@@ -26,43 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Util;
-
 /**
- * Class ApiUtil.
+ * DeskPRO.
  */
-class ApiUtil
+
+namespace DeskPRO\Bundle\ApiBundle\Security\Token;
+
+class LegacyRememberMeSecurityToken extends AbstractApiSecurityToken
 {
-    const API_MODE_SESSION = 'session';
-    const API_MODE_KEY     = 'key';
-    const API_MODE_TOKEN   = 'token';
+    protected $app_id;
+
+    public function getName()
+    {
+        return 'agent_session';
+    }
 
     /**
-     * @var array
-     */
-    protected static $modeMap = [
-        'agent_session' => self::API_MODE_SESSION,
-        'api_key'       => self::API_MODE_KEY,
-        'api_token'     => self::API_MODE_TOKEN,
-    ];
-
-    /**
-     * @param $mode
-     *
      * @return mixed
      */
-    public static function getMode($mode)
+    public function getAppId()
     {
-        if (isset(self::$modeMap[$mode])) {
-            return self::$modeMap[$mode];
-        }
+        return $this->app_id;
+    }
 
-        throw new \InvalidArgumentException(
-            sprintf(
-                'Unsupported api auth mode [ %s ], supported modes are [ %s ]',
-                $mode,
-                implode(', ', array_keys(self::$modeMap))
-            )
-        );
+    /**
+     * @param mixed $app_id
+     */
+    public function setAppId($app_id)
+    {
+        $this->app_id = $app_id;
     }
 }

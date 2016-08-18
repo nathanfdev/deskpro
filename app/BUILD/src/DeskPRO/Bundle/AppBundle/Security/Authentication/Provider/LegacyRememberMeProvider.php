@@ -26,29 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Authentication\Provider;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Auth\AuthenticationManager as DpAuthManager;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
+use DeskPRO\Bundle\ApiBundle\Security\Token\LegacyRememberMeSecurityToken;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
-use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
-class TransferSessionAuthProvider implements AuthenticationProviderInterface
+class LegacyRememberMeProvider implements AuthenticationProviderInterface
 {
-    /**
-     * @var \Application\DeskPRO\Auth\AuthenticationManager
-     */
-    private $dp_auth_manager;
-
     /**
      * @var \DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider
      */
@@ -59,62 +49,38 @@ class TransferSessionAuthProvider implements AuthenticationProviderInterface
      */
     private $session;
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    public function __construct(DpAuthManager $dp_auth_manager, DpPersonUserProvider $dp_person_provider, Session $session, EntityManager $em)
+    public function __construct(DpPersonUserProvider $dp_person_provider, Session $session)
     {
-        $this->dp_auth_manager    = $dp_auth_manager;
         $this->dp_person_provider = $dp_person_provider;
         $this->session            = $session;
-        $this->em                 = $em;
     }
 
     /**
      * Attempts to authenticate a TokenInterface object.
      *
-     * @param DpTransferSessionAuthToken $token The TokenInterface instance to authenticate
+     * @param LegacyRememberMeSecurityToken $token The TokenInterface instance to authenticate
      *
      * @throws AuthenticationException if the authentication fails
      *
-     * @return DpTransferSessionAuthToken An authenticated TokenInterface instance, never null
+     * @return LegacyRememberMeSecurityToken An authenticated TokenInterface instance, never null
      */
     public function authenticate(TokenInterface $token)
     {
-        /** @var DpTransferSessionAuthToken $token */
+        /** @var LegacyRememberMeSecurityToken $token */
         if ($token->isAuthenticated()) {
             return $token;
         }
 
-        // get the auth code and extract the impersonating agent and person
-        $session_id = $token->getCredentials();
-        $sid        = \Application\DeskPRO\Entity\Session::getIdFromCode($session_id);
-        if ($sid) {
-            $agent_session = App::getDb()->fetchAssoc(
-                '
-                    SELECT person_id, auth
-                    FROM sessions
-                    WHERE id = ?
-                ',
-                array(
-                    $sid,
-                )
-            );
+        $this->session->set('last_username', $token->getUsername());
+        $credentials = $token->getCredentials();
+        /** @var Person $person */
+        $person = $token->getUser();
 
-            list(, $auth) = explode('-', $session_id);
-
-            if ($agent_session && $agent_session['auth'] == $auth && $agent_session['person_id']) {
-                if ($person = $this->em->getRepository('DeskPRO:Person')->find($agent_session['person_id'])) {
-                    $token = new DpTransferSessionAuthToken($person, $session_id);
-
-                    return $token;
-                }
-            }
+        if (!$person->validateRememberMeCookieCode($credentials)) {
+            throw new AuthenticationException('could not handle old-style remember me: '.$credentials);
         }
 
-        throw new AuthenticationException('could not transfer session to portal: '.$session_id);
+        return new AgentSessionSecurityToken($person, $person->getPassword(), array_merge(array('ROLE_USER'), $person->getRoles()));
     }
 
     /**
@@ -126,6 +92,6 @@ class TransferSessionAuthProvider implements AuthenticationProviderInterface
      */
     public function supports(TokenInterface $token)
     {
-        return $token instanceof DpTransferSessionAuthToken;
+        return $token instanceof LegacyRememberMeSecurityToken;
     }
 }
