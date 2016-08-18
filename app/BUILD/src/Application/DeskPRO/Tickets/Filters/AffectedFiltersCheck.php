@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,9 +31,11 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Component\Util\RegexUtils;
 use Monolog\Logger;
 use Orb\Util\Arrays;
 
@@ -147,7 +149,12 @@ class AffectedFiltersCheck
                 case 'person': return 'ticket.person_id';
                 case 'agent_team': return 'ticket.agent_team_id';
                 case 'organization': return 'ticket.organization_id';
-                default: return "ticket.$field_name";
+                default:
+                    if ($fid = RegexUtils::getMatch('/^custom_data\.(\d+)$/', $field_name)) {
+                        return 'ticket.custom_data_ticket_'.$fid;
+                    } else {
+                        return "ticket.$field_name";
+                    }
             }
         }, $changed_fields);
 
