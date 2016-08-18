@@ -56,6 +56,9 @@ use Orb\Util\Strings;
 use Orb\Util\Util as OrbUtil;
 use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
+/**
+ * Class TicketManager.
+ */
 class TicketManager
 {
     /**
@@ -94,6 +97,8 @@ class TicketManager
     private $auto_vars = [];
 
     /**
+     * Constructor.
+     *
      * @param DeskproContainer $container
      */
     public function __construct(DeskproContainer $container)
@@ -103,15 +108,22 @@ class TicketManager
         $this->db           = $container->getDb();
         $this->blob_storage = $container->getBlobStorage();
 
+        /** @var \Application\DeskPRO\EntityRepository\Organization $organizationRepo */
+        $organizationRepo = $this->em->getRepository(Organization::class);
+        /** @var \Application\DeskPRO\EntityRepository\Brand $brandRepo */
+        $brandRepo = $this->em->getRepository(Brand::class);
+        /** @var \Application\DeskPRO\EntityRepository\TicketTrigger $ticketTriggerRepo */
+        $ticketTriggerRepo = $this->em->getRepository(TicketTrigger::class);
+
         $this->save_actions      = [];
         $this->post_save_actions = [];
 
         $this->save_actions[] = new TicketSaveActions\VerifyCreationSystem();
         $this->save_actions[] = new TicketSaveActions\VerifyRef($container->getRefGenerator());
-        $this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository(Organization::class));
-        $this->save_actions[] = new TicketSaveActions\VerifyAgent($container->getAgentData());
+        $this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($organizationRepo);
+        $this->save_actions[] = new TicketSaveActions\VerifyAgent();
         $this->save_actions[] = new TicketSaveActions\DetectAutoresponders(
-            $container->getEm(),
+            $this->em,
             $container->getSetting('core_email.antiflood_newtickets'),
             $container->getSetting('core_email.antiflood_newtickets_time'),
             $container->getSetting('core_email.antiflood_newreplies'),
@@ -119,9 +131,9 @@ class TicketManager
         );
 
         $this->post_save_actions[] = new TicketSaveActions\SaveContextualFields($container->getCustomFieldManager());
-        $this->post_save_actions[] = new TicketSaveActions\ExecTriggers($container->getEm()->getRepository(TicketTrigger::class), new ActionApplicator($container));
+        $this->post_save_actions[] = new TicketSaveActions\ExecTriggers($ticketTriggerRepo, new ActionApplicator($container));
         $this->post_save_actions[] = new TicketSaveActions\VerifyBrand(
-            $container->getEm()->getRepository(Brand::class),
+            $brandRepo,
             $container->getSetting('portal.default_brand')
         );
         $this->post_save_actions[] = new TicketSaveActions\VerifyDepartment(
@@ -129,11 +141,11 @@ class TicketManager
             $container->get('brand_form_helper')
         );
         $this->post_save_actions[] = new TicketSaveActions\SetActionTimes();
-        $this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository(Sla::class)->getAutoSlas(), $container->getEm(), new SlaClientMessageSender($container->getDb()));
-        $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($container->getEm(), new ActionApplicator($container));
-        $this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
+        $this->post_save_actions[] = new TicketSaveActions\ApplySlas($this->em->getRepository(Sla::class)->getAutoSlas(), $this->em, new SlaClientMessageSender($this->db));
+        $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($this->em, new ActionApplicator($container));
+        $this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($this->em);
         $this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container);
-        $this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb());
+        $this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($this->db);
 
         $this->setAutoContextVar('custom_field_manager', $container->getCustomFieldManager());
     }
