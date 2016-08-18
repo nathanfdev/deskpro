@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Routing;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
@@ -48,7 +49,7 @@ use Symfony\Component\Routing\RouterInterface;
  * context populated from a Request, we need to create one ourselves
  * based on settings.
  */
-class RouterWithDynamicContext implements RouterInterface, RouterDecorator, RequestMatcherInterface
+class RouterWithDynamicContext implements RouterInterface, RouterDecorator, RequestMatcherInterface, WarmableInterface
 {
     /**
      * @var RouterInterface
@@ -157,5 +158,15 @@ class RouterWithDynamicContext implements RouterInterface, RouterDecorator, Requ
         }
 
         return $this->router->match($request->getPathInfo());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function warmUp($cacheDir)
+    {
+        if ($this->router instanceof WarmableInterface) {
+            $this->router->warmUp($cacheDir);
+        }
     }
 }
