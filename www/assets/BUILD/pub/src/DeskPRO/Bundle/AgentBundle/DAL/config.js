@@ -17,6 +17,7 @@ export const repositoriesConfig = {
   FeedbackCategory:     { type: 'api', url: '/feedback_categories' },
   FeedbackComment:      { type: 'api', url: '/feedback_comments', repositoryClass: FeedbackCommentRepository },
   Organization:         { type: 'api', url: '/organizations' },
+  Onboardings:          { type: 'api', url: '/people/onboarding/new' },
   Person:               { type: 'api', url: '/people' },
   PersonSetting:        { type: 'api', url: '/person_setting', repositoryClass: PersonSettingRepository },
   Project:              { type: 'api', url: '/task_projects', allowAll: true },
