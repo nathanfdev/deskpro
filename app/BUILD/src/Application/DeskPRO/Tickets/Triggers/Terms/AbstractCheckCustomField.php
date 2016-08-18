@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
+use Application\DeskPRO\CustomFields\Handler\DateTime;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
@@ -319,17 +320,23 @@ JS;
             case 'datetime':
                 $date1 = null;
                 $date2 = null;
+                $i1    = 0;
+                $i2    = 0;
                 if ($options['date1']) {
                     $date1 = $options['date1'] * 1000;
                     $date1 = "new Date($date1)";
                 } elseif ($options['date1_relative']) {
-                    // todo
+                    $i1   = \DateInterval::createFromDateString($options['date1_relative'].' '.$options['date1_relative_type']);
+                    $date = new \DateTime('@0');
+                    $i1   = $date->add($i1)->getTimestamp() * 1000;
                 }
                 if ($options['date2']) {
                     $date2 = $options['date2'] * 1000;
                     $date2 = "new Date($date2)";
                 } elseif ($options['date2_relative']) {
-                    // todo
+                    $i2   = \DateInterval::createFromDateString($options['date2_relative'].' '.$options['date2_relative_type']);
+                    $date = new \DateTime('@0');
+                    $i2   = $date->add($i2)->getTimestamp() * 1000;
                 }
 
                 $date1 = $date1 ?: 'null';
@@ -339,13 +346,26 @@ JS;
 function (ticket) {
   var date1 = $date1;
   var date2 = $date2;
+  var i1 = $i1;
+  var i2 = $i2;
   date1 = date1 ? date1.getTime() : null;
   date2 = date2 ? date2.getTime() : null;
+  if (!date1 && i1) {
+    date1 = Date.now() - i1;
+  }
+  if (!date2 && i2) {
+    date2 = Date.now() - i2;
+  }
+   
   var op = '$op';
   var value = $value;
-  if (!value || !value.length) {
+  if (!value) {
     return false;
   }
+  var parts = (value + '').trim().split(' ');
+  if (!parts[0]) return false;
+  value = parts[0].split('-');
+  if (!value.length || value.length !== 3) return false;
   value = new Date(parseInt(value[0]), parseInt(value[1]) - 1, parseInt(value[2]));
   value = value.getTime();
   if (!date1 && !date2) return false;
@@ -359,7 +379,7 @@ function (ticket) {
       return value > (date2 || date1);
     case '$op_btw':
       if (!date1 || !date2) return false;
-      return Math.min(date1, date2) >= value && value <= Math.max(date1, date2); 
+      return Math.min(date1, date2) <= value && Math.max(date1, date2) >= value; 
   }
   
   return false;

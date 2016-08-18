@@ -215,6 +215,23 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			getWorkflowId: function() {
 				var catId = self.getEl('work').val();
 				return parseInt(catId) || 0;
+			},
+			getFieldValue: function(name) {
+				var $cont = self.getEl('fields_container');
+				var $field = $('[name="' + name + '"]:first', $cont);
+				if ($field.is(':checkbox')) {
+					return $field.is(':checked');
+				}
+				return $field.val();
+			},
+			getTicketFieldValue: function(fieldId) {
+				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
+			},
+			getUserFieldValue: function(fieldId) {
+				return this.getFieldValue('custom_person_fields[field_' + fieldId + ']');
+			},
+			getOrgFieldValue: function(fieldId) {
+				return this.getFieldValue('custom_org_fields[field_' + fieldId + ']');
 			}
 		};
 
@@ -263,8 +280,19 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			self.getCustomFields();
 		});
 
+		var $cont = self.getEl('fields_container');
+		$cont.on('change dp.change', function(e){
+			var name = $(e.target).attr('name');
+			if (!name) return;
+			if (name.indexOf('custom_fields[field_') !== -1 || name.indexOf('custom_person_fields[field_') !== -1 || name.indexOf('custom_org_fields[field_') !== -1) {
+				self._updateFields();
+			}
+		});
+
 		$('.ticket-field select', this.wrapper).on('change', function() {
-			self._updateFields();
+			if ($(this).attr('name') && $(this).attr('name').indexOf('custom_') === -1) {
+				self._updateFields();
+			}
 		});
 
 		self.getCustomFields();

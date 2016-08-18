@@ -45,13 +45,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				if ($field.is(':checkbox')) {
 					return $field.is(':checked');
 				}
-				// if ($field.find(`${id}_year`).length) {
-				// 	return [
-						// $(`${id}_year`, $field).val(),
-						// $(`${id}_month`, $field).val(),
-						// $(`${id}_day`, $field).val()
-					// ];
-				// }
 				return $field.val();
 			},
 			getTicketFieldValue: function(fieldId) {
@@ -61,12 +54,21 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return this.getFieldValue('custom_person_fields[field_' + fieldId + ']');
 			},
 			getOrgFieldValue: function(fieldId) {
-				return this.getFieldValue('org', fieldId);
+				return this.getFieldValue('custom_org_fields[field_' + fieldId + ']');
 			}
 		};
 
 		this.page.getEl('department').on('change', function() {
 			self.updateDisplay();
+		});
+
+		var $holders = self.page.getEl('field_holders');
+		$holders.on('change dp.change', function(e){
+			var name = $(e.target).attr('name');
+			if (!name) return;
+			if (name.indexOf('custom_fields[field_') !== -1 || name.indexOf('custom_person_fields[field_') !== -1 || name.indexOf('custom_org_fields[field_') !== -1) {
+				self.updateDisplay();
+			}
 		});
 
 		this.page.changeManager.addEvent('updateResult', function(data) {
@@ -174,7 +176,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 					next: 'fa fa-chevron-right'
 				}
 			});
-			$(this).on('dp.change', function(){
+			$(this).on('dp.change', function(e){
 				$(this).trigger('change');
 			});
 		});
@@ -194,6 +196,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				}
 			});
 			$(this).on('dp.change', function(){
+
 				$(this).trigger('change');
 			});
 		});

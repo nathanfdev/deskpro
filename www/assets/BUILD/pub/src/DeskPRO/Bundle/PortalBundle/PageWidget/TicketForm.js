@@ -49,11 +49,10 @@ class TicketValueReader {
       return $field.is(':checked');
     }
     if ($field.find(`${id}_year`).length) {
-      return [
-        $(`${id}_year`, $field).val(),
-        $(`${id}_month`, $field).val(),
-        $(`${id}_day`, $field).val()
-      ];
+      const year = $(`${id}_year`, $field).val();
+      const month = $(`${id}_month`, $field).val();
+      const day = $(`${id}_day`, $field).val();
+      return `${year}-${month}-${day}`;
     }
     return $field.val();
   }
