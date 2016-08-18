@@ -146,9 +146,6 @@ class AgentDataService
         }
         $this->has_init_teammap = true;
 
-        // needed to preload $this->ids
-        $this->preload();
-
         $this->team_to_agents = $this->db->fetchAllGrouped('
             SELECT team_id, person_id
             FROM agent_team_members
@@ -156,12 +153,13 @@ class AgentDataService
 
         $this->agent_to_teams = Arrays::reverseLookupArray($this->team_to_agents, true, true);
 
-        if ($this->ids) {
+        $ids = $this->db->fetchAllCol('SELECT id FROM people WHERE is_agent = 1 AND is_disabled = 0 AND is_deleted = 0');
+        if ($ids) {
             $this->agent_to_groups = $this->db->fetchAllGrouped('
                 SELECT person_id, usergroup_id
                 FROM person2usergroups
                 WHERE person_id IN (?)
-            ', [$this->ids], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
+            ', [$ids], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
         } else {
             $this->agent_to_groups = [];
         }
