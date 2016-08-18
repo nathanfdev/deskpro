@@ -219,9 +219,13 @@ class MassLoader
         $permNames   = [
             'agent_tickets.use',
             'agent_tickets.view_others',
+            'agent_tickets.view_unassigned',
             'agent_tickets.create',
             'agent_tickets.modify_own',
             'agent_tickets.delete',
+            'agent_tickets.reply_mass',
+            'agent_tickets.reply_own',
+            'agent_tickets.reply_others',
         ];
 
         foreach ($permNames as $permissionName) {
