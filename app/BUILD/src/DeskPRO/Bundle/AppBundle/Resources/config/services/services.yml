@@ -56,7 +56,11 @@ services:
   avatar_resolver:
     class: DeskPRO\Bundle\AppBundle\Content\AvatarResolver
     #todo #portal second param here needs to be setting for gravatar
-    arguments: ["@router.default", true]
+    arguments: ["@router.default", "@doctrine.orm.default_entity_manager", true]
+
+  agent_data:
+    class: DeskPRO\Bundle\AppBundle\Agent\AgentData
+    arguments: ["@avatar_resolver", "@doctrine.orm.default_entity_manager"]
 
   doctrine_association_manager:
     class: DeskPRO\Component\DoctrineAssociation\DoctrineAssociationManager

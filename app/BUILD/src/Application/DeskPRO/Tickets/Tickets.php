@@ -67,9 +67,7 @@ class Tickets
         $options = [];
 
         if ($person['is_agent']) {
-            /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
-            $personRepo        = App::getOrm()->getRepository(Entity\Person::class);
-            $options['agents'] = $personRepo->getAgentNames();
+            $options['agents'] = App::$container->get('agent_data')->getAgentNames();
 
             if (App::getSetting('core.use_agent_team')) {
                 $options['agent_teams'] = App::getDataService('AgentTeam')->getTeamNames();

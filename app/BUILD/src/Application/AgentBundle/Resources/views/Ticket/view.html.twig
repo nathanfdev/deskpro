@@ -498,8 +498,8 @@ pageMeta.lang = {{ {
 					<div class="new-follower" id="{{ baseId }}_followers_sel_wrap">
 						<select id="{{ baseId }}_followers_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 							<option value="0">{{ phrase('agent.general.select_agent') }}</option>
-							{% for agent in agents %}
-								<option data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}" data-icon-small="{{ agent.getPictureUrl(15) }}">{{ agent.display_name }}</option>
+							{% for agent in app.getAgentData().getSelectboxList() %}
+								<option data-icon="{{ agent.picture_url_20 }}" value="{{ agent.id }}" data-icon-small="{{ agent.picture_url_15 }}">{{ agent.display_name }}</option>
 							{% endfor %}
 						</select>
 					</div>

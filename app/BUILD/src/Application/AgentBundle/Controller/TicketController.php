@@ -229,7 +229,6 @@ class TicketController extends AbstractController
             }
         }
 
-        $agents      = $this->container->getAgentData()->getAgents();
         $agent_teams = $this->container->getDataService('AgentTeam')->getTeams();
 
         //------------------------------
@@ -413,7 +412,6 @@ class TicketController extends AbstractController
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
         $vars = [
-            'agents'      => $agents,
             'agent_teams' => $agent_teams,
             'tasks'       => $tasks,
             'brands'      => $brands,

@@ -194,18 +194,18 @@ class Person extends AbstractEntityRepository
     /**
      * Get agent names.
      *
-     * @param null $for_ids
+     * @param null $forIds
      *
-     * @return mixed
+     * @return array
      */
-    public function getAgentNames($for_ids = null)
+    public function getAgentNames($forIds = null)
     {
-        if ($for_ids && !is_array($for_ids)) {
-            $for_ids = [$for_ids];
+        if ($forIds && !is_array($forIds)) {
+            $forIds = [$forIds];
         }
 
         // No names to return
-        if (is_array($for_ids) && !$for_ids) {
+        if (is_array($forIds) && !$forIds) {
             return [];
         }
 
@@ -221,9 +221,9 @@ class Person extends AbstractEntityRepository
             )
         ;
 
-        if ($for_ids) {
+        if ($forIds) {
             $qb->andWhere('p.id IN (:ids)');
-            $qb->setParameter('ids', $for_ids);
+            $qb->setParameter('ids', $forIds);
         }
 
         $agents = $qb->getQuery()->getResult();

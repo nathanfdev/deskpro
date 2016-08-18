@@ -333,4 +333,12 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     {
         return PhpInfo::hasAccelerator();
     }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Agent\AgentData
+     */
+    public function getAgentData()
+    {
+        return $this->container->get('agent_data');
+    }
 }

@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
-use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -426,15 +425,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getFilenameSafe()
     {
-        $filename_safe = Strings::utf8_accents_to_ascii($this->filename);
-        $filename_safe = RegexUtils::safePregReplace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
-        $filename_safe = RegexUtils::safePregReplace('#\-{2,}#', '-', $filename_safe);
-
-        if (!$filename_safe) {
-            return 'file';
-        }
-
-        return $filename_safe;
+        return Strings::getFilenameSafe($this->filename);
     }
 
     /**
