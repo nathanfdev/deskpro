@@ -663,15 +663,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
      *
      * @return bool
      */
-    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-    {
-        /*
-         * This should really be an abstract method but PHP <5.3.9 will error out due to https://bugs.php.net/bug.php?id=43200
-         * "Fatal error: Can't inherit abstract function ..."
-         */
-
-        return false;
-    }
+    abstract public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context);
 
     protected function isIntValuesMatch($op, $value, $check_value)
     {
