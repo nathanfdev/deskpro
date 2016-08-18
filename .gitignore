@@ -170,6 +170,7 @@ app/sys/Resources/agent-perm-names.php
 /app/src/Cloud/bin/twitter-cloud.pid
 /app/tests/coverage
 !/app/tests/coverage/.gitkeep
+php_errors.log
 
 /data/last-email_error.dat
 /data/is_installed.dat
