@@ -195,10 +195,12 @@ class LogReducer
             $preserveIds   = $this->getPreservedEventIds($eventSubjectId);
             $preserveIds[] = $this->query(
                 'SELECT MIN(id) FROM `system_alerts_events` WHERE subject_unique_id = ?', $eventSubjectId);
+            $preserveIds = array_unique($preserveIds);
 
             $limit = $this->quantityLimit - count($preserveIds);
             if ($limit > 0) {
-                $preserveIds = array_merge($preserveIds, $this->queryTopIds($eventSubjectId, $limit, $processed));
+                $topIds      = $this->queryTopIds($eventSubjectId, $limit, $processed);
+                $preserveIds = array_merge($preserveIds, $topIds);
             }
 
             if (count($preserveIds) === $this->quantityLimit) {
@@ -238,17 +240,20 @@ class LogReducer
     }
 
     /**
-     * @param string|null $eventSubjectId Optional subject_unique_id
+     * @param string $eventSubjectId Optional subject_unique_id
      *
-     * @return array|mixed
+     * @return array
      */
-    private function getPreservedEventIds($eventSubjectId = null)
+    private function getPreservedEventIds($eventSubjectId)
     {
         if (!array_key_exists($eventSubjectId, $this->preservedEventIdsCache)) {
-            $this->preservedEventIdsCache[$eventSubjectId] = $this->queryAll('
-                SELECT DISTINCT first_failure_event_id FROM system_alerts_incidents
-                UNION SELECT DISTINCT last_failure_event_id FROM system_alerts_incidents
-            ');
+            $ids = $this->queryAll('
+                SELECT DISTINCT first_failure_event_id FROM system_alerts_incidents WHERE subject_unique_id=?
+                UNION SELECT DISTINCT last_failure_event_id FROM system_alerts_incidents WHERE subject_unique_id=?
+            ', [$eventSubjectId, $eventSubjectId]);
+            $this->preservedEventIdsCache[$eventSubjectId] = array_filter($ids, function ($id) {
+                return !is_null($id);
+            });
         }
 
         return $this->preservedEventIdsCache[$eventSubjectId];
