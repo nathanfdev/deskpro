@@ -114,10 +114,11 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
      * Get an array of departments the user isn't allowed to see.
      *
      * @param string $context
+     * @param bool   $forceAgentData
      *
      * @return array
      */
-    public function getDisallowedDepartments($context = 'tickets')
+    public function getDisallowedDepartments($context = 'tickets', $forceAgentData = false)
     {
         if (isset($this->_disallowed_ids[$context])) {
             return $this->_disallowed_ids[$context];
@@ -125,7 +126,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 
         $all_ids = App::getDataService('Department')->getIds();
 
-        $allowed_ids    = $this->getAllowedDepartments($context);
+        $allowed_ids    = $this->getAllowedDepartments($context, $forceAgentData);
         $disallowed_ids = array_diff($all_ids, $allowed_ids);
 
         $this->_disallowed_ids[$context] = $disallowed_ids;

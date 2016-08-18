@@ -64,7 +64,7 @@ class Problem extends AbstractEntityRepository
 
         $where_perm = [];
 
-        if ($disallowed = $person_context->getHelperManager()->callName('getdisalloweddepartments', [])) {
+        if ($disallowed = $person_context->getHelperManager()->callName('getdisalloweddepartments', ['tickets', true])) {
             $where_perm[] = 't.department_id NOT IN ('.implode(',', $disallowed).')';
         }
 
