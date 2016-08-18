@@ -44,7 +44,7 @@ class Product extends AbstractCategoryRepository
     public function getAll()
     {
         $products = $this->getEntityManager()->createQuery('
-            SELECT p, PARTIAL ch.{id}
+            SELECT p, ch
             FROM DeskPRO:Product p
             LEFT JOIN p.children ch
             ORDER BY p.display_order ASC
