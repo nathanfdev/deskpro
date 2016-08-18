@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Filters;
 
-use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -48,29 +48,23 @@ use Doctrine\ORM\EntityManager;
 class FilterChangeDetector
 {
     /**
-     * @var \Application\DeskPRO\Entity\LegacyTicketFilter[]
+     * @var EntityManager
      */
-    private $filters = [];
+    private $em;
 
     /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * Add a filter check for an agent explicitly. Usually this only goes through
+     * detection for chagned filters, but sometimes you need to know if a ticket
+     * was in an unaffected filter (e.g., for an 'updated' notification).
+     *
      * @var array
      */
-    private $filtersTermMap = [];
-
-    /**
-     * @var array
-     */
-    private $filtersAgentsMap = [];
-
-    /**
-     * @var \Application\DeskPRO\Entity\Person[]
-     */
-    private $agents;
-
-    /**
-     * @var array
-     */
-    private $team_to_agents;
+    private $explicitFilterIds = [];
 
     /**
      * @var bool
@@ -83,86 +77,37 @@ class FilterChangeDetector
     private $disable_cache = false;
 
     /**
+     * @var array
+     */
+    private $cachedAgents = [];
+
+    /**
+     * @var LegacyTicketFilter[]
+     */
+    private $cachedGlobalFilters = null;
+
+    /**
+     * @var array
+     */
+    private $cachedUserFilters = [];
+
+    /**
      * Constructor.
      *
-     * @param EntityManager    $em
-     * @param AgentDataService $agentDataService
+     * @param EntityManager $em
      */
-    public function __construct(EntityManager $em, AgentDataService $agentDataService)
+    public function __construct(EntityManager $em)
     {
-        /** @var \Application\DeskPRO\EntityRepository\TicketFilter $filtersRepo */
-        $filtersRepo = $em->getRepository(LegacyTicketFilter::class);
+        $this->em         = $em;
+        $this->connection = $this->em->getConnection();
 
-        $this->filters = $filtersRepo->getFilters();
-        foreach ($this->filters as $filter) {
-            $filterId = $filter->getId();
-            $agentId  = $filter->getPersonId();
-
-            $this->filtersAgentsMap[$agentId ?: 'global'][$filterId]      = $filter;
-            $this->filtersTermMap[$this->getTermsKey($filter)][$filterId] = $filter;
-        }
-
-        $this->agents         = [];
-        $this->team_to_agents = [];
-
-        $agentToTeams = $agentDataService->getAgentToTeams();
-        foreach ($agentDataService->getAgents() as $agentId => $agent) {
-            if (!$agent->isActiveAgent()) {
-                continue;
-            }
-
-            $this->agents[$agentId] = $agent;
-
-            if (isset($agentToTeams[$agentId])) {
-                foreach ($agentToTeams[$agentId] as $teamId) {
-                    $this->team_to_agents[$teamId][$agentId] = $agent;
-                }
-            }
-        }
+        $this->explicitFilterIds = $this->connection->fetchAllCol('
+            SELECT DISTINCT filter_id FROM ticket_filter_subscriptions WHERE email_property_change = 1 OR alert_property_change = 1
+        ');
 
         if (isset($GLOBALS['DP_FILTERCHANGEDETECT_DISABLE_CACHE']) && $GLOBALS['DP_FILTERCHANGEDETECT_DISABLE_CACHE']) {
             $this->disable_cache = true;
         }
-    }
-
-    /**
-     * @param LegacyTicketFilter[] $affected_filters
-     *
-     * @return array
-     */
-    private function buildFilterCheckList(array $affected_filters)
-    {
-        $check_list = [];
-
-        foreach ($affected_filters as $filter) {
-            if ($filter->getSysName() == 'archive_deleted') {
-                continue;
-            }
-
-            $agentScopes = [];
-            if ($filter->isGlobal()) {
-                $agentScopes = $this->agents;
-            } elseif ($team_id = $filter->getAgentTeamId()) {
-                if (isset($this->team_to_agents[$team_id])) {
-                    foreach ($this->team_to_agents[$team_id] as $agentId => $agent) {
-                        $agentScopes[$agentId] = $agent;
-                    }
-                }
-            } elseif ($person = $filter->getPerson()) {
-                $agentScopes[$person->getId()] = $person;
-            }
-
-            if (!$agentScopes) {
-                continue;
-            }
-
-            $check_list[$filter->getId()] = [
-                'filter' => $filter,
-                'scopes' => $agentScopes,
-            ];
-        }
-
-        return array_values($check_list);
     }
 
     /**
@@ -172,41 +117,48 @@ class FilterChangeDetector
      *
      * @return FilterChangeSet
      */
-    public function getFilterChangeSet(Ticket $ticket, ExecutorContextInterface $context = null, array $forAgentIds = null)
+    public function getFilterChangeSet(Ticket $ticket, ExecutorContextInterface $context, array $forAgentIds)
     {
         $logger = $context->getLogger();
         $state  = $ticket->getStateChangeRecorder();
 
-        /** @var FilterChangeSet $exist_set */
-        $exist_set = null;
+        // prepare agents/filters map
+        $agents  = $this->getAgents($forAgentIds);
+        $filters = $this->getFilters(array_keys($agents));
 
-        // Use the last change set to use values we have already calculated
-        if ($context && $context->getVars()->has('filter_change_set')) {
-            $exist_set = $context->getVars()->get('filter_change_set');
-            if ($exist_set->getTicket()->getId() != $ticket->getId()) {
-                $exist_set = null;
+        $filtersAgentsMap = [];
+        $filtersTermMap   = [];
+
+        foreach ($filters as $filter) {
+            $filterId = $filter->getId();
+            $agentId  = $filter->getPersonId();
+
+            if ($agentId) {
+                $filtersAgentsMap[$filterId][$agentId] = $agents[$agentId];
+            } else {
+                $filtersAgentsMap[$filterId] = $agents;
+            }
+
+            $filtersTermMap[$this->getTermsKey($filter)][$filterId] = $filter;
+        }
+
+        // calc affected filters
+        $start   = microtime(true);
+        $checker = new AffectedFiltersCheck($ticket, $filtersTermMap, $logger);
+
+        $affectedFilters = $checker->getNewAffectedFilters();
+        // add explicit filters
+        foreach ($this->explicitFilterIds as $filterId) {
+            if (!isset($affectedFilters[$filterId]) && isset($filters[$filterId])) {
+                $affectedFilters[$filterId] = $filters[$filterId];
             }
         }
 
-        if ($this->disable_cache) {
-            $exist_set = null;
-        }
+        $logger->info(sprintf('[FilterChangeDetector] Affected filters took %.3fs', microtime(true) - $start));
+        $logger->info(sprintf('[FilterChangeDetector] Checking %d filters', count($affectedFilters)));
 
-        // If the states are exactly the same, then we might be able to just return the same
-        if ($exist_set && $exist_set->getStateId() >= $state->getStateVersion()) {
-            return $exist_set;
-        }
-
-        if ($exist_set) {
-            $logger->info(sprintf('[FilterChangeDetector] Have exist set. Will try to use cached values from last run.'));
-        }
-
-        $is_dep_change = false;
-        $isNewTicket   = $state->isNewTicket();
-
-        if ($state->hasChangedField('department')) {
-            $is_dep_change = true;
-        }
+        $isDepChanged = $state->hasChangedField('department');
+        $isNewTicket  = $state->isNewTicket();
 
         /** @var Ticket $orig_ticket */
         $orig_ticket = $ticket->getOriginalStateClone();
@@ -217,27 +169,9 @@ class FilterChangeDetector
 
         /** @var FilterChange[] $changed */
         $changed = [];
-        $filters = $this->getFiltersGroupedByTerm($forAgentIds);
-
-        $start   = microtime(true);
-        $checker = new AffectedFiltersCheck($ticket, $filters, $logger);
-
-        $affected_filters = $checker->getNewAffectedFilters();
-
-        if ($exist_set) {
-            $logger->info(sprintf('[FilterChangeDetector] Affected filters: %d -- Filters with affected changes since last run: %d', count($checker->getAffectedFilters()), count($affected_filters)));
-        }
-
-        $logger->info(sprintf('[FilterChangeDetector] Affected filters took %.3fs', microtime(true) - $start));
-
-        $start         = microtime(true);
-        $filter_checks = $this->buildFilterCheckList($affected_filters);
-        $logger->info(sprintf('[FilterChangeDetector] Build check list took %.3fs', microtime(true) - $start));
 
         $generic_match_cache  = [];
         $not_cachable_filters = [];
-
-        $logger->info(sprintf('[FilterChangeDetector] Checking %d filters', count($filter_checks)));
 
         // Calculate who could actually see it
         $start = microtime(true);
@@ -246,18 +180,8 @@ class FilterChangeDetector
         $agentPermCache = [];
 
         // remove agents from the scopes
-        $forAgentIds     = array_combine($forAgentIds, $forAgentIds);
-        $oldFilterChecks = $filter_checks;
-        $filter_checks   = [];
-
-        foreach ($oldFilterChecks as $filter_check) {
-            // if defined agent list then exclude others
-            if (null !== $forAgentIds) {
-                $filter_check['scopes'] = array_intersect_key($filter_check['scopes'], $forAgentIds);
-            }
-
-            $distinctAgents += $filter_check['scopes'];
-            $filter_checks[] = $filter_check;
+        foreach ($affectedFilters as $filterId => $filter) {
+            $distinctAgents += $filtersAgentsMap[$filterId];
         }
 
         // calculate agent view permissions
@@ -296,14 +220,11 @@ class FilterChangeDetector
 
         $time = microtime(true);
 
-        foreach ($filter_checks as $filter_check) {
-            /* @var LegacyTicketFilter $filter */
-            $filter        = $filter_check['filter'];
-            $filterId      = $filter->getId();
+        foreach ($affectedFilters as $filterId => $filter) {
             $filterSysName = $filter->getSysName();
             $agent_scopes  = [];
 
-            foreach ($filter_check['scopes'] as $a_id => $a) {
+            foreach ($filtersAgentsMap[$filterId] as $a_id => $a) {
                 if (isset($agentPermCache[$a_id]) && ($agentPermCache[$a_id]['old'] || $agentPermCache[$a_id]['new'])) {
                     $agent_scopes[$a_id] = $a;
                 }
@@ -377,7 +298,7 @@ class FilterChangeDetector
                     $orig_match_failterm = null;
                     $new_match_failterm  = null;
 
-                    if ($is_dep_change) {
+                    if ($isDepChanged) {
                         if (!$isNewTicket && !$agentPermOld) {
                             $orig_match          = false;
                             $orig_match_failterm = 'ticket.department_id';
@@ -513,27 +434,6 @@ class FilterChangeDetector
         $logger->debug(sprintf('[FilterChangeDetector] The following filters could not be optimised: %s', implode(', ', $not_cachable_filters)));
         $logger->info(sprintf('[FilterChangeDetector] Found %d filters in %d iterations (%d of those were cached). Time: %.4fs', count($changed_filters), $scope_counts, $scope_cached_counts, microtime(true) - $time));
 
-        // Add changed filters from previous set
-        if ($exist_set) {
-            $old_changed_filters = $exist_set->getChangedFilters();
-            $copied_ids          = [];
-            foreach ($checker->getAffectedFiltersWithNoChanges() as $f) {
-                $fid = $f->getId();
-
-                if (isset($old_changed_filters[$fid])) {
-                    if (isset($changed_filters[$fid])) {
-                        $old_changed_filters[$fid]->merge($changed_filters[$fid]);
-                    }
-                    $changed_filters[$fid] = $old_changed_filters[$fid];
-                    $copied_ids[]          = $fid;
-                }
-            }
-
-            if ($copied_ids) {
-                $logger->info(sprintf('[FilterChangeDetector] Found %d additional filters from previous detection set', count($copied_ids)));
-            }
-        }
-
         $set = new FilterChangeSet($ticket, $state->getStateVersion(), $checker->getAffectedFilters(), $changed_filters, $checker->getNewestFieldVersions());
 
         if ($context) {
@@ -558,44 +458,6 @@ class FilterChangeDetector
     }
 
     /**
-     * Prepare list of filters grouped by terms.
-     *
-     * @param array|null $forAgentIds
-     *
-     * @return LegacyTicketFilter|array
-     */
-    private function getFiltersGroupedByTerm(array $forAgentIds = null)
-    {
-        // filter per user filters
-        if (null !== $forAgentIds) {
-            /** @var LegacyTicketFilter $filters */
-            $filters = [];
-
-            // take global filters
-            if (isset($this->filtersAgentsMap['global'])) {
-                $filters += $this->filtersAgentsMap['global'];
-            }
-
-            // take per-user filters
-            foreach ($forAgentIds as $agentId) {
-                if (isset($this->filtersAgentsMap[$agentId])) {
-                    $filters += $this->filtersAgentsMap[$agentId];
-                }
-            }
-
-            // group them by term
-            $groupedFilters = [];
-            foreach ($filters as $filter) {
-                $groupedFilters[$this->getTermsKey($filter)][$filter->getId()] = $filter;
-            }
-
-            return $groupedFilters;
-        } else {
-            return $this->filtersTermMap;
-        }
-    }
-
-    /**
      * @param LegacyTicketFilter $filter
      *
      * @return string
@@ -603,5 +465,105 @@ class FilterChangeDetector
     private function getTermsKey(LegacyTicketFilter $filter)
     {
         return md5(serialize($filter->getTerms()));
+    }
+
+    /**
+     * @param array $agentIds
+     *
+     * @return Person[]
+     */
+    private function getAgents(array $agentIds)
+    {
+        if (!$agentIds) {
+            return [];
+        }
+
+        // load from cache
+        $agents   = array_intersect_key($this->cachedAgents, array_combine($agentIds, $agentIds));
+        $agentIds = array_diff($agentIds, array_keys($agents));
+
+        // load from db
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('p')
+            ->from(Person::class, 'p')
+            ->where(
+                'p.is_agent = 1',
+                'p.is_disabled = 0',
+                'p.is_deleted = 0',
+                'p.id IN (:ids)'
+            )
+            ->setParameter('ids', $agentIds)
+        ;
+
+        /** @var Person[] $result */
+        $result = $qb->getQuery()->getResult();
+        foreach ($result as $agent) {
+            $agents[$agent->getId()] = $agent;
+        }
+
+        $this->cachedAgents += $agents;
+
+        return $agents;
+    }
+
+    /**
+     * @param array $agentIds
+     *
+     * @return LegacyTicketFilter[]
+     */
+    private function getFilters(array $agentIds)
+    {
+        if (!$agentIds) {
+            return [];
+        }
+
+        $filters = [];
+
+        // load global filters
+        if (null === $this->cachedGlobalFilters) {
+            $this->cachedGlobalFilters = [];
+
+            $qb = $this->em->createQueryBuilder();
+            $qb
+                ->select('f')
+                ->from(LegacyTicketFilter::class, 'f')
+                ->where('f.person IS NULL')
+            ;
+
+            /** @var LegacyTicketFilter[] $result */
+            $result = $qb->getQuery()->getResult();
+            foreach ($result as $filter) {
+                $this->cachedGlobalFilters[$filter->getId()] = $filter;
+            }
+        }
+
+        $filters += $this->cachedGlobalFilters;
+
+        // load user filters
+        foreach ($agentIds as $agentId) {
+            if (isset($this->cachedUserFilters[$agentId])) {
+                $filters += $this->cachedUserFilters[$agentId];
+            }
+        }
+
+        $agentIds = array_diff($agentIds, array_keys($this->cachedUserFilters));
+
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('f')
+            ->from(LegacyTicketFilter::class, 'f')
+            ->where('f.person IN (:ids)')
+            ->setParameter('ids', $agentIds)
+        ;
+
+        /** @var LegacyTicketFilter[] $result */
+        $result = $qb->getQuery()->getResult();
+        foreach ($result as $filter) {
+            $filters[$filter->getId()]                         = $filter;
+            $this->cachedUserFilters[$filter->getPersonId()][] = $filter;
+        }
+
+        return $filters;
     }
 }
