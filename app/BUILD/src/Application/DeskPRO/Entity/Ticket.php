@@ -4581,6 +4581,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->addLifecycleCallback('_onValidateProps', 'preUpdate');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');
+        $metadata->addLifecycleCallback('recomputeHash', 'postPersist');
+        $metadata->addLifecycleCallback('recomputeHash', 'postUpdate');
         $metadata->setPrimaryTable(
             [
                 'name'    => 'tickets',
