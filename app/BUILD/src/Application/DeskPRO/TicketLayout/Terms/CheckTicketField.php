@@ -28,10 +28,11 @@
 
 namespace Application\DeskPRO\TicketLayout\Terms;
 
-use DeskPRO\Bundle\AppBundle\Form\FormFields;
-use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
-class CheckTicketField extends CheckCustomField
+class CheckTicketField extends \Application\DeskPRO\Tickets\Triggers\Terms\CheckTicketField implements TicketLayoutTermInterface
 {
     /**
      * {@inheritdoc}
@@ -41,10 +42,36 @@ class CheckTicketField extends CheckCustomField
         return "ticket.getTicketFieldValue($id)";
     }
 
-    protected function getSubmittedData(array $data)
+    /**
+     * {@inheritdoc}
+     */
+    protected function getOptionsDef()
     {
-        $options = $this->getTermOptions();
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('field_id', 'value', 'type_name');
 
-        return @$data[FormFields::TICKET_FIELD.'_'.$options['field_id']][CustomDataType::KEY];
+        return $options;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isTicketMatch(Ticket $ticket)
+    {
+        $context = new ExecutorContext();
+
+        return $this->isTriggerMatch($ticket, $context);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTermType()
+    {
+        $class = get_class($this);
+        $parts = explode('\\', $class);
+        $class = end($parts);
+
+        return $class.$this->getTermOptions()->get('field_id');
     }
 }

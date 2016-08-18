@@ -36,6 +36,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -59,17 +60,23 @@ class TicketWithLayoutsWebType extends AbstractType
     private $fieldRenderer;
 
     /**
+     * @var FormFactory
+     */
+    private $formFactory;
+
+    /**
      * Constructor.
      *
      * @param WebFieldResolver    $fieldResolver
      * @param WebFieldRenderer    $fieldRenderer
      * @param TicketLayoutFactory $layoutFactory
      */
-    public function __construct(WebFieldResolver $fieldResolver, WebFieldRenderer $fieldRenderer, TicketLayoutFactory $layoutFactory)
+    public function __construct(WebFieldResolver $fieldResolver, WebFieldRenderer $fieldRenderer, TicketLayoutFactory $layoutFactory, FormFactory $formFactory)
     {
         $this->fieldResolver = $fieldResolver;
         $this->fieldRenderer = $fieldRenderer;
         $this->layoutFactory = $layoutFactory;
+        $this->formFactory   = $formFactory;
     }
 
     /**
@@ -96,7 +103,7 @@ class TicketWithLayoutsWebType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onAddUiFields'], -1);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddUiFields'], -1);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddRerenderField'], -1);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onResetRerenderFormData'], 100);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);
     }
 
     /**
@@ -191,5 +198,14 @@ class TicketWithLayoutsWebType extends AbstractType
         }
 
         $event->setData($data);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onPreSubmit(FormEvent $event)
+    {
+        $this->onResetRerenderFormData($event);
+        TicketWithLayoutsManipulatorType::onPreSubmit($event, TicketWithLayoutsWebFullType::class, $this->formFactory);
     }
 }

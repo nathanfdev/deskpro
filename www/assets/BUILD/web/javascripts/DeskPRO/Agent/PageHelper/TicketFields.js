@@ -38,6 +38,30 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			getWorkflowId: function() {
 				var catId = self.display.find('select.prop-input-workflow_id:first').val();
 				return parseInt(catId) || 0;
+			},
+			getFieldValue: function(name) {
+				var $holders = self.page.getEl('field_holders');
+				var $field = $('[name="' + name + '"]:first', $holders);
+				if ($field.is(':checkbox')) {
+					return $field.is(':checked');
+				}
+				// if ($field.find(`${id}_year`).length) {
+				// 	return [
+						// $(`${id}_year`, $field).val(),
+						// $(`${id}_month`, $field).val(),
+						// $(`${id}_day`, $field).val()
+					// ];
+				// }
+				return $field.val();
+			},
+			getTicketFieldValue: function(fieldId) {
+				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
+			},
+			getUserFieldValue: function(fieldId) {
+				return this.getFieldValue('custom_person_fields[field_' + fieldId + ']');
+			},
+			getOrgFieldValue: function(fieldId) {
+				return this.getFieldValue('org', fieldId);
 			}
 		};
 

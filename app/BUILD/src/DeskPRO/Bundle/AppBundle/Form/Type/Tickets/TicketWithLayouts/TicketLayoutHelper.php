@@ -30,90 +30,13 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
-use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
-use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Component\Util\ListUtils;
-use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 /**
  * Class TicketLayoutHelper.
  */
 class TicketLayoutHelper
 {
-    /**
-     * Submitted choice values are not submitted with the entity Id. Instead we are given the choice list key.
-     *
-     * This inspects the submitted data on our form and gives us data we're interested in.
-     *
-     * @param array                    $submitted_data
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return array the form key and its selected entity ID (or null if not submitted)
-     */
-    public static function getExtractedData(array $submitted_data, TicketWithLayoutsContext $context)
-    {
-        $form      = $context->getForm();
-        $finalData = [];
-        $keys      = [
-            FormFields::DEPARTMENT   => 1,
-            FormFields::PRODUCT      => 1,
-            FormFields::CATEGORY     => 1,
-            FormFields::WORKFLOW     => 1,
-            FormFields::PRIORITY     => 1,
-            FormFields::TICKET_FIELD => 1,
-            FormFields::USER_FIELD   => 1,
-            FormFields::ORG_FIELD    => 1,
-        ];
-
-        foreach ($submitted_data as $key => $value) {
-            $finalData[$key] = null;
-            $check           = preg_replace('/^(.+)_\d*$/', '\\1', $key);
-
-            if (!isset($keys[$check])) {
-                continue;
-            }
-
-            $finalData[$key] = $value;
-
-            if (!$form->has($key)) {
-                continue;
-            }
-
-            /** @var ChoiceLoaderInterface $choiceLoader */
-            if (!$choiceLoader = $form->get($key)->getConfig()->getOption('choice_loader')) {
-                continue;
-            }
-
-            if (is_array($value) && array_key_exists(CustomDataType::KEY, $value)) {
-                $value = $value[CustomDataType::KEY];
-            }
-
-            if (is_array($value)) {
-                $choices         = $choiceLoader->loadChoicesForValues($value);
-                $finalData[$key] = array_map(function ($v) {
-                    if ($v instanceof HierarchyNode) {
-                        $v = $v->getData();
-                    }
-
-                    if ($v) {
-                        return $v->getId();
-                    }
-                }, $choices);
-            } else {
-                $choice = current($choiceLoader->loadChoicesForValues([$value]));
-                if ($choice instanceof HierarchyNode) {
-                    $choice = $choice->getData();
-                }
-
-                if ($choice) {
-                    $finalData[$key] = $choice->getId();
-                }
-            }
-        }
-
-        return $finalData;
-    }
-
     /**
      * @param TicketWithLayoutsContext $context
      *

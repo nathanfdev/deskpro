@@ -150,6 +150,12 @@ class TicketWithLayoutsType extends AbstractType
         $data   = $event->getData();
         $config = $event->getForm()->getConfig();
 
+        // Setting ticket person if not defined
+        if ($data && !$data->getPerson()) {
+            $options = $config->getOptions();
+            $data->setPerson($options['person']);
+        }
+
         // department is already chosen, no need to select the default one
         if ($data->getDepartment()) {
             return;

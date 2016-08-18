@@ -212,6 +212,7 @@ services:
       - "@ticket_with_layouts_web_field_resolver"
       - "@ticket_with_layouts_web_field_renderer"
       - "@ticket_layout_factory"
+      - "@form.factory"
     tags:
       - { name: form.type }
 
@@ -230,6 +231,16 @@ services:
       - "@ticket_with_layouts_api_field_resolver"
       - "@ticket_with_layouts_api_field_renderer"
       - "@ticket_layout_factory"
+      - "@form.factory"
+    tags:
+      - { name: form.type }
+
+  form.api_full_ticket_with_layouts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiFullType
+    arguments:
+      - "@ticket_layout_factory"
+      - "@ticket_with_layouts_api_field_resolver"
+      - "@ticket_with_layouts_api_field_renderer"
     tags:
       - { name: form.type }
 
