@@ -1148,6 +1148,17 @@ GroupSequenceProviderInterface
         return $this->_onNotCallable('getalloweddepartments', [$context, $forceAgentData]);
     }
 
+    /**
+     * @param string $context
+     * @param bool   $forceAgentData
+     *
+     * @return array
+     */
+    public function getDisallowedDepartments($context = 'tickets', $forceAgentData = false)
+    {
+        return $this->_onNotCallable('getdisalloweddepartments', [$context, $forceAgentData]);
+    }
+
     protected function _onNotCallable($name, $arguments)
     {
         if ($this->_helper_manager) {

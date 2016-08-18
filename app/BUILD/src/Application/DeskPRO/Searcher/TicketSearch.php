@@ -903,8 +903,9 @@ class TicketSearch extends SearcherAbstract
             if (!$this->person->getAllowedDepartments('tickets', true) || (!$this->person->hasPerm('agent_tickets.view_unassigned') && !$this->person->hasPerm('agent_tickets.view_others'))) {
                 $where_perm[] = '0';
             } else {
-                if ($this->person->getDisallowedDepartments()) {
-                    $where_perm[] = '(tickets.department_id NOT IN ('.implode(',', $this->person->getDisallowedDepartments()).') OR tickets.department_id IS NULL)';
+                $disAllowedDepartments = $this->person->getDisallowedDepartments('tickets', true);
+                if ($disAllowedDepartments) {
+                    $where_perm[] = '(tickets.department_id NOT IN ('.implode(',', $disAllowedDepartments).') OR tickets.department_id IS NULL)';
                 }
 
                 if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
