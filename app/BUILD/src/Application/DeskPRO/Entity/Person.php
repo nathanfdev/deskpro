@@ -3562,23 +3562,18 @@ GroupSequenceProviderInterface
         $data['usergroup_ids']  = Arrays::castToType($data['usergroup_ids'], 'int');
         $data['agentgroup_ids'] = Arrays::castToType($data['agentgroup_ids'], 'int');
 
-        $data['picture_url']    = $this->getPictureUrl();
-        $data['picture_url_80'] = $this->getPictureUrl(80);
-        $data['picture_url_64'] = $this->getPictureUrl(64);
-        $data['picture_url_50'] = $this->getPictureUrl(50);
-        $data['picture_url_45'] = $this->getPictureUrl(45);
-        $data['picture_url_32'] = $this->getPictureUrl(32);
-        $data['picture_url_22'] = $this->getPictureUrl(22);
-        $data['picture_url_16'] = $this->getPictureUrl(16);
+        $urlTemplate        = $this->getPictureUrl('{{size}}');
+        $defaultUrlTemplate = $this->getPictureUrl('{{size}}', null, true);
+        $encodedTag         = urlencode('{{size}}');
 
-        $data['default_picture_url']    = $this->getPictureUrl(80, null, true);
-        $data['default_picture_url_80'] = $this->getPictureUrl(80, null, true);
-        $data['default_picture_url_64'] = $this->getPictureUrl(64, null, true);
-        $data['default_picture_url_50'] = $this->getPictureUrl(50, null, true);
-        $data['default_picture_url_45'] = $this->getPictureUrl(45, null, true);
-        $data['default_picture_url_32'] = $this->getPictureUrl(32, null, true);
-        $data['default_picture_url_22'] = $this->getPictureUrl(22, null, true);
-        $data['default_picture_url_16'] = $this->getPictureUrl(16, null, true);
+        $pictureSizes = [80, 64, 50, 45, 32, 22, 16];
+        foreach ($pictureSizes as $pictureSize) {
+            $data['picture_url_'.$pictureSize]         = $urlTemplate ? str_replace($encodedTag, $pictureSize, $urlTemplate) : null;
+            $data['default_picture_url_'.$pictureSize] = $defaultUrlTemplate ? str_replace($encodedTag, $pictureSize, $defaultUrlTemplate) : null;
+        }
+
+        $data['picture_url']         = $data['picture_url_80'];
+        $data['default_picture_url'] = $data['default_picture_url_80'];
 
         // Render custom fields to text values
         $field_manager = App::getContainer()->getSystemService('person_fields_manager');
