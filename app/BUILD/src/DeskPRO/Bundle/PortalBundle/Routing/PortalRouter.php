@@ -267,6 +267,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         if (
             !RequestUtils::isLowRequest($request)
             && !RequestUtils::isPortalApiRequest($request)
+            && !RequestUtils::isSysRequest($request)
             && (
                 ($this->isMultiLanguage() && !$requestInfo->getLanguageUrlCode())
                 || (!$this->isMultiLanguage() && $requestInfo->getLanguageUrlCode())

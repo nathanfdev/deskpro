@@ -33,6 +33,7 @@ echo
 
 echo ">> Building new web assets"
 npm run-script gulp-prod
+npm run-script test:visual:build
 echo ".. done"
 echo
 

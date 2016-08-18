@@ -75,7 +75,7 @@
     "striptags": "2.1.1"
   },
   "devDependencies": {
-    "@kadira/storybook": "^1.1.0",
+    "@kadira/storybook": "^2.3.0",
     "babel": "^6.3.26",
     "babel-core": "^6.4.0",
     "babel-eslint": "^6.0.2",
@@ -188,6 +188,7 @@
     "gulp-docs": "gulp slate",
     "test:unit": "jest",
     "test:visual": "start-storybook -p 9001 -s src/tests/Visual/Resources",
+    "test:visual:build": "build-storybook -o build/storybook",
     "test:e2e": "nightwatch",
     "test:e2e:setup": "node selenium-download.js",
     "flow": "flow; test $? -eq 0 -o $? -eq 2"
