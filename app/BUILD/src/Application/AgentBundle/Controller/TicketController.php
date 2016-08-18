@@ -78,6 +78,7 @@ use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
+use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
@@ -89,7 +90,6 @@ use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -136,7 +136,9 @@ class TicketController extends AbstractController
             }
         }
 
-        $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+        /** @var Tickets $ticketsService */
+        $ticketsService = App::getApi('tickets');
+        $ticket_options = $ticketsService->getTicketOptions($this->person);
 
         $ticket_attachments = $this->em->getRepository(TicketAttachment::class)->getTicketAttachments($ticket);
         if (!$ticket_attachments) {
@@ -3903,22 +3905,12 @@ class TicketController extends AbstractController
             ['title' => 'asc']
         );
 
-        $agent_map = [];
-        foreach ($agents as $agent) {
-            $agent_map[$agent->getId()] = [
-                'name'        => $agent->getDisplayName(),
-                'picture_url' => $agent->getPictureUrl(20),
-            ];
-        }
-        unset($agent_map[$this->person->getId()]);
-
         return $this->render('AgentBundle:Ticket:newticket.html.twig', [
             'ticket'               => $ticket,
             'person'               => $person,
             'message'              => $message,
             'attachments'          => isset($attachments) ? $attachments : null,
             'agents'               => $agents,
-            'agent_map'            => $agent_map,
             'agent_signature'      => $this->person->getSignature(),
             'agent_signature_html' => $this->person->getSignatureHtml(),
             'agent_teams'          => $agent_teams,
