@@ -65,14 +65,13 @@ if (php_sapi_name() === 'cli') {
         $config['env'] = [];
     }
 
-    $opts = getopt('e', ['env:', 'no-debug']);
-    if (array_key_exists('--no-debug', $opts)) {
+    if (in_array('--no-debug', $_SERVER['argv'])) {
         $config['env']['debug'] = false;
     }
 
-    $env = @$opts['env'] ?: @$opts['e'];
-    if ($env) {
-        $config['env']['environment'] = $env;
+    $m = null;
+    if (preg_match('/\-\-env=?\s*("|\')?(?P<env>[a-zA-Z0-9]+)/', implode(' ', $_SERVER['argv']), $m)) {
+        $config['env']['environment'] = $m['env'];
     }
 }
 
