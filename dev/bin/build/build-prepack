@@ -22,10 +22,15 @@ DIR_WEB_NODE=$DIR_ROOT/www/assets/BUILD/web/node_modules
 # Reinstall only prod deps
 ########################################################################################################################
 
+cp $DP_DIR/app/BUILD/vendor/zendframework/zend-ldap/src/Node.php $DP_DIR/app/BUILD/tmp-Node.php
+
 # re-install composer deps
 cd $DP_DIR/app/BUILD
 rm -rf vendor/
 composer install --no-dev --ignore-platform-reqs -o --prefer-dist --no-scripts
+
+rm $DP_DIR/app/BUILD/vendor/zendframework/zend-ldap/src/Node.php
+mv $DP_DIR/app/BUILD/tmp-Node.php $DP_DIR/app/BUILD/vendor/zendframework/zend-ldap/src/Node.php
 
 # re-install npm deps
 cd $DP_DIR/www/assets/BUILD/pub
