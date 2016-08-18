@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\Mail\Message;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
@@ -447,6 +448,7 @@ class TicketEmail
         $this->sentToEmail = $toEmail;
         $this->sentWithCcs = [];
 
+        /** @var Message $message */
         $message = $mailer->createMessage();
         $this->logger->info(sprintf('[TicketEmail] To: %s -- Name: %s', $toEmail, $toName));
         $message->setTo([$toEmail => $toName]);

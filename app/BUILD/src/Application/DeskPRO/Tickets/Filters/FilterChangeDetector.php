@@ -38,7 +38,6 @@ use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketFilterSubscription;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Doctrine\ORM\EntityManager;
@@ -77,11 +76,6 @@ class FilterChangeDetector
      * @var bool
      */
     private $extended_log_info = false;
-
-    /**
-     * @var array
-     */
-    private $explicit_filter_scopes = [];
 
     /**
      * @var bool
@@ -126,43 +120,9 @@ class FilterChangeDetector
             }
         }
 
-        /** @var \Application\DeskPRO\EntityRepository\TicketFilterSubscription $subscriptionRepo */
-        $subscriptionRepo = $em->getRepository(TicketFilterSubscription::class);
-        $change_subs      = $subscriptionRepo->getSimplePropertyChangeSubscriptions();
-        if ($change_subs) {
-            foreach ($change_subs as $sub) {
-                if (!isset($filters[$sub['filter_id']]) || !$agentDataService->has($sub['person_id'])) {
-                    continue;
-                }
-
-                $this->addExplicitFilterScope(
-                    $filters[$sub['filter_id']],
-                    $agentDataService->get($sub['person_id'])
-                );
-            }
-        }
-
         if (isset($GLOBALS['DP_FILTERCHANGEDETECT_DISABLE_CACHE']) && $GLOBALS['DP_FILTERCHANGEDETECT_DISABLE_CACHE']) {
             $this->disable_cache = true;
         }
-    }
-
-    /**
-     * Add a filter check for an agent explicitly. Usually this only goes through
-     * detection for chagned filters, but sometimes you need to know if a ticket
-     * was in an unaffected filter (e.g., for an 'updated' notification).
-     *
-     * @param LegacyTicketFilter $filter
-     * @param Person             $agent
-     */
-    public function addExplicitFilterScope(LegacyTicketFilter $filter, Person $agent)
-    {
-        $filterId = $filter->getId();
-        if (!isset($this->explicit_filter_scopes[$filterId])) {
-            $this->explicit_filter_scopes[$filterId] = ['filter' => $filter, 'scopes' => []];
-        }
-
-        $this->explicit_filter_scopes[$filterId]['scopes'][$agent->getId()] = $agent;
     }
 
     /**
@@ -200,12 +160,6 @@ class FilterChangeDetector
                 'filter' => $filter,
                 'scopes' => $agentScopes,
             ];
-        }
-
-        foreach ($this->explicit_filter_scopes as $sub) {
-            if (!isset($check_list[$sub['filter']->id])) {
-                $check_list[$sub['filter']->id] = $sub;
-            }
         }
 
         return array_values($check_list);

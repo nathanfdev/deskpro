@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person as PersonEntity;
@@ -160,17 +159,5 @@ SQL
         }
 
         return $ret;
-    }
-
-    /**
-     * @return array
-     */
-    public function getSimplePropertyChangeSubscriptions()
-    {
-        return App::$container->getDb()->fetchAll('
-            SELECT filter_id, person_id
-            FROM ticket_filter_subscriptions
-            WHERE email_property_change = 1 OR alert_property_change = 1
-        ');
     }
 }
