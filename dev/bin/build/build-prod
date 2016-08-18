@@ -55,7 +55,7 @@ $f          = $DP_DIR.'/app/BUILD/vendor/zendframework/zend-ldap/src/Node.php';
 $content    = file_get_contents($f);
 $newContent = str_replace('if (!Dn::isChildOf($this->_getDn(), $ldap->getBaseDn())) {', 'if (/* DESKPRO EDIT: Removed isChildOf check */false) {', $content);
 
-if ($content === $newContent && strpos($content, 'DESKPRO EDIT') === false) {
+if (strpos($newContent, 'DESKPRO EDIT') === false) {
     echo "\n\n";
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
     echo "Failed to patch zend-ldap/src/Node.php\n";
@@ -66,6 +66,7 @@ if ($content === $newContent && strpos($content, 'DESKPRO EDIT') === false) {
 
 file_put_contents($f, $newContent);
 unset($f, $content, $newContent);
+echo ".. Done\n";
 
 ########################################################################################################################
 # Cache warmup
