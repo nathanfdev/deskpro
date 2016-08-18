@@ -51,8 +51,9 @@ class JsonSerializationVisitor extends BaseVisitor
 
             case JSON_ERROR_UTF8:
                 $root = $this->getRoot();
-
-                array_walk_recursive($root, function (&$item) { $item = iconv('UTF-8', 'UTF-8//IGNORE', $item);});
+                array_walk_recursive($root, function (&$item) {
+                    $item = is_string($item) ? iconv('UTF-8', 'UTF-8//IGNORE', $item) : $item;
+                });
                 $result = @json_encode($root, $this->options);
 
                 if (json_last_error() === JSON_ERROR_UTF8) {
