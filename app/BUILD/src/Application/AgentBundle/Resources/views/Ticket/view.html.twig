@@ -456,9 +456,9 @@ pageMeta.lang = {{ {
 							<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>{{ phrase('agent.general.none') }}</option>
 						{% endif %}
 
-						{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
+						{% if app.user.getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
 						<optgroup label="{{ phrase('agent.general.your_teams') }}">
-                            {% set teams = app.user.getAgent().getTeams() %}
+                            {% set teams = app.user.getTeams() %}
                             {% for team in agent_teams %}
                                 {% if team in teams %}
 								<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
@@ -468,7 +468,7 @@ pageMeta.lang = {{ {
 						{% endif %}
 
 						{% for team in agent_teams %}
-							{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
+							{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getTeamIds() %}
 								<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
 							{% endif %}
 						{% endfor %}
