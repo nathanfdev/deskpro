@@ -46,6 +46,11 @@ if (version_compare(phpversion(), '5.5.0', '<')) {
 @ini_set('xdebug.max_nesting_level', 1000000);
 libxml_disable_entity_loader(true);
 
+// always show errors before boot because we need to make sure silly
+// things like typo in a config file is highly visible
+// (it's fine-tuned below to only show on cli or pre-install)
+@ini_set('display_errors', '1');
+
 define('DP_START_TIME', microtime(true));
 
 #------------------------------
