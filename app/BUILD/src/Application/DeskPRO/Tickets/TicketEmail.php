@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\Entity\TicketAttachment;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Mail\Message;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
@@ -43,6 +45,9 @@ use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
+/**
+ * Class TicketEmail.
+ */
 class TicketEmail
 {
     const MODE_USER  = 'user';
@@ -310,15 +315,13 @@ class TicketEmail
      */
     public function send(array $vars = [])
     {
-        $mailer = $this->mailer;
-
+        $mailer     = $this->mailer;
         $translator = $this->translate;
-        $em         = $this->em;
 
         $ticketDisplay = new TicketDisplay($this->ticket, $this->toPerson);
         $ticketDisplay->setPersonContext($this->toPerson, $this->userMode);
 
-        if ($this->toPerson && $this->toPerson->is_agent) {
+        if ($this->toPerson && $this->toPerson->isAgent()) {
             $this->toPerson->loadHelper('Agent');
             $this->toPerson->loadHelper('AgentTeam');
         }
@@ -353,7 +356,8 @@ class TicketEmail
         }
 
         if ($this->ticketLayoutManager) {
-            $layoutId = $this->ticket->department ? $this->ticket->department->id : null;
+            $department = $this->ticket->getDepartment();
+            $layoutId   = $department ? $department->getId() : null;
 
             if ($this->userMode == self::MODE_AGENT) {
                 $layout = $this->ticketLayoutManager->getAgentLayouts()->getLayout($layoutId);
@@ -383,10 +387,12 @@ class TicketEmail
         $this->logger->info(sprintf('[TicketEmail] Template: %s -- Mode: %s', $this->templateName, $this->userMode));
 
         $toName = $this->toPerson->getDisplayName();
+        $state  = $this->ticket->getStateChangeRecorder();
 
-        $state             = $this->ticket->getStateChangeRecorder();
+        /** @var TicketAttachment[] $ticketAttachments */
         $ticketAttachments = [];
         if ($state->hasNewReply() && !$this->isAuto) {
+            /** @var TicketMessage $lastMessage */
             $lastMessage = Arrays::getFirstItem($vars['messages']);
 
             // This check is because theoretically, the entire thread
@@ -395,15 +401,19 @@ class TicketEmail
             // and this check will prevent warnings about trying to use a null $last_message.
 
             if ($lastMessage) {
-                $this->logger->info(sprintf('[TicketEmail] New reply on #%d checking for attachments <= %d', $lastMessage->id, $this->maxAttachSize));
-                if (count($lastMessage->attachments)) {
-                    $this->logger->info(sprintf('[TicketEmail] Message has %d attachments', count($lastMessage->attachments)));
-                    foreach ($lastMessage->attachments as $a) {
-                        if ($a->blob->filesize <= $this->maxAttachSize) {
-                            $this->logger->info(sprintf('[TicketEmail] Adding attachment %s', $a->blob->filename));
-                            $ticketAttachments[$a->id] = $a;
+                $this->logger->info(sprintf('[TicketEmail] New reply on #%d checking for attachments <= %d', $lastMessage->getId(), $this->maxAttachSize));
+
+                $attachments = $lastMessage->getAttachments();
+                if (count($attachments)) {
+                    $this->logger->info(sprintf('[TicketEmail] Message has %d attachments', count($attachments)));
+                    foreach ($attachments as $attachment) {
+                        $blob = $attachment->getBlob();
+
+                        if ($blob->getFilesize() <= $this->maxAttachSize) {
+                            $this->logger->info(sprintf('[TicketEmail] Adding attachment %s', $blob->getFilename()));
+                            $ticketAttachments[$attachment->getId()] = $attachment;
                         } else {
-                            $this->logger->info(sprintf('[TicketEmail] Skipping attachment %s', $a->blob->filename));
+                            $this->logger->info(sprintf('[TicketEmail] Skipping attachment %s', $blob->getFilename()));
                         }
                     }
                 } else {
@@ -411,18 +421,18 @@ class TicketEmail
                 }
             }
 
-            if ($this->settings->get('core_tickets.enable_feedback') && $this->userMode == 'user' && $lastMessage && $lastMessage->person->is_agent && !$lastMessage->is_agent_note) {
+            if ($this->settings->get('core_tickets.enable_feedback') && $this->userMode == 'user' && $lastMessage && $lastMessage->getPerson()->isAgent() && !$lastMessage->isAgentNote()) {
                 $vars['show_rating_link'] = true;
             }
         }
 
         // To user - use the selected email address on the ticket
         if ($this->userMode == self::MODE_USER) {
-            if ($this->ticket->person_email && $this->ticket->person_email->person === $this->toPerson) {
-                $toEmail = $this->ticket->person_email->email;
+            if ($this->ticket->getPersonEmail() && $this->ticket->getPersonEmail()->getPerson() === $this->toPerson) {
+                $toEmail = $this->ticket->getPersonEmail()->getPerson();
                 $this->logger->info(sprintf('[TicketEmail] to_email(1): %s', $toEmail));
-            } elseif ($this->toPerson->primary_email) {
-                $toEmail = $this->toPerson->primary_email->email;
+            } elseif ($this->toPerson->getPrimaryEmail()) {
+                $toEmail = $this->toPerson->getPrimaryEmail()->getEmail();
                 $this->logger->info(sprintf('[TicketEmail] to_email(3): %s', $toEmail));
             } else {
                 $this->logger->info(sprintf('[TicketEmail] to_email(4): no email'));
@@ -431,11 +441,11 @@ class TicketEmail
 
             // To agent
         } else {
-            if (!$this->toPerson || !$this->toPerson->primary_email) {
+            if (!$this->toPerson || !$this->toPerson->getPrimaryEmail()) {
                 throw new \RuntimeException('No agent email to send to');
             }
 
-            $toEmail = $this->toPerson->primary_email->email;
+            $toEmail = $this->toPerson->getPrimaryEmail()->getEmail();
         }
 
         $tac = null;
@@ -456,9 +466,9 @@ class TicketEmail
 
         if ($ticketAttachments) {
             $vars['attached_blobs'] = $ticketAttachments;
-            foreach ($ticketAttachments as $a) {
-                $ticketDisplay->setIgnoreAttachment($a);
-                $message->attachBlob($a->blob, $a->blob->getDownloadUrl(true), $a->is_inline);
+            foreach ($ticketAttachments as $attachment) {
+                $ticketDisplay->setIgnoreAttachment($attachment);
+                $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), $attachment->isInline());
             }
         }
 
@@ -522,7 +532,7 @@ class TicketEmail
             $lang = $this->toPerson->getLanguage();
         }
 
-        $this->logger->info(sprintf('[TicketEmail] Language: %s', $lang->sys_name));
+        $this->logger->info(sprintf('[TicketEmail] Language: %s', $lang->getSystemName()));
 
         $start = microtime(true);
         $translator->setTemporaryLanguage($lang, function () use ($message) {

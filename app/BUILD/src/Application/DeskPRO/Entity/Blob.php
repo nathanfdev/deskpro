@@ -541,6 +541,14 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getFilesize()
+    {
+        return $this->filesize;
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $is_image = $this->isImage();

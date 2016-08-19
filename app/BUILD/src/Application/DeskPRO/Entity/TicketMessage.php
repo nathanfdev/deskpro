@@ -958,6 +958,14 @@ class TicketMessage extends DomainObject
         return $this->primary_translation;
     }
 
+    /**
+     * @return bool
+     */
+    public function isAgentNote()
+    {
+        return $this->is_agent_note;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

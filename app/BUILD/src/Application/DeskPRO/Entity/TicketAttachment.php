@@ -208,6 +208,14 @@ class TicketAttachment extends DomainObject
         return $this->blob;
     }
 
+    /**
+     * @return bool
+     */
+    public function isInline()
+    {
+        return $this->is_inline;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
