@@ -135,11 +135,15 @@ class AgentDataService
         $this->has_init = true;
 
         $this->agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
-        foreach ($this->agents as $agent) {
-            $this->ids[] = $agent->getId();
-            foreach ($agent->getEmailAddresses() as $emailAddress) {
-                $this->emails[strtolower($emailAddress)] = $agent;
-            }
+        $this->ids    = array_keys($this->agents);
+
+        $emails = $this->em->getConnection()->executeQuery(
+            'SELECT person_id, email FROM people_emails WHERE person_id IN (?)',
+            [$this->ids], [Connection::PARAM_INT_ARRAY]
+        )->fetchAll();
+
+        foreach ($emails as $email) {
+            $this->emails[strtolower($email['email'])] = $this->agents[$email['person_id']];
         }
 
         $this->agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
