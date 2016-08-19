@@ -37,13 +37,15 @@ namespace Application\DeskPRO\Tickets\Notifications;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketFilterSubscription;
 use Application\DeskPRO\EntityRepository\TicketFilterSubscription as TicketFilterSubscriptionRepos;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\Filters\FilterChangeSet;
 use Monolog\Logger;
 
+/**
+ * Class AgentNotifyListBuilder.
+ */
 class AgentNotifyListBuilder implements PersonContextInterface
 {
     /**
@@ -262,28 +264,28 @@ class AgentNotifyListBuilder implements PersonContextInterface
     }
 
     /**
-     * @param array                    $event_types
-     * @param                          $with_origmatch
-     * @param LegacyTicketFilter       $filter
-     * @param TicketFilterSubscription $sub
+     * @param array              $event_types
+     * @param                    $with_origmatch
+     * @param LegacyTicketFilter $filter
+     * @param array              $sub
      *
      * @return array
      */
-    private function getSubTypesForFilterNewMatch(array $event_types, $with_origmatch, LegacyTicketFilter $filter, TicketFilterSubscription $sub)
+    private function getSubTypesForFilterNewMatch(array $event_types, $with_origmatch, LegacyTicketFilter $filter, $sub)
     {
         $types    = [];
         $sys_name = $filter->getSysName();
 
         if ($event_types['new']) {
-            if ($sub->email_created) {
+            if ($sub['email_created']) {
                 $types[] = 'email';
             }
-            if ($sub->alert_created) {
+            if ($sub['alert_created']) {
                 $types[] = 'alert';
             }
         } elseif ($sys_name != 'all') {
-            $email_new = $sub->email_new;
-            $alert_new = $sub->alert_new;
+            $email_new = $sub['email_new'];
+            $alert_new = $sub['alert_new'];
 
             if (
                 (!$sys_name && $email_new && !$with_origmatch)
@@ -310,32 +312,32 @@ class AgentNotifyListBuilder implements PersonContextInterface
     /**
      * @param array $event_types
      * @param $with_newmatch
-     * @param LegacyTicketFilter       $filter
-     * @param TicketFilterSubscription $sub
+     * @param LegacyTicketFilter $filter
+     * @param array              $sub
      *
      * @return array
      */
-    private function getSubTypesForFilterOrigMatch(array $event_types, $with_newmatch, LegacyTicketFilter $filter, TicketFilterSubscription $sub)
+    private function getSubTypesForFilterOrigMatch(array $event_types, $with_newmatch, LegacyTicketFilter $filter, $sub)
     {
         $types = [];
 
-        if ($event_types['property_change'] && $sub->email_property_change) {
+        if ($event_types['property_change'] && $sub['email_property_change']) {
             $types[] = 'email';
-        } elseif ($event_types['agent_note'] && $sub->email_agent_note) {
+        } elseif ($event_types['agent_note'] && $sub['email_agent_note']) {
             $types[] = 'email';
-        } elseif ($event_types['agent_reply'] && $sub->email_agent_activity) {
+        } elseif ($event_types['agent_reply'] && $sub['email_agent_activity']) {
             $types[] = 'email';
-        } elseif ($event_types['user_reply'] && $sub->email_user_activity) {
+        } elseif ($event_types['user_reply'] && $sub['email_user_activity']) {
             $types[] = 'email';
         }
 
-        if ($event_types['property_change'] && $sub->alert_property_change) {
+        if ($event_types['property_change'] && $sub['alert_property_change']) {
             $types[] = 'alert';
-        } elseif ($event_types['agent_note'] && $sub->alert_agent_note) {
+        } elseif ($event_types['agent_note'] && $sub['alert_agent_note']) {
             $types[] = 'alert';
-        } elseif ($event_types['agent_reply'] && $sub->alert_agent_activity) {
+        } elseif ($event_types['agent_reply'] && $sub['alert_agent_activity']) {
             $types[] = 'alert';
-        } elseif ($event_types['user_reply'] && $sub->alert_user_activity) {
+        } elseif ($event_types['user_reply'] && $sub['alert_user_activity']) {
             $types[] = 'alert';
         }
 
@@ -345,18 +347,18 @@ class AgentNotifyListBuilder implements PersonContextInterface
             $sys_name = $filter->getSysName();
 
             if (
-                (!$sys_name && $sub->email_leave)
-                || (($sys_name == 'agent' || $sys_name == 'unassigned') && $event_types['assign_change'] && $sub->email_leave)
-                || ($sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub->email_leave)
-                || ($sys_name == 'participant' && $event_types['assign_follow_change'] && $sub->email_leave)
+                (!$sys_name && $sub['email_leave'])
+                || (($sys_name == 'agent' || $sys_name == 'unassigned') && $event_types['assign_change'] && $sub['email_leave'])
+                || ($sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub['email_leave'])
+                || ($sys_name == 'participant' && $event_types['assign_follow_change'] && $sub['email_leave'])
             ) {
                 $types[] = 'email';
             }
             if (
-                (!$sys_name && $sub->alert_leave)
-                || (($sys_name == 'agent' || $sys_name == 'unassigned') && $event_types['assign_change'] && $sub->alert_leave)
-                || ($sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub->alert_leave)
-                || ($sys_name == 'participant' && $event_types['assign_follow_change'] && $sub->alert_leave)
+                (!$sys_name && $sub['alert_leave'])
+                || (($sys_name == 'agent' || $sys_name == 'unassigned') && $event_types['assign_change'] && $sub['alert_leave'])
+                || ($sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub['alert_leave'])
+                || ($sys_name == 'participant' && $event_types['assign_follow_change'] && $sub['alert_leave'])
             ) {
                 $types[] = 'alert';
             }
@@ -368,7 +370,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
     /**
      * Get an array of subscriptions for the agents and filters.
      *
-     * @return \Application\DeskPRO\Entity\TicketFilterSubscription[]
+     * @return array
      */
     public function getMatchingSubscriptions()
     {

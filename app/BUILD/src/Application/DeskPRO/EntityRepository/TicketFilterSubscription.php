@@ -35,9 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person as PersonEntity;
-use Orb\Util\Arrays;
 
 class TicketFilterSubscription extends AbstractEntityRepository
 {
@@ -91,71 +89,42 @@ SQL
      * )
      * </code>
      *
-     * @param array $people
-     * @param array $filters
+     * @param array $peopleIds
+     * @param array $filtersIds
      *
      * @return array
      */
-    public function getForAgents(array $people, array $filters = null)
+    public function getForAgents(array $peopleIds, array $filtersIds = null)
     {
-        $people_ids = [];
-        /** @var PersonEntity $p */
-        foreach ($people as $p) {
-            if (is_numeric($p)) {
-                $people_ids[] = $p;
-            } else {
-                $people_ids[] = $p->getId();
-            }
-        }
-        $filter_ids = [];
-        /** @var LegacyTicketFilter $f */
-        foreach ($filters as $f) {
-            if (is_numeric($f)) {
-                $filter_ids[] = $f;
-            } else {
-                $filter_ids[] = $f->getId();
-            }
-        }
-
-        $people_ids = Arrays::removeFalsey($people_ids);
-        $filter_ids = Arrays::removeFalsey($filter_ids);
-
-        if (!$people_ids) {
+        if (!$peopleIds) {
             return [];
         }
 
-        $people_ids = implode(',', $people_ids);
-        $filter_ids = implode(',', $filter_ids);
+        $qb = $this->_em->getConnection()->createQueryBuilder();
+        $qb
+            ->select('*')
+            ->from('ticket_filter_subscriptions', 's')
+            ->where('s.person_id IN (:people_ids)')
+            ->setParameter('people_ids', $peopleIds, Connection::PARAM_INT_ARRAY)
+        ;
 
-        if ($filter_ids) {
-            $results = $this->getEntityManager()->createQuery("
-                SELECT s
-                FROM DeskPRO:TicketFilterSubscription s
-                LEFT JOIN s.filter f
-                LEFT JOIN s.person a
-                WHERE s.person IN ($people_ids) AND s.filter IN ($filter_ids)
-            ")->execute();
-        } else {
-            $results = $this->getEntityManager()->createQuery("
-                SELECT s
-                FROM DeskPRO:TicketFilterSubscription s
-                LEFT JOIN s.filter f
-                LEFT JOIN s.person a
-                WHERE s.person IN ($people_ids)
-            ")->execute();
+        if ($filtersIds) {
+            $qb->andWhere('s.filter_id IN (:filter_ids)');
+            $qb->setParameter('filter_ids', $filtersIds, Connection::PARAM_INT_ARRAY);
         }
 
+        $results = $qb->execute()->fetchAll();
+
         $ret = [];
-
         foreach ($results as $s) {
-            $agent_id  = $s->person->getId();
-            $filter_id = $s->filter->getId();
+            $personId = $s['person_id'];
+            $filterId = $s['filter_id'];
 
-            if (!isset($ret[$agent_id])) {
-                $ret[$agent_id] = [];
+            if (!isset($ret[$personId])) {
+                $ret[$personId] = [];
             }
 
-            $ret[$agent_id][$filter_id] = $s;
+            $ret[$personId][$filterId] = $s;
         }
 
         return $ret;
