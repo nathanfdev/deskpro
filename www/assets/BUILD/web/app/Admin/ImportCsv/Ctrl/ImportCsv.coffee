@@ -33,8 +33,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
         if data.status == 'disabled_on_demo'
           @$scope.disabledOnDemo = true
         else
-          @$scope.fileUploadOptions.disabled = false
-
+          @$scope.fileUploadOptions = {url: @$http.formatApiUrl('/import_csv_upload'), disabled: false}
         @$scope.log = data.log
         @updateLogs()
 
