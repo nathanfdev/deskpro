@@ -35,14 +35,11 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Entity\TicketAttachment;
-use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Mail\Message;
 use Application\DeskPRO\Monolog\NullLogger;
-use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
-use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -326,104 +323,11 @@ class TicketEmail
             $this->toPerson->loadHelper('AgentTeam');
         }
 
-        $vars['ticket']        = $this->ticket;
         $vars['person']        = $this->toPerson;
         $vars['ticketdisplay'] = $ticketDisplay;
-        $vars['messages']      = $ticketDisplay->getMessages();
-        $vars['is_auto']       = $this->isAuto;
 
         if ($this->ticket->getBrand()) {
             $this->brandStack->push($this->ticket->getBrand());
-        }
-
-        // If we have a speciifc 'new message', then we need to trim
-        // messages array down (which is ALL the latest messages, may be too many if we are re-sending)
-        if (isset($vars['new_message'])) {
-            $got    = false;
-            $newArr = [];
-
-            foreach (array_reverse($vars['messages']) as $m) {
-                $newArr[] = $m;
-                if ($vars['new_message'] === $m) {
-                    $got = true;
-                    break;
-                }
-            }
-
-            if ($got) {
-                $vars['messages'] = array_reverse($newArr);
-            }
-        }
-
-        if ($this->ticketLayoutManager) {
-            $department = $this->ticket->getDepartment();
-            $layoutId   = $department ? $department->getId() : null;
-
-            if ($this->userMode == self::MODE_AGENT) {
-                $layout = $this->ticketLayoutManager->getAgentLayouts()->getLayout($layoutId);
-                $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $this->ticket);
-            } else {
-                $layout = $this->ticketLayoutManager->getUserLayouts()->getLayout($layoutId);
-                $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $this->ticket);
-            }
-
-            if ($this->ticketFieldManager) {
-                $customFields = $this->ticketFieldManager->getDisplayArrayForObject($this->ticket);
-            } else {
-                $customFields = [];
-            }
-
-            if ($this->userFieldManager) {
-                $customUserFields = $this->userFieldManager->getDisplayArrayForObject($this->ticket->person);
-            } else {
-                $customUserFields = [];
-            }
-
-            $vars['ticket_layout']      = $layout;
-            $vars['custom_fields']      = $customFields;
-            $vars['custom_user_fields'] = $customUserFields;
-        }
-
-        $this->logger->info(sprintf('[TicketEmail] Template: %s -- Mode: %s', $this->templateName, $this->userMode));
-
-        $toName = $this->toPerson->getDisplayName();
-        $state  = $this->ticket->getStateChangeRecorder();
-
-        /** @var TicketAttachment[] $ticketAttachments */
-        $ticketAttachments = [];
-        if ($state->hasNewReply() && !$this->isAuto) {
-            /** @var TicketMessage $lastMessage */
-            $lastMessage = Arrays::getFirstItem($vars['messages']);
-
-            // This check is because theoretically, the entire thread
-            // could be agent notes (e.g., first message was turned into a note).
-            // So if this is an email to a user, messages array will be empty
-            // and this check will prevent warnings about trying to use a null $last_message.
-
-            if ($lastMessage) {
-                $this->logger->info(sprintf('[TicketEmail] New reply on #%d checking for attachments <= %d', $lastMessage->getId(), $this->maxAttachSize));
-
-                $attachments = $lastMessage->getAttachments();
-                if (count($attachments)) {
-                    $this->logger->info(sprintf('[TicketEmail] Message has %d attachments', count($attachments)));
-                    foreach ($attachments as $attachment) {
-                        $blob = $attachment->getBlob();
-
-                        if ($blob->getFilesize() <= $this->maxAttachSize) {
-                            $this->logger->info(sprintf('[TicketEmail] Adding attachment %s', $blob->getFilename()));
-                            $ticketAttachments[$attachment->getId()] = $attachment;
-                        } else {
-                            $this->logger->info(sprintf('[TicketEmail] Skipping attachment %s', $blob->getFilename()));
-                        }
-                    }
-                } else {
-                    $this->logger->info(sprintf('[TicketEmail] Message has no attachments'));
-                }
-            }
-
-            if ($this->settings->get('core_tickets.enable_feedback') && $this->userMode == 'user' && $lastMessage && $lastMessage->getPerson()->isAgent() && !$lastMessage->isAgentNote()) {
-                $vars['show_rating_link'] = true;
-            }
         }
 
         // To user - use the selected email address on the ticket
@@ -454,19 +358,19 @@ class TicketEmail
         }
         $vars['tac'] = $tac;
 
-        $this->sentToName  = $toName;
+        $this->sentToName  = $this->toPerson->getDisplayName();
         $this->sentToEmail = $toEmail;
         $this->sentWithCcs = [];
 
         /** @var Message $message */
         $message = $mailer->createMessage();
-        $this->logger->info(sprintf('[TicketEmail] To: %s -- Name: %s', $toEmail, $toName));
-        $message->setTo([$toEmail => $toName]);
+        $this->logger->info(sprintf('[TicketEmail] To: %s -- Name: %s', $toEmail, $this->toPerson->getDisplayName()));
+        $message->setTo([$toEmail => $this->toPerson->getDisplayName()]);
         $message->setContextId('ticket_gateway');
 
-        if ($ticketAttachments) {
-            $vars['attached_blobs'] = $ticketAttachments;
-            foreach ($ticketAttachments as $attachment) {
+        if (isset($vars['attached_blobs'])) {
+            /** @var TicketAttachment $attachment */
+            foreach ($vars['attached_blobs'] as $attachment) {
                 $ticketDisplay->setIgnoreAttachment($attachment);
                 $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), $attachment->isInline());
             }

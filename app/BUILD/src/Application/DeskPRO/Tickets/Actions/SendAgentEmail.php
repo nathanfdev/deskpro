@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilterSubscription;
 use Application\DeskPRO\ORM\StateChange\ChangeCollection;
@@ -188,7 +189,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         // Vars
         //-------------------------
 
-        $default_vars = $this->getStandardEmailVars($ticket, $context, 'agent');
+        $defaultVars = $this->getStandardEmailVars($ticket, $context, 'agent');
 
         //-------------------------
         // Send emails
@@ -229,13 +230,26 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         }
 
         $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer());
+        $emailBuilder
+            ->setTicket($ticket)
+            ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'agent'))
+            ->setFromEmailAccount($from_account)
+            ->setAgentMode()
+            ->setTemplateName($template)
+            ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
+            ->setLogger($context->getLogger())
+            ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
+        ;
 
+        $defaultVars = array_merge($defaultVars, $emailBuilder->getCommonVars(true));
+
+        /** @var Person[] $agents */
         foreach ($agents as $agent) {
             ++$sent_count;
 
-            $context->getLogger()->debug(sprintf('[SendAgentEmail] Sending to <Person:%d> %s', $agent->id, $agent->getDisplayName()));
+            $context->getLogger()->debug(sprintf('[SendAgentEmail] Sending to <Person:%d> %s', $agent->getId(), $agent->getDisplayName()));
 
-            $vars = $default_vars;
+            $vars = $defaultVars;
 
             $type_flag = null;
             if ($state->hasChangedField('agent') && $ticket->getAgent() && $ticket->getAgent() === $agent) {
@@ -257,26 +271,14 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
             $vars['type_flag'] = $type_flag;
 
-            if (isset($mentioned_agents_map[$agent->id])) {
+            if (isset($mentioned_agents_map[$agent->getId()])) {
                 $vars['is_my_mention'] = true;
             }
 
-            $ticket_email = $emailBuilder
-                ->setTicket($ticket)
-                ->setToPerson($agent)
-                ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'agent'))
-                ->setFromEmailAccount($from_account)
-                ->setAgentMode()
-                ->setTemplateName($template)
-                ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
-                ->setLogger($context->getLogger())
-                ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
-                ->buildTicketEmail()
-            ;
-
             try {
-                $ticket_email->send($vars);
-                $this->recordEmailTicketLog($ticket_email, $ticket, $context);
+                $ticketEmail = $emailBuilder->setToPerson($agent)->buildTicketEmail();
+                $ticketEmail->send($vars);
+                $this->recordEmailTicketLog($ticketEmail, $ticket, $context);
             } catch (\Exception $e) {
                 $context->getLogger()->error(
                     sprintf('[SendAgentEmail] Exception: [%s] %s', $e->getCode(), $e->getMessage()),
