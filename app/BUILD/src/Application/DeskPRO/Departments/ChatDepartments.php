@@ -33,7 +33,15 @@ use Application\DeskPRO\Hierarchy\LazyPreloadedHierarchy;
 
 class ChatDepartments extends LazyPreloadedHierarchy
 {
-    use AllowedIdsTrait;
+    /**
+     * @var array
+     */
+    private $allAllowedIds;
+
+    /**
+     * @var array
+     */
+    private $allAllowedList;
 
     /**
      * @return array
@@ -121,5 +129,37 @@ class ChatDepartments extends LazyPreloadedHierarchy
     public function getPermissionsInfo(Department $dep)
     {
         return $this->em->getRepository('DeskPRO:Department')->getPermissionsInfo($dep);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllAllowedIds()
+    {
+        if (null === $this->allAllowedIds) {
+            $this->allAllowedIds = $this->connection->fetchAllCol('SELECT id FROM departments WHERE is_chat_enabled = 1');
+        }
+
+        return $this->allAllowedIds;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllAllowedList()
+    {
+        if (null === $this->allAllowedList) {
+            $this->allAllowedList = [];
+            foreach ($this->getAllAllowedIds() as $id) {
+                $this->allAllowedList[] = [
+                    'department_id' => $id,
+                    'app'           => 'chat',
+                    'name'          => 'full',
+                    'value'         => 1,
+                ];
+            }
+        }
+
+        return $this->allAllowedList;
     }
 }
