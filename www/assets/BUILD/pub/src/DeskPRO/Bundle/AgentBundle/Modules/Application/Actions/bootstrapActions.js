@@ -38,7 +38,7 @@ export const preloadData    = createAction(
           dispatch(setCollection('AgentTeam', 'my', data.my_agent_teams));
           dispatch(setCollection('Language', 'all', data.languages));
           dispatch(setCollection('UserGroup', 'all', data.user_groups));
-          dispatch(setCollection('Onboardings', 'all', data.onboardings));
+          dispatch(setCollection('Onboardings', 'new', [data.onboardings]));
           dispatch(setAgentSettings(data.settings));
           dispatch(setupActionAlerts(data.alerts));
           dispatch(setCollection('Person', 'me', [data.me.person]));

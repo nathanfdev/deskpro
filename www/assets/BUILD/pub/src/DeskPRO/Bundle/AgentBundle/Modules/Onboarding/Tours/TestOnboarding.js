@@ -1,27 +1,29 @@
-import Shepherd from 'tether-shepherd';
-
 class TestOnboarding {
   static get() {
-    const onboarding = new Shepherd.Tour({
-      defaults: {
-        classes: 'shepherd-theme-arrows',
-        scrollTo: true
-      }
-    });
+    return {
+      force: false,
 
-    onboarding.addStep('example-step', {
-      text: 'This step is attached to the bottom of the <code>.example-css-selector</code> element.',
-      attachTo: '#react_dp_agent_top_bar .item.add',
-      classes: 'example-step-extra-class',
-      buttons: [
+      steps: [
         {
-          text: 'Next',
-          action: onboarding.next
+          title:    'Trigger Action',
+          text:     'Test Onboarding',
+          selector: '#react_dp_agent_top_bar .item.add',
+          position: 'bottom'
+        },
+        {
+          title:    'Notifications',
+          text:     'Here are now the notifications',
+          selector: '#notifications',
+          position: 'bottom'
+        },
+        {
+          title:    'Chat',
+          text:     'Your chat login settings and volume are now here in the top right corner',
+          selector: '#react_dp_agent_top_bar .chat',
+          position: 'left'
         }
       ]
-    });
-    
-    return onboarding;
-  }  
+    };
+  }
 }
 export default TestOnboarding;

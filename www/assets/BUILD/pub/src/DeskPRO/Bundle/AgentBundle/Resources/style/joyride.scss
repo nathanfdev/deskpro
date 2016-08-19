@@ -1,0 +1,62 @@
+@import 'variables';
+
+/******************************
+   Override joyride variables
+******************************/
+$joyride-button-bg-color: $dp-sonic-primary;
+$joyride-button-color: $dp-greyscale-50;
+
+$joyride-tooltip-border-radius: 2px;
+$joyride-tooltip-bg-color: $dp-greyscale-50;
+$joyride-tooltip-color: $dp-greyscale-850;
+$joyride-tooltip-shadow: (x: 1px, y: 1px, blur: 5px, color: rgba(#000, 0.25));
+$joyride-tooltip-padding: 10px;
+
+$joyride-beacon-color: $dp-emerald-primary;
+
+
+$joyride-header-border-color: $dp-sonic-primary;
+$joyride-header-border-width: 0;
+$joyride-header-font-size: 16px;
+$joyride-overlay-color: rgba(#000, 0.2) !default;
+
+$joyride-close: (color: $dp-greyscale-850, size: 20px, top: 7px !important, right: 10px !important);
+
+@import '../../../../../../node_modules/react-joyride/lib/styles/react-joyride';
+
+/******************************
+   Override joyride styling
+******************************/
+
+.joyride {
+  &-tooltip {
+    border: 1px solid $dp-sonic-primary;
+    &__header {
+      padding: 20px 20px 15px;
+      font-weight: 600;
+    }
+    &__main {
+      padding: 0 20px 30px;
+    }
+    &__footer {
+      border-top: 1px solid $dp-greyscale-350;
+      height: 50px;
+      padding: 15px;
+    }
+
+    &__button {
+      font-weight: 600;
+      font-size: 14px;
+
+      &--primary {
+        box-shadow: 0 2px 0 #3c82b4;
+      }
+
+      &--secondary {
+        color: $dp-greyscale-850;
+        margin-right: 10px;
+        float: left;
+      }
+    }
+  }
+}
