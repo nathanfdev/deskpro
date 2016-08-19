@@ -103,7 +103,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         // upgrade because the upgrade scripts need to run from the proper position
         // at build Build1464777281
         if (!$input->getOption('info') && !$input->getOption('dobuildrun') && !$input->getOption('runsync') && !$input->getOption('reset')) {
-            if ($dbVersion == '1470650875') {
+            if ($dbVersion == '1470650875' || $dbVersion == '1471618600') {
                 App::getDb()->update('settings', ['value' => '1459273988'], ['name' => 'core.deskpro_build']);
             }
         }
