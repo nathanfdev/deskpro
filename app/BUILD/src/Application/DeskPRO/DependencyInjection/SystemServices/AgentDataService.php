@@ -89,6 +89,11 @@ class AgentDataService
     public $ids = [];
 
     /**
+     * @var array
+     */
+    private $emails = [];
+
+    /**
      * @var
      */
     public $team_ids;
@@ -130,8 +135,11 @@ class AgentDataService
         $this->has_init = true;
 
         $this->agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
-        foreach ($this->agents as $a) {
-            $this->ids[] = $a->getId();
+        foreach ($this->agents as $agent) {
+            $this->ids[] = $agent->getId();
+            foreach ($agent->getEmailAddresses() as $emailAddress) {
+                $this->emails[strtolower($emailAddress)] = $agent;
+            }
         }
 
         $this->agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
@@ -340,13 +348,9 @@ class AgentDataService
      */
     public function getByEmail($email)
     {
-        foreach ($this->getAgents() as $agent) {
-            if ($agent->hasEmailAddress($email)) {
-                return $agent;
-            }
-        }
+        $email = strtolower($email);
 
-        return;
+        return isset($this->emails[$email]) ? $this->emails[$email] : null;
     }
 
     /**

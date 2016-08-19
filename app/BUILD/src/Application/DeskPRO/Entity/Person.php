@@ -2309,11 +2309,11 @@ GroupSequenceProviderInterface
     {
         $arr = [];
         foreach ($this->emails as $email) {
-            if ($skipPrimary && $email->email === $this->primary_email->email) {
+            if ($skipPrimary && $email->getEmail() === $this->primary_email->getEmail()) {
                 continue;
             }
-            if ($email->is_validated) {
-                $arr[] = $email->email;
+            if ($email->isValidated()) {
+                $arr[] = $email->getEmail();
             }
         }
 
@@ -2385,13 +2385,13 @@ GroupSequenceProviderInterface
     public function getEmailByAddress($email_address)
     {
         $email_address = strtolower($email_address);
-        if ($this->primary_email && strtolower($this->primary_email->email) == $email_address) {
+        if ($this->primary_email && strtolower($this->primary_email->getEmail()) === $email_address) {
             return $this->primary_email;
         }
 
         if ($this->emails) {
             foreach ($this->emails as $email) {
-                if (strtolower($email->email) == $email_address) {
+                if (strtolower($email->getEmail()) === $email_address) {
                     return $email;
                 }
             }
