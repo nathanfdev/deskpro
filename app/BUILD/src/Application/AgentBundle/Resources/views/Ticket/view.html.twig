@@ -414,9 +414,9 @@ pageMeta.lang = {{ {
 						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
 							<option {% if app.user.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
 						{% endif %}
-						{% for agent in app.getAgentData().getSelectboxList() %}
+						{% for agent in app.getAgentData().getAgentAvatarList() %}
 							{% if agent.id != app.user.id and (ticket_perms.modify_assign_agent or ticket.agent.id == agent.id) %}
-								<option {% if agent.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.picture_url_20 }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
+								<option {% if agent.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 							{% endif %}
 						{% endfor %}
 						{% if ticket.agent and (ticket.agent.is_deleted or not ticket.agent.is_agent) %}
@@ -498,8 +498,8 @@ pageMeta.lang = {{ {
 					<div class="new-follower" id="{{ baseId }}_followers_sel_wrap">
 						<select id="{{ baseId }}_followers_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 							<option value="0">{{ phrase('agent.general.select_agent') }}</option>
-							{% for agent in app.getAgentData().getSelectboxList() %}
-								<option data-icon="{{ agent.picture_url_20 }}" value="{{ agent.id }}" data-icon-small="{{ agent.picture_url_15 }}">{{ agent.display_name }}</option>
+							{% for agent in app.getAgentData().getAgentAvatarList() %}
+								<option data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}" data-icon-small="{{ agent.getPictureUrl(15) }}">{{ agent.display_name }}</option>
 							{% endfor %}
 						</select>
 					</div>

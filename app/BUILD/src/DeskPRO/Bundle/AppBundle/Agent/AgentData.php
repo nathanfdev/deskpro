@@ -86,23 +86,14 @@ class AgentData
     /**
      * @return array
      */
-    public function getSelectboxList()
+    public function getAgentAvatarList()
     {
         if (!$this->cachedSelectbox) {
             $names   = $this->getAgentNames();
             $avatars = $this->avatarResolver->getAvatars(array_keys($names), '{{size}}');
 
-            $encodedTag = urlencode('{{size}}');
-
             foreach ($names as $agentId => $agentName) {
-                $pictureUrl = $avatars[$agentId];
-
-                $this->cachedSelectbox[$agentId] = [
-                    'id'             => $agentId,
-                    'display_name'   => $agentName,
-                    'picture_url_15' => $pictureUrl ? str_replace($encodedTag, 15, $pictureUrl) : null,
-                    'picture_url_20' => $pictureUrl ? str_replace($encodedTag, 20, $pictureUrl) : null,
-                ];
+                $this->cachedSelectbox[$agentId] = new AgentAvatarModel($agentId, $agentName, $avatars[$agentId]);
             }
         }
 
