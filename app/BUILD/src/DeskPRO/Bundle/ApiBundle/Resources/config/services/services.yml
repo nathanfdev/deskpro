@@ -25,6 +25,7 @@ services:
     class: DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener
     arguments:
       - "@serializer"
+      - "@settings_resolver"
     tags:
     - { name: 'kernel.event_subscriber' }
 
