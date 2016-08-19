@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
@@ -85,13 +81,13 @@ class ErrorController extends AbstractController
 
         // if the message is "Something has intentionally gone wrong." its the dev route /_error/{code} being vistited for a test
         if ($this->container->getParameter('kernel.debug') && $exception->getMessage() !== 'Something has intentionally gone wrong.') {
-            return $this->render('TwigBundle:Exception:exception_full.html.twig', array(
+            return $this->render('TwigBundle:Exception:exception_full.html.twig', [
                 'status_code'    => $code,
                 'status_text'    => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
                 'exception'      => $exception,
                 'logger'         => $logger,
                 'currentContent' => null,
-            ));
+            ]);
         }
 
         $request  = Request::createFromGlobals();
@@ -100,12 +96,12 @@ class ErrorController extends AbstractController
         try {
             return $this->renderThemeView(
                 $template,
-                array(
+                [
                     'base_url'    => $base_url,
                     'status_code' => $code,
                     'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
                     'exception'   => $exception,
-                )
+                ]
             );
         } catch (\Exception $e) {
             // if that is not found, use the default for this status code (error.html.twig or exception.html.twig)
@@ -113,12 +109,12 @@ class ErrorController extends AbstractController
 
             return $this->renderThemeView(
                 $template,
-                array(
+                [
                     'base_url'    => $base_url,
                     'status_code' => $code,
                     'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
                     'exception'   => $exception,
-                )
+                ]
             );
         }
     }

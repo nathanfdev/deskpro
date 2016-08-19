@@ -1,2 +1,14 @@
 imports:
   - { resource: portal_config.yml }
+
+monolog:
+    handlers:
+        main:
+            type:   fingers_crossed
+            handler: file_log
+            action_level: error
+            excluded_404s:
+                - ^/
+        file_log:
+            type:   service
+            id:     monolog.handler.deskpro_filesystem
