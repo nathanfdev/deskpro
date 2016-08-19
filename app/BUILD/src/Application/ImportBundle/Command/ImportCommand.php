@@ -62,6 +62,9 @@ class ImportCommand extends AbstractImporterCommand
         $appEnv   = $this->getContainer()->get('deskpro.app_env');
         $filename = $input->getArgument('file');
         $basePath = realpath($appEnv->getDpRoot().'/bin/deskpro-importer-tools');
+        if (!$basePath) {
+            $basePath = realpath($appEnv->getDpRoot().'/bin/deskpro-importer-tools-master');
+        }
 
         // register importer inc files in autoload
         $importerAutoload = $basePath.'/inc/autoload.php';

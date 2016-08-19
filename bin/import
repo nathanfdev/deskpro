@@ -2,12 +2,16 @@
 <?php
 
 $_SERVER['argv'][0] = str_replace('import', 'console', $_SERVER['argv'][0]);
-if (isset($_SERVER['argv'][1])) {
-    if (in_array($_SERVER['argv'][1], ['verify', 'apply', 'clean'])) {
-        array_splice($_SERVER['argv'], 1, 1, ['import:'.$_SERVER['argv'][1]]);
-    } else {
-        array_splice($_SERVER['argv'], 1, 0, ['import']);
+
+$actions = ['verify', 'apply', 'clean'];
+if (array_intersect($_SERVER['argv'], $actions)) {
+    foreach ($_SERVER['argv'] as &$arg) {
+        if (in_array($arg, $actions)) {
+            $arg = 'import:'.$arg;
+        }
     }
+} else {
+    array_splice($_SERVER['argv'], 1, 0, ['import']);
 }
 
 $_SERVER['argv'][] = '--kernel';
