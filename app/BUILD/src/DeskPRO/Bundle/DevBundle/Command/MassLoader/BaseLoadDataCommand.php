@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\DevBundle\Command\MassLoader;
 
+use Application\DeskPRO\Entity\Ticket;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -67,6 +68,33 @@ EOF
         $this->iterate('Create %s agents with random group', 1500, 'loadAgent', [
             'agent_team' => 'random',
             'usergroups' => array_fill(0, 2, 'random'),
+            'filters'    => [
+                [
+                    'terms' => [
+                        'status' => Ticket::STATUS_AWAITING_USER,
+                    ],
+                ],
+                [
+                    'terms' => [
+                        'status' => Ticket::STATUS_AWAITING_AGENT,
+                    ],
+                ],
+                [
+                    'terms' => [
+                        'status' => Ticket::STATUS_AWAITING_AGENT,
+                    ],
+                ],
+                [
+                    'terms' => [
+                        'status' => Ticket::STATUS_RESOLVED,
+                    ],
+                ],
+                [
+                    'terms' => [
+                        'status' => Ticket::STATUS_ARCHIVED,
+                    ],
+                ],
+            ],
         ]);
         $this->iterate('Create %s global filters with status:awaiting_agent', 10, 'loadGlobalTicketFilter', [
             'terms' => [

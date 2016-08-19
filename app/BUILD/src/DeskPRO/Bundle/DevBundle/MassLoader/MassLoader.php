@@ -64,6 +64,26 @@ class MassLoader
     private $cache = [];
 
     /**
+     * @var array
+     */
+    private static $subscriptionProps = [
+        'email_created'         => 1,
+        'email_new'             => 1,
+        'email_leave'           => 1,
+        'email_user_activity'   => 1,
+        'email_agent_activity'  => 1,
+        'email_agent_note'      => 1,
+        'email_property_change' => 1,
+        'alert_created'         => 1,
+        'alert_new'             => 1,
+        'alert_leave'           => 1,
+        'alert_user_activity'   => 1,
+        'alert_agent_activity'  => 1,
+        'alert_agent_note'      => 1,
+        'alert_property_change' => 1,
+    ];
+
+    /**
      * Constructor.
      *
      * @param EntityManager $em
@@ -86,6 +106,7 @@ class MassLoader
     {
         $this->clearTickets();
 
+        $this->connection->executeUpdate('DELETE FROM ticket_filter_subscriptions');
         $this->connection->executeUpdate('DELETE FROM permissions');
         $this->connection->executeUpdate('DELETE FROM task_attachments');
         $this->connection->executeUpdate('DELETE FROM ticket_filters');
@@ -238,6 +259,23 @@ class MassLoader
         }
 
         $this->connection->batchInsert('permissions', $permissions);
+
+        // load agent ticket subscriptions
+        $filterIds = $this->connection->fetchAllCol('SELECT id FROM ticket_filters WHERE person_id = :person_id OR person_id IS NULL', [
+            'person_id' => $personId,
+        ]);
+
+        $subscriptions = [];
+        foreach ($filterIds as $filterId) {
+            $subscriptions[] = array_merge(self::$subscriptionProps, [
+                'filter_id' => $filterId,
+                'person_id' => $personId,
+            ]);
+        }
+
+        if ($subscriptions) {
+            $this->connection->batchInsert('ticket_filter_subscriptions', $subscriptions);
+        }
     }
 
     /**
@@ -352,6 +390,21 @@ class MassLoader
             'title'      => $this->faker->title,
             'terms'      => $this->transformTicketFilterTerms($options),
         ]);
+
+        $filterId = $this->connection->lastInsertId();
+        $agentIds = $this->connection->fetchAllCol('SELECT id FROM people WHERE is_agent = 1');
+
+        $subscriptions = [];
+        foreach ($agentIds as $agentId) {
+            $subscriptions[] = array_merge(self::$subscriptionProps, [
+                'filter_id' => $filterId,
+                'person_id' => $agentId,
+            ]);
+        }
+
+        if ($subscriptions) {
+            $this->connection->batchInsert('ticket_filter_subscriptions', $subscriptions);
+        }
     }
 
     /**
