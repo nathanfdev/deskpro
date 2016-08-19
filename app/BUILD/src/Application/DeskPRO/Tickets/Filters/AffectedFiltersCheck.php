@@ -187,9 +187,8 @@ class AffectedFiltersCheck
         $isNewTicket    = $state->isNewTicket();
 
         foreach ($this->groupedByTermFilter as $filterGroup) {
-            /** @var LegacyTicketFilter $filter */
             $filter   = reset($filterGroup);
-            $searcher = $filter->getSearcher();
+            $searcher = LegacyTicketFilter::createSearcher($filter['sys_name'], $filter['terms']);
 
             if ($is_new_messages || $is_hidden_change || $searcher->hasAnyAffectedFields($changed_fields)) {
                 // check filters w/o agent context
@@ -205,7 +204,7 @@ class AffectedFiltersCheck
                 }
 
                 if (!$origMath && !$newMatch) {
-                    $this->logger->debug(sprintf('[FilterChangeDetector] ----- Base check failed #%d -----', $filter->getId()));
+                    $this->logger->debug(sprintf('[FilterChangeDetector] ----- Base check failed #%d -----', $filter['id']));
                     continue;
                 }
 
@@ -291,7 +290,7 @@ class AffectedFiltersCheck
      * Return only filters that are affected by new changes. This is the
      * difference from getAffectedFilters/getAffectedFiltersWithNoChanges.
      *
-     * @return \Application\DeskPRO\Entity\LegacyTicketFilter[]
+     * @return array
      */
     public function getNewAffectedFilters()
     {

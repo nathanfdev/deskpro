@@ -129,9 +129,8 @@ class FilterChangeDetector
         $filtersAgentsMap = [];
         $filtersTermMap   = [];
 
-        foreach ($filters as $filter) {
-            $filterId = $filter->getId();
-            $agentId  = $filter->getPersonId();
+        foreach ($filters as $filterId => $filter) {
+            $agentId = $filter['person_id'];
 
             if ($agentId) {
                 $filtersAgentsMap[$filterId][$agentId] = $agents[$agentId];
@@ -139,7 +138,7 @@ class FilterChangeDetector
                 $filtersAgentsMap[$filterId] = $agents;
             }
 
-            $filtersTermMap[$this->getTermsKey($filter)][$filterId] = $filter;
+            $filtersTermMap[md5(serialize($filter['terms']))][$filterId] = $filter;
         }
 
         // calc affected filters
@@ -221,7 +220,7 @@ class FilterChangeDetector
         $time = microtime(true);
 
         foreach ($affectedFilters as $filterId => $filter) {
-            $filterSysName = $filter->getSysName();
+            $filterSysName = $filter['sys_name'];
             $agent_scopes  = [];
 
             foreach ($filtersAgentsMap[$filterId] as $a_id => $a) {
@@ -240,7 +239,7 @@ class FilterChangeDetector
             $changed[$filterId] = $filter_change;
 
             if ($this->extended_log_info) {
-                $logger->debug(sprintf('[FilterChangeDetector] ----- BEGIN #%d %s -- %d scopes -----', $filterId, $filter->getTitle(), count($agent_scopes)));
+                $logger->debug(sprintf('[FilterChangeDetector] ----- BEGIN #%d -- %d scopes -----', $filterId, count($agent_scopes)));
             }
             $cached_terms_orig = [];
             $cached_terms_new  = [];
@@ -281,7 +280,7 @@ class FilterChangeDetector
                     if ($filterSysName) {
                         // System filters are special in that we ignore status/hold
                         // for notifications
-                        $searcher = $filter->getSearcher([
+                        $searcher = LegacyTicketFilter::createSearcher($filterSysName, $filter['terms'], [
                             ['type' => 'status', 'op' => 'ignore'],
                             ['type' => 'hidden_status', 'op' => 'ignore'],
                             ['type' => 'is_hold', 'op' => 'ignore'],
@@ -290,7 +289,7 @@ class FilterChangeDetector
                         // Reset because we have to re-run to get proper result for add/del lists
                         $reset_status = true;
                     } else {
-                        $searcher = $filter->getSearcher();
+                        $searcher = LegacyTicketFilter::createSearcher($filterSysName, $filter['terms']);
                     }
 
                     $searcher->setPersonContext($agent);
@@ -336,7 +335,7 @@ class FilterChangeDetector
                     $pre_new_match  = $new_match;
 
                     if ($reset_status) {
-                        $searcher = $filter->getSearcher();
+                        $searcher = LegacyTicketFilter::createSearcher($filterSysName, $filter['terms']);
                         $searcher->setPersonContext($agent);
 
                         if ($isNewTicket) {
@@ -447,7 +446,7 @@ class FilterChangeDetector
             if ($addedAgentIds || $removedAgentIds) {
                 $logger->info(sprintf(
                     '[FilterChangeDetector] Summary: Filter %d -- AddedAgents(%s) -- RemovedAgents(%s)',
-                    $change->getFilter()->getId(),
+                    $change->getFilter()['id'],
                     implode(', ', $addedAgentIds ?: ['none']),
                     implode(', ', $removedAgentIds ?: ['none'])
                 ));
@@ -455,16 +454,6 @@ class FilterChangeDetector
         }
 
         return $set;
-    }
-
-    /**
-     * @param LegacyTicketFilter $filter
-     *
-     * @return string
-     */
-    private function getTermsKey(LegacyTicketFilter $filter)
-    {
-        return md5(serialize($filter->getTerms()));
     }
 
     /**
@@ -510,7 +499,7 @@ class FilterChangeDetector
     /**
      * @param array $agentIds
      *
-     * @return LegacyTicketFilter[]
+     * @return array
      */
     private function getFilters(array $agentIds)
     {
@@ -524,17 +513,18 @@ class FilterChangeDetector
         if (null === $this->cachedGlobalFilters) {
             $this->cachedGlobalFilters = [];
 
-            $qb = $this->em->createQueryBuilder();
+            $qb = $this->em->getConnection()->createQueryBuilder();
             $qb
-                ->select('f')
-                ->from(LegacyTicketFilter::class, 'f')
-                ->where('f.person IS NULL')
+                ->select('f.id, f.sys_name, f.person_id, f.terms')
+                ->from('ticket_filters', 'f')
+                ->where('f.person_id IS NULL')
             ;
 
-            /** @var LegacyTicketFilter[] $result */
-            $result = $qb->getQuery()->getResult();
+            $result = $qb->execute()->fetchAll();
             foreach ($result as $filter) {
-                $this->cachedGlobalFilters[$filter->getId()] = $filter;
+                $filter['terms'] = json_decode($filter['terms'], true);
+
+                $this->cachedGlobalFilters[$filter['id']] = $filter;
             }
         }
 
@@ -549,19 +539,20 @@ class FilterChangeDetector
 
         $agentIds = array_diff($agentIds, array_keys($this->cachedUserFilters));
 
-        $qb = $this->em->createQueryBuilder();
+        $qb = $this->em->getConnection()->createQueryBuilder();
         $qb
-            ->select('f')
-            ->from(LegacyTicketFilter::class, 'f')
-            ->where('f.person IN (:ids)')
-            ->setParameter('ids', $agentIds)
+            ->select('f.id, f.sys_name, f.person_id, f.terms')
+            ->from('ticket_filters', 'f')
+            ->where('f.person_id IN (:ids)')
+            ->setParameter('ids', $agentIds, Connection::PARAM_INT_ARRAY)
         ;
 
-        /** @var LegacyTicketFilter[] $result */
-        $result = $qb->getQuery()->getResult();
+        $result = $qb->execute()->fetchAll();
         foreach ($result as $filter) {
-            $filters[$filter->getId()]                         = $filter;
-            $this->cachedUserFilters[$filter->getPersonId()][] = $filter;
+            $filter['terms'] = json_decode($filter['terms'], true);
+
+            $filters[$filter['id']]                          = $filter;
+            $this->cachedUserFilters[$filter['person_id']][] = $filter;
         }
 
         return $filters;

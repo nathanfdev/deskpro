@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Tickets\Notifications;
 
-use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository\TicketFilterSubscription as TicketFilterSubscriptionRepos;
@@ -187,7 +186,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
 
         foreach ($this->filter_changes->getChangedFilters() as $filter_change) {
             $filter   = $filter_change->getFilter();
-            $filterId = $filter->getId();
+            $filterId = $filter['id'];
 
             $agents_with_new_match  = $filter_change->getAgentsWithNewMatch();
             $agents_with_orig_match = $filter_change->getAgentsWithOriginalMatch();
@@ -228,16 +227,16 @@ class AgentNotifyListBuilder implements PersonContextInterface
     }
 
     /**
-     * @param array              $notify_list
-     * @param Person             $agent
-     * @param LegacyTicketFilter $filter
-     * @param $change_type
-     * @param array $notify_types
+     * @param array  $notify_list
+     * @param Person $agent
+     * @param array  $filter
+     * @param        $change_type
+     * @param array  $notify_types
      */
-    private function addTypesToList(array &$notify_list, Person $agent, LegacyTicketFilter $filter, $change_type, array $notify_types)
+    private function addTypesToList(array &$notify_list, Person $agent, array $filter, $change_type, array $notify_types)
     {
         $agentId  = $agent->getId();
-        $filterId = $filter->getId();
+        $filterId = $filter['id'];
 
         if (!isset($notify_list[$agentId])) {
             $notify_list[$agentId] = [
@@ -264,17 +263,17 @@ class AgentNotifyListBuilder implements PersonContextInterface
     }
 
     /**
-     * @param array              $event_types
-     * @param                    $with_origmatch
-     * @param LegacyTicketFilter $filter
-     * @param array              $sub
+     * @param array $event_types
+     * @param       $with_origmatch
+     * @param array $filter
+     * @param array $sub
      *
      * @return array
      */
-    private function getSubTypesForFilterNewMatch(array $event_types, $with_origmatch, LegacyTicketFilter $filter, $sub)
+    private function getSubTypesForFilterNewMatch(array $event_types, $with_origmatch, array $filter, array $sub)
     {
         $types    = [];
-        $sys_name = $filter->getSysName();
+        $sys_name = $filter['sys_name'];
 
         if ($event_types['new']) {
             if ($sub['email_created']) {
@@ -311,13 +310,13 @@ class AgentNotifyListBuilder implements PersonContextInterface
 
     /**
      * @param array $event_types
-     * @param $with_newmatch
-     * @param LegacyTicketFilter $filter
-     * @param array              $sub
+     * @param       $with_newmatch
+     * @param array $filter
+     * @param array $sub
      *
      * @return array
      */
-    private function getSubTypesForFilterOrigMatch(array $event_types, $with_newmatch, LegacyTicketFilter $filter, $sub)
+    private function getSubTypesForFilterOrigMatch(array $event_types, $with_newmatch, array $filter, array $sub)
     {
         $types = [];
 
@@ -344,7 +343,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
         // If orig matched but its not a new match,
         // then we know it's left this list
         if (!$with_newmatch) {
-            $sys_name = $filter->getSysName();
+            $sys_name = $filter['sys_name'];
 
             if (
                 (!$sys_name && $sub['email_leave'])

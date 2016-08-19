@@ -144,7 +144,7 @@ class FilterChangeSet
             $filter = $filter_change->getFilter();
 
             $ticketId = $this->ticket->getId();
-            $filterId = $filter->getId();
+            $filterId = $filter['id'];
 
             foreach ($filter_change->getAgentsAdded() as $agent) {
                 if (!in_array($agent->getId(), $onlineAgentsIds)) {
