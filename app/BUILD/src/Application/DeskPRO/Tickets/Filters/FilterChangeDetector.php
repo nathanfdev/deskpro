@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
+use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Doctrine\ORM\EntityManager;
 
@@ -90,6 +91,11 @@ class FilterChangeDetector
      * @var array
      */
     private $cachedUserFilters = [];
+
+    /**
+     * @var TicketSearch[]
+     */
+    private $cachedSearchers = [];
 
     /**
      * Constructor.
@@ -220,8 +226,7 @@ class FilterChangeDetector
         $time = microtime(true);
 
         foreach ($affectedFilters as $filterId => $filter) {
-            $filterSysName = $filter['sys_name'];
-            $agent_scopes  = [];
+            $agent_scopes = [];
 
             foreach ($filtersAgentsMap[$filterId] as $a_id => $a) {
                 if (isset($agentPermCache[$a_id]) && ($agentPermCache[$a_id]['old'] || $agentPermCache[$a_id]['new'])) {
@@ -277,10 +282,10 @@ class FilterChangeDetector
                 // RESULT_NOT_CACHED
                 } else {
                     $reset_status = false;
-                    if ($filterSysName) {
+                    if ($filter['sys_name']) {
                         // System filters are special in that we ignore status/hold
                         // for notifications
-                        $searcher = LegacyTicketFilter::createSearcher($filterSysName, $filter['terms'], [
+                        $searcher = $this->getOrCreateSearcher($filter, [
                             ['type' => 'status', 'op' => 'ignore'],
                             ['type' => 'hidden_status', 'op' => 'ignore'],
                             ['type' => 'is_hold', 'op' => 'ignore'],
@@ -289,7 +294,7 @@ class FilterChangeDetector
                         // Reset because we have to re-run to get proper result for add/del lists
                         $reset_status = true;
                     } else {
-                        $searcher = LegacyTicketFilter::createSearcher($filterSysName, $filter['terms']);
+                        $searcher = $this->getOrCreateSearcher($filter);
                     }
 
                     $searcher->setPersonContext($agent);
@@ -335,7 +340,7 @@ class FilterChangeDetector
                     $pre_new_match  = $new_match;
 
                     if ($reset_status) {
-                        $searcher = LegacyTicketFilter::createSearcher($filterSysName, $filter['terms']);
+                        $searcher = $this->getOrCreateSearcher($filter);
                         $searcher->setPersonContext($agent);
 
                         if ($isNewTicket) {
@@ -556,5 +561,21 @@ class FilterChangeDetector
         }
 
         return $filters;
+    }
+
+    /**
+     * @param array $filter
+     * @param array $forceTerms
+     *
+     * @return TicketSearch
+     */
+    public function getOrCreateSearcher(array $filter, array $forceTerms = [])
+    {
+        $key = md5($filter['sys_name'].serialize(array_merge($filter['terms'], $forceTerms)));
+        if (!isset($this->cachedSearchers[$key])) {
+            $this->cachedSearchers[$key] = LegacyTicketFilter::createSearcher($filter['sys_name'], $filter['terms'], $forceTerms);
+        }
+
+        return $this->cachedSearchers[$key];
     }
 }
