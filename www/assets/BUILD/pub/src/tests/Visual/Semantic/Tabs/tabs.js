@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@kadira/storybook';
-import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
-import { css } from '../../decorators';
+import { Tabs } from 'Semantic/Tabs';
+import { css } from 'Visual/decorators';
 
 const tabsStruct = {
   items: [

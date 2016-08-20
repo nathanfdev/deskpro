@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@kadira/storybook';
-import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
+import { List, ListElement } from 'Semantic/List';
 
 export const structure = {
   elements: [

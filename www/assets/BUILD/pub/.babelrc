@@ -7,9 +7,11 @@
       "namespaces": {
         "DeskPRO": "src/DeskPRO/",
         "Ampliflux": "src/DeskPRO/Component/Ampliflux/",
+        "Semantic": "src/DeskPRO/Component/Semantic/",
         "Helpers": "src/tests/Helpers/",
-        "Visual": "src/tests/Visual",
-        "DemoState": "src/tests/DemoState"
+        "Visual": "src/tests/Visual/",
+        "DemoState": "src/tests/DemoState/"
+
       }
     }]
   ]

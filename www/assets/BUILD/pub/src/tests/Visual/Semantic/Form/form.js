@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, action, linkTo } from '@kadira/storybook';
 import { Toggle, Range, Select } from 'DeskPRO/Component/Semantic/Form';
-import { css } from '../../decorators';
+import { css } from 'Visual/decorators';
 
 const options = [
   {
