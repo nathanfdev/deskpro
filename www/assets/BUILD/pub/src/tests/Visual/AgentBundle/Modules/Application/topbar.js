@@ -50,11 +50,11 @@ const agents = [
     emails:                    [
       'content.publisher@deskprodemo.com'
     ],
-    avatar: {
+    avatar: Immutable.Map({
       default_url_pattern: 'http://deskpro5.local/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1',
       url_pattern:         null,
       base_gravatar_url:   'https://secure.gravatar.com/avatar/79cfcfdf770db09a40fca15bb845fef1'
-    },
+    }),
     online:        false,
     last_seen:     null,
     phone_numbers: [],
@@ -108,11 +108,11 @@ const agents = [
     emails:        [
       'harley34@example.net'
     ],
-    avatar: {
+    avatar: Immutable.Map({
       default_url_pattern: 'http://deskpro5.local/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1',
       url_pattern:         'http://deskpro5.local/file.php/size/{{IMG_SIZE}}/size-fit/12HBBAKKZSBKNCWWY0/mathieu_kassovitz1.jpg',
       base_gravatar_url:   'https://secure.gravatar.com/avatar/7c7a55550e8a3b4fc038b83fd142b1b7'
-    },
+    }),
     online:        true,
     last_seen:     null,
     phone_numbers: [],
@@ -167,11 +167,11 @@ const agents = [
     emails:        [
       'frieda89@example.net'
     ],
-    avatar: {
+    avatar: Immutable.Map({
       default_url_pattern: 'http://deskpro5.local/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1',
       url_pattern:         'http://deskpro5.local/file.php/size/{{IMG_SIZE}}/size-fit/11XNYDJQNCTMGKCPN0/michael_jackson.jpg',
       base_gravatar_url:   'https://secure.gravatar.com/avatar/da5d33f1edca0378f4158f6c94d35925'
-    },
+    }),
     online:        false,
     last_seen:     null,
     phone_numbers: [],
@@ -225,11 +225,11 @@ const agents = [
     emails:        [
       'mayer.daniella@example.com'
     ],
-    avatar: {
+    avatar: Immutable.Map({
       default_url_pattern: 'http://deskpro5.local/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1',
       url_pattern:         'http://deskpro5.local/file.php/size/{{IMG_SIZE}}/size-fit/10BKQZMTGAHZGXRBA0/b_obama.jpg',
       base_gravatar_url:   'https://secure.gravatar.com/avatar/5ba165b80207a9adbf9f43683f54a479'
-    },
+    }),
     online:        false,
     last_seen:     null,
     phone_numbers: [],
@@ -283,11 +283,11 @@ const agents = [
     emails:        [
       'edgardo.bernier@example.net'
     ],
-    avatar: {
+    avatar: Immutable.Map({
       default_url_pattern: 'http://deskpro5.local/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1',
       url_pattern:         'http://deskpro5.local/file.php/size/{{IMG_SIZE}}/size-fit/9CWTBWABJKCYHRRZ0/b_obama.jpg',
       base_gravatar_url:   'https://secure.gravatar.com/avatar/5323617c52a452c52bc03d7b2c0c36b9'
-    },
+    }),
     online:        false,
     last_seen:     null,
     phone_numbers: [],
@@ -342,11 +342,11 @@ const agents = [
     emails:        [
       'myrtis.schaefer@example.org'
     ],
-    avatar: {
+    avatar: Immutable.Map({
       default_url_pattern: 'http://deskpro5.local/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1',
       url_pattern:         'http://deskpro5.local/file.php/size/{{IMG_SIZE}}/size-fit/8RPTSAJNBBQTQXMN0/mathieu_kassovitz1.jpg',
       base_gravatar_url:   'https://secure.gravatar.com/avatar/6d100317173e4c9dd9287de31b2dee28'
-    },
+    }),
     online:        false,
     last_seen:     null,
     phone_numbers: [],
@@ -400,11 +400,11 @@ const agents = [
     emails:        [
       'dominique.nikolaus@example.org'
     ],
-    avatar: {
+    avatar: Immutable.Map({
       default_url_pattern: 'http://deskpro5.local/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1',
       url_pattern:         'http://deskpro5.local/file.php/size/{{IMG_SIZE}}/size-fit/7ZQGSYPAXRBQAMPT0/kate_middleton.jpg',
       base_gravatar_url:   'https://secure.gravatar.com/avatar/59719175aa164e45edba17beafa1a5ba'
-    },
+    }),
     online:        false,
     last_seen:     null,
     phone_numbers: [],
@@ -456,11 +456,11 @@ const agents = [
     emails:        [
       'ibrahim32@example.net'
     ],
-    avatar: {
+    avatar: Immutable.Map({
       default_url_pattern: 'http://deskpro5.local/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1',
       url_pattern:         'http://deskpro5.local/file.php/size/{{IMG_SIZE}}/size-fit/6TJQNPXWXCBDKXQS0/stanley_kubrick.jpg',
       base_gravatar_url:   'https://secure.gravatar.com/avatar/9d011d2cab877b96ed7a7ab4d21e489f'
-    },
+    }),
     online:        false,
     last_seen:     null,
     phone_numbers: [],
@@ -515,11 +515,11 @@ const agents = [
     emails:        [
       'rodolfo.stark@example.com'
     ],
-    avatar: {
+    avatar: Immutable.Map({
       default_url_pattern: 'http://deskpro5.local/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1',
       url_pattern:         'http://deskpro5.local/file.php/size/{{IMG_SIZE}}/size-fit/5RCWTDHAQKKZWQJT0/mathieu_kassovitz1.jpg',
       base_gravatar_url:   'https://secure.gravatar.com/avatar/76fd0bd481a1d39bc57d1044f6d7c239'
-    },
+    }),
     online:        false,
     last_seen:     null,
     phone_numbers: [],
@@ -571,11 +571,11 @@ const agents = [
     emails:        [
       'christopher40@example.org'
     ],
-    avatar: {
+    avatar: Immutable.Map({
       default_url_pattern: 'http://deskpro5.local/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1',
       url_pattern:         'http://deskpro5.local/file.php/size/{{IMG_SIZE}}/size-fit/4QNAQGAQTKARATKZ0/stanley_kubrick.jpg',
       base_gravatar_url:   'https://secure.gravatar.com/avatar/2b6c6697dd29f737812cd0bce2aced26'
-    },
+    }),
     online:        false,
     last_seen:     null,
     phone_numbers: [],
@@ -632,11 +632,11 @@ const agents = [
     emails:        [
       'dimitri.auer@example.net'
     ],
-    avatar: {
+    avatar: Immutable.Map({
       default_url_pattern: 'http://deskpro5.local/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1',
       url_pattern:         'http://deskpro5.local/file.php/size/{{IMG_SIZE}}/size-fit/3WSYHDCTTRZYHHXP0/borat.jpg',
       base_gravatar_url:   'https://secure.gravatar.com/avatar/3de89bcffefcdfb6a00a62dd14f46302'
-    },
+    }),
     online:        false,
     last_seen:     null,
     phone_numbers: [],
@@ -694,11 +694,11 @@ const agents = [
     emails:        [
       'julien.ducro@deskpro.com'
     ],
-    avatar: {
+    avatar: Immutable.Map({
       default_url_pattern: 'http://deskpro5.local/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1',
       url_pattern:         null,
       base_gravatar_url:   'https://secure.gravatar.com/avatar/92d1cbad7e421b13f09ec01655afbe29'
-    },
+    }),
     online:        true,
     last_seen:     null,
     phone_numbers: [],
@@ -710,6 +710,9 @@ const agents = [
     primary_team:  null
   }
 ];
+
+const newAgents = [];
+agents.map((agent) => newAgents.push(Immutable.Map(agent)));
 
 storiesOf('App: top bar', module)
   .addDecorator(story => css(story()))

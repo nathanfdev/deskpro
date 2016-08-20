@@ -25,6 +25,8 @@ if (!assetsUrl) {
   });
 }
 
+export const appAssetsUrl = assetsUrl;
+
 export function css(jsx) {
   return (
     <div>

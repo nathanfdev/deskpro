@@ -6,7 +6,7 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class AddButton extends React.Component {
   static propTypes = {
-    closeIframes: PropTypes.func
+    closeIframes: PropTypes.func,
   };
   static defaultProps = {
     closeIframes() {}
