@@ -8,7 +8,12 @@ class ListElement extends React.Component {
     description: PropTypes.string,
     icon:        PropTypes.string,
     image:       PropTypes.string,
-    elements:    PropTypes.arrayOf(PropTypes.object)
+    elements:    PropTypes.arrayOf(PropTypes.object),
+    classes:     PropTypes.arrayOf(PropTypes.string)
+  };
+
+  static defultProps = {
+    classes: []
   };
 
   getContent() {
@@ -43,7 +48,7 @@ class ListElement extends React.Component {
   }
 
   render() {
-    return (<div className="item">
+    return (<div className={classNames('item', this.props.classes)}>
       {this.getIcon()}
       <div className="content">
         {this.getContent()}

@@ -18,4 +18,5 @@ import './Semantic/ReactForm/form';
 import './Semantic/List/list';
 import './Semantic/Menu/menu';
 import './Semantic/PopUp/popup';
+import './Semantic/Segment/segment';
 import './Semantic/Tabs/tabs';
