@@ -91,7 +91,7 @@
   ],
   "settings": {
     "import/resolver": {
-      "babel-namespace": {}
+      "babel-namespace": {  }
     },
     "react": {
       "version": "15.1.0"

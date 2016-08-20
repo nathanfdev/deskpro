@@ -7,7 +7,9 @@
       "namespaces": {
         "DeskPRO": "src/DeskPRO/",
         "Ampliflux": "src/DeskPRO/Component/Ampliflux/",
-        "Helpers": "src/tests/Helpers/"
+        "Helpers": "src/tests/Helpers/",
+        "Visual": "src/tests/Visual",
+        "DemoState": "src/tests/DemoState"
       }
     }]
   ]
