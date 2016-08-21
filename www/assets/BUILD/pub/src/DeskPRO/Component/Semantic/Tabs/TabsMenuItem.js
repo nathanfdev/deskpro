@@ -9,13 +9,14 @@ class TabsMenuItem extends React.Component {
     onClick: PropTypes.func.isRequired,
     title:   PropTypes.oneOfType([
       PropTypes.string,
-      PropTypes.node
+      PropTypes.object
     ]).isRequired,
     classes: PropTypes.arrayOf(PropTypes.string).isRequired
   };
 
   render() {
     const { onClick, active, title, classes } = this.props;
+
     return (
       <a
         className={classNames('item', { active }, classes)}

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 class SegmentsGroup extends React.Component {
 
   static propTypes = {
-    children:   PropTypes.object.isRequired,
+    children:   PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     classes:    PropTypes.arrayOf(PropTypes.string),
     raised:     PropTypes.bool,
     horizontal: PropTypes.bool,

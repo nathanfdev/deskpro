@@ -4,7 +4,10 @@ import classNames from 'classnames';
 class TabsMenu extends React.Component {
 
   static propTypes = {
-    children: PropTypes.object.isRequired
+    children: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.array
+    ]).isRequired
   };
 
   render() {

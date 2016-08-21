@@ -8,22 +8,26 @@ class Tabs extends React.Component {
   static propTypes = {
     items: PropTypes.arrayOf(PropTypes.shape({
       id:      PropTypes.string,
-      title:   PropTypes.string,
+      title:   PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
       content: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.node
       ]).isRequired
     })),
     classes: PropTypes.shape({
-      menuItem: PropTypes.arrayOf(PropTypes.string),
-      item:     PropTypes.arrayOf(PropTypes.string)
+      menuItem:          PropTypes.arrayOf(PropTypes.string),
+      notActiveMenuItem: PropTypes.arrayOf(PropTypes.string),
+      activeMenuItem:    PropTypes.arrayOf(PropTypes.string),
+      item:              PropTypes.arrayOf(PropTypes.string)
     })
   };
 
   static defaultProps = {
     classes: {
-      menuItem: [],
-      item:     []
+      menuItem:          [],
+      notActiveMenuItem: [],
+      activeMenuItem:    [],
+      item:              []
     }
   };
 
@@ -46,14 +50,24 @@ class Tabs extends React.Component {
     const { items, classes } = this.props;
     const menuItems = [];
     const self = this;
+    let key = 1;
     items.map((item, index) => {
+      const active = self.state.activeId ? self.state.activeId === item.id : index === 0;
+      let allClasses = classes.menuItem ? classes.menuItem : [];
+      if (active) {
+        allClasses = allClasses.concat(classes.activeMenuItem);
+      } else {
+        allClasses = allClasses.concat(classes.notActiveMenuItem);
+      }
       const props = {
+        key,
+        active,
         tabId:   item.id,
-        active:  self.state.activeId ? self.state.activeId === item.id : index === 0,
         title:   item.title,
-        classes: classes.menuItem,
+        classes: allClasses,
         onClick: self.onTabClick(item.id)
       };
+      key++;
       return menuItems.push(<TabsMenuItem {...props} />);
     });
 
@@ -64,14 +78,16 @@ class Tabs extends React.Component {
     const { items, classes } = this.props;
     const tabsItems = [];
     const self = this;
-
+    let key = 1;
     items.map((item, index) => {
       const props = {
+        key,
         tabId:   item.id,
         active:  self.state.activeId ? self.state.activeId === item.id : index === 0,
         content: item.content,
         classes: classes.item
       };
+      key++;
       return tabsItems.push(<TabsItem {...props} />);
     });
 

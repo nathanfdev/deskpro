@@ -12,6 +12,7 @@ import './AgentBundle/Modules/Common/NavFrame/Lists/NestedList';
 import './AgentBundle/Frames/nav';
 import './AgentBundle/Modules/Voice/index';
 import './DemoBundle/Modules/Application/login';
+import './AgentBundle/Modules/IM/im';
 import './Semantic/Accordion/accordion';
 import './Semantic/Form/form';
 import './Semantic/ReactForm/form';

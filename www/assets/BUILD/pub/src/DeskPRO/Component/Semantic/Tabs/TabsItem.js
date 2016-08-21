@@ -10,7 +10,7 @@ class TabsItem extends React.Component {
       PropTypes.string,
       PropTypes.node
     ]).isRequired,
-    classes: PropTypes.arrayOf(PropTypes.string).isRequired
+    classes: PropTypes.arrayOf(PropTypes.string)
   };
 
 

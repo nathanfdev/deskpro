@@ -16,10 +16,13 @@ class PopUp extends React.Component {
     children:  PropTypes.node,
     autoClose: PropTypes.bool,
     autoOpen:  PropTypes.bool,
+    classes:   PropTypes.arrayOf(PropTypes.string),
     className: PropTypes.string
   };
 
   static defaultProps = {
+    onOpen() {},
+    classes:   [],
     autoClose: false,
     autoOpen:  false
   };
@@ -88,7 +91,7 @@ class PopUp extends React.Component {
 
     return (
       <ClickOut onClickOut={this.closePopup}>
-        <div id={elementId} className={classNames('ui', 'popup', positionAt, className, { visible: isOpen })}>
+        <div id={elementId} className={classNames('ui', 'popup', positionAt, className, { visible: isOpen }, this.props.classes)}>
           {content}
         </div>
       </ClickOut>
