@@ -117,6 +117,11 @@ class HttpServerInfoBootTask implements BootTaskInterface
                 phpinfo();
                 exit;
 
+            case 'php_version':
+                header('Content-Type: text/plain');
+                echo phpversion();
+                exit;
+
             case 'phpinfo-cli':
                 $file = $this->env->getUserCacheDir().'/cli-phpinfo.html';
                 if (!file_exists($file)) {
