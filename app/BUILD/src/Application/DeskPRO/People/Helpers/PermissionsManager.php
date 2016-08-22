@@ -129,7 +129,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         $agent_data   = App::$container->getAgentData();
         $forceLoadUg  = isset($options['force_load_usergroups']) && $options['force_load_usergroups'];
 
-        if (!$forceLoadUg && $agent_data->has($personId)) {
+        if (!$forceLoadUg && $person->isActiveAgent()) {
             $this->usergroup_ids = $agent_data->getGroupIdsForAgent($person);
         } else {
             $this->usergroup_ids = App::getDb()->fetchAllCol('
