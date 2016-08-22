@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\AgentAlert;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
@@ -188,8 +189,6 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         ];
 
         $log_ids = array_map(function ($l) { return $l->getId(); }, $vars['log_items']);
-        $alert_sender = $this->getContainer()->getAgentAlertSender();
-
         $alertData = [
             '@fetch_types'       => ['ticket' => 'DeskPRO:Ticket', 'performer' => 'DeskPRO:Person', 'log_items' => 'DeskPRO:TicketLog'],
             'ticket'             => $ticket->getId(),
@@ -228,42 +227,60 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             $languages['default'] = $em->getRepository(Language::class)->findOneBy([]);
         }
 
-        $alertRecords = [];
+        $connection->beginTransaction();
 
-        $sentCount = 0;
+        $alertsMap = [];
+        $date      = date('Y-m-d H:i');
+
         foreach ($agentsToLang as $languageId => $agents) {
             $alertData['browser_rendered'] = $tr->callWithLanguage($languages[$languageId], function () use ($tpl, $vars) {
                 return $tpl->render('AgentBundle:TicketSearch:notify-row.html.twig', $vars);
             });
 
+            $serializedAlertData = serialize(array_merge($alertData, [
+                '@target_maps' => [
+                    AgentAlert::TARGET_BROWSER => ['browser_rendered'],
+                ],
+            ]));
+
+            // batch insert alerts
+            $alerts = [];
             foreach ($agents as $agent) {
-                $alert = $alert_sender->createAlert($agent, 'tickets', $alertData);
+                $alerts[] = [
+                    'person_id'    => $agent->getId(),
+                    'typename'     => 'tickets',
+                    'date_created' => $date,
+                    'data'         => $serializedAlertData,
+                ];
 
-                ++$sentCount;
-                $em->persist($alert);
+                $alertsMap[] = [
+                    'agent_id'         => $agent->getId(),
+                    'browser_rendered' => $alertData['browser_rendered'],
+                ];
+            }
 
-                $alertRecords[] = [$agent->getId(), $alert->getId(), $alertData['browser_rendered']];
+            $connection->batchInsert('agent_alerts', $alerts);
+
+            $firstAlertId = (int) $connection->lastInsertId();
+            foreach ($alertsMap as $num => &$alertMap) {
+                $alertMap['alert_id'] = $firstAlertId + $num;
             }
         }
 
-        $em->flush();
-
         // batch insert client messages
-        if ($alertRecords) {
-            $date = date('Y-m-d H:i');
-
+        if ($alertsMap) {
             $clientMessages = [];
-            foreach ($alertRecords as $alertRecord) {
+            foreach ($alertsMap as $alertRecord) {
                 $clientMessages[] = [
-                    'for_person_id'     => $alertRecord[0],
+                    'for_person_id'     => $alertRecord['agent_id'],
                     'channel'           => 'agent-notify.tickets',
                     'date_created'      => $date,
                     'created_by_client' => 'sys',
                     'auth'              => ClientMessage::generateAuthCode(),
                     'data'              => serialize([
                         'type'     => 'tickets',
-                        'alert_id' => $alertRecord[1],
-                        'row'      => $alertRecord[2],
+                        'alert_id' => $alertRecord['alert_id'],
+                        'row'      => $alertRecord['browser_rendered'],
                     ]),
                 ];
             }
@@ -271,6 +288,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             $connection->batchInsert('client_messages', $clientMessages);
         }
 
-        $context->getLogger()->info(sprintf('[SendAgentAlert] Sent %d alerts in %.3fs', $sentCount, microtime(true) - $start_time));
+        $connection->commit();
+        $context->getLogger()->info(sprintf('[SendAgentAlert] Sent %d alerts in %.3fs', count($alertsMap), microtime(true) - $start_time));
     }
 }
