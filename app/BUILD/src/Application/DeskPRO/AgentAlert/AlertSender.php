@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\AgentAlert;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -38,6 +34,9 @@ use Application\DeskPRO\Entity\ClientMessage;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class AlertSender.
+ */
 class AlertSender
 {
     /**
@@ -52,6 +51,11 @@ class AlertSender
 
     protected $resolver;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em       = $em;
@@ -132,23 +136,17 @@ class AlertSender
             return;
         }
 
-        $tpl_line = $data['browser_rendered'];
-
         $cm = new ClientMessage();
-        $cm->fromArray(
-            [
-                'channel' => 'agent-notify.tickets',
-                'data'    => [
-                    'type'     => $type,
-                    'alert_id' => $alert ? $alert->id : null,
-                    'row'      => $tpl_line,
-                ],
-                'for_person'        => $agent,
-                'created_by_client' => 'sys',
-            ]
-        );
+        $cm->setChannel('agent-notify.tickets');
+        $cm->setData([
+            'type'     => $type,
+            'alert_id' => $alert ? $alert->getId() : null,
+            'row'      => $data['browser_rendered'],
+        ]);
+        $cm->setForPerson($agent);
+        $cm->setCreatedByClient('sys');
+
         $this->em->persist($cm);
-        $this->em->flush($cm);
     }
 
     /**
