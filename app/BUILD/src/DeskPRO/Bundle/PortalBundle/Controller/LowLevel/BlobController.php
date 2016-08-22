@@ -60,7 +60,7 @@ class BlobController extends BaseController
             ? $assetManager->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG)
             : $assetManager->getBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG);
 
-        $blob = $asset->getBlob();
+        $blob = $asset ? $asset->getBlob() : null;
         $bs   = $this->container->get('blob.storage');
 
         if ($blob) {
