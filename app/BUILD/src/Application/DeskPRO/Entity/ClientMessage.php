@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\MessageHandler\BasicArray;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -240,29 +239,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this->date_created;
     }
 
-    /**
-     * Should be done in a separate listener.
-     * Used deprecated App::get('event_dispatcher') for now.
-     *
-     * todo refactor
-     */
-    public function notifyMessageServers()
-    {
-        static $dispatcher;
-        if (null === $dispatcher) {
-            if (App::has('event_dispatcher')) {
-                $dispatcher = App::get('event_dispatcher');
-            } else {
-                $dispatcher = false;
-            }
-        }
-
-        if ($dispatcher) {
-            $event = new \Application\DeskPRO\ClientMessage\Event($this);
-            $dispatcher->dispatch('DeskPRO_onNewClientMessage', $event);
-        }
-    }
-
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -273,7 +249,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ClientMessage';
         $metadata->setPrimaryTable(['name' => 'client_messages']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->addLifecycleCallback('notifyMessageServers', 'postPersist');
         $metadata->mapField([
             'fieldName'  => 'id',
             'type'       => 'integer',
