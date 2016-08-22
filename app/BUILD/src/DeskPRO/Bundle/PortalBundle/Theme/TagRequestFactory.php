@@ -36,9 +36,13 @@ use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Component\Util\EntityUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class TagRequestFactory.
+ */
 class TagRequestFactory
 {
     /**
@@ -56,6 +60,13 @@ class TagRequestFactory
      */
     private $container;
 
+    /**
+     * Constructor.
+     *
+     * @param RequestStack       $stack
+     * @param LanguageManager    $languageManager
+     * @param ContainerInterface $container
+     */
     public function __construct(RequestStack $stack, LanguageManager $languageManager, ContainerInterface $container)
     {
         $this->stack           = $stack;
@@ -87,6 +98,12 @@ class TagRequestFactory
         $tr->setOptionsResolver(new OptionsResolver());
         $tr->setSession($currentRequest->getSession());
         $tr->headers->replace($currentRequest->headers->all());
+
+        // set base url from main request
+        $property = new \ReflectionProperty(Request::class, 'baseUrl');
+        $property->setAccessible(true);
+        $property->setValue($tr, $currentRequest->getBaseUrl());
+        $property->setAccessible(false);
 
         return $tr;
     }
