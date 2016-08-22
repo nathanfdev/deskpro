@@ -35,7 +35,6 @@ class AgentTopBar extends SeparateComponent {
         notificationCount: e.detail.count
       });
     });
-    this.getUserPicture = this.getUserPicture.bind(this);
   }
 
   static getType() {
@@ -86,7 +85,7 @@ class AgentTopBar extends SeparateComponent {
     }
   }
 
-  getUserPicture() {
+  getUserPicture = () => {
     const { me } = this.props;
     if (!me) {
       return '';
@@ -101,7 +100,7 @@ class AgentTopBar extends SeparateComponent {
     }
 
     return '';
-  }
+  };
 
   closeIframes() {
     for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {

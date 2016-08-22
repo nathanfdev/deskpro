@@ -10,20 +10,6 @@ class AddButton extends React.Component {
   static defaultProps = {
     closeIframes() {}
   };
-  constructor() {
-    super();
-    this.addTicket = this.addTicket.bind(this);
-    this.addPerson = this.addPerson.bind(this);
-    this.addOrganisation = this.addOrganisation.bind(this);
-    this.addArticle = this.addArticle.bind(this);
-    this.addNewsPost = this.addNewsPost.bind(this);
-    this.addDownload = this.addDownload.bind(this);
-    this.addFeedback = this.addFeedback.bind(this);
-    this.addTask = this.addTask.bind(this);
-    this.addTweet = this.addTweet.bind(this);
-    this.closePopup = this.closePopup.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);
-  }
 
   getPopupContent() {
     let items = [];
@@ -58,59 +44,59 @@ class AddButton extends React.Component {
     </div>);
   }
 
-  addTicket() {
+  addTicket = () => {
     window.DeskPRO_Window.newTicketLoader.toggle();
     this.closePopup();
-  }
+  };
 
-  addPerson() {
+  addPerson = () => {
     window.DeskPRO_Window.newPersonLoader.toggle();
     this.closePopup();
-  }
+  };
 
-  addOrganisation() {
+  addOrganisation = () => {
     window.DeskPRO_Window.newOrganizationLoader.toggle();
     this.closePopup();
-  }
+  };
 
-  addArticle() {
+  addArticle = () => {
     window.DeskPRO_Window.newArticleLoader.toggle();
     this.closePopup();
-  }
+  };
 
-  addNewsPost() {
+  addNewsPost = () => {
     window.DeskPRO_Window.newNewsLoader.toggle();
     this.closePopup();
-  }
+  };
 
-  addDownload() {
+  addDownload = () => {
     window.DeskPRO_Window.newDownloadLoader.toggle();
     this.closePopup();
-  }
+  };
 
-  addFeedback() {
+  addFeedback = () => {
     window.DeskPRO_Window.newFeedbackLoader.toggle();
     this.closePopup();
-  }
+  };
 
-  addTask() {
+  addTask = () => {
     window.$('form#newTaskForm input, form#newTaskForm select').val('');
     window.DeskPRO_Window.newTaskLoader.toggle();
     this.closePopup();
-  }
+  };
 
   addTweet() {
-
+    // TODO need implementation if used
   }
 
-  closePopup() {
+  closePopup = () => {
     this.refs.addPopup.closePopup();
     this.props.closeIframes();
-  }
+  };
 
-  togglePopup() {
+  togglePopup = () => {
     this.refs.addPopup.togglePopup();
-  }
+  };
 
   render() {
     return (<div className="item add" onClick={this.togglePopup}>

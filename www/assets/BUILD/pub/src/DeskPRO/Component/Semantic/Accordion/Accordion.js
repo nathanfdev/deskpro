@@ -19,7 +19,6 @@ class Accordion extends React.Component {
 
   constructor(props) {
     super(props);
-    this.onClickItem = this.onClickItem.bind(this);
     this.state = {
       activeKey: [0]
     };
@@ -33,14 +32,14 @@ class Accordion extends React.Component {
     };
   }
 
-  setActiveKey(activeKey) {
+  setActiveKey = (activeKey) => {
     if (!('activeKey' in this.props)) {
       this.setState({
         activeKey,
       });
     }
     this.props.onChange(activeKey[0]);
-  }
+  };
 
   getPanels() {
     const panels = [];

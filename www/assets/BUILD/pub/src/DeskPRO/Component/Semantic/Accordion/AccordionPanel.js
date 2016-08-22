@@ -20,11 +20,6 @@ class AccordionPanel extends React.Component {
     onItemClick() {}
   };
 
-  constructor() {
-    super();
-    this.handleItemClick = this.handleItemClick.bind(this);
-  }
-
   getTitle() {
     const { icon, count } = this.props.panel;
     let { title } = this.props.panel;
@@ -38,9 +33,9 @@ class AccordionPanel extends React.Component {
     return title;
   }
 
-  handleItemClick() {
+  handleItemClick = () => {
     this.props.onItemClick();
-  }
+  };
 
   render() {
     const { panel, active } = this.props;

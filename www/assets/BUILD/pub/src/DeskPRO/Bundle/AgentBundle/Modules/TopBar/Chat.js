@@ -29,12 +29,6 @@ class Chat extends React.Component {
       departmentMode: false,
       previousVolume: 8
     };
-    this.refreshOnlineAgentsList = this.refreshOnlineAgentsList.bind(this);
-    this.toggleChat = this.toggleChat.bind(this);
-    this.toggleDepartmentMode = this.toggleDepartmentMode.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);
-    this.toggleVolume = this.toggleVolume.bind(this);
-    this.updateAudioVolume = this.updateAudioVolume.bind(this);
   }
 
   componentDidMount() {
@@ -135,7 +129,7 @@ class Chat extends React.Component {
     </div>);
   }
 
-  refreshOnlineAgentsList() {
+  refreshOnlineAgentsList = () => {
     const { onlineAgents } = this.state;
     let hasMe = false;
     for (const agentId of onlineAgents) {
@@ -146,19 +140,19 @@ class Chat extends React.Component {
     this.setState({
       activeChat: hasMe
     });
-  }
+  };
 
-  toggleDepartmentMode() {
+  toggleDepartmentMode = () => {
     this.setState({
       departmentMode: !this.state.departmentMode
     });
-  }
+  };
 
-  togglePopup() {
+  togglePopup = () => {
     this.refs.chatPopup.togglePopup();
-  }
+  };
 
-  toggleVolume() {
+  toggleVolume = () => {
     if (this.state.volume === 0) {
       this.updateAudioVolume(this.state.previousVolume);
     } else {
@@ -167,9 +161,9 @@ class Chat extends React.Component {
       });
       this.updateAudioVolume(0);
     }
-  }
+  };
 
-  updateAudioVolume(newVal) {
+  updateAudioVolume = (newVal) => {
     const volume = parseInt(newVal, 10);
     this.props.updateVolume(volume);
     this.setState({
@@ -177,7 +171,7 @@ class Chat extends React.Component {
     });
   }
 
-  toggleChat(status) {
+  toggleChat = (status) => {
     const postData = [];
     const url = `${window.BASE_URL}agent/misc/set-agent-status/available`;
     const self = this;
@@ -206,7 +200,7 @@ class Chat extends React.Component {
         }
       }
     });
-  }
+  };
 
   render() {
     const { activeChat } = this.state;

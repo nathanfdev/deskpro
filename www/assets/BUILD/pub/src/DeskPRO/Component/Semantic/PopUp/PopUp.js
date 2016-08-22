@@ -34,22 +34,16 @@ class PopUp extends React.Component {
         this.closePopup();
       });
     }
-    this.cancelTimeout = this.cancelTimeout.bind(this);
-    this.onMouseEnter = this.onMouseEnter.bind(this);
-    this.onMouseLeave = this.onMouseLeave.bind(this);
-    this.openPopup = this.openPopup.bind(this);
-    this.closePopup = this.closePopup.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);
   }
 
-  onMouseEnter() {
+  onMouseEnter = () => {
     if (this.props.autoOpen) {
       this.cancelTimeout();
       this.openPopup();
     }
-  }
+  };
 
-  onMouseLeave() {
+  onMouseLeave = () => {
     if (this.props.opened) {
       return;
     }
@@ -57,35 +51,35 @@ class PopUp extends React.Component {
     this.timeout = setTimeout(() => {
       self.closePopup();
     }, 500);
-  }
+  };
 
-  openPopup() {
+  openPopup = () => {
     // const event = new Event('dpPopupOpen');
     // window.document.dispatchEvent(event);
     this.setState({
       isOpen: true
     });
-  }
+  };
 
-  closePopup() {
+  closePopup = () => {
     this.setState({
       isOpen: false
     });
-  }
+  };
 
-  togglePopup() {
+  togglePopup = () => {
     if (this.state.isOpen) {
       this.closePopup();
     } else {
       this.openPopup();
     }
-  }
+  };
 
-  cancelTimeout() {
+  cancelTimeout = () => {
     if (this.timeout) {
       window.clearTimeout(this.timeout);
     }
-  }
+  };
 
   renderBody() {
     const { content, positionAt, elementId } = this.props;

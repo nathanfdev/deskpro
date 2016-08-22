@@ -14,15 +14,10 @@ class Toggle extends React.Component {
     }
   };
 
-  constructor() {
-    super();
-    this.onClick = this.onClick.bind(this);
-  }
-
-  onClick() {
+  onClick = () => {
     const newState = !this.props.active;
     this.props.onChange(newState);
-  }
+  };
 
   render() {
     const { children, elementId, active, classes } = this.props;

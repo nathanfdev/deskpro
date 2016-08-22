@@ -13,21 +13,16 @@ class SearchBox extends React.Component {
     onFocus() {},
     onBlur() {}
   };
-  constructor() {
-    super();
-    this.handleChange = this.handleChange.bind(this);
-    this.clearInput   = this.clearInput.bind(this);
-  }
 
-  handleChange() {
+  handleChange = () => {
     this.props.onUserInput(
       this.refs.textInput.value
     );
-  }
+  };
 
-  clearInput() {
+  clearInput = () => {
     this.refs.textInput.value = '';
-  }
+  };
 
   render() {
     const { placeholder, text, onFocus, onBlur } = this.props;

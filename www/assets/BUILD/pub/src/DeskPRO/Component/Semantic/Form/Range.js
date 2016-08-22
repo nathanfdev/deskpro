@@ -12,16 +12,12 @@ class Range extends React.Component {
     onChange() {
     }
   };
-  constructor() {
-    super();
-    this.handleChange = this.handleChange.bind(this);
-  }
 
-  handleChange() {
+  handleChange = () => {
     this.props.onChange(
       this.refs.rangeInput.value
     );
-  }
+  };
 
   render() {
     const { elementId, value, min, max } = this.props;

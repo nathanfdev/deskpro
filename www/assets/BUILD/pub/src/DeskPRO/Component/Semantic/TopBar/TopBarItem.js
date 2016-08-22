@@ -11,14 +11,9 @@ class TopBarItem extends React.Component {
     onClick() {}
   };
 
-  constructor() {
-    super();
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick(e) {
+  handleClick = (e) => {
     this.props.onClick(e);
-  }
+  };
 
   render() {
     const { children, classes } = this.props;

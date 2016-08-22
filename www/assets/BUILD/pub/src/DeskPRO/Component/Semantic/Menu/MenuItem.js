@@ -12,10 +12,6 @@ class MenuItem extends React.Component {
   static defaultProps = {
     onClick() {}
   };
-  constructor() {
-    super();
-    this.handleClick = this.handleClick.bind(this);
-  }
 
   getIcon() {
     const { icon } = this.props;
@@ -33,7 +29,7 @@ class MenuItem extends React.Component {
     return null;
   }
 
-  handleClick(e) {
+  handleClick = (e) => {
     this.props.onClick(e);
   }
 

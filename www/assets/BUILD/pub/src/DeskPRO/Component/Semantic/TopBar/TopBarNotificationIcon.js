@@ -14,18 +14,14 @@ class TopBarNotificationIcon extends React.Component {
   static defaultProps = {
     onClick() {}
   };
-  constructor(props) {
-    super(props);
-    this.renderCount = this.renderCount.bind(this);
-  }
 
-  renderCount() {
+  renderCount = () => {
     const { count } = this.props;
     if (parseInt(count, 10) > 0) {
       return <div className="ui knuckles label">{count}</div>;
     }
     return null;
-  }
+  };
 
   render() {
     const { icon, elementId, onClick } = this.props;

@@ -11,13 +11,6 @@ class User extends React.Component {
     window.location = `${window.DESKPRO_AGENT_LOGOUT}?to=agent`;
   }
 
-  constructor() {
-    super();
-    this.clickSettings = this.clickSettings.bind(this);
-    this.clickHelp = this.clickHelp.bind(this);
-    this.togglePopup = this.togglePopup.bind(this);
-  }
-
   getPopupContent() {
     return (<div id="user-menu">
       <div className="header">Your Profile</div>
@@ -31,11 +24,11 @@ class User extends React.Component {
     </div>);
   }
 
-  closePopup() {
+  closePopup = () => {
     this.refs.userPopup.closePopup();
-  }
+  };
 
-  clickHelp() {
+  clickHelp = () => {
     const wrap = window.$('#dp_header_help');
     wrap.addClass('active');
 
@@ -52,16 +45,16 @@ class User extends React.Component {
 
     window.Orb.shimClickCallback(closeFn, 'zindex-chrome0');
     this.closePopup();
-  }
+  };
 
-  clickSettings() {
+  clickSettings = () => {
     window.$('#settingswin').trigger('dp_open');
     this.closePopup();
-  }
+  };
 
-  togglePopup() {
+  togglePopup = () => {
     this.refs.userPopup.togglePopup();
-  }
+  };
 
   render() {
     const { src } = this.props;
