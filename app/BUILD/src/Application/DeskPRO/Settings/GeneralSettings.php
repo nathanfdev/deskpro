@@ -270,6 +270,26 @@ class GeneralSettings
         $this->settings->setSetting('core.default_timezone', $this->default_timezone ?: 'UTC');
         $this->settings->setSetting('core.task_reminder_time', $this->task_reminder_time ?: '09:30');
 
+        $db    = App::$container->get('database_connection');
+        $brand = App::$container->getBrandStack()->getDefaultBrand();
+
+        foreach ([
+            'core.deskpro_url',
+            'core.deskpro_name',
+            'core.site_url',
+            'core.site_name',
+        ] as $copyName) {
+            $db->delete('settings_brand', ['name' => $copyName]);
+            $val = $db->fetchColumn('SELECT value FROM settings WHERE name = ?', [$copyName]);
+            if ($val) {
+                $db->insert('settings_brand', [
+                    'brand_id' => $brand->getId(),
+                    'name'     => $copyName,
+                    'value'    => $val,
+                ]);
+            }
+        }
+
         foreach (['fulltime', 'full', 'day', 'day_short', 'time'] as $p) {
             $p   = 'date_'.$p;
             $val = trim($this->$p) ?: null;
