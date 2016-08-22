@@ -385,7 +385,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     public function createApiCreateResponse(array $data, $url)
     {
         $response = $this->createApiResponse($data, 201);
-        $response->headers->add(['Location' => $url]);
+
+        $isIIS                 = false !== strpos(strtolower($this->request->server->get('SERVER_SOFTWARE')), 'microsoft-iis');
+        $locationStripDisabled = $this->settings->get('api.disable_location_header_strip');
+
+        if (!($response->getContent() && $isIIS && !$locationStripDisabled)) {
+            $response->headers->add(['Location' => $url]);
+        }
 
         return $response;
     }

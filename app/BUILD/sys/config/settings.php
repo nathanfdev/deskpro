@@ -1170,4 +1170,6 @@ return [
      * Date and time of next scheduled check
      */
     'auto_updater_next_check' => null,
+
+    'api.disable_location_header_strip' => false,
 ];

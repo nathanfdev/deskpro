@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -50,15 +53,26 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
      */
     private $serializer;
 
-    public function __construct(SerializerInterface $serializer)
+    /**
+     * @var SettingsResolver
+     */
+    protected $resolver;
+
+    /**
+     * @var string|null
+     */
+    protected $location = null;
+
+    public function __construct(SerializerInterface $serializer, SettingsResolver $resolver)
     {
         $this->serializer = $serializer;
+        $this->resolver   = $resolver;
     }
 
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::RESPONSE => array('onResponse', -1),
+            KernelEvents::RESPONSE => array('onResponse', 1025),
         );
     }
 
@@ -67,7 +81,9 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
         $request  = $event->getRequest();
         $response = $event->getResponse();
 
-        if ($request->query->has(self::INCLUDE_HEADERS_PARAM)) {
+        $this->stripLocationHeader($request, $response);
+
+        if ($request->query->has(self::INCLUDE_HEADERS_PARAM) || $this->location) {
 
             // add the "headers" node to the json response body
 
@@ -131,6 +147,36 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
             $json_headers[$header_name] = $header_val;
         }
 
+        if ($this->location) {
+            $json_headers['location'] = $this->location;
+        }
+
         return $json_headers;
+    }
+
+    protected function stripLocationHeader(Request $request, Response $response)
+    {
+        // there is no location header
+        if (!$location = $response->headers->get('Location')) {
+            return;
+        }
+
+        // or no response body
+        if (!$response->getContent()) {
+            return;
+        }
+
+        // skip non-IIS servers
+        if (false === strpos(strtolower($request->server->get('SERVER_SOFTWARE')), 'microsoft-iis')) {
+            return;
+        }
+
+        // disabled by cfg
+        if ($this->resolver->getGlobalSettings()->get('api.disable_location_header_strip')) {
+            return;
+        }
+
+        $response->headers->remove('Location');
+        $this->location = $location;
     }
 }
