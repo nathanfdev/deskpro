@@ -228,7 +228,7 @@ class MassLoader
                     'is_global'  => 0,
                     'is_enabled' => true,
                     'title'      => $this->faker->title,
-                    'sys_name'   => $personId.'_'.$num.'_'.$this->faker->word,
+                    'sys_name'   => null, // user filters has no sys name
                     'terms'      => $this->transformTicketFilterTerms($filterOptions),
                     'person_id'  => $personId,
                 ]);
