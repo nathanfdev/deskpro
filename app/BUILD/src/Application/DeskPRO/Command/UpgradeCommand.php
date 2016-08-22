@@ -104,6 +104,26 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         // at build Build1464777281
         if (!$input->getOption('info') && !$input->getOption('dobuildrun') && !$input->getOption('runsync') && !$input->getOption('reset')) {
             if ($dbVersion == '1470650875' || $dbVersion == '1471618600') {
+                // Sanity check -- make sure someone didnt import a database dump over a new database
+                // mysqldump uses 'drop table if exists' by default, so it would work if someone
+                // tried to restore a dump into an existing database (e.g. from a fresh install).
+                // if the user faield to clean the database, then NEW tables in v5 will still exist,
+                // and cause the upgrade scripts to fail.
+                $tables = App::getDb()->fetchAllCol('SHOW TABLES');
+                if (in_array('articles_slug_history', $tables)) {
+                    $output->writeln('<error>Tables from v5 already exist in your database</error>');
+                    $output->writeln('The most common cause of this is if you restored a MySQL dump onto an existing v5 install');
+                    $output->writeln('without first performing the clean command.');
+                    $output->writeln('');
+                    $output->writeln('The process should look something like this:');
+                    $output->writeln('<info>$ php bin/console install:clean --keep-config</info>');
+                    $output->writeln('<info>$ mysql -uyouruser -p your_db_name < your-dump.sql</info>');
+                    $output->writeln('<info>$ php bin/console dp:upgrade</info>');
+                    $output->writeln('');
+
+                    return 1;
+                }
+
                 App::getDb()->update('settings', ['value' => '1459273988'], ['name' => 'core.deskpro_build']);
             }
         }
