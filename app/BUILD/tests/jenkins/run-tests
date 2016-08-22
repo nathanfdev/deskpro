@@ -32,6 +32,8 @@ jenkins/tag-features --tag=new-parallel --num=$API_NEW_THREADS_NUM --path=../fea
 
 SECONDS=0
 echo "---"
+php -v
+echo "---"
 
 # Hack: see https://trello.com/c/xv8IRWTo/382-test-is-failing-when-running-for-the-first-time
 bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /dev/null
