@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
+import { updateCurrentStep } from '../Actions/OnboardingActions';
 import Joyride  from 'react-joyride';
 import * as Tours from '../Tours';
 
@@ -20,14 +21,12 @@ class AgentOnboarding extends SeparateComponent {
       type:  'continuous',
       force: false
     };
-    this.getJoyride = this.getJoyride.bind(this);
-    this.addSteps = this.addSteps.bind(this);
   }
   static getType() {
     return 'AgentOnboarding';
   }
 
-  addSteps(steps) {
+  addSteps = (steps) => {
     const joyride = this.refs.joyride;
 
     let stepsArray = steps;
@@ -45,7 +44,7 @@ class AgentOnboarding extends SeparateComponent {
       return result;
     });
     return true;
-  }
+  };
 
   componentDidMount() {
     this.props.onboardings.map((onboarding) => {
@@ -71,9 +70,29 @@ class AgentOnboarding extends SeparateComponent {
     }
   }
 
-  getJoyride() {
-    return <Joyride ref="joyride" steps={this.state.steps} debug />;
-  }
+  callback = (data) => {
+    const joyride = this.refs.joyride;
+
+    console.log(joyride);
+    console.log(joyride.getProgress());
+    console.log(this.props.onboardings[0]);
+    switch (data.type) {
+      case 'close':
+        if (data.step && data.step.length < this.state.steps.length) {
+          console.log('Close not finished');
+        } else {
+          console.log('Close finished');
+        }
+        break;
+      case 'step:after':
+        updateCurrentStep();
+        break;
+      default:
+        break;
+    }
+    console.log('%ccallback', 'color: #47AAAC; font-weight: bold; font-size: 13px;'); // eslint-disable-line no-console
+    console.log(data); // eslint-disable-line no-console
+  };
 
   render() {
     const { type, force } = this.state;
@@ -93,6 +112,9 @@ class AgentOnboarding extends SeparateComponent {
           last:  (<span>Last</span>),
           next:  (<span>Next</span>)
         }}
+        callback={this.callback}
+        showStepsProgress
+        tooltipOffset={5}
         debug
         {...props}
       />
