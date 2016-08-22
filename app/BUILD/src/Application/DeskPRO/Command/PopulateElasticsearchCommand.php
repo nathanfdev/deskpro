@@ -115,13 +115,17 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         @set_time_limit(0);
-        if ($input->getOption('auto-reset') && App::$container->getSetting('elastica.requires_reset_started') != $input->getOption('auto-reset')) {
+        if ($input->getOption('auto-reset') && App::$container->getSetting('elastica.requires_reset_started') != $input->getOption('auto-reset') && $input->getOption('auto-reset') != 'requires_reset') {
             return;
         }
 
         $reset = App::$container->getSetting('elastica.requires_reset');
         if ($input->getOption('reset') || $input->getOption('auto-reset')) {
             $reset = true;
+        }
+
+        if ($input->getOption('auto-reset') == 'requires_reset' && !$reset) {
+            return;
         }
 
         $this->getContainer()->getDb()->delete('settings', ['name' => 'elastica.requires_reset']);
