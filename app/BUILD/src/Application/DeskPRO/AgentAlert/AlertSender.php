@@ -112,10 +112,10 @@ class AlertSender
      */
     public function createAlert($agent, $type, array $data)
     {
-        $alert           = new AgentAlert();
-        $alert->person   = $agent;
-        $alert->typename = $type;
-        $alert->data     = $data;
+        $alert = new AgentAlert();
+        $alert->setPerson($agent);
+        $alert->setTypename($type);
+        $alert->setData($data);
 
         if (isset($data['browser_rendered'])) {
             $alert->addTargetMap(AgentAlert::TARGET_BROWSER, ['browser_rendered']);
