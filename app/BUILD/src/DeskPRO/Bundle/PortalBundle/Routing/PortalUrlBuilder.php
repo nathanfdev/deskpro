@@ -64,7 +64,7 @@ class PortalUrlBuilder
      * @param PortalMode|null $mode
      * @param string          $baseUrl
      */
-    public function __construct($path, Language $language = null, PortalMode $mode = null, $baseUrl)
+    public function __construct($path, Language $language = null, PortalMode $mode = null, $baseUrl = '')
     {
         $this->path     = trim($path);
         $this->language = $language;
