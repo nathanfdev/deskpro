@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -203,6 +205,9 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         $tpl = $this->getContainer()->getTemplating();
         $tr  = $this->getContainer()->getTranslator();
 
+        /** @var Connection $connection */
+        $connection = $em->getConnection();
+
         $agentsToLang = [];
         $languages    = [];
 
@@ -237,21 +242,33 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
                 ++$sentCount;
                 $em->persist($alert);
 
-                $alertRecords[] = [$agent, $alertData, $alert];
+                $alertRecords[] = [$agent->getId(), $alert->getId(), $alertData['browser_rendered']];
             }
         }
 
         $em->flush();
 
+        // batch insert client messages
         if ($alertRecords) {
-            foreach ($alertRecords as $rec) {
-                $cm = $alert_sender->createClientMessage($rec[0], 'tickets', $rec[1], $rec[2]);
-                if ($cm) {
-                    $em->persist($cm);
-                }
+            $date = date('Y-m-d H:i');
+
+            $clientMessages = [];
+            foreach ($alertRecords as $alertRecord) {
+                $clientMessages[] = [
+                    'for_person_id'     => $alertRecord[0],
+                    'channel'           => 'agent-notify.tickets',
+                    'date_created'      => $date,
+                    'created_by_client' => 'sys',
+                    'auth'              => ClientMessage::generateAuthCode(),
+                    'data'              => serialize([
+                        'type'     => 'tickets',
+                        'alert_id' => $alertRecord[1],
+                        'row'      => $alertRecord[2],
+                    ]),
+                ];
             }
 
-            $em->flush();
+            $connection->batchInsert('client_messages', $clientMessages);
         }
 
         $context->getLogger()->info(sprintf('[SendAgentAlert] Sent %d alerts in %.3fs', $sentCount, microtime(true) - $start_time));

@@ -125,33 +125,6 @@ class AlertSender
     }
 
     /**
-     * @param            $agent
-     * @param            $type
-     * @param array      $data
-     * @param AgentAlert $alert
-     *
-     * @return ClientMessage|null
-     */
-    public function createClientMessage($agent, $type, array $data, AgentAlert $alert = null)
-    {
-        if (!isset($data['browser_rendered'])) {
-            return;
-        }
-
-        $cm = new ClientMessage();
-        $cm->setChannel('agent-notify.tickets');
-        $cm->setData([
-            'type'     => $type,
-            'alert_id' => $alert ? $alert->getId() : null,
-            'row'      => $data['browser_rendered'],
-        ]);
-        $cm->setForPerson($agent);
-        $cm->setCreatedByClient('sys');
-
-        return $cm;
-    }
-
-    /**
      * @param AgentAlert $alert
      *
      * @return array

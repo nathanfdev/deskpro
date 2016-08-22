@@ -117,7 +117,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this->date_created = new \DateTime();
-        $this->auth         = DpStrings::random(15, Strings::CHARS_KEY);
+        $this->auth         = self::generateAuthCode();
     }
 
     /**
@@ -237,6 +237,14 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     public function getDateCreated()
     {
         return $this->date_created;
+    }
+
+    /**
+     * @return string
+     */
+    public static function generateAuthCode()
+    {
+        return DpStrings::random(15, Strings::CHARS_KEY);
     }
 
     //###########################################################################
