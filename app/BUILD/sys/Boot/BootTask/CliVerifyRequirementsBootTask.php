@@ -28,25 +28,31 @@
 
 namespace DpSys\Boot\BootTask;
 
-use Symfony\Component\HttpFoundation\Request;
-
-/**
- * This creates the proper Request object.
- */
-class RequestBootTask implements BootTaskInterface
+class CliVerifyRequirementsBootTask
 {
     public function run(\DpRun\DpEnv $env, array $resources)
     {
-        $request = Request::createFromGlobals();
-
-        if (!defined('DP_REQUEST_URL')) {
-            define('DP_REQUEST_URL', $request->getUri());
+        if ($env->getConfig('env.skip_req_check')) {
+            return;
         }
 
-        $env->setRuntimeVar('request', $request);
+        /** @var \DpSys\SoftwareRequirements\DeskproRequirements $checker */
+        $checker = require $env->getAppDir().'/sys/SoftwareRequirements/load_checker.php';
 
-        return [
-            'request' => $request,
-        ];
+        if (count($checker->getFailedRequirements())) {
+            echo "The version of PHP are you using to run this command has failed the requirements check:\n\n";
+
+            /** @var \DpSys\SoftwareRequirements\Requirement $r */
+            foreach ($checker->getFailedRequirements() as $r) {
+                echo '- '.$r->getHelpText()."\n";
+            }
+
+            echo "\n";
+            echo "For full details, execute the following command:\n";
+            echo escapeshellarg($env->getConfig('paths.php_path')).' '.$env->getDpRoot().DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'check_requirements';
+            echo "\n";
+
+            exit(1);
+        }
     }
 }

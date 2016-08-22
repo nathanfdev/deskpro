@@ -28,7 +28,7 @@
 
 // This is a very low-level check to make sure at least the fundamentals
 // like namespaces will work (which even our requirements checker needs).
-if (version_compare(phpversion(), '5.3.0', '<')) {
+if (version_compare(phpversion(), '5.5.0', '<')) {
     echo "You are using a very old version of PHP that is incompatible with this software.\n\n";
     echo "Please refer to the server requirements here: https://www.deskpro.com/requirements.\n";
     echo "(ERR_CODE:MPHPVFT)";
@@ -45,6 +45,11 @@ if (version_compare(phpversion(), '5.3.0', '<')) {
 @ini_set('zlib.output_compression', '0');
 @ini_set('xdebug.max_nesting_level', 1000000);
 libxml_disable_entity_loader(true);
+
+// always show errors before boot because we need to make sure silly
+// things like typo in a config file is highly visible
+// (it's fine-tuned below to only show on cli or pre-install)
+@ini_set('display_errors', '1');
 
 define('DP_START_TIME', microtime(true));
 
@@ -65,14 +70,13 @@ if (php_sapi_name() === 'cli') {
         $config['env'] = [];
     }
 
-    $opts = getopt('e', ['env:', 'no-debug']);
-    if (array_key_exists('--no-debug', $opts)) {
-        $config['env']['debug'] = false;
+    if (in_array('--no-debug', $_SERVER['argv'])) {
+        $config['env']['debug_mode'] = false;
     }
 
-    $env = @$opts['env'] ?: @$opts['e'];
-    if ($env) {
-        $config['env']['environment'] = $env;
+    $m = null;
+    if (preg_match('/\-\-env=?\s*("|\')?(?P<env>[a-zA-Z0-9]+)/', implode(' ', $_SERVER['argv']), $m)) {
+        $config['env']['environment'] = $m['env'];
     }
 }
 

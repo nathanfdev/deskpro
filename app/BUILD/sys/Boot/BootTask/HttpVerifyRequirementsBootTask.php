@@ -30,23 +30,34 @@ namespace DpSys\Boot\BootTask;
 
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * This creates the proper Request object.
- */
-class RequestBootTask implements BootTaskInterface
+class HttpVerifyRequirementsBootTask
 {
     public function run(\DpRun\DpEnv $env, array $resources)
     {
-        $request = Request::createFromGlobals();
-
-        if (!defined('DP_REQUEST_URL')) {
-            define('DP_REQUEST_URL', $request->getUri());
+        if ($env->getConfig('env.skip_req_check')) {
+            return;
         }
 
-        $env->setRuntimeVar('request', $request);
+        // small optimisation, dont run req checker
+        // on ajax/api requests where we couldnt see the result anyway
+        if (!empty($resources['request'])) {
+            /** @var Request $request */
+            $request = $resources['request'];
+            if ($request->isXmlHttpRequest()) {
+                return;
+            } else if (strpos($request->getPathInfo(), '/api/') === 0) {
+                return;
+            }
+        }
 
-        return [
-            'request' => $request,
-        ];
+        /** @var \DpSys\SoftwareRequirements\DeskproRequirements $checker */
+        $checker = require $env->getAppDir().'/sys/SoftwareRequirements/load_checker.php';
+
+        if (count($checker->getFailedRequirements())) {
+            echo "This server does not meet the minimum server requirements required by DeskPRO.\n\n";
+            echo "Execute the dp:web-server-info command from the command-line to get the URL to your requirements status page.\n";
+            echo "Refer to this article on usage: https://support.deskpro.com/en/kb/articles/553\n";
+            exit(0);
+        }
     }
 }

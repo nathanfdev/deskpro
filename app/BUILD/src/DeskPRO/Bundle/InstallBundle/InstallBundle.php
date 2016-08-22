@@ -39,9 +39,10 @@ class InstallBundle extends Bundle
 {
     public function registerCommands(Application $application)
     {
-        $application->add(new Command\InstallCommand());
         $application->add(new Command\CleanCommand());
         $application->add(new Command\CheckFileIntegrityCommand());
+        $application->add(new Command\InstallCommand());
+        $application->add(new Command\InstallFreshConfigCommand());
     }
 
     public function getNamespace()

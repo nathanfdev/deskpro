@@ -103,7 +103,7 @@ class ContentSlugManager
         $i       = 1;
         while (!$this->isValidSlug($newSlug, $content)) {
             // if expected slug is not valid, keep incrementing a value at the end until we get something valid
-            $newSlug = sprintf('%s-%d', $this->slugifyTitle($content->getTitle()), ++$i);
+            $newSlug = sprintf('%s-%d', $this->slugifyTitle($content->getTitle()) ?: strtolower(TypeUtils::getBaseTypeName($content)), ++$i);
         }
 
         $newHistory = $content->setSlug($newSlug);
@@ -118,7 +118,7 @@ class ContentSlugManager
      */
     private function slugifyTitle($title)
     {
-        return substr(Strings::slugifyTitle($title), 0, 94);
+        return substr(Strings::slugifyTitle($title), 0, 94) ?: '';
     }
 
     /**

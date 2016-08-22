@@ -657,7 +657,7 @@ class DpEnv
     /**
      * @param string $name
      * @param mixed  $default
-     * @return \OutOfRangeException|string
+     * @return mixed
      */
     public function getRuntimeVar($name, $default = '__throw__')
     {

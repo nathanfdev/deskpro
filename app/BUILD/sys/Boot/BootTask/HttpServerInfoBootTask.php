@@ -65,6 +65,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
 
         if (!$this->checkAuth($auth, $action)) {
             echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
+            echo "See: https://support.deskpro.com/kb/articles/553\n";
             exit;
         }
 
@@ -291,7 +292,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
                     'steps'          => [],
                     'currentStepId'  => $session->findCurrentStepId(),
                     'next'           => [
-                        'date'             => $nextDate->format('Y-m-d H:i:s'),
+                        'date'             => $nextDate ? $nextDate->format('Y-m-d H:i:s') : '',
                         'date_description' => $nextDate ? (($nextDate < (new \DateTime())) ? 'in a few seconds' : Dates::secsToReadable($nextDate->getTimestamp() - time())) : null,
                     ],
                 ];

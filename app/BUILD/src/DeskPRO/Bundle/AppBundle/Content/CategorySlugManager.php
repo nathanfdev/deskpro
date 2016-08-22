@@ -82,7 +82,7 @@ class CategorySlugManager
         $i       = 1;
         while (!$this->isValidSlug($newSlug, $category)) {
             // if expected slug is not valid, keep incrementing a value at the end until we get something valid
-            $newSlug = sprintf('%s-%d', $this->slugifyTitle($category->getTitle()), ++$i);
+            $newSlug = sprintf('%s-%d', $this->slugifyTitle($category->getTitle()) ?: strtolower(str_replace('Category', '', TypeUtils::getBaseTypeName($category))), ++$i);
         }
 
         return $category->setSlug($newSlug);
@@ -95,7 +95,7 @@ class CategorySlugManager
      */
     private function slugifyTitle($title)
     {
-        return substr(Strings::slugifyTitle($title), 0, 200);
+        return substr(Strings::slugifyTitle($title), 0, 200) ?: '';
     }
 
     /**

@@ -150,8 +150,8 @@ class TextSnippet extends AbstractEntityRepository
             $qb = new QueryBuilder($conn);
             $qb->select('DISTINCT(object_lang.ref_id)')
                ->from('object_lang')
-               ->innerjJoin('object_lang', 'text_snippets', 'ts', 'ts.id = object_lang.ref_id')
-               ->innerjJoin('ts', 'text_snippet_categories', 'cat', 'cat.id = ts.category_id')
+               ->innerJoin('object_lang', 'text_snippets', 'ts', 'ts.id = object_lang.ref_id')
+               ->innerJoin('ts', 'text_snippet_categories', 'cat', 'cat.id = ts.category_id')
                ->andWhere('cat.typename = :type')->setParameter('type', $typename);
 
             if ($agent) {

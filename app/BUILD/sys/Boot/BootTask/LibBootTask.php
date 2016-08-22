@@ -42,8 +42,8 @@ class LibBootTask implements BootTaskInterface
         if ($env->isDebug()) {
             Debug::enable(-1, true);
         } else {
-            set_error_handler([SystemErrorHandler::class, 'handleError'], E_ALL);
-            set_exception_handler([SystemErrorHandler::class, 'handleException']);
+            set_error_handler(['DpSys\LowError\SystemErrorHandler', 'handleError'], E_ALL);
+            set_exception_handler(['DpSys\LowError\SystemErrorHandler', 'handleException']);
             SystemErrorHandler::enableFatalErrorHandler();
 
             $bugsnagSettings = $env->getConfig('settings.bugsnag');

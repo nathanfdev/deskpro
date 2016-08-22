@@ -58,3 +58,11 @@ $ENV_CONFIG['environment'] = 'prod';
 ######################################################
 
 $ENV_CONFIG['debug_mode'] = false;
+
+######################################################
+# Misc                                               #
+######################################################
+
+// Skip requirements check on boot on http and cli commands.
+// Default: false
+$ENV_CONFIG['skip_req_check'] = false;

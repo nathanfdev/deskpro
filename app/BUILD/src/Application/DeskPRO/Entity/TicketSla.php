@@ -198,6 +198,16 @@ class TicketSla extends DomainObject
         } else {
             $this->setModelField('completed_time_taken', null);
         }
+
+        if ($this->ticket) {
+            $this->ticket->getStateChangeRecorder()->recordData(
+                'ticket_slas_complete',
+                array(
+                    'sla'         => $this->sla,
+                    'is_complete' => $value,
+                )
+            );
+        }
     }
 
     /**

@@ -139,6 +139,9 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
             $class = $this->options['ldapClass'];
             $ldap  = new $class();
             $auth->setLdap($ldap);
+
+            // setLdap resets options (why?!), so we need to reset it back
+            $auth->setOptions([$options]);
         }
 
         return $auth;
