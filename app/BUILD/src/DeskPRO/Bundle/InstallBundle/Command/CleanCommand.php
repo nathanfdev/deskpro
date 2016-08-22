@@ -32,6 +32,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Filesystem\Filesystem;
@@ -45,6 +46,7 @@ class CleanCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('install:clean')
+            ->addOption('keep-config', null, InputOption::VALUE_NONE, 'Keep config files')
             ->setDescription('This command will help you completely clean/delete DeskPRO from the server. You will be shown exactly what will be deleted, and then you will be asked to confirm.')
         ;
     }
@@ -58,6 +60,8 @@ class CleanCommand extends ContainerAwareCommand
 
         /** @var \Symfony\Component\Console\Helper\QuestionHelper $asker */
         $asker = $this->getHelper('question');
+
+        $keepConfig = $input->getOption('keep-config');
 
         #--------------------------------------------------
         # Info
@@ -107,6 +111,10 @@ class CleanCommand extends ContainerAwareCommand
         ]);
         $rmPaths = [];
         foreach ($dirs as $id => $d) {
+            if ($id === 'config' && $keepConfig) {
+                continue;
+            }
+
             $numFiles = Finder::create()
                 ->in($d['path'])
                 ->notName('.gitkeep')
@@ -117,7 +125,7 @@ class CleanCommand extends ContainerAwareCommand
                 continue;
             }
 
-            $rmPaths[] = $d['path'];
+            $rmPaths[$id] = $d['path'];
 
             $table->addRow(new TableSeparator());
 
@@ -180,7 +188,11 @@ class CleanCommand extends ContainerAwareCommand
 
         $fs = new Filesystem();
 
-        foreach ($rmPaths as $path) {
+        foreach ($rmPaths as $id => $path) {
+            if ($id === 'config' && $keepConfig) {
+                continue;
+            }
+
             $output->write("Removing files in $path ... ");
             try {
                 $fs->remove($path);
