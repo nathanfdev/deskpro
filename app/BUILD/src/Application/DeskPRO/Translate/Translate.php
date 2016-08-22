@@ -380,7 +380,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
         $e   = null;
         $ret = null;
         try {
-            $func($this, $language);
+            $ret = $func($this, $language);
         } catch (\Exception $e) {
         }
 

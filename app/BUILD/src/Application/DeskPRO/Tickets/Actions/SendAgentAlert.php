@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilterSubscription;
@@ -187,7 +188,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         $log_ids = array_map(function ($l) { return $l->getId(); }, $vars['log_items']);
         $alert_sender = $this->getContainer()->getAgentAlertSender();
 
-        $alert_data = [
+        $alertData = [
             '@fetch_types'       => ['ticket' => 'DeskPRO:Ticket', 'performer' => 'DeskPRO:Person', 'log_items' => 'DeskPRO:TicketLog'],
             'ticket'             => $ticket->getId(),
             'performer'          => $vars['performer'] ? $vars['performer']->getId() : 0,
@@ -198,12 +199,12 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             'log_items'          => $log_ids,
         ];
 
-        $sent_count = 0;
-        $em         = $this->getContainer()->getEm();
-        $tpl        = $this->getContainer()->getTemplating();
-        $tr         = $this->getContainer()->getTranslator();
+        $em  = $this->getContainer()->getEm();
+        $tpl = $this->getContainer()->getTemplating();
+        $tr  = $this->getContainer()->getTranslator();
 
-        $alert_records = [];
+        $agentsToLang = [];
+        $languages    = [];
 
         /** @var Person $agent */
         foreach ($agents as $agent) {
@@ -211,32 +212,39 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
                 continue;
             }
 
-            $vars['agent'] = $agent;
-            $agentId       = $agent->getId();
+            $language   = $agent->getLanguage();
+            $languageId = $language ? $language->getId() : 'default';
 
-            if (!empty($this->notify_info[$agentId])) {
-                $vars['notify_info'] = $this->notify_info[$agentId];
-            }
+            $languages[$languageId]      = $language;
+            $agentsToLang[$languageId][] = $agent;
+        }
 
-            $tpl_line = $tr->callWithPersonContext($agent, function () use ($tpl, $vars) {
+        if (isset($languages['default'])) {
+            $languages['default'] = $em->getRepository(Language::class)->findOneBy([]);
+        }
+
+        $alertRecords = [];
+
+        $sentCount = 0;
+        foreach ($agentsToLang as $languageId => $agents) {
+            $alertData['browser_rendered'] = $tr->callWithLanguage($languages[$languageId], function () use ($tpl, $vars) {
                 return $tpl->render('AgentBundle:TicketSearch:notify-row.html.twig', $vars);
             });
-            $alert_data['browser_rendered'] = $tpl_line;
 
-            $alert = $alert_sender->createAlert($agent, 'tickets', $alert_data);
+            foreach ($agents as $agent) {
+                $alert = $alert_sender->createAlert($agent, 'tickets', $alertData);
 
-            if ($alert) {
-                ++$sent_count;
+                ++$sentCount;
                 $em->persist($alert);
 
-                $alert_records[] = [$agent, $alert_data, $alert];
+                $alertRecords[] = [$agent, $alertData, $alert];
             }
         }
 
         $em->flush();
 
-        if ($alert_records) {
-            foreach ($alert_records as $rec) {
+        if ($alertRecords) {
+            foreach ($alertRecords as $rec) {
                 $cm = $alert_sender->createClientMessage($rec[0], 'tickets', $rec[1], $rec[2]);
                 if ($cm) {
                     $em->persist($cm);
@@ -246,6 +254,6 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             $em->flush();
         }
 
-        $context->getLogger()->info(sprintf('[SendAgentAlert] Sent %d alerts in %.3fs', $sent_count, microtime(true) - $start_time));
+        $context->getLogger()->info(sprintf('[SendAgentAlert] Sent %d alerts in %.3fs', $sentCount, microtime(true) - $start_time));
     }
 }

@@ -129,6 +129,8 @@ class AlertSender
      * @param            $type
      * @param array      $data
      * @param AgentAlert $alert
+     *
+     * @return ClientMessage|null
      */
     public function createClientMessage($agent, $type, array $data, AgentAlert $alert = null)
     {
@@ -146,7 +148,7 @@ class AlertSender
         $cm->setForPerson($agent);
         $cm->setCreatedByClient('sys');
 
-        $this->em->persist($cm);
+        return $cm;
     }
 
     /**
