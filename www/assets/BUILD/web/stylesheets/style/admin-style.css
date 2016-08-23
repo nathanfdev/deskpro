@@ -3064,11 +3064,8 @@ fieldset[disabled] .btn {
   box-shadow: none;
 }
 .btn-default {
-  background-color: #ffffff;
-  border-color: #cccccc;
+  .gradient(#ffffff, #e0e0e0);
   color: #333333;
-  background: #ffffff url("../../../../../../file.php/gradient?size=30&start_color=ffffff&end_color=e0e0e0") repeat-x bottom left /*gradient_v:30:ffffff:e0e0e0*/;
-  background: #ffffff url("../../../../../../file.php/gradient?size=30&start_color=ffffff&end_color=e0e0e0") repeat-x bottom left /*gradient_v:30:ffffff:e0e0e0*/;
   border-color: #bababa;
   border-bottom-color: #bdbdbd;
   -webkit-box-shadow: inset 0 1px 0 0 #ffffff;

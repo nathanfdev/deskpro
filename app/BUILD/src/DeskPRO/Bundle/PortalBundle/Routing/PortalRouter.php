@@ -298,7 +298,8 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         $urlBuilder = new PortalUrlBuilder(
             $path,
             $this->isMultiLanguage() ? $this->getActiveLanguage() : null,
-            $this->getPortalMode()
+            $this->getPortalMode(),
+            $this->getBaseRouter()->getContext()->getBaseUrl()
         );
 
         return (string) $urlBuilder;
