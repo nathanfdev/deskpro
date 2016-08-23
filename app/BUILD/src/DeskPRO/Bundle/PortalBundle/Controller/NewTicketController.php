@@ -39,12 +39,15 @@ use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketDupe;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * Class NewTicketController.
@@ -73,7 +76,8 @@ class NewTicketController extends AbstractController
             $this->getBrandContainer()->getBrand(),
             Ticket::CREATED_WEB_PERSON_PORTAL
         );
-        $person         = $ticket->getPerson();
+
+        $person = $ticket->getPerson();
 
         $formOptions = [
             'ticket_view_context'   => TicketWithLayoutsContext::VIEW_USER,
@@ -159,6 +163,18 @@ class NewTicketController extends AbstractController
                     $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);
 
                     return $this->onSavedTicket($new_ticket, $request);
+                }
+            }
+        } elseif ($form->isSubmitted()) {
+            // if we have dupe error and it's been <5 mins just redirect the user to the ticket
+            if ($this->hasDupeError($form)) {
+                /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepo */
+                $ticketRepo = $this->getRepo(Ticket::class);
+                $dupeTicket = $ticketRepo->checkDupeTicket($ticket, 5 * 60);
+
+                // if we got ticket then it was created less than 5 min ago, redirecting
+                if ($dupeTicket) {
+                    return $this->redirect($this->generateUrl('portal_tickets_view', ['ticket_ref' => $dupeTicket->getRef()]));
                 }
             }
         }
@@ -266,5 +282,24 @@ class NewTicketController extends AbstractController
     protected function getNewTicketService()
     {
         return $this->get('tickets.new_ticket');
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return bool
+     */
+    protected function hasDupeError(Form $form)
+    {
+        foreach ($form->getErrors() as $error) {
+            $cause = $error->getCause();
+            if ($cause instanceof ConstraintViolation) {
+                if ($cause->getCode() === TicketDupe::DUPE_TICKET) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
