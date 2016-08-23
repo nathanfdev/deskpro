@@ -136,15 +136,11 @@ Feature: /new/ticket_filters_counts endpoint
     And the JSON node "data.nested[0].grouped_by" should be equal to "agent_team"
     And the JSON node "data.nested[0].nested" should have 3 elements
 
-    And the JSON node "data.nested[0].nested[0].id" should be equal to 0
     And the JSON node "data.nested[0].nested[0].type" should be equal to "agent_team"
-    And the JSON node "data.nested[0].nested[0].title" should be equal to 0
     And the JSON node "data.nested[0].nested[0].count" should be equal to 1
     And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
 
-    And the JSON node "data.nested[0].nested[1].id" should be equal to 1
     And the JSON node "data.nested[0].nested[1].type" should be equal to "agent_team"
-    And the JSON node "data.nested[0].nested[1].title" should be equal to "test team"
     And the JSON node "data.nested[0].nested[1].count" should be equal to 1
     And the JSON node "data.nested[0].nested[1].nested" should have 0 elements
 
@@ -160,15 +156,11 @@ Feature: /new/ticket_filters_counts endpoint
     And the JSON node "data.nested[0].grouped_by" should be equal to "organization"
     And the JSON node "data.nested[0].nested" should have 3 elements
 
-    And the JSON node "data.nested[0].nested[0].id" should be equal to 0
     And the JSON node "data.nested[0].nested[0].type" should be equal to "organization"
-    And the JSON node "data.nested[0].nested[0].title" should be equal to 0
     And the JSON node "data.nested[0].nested[0].count" should be equal to 1
     And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
 
-    And the JSON node "data.nested[0].nested[1].id" should be equal to 1
     And the JSON node "data.nested[0].nested[1].type" should be equal to "organization"
-    And the JSON node "data.nested[0].nested[1].title" should be equal to "Organization 1"
     And the JSON node "data.nested[0].nested[1].count" should be equal to 1
     And the JSON node "data.nested[0].nested[1].nested" should have 0 elements
 
