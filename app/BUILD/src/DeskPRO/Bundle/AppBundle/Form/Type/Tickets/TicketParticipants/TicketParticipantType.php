@@ -85,12 +85,10 @@ class TicketParticipantType extends AbstractType
                 },
             ])
             ->setRequired(['is_agent', 'owner'])
-            ->setAllowedTypes([
-                'is_agent'  => 'boolean',
-                'inline'    => 'boolean',
-                'set_owner' => 'boolean',
-                'owner'     => Ticket::class,
-            ])
+            ->setAllowedTypes('is_agent', 'boolean')
+            ->setAllowedTypes('inline', 'boolean')
+            ->setAllowedTypes('set_owner', 'boolean')
+            ->setAllowedTypes('owner', Ticket::class)
         ;
     }
 

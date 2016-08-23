@@ -119,10 +119,8 @@ class CommentType extends AbstractType
             ->setDefaults([
                 'data_class' => 'Application\\DeskPRO\\Entity\\CommentAbstract',
             ])
-            ->setRequired(['person'])
-            ->setAllowedTypes([
-                'person' => Person::class,
-            ])
+            ->setRequired('person')
+            ->setAllowedTypes('person', Person::class)
         ;
     }
 

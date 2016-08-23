@@ -77,12 +77,10 @@ class LabelsCollectionType extends AbstractType
                 'by_reference'    => true,
                 'error_bubbling'  => false,
             ])
-            ->setAllowedTypes([
-                'labels_class'    => 'string',
-                'labels_owner'    => 'object',
-                'labels_property' => 'string',
-                'owner_property'  => 'string',
-            ])
+            ->setAllowedTypes('labels_class', 'string')
+            ->setAllowedTypes('labels_owner', 'object')
+            ->setAllowedTypes('labels_property', 'string')
+            ->setAllowedTypes('owner_property', 'string')
         ;
     }
 }

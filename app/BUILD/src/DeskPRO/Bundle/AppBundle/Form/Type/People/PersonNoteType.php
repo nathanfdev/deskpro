@@ -61,10 +61,8 @@ class PersonNoteType extends AbstractType
                 'data_class' => PersonNote::class,
             ])
             ->setRequired(['agent', 'person'])
-            ->setAllowedTypes([
-                'person' => Person::class,
-                'agent'  => Person::class,
-            ])
+            ->setAllowedTypes('person', Person::class)
+            ->setAllowedTypes('agent', Person::class)
         ;
     }
 

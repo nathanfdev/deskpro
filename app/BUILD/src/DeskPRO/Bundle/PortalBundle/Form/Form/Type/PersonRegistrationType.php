@@ -151,10 +151,8 @@ class PersonRegistrationType extends AbstractType
             ->setDefaults([
                 'data_class' => Person::class,
             ])
-            ->setRequired(['settings'])
-            ->setAllowedTypes([
-                'settings' => SettingsBag::class,
-            ])
+            ->setRequired('settings')
+            ->setAllowedTypes('settings', SettingsBag::class)
         ;
     }
 

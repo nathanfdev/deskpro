@@ -121,11 +121,10 @@ class TicketReplyType extends AbstractType
             ->setRequired([
                 'person', 'ticket', 'ticket_message', 'settings',
             ])
-            ->setAllowedTypes([
-                'ticket'         => Ticket::class,
-                'ticket_message' => TicketMessage::class,
-                'settings'       => SettingsBag::class,
-                'person'         => Person::class,
-            ]);
+            ->setAllowedTypes('ticket', Ticket::class)
+            ->setAllowedTypes('ticket_message', TicketMessage::class)
+            ->setAllowedTypes('settings', SettingsBag::class)
+            ->setAllowedTypes('person', Person::class)
+        ;
     }
 }

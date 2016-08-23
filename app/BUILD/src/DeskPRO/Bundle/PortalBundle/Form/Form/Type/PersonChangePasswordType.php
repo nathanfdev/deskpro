@@ -116,10 +116,8 @@ class PersonChangePasswordType extends AbstractType
                 'data_class'               => Person::class,
                 'require_current_password' => true,
             ])
-            ->setRequired(['settings'])
-            ->setAllowedTypes([
-                'settings' => SettingsBag::class,
-            ])
+            ->setRequired('settings')
+            ->setAllowedTypes('settings', SettingsBag::class)
         ;
     }
 

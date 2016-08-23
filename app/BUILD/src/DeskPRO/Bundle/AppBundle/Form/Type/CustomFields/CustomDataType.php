@@ -295,12 +295,10 @@ class CustomDataType extends AbstractType
                 'custom_def',
                 'agent_interface',
             ])
-            ->setAllowedTypes([
-                'custom_def'      => CustomDefAbstract::class,
-                'agent_interface' => 'bool',
-                'inline'          => 'bool',
-                'ticket'          => ['bool', Ticket::class],
-            ])
+            ->setAllowedTypes('custom_def', CustomDefAbstract::class)
+            ->setAllowedTypes('agent_interface', 'bool')
+            ->setAllowedTypes('inline', 'bool')
+            ->setAllowedTypes('ticket', ['bool', Ticket::class])
         ;
     }
 

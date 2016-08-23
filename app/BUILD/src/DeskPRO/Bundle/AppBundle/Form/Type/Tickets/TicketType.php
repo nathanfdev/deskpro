@@ -173,9 +173,7 @@ class TicketType extends AbstractType
                 'data_class'      => Ticket::class,
                 'agent_interface' => false,
             ])
-            ->setAllowedTypes([
-                'person' => Person::class,
-            ])
+            ->setAllowedTypes('person', Person::class)
         ;
     }
 

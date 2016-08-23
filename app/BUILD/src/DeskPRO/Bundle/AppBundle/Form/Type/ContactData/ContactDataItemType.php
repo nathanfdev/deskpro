@@ -71,10 +71,8 @@ class ContactDataItemType extends AbstractType
                 'data_class'     => ContactDataAbstract::class,
                 'error_bubbling' => false,
             ])
-            ->setAllowedTypes([
-                'contact_type' => 'string',
-                'owner'        => [Person::class, Organization::class],
-            ])
+            ->setAllowedTypes('contact_type', 'string')
+            ->setAllowedTypes('owner', [Person::class, Organization::class])
         ;
     }
 

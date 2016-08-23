@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
@@ -45,6 +41,9 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class FeedbackAttachmentType.
+ */
 class FeedbackAttachmentType extends AbstractType
 {
     /**
@@ -62,6 +61,13 @@ class FeedbackAttachmentType extends AbstractType
      */
     private $attachment_accepter;
 
+    /**
+     * Constructor.
+     *
+     * @param DeskproBlobStorage $blob_storage
+     * @param BlobRepo           $blob_repo
+     * @param AcceptAttachment   $attachment_accepter
+     */
     public function __construct(DeskproBlobStorage $blob_storage, BlobRepo $blob_repo, AcceptAttachment $attachment_accepter)
     {
         $this->blob_storage        = $blob_storage;
@@ -69,6 +75,9 @@ class FeedbackAttachmentType extends AbstractType
         $this->attachment_accepter = $attachment_accepter;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -88,6 +97,9 @@ class FeedbackAttachmentType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'preSubmit']);
     }
 
+    /**
+     * @param FormInterface $form
+     */
     public function addUpload(FormInterface $form)
     {
         $form->add(
@@ -113,6 +125,11 @@ class FeedbackAttachmentType extends AbstractType
         );
     }
 
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
     public function preSubmit(FormEvent $event)
     {
         $form          = $event->getForm();
@@ -147,6 +164,11 @@ class FeedbackAttachmentType extends AbstractType
         }
     }
 
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
     public function postSubmit(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
@@ -200,29 +222,25 @@ class FeedbackAttachmentType extends AbstractType
         $form->setData($attachment);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'feedback_attachment';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
+        $resolver
+            ->setDefaults([
                 'data_class' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment',
-            ]
-        );
-
-        $resolver->setRequired(
-            [
-                'person',
-            ]
-        );
-
-        $resolver->setAllowedTypes(
-            [
-                'person' => 'Application\\DeskPRO\\Entity\\Person',
-            ]
-        );
+            ])
+            ->setRequired('person')
+            ->setAllowedTypes('person', 'Application\\DeskPRO\\Entity\\Person')
+        ;
     }
 }

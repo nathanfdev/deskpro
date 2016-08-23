@@ -83,9 +83,7 @@ class DateType extends AbstractType
                 'min_date'    => null,
                 'max_date'    => null,
             ])
-            ->setAllowedTypes([
-                'weekdays' => ['array', 'null'],
-            ]);
+            ->setAllowedTypes('weekdays', ['array', 'null']);
     }
 
     /**

@@ -64,10 +64,8 @@ class UsergroupsType extends AbstractType
     {
         $resolver
             ->setRequired(['owner', 'is_agent_group'])
-            ->setAllowedTypes([
-                'is_agent_group' => 'bool',
-                'owner'          => [Person::class, Organization::class],
-            ])
+            ->setAllowedTypes('is_agent_group', 'bool')
+            ->setAllowedTypes('owner', [Person::class, Organization::class])
             ->setDefaults([
                 'class'         => Usergroup::class,
                 'multiple'      => true,

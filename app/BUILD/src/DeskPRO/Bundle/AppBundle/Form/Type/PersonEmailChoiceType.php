@@ -87,10 +87,8 @@ class PersonEmailChoiceType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['person'])
-            ->setAllowedTypes([
-                'person' => Person::class,
-            ])
+            ->setRequired('person')
+            ->setAllowedTypes('person', Person::class)
             ->setDefaults([
                 'class'      => PersonEmail::class,
                 'property'   => 'email',

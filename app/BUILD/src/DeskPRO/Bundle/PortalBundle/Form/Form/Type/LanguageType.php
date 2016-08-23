@@ -54,8 +54,8 @@ class LanguageType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['view_context'])
-            ->setAllowedValues(['view_context' => ['user', 'agent', 'admin']])
+            ->setRequired('view_context')
+            ->setAllowedValues('view_context', ['user', 'agent', 'admin'])
             ->setDefaults([
                 'property_path' => 'language',
                 'class'         => Language::class,

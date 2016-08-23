@@ -60,7 +60,7 @@ class PublishProcessor extends AbstractJobProcessor
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired(['ids', 'actions', 'content']);
-        $resolver->setAllowedTypes(['content' => 'string']);
+        $resolver->setAllowedTypes('content', 'string');
     }
 
     /**

@@ -66,10 +66,9 @@ class AgentChatMessageType extends AbstractType
             ->setDefaults([
                 'data_class' => AgentChatMessage::class,
             ])
-            ->setAllowedTypes([
-                'person' => Person::class,
-                'chat'   => AgentChat::class,
-            ]);
+            ->setAllowedTypes('person', Person::class)
+            ->setAllowedTypes('chat', AgentChat::class)
+        ;
     }
 
     /**

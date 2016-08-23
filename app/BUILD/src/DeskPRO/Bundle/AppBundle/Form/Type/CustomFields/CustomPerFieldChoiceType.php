@@ -102,9 +102,7 @@ class CustomPerFieldChoiceType extends AbstractType
                 },
             ])
             ->setRequired('custom_field')
-            ->setAllowedTypes([
-                'custom_field' => CustomFieldDefinition::class,
-            ])
+            ->setAllowedTypes('custom_field', CustomFieldDefinition::class)
         ;
     }
 }

@@ -107,9 +107,7 @@ class DepartmentType extends AbstractType
             ->setDefaults([
                 'data_class' => Department::class,
             ])
-            ->setAllowedValues([
-                'type' => ['tickets', 'chat'],
-            ])
+            ->setAllowedValues('type', ['tickets', 'chat'])
         ;
     }
 

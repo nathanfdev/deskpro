@@ -55,10 +55,8 @@ class TaskLinkedItemType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['task'])
-            ->setAllowedTypes([
-                'task' => Task::class,
-            ])
+            ->setRequired('task')
+            ->setAllowedTypes('task', Task::class)
         ;
     }
 

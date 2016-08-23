@@ -181,14 +181,10 @@ class TicketMessageType extends AbstractType
                 'ticket',
                 'person',
             ])
-            ->setAllowedTypes([
-                'person'         => Person::class,
-                'ticket'         => Ticket::class,
-                'ticket_message' => ['null', TicketMessage::class],
-            ])
-            ->setAllowedValues([
-                'format' => ['', 'html', 'text'],
-            ])
+            ->setAllowedTypes('person', Person::class)
+            ->setAllowedTypes('ticket', Ticket::class)
+            ->setAllowedTypes('ticket_message', ['null', TicketMessage::class])
+            ->setAllowedValues('format', ['', 'html', 'text'])
         ;
     }
 

@@ -63,14 +63,12 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
             ->setRequired([
                 'context', 'parent',
             ])
-            ->setAllowedTypes([
-                // todo
-                'context' => [
-                    'Application\DeskPRO\Entity\Person',
-                    'Application\DeskPRO\Entity\Ticket',
-                    'Application\DeskPRO\Entity\Organization',
-                ],
-            ]);
+            ->setAllowedTypes('context', [
+                'Application\DeskPRO\Entity\Person',
+                'Application\DeskPRO\Entity\Ticket',
+                'Application\DeskPRO\Entity\Organization',
+            ])
+        ;
     }
 
     /**
