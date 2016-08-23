@@ -99,6 +99,11 @@ class FilterChangeDetector
     private $cachedSearchers = [];
 
     /**
+     * @var array
+     */
+    private $cachedPermissions = [];
+
+    /**
      * Constructor.
      *
      * @param EntityManager $em
@@ -182,22 +187,19 @@ class FilterChangeDetector
         // Calculate who could actually see it
         $start = microtime(true);
 
+        $ticketVersion  = $state->getStateVersion();
         $distinctAgents = [];
-        $agentPermCache = [];
-
-        // remove agents from the scopes
         foreach ($affectedFilters as $filterId => $filter) {
             $distinctAgents += $filtersAgentsMap[$filterId];
         }
 
-        // calculate agent view permissions
         foreach ($distinctAgents as $agentId => $agent) {
-            /* @var Person $agent */
-            if (!$agent->isAgent()) {
-                $agentPermCache[$agentId] = ['old' => false, 'new' => false];
+            if (isset($this->cachedPermissions[$ticketVersion][$agentId])) {
+                // already calculated, skipping
                 continue;
             }
 
+            /* @var Person $agent */
             if ($isNewTicket) {
                 $see_old = false;
                 $see_new = true;
@@ -219,23 +221,24 @@ class FilterChangeDetector
                 }
             }
 
-            $agentPermCache[$agentId] = ['old' => $see_old, 'new' => $see_new];
+            $this->cachedPermissions[$ticketVersion][$agentId] = ['old' => $see_old, 'new' => $see_new];
         }
 
-        $logger->debug(sprintf('[FilterChangeDetector] Permissions of %d agents calculated in %.3fs', count($agentPermCache), microtime(true) - $start));
+        $logger->debug(sprintf('[FilterChangeDetector] Permissions of %d agents calculated in %.3fs', count($distinctAgents), microtime(true) - $start));
 
         $time = microtime(true);
 
         foreach ($affectedFilters as $filterId => $filter) {
-            $agent_scopes = [];
+            $agentScopes = [];
 
-            foreach ($filtersAgentsMap[$filterId] as $a_id => $a) {
-                if (isset($agentPermCache[$a_id]) && ($agentPermCache[$a_id]['old'] || $agentPermCache[$a_id]['new'])) {
-                    $agent_scopes[$a_id] = $a;
+            foreach ($filtersAgentsMap[$filterId] as $agentId => $agent) {
+                $agentPermissions = $this->cachedPermissions[$ticketVersion][$agentId];
+                if ($agentPermissions['old'] || $agentPermissions['new']) {
+                    $agentScopes[$agentId] = $agent;
                 }
             }
 
-            if (!$agent_scopes) {
+            if (!$agentScopes) {
                 continue;
             }
 
@@ -245,14 +248,14 @@ class FilterChangeDetector
             $changed[$filterId] = $filter_change;
 
             if ($this->extended_log_info) {
-                $logger->debug(sprintf('[FilterChangeDetector] ----- BEGIN #%d -- %d scopes -----', $filterId, count($agent_scopes)));
+                $logger->debug(sprintf('[FilterChangeDetector] ----- BEGIN #%d -- %d scopes -----', $filterId, count($agentScopes)));
             }
             $cached_terms_orig = [];
             $cached_terms_new  = [];
 
-            foreach ($agent_scopes as $agentId => $agent) {
-                $agentPermOld = $agentPermCache[$agentId]['old'];
-                $agentPermNew = $agentPermCache[$agentId]['new'];
+            foreach ($agentScopes as $agentId => $agent) {
+                $agentPermOld = $this->cachedPermissions[$ticketVersion][$agentId]['old'];
+                $agentPermNew = $this->cachedPermissions[$ticketVersion][$agentId]['new'];
 
                 $orig_match_real = $new_match_real = null;
                 $new_match       = $orig_match       = false;
