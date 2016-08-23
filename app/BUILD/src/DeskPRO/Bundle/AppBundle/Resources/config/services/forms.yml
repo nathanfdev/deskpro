@@ -4,17 +4,17 @@ services:
   form.form_extension:
     class: DeskPRO\Bundle\AppBundle\Form\Extension\DeskproFormExtension
     tags:
-      - { name: form.type_extension, alias: form }
+      - { name: form.type_extension }
 
   form.text_transformer_extension:
     class: DeskPRO\Bundle\AppBundle\Form\Extension\TextTransformerExtension
     tags:
-      - { name: form.type_extension, alias: text }
+      - { name: form.type_extension }
 
   form.choice_transformer_extension:
     class: DeskPRO\Bundle\AppBundle\Form\Extension\ChoiceExtension
     tags:
-      - { name: form.type_extension, alias: choice }
+      - { name: form.type_extension }
 
   # helpers
   form_hierarchy_generator:
