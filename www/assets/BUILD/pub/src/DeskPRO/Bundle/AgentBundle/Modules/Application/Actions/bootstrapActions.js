@@ -23,7 +23,7 @@ export const preloadData    = createAction(
         my_agent_teams:        { endpoint: 'agent_teams', query: 'my=true' },
         ticket_departments:    { endpoint: 'ticket_departments' },
         my_ticket_departments: { endpoint: 'ticket_departments', query: 'my=true' },
-        onboardings:           { endpoint: 'people/onboarding/new' }
+        onboardings:           { endpoint: 'people/onboarding/pending' }
       };
       const batch           = api.prepareParams(batchComponents);
 

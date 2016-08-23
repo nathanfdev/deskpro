@@ -18,5 +18,5 @@ export const updateCurrentStep = createAction(
 
 export const pauseOnboarding = createAction(
   'ONBOARDING_PAUSE',
-  (onboardingId, params) => params
+  (params) => params
 );

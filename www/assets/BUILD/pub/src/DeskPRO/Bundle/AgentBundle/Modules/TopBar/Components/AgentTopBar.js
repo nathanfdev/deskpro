@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
+import * as actions from '../Actions/topbarActions';
 import { connect } from 'react-redux';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
@@ -13,14 +15,18 @@ import Isvg from 'react-inlinesvg';
 @connect(state => ({
   agents:          collectionSelectorFactory('Person', 'agents')(state),
   chatDepartments: collectionSelectorFactory('Department', 'all_tickets')(state),
-  me:              meSelector(state)
+  me:              meSelector(state),
+  logoCallback:    state.TopBar.onboarding.get('logoCallback'),
+  logoActive:      state.TopBar.onboarding.get('logoActive'),
 }))
 class AgentTopBar extends SeparateComponent {
 
   static propTypes = {
     agents:          PropTypes.object.isRequired,
     chatDepartments: PropTypes.object.isRequired,
-    me:              PropTypes.object
+    me:              PropTypes.object,
+    logoCallback:    PropTypes.func,
+    logoActive:      PropTypes.bool
   };
 
   constructor(props) {
@@ -117,16 +123,21 @@ class AgentTopBar extends SeparateComponent {
     }
   }
 
+  clickLogo = () => {
+    // this.openDeskPro();
+    this.props.dispatch(actions.clickLogo());
+  };
+
   openDeskPro() {
     window.open('http://deskpro.com', '_blank');
   }
 
   render() {
     const { notificationCount } = this.state;
-    const { agents, chatDepartments } = this.props;
+    const { agents, chatDepartments, logoActive } = this.props;
     const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     return (<TopBar>
-      <div className="logo" onClick={this.openDeskPro} />
+      <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo} />
       <TopBarItem classes={['search-box legacy-omnibox']}>
         <SearchBox
           onUserInput={this.onSearch}

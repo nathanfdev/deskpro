@@ -80,7 +80,13 @@ class UsersourceSettingsController extends BaseController
     public function getPendingAction()
     {
         $onboardings = $this->getRepository(PersonOnboarding::class)
-            ->findOneBy(['person' => $this->getUser(), 'status' => PersonOnboarding::STATUS_IN_PROGRESS]);
+            ->findOneBy([
+                'person' => $this->getUser(),
+                'status' => [
+                    PersonOnboarding::STATUS_NEW,
+                    PersonOnboarding::STATUS_IN_PROGRESS,
+                ],
+            ]);
 
         return new View($this->wrap($onboardings));
     }

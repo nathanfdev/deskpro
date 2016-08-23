@@ -63,7 +63,11 @@ export class AgentOnboarding extends React.Component {
       if (config) {
         this.loadConfig(config);
       }
-      this.startOnboarding();
+      if (!onboarding.get('status')) {
+        this.startOnboarding();
+      } else {
+        this.props.dispatch(actions.pauseOnboarding({ callback: this.startOnboarding, active: true }));
+      }
     }
     return true;
   }
@@ -111,7 +115,7 @@ export class AgentOnboarding extends React.Component {
     switch (data.action) {
       case 'close':
         if (progress.percentageComplete < 100) {
-          this.props.dispatch(actions.pauseOnboarding(this.state.onboardingId));
+          this.props.dispatch(actions.pauseOnboarding({ callback: this.startOnboarding, active: true }));
           console.log('Close not finished');
         } else {
           console.log('Close finished');
