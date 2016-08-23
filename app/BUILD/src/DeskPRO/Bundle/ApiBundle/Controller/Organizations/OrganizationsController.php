@@ -36,6 +36,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\CustomDataHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\UsergroupsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -78,6 +79,7 @@ class OrganizationsController extends CrudController
         'name'         => 'name',
         'summary'      => 'summary',
         'importance'   => 'importance',
+        'parent'       => ['join' => 'parent', 'as' => 'po', 'sort' => 'po.id'],
     ];
     public static $listSort  = 'date_created';
     public static $listOrder = 'desc';
@@ -115,6 +117,17 @@ class OrganizationsController extends CrudController
         UsergroupsHelper::applyUsergroupsFilters($context);
         LabelHelper::applyLabelFilters($context, static::$entity);
         CustomDataHelper::applyCustomDataFilters($context, 'org', CustomDefOrganization::class);
+
+        // parent filters
+        ListHelper::applyInListFilter($context, 'parent');
+
+        if ($request->query->has('is_child')) {
+            if ($request->query->get('is_child')) {
+                $qb->andWhere("$alias.parent IS NOT NULL");
+            } else {
+                $qb->andWhere("$alias.parent IS NULL");
+            }
+        }
     }
 
     /**

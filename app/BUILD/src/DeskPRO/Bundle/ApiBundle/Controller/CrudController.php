@@ -428,7 +428,7 @@ abstract class CrudController extends BaseController
 
         // Add corresponding select and join if $orderBy is a relational field
         if (is_array($orderBy)) {
-            $qb->join("{$alias}.{$orderBy['join']}", $orderBy['as']);
+            $qb->leftJoin("{$alias}.{$orderBy['join']}", $orderBy['as']);
             $orderBy = $orderBy['sort'];
         }
 
