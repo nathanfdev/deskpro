@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
-import { updateCurrentStep } from '../Actions/OnboardingActions';
+import * as actions from '../Actions/onboardingActions';
 import Joyride  from 'react-joyride';
 import * as Tours from '../Tours';
 
@@ -19,18 +19,21 @@ export class AgentOnboardingContainer extends SeparateComponent {
 
   render() {
     let result = <div />;
-    this.props.onboardings.map((onboarding) => {
-      result = <AgentOnboarding onboarding={onboarding} />;
-      return true;
-    });
+    if (this.props.onboardings.size) {
+      this.props.onboardings.map((onboarding) => {
+        result = <AgentOnboarding onboarding={onboarding} />;
+        return true;
+      });
+    }
     return result;
   }
 }
 
-
+@connect()
 export class AgentOnboarding extends React.Component {
   static propTypes = {
-    onboarding: PropTypes.object.isRequired
+    onboarding: PropTypes.object.isRequired,
+    dispatch:   PropTypes.func.isRequired
   };
 
   constructor() {
@@ -105,10 +108,10 @@ export class AgentOnboarding extends React.Component {
     const progress = joyride.getProgress();
     let onboarding;
 
-    switch (data.type) {
     switch (data.action) {
       case 'close':
         if (progress.percentageComplete < 100) {
+          this.props.dispatch(actions.pauseOnboarding(this.state.onboardingId));
           console.log('Close not finished');
         } else {
           console.log('Close finished');
@@ -127,9 +130,10 @@ export class AgentOnboarding extends React.Component {
         } else {
           onboarding.status = 1;
         }
-        updateCurrentStep(this.state.onboardingId, onboarding);
+        this.props.dispatch(actions.updateCurrentStep(this.state.onboardingId, onboarding));
         break;
       case 'finished':
+        console.log('Close finished');
         break;
       default:
         break;
