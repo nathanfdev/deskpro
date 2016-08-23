@@ -7,9 +7,7 @@ import User from './User';
 import { connect } from 'react-redux';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { SeparateComponent } from '../Common/Components/SeparateComponent';
-// import { IMContainer } from '../IM/Components/IMContainer';
-// import { HeaderWidget } from '../IM/Components/HeaderWidget';
+import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import Isvg from 'react-inlinesvg';
 
 @connect(state => ({

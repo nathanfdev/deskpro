@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AgentTopBar from './Modules/TopBar/AgentTopBar';
+import AgentTopBar from './Modules/TopBar/Components/AgentTopBar';
 import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
 import { AgentList } from './Modules/Agent/Components/AgentList';
 import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
