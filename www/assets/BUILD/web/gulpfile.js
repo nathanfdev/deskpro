@@ -115,7 +115,7 @@ deskpro.taskGen.coffeeScript = function(glob, target_dir) {
     .pipe(sourcemaps.init())
     .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
     .pipe(coffee().on('error', deskpro.util.coffeeError))
-    .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
+    .pipe(sourcemaps.write({includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
     .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 };
@@ -132,7 +132,7 @@ deskpro.taskGen.lessCss = function(glob, target_dir) {
     .pipe(sourcemaps.init())
     .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
     .pipe(less())
-    .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
+    .pipe(sourcemaps.write({includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
     .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 };
