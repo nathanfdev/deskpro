@@ -10,6 +10,7 @@ Feature: New ticket form validation
       | user_layout |
       | followers   |
       | cc          |
+    And the setting "core_tickets.add_agent_ccs" is set to 0
     And I go to "/new-ticket"
 
   Scenario Outline: I try to add person with wrong role
@@ -18,7 +19,7 @@ Feature: New ticket form validation
     Then the "ticket[<type>]" field should contain "<email>"
     And "ticket[<type>]" form field should have 1 error
     And "ticket[<type>]" form field should have error with the phrase "<email>"
-    And "ticket[<type>]" form field should have error with the phrase "is not <role>."
+    And "ticket[<type>]" form field should have error with the phrase "<role>"
 
     Examples:
       | type      | email               | role  |
@@ -44,7 +45,7 @@ Feature: New ticket form validation
     Then the "ticket[<type>]" field should contain "user_1@deskpro.dev,agent_1@deskpro.dev"
     And "ticket[<type>]" form field should have 1 error
     And "ticket[<type>]" form field should have error with the phrase "<email>"
-    And "ticket[<type>]" form field should have error with the phrase "is not <role>."
+    And "ticket[<type>]" form field should have error with the phrase "<role>."
 
     Examples:
       | type      | email               | role  |
@@ -76,3 +77,19 @@ Feature: New ticket form validation
       | type      |
       | cc        |
       | followers |
+
+  Scenario: I check that I can add agents as CCs
+    Given the setting "core_tickets.add_agent_ccs" is set to 1
+    When I fill in "ticket[cc]" with "user_1@deskpro.dev,agent_1@deskpro.dev"
+    And I press "Submit"
+    Then the "ticket[cc]" field should contain "user_1@deskpro.dev,agent_1@deskpro.dev"
+    And "ticket[cc]" form field should have 0 errors
+
+  Scenario: I check that I can't add users as followers
+    Given the setting "core_tickets.add_agent_ccs" is set to 1
+    When I fill in "ticket[followers]" with "user_1@deskpro.dev,agent_1@deskpro.dev"
+    And I press "Submit"
+    Then the "ticket[followers]" field should contain "user_1@deskpro.dev,agent_1@deskpro.dev"
+    And "ticket[followers]" form field should have 1 error
+    And "ticket[followers]" form field should have error with the phrase "user_1@deskpro.dev"
+    And "ticket[followers]" form field should have error with the phrase "agent."
