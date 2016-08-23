@@ -62,4 +62,26 @@ class UsersourceSettingsController extends BaseController
     {
         return new View($this->wrap($this->get('usersource_settings_resolver')->getSettings()));
     }
+
+    /**
+     * @ApiDoc(
+     *     section="People",
+     *     description="Get current user pending onboardings",
+     *     statusCodes={
+     *         200="Success",
+     *         404="Not Found error will returned in case there is no available onboardings"
+     *     }
+     * )
+     *
+     * @Rest\Get("/pending")
+     *
+     * @return View
+     */
+    public function getPendingAction()
+    {
+        $onboardings = $this->getRepository(PersonOnboarding::class)
+            ->findOneBy(['person' => $this->getUser(), 'status' => PersonOnboarding::STATUS_IN_PROGRESS]);
+
+        return new View($this->wrap($onboardings));
+    }
 }

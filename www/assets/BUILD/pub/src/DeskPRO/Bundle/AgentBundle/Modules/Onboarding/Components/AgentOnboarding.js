@@ -106,6 +106,7 @@ export class AgentOnboarding extends React.Component {
     let onboarding;
 
     switch (data.type) {
+    switch (data.action) {
       case 'close':
         if (progress.percentageComplete < 100) {
           console.log('Close not finished');
@@ -113,19 +114,28 @@ export class AgentOnboarding extends React.Component {
           console.log('Close finished');
         }
         break;
-      case 'step:after':
+      case 'next':
+      case 'back':
         onboarding = {
           current_step: progress.index
         };
+        if (progress.percentageComplete === 0) {
+          onboarding.status = 0;
+        } else if (progress.percentageComplete === 100) {
+          onboarding.status = 2;
+          onboarding.data_completion = new Date.toISOString();
+        } else {
+          onboarding.status = 1;
+        }
         updateCurrentStep(this.state.onboardingId, onboarding);
         break;
       case 'finished':
         break;
       default:
-        console.log('%ccallback', 'color: #47AAAC; font-weight: bold; font-size: 13px;'); // eslint-disable-line no-console
-        console.log(data); // eslint-disable-line no-console
         break;
     }
+    console.log('%ccallback', 'color: #47AAAC; font-weight: bold; font-size: 13px;'); // eslint-disable-line no-console
+    console.log(data); // eslint-disable-line no-console
   };
 
   render() {
@@ -142,7 +152,7 @@ export class AgentOnboarding extends React.Component {
         locale={{
           back:  (<i className="fa fa-arrow-left" />),
           close: (<span>Close</span>),
-          last:  (<span>Last</span>),
+          last:  (<span>Finish</span>),
           next:  (<span>Next</span>)
         }}
         callback={this.callback}

@@ -135,7 +135,7 @@ class AgentTopBar extends SeparateComponent {
           placeholder="Search ..."
         />
       </TopBarItem>
-      <TopBarItem classes={['legacy-omnibox']}>
+      <TopBarItem classes={['legacy-omnibox recent']}>
         <i className="icon wait" onClick={this.onRecent} />
       </TopBarItem>
       {/* <TopBarItem classes={['z-index-stub']}>*/}
@@ -148,7 +148,7 @@ class AgentTopBar extends SeparateComponent {
         <TopBarItem classes={['view_mode']} onClick={this.toggleViewMode}>
           <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
         </TopBarItem>
-        <TopBarItem classes={['legacy-omnibox']} onClick={this.onNotification}>
+        <TopBarItem classes={['legacy-omnibox notifications']} onClick={this.onNotification}>
           <TopBarNotificationIcon
             elementId="notifications"
             icon="alarm outline hover pointer"
