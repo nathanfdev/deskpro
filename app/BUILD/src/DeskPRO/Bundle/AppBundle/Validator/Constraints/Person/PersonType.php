@@ -55,10 +55,10 @@ class PersonType extends Constraint
     /**
      * @var string
      */
-    public $notUserMessage = 'Person with identifier "{{ value }}" is not agent.';
+    public $notUserMessage = 'Person with identifier "{{ value }}" is not an agent.';
 
     /**
      * @var string
      */
-    public $notAgentMessage = 'Person with identifier "{{ value }}" is not user.';
+    public $notAgentMessage = 'Person with identifier "{{ value }}" is not a user.';
 }
