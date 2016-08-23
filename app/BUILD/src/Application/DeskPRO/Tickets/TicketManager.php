@@ -314,7 +314,7 @@ class TicketManager
         $is_trivial_change = $ticket->getStateChangeRecorder()->isTrivialChangeSet();
 
         $time_start = microtime(true);
-        $context->getLogger()->info(sprintf('########## START SAVE TICKET -- %s ##########', $ticket->id ? $ticket->id : 'newticket'));
+        $context->getLogger()->info(sprintf('########## START SAVE TICKET -- %s ##########', $ticket->getId() ? $ticket->getId() : 'newticket'));
 
         $context->getLogger()->debug(sprintf('EventType: %s', $context->getEventType()));
         $context->getLogger()->debug(sprintf('EventMethod: %s', $context->getEventMethod()));
@@ -359,7 +359,7 @@ class TicketManager
             }
         }
 
-        if (!$is_noop && !$ticket->ticket_hash) {
+        if (!$is_noop && !$ticket->getTicketHash()) {
             $ticket->recomputeHash();
         }
 
@@ -449,7 +449,7 @@ class TicketManager
         // Done
         //----------------------------------------
 
-        $context->getLogger()->info(sprintf('########## END SAVE TICKET -- %s -- %.4fs ##########', $ticket->id ?: 0, microtime(true) - $time_start));
+        $context->getLogger()->info(sprintf('########## END SAVE TICKET -- %s -- %.4fs ##########', $ticket->getId() ?: 0, microtime(true) - $time_start));
 
         if (!$is_noop && $ticket->getStatusCode() != 'hidden.deleted' && $context->getLogger() instanceof DpLogger) {
             $log_text = $context->getLogger()->getSavedMessages();
@@ -469,8 +469,8 @@ class TicketManager
                 if ($blob) {
                     try {
                         $this->db->insert('ticket_proc_log', [
-                            'ticket_id'    => $ticket->id,
-                            'blob_id'      => $blob->id,
+                            'ticket_id'    => $ticket->getId(),
+                            'blob_id'      => $blob->getId(),
                             'date_created' => date('Y-m-d H:i:s'),
                         ]);
                     } catch (\Exception $e) {
