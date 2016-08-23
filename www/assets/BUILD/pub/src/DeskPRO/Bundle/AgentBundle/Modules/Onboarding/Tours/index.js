@@ -1,1 +1,1 @@
-export TestOnboarding from './TestOnboarding';
+export testOnboarding from './testOnboarding';

@@ -9,9 +9,28 @@ import * as Tours from '../Tours';
 @connect(state => ({
   onboardings: collectionSelectorFactory('Onboardings', 'new')(state)
 }))
-class AgentOnboarding extends SeparateComponent {
+export class AgentOnboardingContainer extends SeparateComponent {
   static propTypes = {
     onboardings: PropTypes.object.isRequired
+  };
+  static getType() {
+    return 'AgentOnboardingContainer';
+  }
+
+  render() {
+    let result = <div />;
+    this.props.onboardings.map((onboarding) => {
+      result = <AgentOnboarding onboarding={onboarding} />;
+      return true;
+    });
+    return result;
+  }
+}
+
+
+export class AgentOnboarding extends React.Component {
+  static propTypes = {
+    onboarding: PropTypes.object.isRequired
   };
 
   constructor() {
@@ -22,8 +41,35 @@ class AgentOnboarding extends SeparateComponent {
       force: false
     };
   }
-  static getType() {
-    return 'AgentOnboarding';
+
+  componentDidMount() {
+    const { onboarding } = this.props;
+
+    const object = onboarding.get('onboarding_class');
+    let config = null;
+    if (Tours[object]) {
+      config = Tours[object];
+    } else {
+      config = onboarding.get('config');
+    }
+    console.log(config);
+    if (config) {
+      this.addSteps(config.steps);
+      delete config.steps;
+      console.log(config);
+      if (config) {
+        this.setState(config);
+      }
+      this.refs.joyride.start(true);
+    }
+    return true;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevState.ready && this.state.ready) {
+      console.log('start');
+      this.refs.joyride.start(true);
+    }
   }
 
   addSteps = (steps) => {
@@ -46,36 +92,12 @@ class AgentOnboarding extends SeparateComponent {
     return true;
   };
 
-  componentDidMount() {
-    this.props.onboardings.map((onboarding) => {
-      const object = onboarding.get('onboarding_class');
-      if (Tours[object]) {
-        const config = Tours[object].get();
-        this.addSteps(config.steps);
-        delete config.steps;
-        console.log(config);
-        if (config) {
-          this.setState(config);
-        }
-        this.refs.joyride.start(true);
-      }
-      return true;
-    });
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (!prevState.ready && this.state.ready) {
-      console.log('start');
-      this.refs.joyride.start(true);
-    }
-  }
-
   callback = (data) => {
     const joyride = this.refs.joyride;
 
     console.log(joyride);
     console.log(joyride.getProgress());
-    console.log(this.props.onboardings[0]);
+    console.log(this.props.onboarding);
     switch (data.type) {
       case 'close':
         if (data.step && data.step.length < this.state.steps.length) {
@@ -87,6 +109,9 @@ class AgentOnboarding extends SeparateComponent {
       case 'step:after':
         updateCurrentStep();
         break;
+      case 'finished':
+        updateCurrentStep();
+        break;
       default:
         break;
     }
@@ -96,7 +121,6 @@ class AgentOnboarding extends SeparateComponent {
 
   render() {
     const { type, force } = this.state;
-    console.log(this.state);
     const props = {
       type,
       disableOverlay: force
@@ -115,10 +139,8 @@ class AgentOnboarding extends SeparateComponent {
         callback={this.callback}
         showStepsProgress
         tooltipOffset={5}
-        debug
         {...props}
       />
     </div>);
   }
 }
-export default AgentOnboarding;

@@ -2,7 +2,7 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import AgentTopBar from './Modules/TopBar/AgentTopBar';
-import AgentOnboarding from './Modules/Onboarding/Components/AgentOnboarding';
+import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
 import { AgentList } from './Modules/Agent/Components/AgentList';
 import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
@@ -31,7 +31,7 @@ export class AgentLegacyApp {
     } else {
       this.renderPiece(AgentTopBar, AgentTopBar.getType());
       this.renderPiece(AgentList, AgentList.getType());
-      this.renderPiece(AgentOnboarding, AgentOnboarding.getType());
+      this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());
     }
   }
 
