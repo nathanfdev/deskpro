@@ -791,10 +791,10 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     {
         $dateMin = $this->getDateMin();
 
-        if ($dateMin instanceof  \DateTime) {
+        if ($dateMin instanceof \DateTime) {
             return $dateMin->format('c');
         } elseif (is_int($dateMin)) {
-            return '-'.$dateMin.' days';
+            return (new \DateTime('-'.$dateMin.' days'))->format('c');
         }
 
         return;
@@ -827,7 +827,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         if ($dateMax instanceof  \DateTime) {
             return $dateMax->format('c');
         } elseif (is_int($dateMax)) {
-            return '+'.$dateMax.' days';
+            return (new \DateTime('+'.$dateMax.' days'))->format('c');
         }
 
         return;
