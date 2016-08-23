@@ -7,7 +7,7 @@ import Joyride  from 'react-joyride';
 import * as Tours from '../Tours';
 
 @connect(state => ({
-  onboardings: collectionSelectorFactory('Onboardings', 'new')(state)
+  onboardings: collectionSelectorFactory('Onboarding', 'new')(state)
 }))
 export class AgentOnboardingContainer extends SeparateComponent {
   static propTypes = {
@@ -36,9 +36,10 @@ export class AgentOnboarding extends React.Component {
   constructor() {
     super();
     this.state = {
-      steps: [],
-      type:  'continuous',
-      force: false
+      steps:        [],
+      onboardingId: 0,
+      type:         'continuous',
+      force:        false
     };
   }
 
@@ -49,18 +50,17 @@ export class AgentOnboarding extends React.Component {
     let config = null;
     if (Tours[object]) {
       config = Tours[object];
+      config.onboardingId = onboarding.get('id');
     } else {
       config = onboarding.get('config');
     }
-    console.log(config);
     if (config) {
       this.addSteps(config.steps);
       delete config.steps;
-      console.log(config);
       if (config) {
-        this.setState(config);
+        this.loadConfig(config);
       }
-      this.refs.joyride.start(true);
+      this.startOnboarding();
     }
     return true;
   }
@@ -71,6 +71,10 @@ export class AgentOnboarding extends React.Component {
       this.refs.joyride.start(true);
     }
   }
+
+  loadConfig = (config) => {
+    this.setState(config);
+  };
 
   addSteps = (steps) => {
     const joyride = this.refs.joyride;
@@ -92,31 +96,36 @@ export class AgentOnboarding extends React.Component {
     return true;
   };
 
+  startOnboarding = () => {
+    this.refs.joyride.start(true);
+  };
+
   callback = (data) => {
     const joyride = this.refs.joyride;
+    const progress = joyride.getProgress();
+    let onboarding;
 
-    console.log(joyride);
-    console.log(joyride.getProgress());
-    console.log(this.props.onboarding);
     switch (data.type) {
       case 'close':
-        if (data.step && data.step.length < this.state.steps.length) {
+        if (progress.percentageComplete < 100) {
           console.log('Close not finished');
         } else {
           console.log('Close finished');
         }
         break;
       case 'step:after':
-        updateCurrentStep();
+        onboarding = {
+          current_step: progress.index
+        };
+        updateCurrentStep(this.state.onboardingId, onboarding);
         break;
       case 'finished':
-        updateCurrentStep();
         break;
       default:
+        console.log('%ccallback', 'color: #47AAAC; font-weight: bold; font-size: 13px;'); // eslint-disable-line no-console
+        console.log(data); // eslint-disable-line no-console
         break;
     }
-    console.log('%ccallback', 'color: #47AAAC; font-weight: bold; font-size: 13px;'); // eslint-disable-line no-console
-    console.log(data); // eslint-disable-line no-console
   };
 
   render() {

@@ -8,6 +8,7 @@ import { PersonSettingRepository } from './Repositories/PersonSettingRepository'
 import { ArticlePendingCreateRepository } from './Repositories/ArticlePendingCreateRepository';
 import { ContentRepository } from './Repositories/ContentRepository';
 import { CommentsRepository } from './Repositories/CommentsRepository';
+import { OnboardingRepository } from './Repositories/OnboardingRepository';
 
 export const repositoriesConfig = {
   AgentChat:            { type: 'api', url: '/agent_chats', repositoryClass: AgentChatRepository },
@@ -17,7 +18,7 @@ export const repositoriesConfig = {
   FeedbackCategory:     { type: 'api', url: '/feedback_categories' },
   FeedbackComment:      { type: 'api', url: '/feedback_comments', repositoryClass: FeedbackCommentRepository },
   Organization:         { type: 'api', url: '/organizations' },
-  Onboardings:          { type: 'api', url: '/people/onboarding/new' },
+  Onboarding:           { type: 'api', url: '/people/onboarding', repositoryClass: OnboardingRepository },
   Person:               { type: 'api', url: '/people' },
   PersonSetting:        { type: 'api', url: '/person_setting', repositoryClass: PersonSettingRepository },
   Project:              { type: 'api', url: '/task_projects', allowAll: true },
