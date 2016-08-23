@@ -2,47 +2,48 @@ const topbar = {
   force: false,
   steps: [
     {
-      title: 'Search',
-      text: 'You can search the helpdesk for tickets, people, articles etc. in the top-left corner of the screen.',
+      title:    'Search',
+      text:     'You can search the helpdesk for tickets, people, articles etc. in the top-left corner of the screen.',
       selector: '#react_dp_agent_top_bar .item.search-box',
       position: 'bottom'
     },
     {
-      title: 'History',
-      text: 'Quickly re-open items you have recently viewed.',
+      title:    'History',
+      text:     'Quickly re-open items you have recently viewed.',
       selector: '#react_dp_agent_top_bar .item.recent',
       position: 'bottom'
     },
     {
-      title: 'Create',
-      text: 'Add new tickets, people, articles etc. to your helpdesk by clicking the \'create button\' in the header.',
+      title:    'Create',
+      text:     'Add new tickets, people, articles etc. to your helpdesk by clicking the \'create button\' in the header.',
       selector: '#react_dp_agent_top_bar .item.add',
       position: 'bottom'
     },
     {
-      title: 'Manage views',
-      text: 'Click the \'views icon\' when you want to change the layout of your screen.',
+      title:    'Manage views',
+      text:     'Click the \'views icon\' when you want to change the layout of your screen.',
       selector: '#react_dp_agent_top_bar .item.view_mode',
       position: 'bottom'
     },
     {
-      title: 'Notifications',
-      text: 'You will receive notifications about helpdesk activity (e.g. new tickets).',
+      title:    'Notifications',
+      text:     'You will receive notifications about helpdesk activity (e.g. new tickets).',
       selector: '#react_dp_agent_top_bar .item.notifications',
       position: 'bottom'
     },
     {
-      title: 'Your profile',
-      text: 'Manage your preferences, find help and log out of DeskPRO.',
+      title:    'Your profile',
+      text:     'Manage your preferences, find help and log out of DeskPRO.',
       selector: '#react_dp_agent_top_bar .user',
       position: 'bottom'
     },
     {
-      title: 'Chat',
-      text: 'You can control whether you are online to answer user chats.',
+      title:    'Chat',
+      text:     'You can control whether you are online to answer user chats.',
       selector: '#react_dp_agent_top_bar .chat',
       position: 'bottom'
     },
   ]
 };
 export default topbar;
+
