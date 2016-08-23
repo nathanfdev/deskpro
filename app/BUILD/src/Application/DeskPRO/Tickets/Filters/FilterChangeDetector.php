@@ -42,6 +42,7 @@ use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * Class FilterChangeDetector.
@@ -490,8 +491,11 @@ class FilterChangeDetector
             ->setParameter('ids', $agentIds)
         ;
 
+        $query = $qb->getQuery();
+        $query->setFetchMode(Person::class, 'primary_email', ClassMetadata::FETCH_LAZY);
+
         /** @var Person[] $result */
-        $result = $qb->getQuery()->getResult();
+        $result = $query->getResult();
         foreach ($result as $agent) {
             $agents[$agent->getId()] = $agent;
         }
