@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
 use Application\DeskPRO\Entity\Organization;
@@ -103,14 +99,6 @@ class OrganizationMemberType extends AbstractType
                 'organization' => Organization::class,
             ])
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'organization_member';
     }
 
     /**

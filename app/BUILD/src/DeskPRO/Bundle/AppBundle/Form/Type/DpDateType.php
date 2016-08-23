@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -39,22 +40,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class DateType.
  */
-class DateType extends AbstractType
+class DpDateType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'deskpro_date';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function getParent()
     {
-        return 'date';
+        return DateType::class;
     }
 
     /**

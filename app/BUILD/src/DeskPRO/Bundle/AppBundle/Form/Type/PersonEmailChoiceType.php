@@ -136,7 +136,7 @@ class PersonEmailChoiceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'deskpro_person_email_choice';
     }

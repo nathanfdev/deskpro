@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\HtmlPurifierTransformer;
 use Orb\Input\Cleaner\Cleaner;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -80,14 +81,6 @@ class HtmlTextareaType extends AbstractType
      */
     public function getParent()
     {
-        return 'textarea';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'html_textarea';
+        return TextareaType::class;
     }
 }

@@ -67,7 +67,7 @@ class HiddenEntityType extends AbstractType
      */
     public function getParent()
     {
-        return HiddenType::class;
+        return DpHiddenType::class;
     }
 
     /**

@@ -66,7 +66,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType
     arguments: ["@deskpro.core.input_cleaner"]
     tags:
-      - { name: form.type, alias: html_textarea }
+      - { name: form.type }
 
   form.person_identity:
     class: DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType
@@ -80,7 +80,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
     tags:
-      - { name: form.type, alias: deskpro_person_email_choice }
+      - { name: form.type }
 
   form.entity_hierarchy:
     class: DeskPRO\Bundle\AppBundle\Form\Type\EntityHierarchyType
@@ -106,21 +106,11 @@ services:
     tags:
       - { name: form.type }
 
-  form.date:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\DateType
-    tags:
-      - { name: form.type, alias: deskpro_date }
-
-  form.display_html:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType
-    tags:
-      - { name: form.type, alias: deskpro_display_html }
-
-  form.hidden:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\HiddenType
+  form.dp_hidden:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType
     arguments: ["@request_stack"]
     tags:
-      - { name: form.type, alias: deskpro_hidden }
+      - { name: form.type }
 
   form.entity_hidden:
     class: DeskPRO\Bundle\AppBundle\Form\Type\HiddenEntityType
@@ -128,16 +118,11 @@ services:
     tags:
       - { name: form.type }
 
-  form.api_date:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
-    tags:
-      - { name: form.type, alias: api_date }
-
   form.person:
     class: DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType
     arguments: ["@doctrine.orm.default_entity_manager", "@custom_field_manager"]
     tags:
-      - { name: form.type, alias: api_person }
+      - { name: form.type }
 
   form.ticket:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType
@@ -155,34 +140,19 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationEmailDomainsType
     arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
-      - { name: form.type, alias: organization_email_domains }
+      - { name: form.type }
 
   form.organization_member:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationMemberType
     arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
-      - { name: form.type, alias: organization_member }
+      - { name: form.type }
 
   form.auth_blob:
     class: DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType
     arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
-      - { name: form.type, alias: auth_blob }
-
-  form.single_checkbox:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType
-    tags:
-      - { name: form.type, alias: single_checkbox }
-
-  form.dp_auth_request:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType
-    tags:
-      - { name: form.type, alias: dp_auth_request }
-
-  form.dp_auth:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType
-    tags:
-      - { name: form.type, alias: dp_auth }
+      - { name: form.type }
 
   form.term_engine.term:
     class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
@@ -190,11 +160,6 @@ services:
         - "@form.term_engine.term_transformer"
     tags:
       - { name: form.type, alias: term_engine_term }
-
-  form.term_engine.term_options:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermOptionsType
-    tags:
-      - { name: form.type, alias: term_engine_term_options }
 
   form.term_engine.term_transformer:
     class: DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer

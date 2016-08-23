@@ -35,7 +35,11 @@ use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DpDateType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
@@ -430,7 +434,7 @@ class CustomDataType extends AbstractType
                     'help'           => $def->getRealDescription(),
                 ];
 
-                return new FormField('single_checkbox', $options);
+                return new FormField(SingleCheckboxType::class, $options);
 
             case CustomDefAbstract::TYPE_DISPLAY:
                 $options = [
@@ -440,7 +444,7 @@ class CustomDataType extends AbstractType
                     'help'  => $def->getRealDescription(),
                 ];
 
-                return new FormField('deskpro_display_html', $options);
+                return new FormField(DisplayHtmlType::class, $options);
 
             case CustomDefAbstract::TYPE_CHOICE:
                 $options = [
@@ -469,7 +473,7 @@ class CustomDataType extends AbstractType
                     ];
                 }
 
-                return new FormField('deskpro_date', $options);
+                return new FormField(DpDateType::class, $options);
 
             case CustomDefAbstract::TYPE_DATETIME:
                 if ($isInline) {
@@ -478,7 +482,7 @@ class CustomDataType extends AbstractType
                         'widget' => 'single_text',
                     ];
 
-                    return new FormField('datetime', $options);
+                    return new FormField(DateTimeType::class, $options);
                 } else {
                     $options = [
                         'input'    => 'timestamp',
@@ -503,7 +507,7 @@ class CustomDataType extends AbstractType
                     'request_param_name' => $def->getOption('param_name'),
                 ];
 
-                return new FormField('deskpro_hidden', $options);
+                return new FormField(DpHiddenType::class, $options);
 
             default:
                 throw new \InvalidArgumentException("Invalid field #{$def->getId()}. Cannot find handler for type \"{$def->getType()}\".");

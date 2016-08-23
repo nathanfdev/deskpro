@@ -266,7 +266,7 @@ class PersonEditProfileType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'person_profile';
     }

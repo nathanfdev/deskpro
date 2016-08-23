@@ -64,14 +64,6 @@ class TermEngineTermOptionsType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'term_engine_term_options';
-    }
-
-    /**
      * @param FormEvent $event
      */
     public function onPreSubmit(FormEvent $event)

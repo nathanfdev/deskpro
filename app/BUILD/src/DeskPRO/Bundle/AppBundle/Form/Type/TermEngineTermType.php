@@ -110,7 +110,7 @@ class TermEngineTermType extends AbstractType
             ->add('op', 'text', [
                 'error_bubbling' => false,
             ])
-            ->add('options', 'term_engine_term_options', [
+            ->add('options', TermEngineTermOptionsType::class, [
                 'error_bubbling' => false,
                 'term_type'      => $term_type,
             ])

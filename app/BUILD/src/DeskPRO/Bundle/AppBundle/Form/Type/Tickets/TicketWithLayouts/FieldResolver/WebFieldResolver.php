@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HiddenEntityType;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsWebType;
@@ -229,7 +230,7 @@ class WebFieldResolver extends AbstractFieldResolver
         if ($person->isUser()) {
             return [
                 'name'    => FormFields::USER_EMAIL,
-                'type'    => 'deskpro_person_email_choice',
+                'type'    => PersonEmailChoiceType::class,
                 'options' => [
                     'property_path' => 'ticket_person_email',
                     'label'         => $this->phrase('portal.forms.label_email'),

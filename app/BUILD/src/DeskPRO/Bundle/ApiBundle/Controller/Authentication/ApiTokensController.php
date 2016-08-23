@@ -88,7 +88,7 @@ class ApiTokensController extends BaseController
     {
         $request_data = $request->request->all();
 
-        $form = $this->createForm(new AuthenticationRequestType());
+        $form = $this->createForm(AuthenticationRequestType::class);
         $form->submit($request_data);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
