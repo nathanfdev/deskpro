@@ -191,7 +191,6 @@ class ProcessNew extends ProcessAbstract
                 $this->logMessage('Message too short to attempt lang detection');
             } else {
                 /* @var $lang_detect \Application\DeskPRO\Languages\Detect */
-                /* TODO control by setting
                 $lang_detect = App::getSystemService('language_detect');
                 $this->logMessage('Detectable languages: '.implode(', ', $lang_detect->getDetectableLanguages()));
 
@@ -200,7 +199,6 @@ class ProcessNew extends ProcessAbstract
                     $this->logMessage("Detected language {$lang->title} (#{$lang->id})");
                     $use_lang = $lang;
                 }
-                */
             }
 
             if (!$use_lang) {
