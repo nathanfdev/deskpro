@@ -10,7 +10,7 @@
                         <label for="enabled">&nbsp;</label>
                     </div>
                 </h3>
-                <div class="ui styled fluid accordion" ng-hide="!brand_settings.widget.enabled">
+                <div class="ui styled fluid accordion" ng-if="brand_settings.widget.enabled">
                     <div class="element">
                         <div class="title" ng-class="{'active': section == 'button_settings'}">
                             <i class="dropdown icon"></i>
