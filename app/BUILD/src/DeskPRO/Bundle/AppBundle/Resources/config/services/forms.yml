@@ -4,17 +4,17 @@ services:
   form.form_extension:
     class: DeskPRO\Bundle\AppBundle\Form\Extension\DeskproFormExtension
     tags:
-      - { name: form.type_extension }
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
 
   form.text_transformer_extension:
     class: DeskPRO\Bundle\AppBundle\Form\Extension\TextTransformerExtension
     tags:
-      - { name: form.type_extension }
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\TextType' }
 
   form.choice_transformer_extension:
     class: DeskPRO\Bundle\AppBundle\Form\Extension\ChoiceExtension
     tags:
-      - { name: form.type_extension }
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\ChoiceType' }
 
   # helpers
   form_hierarchy_generator:
