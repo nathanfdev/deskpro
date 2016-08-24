@@ -28,7 +28,7 @@
 
 namespace DpSys\Boot\BootTask;
 
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Guzzle\Http\Mimetypes;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -310,15 +310,25 @@ CODE;
     /**
      * @param string $filePath
      *
-     * @return BinaryFileResponse
+     * @return Response
      */
     private function getResponseForFile($filePath)
     {
-        $ext = substr($filePath, strpos($filePath, '.') + 1);
+        $fileExt = pathinfo($filePath, PATHINFO_EXTENSION);
 
-        switch ($ext) {
-            case 'js': $contentType = 'application/javascript'; break;
-            default:   $contentType = 'text/plain'; break;
+        switch ($fileExt) {
+            case 'js':       $contentType = 'text/javascript'; break;
+            case 'css':      $contentType = 'text/css'; break;
+            case 'woff':     $contentType = 'application/x-font-woff'; break;
+            case 'woff2':    $contentType = 'application/x-font-woff2'; break;
+            case 'ttf':      $contentType = 'application/x-font-ttf'; break;
+            default:         $contentType = Mimetypes::getInstance()->fromExtension($fileExt);
+        }
+
+        if (!$contentType) {
+            $res = new Response('', 404);
+
+            return $res;
         }
 
         $res = new Response('', 200, ['Content-Type' => $contentType]);
@@ -327,6 +337,18 @@ CODE;
         $res->setLastModified(new \DateTime('@'.filemtime($filePath)));
         $res->setTtl(300);
         $res->headers->set('Content-Length', filesize($filePath));
+        $res->headers->set('Access-Control-Allow-Origin', '*');
+        $res->headers->set('Access-Control-Allow-Credentials', 'true');
+        $res->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+        $res->headers->set('Access-Control-Allow-Headers', 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type');
+
+        if ($this->request->getMethod() === 'OPTIONS') {
+            $res->headers->set('Content-Length', '0');
+            $res->setContent('');
+
+            return $res;
+        }
+
         $res->headers->makeDisposition('inline', basename($filePath));
 
         if (!$res->isNotModified($this->request)) {
