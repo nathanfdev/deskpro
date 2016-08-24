@@ -764,14 +764,17 @@ var RLANG = {
 
 				}, this), 1);
 
+				this.$editor.click($.proxy(function()
+				{
+					if (this.$editor.is(':focus')) {
+						this._origin = this.getOrigin();
+					}
+					this.saveSelection();
+				}, this));
+
 				// FF fix
 				if (this.browser('mozilla'))
 				{
-					this.$editor.click($.proxy(function()
-					{
-						this.saveSelection();
-					}, this));
-
 					try
 					{
 						this.document.execCommand('enableObjectResizing', false, false);
@@ -822,8 +825,11 @@ var RLANG = {
 			{
 				var key = e.keyCode || e.which;
 
-				if (this.browser('mozilla') && !this.pasteRunning)
+				if (!this.pasteRunning)
 				{
+					if (this.$editor.is(':focus')) {
+						this._origin = this.getOrigin();
+					}
 					this.saveSelection();
 				}
 
@@ -1202,8 +1208,15 @@ var RLANG = {
 
 		insertSnippetHtml: function(html)
 		{
-			//this.snippetFocus();
-			this.pasteHtmlAtCaret(html);
+			if (!this._origin) {
+				return this.insertHtml(html);
+			}
+
+			var el = this.document.createElement('div');
+			el.innerHTML = html;
+			var next = this._origin[0].nextSibling;
+			var parent = this._origin[0].parentNode;
+			next ? parent.insertBefore(el, next) : parent.appendChild(el);
 			this.observeImages();
 			this.syncCode();
 		},
