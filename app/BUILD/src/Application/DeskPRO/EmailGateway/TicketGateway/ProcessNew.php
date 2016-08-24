@@ -64,6 +64,8 @@ class ProcessNew extends ProcessAbstract
     protected $cleaner;
 
     /**
+     * Constructor.
+     *
      * @param EmailAccount        $account
      * @param Person              $person
      * @param TicketIncomingEmail $ticket_email
@@ -101,7 +103,7 @@ class ProcessNew extends ProcessAbstract
             $this->ticket_email,
             $this->cleaner,
             App::$container->getEmailAccountManager(),
-            array($this, 'replaceInlineAttachTokens'),
+            [$this, 'replaceInlineAttachTokens'],
             $this->getLogger()
         );
 
@@ -184,7 +186,7 @@ class ProcessNew extends ProcessAbstract
         if (!App::getDataService('Language')->isLangSystemEnabled()) {
             $this->logMessage('Helpdesk is in single-language mode');
         } elseif ($this->person->getRealLanguage()) {
-            $this->logMessage('Person has language set: '.$this->person->getRealLanguage()->id.' '.$this->person->getRealLanguage()->title);
+            $this->logMessage('Person has language set: '.$this->person->getRealLanguage()->getId().' '.$this->person->getRealLanguage()->getTitle());
         } else {
             $detect_body = strip_tags($email_info->body);
             if (strlen($detect_body) < 300) {
@@ -196,7 +198,7 @@ class ProcessNew extends ProcessAbstract
 
                 $lang = $lang_detect->detectLanguage($detect_body);
                 if ($lang) {
-                    $this->logMessage("Detected language {$lang->title} (#{$lang->id})");
+                    $this->logMessage("Detected language {$lang->getTitle()} (#{$lang->getId()})");
                     $use_lang = $lang;
                 }
             }
@@ -217,10 +219,10 @@ class ProcessNew extends ProcessAbstract
         // But we'll create them now if they dont
         if (!$this->person) {
             $this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
-            $person = Person::newContactPerson(array(
+            $person = Person::newContactPerson([
                 'email' => $this->reader->getFromAddress()->getEmail(),
                 'name'  => $this->reader->getFromAddress()->getNameUtf8() ?: '',
-            ));
+            ]);
 
             App::getDb()->beginTransaction();
             try {
@@ -238,7 +240,7 @@ class ProcessNew extends ProcessAbstract
         #------------------------------
 
         if ($email_info->is_no_subject) {
-            $subject = App::$container->getTranslator()->phrase('user.tickets.no_subject', array(), $use_lang);
+            $subject = App::$container->getTranslator()->phrase('user.tickets.no_subject', [], $use_lang);
         } else {
             $subject = $email_info->subject;
         }
@@ -285,7 +287,7 @@ class ProcessNew extends ProcessAbstract
             $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
-            if (isset($this->inline_blobs[$blob->id])) {
+            if (isset($this->inline_blobs[$blob->getId()])) {
                 $attach->is_inline = true;
             }
 
@@ -329,7 +331,7 @@ class ProcessNew extends ProcessAbstract
         // User is an agent and the ticket owner isn't the person who submitted
         // the email. Means the agent used the #user action code and is
         // creting a ticket on behalf of someone else
-        if ($this->person->is_agent && $ticket->person !== $this->person) {
+        if ($this->person->isAgent() && $ticket->getPerson() !== $this->person) {
             $executor_context = $this->getTicketManager()->createAgentExecutorContext(
                 $this->person,
                 'newticket',
@@ -369,11 +371,11 @@ class ProcessNew extends ProcessAbstract
             $this->getTicketManager()->saveTicket($ticket, $executor_context);
 
             if ($email_info->charset_error) {
-                App::getOrm()->getConnection()->insert('tickets_messages_raw', array(
-                    'message_id' => $ticket_message->id,
+                App::getOrm()->getConnection()->insert('tickets_messages_raw', [
+                    'message_id' => $ticket_message->getId(),
                     'raw'        => $email_info->body,
                     'charset'    => $this->charset_error,
-                ));
+                ]);
             }
 
             $this->logMessage('[TicketGatewayProcessor] Created ticket '.$ticket['id']);
@@ -384,9 +386,9 @@ class ProcessNew extends ProcessAbstract
             throw $e;
         }
 
-        return array(
+        return [
             'ticket'         => $ticket,
             'ticket_message' => $ticket_message,
-        );
+        ];
     }
 }
