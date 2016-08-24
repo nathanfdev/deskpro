@@ -21,7 +21,7 @@ $joyride-header-border-width: 0;
 $joyride-header-font-size: 16px;
 $joyride-overlay-color: rgba(#000, 0.2) !default;
 
-$joyride-close: (color: $dp-greyscale-850, size: 20px, top: 7px !important, right: 10px !important);
+$joyride-close: (color: $dp-greyscale-850, size: 25px, top: 7px !important, right: 10px !important);
 
 @import '../../../../../../node_modules/react-joyride/lib/styles/react-joyride';
 
@@ -81,9 +81,12 @@ $joyride-tooltip-arrow-height: 10px;
       }
 
       &--secondary {
-        color: $dp-greyscale-850;
         margin-right: 10px;
         float: left;
+        svg {
+          width: 19px;
+          height: 14px;
+        }
       }
     }
     &.bottom,

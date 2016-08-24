@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType as CoreDateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -43,7 +43,9 @@ class PersonOnboardingType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('status', IntegerType::class);
-        $builder->add('date_completion', DateTimeType::class);
+        $builder->add('date_completion', CoreDateTimeType::class, [
+            'widget' => 'single_text',
+        ]);
         $builder->add('current_step', IntegerType::class);
     }
 

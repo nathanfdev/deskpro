@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/onboardingActions';
+import * as Tours from '../Tours';
 import Joyride  from 'react-joyride';
 import $ from 'jquery';
-import * as Tours from '../Tours';
+import moment from 'moment';
+import Isvg from 'react-inlinesvg';
 
 @connect(state => ({
   onboardings: collectionSelectorFactory('Onboarding', 'new')(state)
@@ -88,8 +90,8 @@ export class AgentOnboarding extends React.Component {
   };
 
   getIntro = () => {
-    const { intro } = this.state;
-    if (!intro) {
+    const { intro, currentStep } = this.state;
+    if (!intro || currentStep > 0) {
       return null;
     }
     const width = $(window).width();
@@ -158,7 +160,7 @@ export class AgentOnboarding extends React.Component {
           onboarding = {
             current_step:    progress.index,
             status:          2,
-            data_completion: new Date().toISOString()
+            date_completion: moment().unix()
           };
           this.props.dispatch(actions.updateCurrentStep(this.state.onboardingId, onboarding));
         }
@@ -173,7 +175,7 @@ export class AgentOnboarding extends React.Component {
           onboarding.status = 0;
         } else if (progress.percentageComplete === 100) {
           onboarding.status = 2;
-          onboarding.data_completion = new Date().toISOString();
+          onboarding.date_completion = moment().unix();
         } else {
           onboarding.status = 1;
         }
@@ -198,13 +200,14 @@ export class AgentOnboarding extends React.Component {
       type,
       disableOverlay: force
     };
+    const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     return (<div>
       <Joyride
         ref="joyride"
         steps={this.state.steps}
         showSkipButton={false}
         locale={{
-          back:  (<i className="fa fa-arrow-left" />),
+          back:  (<Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/back-arrow.svg`} />),
           close: (<span>Close</span>),
           last:  (<span>Finish</span>),
           next:  (<span>Next</span>)

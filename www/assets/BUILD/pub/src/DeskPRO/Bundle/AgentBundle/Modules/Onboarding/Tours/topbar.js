@@ -1,5 +1,5 @@
 const topbar = {
-  force: false,
+  force: true,
   steps: [
     {
       title:    'Search',
