@@ -184,27 +184,31 @@ class ProcessNew extends ProcessAbstract
         $use_lang = null;
 
         if (!App::getDataService('Language')->isLangSystemEnabled()) {
-            $this->logMessage('Helpdesk is in single-language mode');
+            $this->logMessage('[TicketGatewayProcessor] Helpdesk is in single-language mode');
         } elseif ($this->person->getRealLanguage()) {
-            $this->logMessage('Person has language set: '.$this->person->getRealLanguage()->getId().' '.$this->person->getRealLanguage()->getTitle());
+            $this->logMessage('[TicketGatewayProcessor] Person has language set: '.$this->person->getRealLanguage()->getId().' '.$this->person->getRealLanguage()->getTitle());
         } else {
-            $detect_body = strip_tags($email_info->body);
-            if (strlen($detect_body) < 300) {
-                $this->logMessage('Message too short to attempt lang detection');
-            } else {
-                /* @var $lang_detect \Application\DeskPRO\Languages\Detect */
-                $lang_detect = App::getSystemService('language_detect');
-                $this->logMessage('Detectable languages: '.implode(', ', $lang_detect->getDetectableLanguages()));
+            if (App::$container->get('settings_resolver')->getGlobalSettings()->get('core.lang_auto_detect')) {
+                $detect_body = strip_tags($email_info->body);
+                if (strlen($detect_body) < 300) {
+                    $this->logMessage('[TicketGatewayProcessor] Message too short to attempt lang detection');
+                } else {
+                    /* @var $lang_detect \Application\DeskPRO\Languages\Detect */
+                    $lang_detect = App::getSystemService('language_detect');
+                    $this->logMessage('Detectable languages: '.implode(', ', $lang_detect->getDetectableLanguages()));
 
-                $lang = $lang_detect->detectLanguage($detect_body);
-                if ($lang) {
-                    $this->logMessage("Detected language {$lang->getTitle()} (#{$lang->getId()})");
-                    $use_lang = $lang;
+                    $lang = $lang_detect->detectLanguage($detect_body);
+                    if ($lang) {
+                        $this->logMessage("[TicketGatewayProcessor] Detected language {$lang->getTitle()} (#{$lang->getId()})");
+                        $use_lang = $lang;
+                    }
                 }
-            }
 
-            if (!$use_lang) {
-                $this->logMessage('No language detected, no language will be set');
+                if (!$use_lang) {
+                    $this->logMessage('[TicketGatewayProcessor] No language detected, no language will be set');
+                }
+            } else {
+                $this->logMessage('[TicketGatewayProcessor] Language auto detect is disabled');
             }
         }
 
