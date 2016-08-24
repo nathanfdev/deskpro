@@ -151,7 +151,8 @@ export const bootstrapWidget = createAction(
     const options = window.DP_OPTIONS;
 
     dispatch(loadOptions(options));
-    const state = getState();
+    let state = getState();
+
     const liveDemo = liveDemoSelector(state);
     const noFetchOptions = noFetchOptionsSelector(state);
 
@@ -178,6 +179,9 @@ export const bootstrapWidget = createAction(
       }
 
       Promise.all(promises).then(response => {
+        // get updated state after the ajax requests
+        state = getState();
+
         const enabled = widgetEnabledSelector(state);
         if (enabled) {
           // possibly reload translations with proper user's lang
