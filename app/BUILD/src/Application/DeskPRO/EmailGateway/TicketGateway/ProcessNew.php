@@ -262,7 +262,11 @@ class ProcessNew extends ProcessAbstract
         $ticket->creation_system = 'gateway.person';
 
         if ($use_lang) {
-            $ticket->language = $use_lang;
+            if ($this->person && !$this->person->getRealLanguage()) {
+                $this->person->setLanguage($use_lang);
+            }
+
+            $ticket->setLanguage($use_lang);
         }
 
         // Set the proper email address on the ticket from the users account
