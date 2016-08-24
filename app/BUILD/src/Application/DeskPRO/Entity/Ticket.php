@@ -3538,7 +3538,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $hashes   = [];
         $hashes[] = sha1(
             $this->subject
-            .($this->person ? $this->person->getId() : '')
+            .($this->person ? $this->person->getEmailAddress() : '')
             .$this->getAgentId()
             .$this->getAgentTeamId()
             .$this->getDepartmentId()

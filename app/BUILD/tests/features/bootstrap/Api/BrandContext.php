@@ -58,6 +58,7 @@ class BrandContext extends BaseContext
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepo */
         $settingRepo = $this->em()->getRepository(Setting::class);
         $settingRepo->updateSetting('portal.default_brand', $brand->getId());
+        $this->get('settings_resolver')->getGlobalSettings(true);
 
         DataContext::setReference('defaultBrand', $brand);
         DataContext::setPlaceholder('defaultBrandId', $brand->getId());
