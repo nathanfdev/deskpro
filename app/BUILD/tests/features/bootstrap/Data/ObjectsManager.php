@@ -225,6 +225,11 @@ class ObjectsManager
 
             if ($value === 'NULL') {
                 $value = null;
+            } elseif (preg_match('/^NOW\(\)(.*?)$/', $value, $matches)) {
+                $value = new \DateTime();
+                if (isset($matches[1])) {
+                    $value->modify($matches[1]);
+                }
             } elseif (($date = \DateTime::createFromFormat('Y-m-d G:i:s', $value)) !== false) {
                 $value = $date;
             } elseif (is_array($array = json_decode($value, true))) {

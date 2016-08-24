@@ -15,8 +15,8 @@ Feature: New ticket dupe check
 
   Scenario: I try to create dupe ticket
     Given only the following Ticket records exist:
-      | #        | Person | Department | Brand          | Ref | Subject        | Date Last User Reply | Message              |
-      | ticket_1 | {user} | {d1}       | {defaultBrand} | ref | Ticket Subject | 2015-06-15 17:00:00  | Ticket message text. |
+      | #        | Person | Department | Brand          | Ref | Subject        | Date Last User Reply | Message              | Date Created   |
+      | ticket_1 | {user} | {d1}       | {defaultBrand} | ref | Ticket Subject | 2015-06-15 17:00:00  | Ticket message text. | NOW() - 1 hour |
 
     When I go to "/new-ticket"
     And I select "Department 1" from "Department"
