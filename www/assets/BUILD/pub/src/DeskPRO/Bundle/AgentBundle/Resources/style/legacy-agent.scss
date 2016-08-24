@@ -420,7 +420,8 @@ $contrast: 5% !default;
   .icon {
     padding-left: 0;
   }
-  .header {
+
+  > .header, > div > .header {
     background: $dp-sonic-primary;
     color: $dp-greyscale-50;
     padding: 9px 10px 9px 15px;

@@ -14,6 +14,10 @@
   .segments.im {
     border: none;
 
+    .item.im.middle.aligned .content {
+      vertical-align: middle;
+    }
+
     .ui.segment {
       border: none;
     }
@@ -88,6 +92,10 @@
         .im.item:last-of-type {
           border-right: none;
         }
+      }
+
+      .ui.list .item.agent {
+        
       }
 
     }

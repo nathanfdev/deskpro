@@ -1,10 +1,15 @@
-import React from 'react';
-import { PopUp } from 'Semantic/PopUp';
-import { Tabs } from 'Semantic/Tabs';
-import { Segment, SegmentsGroup } from 'Semantic/Segment';
-import SearchBox from 'Semantic/SearchBox';
+import React, { PropTypes } from 'react';
+import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
+import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
+import { Segment, SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
+import AgentList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/Agents/AgentsList';
+import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 
 class IMOverlay extends React.Component {
+
+  static propTypes = {
+    agents: PropTypes.object.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -24,7 +29,7 @@ class IMOverlay extends React.Component {
   getAgentsTab() {
     return  {
       id:      'agents',
-      content: 'agents',
+      content: <AgentList agents={this.props.agents} />,
       title:   <span><i className="fa fa-user dp-im-tab-menu-icon" />Agents</span>
     };
   }
@@ -62,7 +67,6 @@ class IMOverlay extends React.Component {
             <SearchBox
               placeholder="Search ..."
             />
-
           </Segment>
           <Segment classes={['im-tabs']}>{this.getTabs()}</Segment>
         </SegmentsGroup>

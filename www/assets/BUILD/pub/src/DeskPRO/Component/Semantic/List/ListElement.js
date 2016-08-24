@@ -9,10 +9,15 @@ class ListElement extends React.Component {
     icon:        PropTypes.string,
     image:       PropTypes.string,
     elements:    PropTypes.arrayOf(PropTypes.object),
-    classes:     PropTypes.arrayOf(PropTypes.string)
+    classes:     PropTypes.arrayOf(PropTypes.string),
+    children:    PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.array
+    ])
   };
 
-  static defultProps = {
+  static defaultProps = {
+    label:   '',
     classes: []
   };
 
@@ -52,6 +57,7 @@ class ListElement extends React.Component {
       {this.getIcon()}
       <div className="content">
         {this.getContent()}
+        {this.props.children}
       </div>
     </div>);
   }
