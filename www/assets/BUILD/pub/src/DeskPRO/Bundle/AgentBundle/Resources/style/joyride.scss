@@ -53,6 +53,9 @@ $joyride-tooltip-arrow-height: 10px;
 }
 
 .joyride {
+  &-beacon {
+    display: none;
+  }
   &-tooltip {
     border: 1px solid $dp-sonic-primary;
     &__header {

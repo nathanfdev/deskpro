@@ -42,7 +42,8 @@ export class AgentOnboarding extends React.Component {
       steps:        [],
       onboardingId: 0,
       type:         'continuous',
-      force:        false
+      force:        false,
+      currentStep:  0
     };
   }
 
@@ -64,9 +65,11 @@ export class AgentOnboarding extends React.Component {
         this.loadConfig(config);
       }
       if (!onboarding.get('status')) {
-        this.startOnboarding();
+        this.startOnboarding(true);
       } else {
-        this.props.dispatch(actions.pauseOnboarding({ callback: this.startOnboarding, active: true }));
+        this.setStep(onboarding.get('current_step'));
+        this.startOnboarding();
+        this.props.dispatch(actions.pauseOnboarding({ callback: this.resumeOnboarding, active: true }));
       }
     }
     return true;
@@ -74,13 +77,12 @@ export class AgentOnboarding extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (!prevState.ready && this.state.ready) {
-      console.log('start');
       this.refs.joyride.start(true);
     }
   }
 
-  loadConfig = (config) => {
-    this.setState(config);
+  setStep = (step) => {
+    this.setState({ currentStep: step });
   };
 
   addSteps = (steps) => {
@@ -103,8 +105,16 @@ export class AgentOnboarding extends React.Component {
     return true;
   };
 
-  startOnboarding = () => {
-    this.refs.joyride.start(true);
+  loadConfig = (config) => {
+    this.setState(config);
+  };
+
+  resumeOnboarding = () => {
+    this.refs.joyride.toggleTooltip(true, this.state.currentStep);
+  };
+
+  startOnboarding = (open) => {
+    this.refs.joyride.start(open);
   };
 
   callback = (data) => {
@@ -115,10 +125,14 @@ export class AgentOnboarding extends React.Component {
     switch (data.action) {
       case 'close':
         if (progress.percentageComplete < 100) {
-          this.props.dispatch(actions.pauseOnboarding({ callback: this.startOnboarding, active: true }));
-          console.log('Close not finished');
+          this.props.dispatch(actions.pauseOnboarding({ callback: this.resumeOnboarding, active: true }));
         } else {
-          console.log('Close finished');
+          onboarding = {
+            current_step:    progress.index,
+            status:          2,
+            data_completion: new Date().toISOString()
+          };
+          this.props.dispatch(actions.updateCurrentStep(this.state.onboardingId, onboarding));
         }
         break;
       case 'next':
@@ -126,15 +140,19 @@ export class AgentOnboarding extends React.Component {
         onboarding = {
           current_step: progress.index
         };
+        this.setState({ currentStep: progress.index });
         if (progress.percentageComplete === 0) {
           onboarding.status = 0;
         } else if (progress.percentageComplete === 100) {
           onboarding.status = 2;
-          onboarding.data_completion = new Date.toISOString();
+          onboarding.data_completion = new Date().toISOString();
         } else {
           onboarding.status = 1;
         }
         this.props.dispatch(actions.updateCurrentStep(this.state.onboardingId, onboarding));
+        break;
+      case 'beacon':
+        this.props.dispatch(actions.resumeOnboarding());
         break;
       case 'finished':
         console.log('Close finished');

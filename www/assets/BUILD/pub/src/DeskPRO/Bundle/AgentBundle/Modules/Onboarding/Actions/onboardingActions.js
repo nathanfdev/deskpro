@@ -15,8 +15,13 @@ export const updateCurrentStep = createAction(
   )
 );
 
-
 export const pauseOnboarding = createAction(
   'ONBOARDING_PAUSE',
   (params) => params
+);
+
+
+export const resumeOnboarding = createAction(
+  'ONBOARDING_RESUME',
+  () => {}
 );

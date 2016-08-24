@@ -174,7 +174,7 @@
     cursor: pointer;
     border-bottom: 3px solid #2b2f33;
     margin-bottom: -3px;
-    .active {
+    &.active {
       background-color: $dp-emerald-primary;
     }
     img {

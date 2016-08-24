@@ -5,7 +5,7 @@ import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
-import * as actions from '../Actions/topbarActions';
+import { resumeOnboarding } from '../../Onboarding/Actions/onboardingActions';
 import { connect } from 'react-redux';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
@@ -16,8 +16,8 @@ import Isvg from 'react-inlinesvg';
   agents:          collectionSelectorFactory('Person', 'agents')(state),
   chatDepartments: collectionSelectorFactory('Department', 'all_tickets')(state),
   me:              meSelector(state),
-  logoCallback:    state.TopBar.onboarding.get('logoCallback'),
-  logoActive:      state.TopBar.onboarding.get('logoActive'),
+  logoCallback:    state.Onboarding.onboarding.get('logoCallback'),
+  logoActive:      state.Onboarding.onboarding.get('logoActive'),
 }))
 class AgentTopBar extends SeparateComponent {
 
@@ -26,7 +26,8 @@ class AgentTopBar extends SeparateComponent {
     chatDepartments: PropTypes.object.isRequired,
     me:              PropTypes.object,
     logoCallback:    PropTypes.func,
-    logoActive:      PropTypes.bool
+    logoActive:      PropTypes.bool,
+    TopBar:          PropTypes.object
   };
 
   constructor(props) {
@@ -125,7 +126,12 @@ class AgentTopBar extends SeparateComponent {
 
   clickLogo = () => {
     // this.openDeskPro();
-    this.props.dispatch(actions.clickLogo());
+    if (this.props.logoActive) {
+      this.props.logoCallback();
+      this.props.dispatch(resumeOnboarding());
+    } else {
+      this.openDeskPro();
+    }
   };
 
   openDeskPro() {
@@ -136,6 +142,7 @@ class AgentTopBar extends SeparateComponent {
     const { notificationCount } = this.state;
     const { agents, chatDepartments, logoActive } = this.props;
     const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
+
     return (<TopBar>
       <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo} />
       <TopBarItem classes={['search-box legacy-omnibox']}>

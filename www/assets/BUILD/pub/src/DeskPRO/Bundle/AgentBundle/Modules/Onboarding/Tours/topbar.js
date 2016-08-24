@@ -43,7 +43,12 @@ const topbar = {
       selector: '#react_dp_agent_top_bar .chat',
       position: 'bottom'
     },
-  ]
+  ],
+  intro: {
+    title:  'New DeskPRO update',
+    text:   'We’ve made a few changes to how you navigate DeskPRO. Let’s take a quick look...',
+    action: 'Start'
+  }
 };
 export default topbar;
 
