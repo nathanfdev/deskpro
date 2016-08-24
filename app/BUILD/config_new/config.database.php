@@ -11,7 +11,7 @@ $DB_CONFIG     = [];
 # Refer to the README for more information.          #
 ######################################################
 
-$DB_CONFIG['host']     = 'localhost';
+$DB_CONFIG['host']     = '127.0.0.1';
 $DB_CONFIG['user']     = 'root';
 $DB_CONFIG['password'] = '';
 $DB_CONFIG['dbname']   = 'deskpro';

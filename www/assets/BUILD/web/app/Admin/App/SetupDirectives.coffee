@@ -307,3 +307,13 @@ define [
           )
       }
     ])
+
+    Module.directive('href', [ '$location', '$state', ($location, $state) ->
+      return {
+        restrict: 'A',
+        link: (scope, element, attrs) ->
+          element.bind 'click', ->
+            if element[0] && element[0].href && element[0].href == $location.absUrl()
+              $state.go($state.current.name, $state.current.data, {reload: true})
+      }
+    ])

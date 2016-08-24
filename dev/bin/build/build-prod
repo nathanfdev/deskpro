@@ -55,7 +55,7 @@ $f          = $DP_DIR.'/app/BUILD/vendor/zendframework/zend-ldap/src/Node.php';
 $content    = file_get_contents($f);
 $newContent = str_replace('if (!Dn::isChildOf($this->_getDn(), $ldap->getBaseDn())) {', 'if (/* DESKPRO EDIT: Removed isChildOf check */false) {', $content);
 
-if ($content === $newContent && strpos($content, 'DESKPRO EDIT') === false) {
+if (strpos($newContent, 'DESKPRO EDIT') === false) {
     echo "\n\n";
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
     echo "Failed to patch zend-ldap/src/Node.php\n";
@@ -66,25 +66,26 @@ if ($content === $newContent && strpos($content, 'DESKPRO EDIT') === false) {
 
 file_put_contents($f, $newContent);
 unset($f, $content, $newContent);
+echo ".. Done\n";
 
 ########################################################################################################################
 # Cache warmup
 ########################################################################################################################
 
 echo "Cache warmup: dev\n";
-dp_build_runcmd('bin/console cache:warmup --kernel dev --env prod --verbose --barg is-building');
+dp_build_runcmd('bin/console cache:warmup --kernel dev --env prod --no-debug --verbose --barg is-building');
 
 echo "Cache warmup: dp\n";
-dp_build_runcmd('bin/console cache:warmup --kernel dp --env prod --verbose --barg is-building');
+dp_build_runcmd('bin/console cache:warmup --kernel dp --env prod --no-debug --verbose --barg is-building');
 
 echo "Cache warmup: portal\n";
-dp_build_runcmd('bin/console cache:warmup --kernel portal --env prod --verbose --barg is-building');
+dp_build_runcmd('bin/console cache:warmup --kernel portal --env prod --no-debug --verbose --barg is-building');
 
 echo "Cache warmup: install\n";
-dp_build_runcmd('bin/console cache:warmup --kernel install --env prod --verbose --barg is-building');
+dp_build_runcmd('bin/console cache:warmup --kernel install --env prod --no-debug --verbose --barg is-building');
 
 echo "Cache warmup: api\n";
-dp_build_runcmd('bin/console cache:warmup --kernel api --env prod --verbose --barg is-building');
+dp_build_runcmd('bin/console cache:warmup --kernel api --env prod --no-debug --verbose --barg is-building');
 
 ########################################################################################################################
 # Legacy Assets

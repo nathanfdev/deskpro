@@ -4,6 +4,11 @@ Feature: Production mode
     Given I install the api data set
     And I have no logged system alert events
 
+  Scenario: I print PHP version
+    Given I have TEST_AUTH as my server info auth code
+    And I go to "/__serverinfo/php_version?auth=TEST_AUTH"
+    And print last response
+
   Scenario: I visit Portal home page
     When I go to "/"
     Then the response status code should be 200

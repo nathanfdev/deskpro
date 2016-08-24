@@ -175,7 +175,7 @@ class Boot
             return;
         }
 
-        $res = self::runBootTasks($env, ['OfflineCheck'], $res);
+        $res = self::runBootTasks($env, ['HttpVerifyRequirements', 'OfflineCheck'], $res);
 
         #------------------------------
         # Boot to low scripts
@@ -253,6 +253,7 @@ class Boot
     public static function bootCli(\DpRun\DpEnv $env, array $commandClasses = [])
     {
         $tasks = [
+            'CliVerifyRequirements',
             'Loader',
             'Lib',
             'PreparePaths',
@@ -291,6 +292,7 @@ class Boot
     public static function bootCron(\DpRun\DpEnv $env)
     {
         $tasks = [
+            'CliVerifyRequirements',
             'Loader',
             'Lib',
             'PreparePaths',

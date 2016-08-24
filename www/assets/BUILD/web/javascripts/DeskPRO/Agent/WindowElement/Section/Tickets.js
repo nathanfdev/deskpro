@@ -202,6 +202,16 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				}
 			});
 
+      DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function(info) {
+        if (!info || !info.changed_fields) {
+          return;
+        }
+
+        if (info.changed_fields.indexOf('ticket_slas_complete') || info.changed_fields.indexOf('ticket_slas_status')) {
+          self.limited_getUpdatedSlaCounts();
+        }
+      });
+
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function(info) {
 				if (!info.sla_ids || !info.sla_ids.length) {
 					return;

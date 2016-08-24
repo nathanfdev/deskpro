@@ -7,9 +7,11 @@ define ['underscore','Admin/Main/Ctrl/Base'], (_, Admin_Ctrl_Base) ->
     init: ->
       @$scope.server_error_logs = null
       @$scope.logs_size = 0
+      @logs_path = '';
 
     initialLoad: ->
       data_promise = @Api.sendGet('/server_error_logs').then( (res) =>
+        @logs_path = res.data.path
         @$scope.server_error_logs = res.data.server_error_logs
         if @$scope.server_error_logs?.logs
           @$scope.server_error_logs.logs = @$scope.server_error_logs.logs.reverse()
@@ -44,7 +46,7 @@ define ['underscore','Admin/Main/Ctrl/Base'], (_, Admin_Ctrl_Base) ->
       @Api.sendDelete('/server_error_logs/').success( =>
         @$scope.server_error_logs.logs = null
       ).error(=>
-        @showAlert("Clearing the logs failed because the log file is not writable by the web server. You must make the data/logs/error.log file writable before you can clear it.")
+        @showAlert("Clearing the logs failed because the log file is not writable by the web server. You must make the " + @logs_path + "/error.log file writable before you can clear it.")
       )
 
   Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.EXPORT_CTRL()

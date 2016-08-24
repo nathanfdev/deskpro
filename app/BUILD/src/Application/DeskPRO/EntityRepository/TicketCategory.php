@@ -44,7 +44,7 @@ class TicketCategory extends AbstractCategoryRepository
     public function getCategories()
     {
         return $this->_em->createQuery('
-            SELECT c, PARTIAL ch.{id}
+            SELECT c, ch
             FROM DeskPRO:TicketCategory c
             LEFT JOIN c.children ch
             ORDER BY c.display_order ASC

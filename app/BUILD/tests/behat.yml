@@ -184,6 +184,7 @@ production:
                 - DpBehat\System\Alerts\EventsContext
                 - DpBehat\ProductionModeContext
                 - DpBehat\System\AntiAbuse\AntiAbuseContext
+                - DpBehat\Install\ServerInfoContext
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
     extensions:

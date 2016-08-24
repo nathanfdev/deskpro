@@ -119,7 +119,7 @@ CODE;
         }
 
         $code = <<<CODE
-<script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js" {$add}"></script>
+<script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js" {$add}></script>
 {$metadata}
 CODE;
         $response = $event->getResponse();

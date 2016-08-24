@@ -259,6 +259,12 @@ class DeskproRequirements extends RequirementCollection
             'Install and enable the <strong>intl</strong> extension (used for validators).'
         );
 
+        $this->addRecommendation(
+            extension_loaded('zip'),
+            'zip extension should be installed',
+            'Install and enable the <strong>zip</strong> extension.'
+        );
+
         if (extension_loaded('intl')) {
             // check for compatible ICU versions (only done when you have the intl extension)
             if (defined('INTL_ICU_VERSION')) {
@@ -392,6 +398,26 @@ class DeskproRequirements extends RequirementCollection
                 'attachments directory must be writable',
                 'You need to make your attachments directory writable: <strong>'.$DP_ENV->getUserFilesDir().'</strong>'
             );
+
+            if (is_writable($DP_ENV->getAppBaseKernelCacheDir())) {
+                $failedDirs = [];
+                foreach ([
+                    $DP_ENV->getAppBaseKernelCacheDir(),
+                    $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$DP_ENV->getEnvId(),
+                    $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$DP_ENV->getEnvId().DIRECTORY_SEPARATOR.'annotations',
+                    $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$DP_ENV->getEnvId().DIRECTORY_SEPARATOR.'doctrine',
+                    $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$DP_ENV->getEnvId().DIRECTORY_SEPARATOR.'twig',
+                    $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$DP_ENV->getEnvId().DIRECTORY_SEPARATOR.'api_permissions',
+                ] as $d) {
+                    if (is_dir($d) && !is_writable($d)) {
+                        $failedDirs[] = $d;
+                    }
+                }
+
+                if ($failedDirs) {
+                    $this->addRequirement(false, 'var/kernel_cache and all sub-directories must be writable', 'Make var/kernel_cache and all sub-dirs writable (not writable : '.implode(', ', $failedDirs).')');
+                }
+            }
         }
     }
 

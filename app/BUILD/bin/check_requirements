@@ -115,13 +115,19 @@ if (!empty($messages['warning'])) {
 
 echo PHP_EOL;
 echo_style('title', 'Note');
-echo '  The command console could use a different php.ini file'.PHP_EOL;
+echo '  The command line console could use a different php.ini file'.PHP_EOL;
 echo_style('title', '~~~~');
 echo '  than the one used with your web server. To be on the'.PHP_EOL;
 echo '      safe side, please check the requirements from '.PHP_EOL;
 echo '      your web server using this URL:' . PHP_EOL;
 echo '      ';
-echo_style('yellow', 'http://your-deskpro-url/?__serverinfo=check_requirements');
+$authFile = __DIR__.'/../../../var/cache/server_info_auth.txt';
+if (is_file($authFile)) {
+    $auth = '?auth=' . trim(file_get_contents($authFile));
+} else {
+    $auth = '';
+}
+echo_style('yellow', 'http://your-deskpro-url/__serverinfo/check_requirements'.$auth);
 echo PHP_EOL;
 echo PHP_EOL;
 

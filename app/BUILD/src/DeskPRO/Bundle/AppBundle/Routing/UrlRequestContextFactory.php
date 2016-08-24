@@ -33,6 +33,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
 
+/**
+ * Class UrlRequestContextFactory.
+ */
 class UrlRequestContextFactory
 {
     /**
@@ -83,8 +86,7 @@ class UrlRequestContextFactory
     private function createContextForSettingsUrl(RequestContext $defaultContext, array $parameters)
     {
         /** @var Brand $brand */
-        $brand =
-            array_key_exists('brand', $parameters) && $parameters['brand'] instanceof Brand
+        $brand = array_key_exists('brand', $parameters) && $parameters['brand'] instanceof Brand
             ? $parameters['brand']
             : $this->container->get('brand_stack')->getActive()->getBrand();
 

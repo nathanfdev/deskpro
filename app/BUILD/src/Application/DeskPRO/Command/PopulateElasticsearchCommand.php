@@ -115,13 +115,17 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         @set_time_limit(0);
-        if ($input->getOption('auto-reset') && App::$container->getSetting('elastica.requires_reset_started') != $input->getOption('auto-reset')) {
+        if ($input->getOption('auto-reset') && App::$container->getSetting('elastica.requires_reset_started') != $input->getOption('auto-reset') && $input->getOption('auto-reset') != 'requires_reset') {
             return;
         }
 
         $reset = App::$container->getSetting('elastica.requires_reset');
         if ($input->getOption('reset') || $input->getOption('auto-reset')) {
             $reset = true;
+        }
+
+        if ($input->getOption('auto-reset') == 'requires_reset' && !$reset) {
+            return;
         }
 
         $this->getContainer()->getDb()->delete('settings', ['name' => 'elastica.requires_reset']);
@@ -204,14 +208,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
      */
     private function runCommand($arguments, OutputInterface $output)
     {
-        $php_path = $this->getContainer()->get('deskpro.app_env')->getConfig('paths.php_path');
-        $file     = escapeshellarg(realpath(DP_APP_DIR.'/bin/console'));
-
-        if (defined('DPC_IS_CLOUD')) {
-            $file .= ' --dpc-site-id '.DPC_SITE_ID;
-        }
-
-        $command = $php_path.' '.$file.' dp:elastica:index '.implode(' ', $arguments);
+        $command = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:elastica:index '.implode(' ', $arguments));
         $process = new Process($command);
         $process->setTimeout(600);
 

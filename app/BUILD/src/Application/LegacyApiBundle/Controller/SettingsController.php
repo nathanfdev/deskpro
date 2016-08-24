@@ -207,8 +207,8 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
-     * 
-     * @deprecated 
+     *
+     * @deprecated
      */
     public function portalSettingsAction()
     {
@@ -225,8 +225,8 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
-     * 
-     * @deprecated 
+     *
+     * @deprecated
      */
     public function savePortalSettingsAction()
     {
@@ -474,6 +474,15 @@ class SettingsController extends AbstractController implements ProtectedControll
         $this->settings->setSetting('core.deskpro_url', $this->in->getString('deskpro_url'));
         $this->settings->setSetting('core.deskpro_name', $this->in->getString('deskpro_name'));
 
+        $brand = $this->get('brand_stack')->getDefaultBrand();
+        $db    = $this->get('database_connection');
+        $db->delete('settings_brand', ['name' => 'core.deskpro_url', 'brand_id' => $brand->getId()]);
+        $db->insert('settings_brand', [
+            'name'     => 'core.deskpro_url',
+            'value'    => $this->in->getString('deskpro_url'),
+            'brand_id' => $brand->getId(),
+        ]);
+
         $content = json_decode($request->getContent(), 1);
 
         $remove_label = false;
@@ -602,7 +611,7 @@ class SettingsController extends AbstractController implements ProtectedControll
      * @throws \Exception
      *
      * @return \Symfony\Component\HttpFoundation\Response
-     * 
+     *
      * @deprecated use Api v2 instead
      */
     public function savePortalAppSettingsAction($app)
