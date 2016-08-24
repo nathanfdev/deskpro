@@ -22,7 +22,12 @@ const basicOnboarding = Immutable.Map({
         selector: '.button2',
         position: 'bottom'
       }
-    ]
+    ],
+    intro: {
+      title:  'New DeskPRO update',
+      text:   'We’ve made a few changes to how you navigate DeskPRO. Let’s take a quick look...',
+      action: 'Start'
+    }
   }
 });
 

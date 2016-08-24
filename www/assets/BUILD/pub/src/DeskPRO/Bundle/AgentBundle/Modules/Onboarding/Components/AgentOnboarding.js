@@ -4,6 +4,7 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/Reco
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/onboardingActions';
 import Joyride  from 'react-joyride';
+import $ from 'jquery';
 import * as Tours from '../Tours';
 
 @connect(state => ({
@@ -43,7 +44,8 @@ export class AgentOnboarding extends React.Component {
       onboardingId: 0,
       type:         'continuous',
       force:        false,
-      currentStep:  0
+      currentStep:  0,
+      intro:        false
     };
   }
 
@@ -65,7 +67,7 @@ export class AgentOnboarding extends React.Component {
         this.loadConfig(config);
       }
       if (!onboarding.get('status')) {
-        this.startOnboarding(true);
+        this.startOnboarding(!config.intro);
       } else {
         this.setStep(onboarding.get('current_step'));
         this.startOnboarding();
@@ -83,6 +85,32 @@ export class AgentOnboarding extends React.Component {
 
   setStep = (step) => {
     this.setState({ currentStep: step });
+  };
+
+  getIntro = () => {
+    const { intro } = this.state;
+    if (!intro) {
+      return null;
+    }
+    const width = $(window).width();
+    const height = $(window).height();
+    const style = { left: width / 2 - 280, top: height / 2 - 320 };
+    return (<div className="joyride">
+      <div className="joyride-overlay" style={{ height }}>
+        <div className="joyride-hole"></div>
+        <div className="joyride-intro" style={style}>
+          <img src={intro.img} role="presentation" />
+          <h3>{intro.title}</h3>
+          <p>{intro.text}</p>
+          <footer><button className="ui button" onClick={this.closeIntro}>{intro.action}</button></footer>
+        </div>
+      </div>
+    </div>);
+  };
+
+  closeIntro = () => {
+    this.setState({ intro: false });
+    this.resumeOnboarding();
   };
 
   addSteps = (steps) => {
@@ -186,6 +214,7 @@ export class AgentOnboarding extends React.Component {
         tooltipOffset={5}
         {...props}
       />
+      {this.getIntro()}
     </div>);
   }
 }

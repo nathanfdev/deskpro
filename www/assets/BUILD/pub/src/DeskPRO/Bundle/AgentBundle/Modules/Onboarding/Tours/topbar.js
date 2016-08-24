@@ -14,8 +14,9 @@ const topbar = {
       position: 'bottom'
     },
     {
-      title:    'Create',
-      text:     'Add new tickets, people, articles etc. to your helpdesk by clicking the \'create button\' in the header.',
+      title: 'Create',
+      text:  'Add new tickets, people, articles etc. to your ' +
+        'helpdesk by clicking the \'create button\' in the header.',
       selector: '#react_dp_agent_top_bar .item.add',
       position: 'bottom'
     },
@@ -47,7 +48,9 @@ const topbar = {
   intro: {
     title:  'New DeskPRO update',
     text:   'We’ve made a few changes to how you navigate DeskPRO. Let’s take a quick look...',
-    action: 'Start'
+    action: 'Start',
+    img:    `${window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '')}` +
+      '/../src/DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/topbar_intro.png'
   }
 };
 export default topbar;

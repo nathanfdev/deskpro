@@ -53,6 +53,7 @@ $joyride-tooltip-arrow-height: 10px;
 }
 
 .joyride {
+  font-family: 'Open Sans', Helvetica, sans-serif;
   &-beacon {
     display: none;
   }
@@ -112,6 +113,30 @@ $joyride-tooltip-arrow-height: 10px;
         background-image: url(joyride-arrow(right));
         left: -($joyride-tooltip-arrow-height - 2);
       }
+    }
+  }
+  &-intro {
+    font-size: 22px;
+    background-color: $dp-greyscale-50;
+    padding: 70px 30px;
+    width: 560px;
+    border: 1px solid $dp-emerald-primary;
+    border-radius: 2px;
+    box-shadow : 1px 1px 5px rgba(0, 0, 0, 0.25);
+    position: absolute;
+    text-align: center;
+    img {
+      margin-bottom: 40px;
+      margin-left: 30px;
+    }
+    h3 {
+      font-family: 'Open Sans', Helvetica, sans-serif;
+      font-size : 32px;
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+    p {
+      margin-bottom: 30px;
     }
   }
 }
