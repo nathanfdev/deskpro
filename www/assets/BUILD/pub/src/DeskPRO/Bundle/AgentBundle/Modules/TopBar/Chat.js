@@ -149,7 +149,7 @@ class Chat extends React.Component {
   };
 
   togglePopup = () => {
-    this.refs.chatPopup.togglePopup();
+    this.chatPopup.togglePopup();
   };
 
   toggleVolume = () => {
@@ -169,12 +169,14 @@ class Chat extends React.Component {
     this.setState({
       volume
     });
-  }
+  };
 
   toggleChat = (status) => {
     const postData = [];
     const url = `${window.BASE_URL}agent/misc/set-agent-status/available`;
-    const self = this;
+    this.setState({
+      activeChat: status
+    });
     if (status) {
       postData.push({
         name:  'is_chat_available',
@@ -187,6 +189,7 @@ class Chat extends React.Component {
       });
     }
 
+    const self = this;
     window.$.ajax({
       url,
       type: 'POST',
@@ -212,7 +215,7 @@ class Chat extends React.Component {
         elementId="chat-menu-popup"
         zIndex={99999}
         autoOpen={false}
-        ref="chatPopup"
+        ref={(c) => { this.chatPopup = c; }}
         classes={['chat_popup']}
         content={this.getPopupContent()}
       >
