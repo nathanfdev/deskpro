@@ -13,17 +13,19 @@ class Menu extends React.Component {
     ),
     children: PropTypes.node
   };
+  static defaultProps = {
+    items: []
+  };
 
   getItems() {
     const menus = [];
     const { items } = this.props;
     let i = 0;
     for (const props of items) {
-      if (props.label.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
-        continue;
+      if (props.label.toLowerCase().indexOf(this.props.filterText.toLowerCase()) !== -1) {
+        props.key = String(i++);
+        menus.push(<MenuItem {...props} />);
       }
-      props.key = String(i++);
-      menus.push(<MenuItem {...props} />);
     }
     return menus;
   }

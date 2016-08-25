@@ -76,7 +76,6 @@
     "build:semantic-less": "lessc --source-map  node_modules/semantic-ui-less/semantic.less stylesheets-less/semantic-ui/semantic.css",
     "build:css": "npm run build:sass && npm run build:less",
     "semantic:copy": "postcss --use autoprefixer --autoprefixer.browsers 'last 2 versions' --use postcss-discard-comments --postcss-discard-comments.removeAll true -d app-build/styles/Admin/ stylesheets-less/semantic-ui/semantic.css",
-    "presemantic": "cpx \"stylesheets-less/semantic-ui/theme.config\" node_modules/semantic-ui-less/",
     "semantic": "npm run semantic:copy",
     "prebuild": "npm run clean && npm run copy:js && npm run compile:coffee && npm run semantic",
     "postbuild": "npm run sassdoc",
