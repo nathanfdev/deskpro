@@ -218,11 +218,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			},
 			getFieldValue: function(name) {
 				var $cont = self.getEl('fields_container');
-				var $field = $('[name="' + name + '"]:first', $cont);
+				var $field = $('[name="' + name + '"]', $cont);
 				if ($field.is(':checkbox')) {
 					return $field.is(':checked');
 				}
-				return $field.val();
+				if ($field.is('select, input:not(:radio, :checkbox), textarea')) {
+					return $field.val();
+				}
+				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $cont);
+				if ($field.hasClass('with-select2')) {
+					return $field.select2('val');
+				}
+				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
 			},
 			getTicketFieldValue: function(fieldId) {
 				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
