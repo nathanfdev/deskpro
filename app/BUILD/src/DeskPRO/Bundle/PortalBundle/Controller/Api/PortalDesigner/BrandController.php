@@ -35,9 +35,12 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\ImageType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class LogoController.
@@ -56,6 +59,12 @@ class BrandController extends AbstractApiController
      */
     public function uploadLogoAction(Request $request)
     {
+        $form = $this->createForm(ImageType::class);
+        $form->submit($request->files);
+        if(!$form->isValid()) {
+            return $this->generateFormErrorsResponse($form);
+        }
+
         return $this->wrap(
             $this->getAssetsManager()->uploadBlob($request->files->get('file'), AssetsManager::CUSTOM_LOGO_TAG)
         );
@@ -71,6 +80,12 @@ class BrandController extends AbstractApiController
      */
     public function uploadFaviconAction(Request $request)
     {
+        $form = $this->createForm(ImageType::class);
+        $form->submit($request->files);
+        if(!$form->isValid()) {
+            return $this->generateFormErrorsResponse($form);
+        }
+
         return $this->wrap(
             $this->getAssetsManager()->uploadBlob($request->files->get('file'), AssetsManager::CUSTOM_FAVICON_TAG)
         );

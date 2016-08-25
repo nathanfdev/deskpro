@@ -60,7 +60,9 @@
                         <i class="fa fa-caret-down" ng-show="Portal.isOpen('logo')"></i>
                     </a>
                 </div>
-
+                <div class="alert alert-danger inner-group" ng-show="errors.logo">
+                    <span ng-if="errors.logo">{{ ng_var('errors.logo') }}</span>
+                </div>
                 <div class="logo-options" ng-show="Portal.isOpen('logo')">
                     <div class="logo-box logo-size-desktop">
                         <input type="file" ng-file-select="Portal.uploadLogo($files)" />
@@ -75,15 +77,18 @@
                     </div>
                 </div>
 
+
                 <!-- Favicon -->
-                <div class="panel-title" style="display: none"> {# favicon section temp disabeld #}
+                <div class="panel-title">
                     <a ng-click="Portal.togglePanel('favicon')">
                         Favicon
                         <i class="fa fa-caret-right" ng-show="!Portal.isOpen('favicon')"></i>
                         <i class="fa fa-caret-down" ng-show="Portal.isOpen('favicon')"></i>
                     </a>
                 </div>
-
+                <div class="alert alert-danger inner-group" ng-show="errors.favicon">
+                    <span ng-if="errors.favicon">{{ ng_var('errors.favicon') }}</span>
+                </div>
                 <div ng-show="Portal.isOpen('favicon')">
                     <div class="logo-box logo-size-desktop">
                         <input type="file" ng-file-select="Portal.uploadFavicon($files)" />
@@ -92,11 +97,11 @@
                             <div class="logo-container">
                                 <img ng-src="{{ '{{ Portal.custom_favicon }}' }}">
                             </div>
-
                             <a href ng-click="Portal.deleteFavicon()">Delete favicon</a>
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Vars -->
 
