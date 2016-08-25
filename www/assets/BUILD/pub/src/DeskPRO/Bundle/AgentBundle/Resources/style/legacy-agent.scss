@@ -171,6 +171,8 @@
     background-repeat: no-repeat;
     padding: 11px 15px 11px 16px;
     cursor: pointer;
+    border-bottom: 3px solid #2b2f33;
+    margin-bottom: -3px;
     img {
       width: 24px;
       height: 24px;
@@ -214,7 +216,7 @@
     }
   }
   > .item.search-box {
-    padding: 4px 10px 3px 0;
+    padding: 4px 9px 3px 1px;
     i.icon.search {
       color: $dp-greyscale-850;
       opacity: 1;
@@ -263,6 +265,8 @@
   #notifications {
     i.icon {
       font-size: 18px;
+    }
+    &.active i.icon {
       color: $dp-greyscale-850;
     }
     .label {

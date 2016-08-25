@@ -24,8 +24,8 @@ class TopBarNotificationIcon extends React.Component {
   };
 
   render() {
-    const { icon, elementId, onClick } = this.props;
-    return (<div id={elementId}>
+    const { icon, elementId, onClick, count } = this.props;
+    return (<div id={elementId} className={classNames({ active: count > 0 })}>
       <i className={classNames('icon', 'pointer', icon)} onClick={onClick} />
       {this.renderCount()}
     </div>);
