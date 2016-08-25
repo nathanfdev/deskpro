@@ -44,17 +44,29 @@ class TicketValueReader {
 
   getFieldValue(prefix, fieldId) {
     const id = `#ticket_${prefix}_field_${fieldId}_data`;
-    const $field = $(id, this.$formEl);
+    let $field = $(id, this.$formEl);
+
+    // toggle
     if ($field.is(':checkbox')) {
       return $field.is(':checked');
     }
+
+    if ($field.is('select, input, textarea')) {
+      return $field.val();
+    }
+
+    // date and datetime widgets
     if ($field.find(`${id}_year`).length) {
       const year = $(`${id}_year`, $field).val();
       const month = $(`${id}_month`, $field).val();
       const day = $(`${id}_day`, $field).val();
       return `${year}-${month}-${day}`;
     }
-    return $field.val();
+
+    // choice of checkboxes, radio
+    const name = `ticket[${prefix}_field_${fieldId}]`;
+    $field = $(`[name="${name}[data]"]:checked, [name="${name}[data][]"]:checked`, this.$formEl);
+    return $field.map((i, el) => el.value).get();
   }
 
   getTicketFieldValue(fieldId) {

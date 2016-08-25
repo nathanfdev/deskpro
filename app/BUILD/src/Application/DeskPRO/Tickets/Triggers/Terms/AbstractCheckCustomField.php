@@ -302,13 +302,13 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
                 return <<<JS
 function (ticket) { 
   var check_value = $check_value;
-  var value = parseInt($value) || null;
+  var value = $value || null;
   var op = '$op';
-  if (!value || !value.length) value = [value];
+  if (!value || undefined === value.length) value = [value + ''];
   
   var has = false; 
   for (var i = 0; i < check_value.length; i++) {
-    if (value.indexOf(check_value[i]) !== -1) has = true;
+    if (value.indexOf(check_value[i] + '') !== -1) has = true;
   }
   
   if (op === '$op_is' && has) return true;
