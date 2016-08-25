@@ -38,9 +38,7 @@ use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\ImageType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class LogoController.
@@ -61,7 +59,7 @@ class BrandController extends AbstractApiController
     {
         $form = $this->createForm(ImageType::class);
         $form->submit($request->files);
-        if(!$form->isValid()) {
+        if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
         }
 
@@ -82,7 +80,7 @@ class BrandController extends AbstractApiController
     {
         $form = $this->createForm(ImageType::class);
         $form->submit($request->files);
-        if(!$form->isValid()) {
+        if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
         }
 
@@ -119,9 +117,10 @@ class BrandController extends AbstractApiController
      */
     public function deleteEditThemeSetLogoAssetAction()
     {
-        return $this->wrap($this->getAssetsManager()->deleteEditThemeSetAsset(
-            $this->getAssetsManager()->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_LOGO_TAG)
-        ));
+        $assetsManager = $this->getAssetsManager();
+        $assetsManager->deleteEditThemeSetAsset($assetsManager->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_LOGO_TAG));
+
+        return $this->wrap(null);
     }
 
     /**
@@ -132,9 +131,11 @@ class BrandController extends AbstractApiController
      */
     public function deleteEditThemeSetFaviconAssetAction()
     {
-        return $this->wrap($this->getAssetsManager()->deleteEditThemeSetAsset(
-            $this->getAssetsManager()->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG)
-        ));
+        $assetsManager = $this->getAssetsManager();
+        $assetsManager->deleteEditThemeSetAsset($assetsManager->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG));
+        $assetsManager->deleteEditThemeSetAsset($assetsManager->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_FALLBACK));
+
+        return $this->wrap(null);
     }
 
     /**
@@ -162,7 +163,7 @@ class BrandController extends AbstractApiController
     {
         $data = json_decode($request->getContent(), true);
 
-        $title    = @$data['title']   ?: '';
+        $title    = @$data['title'] ?: '';
         $message  = @$data['message'] ?: '';
         $themeSet = $this->getEditThemeSet();
 
