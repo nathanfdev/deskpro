@@ -71,6 +71,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
             new \Twig_SimpleFunction('portal_css_url', [$this, 'getPortalCssUrl']),
             new \Twig_SimpleFunction('portal_custom_js', [$this, 'getPortalCustomJs']),
             new \Twig_SimpleFunction('portal_custom_logo', [$this, 'getPortalCustomLogo']),
+            new \Twig_SimpleFunction('portal_custom_favicon', [$this, 'getPortalCustomFavicon']),
         ];
     }
 
@@ -139,6 +140,19 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
 
         if ($asset) {
             return $asset->getBlob()->getDownloadUrl(true);
+        }
+
+        return;
+    }
+
+    public function getPortalCustomFavicon()
+    {
+        $asset = $this->isPreviewMode($this->container)
+            ? $this->getAssetsManager()->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG)
+            : $this->getAssetsManager()->getBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG);
+
+        if ($asset) {
+            return ['url' => $asset->getBlob()->getDownloadUrl(true), 'type' => $asset->getBlob()->getContentType()];
         }
 
         return;

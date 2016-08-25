@@ -42,7 +42,6 @@ use Imagine\Image\Box;
 use Imagine\Image\Point;
 use Orb\Data\ContentTypes;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Zend\Validator\File\Upload;
 
 /**
  * Class AssetsManager.
