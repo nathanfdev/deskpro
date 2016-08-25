@@ -3655,6 +3655,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                     'on'.ucfirst($event)
                 );
             }
+            foreach ([Events::prePersist, Events::preUpdate, Events::preFlush] as $event) {
+                $metadata->addEntityListener(
+                    $event,
+                    'DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener',
+                    $event
+                );
+            }
         }
 
         $metadata->mapField(

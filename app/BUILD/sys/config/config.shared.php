@@ -231,6 +231,10 @@ $definition->setClass('Application\DeskPRO\Entity\EventListener\ProblemListener'
 $definition->setArguments(array(new Reference('service_container')));
 $definition->addTag('doctrine.entity_listener');
 $container->setDefinition('dp.entity_lister.problem', $definition);
+$definition = new Definition();
+$definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener');
+$definition->addTag('doctrine.entity_listener');
+$container->setDefinition('dp.entity_lister.person_onboarding', $definition);
 
 ############################################################################
 # Doctrine Configuration
