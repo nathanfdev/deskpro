@@ -1,20 +1,21 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AgentTopBar from './Modules/TopBar/Components/AgentTopBar';
-import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
-import { AgentList } from './Modules/Agent/Components/AgentList';
-import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
+import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { combineReducerHierarchy } from 'Ampliflux';
+import * as ampMiddleware from 'Ampliflux/middleware';
+import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
+import AgentTopBar from './Modules/TopBar/Components/AgentTopBar';
+import { SideBarContainer } from './Modules/SideBar/SideBar';
+import { AgentList } from './Modules/Agent/Components/AgentList';
+import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
 import AgentReducers from './AgentApp_Reducers';
 import AppReducers from '../AppBundle/AppApp_Reducers';
-import * as ampMiddleware from 'Ampliflux/middleware';
 import { preloadData } from './Modules/Application/Actions/bootstrapActions';
-import { Provider } from 'react-redux';
 
-export class AgentLegacyApp {
+class AgentLegacyApp {
 
   rendered = [];
   store;
@@ -26,11 +27,13 @@ export class AgentLegacyApp {
   }
 
   start() {
-    if (typeof window.DeskPRO_Window === 'undefined' || !this.store.getState().Application.bootstrap.get('isBootstrapped')) {
+    if (typeof window.DeskPRO_Window === 'undefined'
+      || !this.store.getState().Application.bootstrap.get('isBootstrapped')) {
       setTimeout(this.start.bind(this), 100);
     } else {
       this.renderPiece(AgentTopBar, AgentTopBar.getType());
       this.renderPiece(AgentList, AgentList.getType());
+      this.renderPiece(SideBarContainer, SideBarContainer.getType());
       this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());
     }
   }
@@ -64,7 +67,7 @@ export class AgentLegacyApp {
 
     // This builder calls compile on old-style reducers
     // created via the Reducer class
-    const legacyReducerBuilder = function (reducer) {
+    const legacyReducerBuilder = (reducer) => {
       if (reducer.isAmplifluxReducer) {
         const rInst = new reducer();
         return rInst.compile();
@@ -89,3 +92,4 @@ export class AgentLegacyApp {
     return makeStore(reducer, initialState, window.devToolsExtension ? window.devToolsExtension() : f => f);
   }
 }
+export default AgentLegacyApp;

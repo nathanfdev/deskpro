@@ -170,7 +170,7 @@
     background-position: center;
     background-size: 24px;
     background-repeat: no-repeat;
-    padding: 11px 15px 11px 16px;
+    padding: 11px 14px;
     cursor: pointer;
     border-bottom: 3px solid #2b2f33;
     margin-bottom: -3px;
@@ -491,8 +491,62 @@
 
 .z-index-stub {
   z-index: 500;
-}.positioned-element.add_menu_popup,
+}
+.positioned-element.add_menu_popup,
 .positioned-element.chat_popup,
 .positioned-element.user_popup {
   top: 44px !important;
+}
+
+.sidebar-menu.ui.vertical.menu {
+  background-color: $dp-night-sky;
+  font-family: 'Open Sans', Helvetica, sans-serif;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  right: auto;
+  width: 52px;
+  transition: width 0.2s;
+  transition-delay: 0.1s;
+  overflow: hidden;
+  z-index: 10000;
+  .ui.item {
+    height: 52px;
+    width: 52px;
+    color: $dp-greyscale-50;
+    font-size: 16px;
+    white-space: nowrap;
+    padding: 14px;
+    overflow: hidden;
+    vertical-align: middle;
+    span.menu-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 14px;
+    }
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+    &:hover:not(.active) {
+      svg {
+        transform: scale(1.25);
+      }
+    }
+    &.active {
+      background-color: black;
+      &::after {
+        height: 52px;
+        width: 10px;
+        background-image: url("../img/sidebar/tooltip.svg");
+        background-repeat: no-repeat;
+      };
+    }
+  }
+  &.hover-mode:hover {
+    &, .ui.item {
+      width: 150px;
+    }
+  }
 }

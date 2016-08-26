@@ -7,7 +7,8 @@ class MenuItem extends React.Component {
     icon:       PropTypes.string,
     subContent: PropTypes.object,
     onClick:    PropTypes.func,
-    children:   PropTypes.node
+    children:   PropTypes.node,
+    classes:    PropTypes.string
   };
   static defaultProps = {
     onClick() {}
@@ -31,12 +32,12 @@ class MenuItem extends React.Component {
 
   handleClick = (e) => {
     this.props.onClick(e);
-  }
+  };
 
   render() {
-    const { label, subContent, children } = this.props;
+    const { label, subContent, children, classes } = this.props;
     return (<a
-      className={classNames('ui', 'item', { dropdown: !!subContent })}
+      className={classNames('ui', 'item', { dropdown: !!subContent }, classes)}
       onClick={this.handleClick}
     >
       {this.getIcon()}

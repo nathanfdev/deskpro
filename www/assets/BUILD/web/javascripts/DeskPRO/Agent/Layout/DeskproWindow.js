@@ -12,7 +12,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		this.LEFT_START = 215;
 
 		// Where the center section (where all cols are embedded) starts
-		this.CENTER_START = 55;
+		this.CENTER_START = 52;
 
 		// Width of the collapsed source pane placeholder
 		this.SOURCE_PLACE_WIDTH = 23;
@@ -210,7 +210,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			$('#dp_source_btn').find('.collapse-btn').hide();
 			$('#dp_source_btn').find('.pin-btn').show();
 			$('#dp_source_place').show();
-			$('#dp_center').css('left', 55);
+			$('#dp_center').css('left', this.CENTER_START);
 			left += this.SOURCE_PLACE_WIDTH;
 		} else {
 			$('#dp_source').stop().show().css('left', 0);
@@ -218,7 +218,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			$('#dp_source_btn').find('.pin-btn').hide();
 			$('#dp_source_place').hide();
 			$('#dp_nav').show();
-			$('#dp_center').css('left', 55);
+			$('#dp_center').css('left', this.CENTER_START);
 			left += 215;
 		}
 
@@ -244,9 +244,9 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		}
 
 		if (paneVis.source) {
-			sourceLeft += 270;
+			sourceLeft += 267;
 		} else {
-			sourceLeft += 55 + this.SOURCE_PLACE_WIDTH;
+			sourceLeft += this.CENTER_START + this.SOURCE_PLACE_WIDTH;
 		}
 		visibleLeft += 270;
 		visibleLeft += listWidth;

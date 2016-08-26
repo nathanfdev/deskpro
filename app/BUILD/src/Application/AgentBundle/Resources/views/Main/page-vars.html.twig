@@ -45,15 +45,28 @@
 	var DESKPRO_PERSON_ISADMIN = true;
 	{# {% endif %} #}
 	var DESKPRO_PERSON_PERMS = {
+		'agent_tickets.use': {% if app.user.hasPerm('agent_tickets.use') %}true{% else %}false{% endif %},
 		'agent_tickets.create': {% if app.user.hasPerm('agent_tickets.create') %}true{% else %}false{% endif %},
+		'agent_chat.use': {% if app.user.hasPerm('agent_chat.use') %}true{% else %}false{% endif %},
 		'agent_people.create': {% if app.user.hasPerm('agent_people.create') %}true{% else %}false{% endif %},
+		'agent_people.use': {% if app.user.hasPerm('agent_people.use') %}true{% else %}false{% endif %},
 		'agent_org.create': {% if app.user.hasPerm('agent_org.create') %}true{% else %}false{% endif %},
 		'agent_publish.create': {% if app.user.hasPerm('agent_publish.create') %}true{% else %}false{% endif %},
 		'agent_tasks.use': {% if app.user.hasPerm('agent_tasks.use') %}true{% else %}false{% endif %},
+		'agent_reports.use': {% if app.user.can_reports %}true{% else %}false{% endif %},
+		'agent_admin.use': {% if app.user.can_admin %}true{% else %}false{% endif %},
 		'chat_dep_ids': [
 			0{% for id in chat_dep_ids %},{{id}}{% endfor %}
 		]
 	};
+    var DESKPRO_APP_SETTINGS = {
+        'core.apps_chat': {% if app.getSetting('core.apps_chat') %}true{% else %}false{% endif %},
+        'core.apps_feedback': {% if brand_app_settings['core.apps_feedback'] %}true{% else %}false{% endif %},
+        'core.apps_kb': {% if brand_app_settings['core.apps_kb'] %}true{% else %}false{% endif %},
+        'core.apps_news': {% if brand_app_settings['core.apps_kb'] %}true{% else %}false{% endif %},
+        'core.apps_downloads': {% if brand_app_settings['core.apps_kb'] %}true{% else %}false{% endif %},
+        'core.apps_tasks': {% if brand_app_settings['core.apps_tasks'] %}true{% else %}false{% endif %},
+    };
 
 	{% if app.getSetting('agent.ui_snippets_use_client_db') %}var DESKPRO_SNIPPETS_USE_CLIENT_DB = true;{% endif %}
 
