@@ -11,3 +11,6 @@ import './Semantic/Form/form';
 import './Semantic/List/list';
 import './Semantic/Menu/menu';
 import './Semantic/PopUp/popup';
+
+
+window.DESKPRO_APP_ASSETS_URL = 'http://localhost:9666/pub/build';
