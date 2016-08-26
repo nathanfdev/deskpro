@@ -12,7 +12,7 @@
 					>
 				<option value="all" ng-if="AgentActivity.all_agents.length <= 20">All Agents</option>
 				<option ng-repeat="agent in AgentActivity.all_agents" ng-value="agent.id">
-					{{ ng_var('agent.name') }}
+					{{ ng_var('agent.display_name') }}
 				</option>
 				<optgroup label="Teams">
 					<option ng-repeat="team in AgentActivity.agent_teams" value="team-{{ ng_var('team.id') }}">
