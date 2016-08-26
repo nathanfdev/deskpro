@@ -216,7 +216,7 @@ class PortalController extends AbstractController
      *
      * @return RedirectResponse
      */
-    public function legacyLogoutLinkAction($auth)
+    public function legacyLogoutLinkAction($auth, Request $request)
     {
         $appSecret = $this->get('settings_resolver')->getGlobalSettings()->get('core.app_secret', '');
 
@@ -224,7 +224,12 @@ class PortalController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return new RedirectResponse($this->get('security.logout_url_generator')->getLogoutUrl('portal'));
+        $url = $this->get('security.logout_url_generator')->getLogoutUrl('portal');
+        if ($request->get('to')) {
+            $url .= '&to='.$request->get('to');
+        }
+
+        return new RedirectResponse($url);
     }
 
     /**
