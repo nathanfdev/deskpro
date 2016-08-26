@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CustomDefArticle;
@@ -290,6 +291,16 @@ class MapperRegistry
     public function getDepartmentMapper()
     {
         return $this->getMapper(Department::class);
+    }
+
+    /**
+     * Returns the brand mapper.
+     *
+     * @return CommonMapper
+     */
+    public function getBrandMapper()
+    {
+        return $this->getMapper(Brand::class);
     }
 
     /**

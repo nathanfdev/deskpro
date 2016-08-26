@@ -147,6 +147,21 @@ class TicketHandler extends AbstractEntityHandler
             $entity->setCategory(null);
         }
 
+        // ensure that the ticket has brand and department
+        // they are optional so set default ones if they are empty
+        if (!$entity->getDepartment()) {
+            $entity->setDepartment($this->mappers->getDepartmentMapper()->findOneBy([]));
+        }
+
+        if ($entity->getDepartment()->getBrands()->first()) {
+            $entity->setBrand($entity->getDepartment()->getBrands()->first());
+        } else {
+            $defaultBrand = $this->mappers->getBrandMapper()->findOneBy([]);
+            if ($defaultBrand) {
+                $entity->setBrand($defaultBrand);
+            }
+        }
+
         // persist basic entity
         $this->persister->persistAndFlush($entity, $model);
 
@@ -228,6 +243,11 @@ class TicketHandler extends AbstractEntityHandler
             } else {
                 $department = Entity\Department::createTicketDepartment();
                 $department->setRealTitle($title);
+
+                $defaultBrand = $this->mappers->getBrandMapper()->findOneBy([]);
+                if ($defaultBrand) {
+                    $department->addBrand($defaultBrand);
+                }
 
                 $this->logger->notice(sprintf('New department creating `%s`', $department->getTitle()));
                 $this->persister->persistAndFlush($department);
