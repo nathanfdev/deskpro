@@ -1,9 +1,8 @@
 import React from 'react';
-import { storiesOf } from '@kadira/storybook';
-import { css } from '../../../decorators';
+import { storiesOf, action } from '@kadira/storybook';
 import Immutable from 'immutable';
 import { AgentOnboarding } from 'DeskPRO/Bundle/AgentBundle/Modules/Onboarding/Components/AgentOnboarding';
-// import { basicOnboarding } from 'DemoState/AgentBundle/Modules/Application/notifications';
+import { css } from '../../../decorators';
 
 const basicOnboarding = Immutable.Map({
   config: {
@@ -36,7 +35,12 @@ storiesOf('App: onboarding', module)
   .add(
     'Simple', () =>
       <div>
-        <AgentOnboarding onboarding={basicOnboarding} />
+        <AgentOnboarding
+          onboarding={basicOnboarding}
+          updateCurrentStep={action('updateStep')}
+          pauseOnboarding={action('pause')}
+          resumeOnboarding={action('resume')}
+        />
         <p>
           <button className="button1">Button 1</button>
         </p>

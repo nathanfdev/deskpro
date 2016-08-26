@@ -14,17 +14,37 @@ import * as Tours from '../Tours';
 }))
 export class AgentOnboardingContainer extends SeparateComponent {
   static propTypes = {
-    onboardings: PropTypes.object.isRequired
+    onboardings: PropTypes.object.isRequired,
+    dispatch:    PropTypes.func.isRequired
   };
+
   static getType() {
     return 'AgentOnboardingContainer';
   }
 
+  pauseOnboarding = (callback) => {
+    this.props.dispatch(actions.pauseOnboarding({ callback, active: true }));
+  };
+
+  resumeOnboarding = () => {
+    this.props.dispatch(actions.resumeOnboarding());
+  };
+
+  updateCurrentStep = (onboardingId, onboarding) => {
+    this.props.dispatch(actions.updateCurrentStep(onboardingId, onboarding));
+  };
+
   render() {
     let result = <div />;
+    const props = {
+      pauseOnboarding:   this.pauseOnboarding,
+      resumeOnboarding:  this.resumeOnboarding,
+      updateCurrentStep: this.updateCurrentStep
+    };
+
     if (this.props.onboardings.size) {
       this.props.onboardings.map((onboarding) => {
-        result = <AgentOnboarding onboarding={onboarding} />;
+        result = <AgentOnboarding onboarding={onboarding} {...props} />;
         return true;
       });
     }
@@ -32,11 +52,12 @@ export class AgentOnboardingContainer extends SeparateComponent {
   }
 }
 
-@connect()
 export class AgentOnboarding extends React.Component {
   static propTypes = {
-    onboarding: PropTypes.object.isRequired,
-    dispatch:   PropTypes.func.isRequired
+    onboarding:        PropTypes.object.isRequired,
+    pauseOnboarding:   PropTypes.func.isRequired,
+    resumeOnboarding:  PropTypes.func.isRequired,
+    updateCurrentStep: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -52,7 +73,7 @@ export class AgentOnboarding extends React.Component {
   }
 
   componentDidMount() {
-    const { onboarding } = this.props;
+    const { onboarding, pauseOnboarding } = this.props;
 
     const object = onboarding.get('onboarding_class');
     let config = null;
@@ -73,7 +94,7 @@ export class AgentOnboarding extends React.Component {
       } else {
         this.setStep(onboarding.get('current_step'));
         this.startOnboarding();
-        this.props.dispatch(actions.pauseOnboarding({ callback: this.resumeOnboarding, active: true }));
+        pauseOnboarding(this.resumeOnboarding);
       }
     }
     return true;
@@ -155,7 +176,7 @@ export class AgentOnboarding extends React.Component {
     switch (data.action) {
       case 'close':
         if (progress.percentageComplete < 100) {
-          this.props.dispatch(actions.pauseOnboarding({ callback: this.resumeOnboarding, active: true }));
+          this.props.pauseOnboarding(this.resumeOnboarding);
         } else {
           this.finishOnboarding(progress.index);
         }
@@ -174,10 +195,10 @@ export class AgentOnboarding extends React.Component {
         } else {
           onboarding.status = 1;
         }
-        this.props.dispatch(actions.updateCurrentStep(this.state.onboardingId, onboarding));
+        this.props.updateCurrentStep(this.state.onboardingId, onboarding);
         break;
       case 'beacon':
-        this.props.dispatch(actions.resumeOnboarding());
+        this.props.resumeOnboarding();
         break;
       case 'finished':
         this.finishOnboarding(progress.index);
@@ -193,7 +214,7 @@ export class AgentOnboarding extends React.Component {
       status:          2,
       date_completion: moment().format()
     };
-    this.props.dispatch(actions.updateCurrentStep(this.state.onboardingId, onboarding));
+    this.props.updateCurrentStep(this.state.onboardingId, onboarding);
   };
 
   render() {
