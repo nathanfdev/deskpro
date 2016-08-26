@@ -41,7 +41,7 @@ use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
-use Symfony\Component\HttpFoundation\Request;
+use DeskPRO\Bundle\AppBundle\Limits\Model\LimitInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -164,6 +164,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
             $limits_service = $this->get('api_limits.limits_service');
             $limits         = $limits_service->getKeyLimits($key);
 
+            /** @var LimitInterface[] $limits_data */
             $limits_data = [
                 AbstractLimit::INTERVAL_DAY  => null,
                 AbstractLimit::INTERVAL_HOUR => null,
@@ -188,7 +189,9 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
             $daily_limit = min($daily_limit, $settings->get('api_limits.key.day'));
 
             $limits_data[AbstractLimit::INTERVAL_HOUR]->setLimit($hourly_limit);
+            $limits_data[AbstractLimit::INTERVAL_HOUR]->setCurrent($hourly_limit);
             $limits_data[AbstractLimit::INTERVAL_DAY]->setLimit($daily_limit);
+            $limits_data[AbstractLimit::INTERVAL_DAY]->setCurrent($daily_limit);
 
             foreach ($limits_data as $limit) {
                 $limits_service->saveLimit($key, $limit);
