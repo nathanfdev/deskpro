@@ -30,6 +30,7 @@ namespace DpBehat\Api;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Setting;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
@@ -40,6 +41,22 @@ use DpBehat\Data\DataContext;
 class BrandContext extends BaseContext
 {
     /**
+     * @var DataContext
+     * */
+    private $dataContext;
+
+    /**
+     * @BeforeScenario
+     *
+     * @param BeforeScenarioScope $scope
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment       = $scope->getEnvironment();
+        $this->dataContext = $environment->getContext('DpBehat\Data\DataContext');
+    }
+
+    /**
      * @Given I have several brands
      */
     public function iHaveSeveralBrand()
@@ -49,10 +66,11 @@ class BrandContext extends BaseContext
     }
 
     /**
-     * @Then I have default brand
+     * @Given I have only default brand
      */
     public function iHaveDefaultBrand()
     {
+        $this->dataContext->noRecordsExist('Brand');
         $brand = $this->createNewBrand('default');
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepo */

@@ -5,7 +5,7 @@ Feature: New ticket dupe check
     Given I'm authenticated as user
     And I disable anti-abuse rate limiting
     And I set permission "tickets.use" = 1 for registered usergroup
-    And I have default brand
+    And I have only default brand
     And only the following Department records exist:
       | #  | Title        | Brands           | Is Tickets Enabled |
       | d1 | Department 1 | [{defaultBrand}] | 1                  |

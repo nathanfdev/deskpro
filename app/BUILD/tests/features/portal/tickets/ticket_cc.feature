@@ -6,7 +6,7 @@ Feature: Add and edit ticket participants
     And I'm authenticated as user
     And I disable anti-abuse rate limiting
     And I set permission "tickets.use" = 1 for registered usergroup
-    And I have default brand
+    And I have only default brand
     And a user with "user_1@deskpro.dev" email exists
     And a user with "user_2@deskpro.dev" email exists
     And an agent with "agent@deskpro.dev" email exists

@@ -5,7 +5,7 @@ Feature: Ticket logs
   Background:
     Given no Person records exist
     And I'm authenticated as admin
-    And I have default brand
+    And I have only default brand
     And only the following Department records exist:
       | #  | Title        | Brands           | Is Tickets Enabled |
       | d1 | Department 1 | [{defaultBrand}] | 1                  |

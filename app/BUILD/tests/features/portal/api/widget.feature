@@ -2,7 +2,7 @@
 Feature: Widget configuration
 
   Background:
-    Given I have default brand
+    Given I have only default brand
 
   Scenario: I get widget options
     When I send a GET request to "/portal/api/widget/brand_options"

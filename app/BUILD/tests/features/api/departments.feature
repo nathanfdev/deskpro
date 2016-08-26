@@ -6,7 +6,7 @@ Feature: /(ticket|chat)_departments endpoint
 
   Background:
     Given I'm authenticated as admin
-    And I have default brand
+    And I have only default brand
     And no Department records exist
 
   Scenario: I retrieve a list of departments
