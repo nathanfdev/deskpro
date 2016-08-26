@@ -61,7 +61,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
      */
     public function indexAction(Request $request)
     {
-        $return = LegacyRequestUtils::readReturnParam($this->request);
+        $return = LegacyRequestUtils::readReturnParam($request);
 
         if ($this->loginViaToken()) {
             if ($return) {

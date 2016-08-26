@@ -70,8 +70,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     public function preActionHandler(Request $request, $action, $arguments = null)
     {
         if (!$this->_userHasPermissions()) {
-            if ($this->request->isXmlHttpRequest()) {
-                $data = array('error' => 'session_expired');
+            if ($request->isXmlHttpRequest()) {
+                $data = ['error' => 'session_expired'];
 
                 return $this->createJsonResponse($data, 403);
             }
@@ -80,11 +80,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
 
         if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
-            if ($this->request->isXmlHttpRequest()) {
-                $data = array(
+            if ($request->isXmlHttpRequest()) {
+                $data = [
                     'error'          => 'invalid_request_token',
                     'redirect_login' => $this->generateUrl('agent_login'),
-                );
+                ];
 
                 return $this->createJsonResponse($data, 403);
             } else {
@@ -93,9 +93,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
 
         if (!CheckWhitelistedIP::checkIP($this->getRequest(), $this->container, $this->person)) {
-            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', [
                 'ip' => $this->getRequest()->getClientIp(),
-            ));
+            ]);
         }
 
         return;

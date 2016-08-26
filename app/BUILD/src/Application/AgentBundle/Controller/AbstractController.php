@@ -72,7 +72,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     public function preActionHandler(Request $request, $action, $arguments = null)
     {
         if (!$this->person['id']) {
-            if ($this->request->isXmlHttpRequest()) {
+            if ($request->isXmlHttpRequest()) {
                 $data = array(
                     'error'          => 'session_expired',
                     'redirect_login' => $this->generateUrl('agent_login'),
@@ -83,7 +83,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 if ($this->getRequest()->getMethod() === 'POST') {
                     $return = $this->get('router')->generate('agent');
                 } else {
-                    $return = $this->request->getRequestUri();
+                    $return = $request->getRequestUri();
                 }
 
                 return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
@@ -97,7 +97,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
 
         if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
-            if ($this->request->isXmlHttpRequest()) {
+            if ($request->isXmlHttpRequest()) {
                 $data = array(
                     'error'          => 'invalid_request_token',
                     'redirect_login' => $this->generateUrl('agent_login'),

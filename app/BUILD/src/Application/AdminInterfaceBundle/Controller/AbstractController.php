@@ -79,15 +79,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     {
         $return = '';
         if (!$this->person['id']) {
-            if ($this->getRequest()->getMethod() === 'POST') {
+            if ($request->getMethod() === 'POST') {
                 $return = $this->get('router')->generate('admin');
             } else {
-                $return = $this->request->getRequestUri();
+                $return = $request->getRequestUri();
             }
         }
 
         if (!$this->_userHasPermissions()) {
-            if ($this->request->isXmlHttpRequest()) {
+            if ($request->isXmlHttpRequest()) {
                 $data = ['error' => 'session_expired'];
 
                 return $this->createJsonResponse($data, 403);
@@ -99,7 +99,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
 
         if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
-            if ($this->request->isXmlHttpRequest()) {
+            if ($request->isXmlHttpRequest()) {
                 $data = [
                     'error'          => 'invalid_request_token',
                     'redirect_login' => $this->generateUrl('agent_login'),

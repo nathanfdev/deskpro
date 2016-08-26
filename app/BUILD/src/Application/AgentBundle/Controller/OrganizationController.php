@@ -298,7 +298,7 @@ class OrganizationController extends AbstractController
         $org = $this->getOrgOr404($organization_id);
 
         $field_manager      = $this->container->getSystemService('org_fields_manager');
-        $post_custom_fields = $this->request->request->get('custom_fields', []);
+        $post_custom_fields = $request->request->get('custom_fields', []);
         if (!empty($post_custom_fields)) {
             $field_manager->saveFormToObject($post_custom_fields, $org);
         }
