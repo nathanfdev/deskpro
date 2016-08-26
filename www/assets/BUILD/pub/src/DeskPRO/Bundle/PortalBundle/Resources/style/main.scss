@@ -2700,7 +2700,8 @@ header {
 
 
   form .error .message {
-    bottom: -17px;
+    bottom: -38px;
+    z-index: 1000;
   }
 }
 
