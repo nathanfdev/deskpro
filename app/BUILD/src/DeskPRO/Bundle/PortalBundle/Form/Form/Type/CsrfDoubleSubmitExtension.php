@@ -161,11 +161,9 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
                 'csrf_double_submit_cookie_name' => self::COOKIE_NAME,
                 'csrf_double_submit_error_code'  => ErrorsCodes::CSRF,
             ])
-            ->setAllowedTypes([
-                'csrf_double_submit_protection'  => 'bool',
-                'csrf_double_submit_cookie_name' => 'string',
-                'csrf_double_submit_error_code'  => 'string',
-            ])
+            ->setAllowedTypes('csrf_double_submit_protection', 'bool')
+            ->setAllowedTypes('csrf_double_submit_cookie_name', 'string')
+            ->setAllowedTypes('csrf_double_submit_error_code', 'string')
         ;
     }
 

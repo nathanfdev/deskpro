@@ -82,12 +82,10 @@ class CustomPerFieldType extends AbstractType
                 'custom_def',
                 'owner',
             ])
-            ->setAllowedTypes([
-                'agent_interface' => 'bool',
-                'inline'          => 'bool',
-                'custom_def'      => CustomFieldDefinition::class,
-                'owner'           => [Person::class, Organization::class],
-            ])
+            ->setAllowedTypes('agent_interface', 'bool')
+            ->setAllowedTypes('inline', 'bool')
+            ->setAllowedTypes('custom_def', CustomFieldDefinition::class)
+            ->setAllowedTypes('owner', [Person::class, Organization::class])
         ;
     }
 

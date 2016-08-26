@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
 use Doctrine\ORM\EntityManager;
@@ -85,13 +81,5 @@ class OrganizationEmailDomainsType extends AbstractType
     public function getParent()
     {
         return 'collection';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'organization_email_domains';
     }
 }

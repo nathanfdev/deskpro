@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -40,7 +41,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class HiddenType.
  */
-class HiddenType extends AbstractType
+class DpHiddenType extends AbstractType
 {
     /**
      * @var \Symfony\Component\HttpFoundation\RequestStack
@@ -103,17 +104,9 @@ class HiddenType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'deskpro_hidden';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getParent()
     {
-        return 'hidden';
+        return HiddenType::class;
     }
 
     /**

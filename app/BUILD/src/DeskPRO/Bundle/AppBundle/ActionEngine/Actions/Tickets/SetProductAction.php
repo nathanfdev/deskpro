@@ -26,27 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
+/**
+ * Class SetProductAction.
+ */
 class SetProductAction extends AbstractAction implements ActionWithOptionsInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired('set_product');
         $resolver->setAllowedTypes('set_product', ['string', 'int']);
-        $resolver->setAllowedValues(
-            'set_product',
-            function ($value) {
-                return (is_int($value) && $value > 0) || ctype_digit($value);
-            }
-        );
+        $resolver->setAllowedValues('set_product', function ($value) {
+            return (is_int($value) && $value > 0) || ctype_digit($value);
+        });
     }
 }

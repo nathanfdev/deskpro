@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -37,20 +33,23 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
+/**
+ * Class SetHiddenStatusAction.
+ */
 class SetHiddenStatusAction extends AbstractAction implements ActionWithOptionsInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired('set_hidden_status');
         $resolver->setAllowedTypes('set_hidden_status', 'string');
-        $resolver->setAllowedValues(
-            'set_hidden_status',
-            [
-                Feedback::HIDDEN_STATUS_DELETED,
-                Feedback::HIDDEN_STATUS_DRAFT,
-                Feedback::HIDDEN_STATUS_SPAM,
-                Feedback::HIDDEN_STATUS_UNPUBLISHED,
-            ]
-        );
+        $resolver->setAllowedValues('set_hidden_status', [
+            Feedback::HIDDEN_STATUS_DELETED,
+            Feedback::HIDDEN_STATUS_DRAFT,
+            Feedback::HIDDEN_STATUS_SPAM,
+            Feedback::HIDDEN_STATUS_UNPUBLISHED,
+        ]);
     }
 }

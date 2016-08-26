@@ -102,12 +102,8 @@ class CustomFieldChoiceType extends AbstractType
                 'placeholder' => '',
                 'help'        => '',
             ])
-            ->setRequired([
-                'custom_field',
-            ])
-            ->setAllowedTypes([
-                'custom_field' => CustomDefAbstract::class,
-            ])
+            ->setRequired('custom_field')
+            ->setAllowedTypes('custom_field', CustomDefAbstract::class)
         ;
     }
 

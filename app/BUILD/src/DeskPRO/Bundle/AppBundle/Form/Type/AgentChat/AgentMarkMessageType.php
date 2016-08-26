@@ -83,9 +83,7 @@ class AgentMarkMessageType extends AbstractType
     {
         $resolver
             ->setRequired(['chat'])
-            ->setAllowedTypes([
-                'chat' => AgentChat::class,
-            ])
+            ->setAllowedTypes('chat', AgentChat::class)
         ;
     }
 }

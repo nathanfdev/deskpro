@@ -73,14 +73,12 @@ class CustomFieldDefinitionType extends AbstractType implements EventSubscriberI
                 'context',
                 'allow_edit',
             ])
-            ->setAllowedTypes([
-                // todo
-                'context' => [
-                    'Application\DeskPRO\Entity\Person',
-                    'Application\DeskPRO\Entity\Ticket',
-                    'Application\DeskPRO\Entity\Organization',
-                ],
-            ]);
+            ->setAllowedTypes('context', [
+                'Application\DeskPRO\Entity\Person',
+                'Application\DeskPRO\Entity\Ticket',
+                'Application\DeskPRO\Entity\Organization',
+            ])
+        ;
     }
 
     /**

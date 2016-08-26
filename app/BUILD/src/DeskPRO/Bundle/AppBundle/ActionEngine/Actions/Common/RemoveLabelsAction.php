@@ -26,27 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
+/**
+ * Class RemoveLabelsAction.
+ */
 class RemoveLabelsAction extends AbstractAction implements ActionWithOptionsInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired('remove_labels');
         $resolver->setAllowedTypes('remove_labels', 'array');
-        $resolver->setAllowedValues(
-            'remove_labels',
-            function ($value) {
-                return !empty($value);
-            }
-        );
+        $resolver->setAllowedValues('remove_labels', function ($value) {
+            return !empty($value);
+        });
     }
 }

@@ -77,9 +77,7 @@ class TicketSlaType extends AbstractType
             ->setDefaults([
                 'data_class' => TicketSla::class,
             ])
-            ->setAllowedTypes([
-                'ticket' => Ticket::class,
-            ])
+            ->setAllowedTypes('ticket', Ticket::class)
         ;
     }
 

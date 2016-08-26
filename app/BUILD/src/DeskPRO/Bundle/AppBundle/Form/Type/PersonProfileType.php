@@ -30,7 +30,13 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
 use Orb\Util\Arrays;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -48,16 +54,16 @@ class PersonProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text')
-            ->add('display_name', 'text', [
+            ->add('name', TextType::class)
+            ->add('display_name', TextType::class, [
                 'property_path' => 'override_display_name',
             ])
-            ->add('avatar_blob_auth_id', 'auth_blob', [
+            ->add('avatar_blob_auth_id', BlobAuthType::class, [
                 'required'      => false,
                 'property_path' => 'picture_blob',
             ])
-            ->add('emails', 'collection', [
-                'type'            => 'email',
+            ->add('emails', CollectionType::class, [
+                'type'            => EmailType::class,
                 'allow_add'       => true,
                 'allow_delete'    => true,
                 'invalid_message' => 'Invalid Email.',
@@ -68,10 +74,10 @@ class PersonProfileType extends AbstractType
                     'error_bubbling' => true,
                 ],
             ])
-            ->add('primary_email', 'email', [
+            ->add('primary_email', EmailType::class, [
                 'property_path' => 'email',
             ])
-            ->add('phone', new PhoneNumberType(), [
+            ->add('phone', PhoneNumberType::class, [
                 'property_path'  => 'primaryPhoneNumber',
                 'error_bubbling' => false,
                 'required'       => false,
@@ -79,13 +85,13 @@ class PersonProfileType extends AbstractType
                     new AppConstraints\PhoneNumber(),
                 ],
             ])
-            ->add('language_id', 'entity', [
+            ->add('language_id', EntityType::class, [
                 'class'         => 'DeskPRO:Language',
                 'property_path' => 'language',
             ])
-            ->add('timezone', 'text')
-            ->add('password', 'repeated', [
-                'type'            => 'password',
+            ->add('timezone', TextType::class)
+            ->add('password', RepeatedType::class, [
+                'type'            => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
                 'required'        => false,
                 'error_bubbling'  => false,

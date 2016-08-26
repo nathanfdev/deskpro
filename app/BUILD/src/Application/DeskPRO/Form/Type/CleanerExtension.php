@@ -112,15 +112,12 @@ class CleanerExtension extends AbstractTypeExtension
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefaults(
-            [
+        $resolver
+            ->setDefaults([
                 'filter_clean' => true,
-            ]
-        )->setAllowedTypes(
-            [
-                'filter_clean' => 'bool',
-            ]
-        );
+            ])
+            ->setAllowedTypes('filter_clean', 'bool')
+        ;
     }
 
     public function getExtendedType()

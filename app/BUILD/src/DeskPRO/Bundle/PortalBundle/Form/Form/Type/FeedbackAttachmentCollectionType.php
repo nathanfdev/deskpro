@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\FeedbackAttachment;
@@ -42,12 +38,17 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class FeedbackAttachmentCollectionType.
+ */
 class FeedbackAttachmentCollectionType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $form = $event->getForm();
             $collection = $event->getData();
 
             // ensure there is a collection of attachments on the message (even if empty)
@@ -80,10 +81,13 @@ class FeedbackAttachmentCollectionType extends AbstractType
         });
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
+        $resolver
+            ->setDefaults([
                 'type'    => 'feedback_attachment',
                 'options' => function (Options $options) {
                     return [
@@ -94,31 +98,22 @@ class FeedbackAttachmentCollectionType extends AbstractType
                 'allow_add'    => true,
                 'allow_delete' => true,
                 'label'        => false,
-            ]
-        );
-
-        $resolver->setRequired(
-            [
-                'person',
-            ]
-        );
-
-        $resolver->setAllowedTypes(
-            [
-                'person' => 'Application\\DeskPRO\\Entity\\Person',
-            ]
-        );
+            ])
+            ->setRequired('person')
+            ->setAllowedTypes('person', 'Application\\DeskPRO\\Entity\\Person')
+        ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
         return 'collection';
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {

@@ -178,13 +178,11 @@ class TaskType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['person'])
+            ->setRequired('person')
             ->setDefaults([
                 'data_class' => Task::class,
             ])
-            ->setAllowedTypes([
-                'person' => Person::class,
-            ])
+            ->setAllowedTypes('person', Person::class)
         ;
     }
 

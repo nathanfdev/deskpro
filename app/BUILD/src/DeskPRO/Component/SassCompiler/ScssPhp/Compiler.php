@@ -139,18 +139,18 @@ class Compiler extends BaseCompiler
 
             // What happens when all file loaders cant load it
             $resolver->setDefault('invalid_load_file', 'comment');
-            $resolver->setAllowedValues('invalid_load_file', array('ignore', 'throw', 'comment'));
+            $resolver->setAllowedValues('invalid_load_file', ['ignore', 'throw', 'comment']);
 
             // What happens if there's an exception thrown during load of a file
             $resolver->setDefault('error_load_file', 'comment');
-            $resolver->setAllowedValues('error_load_file', array('ignore', 'throw', 'comment', 'continue'));
+            $resolver->setAllowedValues('error_load_file', ['ignore', 'throw', 'comment', 'continue']);
 
-            $resolver->setDefault('file_loaders', function (Options $options) {
+            $resolver->setDefault('file_loaders', function () {
                 return new DefaultFileLoader();
             });
 
-            $resolver->setDefault('include_paths', array());
-            $resolver->setDefault('file_locators', array());
+            $resolver->setDefault('include_paths', []);
+            $resolver->setDefault('file_locators', []);
         }
 
         return $resolver;

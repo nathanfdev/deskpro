@@ -33,6 +33,9 @@ use Predis\Client;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class RedisReader.
+ */
 class RedisReader implements ReaderInterface
 {
     /**
@@ -87,31 +90,29 @@ class RedisReader implements ReaderInterface
      */
     private function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'redis_client'  => null,
-            'redis_params'  => null, // see https://github.com/nrk/predis/wiki/Connection-Parameters
-            'redis_factory' => null,
-        ]);
-
-        $resolver->setRequired([
-            'logger',
-            'redis_key',
-            'task_factory',
-        ]);
-        $resolver->setDefined([
-            'logger',
-            'redis_client',
-            'redis_params',
-            'redis_factory',
-        ]);
-
-        $resolver->setAllowedTypes([
-            'redis_client' => ['Predis\Client', 'null'],
-            'logger'       => 'Monolog\Logger',
-            'task_factory' => 'DeskPRO\Component\TaskRunner\Task\TaskFactoryInterface',
-            'redis_params' => ['array', 'null'],
-            'redis_key'    => ['string', 'null'],
-        ]);
+        $resolver
+            ->setDefaults([
+                'redis_client'  => null,
+                'redis_params'  => null, // see https://github.com/nrk/predis/wiki/Connection-Parameters
+                'redis_factory' => null,
+            ])
+            ->setRequired([
+                'logger',
+                'redis_key',
+                'task_factory',
+            ])
+            ->setDefined([
+                'logger',
+                'redis_client',
+                'redis_params',
+                'redis_factory',
+            ])
+            ->setAllowedTypes('redis_client', ['Predis\Client', 'null'])
+            ->setAllowedTypes('logger', 'Monolog\Logger')
+            ->setAllowedTypes('task_factory', 'DeskPRO\Component\TaskRunner\Task\TaskFactoryInterface')
+            ->setAllowedTypes('redis_params', ['array', 'null'])
+            ->setAllowedTypes('redis_key', ['string', 'null'])
+        ;
     }
 
     /**

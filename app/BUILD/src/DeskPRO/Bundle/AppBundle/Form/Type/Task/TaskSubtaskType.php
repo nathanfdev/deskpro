@@ -75,10 +75,8 @@ class TaskSubtaskType extends AbstractType
             ->setDefaults([
                 'data_class' => TaskSubtask::class,
             ])
-            ->setAllowedTypes([
-                'person' => Person::class,
-                'task'   => Task::class,
-            ])
+            ->setAllowedTypes('person', Person::class)
+            ->setAllowedTypes('task', Task::class)
         ;
     }
 

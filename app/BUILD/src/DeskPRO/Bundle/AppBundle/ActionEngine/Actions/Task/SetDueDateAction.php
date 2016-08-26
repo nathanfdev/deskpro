@@ -26,30 +26,28 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
+/**
+ * Class SetDueDateAction.
+ */
 class SetDueDateAction extends AbstractAction implements ActionWithOptionsInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired('set_due_date');
         $resolver->setAllowedTypes('set_due_date', 'string');
-        $resolver->setAllowedValues(
-            'set_due_date',
-            function ($value) {
-                $dateTime = new \DateTime($value);
-                $errors = \DateTime::getLastErrors();
+        $resolver->setAllowedValues('set_due_date', function () {
+            $errors = \DateTime::getLastErrors();
 
-                return empty($errors['error_count']) && empty($errors['warning_count']);
-            }
-        );
+            return empty($errors['error_count']) && empty($errors['warning_count']);
+        });
     }
 }

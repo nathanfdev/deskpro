@@ -57,10 +57,8 @@ class CombinedType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['forms'])
-            ->setAllowedTypes([
-                'forms' => 'array', // an array of form types with their option sets
-            ])
+            ->setRequired('forms')
+            ->setAllowedTypes('forms', 'array') // an array of form types with their option sets
             ->setDefaults([
                 'mapped'       => false,
                 'inherit_data' => true,
