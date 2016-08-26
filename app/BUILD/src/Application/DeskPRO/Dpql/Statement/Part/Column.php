@@ -64,9 +64,13 @@ class Column extends AbstractPart
      */
     protected static $_tableResolver = [
         'agent_teams'                => ['id', 'name'],
-        'brands'                     => ['id', 'name'],
-        'departments'                => ['id', 'title'],
+        'article_categories'         => ['id', 'title'],
+        'download_categories'        => ['id', 'title'],
         'feedback_categories'        => ['id', 'title'],
+        'news_categories'            => ['id', 'title'],
+        'brands'                     => ['id', 'name'],
+        'custom_field_definition'    => ['id', 'title'],
+        'departments'                => ['id', 'title'],
         'feedback_status_categories' => ['id', 'title'],
         'labels_tickets'             => ['label', 'label'],
         'languages'                  => ['id', 'title'],
@@ -103,6 +107,22 @@ class Column extends AbstractPart
     public function __construct(array $parts)
     {
         $this->parts = $parts;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @throws Exception
+     *
+     * @return array
+     */
+    public static function resolveTable($name)
+    {
+        if (!array_key_exists($name, self::$_tableResolver)) {
+            throw new Exception("Missing `{$name}` table resolving information");
+        }
+
+        return self::$_tableResolver[$name];
     }
 
     /**
@@ -361,20 +381,7 @@ class Column extends AbstractPart
         if ($sql === false) {
             $assocTable = $repository->getTableName();
             $name       = $part;
-            if ($assocTable == 'departments') {
-                $call = new FunctionCall('if', [
-                    new self(array_merge($this->parts, ['parent', 'id'])),
-                    new FunctionCall('concat', [
-                        new self(array_merge($this->parts, ['parent', 'title'])),
-                        new StringPart(' > '),
-                        new self(array_merge($this->parts, ['title'])),
-                    ]),
-                    new self(array_merge($this->parts, ['title'])),
-                ]);
-                $prepped = $call->prepare($statement, $section, $stack, $select, $result);
-
-                return new Prepared("`$sqlTable`.`id`", $this->_prettifyColumnName($name), $prepped->sql());
-            } elseif ($assocTable == 'ticket_slas') {
+            if ($assocTable == 'ticket_slas') {
                 $call    = new self(array_merge($this->parts, ['sla']));
                 $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 

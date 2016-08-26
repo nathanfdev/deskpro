@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -51,7 +52,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property CustomFieldDefinition $parent
  * @property ArrayCollection $children
  */
-class CustomFieldDefinition extends DomainObject implements HasPhraseName
+class CustomFieldDefinition extends DomainObject implements HasPhraseName, Hierarchical
 {
     /**
      * The unique ID.
@@ -184,6 +185,14 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         $this->is_enabled      = true;
         $this->is_user_enabled = true;
         $this->is_agent_field  = false;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**

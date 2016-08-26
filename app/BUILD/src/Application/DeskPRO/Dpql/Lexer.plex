@@ -84,7 +84,7 @@ class Lexer
 	protected $_reserved = array(
 		'DISPLAY', 'TABLE', 'BAR', 'LINE', 'PIE', 'AREA',
 		'SELECT', 'FROM', 'WHERE',
-		'GROUP', 'ORDER', 'SPLIT', 'BY',
+		'GROUP', 'WITH', 'ROLLUP', 'ORDER', 'SPLIT', 'BY',
 		'LIMIT', 'OFFSET', 'AS', 'NULL',
 		'AND', 'OR', 'NOT', 'IN', 'LIKE', 'REGEXP',
 		'ASC', 'DESC',

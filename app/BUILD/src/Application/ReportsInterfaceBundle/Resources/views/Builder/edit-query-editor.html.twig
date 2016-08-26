@@ -88,6 +88,13 @@
 							<dd><input ng-model="EditCtrl.query_parts.groupBy" class="form-control" type="text"></dd>
 						</dl>
 						<dl>
+							<dt>WITH ROLLUP</dt>
+							<dd>
+								<input ng-model="EditCtrl.query_parts.withRollup" class="form-control expander" type="checkbox">
+								Will add the Total column for COUNT() on hierarchical data
+							</dd>
+						</dl>
+						<dl>
 							<dt>ORDER BY</dt>
 							<dd><input ng-model="EditCtrl.query_parts.orderBy" class="form-control" type="text"></dd>
 						</dl>
