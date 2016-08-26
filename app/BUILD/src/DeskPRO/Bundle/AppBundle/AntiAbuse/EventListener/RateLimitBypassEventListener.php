@@ -82,16 +82,14 @@ class RateLimitBypassEventListener implements EventSubscriberInterface
      */
     public function checkBypass(AntiAbuseEvent $event)
     {
-        if (!$event->isCheckOnly()) {
-            if ($request = $this->requestStack->getCurrentRequest()) {
-                $bypass =
-                    $request->query->get('DP_BYPASS_TOKEN_AUTH', false) ?:
-                    $request->request->get('DP_BYPASS_TOKEN_AUTH', false) ?:
-                    $request->headers->get('DP_BYPASS_TOKEN_AUTH', false);
+        if ($request = $this->requestStack->getCurrentRequest()) {
+            $bypass =
+                $request->query->get('DP_BYPASS_TOKEN_AUTH', false) ?:
+                $request->request->get('DP_BYPASS_TOKEN_AUTH', false) ?:
+                $request->headers->get('DP_BYPASS_TOKEN_AUTH', false);
 
-                if ($bypass && defined('DP_BYPASS_TOKEN_AUTH') && DP_BYPASS_TOKEN_AUTH === $bypass) {
-                    $event->stopPropagation();
-                }
+            if ($bypass && defined('DP_BYPASS_TOKEN_AUTH') && DP_BYPASS_TOKEN_AUTH === $bypass) {
+                $event->stopPropagation();
             }
         }
 
