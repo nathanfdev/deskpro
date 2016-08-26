@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
+import Isvg from 'react-inlinesvg';
+import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
 import { resumeOnboarding } from '../../Onboarding/Actions/onboardingActions';
-import { connect } from 'react-redux';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
-import Isvg from 'react-inlinesvg';
 
 @connect(state => ({
   agents:          collectionSelectorFactory('Person', 'agents')(state),
@@ -125,7 +125,6 @@ class AgentTopBar extends SeparateComponent {
   }
 
   clickLogo = () => {
-    // this.openDeskPro();
     if (this.props.logoActive) {
       this.props.logoCallback();
       this.props.dispatch(resumeOnboarding());

@@ -39,7 +39,7 @@ export const preloadData    = createAction(
           dispatch(setCollection('Language', 'all', data.languages));
           dispatch(setCollection('UserGroup', 'all', data.user_groups));
           if (data.onboardings) {
-            dispatch(setCollection('Onboarding', 'new', [data.onboardings]));
+            dispatch(setCollection('Onboarding', 'pending', [data.onboardings]));
           }
           dispatch(setAgentSettings(data.settings));
           dispatch(setupActionAlerts(data.alerts));

@@ -37,11 +37,11 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 class PersonOnboardingListener
 {
     /** @var ArrayCollection */
-    private $new_entities;
+    private $newEntities;
 
     public function __construct()
     {
-        $this->new_entities = new ArrayCollection();
+        $this->newEntities = new ArrayCollection();
     }
 
     protected static $onboardings = [
@@ -67,29 +67,29 @@ class PersonOnboardingListener
     protected function addOnboardings(Person $person)
     {
         foreach (self::$onboardings as $class) {
-            if ($this->new_entities->containsKey($class.$person->getId())) {
+            if ($this->newEntities->containsKey($class.$person->getId())) {
                 continue;
             }
             $onboarding = new PersonOnboarding();
             $onboarding->setPerson($person);
             $onboarding->setOnboardingClass($class);
             $onboarding->setApplication(PersonOnboarding::APPLICATION_AGENT);
-            $this->new_entities->set($class.$person->getId(), $onboarding);
+            $this->newEntities->set($class.$person->getId(), $onboarding);
         }
     }
 
     public function preFlush(Person $person, PreFlushEventArgs $args)
     {
-        if ($this->new_entities->count() > 0) {
+        if ($this->newEntities->count() > 0) {
             $em  = $args->getEntityManager();
             $uow = $em->getUnitOfWork();
 
-            foreach ($this->new_entities as $entity) {
+            foreach ($this->newEntities as $entity) {
                 $em->persist($entity);
                 $uow->computeChangeSet($em->getClassMetadata(get_class($entity)), $entity);
             }
 
-            $this->new_entities = new ArrayCollection(); // clear this to prevent recursive flushing
+            $this->newEntities = new ArrayCollection(); // clear this to prevent recursive flushing
         }
     }
 }

@@ -79,23 +79,23 @@ class PersonOnboarding implements EntityInterface
     /**
      * @JMS\Expose()
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="current_step")
      *
      * @var int
      */
-    protected $current_step = 0;
+    protected $currentStep = 0;
 
     /**
      * @JMS\Expose()
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", name="onboarding_class")
      *
      * @var string
      */
-    protected $onboarding_class;
+    protected $onboardingClass;
 
     /**
-     * Message status (0 - new, 1 - in progree, 2 - completed).
+     * Message status (0 - new, 1 - in progress, 2 - completed).
      *
      * @JMS\Expose()
      *
@@ -122,11 +122,11 @@ class PersonOnboarding implements EntityInterface
     /**
      * @JMS\Expose()
      *
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", name="date_completion", nullable=true)
      *
      * @var DateTime
      */
-    protected $date_completion;
+    protected $dateCompletion;
 
     /**
      * @return int
@@ -149,7 +149,7 @@ class PersonOnboarding implements EntityInterface
      *
      * @return PersonOnboarding
      */
-    public function setPerson($person)
+    public function setPerson(Person $person)
     {
         $this->person = $person;
 
@@ -161,17 +161,17 @@ class PersonOnboarding implements EntityInterface
      */
     public function getCurrentStep()
     {
-        return $this->current_step;
+        return $this->currentStep;
     }
 
     /**
-     * @param int $current_step
+     * @param int $currentStep
      *
      * @return PersonOnboarding
      */
-    public function setCurrentStep($current_step)
+    public function setCurrentStep($currentStep)
     {
-        $this->current_step = $current_step;
+        $this->currentStep = $currentStep;
 
         return $this;
     }
@@ -181,17 +181,17 @@ class PersonOnboarding implements EntityInterface
      */
     public function getOnboardingClass()
     {
-        return $this->onboarding_class;
+        return $this->onboardingClass;
     }
 
     /**
-     * @param string $onboarding_class
+     * @param string $onboardingClass
      *
      * @return PersonOnboarding
      */
-    public function setOnboardingClass($onboarding_class)
+    public function setOnboardingClass($onboardingClass)
     {
-        $this->onboarding_class = $onboarding_class;
+        $this->onboardingClass = $onboardingClass;
 
         return $this;
     }
@@ -241,17 +241,17 @@ class PersonOnboarding implements EntityInterface
      */
     public function getDateCompletion()
     {
-        return $this->date_completion;
+        return $this->dateCompletion;
     }
 
     /**
-     * @param DateTime $date_completion
+     * @param DateTime $dateCompletion
      *
      * @return PersonOnboarding
      */
-    public function setDateCompletion($date_completion)
+    public function setDateCompletion($dateCompletion)
     {
-        $this->date_completion = $date_completion;
+        $this->dateCompletion = $dateCompletion;
 
         return $this;
     }

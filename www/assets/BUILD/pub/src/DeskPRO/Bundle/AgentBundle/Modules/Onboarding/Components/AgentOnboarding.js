@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { SeparateComponent } from '../../Common/Components/SeparateComponent';
-import * as actions from '../Actions/onboardingActions';
-import * as Tours from '../Tours';
 import Joyride  from 'react-joyride';
 import $ from 'jquery';
 import moment from 'moment';
 import Isvg from 'react-inlinesvg';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { SeparateComponent } from '../../Common/Components/SeparateComponent';
+import * as actions from '../Actions/onboardingActions';
+import * as Tours from '../Tours';
 
 @connect(state => ({
-  onboardings: collectionSelectorFactory('Onboarding', 'new')(state)
+  onboardings: collectionSelectorFactory('Onboarding', 'pending')(state)
 }))
 export class AgentOnboardingContainer extends SeparateComponent {
   static propTypes = {
@@ -39,8 +39,8 @@ export class AgentOnboarding extends React.Component {
     dispatch:   PropTypes.func.isRequired
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       steps:        [],
       onboardingId: 0,
@@ -81,7 +81,7 @@ export class AgentOnboarding extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (!prevState.ready && this.state.ready) {
-      this.refs.joyride.start(true);
+      this.joyride.start(true);
     }
   }
 
@@ -96,10 +96,10 @@ export class AgentOnboarding extends React.Component {
     }
     const width = $(window).width();
     const height = $(window).height();
-    const style = { left: width / 2 - 280, top: height / 2 - 320 };
+    const style = { left: (width / 2) - 280, top: (height / 2) - 320 };
     return (<div className="joyride">
       <div className="joyride-overlay" style={{ height }}>
-        <div className="joyride-hole"></div>
+        <div className="joyride-hole" />
         <div className="joyride-intro" style={style}>
           <img src={intro.img} role="presentation" />
           <h3>{intro.title}</h3>
@@ -116,7 +116,7 @@ export class AgentOnboarding extends React.Component {
   };
 
   addSteps = (steps) => {
-    const joyride = this.refs.joyride;
+    const joyride = this.joyride;
 
     let stepsArray = steps;
     if (!Array.isArray(stepsArray)) {
@@ -140,15 +140,15 @@ export class AgentOnboarding extends React.Component {
   };
 
   resumeOnboarding = () => {
-    this.refs.joyride.toggleTooltip(true, this.state.currentStep);
+    this.joyride.toggleTooltip(true, this.state.currentStep);
   };
 
   startOnboarding = (open) => {
-    this.refs.joyride.start(open);
+    this.joyride.start(open);
   };
 
   callback = (data) => {
-    const joyride = this.refs.joyride;
+    const joyride = this.joyride;
     const progress = joyride.getProgress();
     let onboarding;
 
@@ -157,12 +157,7 @@ export class AgentOnboarding extends React.Component {
         if (progress.percentageComplete < 100) {
           this.props.dispatch(actions.pauseOnboarding({ callback: this.resumeOnboarding, active: true }));
         } else {
-          onboarding = {
-            current_step:    progress.index,
-            status:          2,
-            date_completion: moment().unix()
-          };
-          this.props.dispatch(actions.updateCurrentStep(this.state.onboardingId, onboarding));
+          this.finishOnboarding(progress.index);
         }
         break;
       case 'next':
@@ -175,7 +170,7 @@ export class AgentOnboarding extends React.Component {
           onboarding.status = 0;
         } else if (progress.percentageComplete === 100) {
           onboarding.status = 2;
-          onboarding.date_completion = moment().unix();
+          onboarding.date_completion = moment().format();
         } else {
           onboarding.status = 1;
         }
@@ -185,13 +180,20 @@ export class AgentOnboarding extends React.Component {
         this.props.dispatch(actions.resumeOnboarding());
         break;
       case 'finished':
-        console.log('Close finished');
+        this.finishOnboarding(progress.index);
         break;
       default:
         break;
     }
-    console.log('%ccallback', 'color: #47AAAC; font-weight: bold; font-size: 13px;'); // eslint-disable-line no-console
-    console.log(data); // eslint-disable-line no-console
+  };
+
+  finishOnboarding = (index) => {
+    const onboarding = {
+      current_step:    index,
+      status:          2,
+      date_completion: moment().format()
+    };
+    this.props.dispatch(actions.updateCurrentStep(this.state.onboardingId, onboarding));
   };
 
   render() {
@@ -203,7 +205,7 @@ export class AgentOnboarding extends React.Component {
     const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     return (<div>
       <Joyride
-        ref="joyride"
+        ref={(c) => { this.joyride = c; }}
         steps={this.state.steps}
         showSkipButton={false}
         locale={{

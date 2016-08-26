@@ -36,11 +36,14 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\EventListener\PersonChangeLogListener;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
+use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -3627,7 +3630,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Person';
+        $metadata->customRepositoryClassName = PersonRepository::class;
 
         $metadata->setPrimaryTable(
             [
@@ -3651,14 +3654,14 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             foreach ([Events::prePersist, Events::postPersist, Events::preUpdate, Events::postUpdate] as $event) {
                 $metadata->addEntityListener(
                     $event,
-                    'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener',
+                    PersonChangeLogListener::class,
                     'on'.ucfirst($event)
                 );
             }
             foreach ([Events::prePersist, Events::preUpdate, Events::preFlush] as $event) {
                 $metadata->addEntityListener(
                     $event,
-                    'DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener',
+                    PersonOnboardingListener::class,
                     $event
                 );
             }
@@ -4057,7 +4060,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'picture_blob',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+                'targetEntity' => Blob::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'fetch'        => ClassMetadata::FETCH_EAGER,
@@ -4076,7 +4079,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'language',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
+                'targetEntity' => Language::class,
                 'mappedBy'     => null,
                 'cascade'      => ['persist'],
                 'inversedBy'   => null,
@@ -4094,7 +4097,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'organization',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
+                'targetEntity' => Organization::class,
                 'mappedBy'     => null,
                 'inversedBy'   => 'employees',
                 'fetch'        => ClassMetadata::FETCH_EAGER,
@@ -4114,7 +4117,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapOneToOne(
             [
                 'fieldName'    => 'primary_email',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail',
+                'targetEntity' => PersonEmail::class,
                 'cascade'      => ['persist', 'detach'],
                 'mappedBy'     => null,
                 'inversedBy'   => null,
@@ -4134,7 +4137,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'emails',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\PersonEmail',
+                'targetEntity'  => PersonEmail::class,
                 'cascade'       => ['persist', 'detach'],
                 'mappedBy'      => 'person',
                 'dpApi'         => true,
@@ -4144,7 +4147,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'labels',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelPerson',
+                'targetEntity'  => LabelPerson::class,
                 'cascade'       => ['remove', 'persist', 'merge', 'detach'],
                 'mappedBy'      => 'person',
                 'orphanRemoval' => true,
@@ -4153,7 +4156,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'custom_data',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataPerson',
+                'targetEntity'  => CustomDataPerson::class,
                 'cascade'       => ['remove', 'persist', 'merge', 'detach'],
                 'mappedBy'      => 'person',
                 'orphanRemoval' => true,
@@ -4163,7 +4166,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'contact_data',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonContactData',
+                'targetEntity' => PersonContactData::class,
                 'cascade'      => ['remove', 'persist', 'merge', 'detach'],
                 'mappedBy'     => 'person',
                 'indexBy'      => 'id',
@@ -4174,7 +4177,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'usergroups',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'targetEntity' => Usergroup::class,
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [
                     'name'        => 'person2usergroups',
@@ -4204,7 +4207,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'preferences',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref',
+                'targetEntity' => PersonPref::class,
                 'cascade'      => ['persist', 'remove', 'merge'],
                 'mappedBy'     => 'person',
             ]
@@ -4212,7 +4215,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'usersource_assoc',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc',
+                'targetEntity' => PersonUsersourceAssoc::class,
                 'mappedBy'     => 'person',
                 'cascade'      => ['persist', 'remove'],
             ]
@@ -4220,21 +4223,21 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'twitter_users',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonTwitterUser',
+                'targetEntity' => PersonTwitterUser::class,
                 'mappedBy'     => 'person',
             ]
         );
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'twitter_accounts',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount',
+                'targetEntity' => TwitterAccount::class,
                 'mappedBy'     => 'persons',
             ]
         );
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'notes',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonNote',
+                'targetEntity' => PersonNote::class,
                 'mappedBy'     => 'person',
                 'cascade'      => ['persist', 'remove'],
             ]
@@ -4242,7 +4245,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'phone_numbers',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\PhoneNumber',
+                'targetEntity'  => PhoneNumber::class,
                 'mappedBy'      => 'person',
                 'cascade'       => ['persist', 'detach'],
                 'orphanRemoval' => true,
@@ -4251,14 +4254,14 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'department_permissions',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
+                'targetEntity' => DepartmentPermission::class,
                 'mappedBy'     => 'person',
             ]
         );
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'assigned_tasks',
-                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TaskAssignment',
+                'targetEntity'  => TaskAssignment::class,
                 'mappedBy'      => 'person',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'orphanRemoval' => true,
@@ -4268,7 +4271,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'tickets',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketParticipant',
+                'targetEntity'  => TicketParticipant::class,
                 'mappedBy'      => 'person',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'orphanRemoval' => true,
@@ -4280,7 +4283,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'fieldName'    => 'teams',
                 'mappedBy'     => 'members',
                 'dpApi'        => true,
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+                'targetEntity' => AgentTeam::class,
                 'joinTable'    => [
                     'name'               => 'agent_team_members',
                     'joinColumns'        => [['name' => 'person_id', 'onDelete' => 'CASCADE']],
@@ -4294,7 +4297,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'fieldName'    => 'chats',
                 'mappedBy'     => 'participants',
                 'dpApi'        => true,
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation',
+                'targetEntity' => ChatConversation::class,
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
@@ -4303,7 +4306,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             [
                 'fieldName'    => 'primary_team',
                 'dpApi'        => true,
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+                'targetEntity' => AgentTeam::class,
                 'nullable'     => true,
                 'joinColumns'  => [
                     [
