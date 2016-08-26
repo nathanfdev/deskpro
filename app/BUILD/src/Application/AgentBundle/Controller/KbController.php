@@ -50,6 +50,7 @@ use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -990,7 +991,7 @@ class KbController extends AbstractController
         ]);
     }
 
-    public function newArticleSaveAction()
+    public function newArticleSaveAction(Request $request)
     {
         $newArticle = new \Application\AgentBundle\Form\Model\NewArticle($this->person);
 
@@ -999,8 +1000,8 @@ class KbController extends AbstractController
 
         $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newarticle' AND person_id = ?", [$this->person->id]);
 
-        if ($this->get('request')->getMethod() == 'POST') {
-            $form->handleRequest($this->get('request'));
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
             $form->isValid();
 
             $validator = new \Application\AgentBundle\Validator\NewArticleValidator();

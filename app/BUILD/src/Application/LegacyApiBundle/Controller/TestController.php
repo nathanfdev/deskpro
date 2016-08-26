@@ -30,6 +30,7 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * A Test API resource.
@@ -38,13 +39,16 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  */
 class TestController extends AbstractController
 {
-    public function preActionHandler($action, $arguments = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         if ($action == 'testAction' || $action == 'aboutAction') {
             return;
         }
 
-        return parent::preActionHandler($action, $arguments);
+        return parent::preActionHandler($request, $action, $arguments);
     }
 
     /**
