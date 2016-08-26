@@ -2,13 +2,18 @@ import React, { PropTypes } from 'react';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
 import { Segment, SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
-import AgentList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/Agents/AgentsList';
+import AgentList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/AgentsList';
+import DepartmentsList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/DepartmentsList';
+import EveryoneSegment from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/EveryoneSegment';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
+import { Header } from 'DeskPRO/Component/Semantic/Common';
 
 class IMOverlay extends React.Component {
 
   static propTypes = {
-    agents: PropTypes.object.isRequired
+    agents:        PropTypes.object.isRequired,
+    departments:   PropTypes.object.isRequired,
+    notifications: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -27,17 +32,27 @@ class IMOverlay extends React.Component {
   }
 
   getAgentsTab() {
+    const { agents, notifications } = this.props;
     return  {
       id:      'agents',
-      content: <AgentList agents={this.props.agents} />,
+      content: <AgentList agents={agents} notifications={notifications}/>,
       title:   <span><i className="fa fa-user dp-im-tab-menu-icon" />Agents</span>
     };
   }
 
   getGroupsTab() {
+    const { agents, departments } = this.props;
+    const content = (
+      <div>
+        <Header size={4} classes={['group-list']} content={<span>everyone<span className="agents-counter">({agents.size})</span></span>} />
+        <EveryoneSegment agents={agents} />
+        <Header size={4} classes={['group-list']} content="department" />
+        <DepartmentsList agents={agents} departments={departments} />
+      </div>
+    );
     return  {
       id:      'groups',
-      content: 'groups',
+      content,
       title:   <span><i className="fa fa-group dp-im-tab-menu-icon" />Groups</span>
     };
   }

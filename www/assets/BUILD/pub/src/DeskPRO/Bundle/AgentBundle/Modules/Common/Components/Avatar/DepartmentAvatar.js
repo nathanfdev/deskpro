@@ -7,7 +7,12 @@ export class DepartmentAvatar extends React.Component {
 
   static propTypes = {
     department: PropTypes.object.isRequired,
-    size:       PropTypes.any
+    size:       PropTypes.any,
+    classes:    PropTypes.array
+  };
+
+  static defaultProps = {
+    classes: []
   };
 
   getDepartmentFallbackText() {
@@ -19,7 +24,7 @@ export class DepartmentAvatar extends React.Component {
   }
 
   render() {
-    const { size } = this.props;
+    const { size, classes } = this.props;
     const department = this.props.department || Immutable.fromJS({});
     const avatar = department.get('avatar') || Immutable.fromJS({});
 
@@ -28,7 +33,8 @@ export class DepartmentAvatar extends React.Component {
       color:      chooseColor(department.get('id')),
       url:        avatar.get('url'),
       urlPattern: avatar.get('url_pattern'),
-      text:       this.getDepartmentFallbackText()
+      text:       this.getDepartmentFallbackText(),
+      classes
     };
 
     return (

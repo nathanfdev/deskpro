@@ -8,25 +8,30 @@ export class Avatar extends React.Component {
     size:       PropTypes.number,
     url:        PropTypes.string,
     urlPattern: PropTypes.string,
-    gravatar:   PropTypes.string
+    gravatar:   PropTypes.string,
+    classes:    PropTypes.array,
+  };
+
+  static defaultProps = {
+    classes: []
   };
 
   render() {
-    const { url, urlPattern, gravatar, size } = this.props;
+    const { url, urlPattern, gravatar, size, classes } = this.props;
 
     if (url || urlPattern) {
       return (
         <ImageAvatar {...this.props}>
-          <UserPhoto />
+          <UserPhoto classes={classes} />
         </ImageAvatar>
       );
     }
     if (gravatar) {
       return (
         <TextAvatar {...this.props}>
-          <UserPhoto type="text">
+          <UserPhoto type="text" classes={classes}>
             <Gravatar gravatar={gravatar} size={size}>
-              <UserPhoto type="gravatar" />
+              <UserPhoto type="gravatar" classes={classes}/>
             </Gravatar>
           </UserPhoto>
         </TextAvatar>
@@ -35,7 +40,7 @@ export class Avatar extends React.Component {
 
     return (
       <TextAvatar {...this.props}>
-        <UserPhoto type="text" />
+        <UserPhoto type="text"classes={classes}  />
       </TextAvatar>
     );
   }

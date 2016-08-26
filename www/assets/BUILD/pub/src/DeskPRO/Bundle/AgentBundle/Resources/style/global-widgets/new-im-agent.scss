@@ -23,8 +23,8 @@
     }
 
     .search-wrapper {
-      width: 100%;
-      padding: 0 15px 15px;
+      padding: 0;
+      margin: 0 15px 15px;
       border: none;
 
       .ui.search {
@@ -55,14 +55,76 @@
       padding: 0;
       border: none;
 
+      .offline {
+        > .name, > .avatar, & {
+          opacity: 0.5;
+        }
+      }
+
+      .im.avatar {
+        width: 24px;
+        height: 24px;
+
+        &.image {
+          display: inline-block;
+          + .content {
+            display: inline-block;
+          }
+        }
+
+        .text {
+          font-family: "Open Sans", serif;
+          font-size: 12px;
+          color: $dp-greyscale-850;
+          display: inline-block;
+          width: inherit;
+          height: inherit;
+          background-size: cover;
+          position: absolute;
+          left: 0;
+          top: 0;
+
+          &.gravatar {
+            position: absolute;
+            top: 0;
+            left: 1px !important;
+          }
+        }
+      }
+
       .attached.bottom.tab.segment {
-        margin-bottom: 1rem;
+        margin-bottom: 0;
         margin-left: 0;
         margin-right: 0;
+        padding: 0;
         width: 100%;
+
+        .everyone-list {
+          padding: 5px;
+          margin: 20px 15px;
+        }
+
+        .group-list.ui.header {
+          text-transform: uppercase;
+          padding: 0;
+          margin: 20px 15px;
+          color: $dp-greyscale-850;
+          font-size: 12px;
+
+          .agents-counter {
+            font-size: 16px;
+            font-weight: 400;
+            color: $dp-greyscale-450;
+            padding: 3px;
+          }
+        }
       }
 
       .ui.top.attached.menu {
+        margin-top: 15px;
+        margin-bottom: 20px;
+        padding: 0;
+
         .im.item {
           color: $dp-greyscale-600;
           font-size: 16px;
@@ -72,7 +134,7 @@
           border-left: none;
 
           .dp-im-tab-menu-icon {
-            font-size: 12px;
+            font-size: 16px;
             padding-right: 4px;
           }
         }
@@ -94,10 +156,66 @@
         }
       }
 
-      .ui.list .item.agent {
-        
+      .ui.list {
+
+        &:last-child {
+          margin: 0;
+        }
+
+        .item {
+          &:hover {
+            background: $dp-morning-sky;
+            .content .name {
+              color: $dp-sonic-primary;
+            }
+          }
+
+          &.agent {
+            .timestamp.last-seen {
+              font-size: 10px;
+              font-weight: 400;
+              color: $dp-greyscale-450;
+              font-family: "Open Sans", serif;
+              margin-top: 10px;
+            }
+          }
+
+          &.agent, &.department {
+
+            padding: 0;
+            margin: 20px 15px;
+
+
+
+            .name {
+              font-family: "Open Sans", serif;
+              font-size: 16px;
+              font-weight: 400;
+              color: $dp-greyscale-850;
+            }
+
+            .message-counter {
+              font-family: "Open Sans", serif;
+              font-size: 10px;
+              display: inline-block;
+              margin-left: 10px;
+              height: 14px;
+              padding: 2px 4px;
+              font-weight: 600;
+
+            }
+          }
+        }
       }
 
+      .ui.list .item.agent {
+
+        &.offline {
+          .name, .avatar {
+            opacity: 0.5;
+          }
+        }
+      }
     }
   }
 }

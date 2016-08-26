@@ -5,8 +5,15 @@ import { Avatar } from './Avatar';
 export class PersonAvatar extends React.Component {
 
   static propTypes = {
-    person: PropTypes.object.isRequired,
-    size:   PropTypes.number
+    person:  PropTypes.object.isRequired,
+    size:    PropTypes.number,
+    classes: PropTypes.array,
+    color:   PropTypes.string
+  };
+
+  static defaultProps = {
+    classes: [],
+    color:   '#CDD2D4'
   };
 
   getPersonFallbackText() {
@@ -19,15 +26,16 @@ export class PersonAvatar extends React.Component {
   }
 
   render() {
-    const { size, person } = this.props;
+    const { size, person, classes, color } = this.props;
     const avatar = person && person.get('avatar') ? person.get('avatar') : Immutable.fromJS({});
 
     const props = {
       size,
-      color:      '#CDD2D4',
+      color,
       urlPattern: avatar.get('url_pattern'),
       gravatar:   avatar.get('base_gravatar_url'),
-      text:       this.getPersonFallbackText()
+      text:       this.getPersonFallbackText(),
+      classes
     };
 
     return <Avatar {...props} />;

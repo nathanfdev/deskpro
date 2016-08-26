@@ -8,6 +8,7 @@ class ListElement extends React.Component {
     description: PropTypes.string,
     icon:        PropTypes.string,
     image:       PropTypes.string,
+    imageNode:   PropTypes.object,
     elements:    PropTypes.arrayOf(PropTypes.object),
     classes:     PropTypes.arrayOf(PropTypes.string),
     children:    PropTypes.oneOfType([
@@ -42,23 +43,36 @@ class ListElement extends React.Component {
   }
 
   getIcon() {
-    const { icon, image } = this.props;
+    const { icon, image, imageNode } = this.props;
     if (icon) {
       return <i className={classNames('icon', icon)} />;
     }
     if (image) {
       return <img className="ui avatar image" src={image} role="presentation" />;
     }
+
+    if (imageNode) {
+      return imageNode;
+    }
     return null;
   }
 
   render() {
-    return (<div className={classNames('item', this.props.classes)}>
+    const content = this.getContent();
+    const { classes, children } = this.props;
+
+    return (<div className={classNames('item', classes)}>
       {this.getIcon()}
-      <div className="content">
-        {this.getContent()}
-        {this.props.children}
-      </div>
+      {
+        () => {
+          return content ? (
+            <div className="content">
+              {content}
+            </div>
+          ) : null;
+        }
+      }
+      {children}
     </div>);
   }
 }
