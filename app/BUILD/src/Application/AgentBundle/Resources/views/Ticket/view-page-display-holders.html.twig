@@ -31,7 +31,7 @@
 
 {# Standard fields #}
 {% if app.getSetting('core.use_ticket_category') %}
-	<tbody class="category category_id standard-field item {% if not ticket.category %}no-value{% endif %}"
+	<tbody class="category category_id standard-field item off {% if not ticket.category %}no-value{% endif %}"
 		   data-item-type="ticket_category"
 		   ng-show="fields['category']"
 	>
@@ -66,7 +66,7 @@
 {% endif %}
 
 {% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.view') %}
-    <tbody class="problem problem_id standard-field item"
+    <tbody class="problem problem_id standard-field item off"
 		   data-item-type="ticket_problem"
 		   ng-show="fields['problem']"
 	>
@@ -144,7 +144,7 @@
 {% endif %}
 
 {% if app.getSetting('core.use_product') %}
-	<tbody class="product standard-field item {% if not ticket.product %}no-value{% endif %}"
+	<tbody class="product standard-field item off {% if not ticket.product %}no-value{% endif %}"
 		   data-item-type="product"
 		   ng-show="fields['product']"
 	>
@@ -187,7 +187,7 @@
 	</tbody>
 {% endif %}
 {% if app.getSetting('core.use_ticket_priority') %}
-	<tbody class="priority priority_id standard-field item {% if not ticket.priority %}no-value{% endif %}"
+	<tbody class="priority priority_id standard-field item off {% if not ticket.priority %}no-value{% endif %}"
 		   data-item-type="ticket_priority"
 		   ng-show="fields['priority']"
 	>
@@ -213,7 +213,7 @@
 	</tbody>
 {% endif %}
 {% if app.getSetting('core.use_ticket_workflow') %}
-	<tbody class="workflow workflow_id standard-field item {% if not ticket.workflow %}no-value{% endif %}"
+	<tbody class="workflow workflow_id standard-field item off {% if not ticket.workflow %}no-value{% endif %}"
 		   data-item-type="ticket_workflow"
 		   ng-show="fields['workflow']"
 	>
@@ -241,7 +241,7 @@
 
 {# Custom fields#}
 {% for f in custom_fields %}
-	<tbody class="ticket_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.hasCustomField(f.id) %}no-value{% endif %}"
+	<tbody class="ticket_field_{{f.id}} custom-field item off {% if f.field_def.isFormField() and not ticket.hasCustomField(f.id) %}no-value{% endif %}"
 		   data-field-type="ticket_field"
 		   data-item-id="{{f.id}}"
 		   data-custom-field-handler="{{f.field_handler}}"
@@ -269,7 +269,7 @@
 {% endfor %}
 
 {% for f in custom_person_fields %}
-    <tbody class="person_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.person.hasCustomField(f.id) %}no-value{% endif %}"
+    <tbody class="person_field_{{f.id}} custom-field item off {% if f.field_def.isFormField() and not ticket.person.hasCustomField(f.id) %}no-value{% endif %}"
 		   data-field-type="person_field"
 		   data-item-id="{{f.id}}"
 		   data-custom-field-handler="{{f.field_handler}}"
@@ -297,7 +297,7 @@
 {% endfor %}
 
 {% for f in custom_org_fields if ticket.person.organization %}
-    <tbody class="org_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.person.organization.hasCustomField(f.id) %}no-value{% endif %}"
+    <tbody class="org_field_{{f.id}} custom-field item off {% if f.field_def.isFormField() and not ticket.person.organization.hasCustomField(f.id) %}no-value{% endif %}"
 		   data-field-type="org_field"
 		   data-item-id="{{f.id}}"
 		   data-custom-field-handler="{{f.field_handler}}"
@@ -326,7 +326,7 @@
 
 {% for f in new_custom_fields %}
     {% set id = f.vars.def.id %}
-    <tbody class="custom_field_{{id}} custom-field item {% if not f.vars.rendered_data %}no-value{% endif %}"
+    <tbody class="custom_field_{{id}} custom-field item off {% if not f.vars.rendered_data %}no-value{% endif %}"
 		   data-field-type="custom_field"
 		   data-item-id="{{id}}"
 		   ng-show="fields['custom_field_{{ id }}']"

@@ -147,13 +147,14 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		$scope.editables = {};
 		this.no_value_fields = [];
 		var $ctrls = this.display.find('.controls-row');
+		$ctrls.removeClass('off').prev().removeClass('off');
 
 		for (var i = 0; i < fields.length; i++) {
 			var f = fields[i];
 
 			var row = this.display.find('.item.' + f.id);
 			if (undefined === $scope.fields[f.id]) {
-				row.detach().insertBefore($ctrls);
+				row.detach().removeClass('off').insertBefore($ctrls);
 			}
 			var noValue = row.hasClass('no-value');
 
