@@ -1180,7 +1180,7 @@ button, .button, input[type="submit"] {
   // when a logo is uploaded
   &.with-logo-img ul {
     float: none;
-    text-align: right;
+    text-align: $text-right;
   }
 
   ul {
