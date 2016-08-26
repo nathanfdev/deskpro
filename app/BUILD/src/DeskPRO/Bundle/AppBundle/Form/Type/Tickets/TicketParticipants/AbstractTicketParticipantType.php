@@ -26,39 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person;
-
-use Symfony\Component\Validator\Constraint;
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use Symfony\Component\Form\AbstractType;
 
 /**
- * Class PersonRole.
- *
- * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
+ * Class AbstractTicketParticipantType.
  */
-class PersonType extends Constraint
+abstract class AbstractTicketParticipantType extends AbstractType
 {
-    const PERSON_NOT_USER  = 'person_not_user';
-    const PERSON_NOT_AGENT = 'person_not_agent';
+    /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
 
     /**
-     * Could be agent or user.
+     * Constructor.
      *
-     * @var string
+     * @param SettingsResolver $settingsResolver
      */
-    public $type;
+    public function __construct(SettingsResolver $settingsResolver)
+    {
+        $this->settingsResolver = $settingsResolver;
+    }
 
     /**
-     * @var string
+     * @param array $options
+     *
+     * @return bool
      */
-    public $notUserMessage = 'Person with identifier "{{ value }}" is not a user.';
+    protected function isAllParticipantsEnabled(array $options)
+    {
+        // process agents that are in the CC line of incoming emails
+        if (!$options['is_agent']) {
+            return (bool) $this->settingsResolver->getGlobalSettings()->get('core_tickets.add_agent_ccs');
+        }
 
-    /**
-     * @var string
-     */
-    public $notAgentMessage = 'Person with identifier "{{ value }}" is not an agent.';
+        return false;
+    }
 }

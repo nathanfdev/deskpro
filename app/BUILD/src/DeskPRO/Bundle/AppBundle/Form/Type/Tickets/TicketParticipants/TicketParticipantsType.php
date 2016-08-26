@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -44,7 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Accepts array of emails.
  */
-class TicketParticipantsType extends AbstractType
+class TicketParticipantsType extends AbstractTicketParticipantType
 {
     /**
      * {@inheritdoc}
@@ -104,9 +103,10 @@ class TicketParticipantsType extends AbstractType
      */
     public function onPreSetData(FormEvent $event)
     {
+        $isAllEnabled     = $this->isAllParticipantsEnabled($event->getForm()->getConfig()->getOptions());
         $allParticipants  = $this->getAllParticipants($event);
-        $formParticipants = $allParticipants->filter(function (TicketParticipant $participant) use ($event) {
-            return $participant->getPerson() && $participant->getPerson()->isAgent() === $this->isAgent($event);
+        $formParticipants = $allParticipants->filter(function (TicketParticipant $participant) use ($event, $isAllEnabled) {
+            return $participant->getPerson() && ($isAllEnabled || $participant->getPerson()->isAgent() === $this->isAgent($event));
         });
 
         $event->setData($formParticipants);
@@ -121,6 +121,7 @@ class TicketParticipantsType extends AbstractType
      */
     public function onMergeData(FormEvent $event)
     {
+        $isAllEnabled     = $this->isAllParticipantsEnabled($event->getForm()->getConfig()->getOptions());
         $allParticipants  = $this->getAllParticipants($event);
         $formParticipants = $this->getFormParticipants($event);
 
@@ -134,7 +135,7 @@ class TicketParticipantsType extends AbstractType
         }
         foreach ($allParticipants as $participant) {
             $person = $participant->getPerson();
-            if ($person && $person->isAgent() === $this->isAgent($event) && !$formParticipants->contains($participant)) {
+            if ($person && ($isAllEnabled || $person->isAgent() === $this->isAgent($event)) && !$formParticipants->contains($participant)) {
                 $ticket->removeParticipant($participant);
             }
         }

@@ -213,6 +213,18 @@ services:
     tags:
       - { name: form.type }
 
+  form.ticket_participant_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantType
+    arguments: ["@settings_resolver"]
+    tags:
+      - { name: form.type }
+
+  form.ticket_participants_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType
+    arguments: ["@settings_resolver"]
+    tags:
+      - { name: form.type }
+
   form.ticket_with_layouts:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType
     arguments:

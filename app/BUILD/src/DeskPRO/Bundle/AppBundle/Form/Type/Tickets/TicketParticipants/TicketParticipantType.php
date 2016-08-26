@@ -33,7 +33,6 @@ use Application\DeskPRO\Entity\TicketParticipant;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDisableAutoProcessListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -44,20 +43,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class TicketParticipantType.
  */
-class TicketParticipantType extends AbstractType
+class TicketParticipantType extends AbstractTicketParticipantType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $personConstraints = [];
+        if (!$this->isAllParticipantsEnabled($options)) {
+            $personConstraints[] = new AppAssert\Person\PersonType([
+                'type' => $options['is_agent'] ? 'agent' : 'user',
+            ]);
+        }
+
         $builder->add('person', PersonAssignType::class, [
             'error_bubbling' => $options['inline'],
-            'constraints'    => [
-                new AppAssert\Person\PersonType([
-                    'type' => $options['is_agent'] ? 'agent' : 'user',
-                ]),
-            ],
+            'constraints'    => $personConstraints,
         ]);
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
