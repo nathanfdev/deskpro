@@ -296,7 +296,7 @@ class MapperRegistry
     /**
      * Returns the brand mapper.
      *
-     * @return CommonMapper
+     * @return BrandMapper
      */
     public function getBrandMapper()
     {

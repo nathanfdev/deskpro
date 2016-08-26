@@ -129,3 +129,9 @@ services:
     arguments: ["@doctrine.orm.entity_manager"]
     tags:
       - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.brand:
+    class: Application\ImportBundle\Writer\Mapper\BrandMapper
+    arguments: ["@doctrine.orm.entity_manager", "@brand_aware_settings_resolver"]
+    tags:
+      - { name: dp.importer.writer.mapper }
