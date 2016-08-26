@@ -27,6 +27,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       @$scope.$on 'dp-update-brands', (e) =>
         @getBrands()
+        @portalSettings.getSettings().then((s) => @settings = s)
 
       @$scope.$watch('Ctrl.portalSettings.version', =>
         @portalSettings.getSettings().then((s) => @settings = s)
