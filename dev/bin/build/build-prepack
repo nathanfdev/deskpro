@@ -55,6 +55,12 @@ find . -type f \( \
     -o -name ".php_cs" -o -name ".php_cs.cache" -o -name ".eslintignore" \
 \) -exec rm -rf {} \;
 
+rm -rf $DP_DIR/app/BUILD/.phan
+
+# prod doesnt need tests, and tests/bin contain symlinks which
+# can mess up the archive anyway
+rm -rf $DP_DIR/app/BUILD/tests
+
 ########################################################################################################################
 # Cleanup web vendors
 ########################################################################################################################
