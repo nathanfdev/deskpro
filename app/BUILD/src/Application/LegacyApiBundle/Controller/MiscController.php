@@ -49,13 +49,16 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class MiscController extends AbstractController
 {
-    public function preActionHandler($action, $arguments = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         if ($action == 'tokenExchangeAction' || $action == 'helpdeskInfoAction' || $action == 'dpSpecialAction') {
             return;
         }
 
-        return parent::preActionHandler($action, $arguments);
+        return parent::preActionHandler($request, $action, $arguments);
     }
 
     protected function _checkRateLimit($action, $arguments = null)

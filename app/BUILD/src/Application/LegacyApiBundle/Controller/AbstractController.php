@@ -39,6 +39,7 @@ use Application\LegacyApiBundle\Request\RequestAuth;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -159,7 +160,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     /**
      * Always require a valid API key.
      */
-    public function preActionHandler($action, $arguments = null)
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         if (!$this->apikey && !$this->api_token) {
             $response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key or token', 401);

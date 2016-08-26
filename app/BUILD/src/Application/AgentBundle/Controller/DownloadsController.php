@@ -45,6 +45,7 @@ use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Web;
+use Symfony\Component\HttpFoundation\Request;
 
 class DownloadsController extends AbstractController
 {
@@ -490,7 +491,12 @@ class DownloadsController extends AbstractController
         ]);
     }
 
-    public function newDownloadSaveAction()
+    /**
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function newDownloadSaveAction(Request $request)
     {
         $newdownload = new \Application\AgentBundle\Form\Model\NewDownload($this->person);
 
@@ -499,8 +505,8 @@ class DownloadsController extends AbstractController
 
         $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newdownload' AND person_id = ?", [$this->person->id]);
 
-        if ($this->get('request')->getMethod() == 'POST') {
-            $form->handleRequest($this->get('request'));
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
             $form->isValid();
 
             $validator = new \Application\AgentBundle\Validator\NewDownloadValidator();

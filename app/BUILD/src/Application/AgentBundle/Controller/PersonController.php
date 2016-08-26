@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -1493,8 +1494,8 @@ class PersonController extends AbstractController
         $formType = new \Application\AgentBundle\Form\Type\NewPerson();
         $form     = $this->get('form.factory')->create($formType, $newperson);
 
-        if ($this->get('request')->getMethod() == 'POST') {
-            $form->handleRequest($this->get('request'));
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
             $form->isValid();
 
             $newperson->setCustomFieldForm($_POST);

@@ -63,6 +63,7 @@ use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -1171,17 +1172,19 @@ class FeedbackController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     *
      * @return Response
      */
-    public function newFeedbackSaveAction()
+    public function newFeedbackSaveAction(Request $request)
     {
         $newfeedback = new NewFeedback($this->person);
 
         $formType = new NewFeedbackTypeOld();
         $form     = $this->get('form.factory')->create($formType, $newfeedback);
 
-        if ($this->get('request')->getMethod() == 'POST') {
-            $form->handleRequest($this->get('request'));
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
             $form->isValid();
 
             $validator = new NewFeedbackValidator();
