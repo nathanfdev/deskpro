@@ -26,40 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
-
-/**
- * Class UsersourceSettingsController.
- *
- * @ApiModes("all")
- * @Rest\Route("/settings/user_source")
- */
-class UsersourceSettingsController extends BaseController
+class Build1471528558 extends AbstractBuild
 {
-    /**
-     * @ApiDoc(
-     *     section="Usersource settings",
-     *     description="Get usersource settings",
-     *     statusCodes={
-     *         200="Success"
-     *     },
-     *     output={
-     *          "class"="DeskPRO\Bundle\AppBundle\Settings\Model\UsersourceSettings"
-     *      }
-     * )
-     *
-     * @Rest\Get("")
-     *
-     * @return View
-     */
-    public function getAction()
+    public function run()
     {
-        return new View($this->wrap($this->get('usersource_settings_resolver')->getSettings()));
+        $this->out('Add Person Onboarding table');
+        $this->execDbQuery('default', 'CREATE TABLE person_onboarding (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, current_step INT DEFAULT NULL, onboarding_class VARCHAR(255) NOT NULL, status INT NOT NULL, application VARCHAR(255) NOT NULL, date_completion DATETIME DEFAULT NULL, INDEX IDX_151CD81B217BBB47 (person_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;');
+        $this->execDbQuery('default', 'ALTER TABLE person_onboarding ADD CONSTRAINT FK_151CD81B217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
     }
 }
