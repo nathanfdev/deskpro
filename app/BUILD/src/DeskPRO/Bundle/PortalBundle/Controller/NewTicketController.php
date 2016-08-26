@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -73,7 +69,8 @@ class NewTicketController extends AbstractController
             $this->getBrandContainer()->getBrand(),
             Ticket::CREATED_WEB_PERSON_PORTAL
         );
-        $person         = $ticket->getPerson();
+
+        $person = $ticket->getPerson();
 
         $formOptions = [
             'ticket_view_context'   => TicketWithLayoutsContext::VIEW_USER,
@@ -104,23 +101,10 @@ class NewTicketController extends AbstractController
                         $guestForm = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
 
                         try {
-                            $this->getPersonFactory()->checkGuestForValidation(
-                                $person,
-                                $this->isSavedFormSubRequest($request)
-                            );
+                            $this->getPersonFactory()->checkGuestForValidation($person, $this->isSavedFormSubRequest($request));
+                            $newTicket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm);
 
-                            // the below block only executes during a saved form request (they clicked validation link)
-                            $email  = $person->getPrimaryEmail();
-                            $person = $this->getPersonDataService()->getPersonForEmail($email->getEmail());
-
-                            // since the guest is set on the form, we need to update all of the associations
-                            $ticket->setPerson($person);
-
-                            // submit the form again with proper user
-                            $guestForm->handleRequest($request);
-                            $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);
-
-                            return $this->onSavedTicket($new_ticket, $request);
+                            return $this->onSavedTicket($newTicket, $request);
                         } catch (\InvalidArgumentException $e) {
                             $this->addFlash('error', $this->phrase('portal.forms.error_email_required'));
 
@@ -149,16 +133,30 @@ class NewTicketController extends AbstractController
                                 return $this->redirectToRoute('portal_thanks_verify');
                             } else {
                                 // this is a guest that we are accepting
-                                $new_ticket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm);
+                                $newTicket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm);
 
-                                return $this->onSavedTicket($new_ticket, $request);
+                                return $this->onSavedTicket($newTicket, $request);
                             }
                         }
+                    } else {
+                        $newTicket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);
+
+                        return $this->onSavedTicket($newTicket, $request);
                     }
+                }
+            }
+        } elseif ($this->getNewTicketService()->hasDupeError($form)) {
+            /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepo */
+            $ticketRepo = $this->getRepo(Ticket::class);
 
-                    $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);
-
-                    return $this->onSavedTicket($new_ticket, $request);
+            // if we got ticket then it was created less than 5 min ago, redirecting
+            // otherwise the form returns duplicate error message
+            $dupeTicket = $ticketRepo->checkDupeTicket($ticket, 5 * 60);
+            if ($dupeTicket) {
+                if ($person instanceof PersonGuest) {
+                    return $this->redirect($this->generateUrl('portal_thanks', ['ticket_ref' => $dupeTicket->getRef()]));
+                } else {
+                    return $this->redirect($this->generateUrl('portal_tickets_view', ['ticket_ref' => $dupeTicket->getRef()]));
                 }
             }
         }

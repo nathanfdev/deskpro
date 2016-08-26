@@ -78,7 +78,7 @@ Feature: To prevent ticket submitting abuse
     When I fill in the following:
       | ticket[person][user_email][email] | guest@example.com  |
       | ticket[person][user_name]         | Guest              |
-      | ticket[subject]                   | test subject       |
+      | ticket[subject]                   | test subject 2     |
       | ticket[department]                | 1                  |
       | ticket[message][message]          | test message       |
     And I press "Submit"

@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketDupe;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use Doctrine\ORM\EntityManager;
@@ -46,6 +47,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * Class NewTicket.
@@ -204,6 +206,25 @@ class NewTicket
         $check = new SubmitTicketAbuseCheck($person, $ip);
         $check->setResponse(new RedirectResponse($this->urlGenerator->generate('portal_new_ticket')));
         $this->anti_abuse->check($check);
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return bool
+     */
+    public function hasDupeError(Form $form)
+    {
+        foreach ($form->getErrors() as $error) {
+            $cause = $error->getCause();
+            if ($cause instanceof ConstraintViolation) {
+                if ($cause->getCode() === TicketDupe::DUPE_TICKET) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

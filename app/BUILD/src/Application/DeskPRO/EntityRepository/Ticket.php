@@ -673,7 +673,7 @@ class Ticket extends AbstractEntityRepository
      * @param TicketEntity $ticket
      * @param int          $secs_ago
      *
-     * @return bool|mixed
+     * @return bool|TicketEntity
      */
     public function checkDupeTicket(TicketEntity $ticket = null, $secs_ago = 10800 /* 3 hours */)
     {
