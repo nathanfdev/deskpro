@@ -7,6 +7,11 @@ import AddButton from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AddB
 import Chat from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/Chat';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
+import TopBarRecentImList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar/TopBarRecentImList';
+import { imState } from 'DemoState/AgentBundle/Modules/IM/im';
+import recentSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg';
+import viewsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg';
+import notificationsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg';
 import teleOperator from '../../../Resources/teleoperator.jpg';
 import { css } from '../../../decorators';
 

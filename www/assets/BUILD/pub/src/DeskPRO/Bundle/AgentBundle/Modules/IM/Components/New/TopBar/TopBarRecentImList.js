@@ -1,0 +1,63 @@
+import React from 'react';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
+import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';
+import classNames from 'classnames';
+import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
+import RecentList from '../RecentList';
+
+
+class TopBarRecentImList extends RecentList {
+
+  getItems() {
+    return this.props.chats.map(agent => this.getItem(agent));
+  }
+
+  renderAgent(chat) {
+    let agentId;
+    for (const id of chat.get('agents')) {
+      if (id !== this.props.me.get('id')) {
+        agentId = id;
+        break;
+      }
+    }
+    const agent = this.props.agents.get(agentId);
+    const classes = ['im', 'agent', 'recent'];
+    if (!agent.get('online')) {
+      classes.push('offline');
+    }
+    return (<span className="im wrapper">
+      <PersonAvatar
+        color={chooseColor(agent.get('id'))}
+        person={agent} size={24}
+        classes={['ui avatar image im']}
+      />
+    </span>);
+  }
+
+  renderDepartment(chat) {
+    const department = this.props.departments.get(chat.get('departments')[0]);
+
+    return (
+      <span className="im wrapper">
+        <DepartmentAvatar department={department} size={24} classes={['ui avatar image im']} />
+      </span>
+    );
+  }
+
+  render() {
+    return (
+      <div className={classNames(['im', { empty: this.props.chats.size < 1 }])}>
+        {this.getItems()}
+        <span className="im wrapper">
+          <span className="ui image avatar im ">
+            <i className="icons">
+              <i className="big thin circle icon" />
+              <i className="user add icon" />
+            </i>
+          </span>
+        </span>
+      </div>);
+  }
+}
+
+export default TopBarRecentImList;

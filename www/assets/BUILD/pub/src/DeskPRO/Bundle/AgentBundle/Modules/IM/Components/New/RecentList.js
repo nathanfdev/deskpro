@@ -20,9 +20,9 @@ class RecentList extends React.Component {
   getItem(chat) {
     switch (chat.get('chat_type')) {
       case 'agent':
-        return this.renderAgentRow(chat);
+        return this.renderAgent(chat);
       case 'department':
-        return this.renderDepartmentRow(chat);
+        return this.renderDepartment(chat);
       default:
         return null;
     }
@@ -55,7 +55,7 @@ class RecentList extends React.Component {
     );
   }
 
-  renderAgentRow(chat) {
+  renderAgent(chat) {
     let agentId;
     for (const id of chat.get('agents')) {
       if (id !== this.props.me.get('id')) {
@@ -90,12 +90,12 @@ class RecentList extends React.Component {
     );
   }
 
-  renderDepartmentRow(chat) {
+  renderDepartment(chat) {
     const department = this.props.departments.get(chat.get('departments')[0]);
     const classes = ['im', 'department', 'recent'];
     return (<ListElement key={department.get('id')} classes={classes} imageNode={DepartmentList.getAvatar(department)}>
       <div className="content department">
-        <div className="header">DEPARTMENT</div>
+        <div className="header">department</div>
         <div className="description">
           {department.get('title')}
           <span className="agents-list">{this.getAgents(department)}</span>

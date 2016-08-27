@@ -3,10 +3,11 @@ import classNames from 'classnames';
 
 class TopBarItem extends React.Component {
   static propTypes = {
-    onClick:   PropTypes.func,
-    children:  PropTypes.node,
-    className: PropTypes.string,
-    title:     PropTypes.string
+    onClick:         PropTypes.func,
+    children:        PropTypes.node,
+    className:       PropTypes.string,
+    childrenWrapper: PropTypes.string,
+    title:           PropTypes.string
   };
   static defaultProps = {
     onClick() {}
@@ -17,16 +18,18 @@ class TopBarItem extends React.Component {
   };
 
   render() {
-    const { children, className, title } = this.props;
-    return (<div
-      className={classNames('item', className)}
-      onClick={this.handleClick}
-      title={title}
-    >
-      <div>
-        {children}
+    const { children, className, childrenWrapper } = this.props;
+    return (
+      <div 
+        className={classNames('item', className)} 
+        onClick={this.handleClick}
+        title={title}
+      >
+        <div className={childrenWrapper}>
+          {children}
+        </div>
       </div>
-    </div>);
+    );
   }
 }
 export default TopBarItem;
