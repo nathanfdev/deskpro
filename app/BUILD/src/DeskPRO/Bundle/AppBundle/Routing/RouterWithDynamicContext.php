@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Routing;
 
-use DeskPRO\Component\Routing\Generator\RouterInterface as DpRouterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
@@ -133,10 +132,6 @@ class RouterWithDynamicContext implements RouterInterface, RouterDecorator, Requ
         }
 
         try {
-            if ($referenceType === DpRouterInterface::RELATIVE_URL) {
-                $referenceType = self::ABSOLUTE_URL;
-            }
-
             return $this->getBaseRouter()->generate($name, $parameters, $referenceType);
         } finally {
             if ($context !== $prevContext) {
