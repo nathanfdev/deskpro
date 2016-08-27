@@ -217,7 +217,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	saveChanges: function() {
 		var changeManager = this.page.changeManager;
 		var baseId = this.page.meta.baseId;
+		var self = this;
 
+		this.page.getEl('field_errors').hide();
 		this.display.find('[data-prop-id]').each(function() {
 			var prop = changeManager.getPropertyManager($(this).data('prop-id'));
 			prop.setValue($(this).val());
@@ -245,13 +247,14 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
         DeskPRO_Window.showAlert(div);
 				console.error(message);
 			}).bind(this),
-			(function(data) {
-				if (data.fields) {
+			function(data) {
+				if (!data.fields) return;
+				self.$scope.$apply(function(){
 					for (var i = 0; i < data.fields.length; i++) {
-						this.$scope.editField(data.fields[i]);
+						self.$scope.editField(data.fields[i]);
 					}
-				}
-			}).bind(this)
+				});
+			}
 		);
 	},
 
