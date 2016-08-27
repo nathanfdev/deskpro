@@ -766,9 +766,6 @@ var RLANG = {
 
 				this.$editor.click($.proxy(function()
 				{
-					if (this.$editor.is(':focus')) {
-						this._origin = this.getOrigin();
-					}
 					this.saveSelection();
 				}, this));
 
@@ -825,11 +822,7 @@ var RLANG = {
 			{
 				var key = e.keyCode || e.which;
 
-				if (!this.pasteRunning)
-				{
-					if (this.$editor.is(':focus')) {
-						this._origin = this.getOrigin();
-					}
+				if (!this.pasteRunning) {
 					this.saveSelection();
 				}
 
@@ -1202,21 +1195,6 @@ var RLANG = {
 		{
 			this.$editor.focus();
 			this.pasteHtmlAtCaret(html);
-			this.observeImages();
-			this.syncCode();
-		},
-
-		insertSnippetHtml: function(html)
-		{
-			if (!this._origin) {
-				return this.insertHtml(html);
-			}
-
-			var el = this.document.createElement('div');
-			el.innerHTML = html;
-			var next = this._origin[0].nextSibling;
-			var parent = this._origin[0].parentNode;
-			next ? parent.insertBefore(el, next) : parent.appendChild(el);
 			this.observeImages();
 			this.syncCode();
 		},
@@ -2669,7 +2647,7 @@ var RLANG = {
 					try {
 						sel.collapse(orgn, orgo);
 						sel.extend(focn, foco);
-					} catch (e) {}
+					} catch (e) {console.errro(e);}
 				}
 				else // IE9
 				{
