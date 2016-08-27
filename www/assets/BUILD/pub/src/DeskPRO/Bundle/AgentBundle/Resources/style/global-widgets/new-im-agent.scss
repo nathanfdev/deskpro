@@ -61,7 +61,7 @@
       border: none;
 
       .offline {
-        > .name, > .avatar, & {
+        .name, .avatar {
           opacity: 0.5;
         }
       }
@@ -250,7 +250,6 @@
       }
 
       .ui.list .item.agent {
-
         &.offline {
           .name, .avatar {
             opacity: 0.5;
