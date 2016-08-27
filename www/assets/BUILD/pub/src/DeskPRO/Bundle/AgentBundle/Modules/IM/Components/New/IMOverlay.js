@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
 import { Segment, SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
-import AgentList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/AgentsList';
-import DepartmentsList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/DepartmentsList';
+import AgentList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/AgentList';
+import DepartmentList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/DepartmentList';
 import RecentList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/RecentList';
 import EveryoneSegment from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/EveryoneSegment';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
@@ -58,7 +58,7 @@ class IMOverlay extends React.Component {
         <Segment classes={['new-im-group']} raised vertical>+ create new im group</Segment>
         <div className="ui divider"></div>
         <Header size={4} classes={['group-list']} content="department" />
-        <DepartmentsList agents={agents} departments={departments} me={me} />
+        <DepartmentList agents={agents} departments={departments} me={me} />
       </div>
     );
     return  {

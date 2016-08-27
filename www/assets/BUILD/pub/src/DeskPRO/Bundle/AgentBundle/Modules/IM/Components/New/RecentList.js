@@ -4,8 +4,8 @@ import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 import classNames from 'classnames';
 import TimeAgo from 'react-timeago';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
-import AgentList from './AgentsList';
-import DepartmentsList from './DepartmentsList';
+import AgentList from './AgentList';
+import DepartmentList from './DepartmentList';
 
 class RecentList extends React.Component {
 
@@ -93,7 +93,7 @@ class RecentList extends React.Component {
   renderDepartmentRow(chat) {
     const department = this.props.departments.get(chat.get('departments')[0]);
     const classes = ['im', 'department', 'recent'];
-    return (<ListElement key={department.get('id')} classes={classes} imageNode={DepartmentsList.getAvatar(department)}>
+    return (<ListElement key={department.get('id')} classes={classes} imageNode={DepartmentList.getAvatar(department)}>
       <div className="content department">
         <div className="header">DEPARTMENT</div>
         <div className="description">

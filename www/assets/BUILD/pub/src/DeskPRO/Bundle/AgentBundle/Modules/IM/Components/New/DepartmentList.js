@@ -4,7 +4,7 @@ import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Comp
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 
-class DepartmentsList extends React.Component {
+class DepartmentList extends React.Component {
 
   static propTypes = {
     me:          PropTypes.object.isRequired,
@@ -20,7 +20,7 @@ class DepartmentsList extends React.Component {
     const classes = ['im', 'department'];
 
     return (
-      <ListElement key={department.get('id')} classes={classes} imageNode={DepartmentsList.getAvatar(department)}>
+      <ListElement key={department.get('id')} classes={classes} imageNode={DepartmentList.getAvatar(department)}>
         <div className="content department">
           <div className="header">
             {department.get('title')}
@@ -67,4 +67,4 @@ class DepartmentsList extends React.Component {
   }
 }
 
-export default DepartmentsList;
+export default DepartmentList;
