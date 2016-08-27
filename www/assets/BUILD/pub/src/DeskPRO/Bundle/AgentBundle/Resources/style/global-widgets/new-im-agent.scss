@@ -14,6 +14,11 @@
   .segments.im {
     border: none;
 
+    .ui.divider {
+      margin: 20px 15px 8px;
+      width: calc(100% - 30px);
+    }
+
     .item.im.middle.aligned .content {
       vertical-align: middle;
     }
@@ -64,6 +69,7 @@
       .im.avatar {
         width: 24px;
         height: 24px;
+        margin-right: 5px;
 
         &.image {
           display: inline-block;
@@ -92,6 +98,16 @@
         }
       }
 
+      .agents-list .im.avatar {
+        width: 12px;
+        height: 12px;
+        margin-right: 1px;
+
+        .text {
+          font-size: 6px;
+        }
+      }
+
       .attached.bottom.tab.segment {
         margin-bottom: 0;
         margin-left: 0;
@@ -101,28 +117,55 @@
 
         .everyone-list {
           padding: 5px;
-          margin: 20px 15px;
+          margin: 10px 15px;
+
+          &:hover {
+            color: $dp-sonic-primary;
+            background: $dp-morning-sky;
+            cursor: pointer;
+          }
+        }
+
+        .new-im-group {
+          display: inline-block;
+          padding: 0 15px;
+          height: 28px;
+          line-height: 28px;
+          vertical-align: middle;
+          font-size: 14px;
+          margin: 0 15px 0;
+          text-transform: uppercase;
+          font-family: Open Sans, serif;
+          font-weight: 600;
+          color: $dp-greyscale-850;
+
+          &:hover {
+            cursor: pointer;
+            color: $dp-sonic-primary;
+            background: $dp-morning-sky;
+          }
         }
 
         .group-list.ui.header {
           text-transform: uppercase;
-          padding: 0;
-          margin: 20px 15px;
+          padding: 10px 15px 8px;
+          margin: 0;
           color: $dp-greyscale-850;
           font-size: 12px;
+          font-family: "Open Sans", serif;
+        }
 
-          .agents-counter {
-            font-size: 16px;
-            font-weight: 400;
-            color: $dp-greyscale-450;
-            padding: 3px;
-          }
+        .agents-counter {
+          font-size: 16px;
+          font-weight: 400;
+          color: $dp-greyscale-450;
+          padding: 3px;
         }
       }
 
       .ui.top.attached.menu {
         margin-top: 15px;
-        margin-bottom: 20px;
+        margin-bottom: 8px;
         padding: 0;
 
         .im.item {
@@ -182,10 +225,8 @@
 
           &.agent, &.department {
 
-            padding: 0;
-            margin: 20px 15px;
-
-
+            padding: 8px 15px;
+            margin-top: 2px;
 
             .name {
               font-family: "Open Sans", serif;

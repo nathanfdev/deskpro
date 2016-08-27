@@ -11,6 +11,7 @@ import { Header } from 'DeskPRO/Component/Semantic/Common';
 class IMOverlay extends React.Component {
 
   static propTypes = {
+    me:            PropTypes.object.isRequired,
     agents:        PropTypes.object.isRequired,
     departments:   PropTypes.object.isRequired,
     notifications: PropTypes.object.isRequired
@@ -35,25 +36,33 @@ class IMOverlay extends React.Component {
     const { agents, notifications } = this.props;
     return  {
       id:      'agents',
-      content: <AgentList agents={agents} notifications={notifications}/>,
+      content: <AgentList agents={agents} notifications={notifications} />,
       title:   <span><i className="fa fa-user dp-im-tab-menu-icon" />Agents</span>
     };
   }
 
   getGroupsTab() {
-    const { agents, departments } = this.props;
+    const { agents, departments, me } = this.props;
     const content = (
       <div>
-        <Header size={4} classes={['group-list']} content={<span>everyone<span className="agents-counter">({agents.size})</span></span>} />
+        <Header
+          size={4}
+          classes={['group-list']}
+          content={<span>everyone<span className="agents-counter">({agents.size})</span></span>}
+        />
         <EveryoneSegment agents={agents} />
+        <div className="ui divider"></div>
+        <Header size={4} classes={['group-list']} content="im groups" />
+        <Segment classes={['new-im-group']} raised vertical>+ create new im group</Segment>
+        <div className="ui divider"></div>
         <Header size={4} classes={['group-list']} content="department" />
-        <DepartmentsList agents={agents} departments={departments} />
+        <DepartmentsList agents={agents} departments={departments} me={me} />
       </div>
     );
     return  {
-      id:      'groups',
       content,
-      title:   <span><i className="fa fa-group dp-im-tab-menu-icon" />Groups</span>
+      id:    'groups',
+      title: <span><i className="fa fa-group dp-im-tab-menu-icon" />Groups</span>
     };
   }
 
