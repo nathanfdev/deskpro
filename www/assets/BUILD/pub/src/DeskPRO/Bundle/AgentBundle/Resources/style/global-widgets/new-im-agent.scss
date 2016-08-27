@@ -169,7 +169,7 @@
 
       .ui.top.attached.menu {
         margin-top: 15px;
-        margin-bottom: 8px;
+        margin-bottom: 12px;
         padding: 0;
 
         .im.item {
@@ -223,18 +223,21 @@
           }
 
           &.agent, &.department {
+
+            padding: 8px 15px;
+            margin-top: 2px;
+
             .timestamp {
               font-size: 10px;
               font-weight: 400;
               color: $dp-greyscale-450;
               font-family: "Open Sans", serif;
-              margin-top: 15px;
+              margin-top: 10px;
             }
           }
-          .content {
+          >.content {
             &.agent, &.department {
-              padding: 8px 15px;
-              margin-top: 2px;
+
 
               .header {
                 font-family: "Open Sans", serif;
@@ -258,9 +261,8 @@
 
           &.department.recent {
             .content {
-              &.timestamp {
-                margin-top: 20px;
-              }
+              line-height: 12px;
+
               .header {
                 font-size: 10px;
                 text-transform: uppercase;
