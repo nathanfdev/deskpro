@@ -66,6 +66,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		};
 
 		this.page.getEl('department').on('change', function() {
+			self.page.getEl('field_errors').hide();
 			self.updateDisplay();
 		});
 
