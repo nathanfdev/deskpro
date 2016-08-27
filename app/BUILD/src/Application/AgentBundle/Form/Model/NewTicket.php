@@ -186,6 +186,9 @@ class NewTicket
     public function getMockTicket()
     {
         $t = new Ticket();
+        $p = new Person();
+        $o = new Organization();
+        $t->_setNoPersist();
 
         if ($this->brand_id) {
             $t->setBrandId($this->brand_id);
@@ -208,6 +211,13 @@ class NewTicket
         if ($this->status) {
             $t->setStatus($this->status);
         }
+
+        $t->person       = $p;
+        $p->organization = $o;
+
+        App::$container->getTicketFieldManager()->setFormToObject($this->ticket_fields, $t);
+        App::$container->getPersonFieldManager()->setFormToObject($this->custom_person_fields, $p);
+        App::$container->getOrgFieldManager()->setFormToObject($this->custom_org_fields, $o);
 
         return $t;
     }

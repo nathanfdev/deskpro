@@ -35,6 +35,7 @@ namespace Application\AgentBundle\Validator;
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Orb\Validator\AbstractValidator;
 
@@ -83,22 +84,26 @@ class NewTicketValidator extends AbstractValidator
         $this->newticket   = $newticket;
         $this->is_resolved = $newticket->status == 'resolved';
 
-        $this->mock_ticket = new \Application\DeskPRO\Entity\Ticket(false);
-        $this->mock_ticket->_setNoPersist();
-        if ($newticket->department_id) {
-            $this->mock_ticket->setDepartmentId($newticket->department_id);
-        }
-        if ($newticket->category_id) {
-            $this->mock_ticket->setCategoryId($newticket->category_id);
-        }
-        if ($newticket->product_id) {
-            $this->mock_ticket->setProductId($newticket->product_id);
-        }
-        if ($newticket->priority_id) {
-            $this->mock_ticket->setPriorityId($newticket->priority_id);
-        }
-        if ($newticket->workflow_id) {
-            $this->mock_ticket->setWorkflowId($newticket->workflow_id);
+        if ($this->layout instanceof LayoutDisplay && ($t = $this->layout->getTicket())) {
+            $this->mock_ticket = $t;
+        } else {
+            $this->mock_ticket = new \Application\DeskPRO\Entity\Ticket(false);
+            $this->mock_ticket->_setNoPersist();
+            if ($newticket->department_id) {
+                $this->mock_ticket->setDepartmentId($newticket->department_id);
+            }
+            if ($newticket->category_id) {
+                $this->mock_ticket->setCategoryId($newticket->category_id);
+            }
+            if ($newticket->product_id) {
+                $this->mock_ticket->setProductId($newticket->product_id);
+            }
+            if ($newticket->priority_id) {
+                $this->mock_ticket->setPriorityId($newticket->priority_id);
+            }
+            if ($newticket->workflow_id) {
+                $this->mock_ticket->setWorkflowId($newticket->workflow_id);
+            }
         }
 
         $this->_traverseItems($this->layout);
