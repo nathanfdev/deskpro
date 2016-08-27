@@ -4,6 +4,7 @@ import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
 import { Segment, SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
 import AgentList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/AgentsList';
 import DepartmentsList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/DepartmentsList';
+import RecentList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/RecentList';
 import EveryoneSegment from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/EveryoneSegment';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
@@ -14,7 +15,8 @@ class IMOverlay extends React.Component {
     me:            PropTypes.object.isRequired,
     agents:        PropTypes.object.isRequired,
     departments:   PropTypes.object.isRequired,
-    notifications: PropTypes.object.isRequired
+    notifications: PropTypes.object.isRequired,
+    chats:         PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -27,7 +29,7 @@ class IMOverlay extends React.Component {
   getRecentTab() {
     return  {
       id:      'recent',
-      content: 'recent',
+      content: <RecentList {...this.props} />,
       title:   <span><i className="fa fa-clock-o dp-im-tab-menu-icon" />Recent</span>
     };
   }

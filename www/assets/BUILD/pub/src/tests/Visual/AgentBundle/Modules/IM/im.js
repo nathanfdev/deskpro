@@ -110,6 +110,26 @@ const depThree = {
   agents: [1, 4, 2, 6]
 };
 
+const chatOne = {
+  id:                1,
+  chat_type:         'agent',
+  agents:            [1, 6],
+  departments:       [],
+  agent_teams:       [],
+  date_created:      '2016-08-26T06:56:45+0000',
+  date_last_message: '2016-08-26T06:56:45+0000'
+};
+
+const chatTwo = {
+  id:                2,
+  chat_type:         'department',
+  agents:            [],
+  departments:       [2],
+  agent_teams:       [],
+  date_created:      '2016-08-26T06:56:45+0000',
+  date_last_message: '2016-08-26T06:56:45+0000'
+};
+
 const notifications = {
   [agentOne.id]:   3,
   [agentTwo.id]:   4,
@@ -117,6 +137,11 @@ const notifications = {
   [agentFour.id]:  200,
   [agentFive.id]:  8500,
   [agentSix.id]:   1
+};
+
+const chats = {
+  [chatOne.id]: Immutable.Map(chatOne),
+  [chatTwo.id]: Immutable.Map(chatTwo)
 };
 
 const imState = {
@@ -137,7 +162,8 @@ const imState = {
     [depTwo.id]:   Immutable.Map(depTwo),
     [depThree.id]: Immutable.Map(depThree)
   }),
-  notifications: Immutable.fromJS(notifications)
+  notifications: Immutable.Seq(notifications),
+  chats:         Immutable.Seq(chats)
 };
 
 

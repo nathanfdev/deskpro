@@ -30,15 +30,15 @@ class AgentList extends React.Component {
     return (
       <ListElement key={agent.get('id')} classes={classes} imageNode={AgentList.getAvatar(agent)}>
         <div className="content agent">
-          <span className="name">{agent.get('name')}</span>
-          <span
+          <div className="header">{agent.get('name')}</div>
+          <div
             className={classNames(
                 ['ui', 'knuckles', 'label', 'message-counter'],
                 { grey: notificationCount < 1 })
             }
           >
             {notificationCount}
-          </span>
+          </div>
         </div>
         <div className="timestamp last-seen content right floated">
           {agent.get('last_seen') ? <TimeAgo date={agent.get('last_seen')} /> : 'never'}

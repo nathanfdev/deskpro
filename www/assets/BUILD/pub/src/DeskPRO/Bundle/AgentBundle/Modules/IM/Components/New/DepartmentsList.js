@@ -22,7 +22,7 @@ class DepartmentsList extends React.Component {
     return (
       <ListElement key={department.get('id')} classes={classes} imageNode={DepartmentsList.getAvatar(department)}>
         <div className="content department">
-          <div className="name">
+          <div className="header">
             {department.get('title')}
             <span className="agents-counter">({department.get('agents').length - 1})</span>
             <span className="agents-list">{this.getAgents(department)}</span>

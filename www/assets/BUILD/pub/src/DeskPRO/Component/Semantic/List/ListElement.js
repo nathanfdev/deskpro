@@ -30,7 +30,7 @@ class ListElement extends React.Component {
         <a className="header">{label}</a>,
         <div className="description">{description}</div>
       ];
-    } else {
+    } else if (label) {
       content = [label];
     }
     if (elements) {
@@ -39,7 +39,7 @@ class ListElement extends React.Component {
       };
       content.push(<List {...props} />);
     }
-    return content;
+    return content.length ? <div className="content">{content}</div> : null;
   }
 
   getIcon() {
@@ -59,19 +59,12 @@ class ListElement extends React.Component {
 
   render() {
     const content = this.getContent();
+    console.log(content);
     const { classes, children } = this.props;
 
     return (<div className={classNames('item', classes)}>
       {this.getIcon()}
-      {
-        () => {
-          return content ? (
-            <div className="content">
-              {content}
-            </div>
-          ) : null;
-        }
-      }
+      {this.getContent()}
       {children}
     </div>);
   }
