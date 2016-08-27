@@ -4,7 +4,7 @@ Feature: New ticket form validation
 
   Background:
     Given I'm authenticated as user
-    And I have default brand
+    And I have only default brand
 
   Scenario: I check empty department
     Given default everyone user group exists

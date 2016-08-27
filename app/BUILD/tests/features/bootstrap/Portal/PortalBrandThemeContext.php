@@ -26,66 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Brand;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Theme\ThemeRepository;
 use DpBehat\Data\DataContext;
-use DpBehat\RebootableContextInterface;
 
-class PortalBrandThemeContext extends BasePortalContext implements RebootableContextInterface
+class PortalBrandThemeContext extends BasePortalContext
 {
     /**
-     * @var BrandStack
-     */
-    private $brand_stack;
-
-    /**
-     * @var ThemeRepository
-     */
-    private $theme_repository;
-
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    public function rebootContext()
-    {
-        $this->resetPortalBrandThemeContext();
-    }
-
-    public function resetPortalBrandThemeContext()
-    {
-        $this->brand_stack      = $this->get('brand_stack');
-        $this->theme_repository = $this->get('theme_repository');
-        $this->em               = $this->get('doctrine.orm.default_entity_manager');
-    }
-
-    /**
      * @Given the default brand is using the :theme_id theme
+     *
+     * @param string $themeId
      */
-    public function theActiveBrandHasTheme($theme_id)
+    public function theActiveBrandHasTheme($themeId)
     {
-        $theme_set = $this->em->getRepository('App:ThemeSet')->findOneBy(['theme_id' => $theme_id]);
+        $themeSet = $this->em()->getRepository('App:ThemeSet')->findOneBy(['theme_id' => $themeId]);
 
-        if ($brand = $this->em->getRepository(Brand::class)->findOneBy(compact('theme_set'))) {
-            $this->brand_stack->push($brand);
-        } else {
-            $brand_container = $this->brand_stack->getActive();
-            $brand           = $brand_container->getBrand();
-
-            $brand->setThemeSet($theme_set);
-
-            $this->em->persist($brand);
-            $this->em->flush($brand);
+        // portal fixtures BC
+        $brand = $this->getEm()->getRepository(Brand::class)->findOneBy(['theme_set' => $themeSet]);
+        if ($brand) {
+            return;
         }
 
-        DataContext::setReference('defaultBrand', $brand);
+        $brand = DataContext::getReference('defaultBrand');
+        $brand->setThemeSet($themeSet);
+
+        $this->em()->persist($brand);
+        $this->em()->flush();
     }
 }

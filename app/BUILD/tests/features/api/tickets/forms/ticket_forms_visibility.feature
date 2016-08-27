@@ -4,7 +4,7 @@ Feature: /ticket_forms endpoint
 
   Background:
     Given I'm authenticated as admin
-    And I have default brand
+    And I have only default brand
     And a user with "user_1@deskpro.dev" email exists
     And a user with "user_2@deskpro.dev" email exists
     And only the following Department records exist:

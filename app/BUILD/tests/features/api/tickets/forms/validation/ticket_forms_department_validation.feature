@@ -4,7 +4,7 @@ Feature: /ticket_forms validation
 
   Background:
     Given I'm authenticated as admin
-    And I have default brand
+    And I have only default brand
 
   Scenario: I try to create a ticket with no subject property in request
     When I send a POST request to "/api/v2/ticket_forms/agent"

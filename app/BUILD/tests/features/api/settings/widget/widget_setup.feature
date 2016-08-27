@@ -3,7 +3,7 @@ Feature: Widget Setup
   Background:
     Given I install the api data set
     And my request is authenticated
-    And I have default brand
+    And I have only default brand
 
   Scenario: I get initial widget configuration
     When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/widget/setup"

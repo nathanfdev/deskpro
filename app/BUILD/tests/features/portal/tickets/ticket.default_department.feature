@@ -1,9 +1,9 @@
 @new
 Feature: Check default department for brand
 
-  # need a way to refresh brand inside brand stack after department was attached to brand
   Background:
     Given I'm authenticated as user
+    And I have only default brand
     And the default brand is using the standard theme
     And the only default ticket layout exists with fields:
       | user_layout |
@@ -18,7 +18,7 @@ Feature: Check default department for brand
   Scenario: I check default department is set
     Given only setting for brand "{defaultBrand}" with name "default_department.user" and value "{d1}" exists
     And I go to "/new-ticket"
-#    Then the "Department" field should contain "{d1}"
+    Then the "Department" field should contain "{d1}"
 
   Scenario: I check default department is set but we respect get parameter
     Given only setting for brand "{defaultBrand}" with name "default_department.user" and value "{d1}" exists
