@@ -16,7 +16,8 @@ class IMOverlay extends React.Component {
     agents:        PropTypes.object.isRequired,
     departments:   PropTypes.object.isRequired,
     notifications: PropTypes.object.isRequired,
-    chats:         PropTypes.object.isRequired
+    chats:         PropTypes.object.isRequired,
+    children:      PropTypes.oneOfType([PropTypes.object, PropTypes.array])
   };
 
   constructor(props) {
@@ -102,16 +103,19 @@ class IMOverlay extends React.Component {
 
   render() {
     return (<PopUp
-      classes={['im']}
-      positionMy="left top-2"
+      classes={['im wrapper']}
+      innerClasses={['im']}
+      positionMy="left+2 top-5"
       positionAt="left bottom"
-      id={3}
+      id={100500}
       zIndex={99999}
       content={this.getContent()}
       autoClose={false}
       autoOpen={false}
       opened
-    ><button className="ui button">+</button></PopUp>);
+    >
+      {this.props.children}
+    </PopUp>);
   }
 }
 

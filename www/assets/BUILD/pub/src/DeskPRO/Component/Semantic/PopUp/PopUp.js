@@ -9,19 +9,24 @@ class PopUp extends React.Component {
     opened:     PropTypes.bool,
     elementId:  PropTypes.string,
     positionAt: PropTypes.string,
-    content:    PropTypes.oneOfType([
+
+    content: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.node
     ]).isRequired,
-    children:  PropTypes.node,
-    autoClose: PropTypes.bool,
-    autoOpen:  PropTypes.bool,
-    classes:   PropTypes.arrayOf(PropTypes.string),
+
+    id:           PropTypes.number.isRequired,
+    children:     PropTypes.any,
+    autoClose:    PropTypes.bool,
+    autoOpen:     PropTypes.bool,
+    classes:      PropTypes.arrayOf(PropTypes.string),
+    innerClasses: PropTypes.arrayOf(PropTypes.string)
     className: PropTypes.string
   };
 
   static defaultProps = {
     onOpen() {},
+    innerClasses: [],
     classes:   [],
     autoClose: false,
     autoOpen:  false
@@ -86,12 +91,12 @@ class PopUp extends React.Component {
   };
 
   renderBody() {
-    const { content, positionAt, elementId, className } = this.props;
+    const { content, positionAt, elementId, className, innerClasses} = this.props;
     const { isOpen } = this.state;
 
     return (
       <ClickOut onClickOut={this.closePopup}>
-        <div id={elementId} className={classNames('ui', 'popup', positionAt, className, { visible: isOpen }, this.props.classes)}>
+        <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen }, innerClasses)}>
           {content}
         </div>
       </ClickOut>
@@ -105,8 +110,8 @@ class PopUp extends React.Component {
     return (
       <div
         style={{ display: 'inline-block' }}
-        className={classNames({ active: isOpen })}
-        ref={(c) => { this.button = c; }}
+        className={classNames({ active: isOpen }, this.props.classes)}
+        ref={c => { this.button = c; }}
         onClick={this.openPopup}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}

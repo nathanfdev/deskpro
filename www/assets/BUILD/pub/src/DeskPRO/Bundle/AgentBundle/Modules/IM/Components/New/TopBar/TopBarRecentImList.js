@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';
 import classNames from 'classnames';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import RecentList from '../RecentList';
 
-
 class TopBarRecentImList extends RecentList {
+
+  static propTypes = {
+    chats:    PropTypes.object.isRequired,
+    children: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  };
 
   getItems() {
     return this.props.chats.map(agent => this.getItem(agent));
@@ -48,14 +52,7 @@ class TopBarRecentImList extends RecentList {
     return (
       <div className={classNames(['im', { empty: this.props.chats.size < 1 }])}>
         {this.getItems()}
-        <span className="im wrapper">
-          <span className="ui image avatar im ">
-            <i className="icons">
-              <i className="big thin circle icon" />
-              <i className="user add icon" />
-            </i>
-          </span>
-        </span>
+        {this.props.children}
       </div>);
   }
 }
