@@ -290,7 +290,7 @@ class UserSearch implements UserSearchInterface
      *
      * @param $q
      *
-     * @return Query\QueryString|Query\MultiMatch
+     * @return Query\QueryString|Query\QueryString
      */
     protected function getQueryString($q)
     {
@@ -303,7 +303,12 @@ class UserSearch implements UserSearchInterface
             $term = str_replace('\\"', '"', $term);
         }
 
-        $queryString = new Query\QueryString($term);
+        // ES does not skip short words and returns empty results if they are in the query string
+        // just remove them
+        $term = preg_replace('/\b.{1,2}\b/', ' ', $term);
+
+        $queryString = new Query\QueryString();
+        $queryString->setQuery($term);
 
         return $queryString;
     }

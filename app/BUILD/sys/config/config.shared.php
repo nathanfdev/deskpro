@@ -536,12 +536,6 @@ $container->loadFromExtension(
                                 'max_gram'    => 20,
                                 'token_chars' => array('letters', 'digit', 'punctuation', 'symbol'),
                             ),
-                            'edge_ngram_filter_4' => array(
-                                'type'        => 'edgeNGram',
-                                'min_gram'    => 4,
-                                'max_gram'    => 20,
-                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol'),
-                            ),
                             'ngram_filter_5' => array(
                                 'type'        => 'nGram',
                                 'min_gram'    => 5,
@@ -582,7 +576,7 @@ $container->loadFromExtension(
                                     'stop',
                                     'lowercase',
                                     'asciifolding',
-                                    'edge_ngram_filter_4',
+                                    'edge_ngram_filter_3',
                                 ),
                             ),
                             'text_content_analyzer' => array(
