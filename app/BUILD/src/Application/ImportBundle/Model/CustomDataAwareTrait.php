@@ -28,6 +28,9 @@
 
 namespace Application\ImportBundle\Model;
 
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * Class CustomDataAwareTrait.
  */
