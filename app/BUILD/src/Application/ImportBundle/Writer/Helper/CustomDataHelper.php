@@ -111,11 +111,18 @@ class CustomDataHelper
      */
     private function findOrCreateCustomDef(CustomDefMapperInterface $mapper, CustomField $fieldModel)
     {
+        $customDefModelClass = $mapper->getModelClass();
+
+        /** @var AbstractCustomDef $customDefModel */
+        $customDefModel = new $customDefModelClass();
+        $customDefModel->setOid($fieldModel->getOid() ?: $fieldModel->getName());
+        $customDefModel->setTitle($fieldModel->getName() ?: 'Custom field '.$fieldModel->getOid());
+
         $customDef = null;
 
         // try to get custom def by oid
         if ($fieldModel->getOid()) {
-            $entityId = $this->importMapMapper->findIdByModel($fieldModel);
+            $entityId = $this->importMapMapper->findIdByModel($customDefModel);
             if ($entityId) {
                 $this->logger->debug('Found existing custom def id by OID');
                 $customDef = $mapper->find($entityId);
@@ -124,7 +131,7 @@ class CustomDataHelper
             // just oid was provided (no name), try to get by field name fallback
             if (!$customDef && !$fieldModel->getName()) {
                 $customDef = $mapper->findOneBy([
-                    'title'  => 'Custom field'.$fieldModel->getOid(),
+                    'title'  => 'Custom field '.$fieldModel->getOid(),
                     'parent' => null,
                 ]);
             }
@@ -153,13 +160,7 @@ class CustomDataHelper
             }
         } else {
             // no custom def found, create a new one
-            $customDefModelClass  = $mapper->getModelClass();
             $customDefEntityClass = $mapper->getEntityClass();
-
-            /** @var AbstractCustomDef $customDefModel */
-            $customDefModel = new $customDefModelClass();
-            $customDefModel->setOid($fieldModel->getOid() ?: $fieldModel->getName());
-            $customDefModel->setTitle($fieldModel->getName() ?: 'Custom field'.$fieldModel->getOid());
 
             /** @var CustomDefAbstract $customDef */
             $customDef = new $customDefEntityClass();
