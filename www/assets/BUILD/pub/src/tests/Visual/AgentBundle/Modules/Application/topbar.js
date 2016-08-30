@@ -1,11 +1,11 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import { css } from '../../../decorators';
-import User from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/User';
-import AddButton from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AddButton';
-import Chat from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/Chat';
+import User from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/User';
+import AddButton from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/AddButton';
+import Chat from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Chat';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
+import { css } from '../../../decorators';
 
 const agents = [
   {

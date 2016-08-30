@@ -9,12 +9,25 @@ class TopBarNotificationIcon extends React.Component {
       PropTypes.string
     ]),
     icon:      PropTypes.string,
-    svg:      PropTypes.string,
+    svg:       PropTypes.string,
     elementId: PropTypes.string,
     onClick:   PropTypes.func
   };
   static defaultProps = {
     onClick() {}
+  };
+
+  getIcon = () => {
+    if (this.props.icon) {
+      return <i className={classNames('icon', 'pointer', this.props.icon)} />;
+    }
+    if (this.props.svg) {
+      const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
+      return (<Isvg
+        src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/${this.props.svg}`}
+      />);
+    }
+    return null;
   };
 
   renderCount = () => {
@@ -23,19 +36,6 @@ class TopBarNotificationIcon extends React.Component {
       return <div className="ui knuckles label">{count}</div>;
     }
     return null;
-  };
-
-  getIcon = () => {
-    if (this.props.icon) {
-      return <i className={classNames('icon', 'pointer', this.props.icon)} />
-    }
-    if (this.props.svg) {
-      const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
-      return <Isvg
-        src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/${this.props.svg}`}
-      />
-    }
-    return null
   };
 
   render() {
