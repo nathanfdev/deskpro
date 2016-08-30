@@ -37,7 +37,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Monolog\Logger;
 use Application\InstallBundle\Upgrade\Build\PostBuild;
 use DeskPRO\Bundle\AppBundle\Util\BinariesPathValidator;
-use DeskPRO\Bundle\InstallBundle\InstallSession\Model\Paths;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Input\InputInterface;
