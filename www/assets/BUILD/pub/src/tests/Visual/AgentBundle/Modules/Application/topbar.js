@@ -723,7 +723,7 @@ storiesOf('App: top bar', module)
       <AddButton />
       <TopBarRightMenu>
         <TopBarItem>
-          <div className="view_mode" />
+          <div className="views" />
         </TopBarItem>
         <TopBarItem>
           <TopBarNotificationIcon elementId="notifications" icon="alarm outline" count="2" />
