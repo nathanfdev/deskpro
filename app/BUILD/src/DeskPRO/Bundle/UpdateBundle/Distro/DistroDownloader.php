@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\UpdateBundle\Distro;
 
+use DeskPRO\Bundle\AppBundle\Util\HttpClientFactory;
 use DeskPRO\Bundle\UpdateBundle\Distro\Manifest\DistroRelease;
 use DeskPRO\Bundle\UpdateBundle\Logger\LogKeyEvent;
 use GuzzleHttp;
@@ -56,7 +57,7 @@ class DistroDownloader implements LoggerAwareInterface
      *
      * @return DistroDownloader
      */
-    public static function create(LoggerInterface $logger = null, LoggerInterface $httpLogger = null)
+    public static function create(LoggerInterface $logger = null, LoggerInterface $httpLogger = null, HttpClientFactory $factory)
     {
         $stack = GuzzleHttp\HandlerStack::create();
 
@@ -67,7 +68,7 @@ class DistroDownloader implements LoggerAwareInterface
             ));
         }
 
-        $client = new GuzzleHttp\Client([
+        $client = $factory->getClient([
             GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true,
             GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 10,
             GuzzleHttp\RequestOptions::TIMEOUT         => 1800,

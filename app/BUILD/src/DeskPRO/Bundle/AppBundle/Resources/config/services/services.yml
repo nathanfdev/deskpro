@@ -95,4 +95,7 @@ services:
 
   portal_mode_storage:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
-      
+
+  http_client.factory:
+    class: DeskPRO\Bundle\AppBundle\Util\HttpClientFactory
+    arguments: ["@service_container"]
