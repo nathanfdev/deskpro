@@ -146,7 +146,13 @@ class InstallConfigStep extends AbstractStep
      */
     private function getConfigPath()
     {
-        return $this->getContext()->getDpEnv()->getDpRoot().DIRECTORY_SEPARATOR.'config';
+        $path = $this->getContext()->getDpEnv()->getDpRoot().DIRECTORY_SEPARATOR.'config';
+
+        if (!is_dir($path)) {
+            @mkdir($path);
+        }
+
+        return $path;
     }
 
     private function backupConfig()
