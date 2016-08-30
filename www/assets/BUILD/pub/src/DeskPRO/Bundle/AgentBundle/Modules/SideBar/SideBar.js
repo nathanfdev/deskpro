@@ -200,7 +200,7 @@ export class SideBar extends React.Component {
         className: 'reports',
         label:     'Reports',
         icon:      'reports.svg',
-        callback: () => {
+        callback:  () => {
           this.props.openReports();
         }
       });
@@ -210,7 +210,7 @@ export class SideBar extends React.Component {
         className: 'admin',
         label:     'Admin',
         icon:      'settings.svg',
-        callback: () => {
+        callback:  () => {
           this.props.openAdmin();
         }
       });
@@ -220,7 +220,7 @@ export class SideBar extends React.Component {
         className: 'billing',
         label:     'Billing',
         icon:      'billing.svg',
-        callback: () => {
+        callback:  () => {
           this.props.openBilling();
         }
       });
