@@ -102,6 +102,13 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
      *
      * @JMS\Type("string")
      */
+    private $titlePrefix;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
     private $override_display_name;
 
     /**
@@ -428,6 +435,26 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     public function setOverrideDisplayName($override_display_name)
     {
         $this->override_display_name = $override_display_name;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitlePrefix()
+    {
+        return $this->titlePrefix;
+    }
+
+    /**
+     * @param string $titlePrefix
+     *
+     * @return $this
+     */
+    public function setTitlePrefix($titlePrefix)
+    {
+        $this->titlePrefix = $titlePrefix;
 
         return $this;
     }
