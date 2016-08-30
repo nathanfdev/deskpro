@@ -316,6 +316,68 @@
       }
     }
   }
+
+  &.chat.drawer {
+    .box {
+      min-width: 300px;
+      height: 400px;
+      position: relative;
+      background-color: $dp-greyscale-50;
+
+
+      .ui.segments {
+        padding: 20px;
+        border: 0;
+        margin-bottom: 20px;
+
+        .ui.segment.row {
+          padding: 0;
+          margin: 12px 0;
+          border: 0;
+          text-align: left;
+
+          .message {
+            max-width: 75%;
+            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid $dp-greyscale-350;
+            display: inline-block;
+            position: relative;
+          }
+
+          .message:before {
+            bottom: -0.40714286em;
+            left: 1em;
+            right: auto;
+            top: auto;
+            margin-left: 0em;
+            box-shadow: none;
+            background: #FFFFFF;
+            position: absolute;
+            content: '';
+            width: 0.71428571em;
+            height: 0.71428571em;
+            transform: rotate(45deg);
+            z-index: 2;
+            border: 1px solid $dp-greyscale-350;
+            border-top: none;
+            border-left: none;
+          }
+
+          &.my {
+            text-align: right;
+            .message, .message:before {
+              text-align: left;
+              border-color: $dp-sonic-primary;
+              background: $dp-morning-sky;
+            }
+          }
+        }
+      }
+    }
+  }
+
 }
 
 

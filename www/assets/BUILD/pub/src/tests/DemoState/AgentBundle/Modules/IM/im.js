@@ -173,3 +173,8 @@ export const imState = {
   notifications: Immutable.Seq(notifications),
   chats:         Immutable.Seq(chats)
 };
+
+
+export const chatMessages = Immutable.Seq({
+  1: Immutable.Map({ id: 1, author: 1, text: '111' })
+});
