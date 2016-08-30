@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import moment from 'moment';
 
 function random() {
   return Math
@@ -27,7 +28,7 @@ const agentTwo = {
   name:         'Tyrion Lannister',
   first_name:   'Tyrion',
   last_name:    'Lannister',
-  last_seen:    '2016-08-26T06:56:45+0000',
+  last_seen:    moment().subtract(10, 'minutes').format(),
   gravatar_url: `http://lorempixel.com/22/22/people/?random=${random()}`,
   online:       true,
   avatar:       Immutable.Map({
@@ -52,7 +53,7 @@ const agentFour = {
   name:         'Duncan The Tall',
   first_name:   'Duncan',
   last_name:    'The Tall',
-  last_seen:    '2016-08-26T06:56:45+0000',
+  last_seen:    moment().subtract(2, 'hours').format(),
   gravatar_url: `http://lorempixel.com/22/22/people/?random=${random()}`,
   online:       false,
   avatar:       Immutable.Map({
@@ -80,7 +81,7 @@ const agentSix = {
   name:         'Jorah Mormont',
   first_name:   'Jorah',
   last_name:    'Mormont',
-  last_seen:    '2016-08-26T06:56:45+0000',
+  last_seen:    moment().subtract(7, 'days').format(),
   gravatar_url: `http://lorempixel.com/22/22/people/?random=${random()}`,
   online:       false,
   avatar:       Immutable.Map({
@@ -112,8 +113,8 @@ const chatOne = {
   agents:            [1, 6],
   departments:       [],
   agent_teams:       [],
-  date_created:      '2016-08-26T06:56:45+0000',
-  date_last_message: '2016-08-26T06:56:45+0000'
+  date_created:      moment().subtract(2, 'hours').format(),
+  date_last_message: moment().subtract(3, 'minutes').format()
 };
 
 const chatTwo = {
@@ -122,8 +123,18 @@ const chatTwo = {
   agents:            [],
   departments:       [2],
   agent_teams:       [],
-  date_created:      '2016-08-26T06:56:45+0000',
-  date_last_message: '2016-08-26T06:56:45+0000'
+  date_created:      moment().subtract(3, 'days').format(),
+  date_last_message: moment().subtract(1, 'day').format()
+};
+
+const chatThree = {
+  id:                3,
+  chat_type:         'agent',
+  agents:            [1, 7],
+  departments:       [],
+  agent_teams:       [],
+  date_created:      moment().subtract(12, 'days').format(),
+  date_last_message: moment().subtract(2, 'hours').format()
 };
 
 const notifications = {
@@ -136,8 +147,9 @@ const notifications = {
 };
 
 const chats = {
-  [chatOne.id]: Immutable.Map(chatOne),
-  [chatTwo.id]: Immutable.Map(chatTwo)
+  [chatOne.id]:   Immutable.Map(chatOne),
+  [chatTwo.id]:   Immutable.Map(chatTwo),
+  [chatThree.id]: Immutable.Map(chatThree)
 };
 
 export const imState = {

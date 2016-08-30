@@ -20,13 +20,6 @@ class IMOverlay extends React.Component {
     children:      PropTypes.oneOfType([PropTypes.object, PropTypes.array])
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      header: 'Agent IM'
-    };
-  }
-
   getRecentTab() {
     return  {
       id:      'recent',
@@ -88,7 +81,7 @@ class IMOverlay extends React.Component {
   getContent() {
     return (
       <div>
-        <div className="im header">{this.state.header}</div>
+        <div className="im header">Agent IM</div>
         <SegmentsGroup classes={['im']}>
           <Segment classes={['search-wrapper']}>
             <SearchBox
@@ -105,8 +98,8 @@ class IMOverlay extends React.Component {
     return (<PopUp
       classes={['im wrapper']}
       innerClasses={['im']}
-      positionMy="left+2 top-5"
-      positionAt="left bottom"
+      positionMy="center-2 top-5"
+      positionAt="center bottom"
       id={100500}
       zIndex={99999}
       content={this.getContent()}

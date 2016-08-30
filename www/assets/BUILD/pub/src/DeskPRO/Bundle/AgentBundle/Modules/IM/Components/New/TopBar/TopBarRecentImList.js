@@ -29,7 +29,7 @@ class TopBarRecentImList extends RecentList {
     if (!agent.get('online')) {
       classes.push('offline');
     }
-    return (<span className="im wrapper">
+    return (<span className="im wrapper" id={`chat-${chat.get('id')}`}>
       <PersonAvatar
         color={chooseColor(agent.get('id'))}
         person={agent} size={24}
@@ -42,7 +42,7 @@ class TopBarRecentImList extends RecentList {
     const department = this.props.departments.get(chat.get('departments')[0]);
 
     return (
-      <span className="im wrapper">
+      <span className="im wrapper" id={`chat-${chat.get('id')}`}>
         <DepartmentAvatar department={department} size={24} classes={['ui avatar image im']} />
       </span>
     );

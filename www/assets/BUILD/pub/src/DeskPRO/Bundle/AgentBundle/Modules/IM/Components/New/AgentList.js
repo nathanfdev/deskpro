@@ -3,6 +3,7 @@ import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import classNames from 'classnames';
 import TimeAgo from 'react-timeago';
+import moment from 'moment';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 
 class AgentList extends React.Component {
@@ -18,6 +19,15 @@ class AgentList extends React.Component {
       person={agent} size={24}
       classes={['ui avatar image im']}
     />);
+  }
+
+  static getTimestamp(date) {
+    const m = date ? moment(date) : null;
+    if (!m) return 'never';
+
+    const now = moment();
+    const seen = now.unix() - m.unix();
+    return m && (seen > 3600 && seen < 60 * 60 * 24) ? m.format('h:mm a') : <TimeAgo date={date} />;
   }
 
   getItem(agent) {
@@ -41,7 +51,7 @@ class AgentList extends React.Component {
           </div>
         </div>
         <div className="timestamp last-seen content right floated">
-          {agent.get('last_seen') ? <TimeAgo date={agent.get('last_seen')} /> : 'never'}
+          {AgentList.getTimestamp(agent.get('last_seen'))}
         </div>
 
       </ListElement>
