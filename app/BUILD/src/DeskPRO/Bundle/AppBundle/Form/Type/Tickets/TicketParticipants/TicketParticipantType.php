@@ -51,9 +51,9 @@ class TicketParticipantType extends AbstractTicketParticipantType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $personConstraints = [];
-        if (!$this->isAllParticipantsEnabled($options)) {
+        if (!$options['allow_all']) {
             $personConstraints[] = new AppAssert\Person\PersonType([
-                'type' => $options['is_agent'] ? 'agent' : 'user',
+                'type' => 'user',
             ]);
         }
 
@@ -76,6 +76,8 @@ class TicketParticipantType extends AbstractTicketParticipantType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
+
         $resolver
             ->setDefaults([
                 'inline'         => false,
@@ -86,11 +88,8 @@ class TicketParticipantType extends AbstractTicketParticipantType
                     return $options['inline'] ? [] : ['.' => 'person'];
                 },
             ])
-            ->setRequired(['is_agent', 'owner'])
-            ->setAllowedTypes('is_agent', 'boolean')
             ->setAllowedTypes('inline', 'boolean')
             ->setAllowedTypes('set_owner', 'boolean')
-            ->setAllowedTypes('owner', Ticket::class)
         ;
     }
 

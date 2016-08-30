@@ -95,21 +95,9 @@ class WebFieldResolver extends AbstractFieldResolver
     protected function createCc(TicketWithLayoutsContext $context)
     {
         return new FormField(TicketParticipantsWebType::class, [
-            'owner'    => $context->getTicket(),
-            'is_agent' => false,
-            'required' => false,
-        ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function createFollowers(TicketWithLayoutsContext $context)
-    {
-        return new FormField(TicketParticipantsWebType::class, [
-            'owner'    => $context->getTicket(),
-            'is_agent' => true,
-            'required' => false,
+            'owner'           => $context->getTicket(),
+            'required'        => false,
+            'agent_interface' => $context->isAgentView(),
         ]);
     }
 

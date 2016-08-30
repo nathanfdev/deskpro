@@ -101,21 +101,21 @@ Feature: Ticket logs
     Given "person@deskpro.dev" <role> exists
     And the only default ticket layout exists with fields:
       | agent_layout |
-      | <type>       |
+      | cc           |
 
     When I send a PUT request to "/api/v2/ticket_forms/agent/{t1}" with body:
     """
 {
-  "<type>": ["person@deskpro.dev"]
+  "cc": ["person@deskpro.dev"]
 }
     """
     Then the response status code should be 204
     And the "{t1}" ticket should have "changed_<role>_participants" log
 
     Examples:
-      | type      | role  |
-      | cc        | user  |
-      | followers | agent |
+      | role  |
+      | user  |
+      | agent |
 
   Scenario: I check changed_custom_field log
     Given only the following custom ticket fields exist:

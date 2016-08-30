@@ -26,20 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Participants;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketParticipant;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantType;
-use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class AbstractTicketParticipantsController.
+ * Class TicketСсController.
+ *
+ * @ApiModes("all")
+ * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+ * @Rest\Route("/tickets/{parentId}/cc")
  */
-abstract class AbstractTicketParticipantsController extends CrudSubController
+class TicketCcController extends CrudSubController
 {
     use TicketSaveTrait, TicketAwarePersistModelTrait;
 
@@ -50,28 +56,14 @@ abstract class AbstractTicketParticipantsController extends CrudSubController
 
     /**
      * {@inheritdoc}
-     */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
-    {
-        parent::applyListFilters($qb, $alias, $request);
-
-        $qb
-            ->join("$alias.person", 'p')
-            ->andWhere('p.is_agent = :is_agent')
-            ->setParameter('is_agent', $this->isAgent())
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
      *
      * @param TicketParticipant $model
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'owner'    => $this->findParentOr404(),
-            'is_agent' => $this->isAgent(),
+            'owner'           => $this->findParentOr404(),
+            'agent_interface' => true,
         ]);
 
         return parent::handleForm($model, $request, $options);
@@ -88,10 +80,8 @@ abstract class AbstractTicketParticipantsController extends CrudSubController
             ->from(self::$entity, 'e')
             ->join('e.person', 'p')
             ->join('e.ticket', 't')
-            ->andWhere('p.is_agent = :is_agent')
             ->andWhere('p.id = :person_id')
             ->andWhere('t.id = :ticket_id')
-            ->setParameter('is_agent', $this->isAgent())
             ->setParameter('person_id', $id)
             ->setParameter('ticket_id', $this->findParentOr404()->getId())
         ;
@@ -117,9 +107,4 @@ abstract class AbstractTicketParticipantsController extends CrudSubController
 
         $this->saveTicket($ticket);
     }
-
-    /**
-     * @return bool
-     */
-    abstract protected function isAgent();
 }

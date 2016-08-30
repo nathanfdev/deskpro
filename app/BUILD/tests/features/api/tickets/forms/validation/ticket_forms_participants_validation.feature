@@ -6,9 +6,8 @@ Feature: /ticket_forms validation
     Given I'm authenticated as admin
     And agent and user exist
     And the only default ticket layout exists with fields:
-      | agent_layout |
-      | cc           |
-      | followers    |
+      | user_layout | agent_layout |
+      | cc          | cc           |
 
   Scenario: I sent not valid cc email data
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
@@ -39,12 +38,11 @@ Feature: /ticket_forms validation
     And the JSON node "errors.fields.cc.fields.cc_0.errors[0].code" should be equal to "person_not_found"
     And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "not_valid_email"
 
-  Scenario: I confused participant fields
-    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+  Scenario: I try to add agent participant in user view context
+    When I send a POST request to "/api/v2/ticket_forms/user" with body:
     """
 {
-  "cc": ["agent@deskpro.dev"],
-  "followers": ["user@deskpro.dev"]
+  "cc": ["agent@deskpro.dev", "user@deskpro.dev"]
 }
     """
     Then the response status code should be 400
@@ -52,6 +50,3 @@ Feature: /ticket_forms validation
     And the JSON node "errors.fields.cc.fields" should have 1 element
     And the JSON node "errors.fields.cc.fields.cc_0.errors[0].code" should be equal to "person_not_user"
     And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "agent@deskpro.dev"
-    And the JSON node "errors.fields.followers.fields" should have 1 element
-    And the JSON node "errors.fields.followers.fields.followers_0.errors[0].code" should be equal to "person_not_agent"
-    And the JSON node "errors.fields.followers.fields.followers_0.errors[0].message" should contain "user@deskpro.dev"

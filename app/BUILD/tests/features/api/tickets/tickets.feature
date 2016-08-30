@@ -37,8 +37,7 @@ Feature: /tickets endpoint
   "agent": ~agent~,
   "product": ~p2~,
   "star": "green",
-  "followers": ["agent@deskpro.dev", ~admin~],
-  "cc": ["user@deskpro.dev"]
+  "cc": ["user@deskpro.dev", "agent@deskpro.dev", ~admin~]
 }
     """
     Then the response status code should be 201
@@ -50,11 +49,10 @@ Feature: /tickets endpoint
     And the JSON node "data.product" should be equal to "{p2}"
     And the JSON node "data.person" should be equal to "{user}"
     And the JSON node "data.agent" should be equal to "{agent}"
-    And the JSON node "data.cc" should have 1 element
+    And the JSON node "data.cc" should have 3 elements
     And the JSON node "data.cc[0]" should be equal to "{user}"
-    And the JSON node "data.followers" should have 2 elements
-    And the JSON node "data.followers[0]" should be equal to "{agent}"
-    And the JSON node "data.followers[1]" should be equal to "{admin}"
+    And the JSON node "data.cc[1]" should be equal to "{agent}"
+    And the JSON node "data.cc[2]" should be equal to "{admin}"
     And the JSON node "data.star" should be equal to the string "green"
 
   Scenario: I modify a ticket
@@ -71,14 +69,14 @@ Feature: /tickets endpoint
     """
 {
   "subject": "Modified 4",
-  "followers": [~agent~, ~admin~]
+  "cc": [~agent~, ~admin~]
 }
     """
     And the response status code should be 204
     When I send a GET request to "/api/v2/tickets/{ticket1}"
     Then the response status code should be 200
     And the JSON node "data.subject" should be equal to "Modified 4"
-    And the JSON node "data.followers" should have 2 elements
+    And the JSON node "data.cc" should have 2 elements
 
   Scenario: I delete a ticket then verify it's properly soft-deleted
     Given I send a DELETE request to "/api/v2/tickets/{ticket1}"
@@ -154,8 +152,6 @@ Feature: /tickets endpoint
     Then the response status code should be 400
     And the JSON node "errors.fields.cc.fields.cc_0.errors[0].code" should be equal to "system_email"
     And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "dev@deskprodev.com"
-    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "is already being used as email account."
-    And the JSON node "errors.fields.cc.fields.cc_0.errors[1].code" should be equal to the string "person_not_user"
 
   @skip-ci
   # This scenario passed because the api data set defined a require custom field
