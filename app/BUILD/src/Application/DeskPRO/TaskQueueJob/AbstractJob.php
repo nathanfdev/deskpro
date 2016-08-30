@@ -37,6 +37,9 @@ namespace Application\DeskPRO\TaskQueueJob;
 use Application\DeskPRO\Entity\TaskQueue;
 use Application\DeskPRO\Log\Logger;
 
+/**
+ * Class AbstractJob.
+ */
 abstract class AbstractJob
 {
     const TASK_COMPLETED  = 1;
@@ -57,6 +60,13 @@ abstract class AbstractJob
      */
     protected $_logger;
 
+    /**
+     * Constructor.
+     *
+     * @param array       $data
+     * @param TaskQueue   $task
+     * @param Logger|null $logger
+     */
     public function __construct(array $data, TaskQueue $task, Logger $logger = null)
     {
         $this->_data   = array_merge($this->_getDefaultData(), $data);
@@ -64,24 +74,44 @@ abstract class AbstractJob
         $this->_logger = $logger;
     }
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         return $this->_data;
     }
 
+    /**
+     * @return Logger|null
+     */
     public function getLogger()
     {
         return $this->_logger;
     }
 
+    /**
+     * @return TaskQueue
+     */
     public function getTask()
     {
         return $this->_task;
     }
 
+    /**
+     * @return mixed
+     */
     abstract protected function _getDefaultData();
 
+    /**
+     * @param $max_time
+     *
+     * @return int
+     */
     abstract public function run($max_time);
 
+    /**
+     * @return string
+     */
     abstract public function getTitle();
 }

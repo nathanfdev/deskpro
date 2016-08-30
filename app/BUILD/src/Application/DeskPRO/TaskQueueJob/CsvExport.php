@@ -41,13 +41,22 @@ use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\TmpData;
 use Symfony\Component\Process\Process;
 
+/**
+ * Class CsvExport.
+ */
 class CsvExport extends AbstractJob
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getTitle()
     {
         return 'CSV Export';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function _getDefaultData()
     {
         return [
@@ -63,6 +72,9 @@ class CsvExport extends AbstractJob
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function run($max_time)
     {
         $em = App::getOrm();
@@ -108,7 +120,7 @@ class CsvExport extends AbstractJob
         }
 
         /** @var \Application\DeskPRO\EntityRepository\Person $rep */
-        $rep = $em->getRepository('DeskPRO:Person');
+        $rep = $em->getRepository(Person::class);
 
         while (microtime(true) - $start_time < $max_time) {
             if (!$batch = $rep->findBy([], [], $this->_data['limit'], $this->_data['offset'])) {
@@ -204,11 +216,7 @@ class CsvExport extends AbstractJob
                     );
                 }
             } else {
-                $data = TmpData::create(
-                'csv_export.file',
-                ['file' => $file, 'count' => $this->_data['offset']],
-                    '+28 hours'
-            );
+                $data = TmpData::create('csv_export.file', ['file' => $file, 'count' => $this->_data['offset']], '+28 hours');
             }
 
             $data['name'] = 'csv_export.file';
