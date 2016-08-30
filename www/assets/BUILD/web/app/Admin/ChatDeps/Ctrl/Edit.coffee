@@ -21,6 +21,7 @@ define [
       @depData = @DataService.get('ChatDeps')
       @$scope.icon_image = null
       @$scope.$on 'icon.selected', (e, path) => @selectIcon path
+      @$scope.usergroups_locked = {}
 
       @initializeScopeWatching()
       @all_perms =
@@ -55,6 +56,20 @@ define [
         @dep_parent_list = data.dep_parent_list
         @setAvatar @dep.avatar
 
+        for group in @usergroups
+          if group.sys_name != 'everyone' && group.sys_name != 'registered' then continue
+          @["group_#{group.sys_name}_id"] = group.id
+          ((group) =>
+            @["group_#{group.sys_name}_perm"] = @form.usergroup_perms[group.id].full
+            @$scope.$watch (=> return @form.usergroup_perms[group.id].full), (newVal) =>
+              @["group_#{group.sys_name}_perm"] = newVal
+              for own id, g of @form.usergroup_perms
+                id = parseInt(id)
+                if id == @group_everyone_id then continue
+                g.full = @group_everyone_perm || @group_registered_perm || g.full
+                if id == @group_registered_id then @$scope.usergroups_locked[id] = @group_everyone_perm
+                else @$scope.usergroups_locked[id] = @group_everyone_perm || @group_registered_perm
+          )(group)
 
         for own id, group of @form.usergroup_perms
           if !group.full then @all_perms.user_full = false
