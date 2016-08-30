@@ -63,6 +63,21 @@ export class SideBarContainer extends SeparateComponent {
     }
   }
 
+  openAdmin = () => {
+    this.closeIframes();
+    window.DP_FRAME_OVERLAYS.admin.open();
+  };
+
+  openReports = () => {
+    this.closeIframes();
+    window.DP_FRAME_OVERLAYS.reports.open();
+  };
+
+  openBilling = () => {
+    this.closeIframes();
+    window.DP_FRAME_OVERLAYS.billing.open();
+  };
+
   render() {
     const props = {
       hoverMode:      false,
@@ -76,7 +91,10 @@ export class SideBarContainer extends SeparateComponent {
       canUseAdmin:    this.canUseAdmin(),
       canUseBilling:  this.canUseBilling(),
       canUsePortal:   this.canUsePortal(),
-      closeIframes:   this.closeIframes
+      closeIframes:   this.closeIframes,
+      openAdmin:      this.openAdmin,
+      openReports:    this.openReports,
+      openBilling:    this.openBilling
     };
     return <SideBar {...this.props} {...props} />;
   }
@@ -96,7 +114,10 @@ export class SideBar extends React.Component {
     canUseAdmin:    PropTypes.bool.isRequired,
     canUseBilling:  PropTypes.bool.isRequired,
     canUsePortal:   PropTypes.bool.isRequired,
-    closeIframes:   PropTypes.func.isRequired
+    closeIframes:   PropTypes.func.isRequired,
+    openAdmin:      PropTypes.func.isRequired,
+    openReports:    PropTypes.func.isRequired,
+    openBilling:    PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -178,21 +199,30 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'reports',
         label:     'Reports',
-        icon:      'reports.svg'
+        icon:      'reports.svg',
+        callback: () => {
+          this.props.openReports();
+        }
       });
     }
     if (this.props.canUseAdmin) {
       menus.push({
         className: 'admin',
         label:     'Admin',
-        icon:      'settings.svg'
+        icon:      'settings.svg',
+        callback: () => {
+          this.props.openAdmin();
+        }
       });
     }
     if (this.props.canUseBilling) {
       menus.push({
         className: 'billing',
         label:     'Billing',
-        icon:      'billing.svg'
+        icon:      'billing.svg',
+        callback: () => {
+          this.props.openBilling();
+        }
       });
     }
     if (this.props.canUsePortal) {
