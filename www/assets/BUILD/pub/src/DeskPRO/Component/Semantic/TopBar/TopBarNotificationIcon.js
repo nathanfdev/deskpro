@@ -38,6 +38,19 @@ class TopBarNotificationIcon extends React.Component {
     return null;
   };
 
+  getIcon = () => {
+    if (this.props.icon) {
+      return <i className={classNames('icon', 'pointer', this.props.icon)} />
+    }
+    if (this.props.svg) {
+      const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
+      return <Isvg
+        src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/${this.props.svg}`}
+      />
+    }
+    return null
+  };
+
   render() {
     const { elementId, onClick, count } = this.props;
     return (<div id={elementId} className={classNames({ active: count > 0 })} onClick={onClick}>
