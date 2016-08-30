@@ -1827,7 +1827,7 @@ GroupSequenceProviderInterface
     /**
      * @param null $type
      *
-     * @return PersonContactData[]
+     * @return PersonContactData[]|ArrayCollection
      */
     public function getContactData($type = null)
     {

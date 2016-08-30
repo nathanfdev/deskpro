@@ -84,7 +84,7 @@ services:
     arguments:
       - "@dp.importer.writer.mapper.person"
       - "@dp.importer.writer.mapper.import_map"
-      - "@validator"
+      - "@dp.importer_validator"
       - "@dp.importer.entity_persister"
       - "@dp.importer_logger"
     tags:

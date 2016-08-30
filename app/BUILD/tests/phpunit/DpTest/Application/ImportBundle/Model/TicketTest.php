@@ -41,10 +41,11 @@ class TicketTest extends AbstractModelTest
     {
         $errors = $this->validateData([]);
 
-        $this->assertCount(3, $errors);
-        $this->assertEquals('status', $errors[0]->getPropertyPath());
-        $this->assertEquals('subject', $errors[1]->getPropertyPath());
-        $this->assertEquals('raw_data', $errors[2]->getPropertyPath());
+        $this->assertCount(4, $errors);
+        $this->assertEquals('person', $errors[0]->getPropertyPath());
+        $this->assertEquals('status', $errors[1]->getPropertyPath());
+        $this->assertEquals('subject', $errors[2]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[3]->getPropertyPath());
     }
 
     public function test_required_params()
@@ -52,7 +53,7 @@ class TicketTest extends AbstractModelTest
         $params = [
             'subject' => 'Ticket subject',
             'status'  => 'awaiting_agent',
-
+            'person'  => 1,
         ];
 
         $this->assertEquals($this->transformData($params), array_merge($params, [

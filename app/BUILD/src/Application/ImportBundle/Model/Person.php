@@ -31,6 +31,7 @@ namespace Application\ImportBundle\Model;
 use Application\ImportBundle\Model\ContactData\ContactData;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Exporting person entity.
@@ -42,9 +43,6 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     use PrimaryImportModelTrait, LabelAwareTrait, CustomDataAwareTrait;
 
     const INITIAL_PASSWORD = 'password';
-
-    const PASSWORD_SCHEME_PLAIN  = 'plain';
-    const PASSWORD_SCHEME_BCRYPT = 'bcrypt';
 
     /**
      * @var bool
@@ -92,8 +90,6 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
      */
     private $name;
 
@@ -495,16 +491,6 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     }
 
     /**
-     * Returns true if the person password scheme is plain.
-     *
-     * @return bool
-     */
-    public function isPlainPasswordScheme()
-    {
-        return $this->password_scheme === self::PASSWORD_SCHEME_PLAIN;
-    }
-
-    /**
      * Set specific password scheme.
      *
      * @param string $password_scheme
@@ -770,5 +756,25 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     public function getContactData()
     {
         return $this->contact_data;
+    }
+
+    /**
+     * @Assert\Callback()
+     *
+     * @internal
+     *
+     * @param ExecutionContextInterface $context
+     */
+    public function validate(ExecutionContextInterface $context)
+    {
+        // validate name
+        if (!$this->name && !$this->first_name && !$this->last_name) {
+            $context
+                ->buildViolation('This value should not be blank.')
+                ->setCode(Assert\NotBlank::IS_BLANK_ERROR)
+                ->atPath('name')
+                ->addViolation()
+            ;
+        }
     }
 }

@@ -150,4 +150,31 @@ class PersonTest extends AbstractModelTest
 
         $this->assertEquals($this->transformData($params), $params);
     }
+
+    /**
+     * @dataProvider validNamesProvider
+     *
+     * @param array $nameParams
+     */
+    public function test_valid_name(array $nameParams)
+    {
+        $params = array_merge($nameParams, ['emails' => ['email_1@deskpro.dev']]);
+        $errors = $this->validateData($params);
+
+        $this->assertCount(0, $errors);
+    }
+
+    /**
+     * @return array
+     */
+    public function validNamesProvider()
+    {
+        return [
+            [['name' => 'Name']],
+            [['first_name' => 'Name']],
+            [['last_name' => 'Name']],
+            [['first_name' => 'Name', 'last_name' => 'Name']],
+            [['name' => 'Name', 'first_name' => 'Name', 'last_name' => 'Name']],
+        ];
+    }
 }

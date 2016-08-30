@@ -52,7 +52,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
     public function test_validation()
     {
         $this->writer->writeData(new Model\Ticket());
-        $this->assertTrue($this->loggerHandler->hasErrorRecords());
+        $this->assertTrue($this->loggerHandler->hasWarningRecords());
     }
 
     public function test_create_and_update_entity()
@@ -176,6 +176,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $message1 = new Model\TicketMessage();
         $message1->setOid(1);
         $message1->setMessage('message');
+        $message1->setPerson(1);
 
         $model = $this->createBaseModel();
         $model->addMessage($message1);
@@ -209,6 +210,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $message1 = new Model\TicketMessage();
         $message1->setOid(1);
         $message1->setMessage('message');
+        $message1->setPerson(1);
         $message1->addAttachment($attachment);
 
         $model = $this->createBaseModel();
@@ -242,6 +244,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $model = new Model\Ticket();
         $model->setOid(1);
         $model->setSubject('subject');
+        $model->setPerson(1);
 
         return $model;
     }

@@ -77,8 +77,12 @@ class TicketHandler extends AbstractEntityHandler
         // update ticket person
         if ($model->getPerson()) {
             $entity->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()));
-        } else {
-            $entity->setPerson(null);
+        }
+
+        if (!$entity->getPerson()) {
+            $this->logger->warning("Unable to create a ticket {$model->getOid()} without person.");
+
+            return;
         }
 
         // update ticket agent
@@ -194,6 +198,12 @@ class TicketHandler extends AbstractEntityHandler
             ->setAsAgentNote($model->isNote())
             ->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()))
         ;
+
+        if (!$messageEntity->getPerson()) {
+            $this->logger->warning("Unable to create a ticket message {$model->getOid()} without person.");
+
+            return;
+        }
 
         if ($model->getDateCreated()) {
             $messageEntity->setDateCreated($model->getDateCreated());
