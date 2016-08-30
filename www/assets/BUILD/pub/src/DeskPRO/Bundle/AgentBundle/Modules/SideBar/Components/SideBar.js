@@ -88,7 +88,7 @@ export class SideBarContainer extends SeparateComponent {
 
   render() {
     const props = {
-      hoverMode:      true,
+      hoverMode:      false,
       canUseTicket:   this.canUseTicket(),
       canUseChat:     this.canUseChat(),
       canUsePeople:   this.canUsePeople(),
