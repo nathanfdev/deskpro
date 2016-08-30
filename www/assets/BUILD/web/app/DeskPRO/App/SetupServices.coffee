@@ -20,19 +20,21 @@ define [
       return new DeskPRO_Main_Service_AppState($rootScope, $state)
     ])
 
-    Module.service('Api', ['$http', ($http) ->
+    Module.service('Api', ['$http', 'Growl', ($http, Growl) ->
       return new DeskPRO_Main_Service_DpApi(
         $http,
         window.DP_BASE_API_URL,
-        window.DP_API_TOKEN
+        window.DP_API_TOKEN,
+        Growl
       )
     ])
 
-    Module.service('Api2', ['$http', ($http) ->
+    Module.service('Api2', ['$http', 'Growl', ($http, Growl) ->
         return new DeskPRO_Main_Service_DpApi2(
-            $http,
-            window.DP_BASE_API_URL,
-            window.DP_API_TOKEN
+          $http,
+          window.DP_BASE_API_URL,
+          window.DP_API_TOKEN,
+          Growl
         )
     ])
 
