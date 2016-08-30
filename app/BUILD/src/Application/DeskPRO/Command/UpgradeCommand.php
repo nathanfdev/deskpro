@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 namespace Application\DeskPRO\Command;
@@ -37,6 +36,12 @@ namespace Application\DeskPRO\Command;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Monolog\Logger;
 use Application\InstallBundle\Upgrade\Build\PostBuild;
+use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
+use DeskPRO\Bundle\InstallBundle\Installer\InstallProfile;
+use DeskPRO\Bundle\InstallBundle\Installer\InstallStep\AcceptPathsStep;
+use DeskPRO\Bundle\InstallBundle\Installer\InstallStep\InstallConfigStep;
+use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
+use DeskPRO\Bundle\InstallBundle\InstallSession\Model\Paths;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,9 +62,40 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             ->setHelp('This command executes the upgrader to bring your database to the same version the filesystem is');
     }
 
+    protected function updatePaths(InputInterface $input, OutputInterface $output)
+    {
+        global $DP_ENV;
+        $env     = $DP_ENV;
+        $profile = new InstallProfile();
+        $session = new InstallSession(__DIR__); // the path doesn't matter
+        $context = new InstallerContext(
+            $DP_ENV,
+            $session,
+            $profile,
+            $output,
+            $input,
+            $this->getHelperSet()
+        );
+        $checkStep  = new AcceptPathsStep($context);
+        $configStep = new InstallConfigStep($context);
+        $checkStep->run();
+
+        $method = new \ReflectionMethod(InstallConfigStep::class, 'writeVars');
+        $method->setAccessible(true);
+        var_dump($session->getPaths());
+        $method->invoke($configStep, 'config.paths.php', 'PATHS_CONFIG', [
+            'php_path'       => $session->getPaths()->php_path,
+            'mysqldump_path' => $session->getPaths()->mysqldump_path,
+            'mysql_path'     => $session->getPaths()->mysql_path,
+        ]);
+        $env->resetConfigCache();
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         set_time_limit(0);
+
+        $this->updatePaths($input, $output);
 
         $doReset       = $input->getOption('reset');
         $versionError  = false;
