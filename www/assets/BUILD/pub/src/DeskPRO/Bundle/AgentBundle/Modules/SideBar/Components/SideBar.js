@@ -4,14 +4,18 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
-import { SeparateComponent } from '../Common/Components/SeparateComponent';
+import { SeparateComponent } from '../../Common/Components/SeparateComponent';
+import * as actions from '../Actions/sideBarActions';
 
 @connect(state => ({
-  me: meSelector(state)
+  me:             meSelector(state),
+  currentSection: state.SideBar.sections.get('current')
 }))
 export class SideBarContainer extends SeparateComponent {
   static propTypes = {
-    me: PropTypes.object
+    me:             PropTypes.object.isRequired,
+    currentSection: PropTypes.string.isRequired,
+    dispatch:       PropTypes.func.isRequired
   };
 
   static getType() {
@@ -78,6 +82,10 @@ export class SideBarContainer extends SeparateComponent {
     window.DP_FRAME_OVERLAYS.billing.open();
   };
 
+  changeSection = (section) => {
+    this.props.dispatch(actions.changeSection({ section }));
+  };
+
   render() {
     const props = {
       hoverMode:      false,
@@ -94,7 +102,8 @@ export class SideBarContainer extends SeparateComponent {
       closeIframes:   this.closeIframes,
       openAdmin:      this.openAdmin,
       openReports:    this.openReports,
-      openBilling:    this.openBilling
+      openBilling:    this.openBilling,
+      changeSection:  this.changeSection
     };
     return <SideBar {...this.props} {...props} />;
   }
@@ -117,15 +126,10 @@ export class SideBar extends React.Component {
     closeIframes:   PropTypes.func.isRequired,
     openAdmin:      PropTypes.func.isRequired,
     openReports:    PropTypes.func.isRequired,
-    openBilling:    PropTypes.func.isRequired
+    openBilling:    PropTypes.func.isRequired,
+    changeSection:  PropTypes.func.isRequired,
+    currentSection: PropTypes.string.isRequired
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeMenu: 'menu_tickets'
-    };
-  }
 
   getMenus = () => {
     const menus = [];
@@ -237,7 +241,7 @@ export class SideBar extends React.Component {
 
   getMenuItems = () => {
     const menus = [];
-    const { activeMenu } = this.state;
+    const currentSection = this.props.currentSection;
     const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     this.getMenus().map((item) => {
       const menuItem = item;
@@ -246,7 +250,7 @@ export class SideBar extends React.Component {
       menus.push(
         <MenuItem
           key={menuItem.key}
-          classes={classNames(menuItem.className, { active: activeMenu === menuItem.key })}
+          classes={classNames(menuItem.className, { active: currentSection === menuItem.key })}
           onClick={() => this.clickMenu(menuItem)}
         >
           <span className="menu-icon" title={title}>
@@ -261,9 +265,7 @@ export class SideBar extends React.Component {
   };
 
   clickMenu = (item) => {
-    this.setState({
-      activeMenu: item.key
-    });
+    this.props.changeSection(item.key);
     if (item.callback) {
       item.callback();
     }

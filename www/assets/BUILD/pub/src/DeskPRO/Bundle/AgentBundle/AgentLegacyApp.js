@@ -8,7 +8,7 @@ import * as ampMiddleware from 'Ampliflux/middleware';
 import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
 import AgentTopBar from './Modules/TopBar/Components/AgentTopBar';
-import { SideBarContainer } from './Modules/SideBar/SideBar';
+import { SideBarContainer } from './Modules/SideBar/Components/SideBar';
 import { AgentList } from './Modules/Agent/Components/AgentList';
 import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
 import AgentReducers from './AgentApp_Reducers';

@@ -307,6 +307,9 @@
     display: inline-block;
     cursor: pointer;
     text-align: center;
+    svg {
+      width: 24px;
+    }
     &:hover {
       .status, i.icon {
         color: $dp-sonic-primary;

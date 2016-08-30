@@ -155,8 +155,8 @@ class AgentTopBar extends SeparateComponent {
           placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
         />
       </TopBarItem>
-      <TopBarItem classes={['legacy-omnibox recent']}>
-        <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`}  onClick={this.onRecent}/>
+      <TopBarItem classes={['legacy-omnibox recent']} onClick={this.onRecent}>
+        <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
       </TopBarItem>
       {/* <TopBarItem classes={['z-index-stub']}>*/}
         {/* <HeaderWidget />*/}
