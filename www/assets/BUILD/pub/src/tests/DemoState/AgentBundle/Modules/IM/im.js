@@ -174,7 +174,47 @@ export const imState = {
   chats:         Immutable.Seq(chats)
 };
 
+const messageOne = {
+  chat:         1,
+  date_created: '2016-08-28T11:19:14+0000',
+  id:           1,
+  message:      '<p>Zombie ipsum brains reversus ab cerebellum viral inferno, brein nam rick mend grimes malum cerveau cerebro. De carne cerebro lumbering animata cervello corpora quaeritis. Summus thalamus brains sit​​, morbo basal ganglia vel maleficia?</p>',
+  metadata:     [],
+  person:       6,
+  person_name:  'Daenerys Targaryen',
+  status:       1,
+  timestamp:    1472383154,
+  uuid:         'a6e789a6-cd72-4a1b-888c-c93e1868c6b4'
+};
 
-export const chatMessages = Immutable.Seq({
-  1: Immutable.Map({ id: 1, author: 1, text: '111' })
+const messageTwo = {
+  chat:         1,
+  date_created: '2016-08-28T11:19:15+0000',
+  id:           2,
+  message:      '<p>De braaaiiiins apocalypsi gorger omero prefrontal cortex undead survivor fornix dictum mauris.</p>',
+  metadata:     [],
+  person:       1,
+  person_name:  'Admin Admin',
+  status:       1,
+  timestamp:    1472383155,
+  uuid:         'b6e789a6-cd72-4a1b-888c-c93e1868c6b5'
+};
+
+const messageThree = {
+  chat:         1,
+  date_created: '2016-08-28T11:19:16+0000',
+  id:           3,
+  message:      '<p>Hi brains mindless mortuis limbic cortex soulless creaturas optic nerve, imo evil braaiinns stalking monstra hypothalamus adventus resi hippocampus dentevil vultus brain comedat cerebella pitiutary gland viventium.</p>',
+  metadata:     [],
+  person:       6,
+  person_name:  'Daenerys Targaryen',
+  status:       1,
+  timestamp:    1472383156,
+  uuid:         'c6e789a6-cd72-4a1b-888c-c93e1868c6b6'
+};
+
+export const messages = Immutable.Seq({
+  [messageOne.uuid]:   messageOne,
+  [messageTwo.uuid]:   messageTwo,
+  [messageThree.uuid]: messageThree
 });

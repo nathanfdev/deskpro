@@ -7,7 +7,11 @@ import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import IMOverlay from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar/IMOverlay';
 import IMButton from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar/IMButton';
 import TopBarRecentImList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar/TopBarRecentImList';
-import { imState } from 'DemoState/AgentBundle/Modules/IM/im';
+import { imState, messages } from 'DemoState/AgentBundle/Modules/IM/im';
+
+
+const chatState = { ...imState, messages };
+console.log(chatState);
 
 storiesOf('Agent: IM', module)
   .addDecorator(story => css(story()))
@@ -45,7 +49,7 @@ storiesOf('Agent: IM', module)
       </TopBarItem>
       <TopBarItem childrenWrapper="im-list">
         <TopBarRecentImList {...imState}>
-          <Container isOpen {...imState} current={1}>123</Container>
+          <Container isOpen {...chatState} current={1} />
         </TopBarRecentImList>
       </TopBarItem>
     </TopBar>
