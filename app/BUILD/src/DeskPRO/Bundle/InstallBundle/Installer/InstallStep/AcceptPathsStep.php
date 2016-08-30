@@ -52,9 +52,8 @@ class AcceptPathsStep extends AbstractStep
         $paths = $this->getSession()->getPaths();
         if (!$paths) {
             $paths = new Paths();
+            $this->getSession()->setPaths($paths);
         }
-
-        $this->getSession()->setPaths($paths);
 
         if (!$paths->php_path) {
             if ($p = $this->determinePhpPath()) {
