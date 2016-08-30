@@ -36,11 +36,7 @@ namespace Application\DeskPRO\Command;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Monolog\Logger;
 use Application\InstallBundle\Upgrade\Build\PostBuild;
-use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
-use DeskPRO\Bundle\InstallBundle\Installer\InstallProfile;
-use DeskPRO\Bundle\InstallBundle\Installer\InstallStep\AcceptPathsStep;
-use DeskPRO\Bundle\InstallBundle\Installer\InstallStep\InstallConfigStep;
-use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
+use DeskPRO\Bundle\AppBundle\Util\BinariesPathValidator;
 use DeskPRO\Bundle\InstallBundle\InstallSession\Model\Paths;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
@@ -62,40 +58,46 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             ->setHelp('This command executes the upgrader to bring your database to the same version the filesystem is');
     }
 
-    protected function updatePaths(InputInterface $input, OutputInterface $output)
-    {
-        global $DP_ENV;
-        $env     = $DP_ENV;
-        $profile = new InstallProfile();
-        $session = new InstallSession(__DIR__); // the path doesn't matter
-        $context = new InstallerContext(
-            $DP_ENV,
-            $session,
-            $profile,
-            $output,
-            $input,
-            $this->getHelperSet()
-        );
-        $checkStep  = new AcceptPathsStep($context);
-        $configStep = new InstallConfigStep($context);
-        $checkStep->run();
-
-        $method = new \ReflectionMethod(InstallConfigStep::class, 'writeVars');
-        $method->setAccessible(true);
-        var_dump($session->getPaths());
-        $method->invoke($configStep, 'config.paths.php', 'PATHS_CONFIG', [
-            'php_path'       => $session->getPaths()->php_path,
-            'mysqldump_path' => $session->getPaths()->mysqldump_path,
-            'mysql_path'     => $session->getPaths()->mysql_path,
-        ]);
-        $env->resetConfigCache();
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         set_time_limit(0);
 
-        $this->updatePaths($input, $output);
+        global $DP_ENV;
+        $validator  = new BinariesPathValidator();
+        $wrongPaths = [];
+
+        $root          = $DP_ENV->getDpRoot();
+        $phpPath       = $DP_ENV->getConfig('paths.php_path');
+        $mysqlPath     = $DP_ENV->getConfig('paths.mysql_path');
+        $mysqldumpPath = $DP_ENV->getConfig('paths.mysqldump_path');
+
+        try {
+            $validator->validatePhpPath($phpPath, $root);
+        } catch (\Exception $e) {
+            $wrongPaths[] = $phpPath ?: 'php';
+        }
+
+        try {
+            $validator->validateMysqlPath($mysqlPath);
+        } catch (\Exception $e) {
+            $wrongPaths[] = $mysqlPath ?: 'mysql';
+        }
+
+        try {
+            $validator->validateMysqldumpPath($mysqldumpPath);
+        } catch (\Exception $e) {
+            $wrongPaths[] = $mysqldumpPath ?: 'mysqldump';
+        }
+
+        if ($wrongPaths) {
+            $output->writeln('<error>One or more paths to system binaries are incorrect</error>');
+            $output->writeln('The following paths are incorrect: '.implode(', ', $wrongPaths));
+            $output->writeln('');
+            $output->writeln('You need to edit your config.paths.php file and correct the paths. The full path to the config fileis:');
+            $output->writeln('<info>'.$root.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.paths.php</info>');
+
+            return 1;
+        }
 
         $doReset       = $input->getOption('reset');
         $versionError  = false;
