@@ -742,6 +742,7 @@ $container->loadFromExtension(
                             'phone_numbers' => array('type' => 'string', 'analyzer' => 'phone_analyzer'),
                             'date_created'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
                             'date_active'   => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+                            'is_agent'      => ['type' => 'boolean'],
                         ),
                         'persistence' => array(
                             'driver'                        => 'orm',

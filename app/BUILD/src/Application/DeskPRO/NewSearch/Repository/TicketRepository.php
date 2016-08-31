@@ -60,7 +60,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
     /**
      * {@inheritdoc}
      */
-    protected function getFilters()
+    protected function getFilters(array $options = [])
     {
         // See app/src/Application/DeskPRO/Searcher/TicketSearch.php
         // Re-creating permission logic via filters
