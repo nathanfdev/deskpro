@@ -41,6 +41,7 @@ use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
 use Orb\Data\ContentTypes;
+use Ossobuffo\PhpIco\IcoConverter;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -144,12 +145,22 @@ class AssetsManager
      */
     public function uploadBlob(UploadedFile $file, $blobType = self::CUSTOM_LOGO_TAG)
     {
-        if ($logo = $this->getEditThemeSetBlobAsset($blobType)) {
-            if ($logo->getBlob()) {
-                $this->bs->deleteBlobRecord($logo->getBlob());
+        if ($blobAsset = $this->getEditThemeSetBlobAsset($blobType)) {
+            if ($blobAsset->getBlob()) {
+                $this->bs->deleteBlobRecord($blobAsset->getBlob());
             }
-            $this->em->remove($logo);
+            $this->em->remove($blobAsset);
             $this->em->flush();
+        }
+
+        if ($blobType === self::CUSTOM_FAVICON_TAG) {
+            if ($blobAsset = $this->getEditThemeSetBlobAsset(self::CUSTOM_FAVICON_FALLBACK)) {
+                if ($blobAsset->getBlob()) {
+                    $this->bs->deleteBlobRecord($blobAsset->getBlob());
+                }
+                $this->em->remove($blobAsset);
+                $this->em->flush();
+            }
         }
 
         return $blobType === self::CUSTOM_FAVICON_TAG
@@ -277,7 +288,7 @@ class AssetsManager
         $image->save($filename, ['format' => $context->getExtension()]);
         $context->setFilename($filename);
 
-        $this->createFallbackIcon($file, $image, $filename, $context);
+        $this->createFallbackIcon($file, $filename, $context);
 
         $asset = $this->doUpload($context);
         unlink($filename);
@@ -287,22 +298,21 @@ class AssetsManager
 
     /**
      * @param UploadedFile      $file
-     * @param Image             $image
      * @param string            $filename
      * @param UploadFileContext $previousContext
      */
     private function createFallbackIcon(
         UploadedFile $file,
-        Image $image,
         $filename, UploadFileContext $previousContext
     ) {
-        $context  = new UploadFileContext($file, $this->edit_theme_set, self::CUSTOM_FAVICON_FALLBACK);
-        $filename = str_ireplace(".{$previousContext->getExtension()}", '.ico', $filename);
-        $name     = str_ireplace(".{$previousContext->getExtension()}", '.ico', $previousContext->getName());
-        $context->setFilename($filename);
+        $context     = new UploadFileContext($file, $this->edit_theme_set, self::CUSTOM_FAVICON_FALLBACK);
+        $icoFilename = str_ireplace(".{$previousContext->getExtension()}", '.ico', $filename);
+        $name        = str_ireplace(".{$previousContext->getExtension()}", '.ico', $previousContext->getName());
+        $context->setFilename($icoFilename);
         $context->setName($name);
-        $image->resize(new Box(16, 16))->save($filename, ['format' => 'wbmp']);
+        $ico = new IcoConverter($filename, [16, 16]);
+        $ico->saveIco($icoFilename);
         $this->doUpload($context);
-        unlink($filename);
+        unlink($icoFilename);
     }
 }
