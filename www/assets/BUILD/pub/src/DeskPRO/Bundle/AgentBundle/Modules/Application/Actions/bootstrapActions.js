@@ -1,3 +1,4 @@
+import lscache from 'lscache';
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
@@ -5,6 +6,32 @@ import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+
+export const loadAgentPhraseTranslations = createAction(
+  'AGENT_LOAD_PHRASE_TRANSLATIONS',
+  () => () => new Promise(resolve => {
+    const language = window.DESKPRO_PERSON_LANG_ID;
+
+    const setPhrases = (data) => {
+      agentPhrases.setPhrases(data);
+      resolve();
+    };
+
+    const cacheKey = `dpAgent.phrases.${language}`;
+    const cachedData = lscache.get(cacheKey);
+    if (cachedData) {
+      setPhrases(cachedData);
+    } else {
+      api
+        .sendGet(`DP_API/languages/agent_phrases?language=${language}`)
+        .success(response => {
+          setPhrases(response);
+          lscache.set(cacheKey, response, 60);
+        });
+    }
+  })
+);
 
 export const donePreloading = createAction('APP_BOOTSTRAP_DONE_PRELOADING');
 export const preloadData    = createAction(
@@ -46,6 +73,7 @@ export const preloadData    = createAction(
           dispatch(setCollection('Person', 'me', [data.me.person]));
           dispatch(setImMe(data.me.person));
 
+          dispatch(loadAgentPhraseTranslations());
           dispatch(donePreloading());
         })
       ;

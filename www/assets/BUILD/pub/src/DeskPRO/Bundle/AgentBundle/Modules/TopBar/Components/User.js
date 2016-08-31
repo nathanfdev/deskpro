@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 
@@ -9,19 +10,22 @@ class User extends React.Component {
 
   getPopupContent() {
     return (<div id="user-menu">
-      <div className="header">Your Profile</div>
+      <div className="header">{agentPhrases.get('agent.general.your_profile')}</div>
       <div className="description">
         <div className="ui vertical menu">
-          <MenuItem onClick={this.clickSettings}><i className="icon setting" /> Preferences</MenuItem>
-          <MenuItem onClick={this.clickHelp}><i className="icon help circle" /> Help</MenuItem>
-          <MenuItem onClick={this.clickLogout}><i className="icon reply" /> Log out</MenuItem>
+          <MenuItem onClick={this.clickSettings}>
+            <i className="icon setting" /> {agentPhrases.get('agent.chrome.link_preferences')}</MenuItem>
+          <MenuItem onClick={this.clickHelp}>
+            <i className="icon help circle" /> {agentPhrases.get('agent.chrome.link_help')}</MenuItem>
+          <MenuItem onClick={this.clickLogout}>
+            <i className="icon reply" /> {agentPhrases.get('agent.chrome.link_logout')}</MenuItem>
         </div>
       </div>
     </div>);
   }
 
   closePopup = () => {
-    this.refs.userPopup.closePopup();
+    this.userPopup.closePopup();
   };
 
   clickHelp = () => {
@@ -54,7 +58,7 @@ class User extends React.Component {
   };
 
   togglePopup = () => {
-    this.refs.userPopup.togglePopup();
+    this.userPopup.togglePopup();
   };
 
   render() {
@@ -68,7 +72,7 @@ class User extends React.Component {
           elementId="user-menu-popup"
           zIndex={99999}
           content={this.getPopupContent()}
-          ref="userPopup"
+          ref={(c) => { this.userPopup = c; }}
           classes={['user_popup']}
           autoOpen={false}
         >

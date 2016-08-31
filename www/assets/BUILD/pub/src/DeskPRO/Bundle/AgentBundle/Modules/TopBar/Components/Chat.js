@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { Toggle, Range } from 'DeskPRO/Component/Semantic/Form';
@@ -45,7 +46,7 @@ class Chat extends React.Component {
 
   getStatus() {
     const { activeChat, onlineAgents } = this.state;
-    const status = activeChat ? 'ON' : 'OFF';
+    const status = activeChat ? agentPhrases.get('agent.general.on') : agentPhrases.get('agent.general.off');
     return (<div className="status">
       {status} <span className="count">({onlineAgents.length})</span>
     </div>);
@@ -98,11 +99,12 @@ class Chat extends React.Component {
     const volume = parseInt(this.state.volume, 10);
     return (<div id="chat-menu">
       <div className="header">
-        Chat <span className="count">({onlineAgents.length} Agents)</span>
+        {agentPhrases.get('agent.general.chat')}&nbsp;
+        <span className="count">({agentPhrases.get('agent.tickets.count_agents', { count: onlineAgents.length })})</span>
       </div>
       <div className="description">
         <Toggle active={activeChat} onChange={this.toggleChat} classes={['small']}>
-          Online for chat
+          {agentPhrases.get('agent.chat.online_for_chat')}
         </Toggle>
         <hr className="full" />
         <i
@@ -112,17 +114,17 @@ class Chat extends React.Component {
             'volume',
             { off: volume === 0, up: volume > 7, down: (volume <= 7 && volume > 0) }
           )}
-        /> Notification volume<br />
+        /> {agentPhrases.get('agent.chat.notification_volume')}<br />
         <Range min={0} max={10} value={volume} onChange={this.updateAudioVolume} />
         <hr className="full" />
-        {onlineAgents.length} online agents
+        {agentPhrases.get('agent.tickets.count_agents', { count: onlineAgents.length })}
         <button
           className={classNames('ui', 'button', 'basic', 'tiny', 'compact', 'right', 'department-filter',
             { active: departmentMode })}
           onClick={this.toggleDepartmentMode}
         >
           <i className="icon users" />
-          By department
+          {agentPhrases.get('agent.chat.by_department')}
         </button>
         {this.getAgents()}
       </div>
