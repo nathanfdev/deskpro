@@ -66,6 +66,8 @@ class LayoutFieldOptions
 
     /**
      * @var \Application\DeskPRO\TicketLayout\LayoutFieldCriteria
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\LayoutFieldCriteria")
      */
     private $criteria;
 
@@ -80,6 +82,9 @@ class LayoutFieldOptions
         $this->onViewticket     = $layoutField->isVisibleOnView();
         $this->onViewticketMode = $layoutField->getOnViewticketMode();
         $this->onEditticket     = $layoutField->isVisibleOnEdit();
-        $this->criteria         = $layoutField->getCriteria();
+
+        if ($layoutField->getCriteria()) {
+            $this->criteria = new LayoutFieldCriteria($layoutField->getCriteria());
+        }
     }
 }
