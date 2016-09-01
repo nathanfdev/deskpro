@@ -31,11 +31,12 @@
  *
  * @category Entities
  */
+
 namespace deskpro_slack\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
-use DeskPRO\Bundle\AppBundle\Util\HttpClientFactory;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -79,10 +80,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $log   = array();
         $log[] = 'webhook url: '.$webhook_url;
 
-        /** @var HttpClientFactory $factory */
-        $factory = $context->getContainer()->get('http_client.factory');
         try {
-            $client = $factory->getClient();
+            $client = new HttpClient();
             $res    = $client->request(
                 'POST',
                 $webhook_url,

@@ -16,7 +16,6 @@ services:
     arguments:
       - "@monolog.logger.updater.general"
       - "@monolog.logger.updater.http"
-      - "@http_client.factory"
 
   dp.updater.distro.manifest_loader:
     class: DeskPRO\Bundle\UpdateBundle\Distro\DistroManifestLoader

@@ -33,14 +33,12 @@ use GuzzleHttp\RequestOptions;
 
 class HttpClient extends Client
 {
-    const CERT_PATH = 'cert';
-
-    public function request($method, $uri = '', array $options = [])
+    public function __construct($config = [])
     {
-        if (null !== $verify = $this->getConfig(RequestOptions::VERIFY)) {
-            $options[RequestOptions::VERIFY] = $verify;
+        // cp from \DeskPRO_LowUtil_RequestCurl::setCaBundle
+        if (false !== @$config[RequestOptions::VERIFY] && !defined('DP_CURL_USE_SYS_CA_BUNDLE') && defined('DP_ROOT')) {
+            $config[RequestOptions::VERIFY] = DP_ROOT.implode(DIRECTORY_SEPARATOR, ['sys', 'Resources', 'cacert.pem']);
         }
-
-        return parent::request($method, $uri, $options);
+        parent::__construct($config);
     }
 }

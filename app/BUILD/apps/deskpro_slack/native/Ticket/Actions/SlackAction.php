@@ -41,7 +41,7 @@ use Application\DeskPRO\Tickets\Actions\AbstractContainerAwareAction;
 use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\Actions\AppActionInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use GuzzleHttp\Client as GuzzleClient;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -90,7 +90,7 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
         $context->getLogger()->debug("[SlackAction] Sending message to channel: $channel");
 
         try {
-            $client = new GuzzleClient();
+            $client = new HttpClient();
 
             $client->request(
                 'POST',
