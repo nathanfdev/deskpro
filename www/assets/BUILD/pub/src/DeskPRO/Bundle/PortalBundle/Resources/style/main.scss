@@ -8928,6 +8928,10 @@ body.with-agent-bar {
   display: none;
 }
 
+.medium-editor-toolbar-actions {
+  float: $float-left;
+}
+
 
 .attach-file-active {
   @extend .attach-file;
@@ -11646,3 +11650,4 @@ $datetime-hover-color: lighten($btn-primary-bg, 10%);
 .xdsoft_datetimepicker .blue-gradient-button {
   border: 1px solid $datetime-cell-border;
 }
+
