@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -231,7 +231,7 @@ class Web
      */
     public static function getUserIp()
     {
-        return (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '');
+        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
     }
 
     /**
@@ -281,7 +281,7 @@ class Web
      */
     public static function getUserAgent()
     {
-        return (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
+        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
     }
 
     /**
@@ -291,7 +291,7 @@ class Web
      */
     public static function getScriptReferrer()
     {
-        return (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
+        return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
     }
 
     /**
@@ -420,6 +420,23 @@ class Web
         return $ret;
     }
 
+    protected static function initCaCert($ch)
+    {
+        if (!defined('DP_CURL_USE_SYS_CA_BUNDLE')) {
+            if (defined('DP_ROOT') && file_exists(DP_ROOT.'/sys/Resources/cacert.pem')) {
+                if (@curl_setopt($ch, CURLOPT_CAINFO, DP_ROOT.'/sys/Resources/cacert.pem')) {
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+                } else {
+                    error_log('Could not set DeskPRO CA Bundle');
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                }
+            } else {
+                error_log('Could not set DeskPRO CA Bundle');
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            }
+        }
+    }
+
     /**
      * Get the filesize of a file at a URL. Note: Requires remote file server to return
      * proper Content-Length header.
@@ -440,6 +457,7 @@ class Web
         @curl_setopt($ch, CURLOPT_HEADER, true);
         @curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        self::initCaCert($ch);
 
         $full_result = @curl_exec($ch);
         @curl_close($ch);
@@ -480,6 +498,7 @@ class Web
         @curl_setopt($ch, CURLOPT_HEADER, true);
         @curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        self::initCaCert($ch);
 
         $full_result = @curl_exec($ch);
         @curl_close($ch);

@@ -100,13 +100,15 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             $url .= '/api?wsdl';
             $handle = @curl_init($url);
             @curl_setopt($handle,  CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, true);
             $cainfo = $context->getContainer()->get('kernel.root_dir')
                 .DIRECTORY_SEPARATOR
                 .'Resources'
                 .DIRECTORY_SEPARATOR
                 .'cacert.pem';
-            @curl_setopt($handle, CURLOPT_CAINFO, $cainfo);
+            if (file_exists($cainfo)) {
+                @curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, true);
+                @curl_setopt($handle, CURLOPT_CAINFO, $cainfo);
+            }
 
             $response = @curl_exec($handle);
             $httpCode = @curl_getinfo($handle, CURLINFO_HTTP_CODE);

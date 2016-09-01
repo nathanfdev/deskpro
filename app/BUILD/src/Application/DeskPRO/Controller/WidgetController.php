@@ -59,13 +59,16 @@ class WidgetController extends AbstractController
             return $this->createResponse('Bad url', 400);
         }
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        $ch     = curl_init($url);
         $cainfo = $this->getParameter('kernel.root_dir')
             .DIRECTORY_SEPARATOR
             .'Resources'
             .DIRECTORY_SEPARATOR
             .'cacert.pem';
+        if (file_exists($cainfo)) {
+            @curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            @curl_setopt($ch, CURLOPT_CAINFO, $cainfo);
+        }
         @curl_setopt($ch, CURLOPT_CAINFO, $cainfo);
         if ($this->getRequest()->getMethod() === 'POST') {
             curl_setopt($ch, CURLOPT_POST, true);
