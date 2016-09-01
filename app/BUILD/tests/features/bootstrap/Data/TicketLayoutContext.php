@@ -119,7 +119,7 @@ class TicketLayoutContext extends BaseContext
 
         $ticketLayout = new TicketLayout();
         $ticketLayout->setIsEnabled(true);
-        $ticketLayout->setDepartment($departmentRef ? $this->dataContext->getReference($departmentRef) : null);
+        $ticketLayout->setDepartment($departmentRef ? DataContext::resolveReference($departmentRef) : null);
         $ticketLayout->setUserLayout($layouts['user_layout']);
         $ticketLayout->setAgentLayout($layouts['agent_layout']);
 
