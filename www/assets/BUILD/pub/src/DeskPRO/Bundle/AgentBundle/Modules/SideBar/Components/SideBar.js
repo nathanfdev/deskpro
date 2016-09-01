@@ -88,7 +88,6 @@ export class SideBarContainer extends SeparateComponent {
 
   render() {
     const props = {
-      hoverMode:      false,
       canUseTicket:   this.canUseTicket(),
       canUseChat:     this.canUseChat(),
       canUsePeople:   this.canUsePeople(),
@@ -112,7 +111,6 @@ export class SideBarContainer extends SeparateComponent {
 export class SideBar extends React.Component {
   static propTypes = {
     me:             PropTypes.object,
-    hoverMode:      PropTypes.bool.isRequired,
     canUseTicket:   PropTypes.bool.isRequired,
     canUseChat:     PropTypes.bool.isRequired,
     canUsePeople:   PropTypes.bool.isRequired,
@@ -245,7 +243,6 @@ export class SideBar extends React.Component {
     const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     this.getMenus().map((item) => {
       const menuItem = item;
-      const title = this.props.hoverMode ? '' : menuItem.label;
       menuItem.key = `menu_${menuItem.className}`;
       menus.push(
         <MenuItem
@@ -253,7 +250,7 @@ export class SideBar extends React.Component {
           classes={classNames(menuItem.className, { active: currentSection === menuItem.key })}
           onClick={() => this.clickMenu(menuItem)}
         >
-          <span className="menu-icon" title={title}>
+          <span className="menu-icon">
             <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/${menuItem.icon}`} />
           </span>
           <span className="menu-label">{menuItem.label}</span>
@@ -271,12 +268,19 @@ export class SideBar extends React.Component {
     }
   };
 
+  openDeskPro() {
+    window.open('http://deskpro.com', '_blank');
+  }
+
   render() {
-    const { hoverMode } = this.props;
+    const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     return (
       <div
-        className={classNames('sidebar-menu', 'ui', 'vertical', 'menu', { 'hover-mode': hoverMode })}
+        className={classNames('sidebar-menu', 'ui', 'vertical', 'menu')}
       >
+        <div className="logo" onClick={this.openDeskPro}>
+          <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logo.svg`} />
+        </div>
         {this.getMenuItems()}
       </div>
     );

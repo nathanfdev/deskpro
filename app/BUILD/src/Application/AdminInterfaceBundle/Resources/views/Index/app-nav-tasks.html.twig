@@ -1,7 +1,0 @@
-{% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
-{% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
-{% block nav_content %}
-	{{ nav.list() }}
-		{{ nav.list_item(phrase('adm.tasks.settings'), ng_href('tasks.settings'), 'tasks.settings', 'fa-cog') }}
-	{{ nav.list_end() }}
-{% endblock %}

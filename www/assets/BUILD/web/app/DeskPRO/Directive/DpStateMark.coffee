@@ -16,11 +16,11 @@ define [
     # * tickets.ticket_deps
     # * tickets
     #
-    # If you specifiy a generic state name, then all states "under" that state will cause the on-state.
+    # If you specify a generic state name, then all states "under" that state will cause the on-state.
     #
     # If a is three-levels deep (e.g., nav > list > edit) then the 'id' param is appended and used as the last segment.
     #
-    # You can prefix the string with a comma-separated list of target route paramters. For example, if a route
+    # You can prefix the string with a comma-separated list of target route parameters. For example, if a route
     # takes 'id' and 'type', you can specify the match param like:
     #
     #     dp-state-mark="id,type:my.example.type.123"

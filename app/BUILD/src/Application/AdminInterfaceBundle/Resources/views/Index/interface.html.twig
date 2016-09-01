@@ -1,3 +1,4 @@
+{% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
 <!DOCTYPE html>
 <html ng-app>
 <head>
@@ -58,7 +59,138 @@
 <body ng-controller="Admin_Main_Ctrl_MainBody">
     <div id="dp_main_view" ng-controller="Admin_Main_Ctrl_MainPage">
         <!-- Left Navigation Column -->
-        <nav class="dp-appstrip">
+        <nav class="dp-layout-appnav" ng-hide="isBillingInterface">
+            <div class="sidebar">
+                {{ nav.list() }}
+                {{ nav.list_item(phrase('admin.menu.admin_dashboard'), ng_href('home'), 'dashboard', 'fa-dashboard') }}
+                {{ nav.list_item_group(phrase('admin.general.apps_setup'), 'fa-cog', '', 'setup') }}
+                    {{ nav.list_subitem('Settings', ng_href('setup.settings'), 'setup.settings', 'fa-cog') }}
+                    {% if app.isCloud() %}{{ nav.list_subitem('Domain / URL Setup', ng_href('setup.cloud_custom_domain'), 'setup.cloud_custom_domain', 'fa-link') }}{% endif %}
+                    {% if not app.isCloud() %}{{ nav.list_subitem('Automatic Updater', ng_href('setup.updater'), 'setup.updater', 'fa-wrench') }}{% endif %}
+
+                    {{ nav.list_subitem('Rate Limiting', ng_href('setup.rate_limiting'), 'setup.rate_limiting', 'fa-clock-o') }}
+                    {{ nav.list_subitem('Email Rate Limiting', ng_href('setup.email_rate_limiting'), 'setup.email_rate_limiting', 'fa-download') }}
+                    {{ nav.list_subitem('CAPTCHA Settings', ng_href('setup.captcha_settings'), 'setup.captcha_settings', 'fa-thumbs-up') }}
+
+                    {{ nav.list_subitem('Languages', ng_href('setup.languages'), 'setup.languages', 'fa-globe') }}
+
+                    {% if app.canResetHelpdesk %}
+                        {{ nav.list_subitem('Reset Helpdesk', ng_href('setup.reset_demo'), 'setup.reset_demo', 'fa-trash-o') }}
+                    {% endif %}
+                {{ nav.list_item_group_end() }}
+                {{ nav.list_item_group(phrase('adm.general.apps_agents'), 'fa-user', '', 'agents') }}
+                    {{ nav.list_subitem('Agents', ng_href('agents.agents'), 'agents.agents', 'fa-user') }}
+                    {{ nav.list_subitem('Auth & SSO', ng_href('agents.usersources'), 'agents.usersources', 'fa-key') }}
+                    {{ nav.list_subitem('Teams', ng_href('agents.teams'), 'agents.teams', 'fa-users') }}
+                    {{ nav.list_subitem('Permission Groups', ng_href('agents.groups'), 'agents.groups', 'fa-shield') }}
+                    {{ nav.list_subitem('Settings', ng_href('agents.settings'), 'agents.settings', 'fa-cog') }}
+                {{ nav.list_item_group_end() }}
+                {{ nav.list_item_group(phrase('adm.general.apps_tickets'), 'fa-envelope', '', 'tickets') }}
+                    {% if app.getSetting('experimental_admin_features') %}
+                        {{ nav.list_subitem('Email triggers', ng_href('tickets.ticket_accounts'), 'tickets.ticket_accounts', 'fa-envelope') }}
+                        {{ nav.list_subitem('SMS triggers', ng_href('tickets.channel_sms'), 'tickets.ticket_accounts', 'fa-group') }}
+                        {{ nav.list_subitem('Facebook triggers', ng_href('tickets.channel_facebook'), 'tickets.ticket_accounts', 'fa-group') }}
+                    {% endif %}
+
+                    {{ nav.list_subitem('Departments', ng_href('tickets.ticket_deps'), 'tickets.ticket_deps', 'fa-briefcase') }}
+
+                    {%  if not app.getSetting('experimental_admin_features') %}
+                        {{ nav.list_subitem('Email Accounts', ng_href('tickets.ticket_accounts'), 'tickets.ticket_accounts', 'fa-envelope') }}
+                    {% endif %}
+
+                    {{ nav.list_subitem('Statuses', ng_href('tickets.statuses'), 'tickets.statuses', 'fa-ticket') }}
+                    {{ nav.list_subitem('Urgency', ng_href('tickets.urgency'), 'tickets.urgency', 'fa-exclamation') }}
+                    {{ nav.list_subitem('Fields', ng_href('tickets.fields'), 'tickets.fields', 'fa-terminal') }}
+
+                    {{ nav.list_subitem('New Ticket triggers', ng_href('tickets.triggers', {type: "newticket"}), 'type:tickets.triggers.newticket', 'fa-user') }}
+                    {{ nav.list_subitem('New Reply triggers', ng_href('tickets.triggers', {type: "newreply"}), 'type:tickets.triggers.newreply', 'fa-group') }}
+                    {{ nav.list_subitem('Ticket Update triggers', ng_href('tickets.triggers', {type: "update"}), 'type:tickets.triggers.update', 'fa-group') }}
+
+                    {{ nav.list_subitem('Macros', ng_href('tickets.macros'), 'tickets.macros', 'fa-keyboard-o') }}
+                    {{ nav.list_subitem('Filters', ng_href('tickets.ticket_filters'), 'tickets.ticket_filters', 'fa-filter') }}
+                    {{ nav.list_subitem('Satisfaction', ng_href('tickets.satisfaction'), 'tickets.satisfaction', 'fa-smile-o') }}
+                    {{ nav.list_subitem('Escalations', ng_href('tickets.ticket_escalations'), 'tickets.ticket_escalations', 'fa-bolt') }}
+                    {{ nav.list_subitem('SLAs', ng_href('tickets.slas'), 'tickets.slas', 'fa-clock-o') }}
+                    {{ nav.list_subitem('Labels', ng_href('tickets.labels'), 'tickets.labels', 'fa-tags') }}
+                    {{ nav.list_subitem('Round Robin', ng_href('tickets.roundrobin'), 'tickets.roundrobin', 'fa-refresh') }}
+
+                    {{ nav.list_subitem('Time Log & Billing Settings', ng_href('tickets.timelog_billing_settings'), 'tickets.timelog_billing_settings', 'fa-cog') }}
+                    {{ nav.list_subitem('Time Log & Billing Fields', ng_href('tickets.timelog_billing_fields'), 'tickets.timelog_billing_fields', 'fa-terminal') }}
+
+                    {{ nav.list_subitem('Email Templates', ng_href('tickets.email_templates'), 'tickets.email_templates', 'fa-file-text') }}
+                    {{ nav.list_subitem('Forward Settings', ng_href('tickets.fwd_settings'), 'tickets.fwd_settings', 'fa-mail-forward') }}
+                    {{ nav.list_subitem(phrase('adm.problems.title'), ng_href('tickets.problems'), 'tickets.problems', 'fa-bullhorn') }}
+                    {{ nav.list_subitem('Settings', ng_href('tickets.settings'), 'tickets.settings', 'fa-cog') }}
+                {{ nav.list_item_group_end() }}
+                {{ nav.list_item_group(phrase('adm.general.apps_crm'), 'fa-users', '', 'crm') }}
+                    {{ nav.list_subitem('Auth & SSO', ng_href('crm.usersources'), 'crm.usersources', 'fa-key') }}
+                    {{ nav.list_subitem('User Groups', ng_href('crm.groups'), 'crm.groups', 'fa-group') }}
+                    {{ nav.list_subitem('Users Fields', ng_href('crm.user_fields'), 'crm.user_fields', 'fa-user') }}
+                    {{ nav.list_subitem('Organizations Fields', ng_href('crm.org_fields'), 'crm.org_fields', 'fa-group') }}
+                    {{ nav.list_subitem('Rules', ng_href('crm.rules'), 'crm.rules', 'fa-tasks') }}
+                    {{ nav.list_subitem('Users Labels', ng_href('crm.user_labels'), 'crm.user_labels', 'fa-user') }}
+                    {{ nav.list_subitem('Organizations Labels', ng_href('crm.org_labels'), 'crm.org_labels', 'fa-group') }}
+                    {{ nav.list_subitem('Banning', ng_href('crm.banning'), 'crm.banning', 'fa-ban') }}
+                    {{ nav.list_subitem('CSV Import', ng_href('crm.import'), 'crm.import', 'fa-upload') }}
+                {{ nav.list_item_group_end() }}
+                {{ nav.list_item_group(phrase('admin.setup.user_interface'), 'fa-cog', '', 'portal') }}
+                    <select
+                            ui-select2
+                            ng-model="brandId"
+                            ng-change="Ctrl.changeBrand()"
+                            style="width: 194px"
+                            class="no-search"
+                    >
+                        <option ng-repeat="brand in brands | orderBy: 'name'" value="{{ ng_var('brand.id') }}">{{ ng_var('brand.name') }}</option>
+                        <option class="new-brand"value="-1">{{ phrase('admin.setup.new_brand') }}</option>
+                    </select>
+                    {{ nav.list_subitem('Setup', ng_href('portal.setup'), 'portal.setup', 'fa-th-large') }}
+                    <div ng-if="brandId > 0">
+                        {{ nav.list_subitem_regex_statemark('Knowledgebase', ng_href('portal.kb_settings'), 'kb', 'fa-book', null, '{"is-disabled": !Ctrl.settings.apps_kb || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
+                        {{ nav.list_subitem_regex_statemark('News', ng_href('portal.news_settings'), 'news', 'fa-clock-o', null, '{"is-disabled": !Ctrl.settings.apps_news || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
+                        {{ nav.list_subitem_regex_statemark('Downloads', ng_href('portal.downloads_settings'), 'downloads', 'fa-download', null, '{"is-disabled": !Ctrl.settings.apps_downloads || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
+                        {{ nav.list_subitem_regex_statemark('Feedback', ng_href('portal.feedback_settings'), 'feedback', 'fa-thumbs-up', null, '{"is-disabled": !Ctrl.settings.apps_feedback || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
+                    </div>
+                    <div ng-if="brandId > 0">
+                        {{ nav.list_subitem('Portal', ng_href('portal.portal_editor'), 'portal.portal_editor', 'fa-home', 'true', '{"is-disabled": !Ctrl.settings.iface_portal}') }}
+                        {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor'), 'portal.widget_editor', 'fa-puzzle-piece') }}
+                        {{ nav.list_subitem('Ticket Form Widget', ng_href('portal.ticket_form_widget'), 'portal.ticket_form_widget', 'fa-envelope') }}
+                    </div>
+                {{ nav.list_item_group_end() }}
+                {{ nav.list_item_group(phrase('adm.general.apps_chat'), 'fa-comments-o', '', 'chat') }}
+                    {{ nav.list_subitem('Chat Departments', ng_href('chat.chat_deps'), 'chat.chat_deps', 'fa-briefcase') }}
+                    {{ nav.list_subitem('Fields', ng_href('chat.fields'), 'chat.fields', 'fa-terminal') }}
+                    {{ nav.list_subitem('Labels', ng_href('chat.labels'), 'chat.labels', 'fa-tags') }}
+                    {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor', {brandId: 1}), 'portal.widget_editor_link', 'fa-puzzle-piece') }}
+                {{ nav.list_item_group_end() }}
+                {{ nav.list_item_group(phrase('adm.general.apps'), 'fa-cubes', '', 'apps') }}
+                    {{ nav.list_subitem(phrase('adm.general.apps'), ng_href('apps.apps'), 'apps.apps', 'fa-puzzle-piece') }}
+                    {{ nav.list_subitem(phrase('adm.general.api_keys'), ng_href('apps.api_keys'), 'apps.api_keys', 'fa-key') }}
+                {{ nav.list_item_group_end() }}
+                {{ nav.list_item_group(phrase('adm.general.tasks'), 'fa-check-circle-o', '', 'tasks') }}
+                    {{ nav.list_subitem(phrase('adm.tasks.settings'), ng_href('tasks.settings'), 'tasks.settings', 'fa-cog') }}
+                {{ nav.list_item_group_end() }}
+                {% if not app.isCloud() %}
+                    {{ nav.list_item_group(phrase('adm.general.apps_server'), 'fa-database', '', 'server') }}
+                        {{ nav.list_subitem('Server Settings', ng_href('server.server_settings'), 'server.server_settings', 'fa-cog') }}
+                        {{ nav.list_subitem('ElasticSearch', ng_href('server.elastic_search'), 'setup.elastic_search', 'fa-search') }}
+                        {{ nav.list_subitem('Report File', ng_href('server.report_file'), 'server.report_file', 'fa-download') }}
+                        {{ nav.list_subitem('Server Requirements', ng_href('server.server_reqs'), 'server.server_reqs', 'fa-check-square-o') }}
+                        {{ nav.list_subitem('File Check', ng_href('server.file_check'), 'server.file_check', 'fa-shield') }}
+                        {{ nav.list_subitem('File Uploads', ng_href('server.file_uploads'), 'server.file_uploads', 'fa-upload') }}
+                        {{ nav.list_subitem('Scheduled Tasks', ng_href('server.cron'), 'server.cron', 'fa-clock-o') }}
+                        {{ nav.list_subitem('PHP Info', ng_href('server.php_info'), 'server.php_info', 'fa-info-circle') }}
+                        {{ nav.list_subitem('MySQL Info', ng_href('server.mysql_info'), 'server.mysql_info', 'fa-hdd-o') }}
+                        {{ nav.list_subitem('Error Logs', ng_href('server.error_logs'), 'server.error_logs', 'fa-exclamation') }}
+                        {{ nav.list_subitem('Incidents', ng_href('server.incidents'), 'server.incidents', 'fa-exclamation') }}
+                        {{ nav.list_subitem('Audit Logs', ng_href('server.audit_logs'), 'server.audit_logs', 'fa-list') }}
+                    {{ nav.list_item_group_end() }}
+                {% endif %}
+
+                {{ nav.list_end() }}
+            </div>
+        </nav>
+        {#<nav class="dp-appstrip">
             <ul ng-hide="isBillingInterface">
                 <li tooltip="{{ phrase('adm.general.home') }}" tooltip-append-to-body="true" tooltip-placement="right"
                     dp-state-mark="home" class="state-on">
@@ -101,7 +233,7 @@
                         <a href="#/twitter"><i class="app-icon app-icon-twitter"></i></a>
                     </li>
                 #}
-                <li tooltip="{{ phrase('adm.general.apps') }}" tooltip-append-to-body="true" tooltip-placement="right"
+                {#<li tooltip="{{ phrase('adm.general.apps') }}" tooltip-append-to-body="true" tooltip-placement="right"
                     dp-state-mark="apps">
                     <a href="#/apps"><i class="app-icon app-icon-apps"></i></a>
                 </li>
@@ -116,78 +248,7 @@
                     </li>
                 {% endif %}
             </ul>
-
-            <ul class="btm normal">
-                <li tooltip="Go to Agent Interface" tooltip-append-to-body="true" tooltip-placement="right"
-                    class="agent-ifce-btn">
-                    <a href="/agent/" dp-click-href="#/go_to_agent" ><i class="app-icon app-icon-agent-ifce"></i></a>
-                </li>
-                <li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right"
-                    class="reports-ifce-btn">
-                    <a href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports" ><i class="app-icon app-icon-reports-ifce"></i></a>
-                </li>
-                {% if not app.getSetting('disable_admin_billing') %}
-                    <li ng-class="{'section-on': isBillingInterface}"
-                        tooltip="{{ ng_var("(isBillingInterface ? 'You are currently using the Billing Interface' : 'Go to Billing Interface')") }}"
-                        tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
-                        <a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
-                    </li>
-                {% endif %}
-                <li ng-class="{'section-on': !isBillingInterface}"
-                    tooltip="{{ ng_var("(isBillingInterface ? 'Go to Admin Interface' : 'You are currently using the Admin Interface')") }}"
-                    tooltip-append-to-body="true" tooltip-placement="right">
-                    <a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
-                </li>
-                <li tooltip="Go to User Interface" tooltip-append-to-body="true" tooltip-placement="right"
-                    class="user-ifce-btn">
-                    <a href="{{ path('user') }}" dp-click-href="#/go_to_user"><i
-                                class="app-icon app-icon-user-ifce"></i></a>
-                </li>
-            </ul>
-            <ul class="btm mini-rest ng-hide" ng-show="miniAppStrip">
-                <li class="dotdotdot" ng-click="miniAppStrip = false">
-                    <span><i class="fa fa-caret-down"></i></span>
-                </li>
-                <li tooltip="Go to Agent Interface" tooltip-append-to-body="true" tooltip-placement="right"
-                    class="agent-ifce-btn">
-                    <a href="/{{ path('user')|ltrim('/') }}agent/" dp-click-href="#/go_to_agent" ><i class="app-icon app-icon-agent-ifce"></i></a>
-                </li>
-                <li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right"
-                    class="reports-ifce-btn">
-                    <a href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports" ><i class="app-icon app-icon-reports-ifce"></i></a>
-                </li>
-                {% if not app.getSetting('disable_admin_billing') %}
-                    <li ng-show="!isBillingInterface" tooltip="Go to Billing Interface" tooltip-append-to-body="true"
-                        tooltip-placement="right" class="lic-ifce-btn">
-                        <a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
-                    </li>
-                {% endif %}
-                <li ng-show="isBillingInterface" tooltip="Go to Admin Interface" tooltip-append-to-body="true"
-                    tooltip-placement="right">
-                    <a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
-                </li>
-                <li tooltip="Go to User Interface" tooltip-append-to-body="true" tooltip-placement="right"
-                    class="user-ifce-btn">
-                    <a href="{{ path('user') }}" dp-click-href="#/go_to_user"><i
-                                class="app-icon app-icon-user-ifce"></i></a>
-                </li>
-            </ul>
-            <ul class="btm mini">
-                <li class="dotdotdot" ng-hide="miniAppStrip" ng-click="miniAppStrip = true">
-                    <span>&middot; &middot; &middot;</span>
-                </li>
-                {% if not app.getSetting('disable_admin_billing') %}
-                    <li ng-show="isBillingInterface" tooltip="You are currently using the Billing Interface"
-                        tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
-                        <a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
-                    </li>
-                {% endif %}
-                <li ng-show="!isBillingInterface" tooltip="You are currently using the Admin Interface"
-                    tooltip-append-to-body="true" tooltip-placement="right">
-                    <a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
-                </li>
-            </ul>
-        </nav>
+        </nav>#}
         <div class="dp-layout" ui-view></div>
     </div>
 

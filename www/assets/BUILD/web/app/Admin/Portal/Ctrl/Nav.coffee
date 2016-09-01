@@ -44,11 +44,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @Api2.sendGet('brands').then (res) =>
         @$scope.brands = res.data.data
 
-    changeBrand: ->
-      if @$scope.brandId == '-1'
-        @$state.go 'portal.setup', {brandId: 'new'}
-      else if @$scope.brandId
-        @$state.go 'portal.setup', {brandId: @$scope.brandId}
 
 
   Admin_Portal_Ctrl_Nav.EXPORT_CTRL()
