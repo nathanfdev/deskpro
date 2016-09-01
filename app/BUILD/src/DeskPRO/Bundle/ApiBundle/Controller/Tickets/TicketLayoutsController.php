@@ -149,7 +149,9 @@ class TicketLayoutsController extends BaseController
         $department    = $department ?: $ticketLayout->getDepartment();
 
         $this->getLayoutFieldFilter()->filterInvalid($contextLayout);
-        $this->get('ticket_layout_factory')->verifyRequiredFields($contextLayout, true);
+
+        $layoutFactory = $this->get('ticket_layout_factory');
+        $layoutFactory->verifyRequiredFields($contextLayout, true);
 
         return new TicketLayoutModel($contextLayout, $context, $department);
     }

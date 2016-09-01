@@ -26,32 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets;
 
-use Application\DeskPRO\TicketLayout\LayoutField;
-use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Application\DeskPRO\TicketLayout\LayoutFieldCriteria as BaseLayoutFieldCriteria;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class LayoutFieldHandler.
+ * Class LayoutFieldCriteria.
  */
-class LayoutFieldHandler extends AbstractEntityHandler
+class LayoutFieldCriteria
 {
     /**
-     * {@inheritdoc}
+     * @var string
+     *
+     * @JMS\Type("string")
      */
-    public static function getClassNames()
-    {
-        return LayoutField::class;
-    }
+    private $mode;
 
     /**
-     * {@inheritdoc}
+     * @var array
      *
-     * @param LayoutField $entity
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\LayoutFieldCriteriaTerm>")
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    private $terms = [];
+
+    /**
+     * Constructor.
+     *
+     * @param BaseLayoutFieldCriteria $criteria
+     */
+    public function __construct(BaseLayoutFieldCriteria $criteria)
     {
-        return $entity->exportToArray();
+        $this->mode = $criteria->getMode();
+
+        foreach ($criteria->getTerms() as $term) {
+            $this->terms[] = new LayoutFieldCriteriaTerm($term);
+        }
     }
 }
