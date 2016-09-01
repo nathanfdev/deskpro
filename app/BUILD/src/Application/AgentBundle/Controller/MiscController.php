@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\FragmentRouter;
@@ -377,6 +376,13 @@ JS;
         }
 
         $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        $cainfo = $this->getParameter('kernel.root_dir')
+            .DIRECTORY_SEPARATOR
+            .'Resources'
+            .DIRECTORY_SEPARATOR
+            .'cacert.pem';
+        @curl_setopt($ch, CURLOPT_CAINFO, $cainfo);
         if ($method != 'GET') {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
             curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($passData) ? http_build_query($passData) : $passData);

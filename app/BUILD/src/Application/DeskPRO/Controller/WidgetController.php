@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -60,6 +60,13 @@ class WidgetController extends AbstractController
         }
 
         $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        $cainfo = $this->getParameter('kernel.root_dir')
+            .DIRECTORY_SEPARATOR
+            .'Resources'
+            .DIRECTORY_SEPARATOR
+            .'cacert.pem';
+        @curl_setopt($ch, CURLOPT_CAINFO, $cainfo);
         if ($this->getRequest()->getMethod() === 'POST') {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents('php://input'));
