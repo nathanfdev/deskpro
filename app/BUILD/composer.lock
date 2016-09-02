@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "24044f4af6e37ca65e77ad2fd140ae53",
-    "content-hash": "85ee6fb3223bb1b51bdb2e2ca5e1d009",
+    "hash": "79bbc418126765d3528e8a7f6db59cc8",
+    "content-hash": "5856458c69a244aea118d7f4ee6bdf71",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -1228,24 +1228,23 @@
         },
         {
             "name": "doctrine/migrations",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/migrations.git",
-                "reference": "6f40d16de7a4da2fff883f2de92fdbf17e61d75d"
+                "reference": "3a787de7c4a64460436dc2eb2e3cde8920d5fadd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/6c527d8ccbccec5257bb2c92bca973653b1e3976",
-                "reference": "6f40d16de7a4da2fff883f2de92fdbf17e61d75d",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/3a787de7c4a64460436dc2eb2e3cde8920d5fadd",
+                "reference": "3a787de7c4a64460436dc2eb2e3cde8920d5fadd",
                 "shasum": ""
             },
             "require": {
                 "doctrine/dbal": "~2.2",
-                "ocramius/proxy-manager": "^1.0|^2.0",
-                "php": "^5.5|^7.0",
-                "symfony/console": "~2.3|~3.0",
-                "symfony/yaml": "~2.3|~3.0"
+                "php": ">=5.4.0",
+                "symfony/console": "~2.3",
+                "symfony/yaml": "~2.3"
             },
             "require-dev": {
                 "doctrine/coding-standard": "dev-master",
@@ -1264,12 +1263,12 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "v1.0.x-dev"
+                    "dev-master": "1.0.x-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Doctrine\\DBAL\\Migrations\\": "lib/Doctrine/DBAL/Migrations"
+                "psr-0": {
+                    "Doctrine\\DBAL\\Migrations": "lib"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1292,7 +1291,7 @@
                 "database",
                 "migrations"
             ],
-            "time": "2015-09-15 13:41:30"
+            "time": "2015-07-29 20:43:19"
         },
         {
             "name": "doctrine/mongodb",
@@ -1974,7 +1973,7 @@
                 "propel",
                 "search"
             ],
-            "time": "2016-03-14 23:21:24"
+            "time": "2016-08-25 11:56:35"
         },
         {
             "name": "friendsofsymfony/http-cache",
@@ -6198,6 +6197,48 @@
             "time": "2015-11-30 10:53:14"
         },
         {
+            "name": "shopblocks/php-ico",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shopblocks/php-ico.git",
+                "reference": "91f721392c022678ffc948751ac3bfb79642299e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shopblocks/php-ico/zipball/91f721392c022678ffc948751ac3bfb79642299e",
+                "reference": "91f721392c022678ffc948751ac3bfb79642299e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ossobuffo\\PhpIco\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Jean",
+                    "email": "gaarai@gaarai.com"
+                },
+                {
+                    "name": "Daniel Johnson",
+                    "email": "il.basso.buffo@gmail.com"
+                }
+            ],
+            "description": "Provides easy-to-use functionality to generate valid ICO files. Adapted from the popular PHP_ICO library.",
+            "homepage": "http://github.com/shopblocks/php-ico",
+            "time": "2016-02-26 11:20:29"
+        },
+        {
             "name": "slushie/recaptcha-secure-token",
             "version": "1.1.1",
             "source": {
@@ -6976,14 +7017,12 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony SwiftmailerBundle",
@@ -9723,16 +9762,16 @@
         },
         {
             "name": "zendframework/zend-servicemanager",
-            "version": "2.7.6",
+            "version": "2.7.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-servicemanager.git",
-                "reference": "a6db4d13b9141fccce5dcb553df0295d6ad7d477"
+                "reference": "eeecb78945c2a9f653caded36ba5274e8a8f5468"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/a6db4d13b9141fccce5dcb553df0295d6ad7d477",
-                "reference": "a6db4d13b9141fccce5dcb553df0295d6ad7d477",
+                "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/eeecb78945c2a9f653caded36ba5274e8a8f5468",
+                "reference": "eeecb78945c2a9f653caded36ba5274e8a8f5468",
                 "shasum": ""
             },
             "require": {
@@ -9771,7 +9810,7 @@
                 "servicemanager",
                 "zf2"
             ],
-            "time": "2016-04-27 19:07:40"
+            "time": "2016-09-01 19:03:15"
         },
         {
             "name": "zendframework/zend-session",
@@ -11818,56 +11857,44 @@
         },
         {
             "name": "satooshi/php-coveralls",
-            "version": "dev-master",
+            "version": "v0.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/satooshi/php-coveralls.git",
-                "reference": "2fbf803803d179ab1082807308a67bbd5a760c70"
+                "reference": "01793ce60f1e259592ac3cb7c3fc183209800127"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/satooshi/php-coveralls/zipball/f2fe833caef2c65620c11f5fabe60040df39339f",
-                "reference": "2fbf803803d179ab1082807308a67bbd5a760c70",
+                "url": "https://api.github.com/repos/satooshi/php-coveralls/zipball/01793ce60f1e259592ac3cb7c3fc183209800127",
+                "reference": "01793ce60f1e259592ac3cb7c3fc183209800127",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-simplexml": "*",
-                "guzzlehttp/guzzle": "^6.0",
-                "php": ">=5.5",
+                "guzzle/guzzle": "^2.8|^3.0",
+                "php": ">=5.3.3",
                 "psr/log": "^1.0",
-                "symfony/config": "^2.1|^3.0",
+                "symfony/config": "^2.4|^3.0",
                 "symfony/console": "^2.1|^3.0",
-                "symfony/stopwatch": "^2.0|^3.0",
-                "symfony/yaml": "^2.0|^3.0"
-            },
-            "require-dev": {
-                "apigen/apigen": "2.8.*@stable",
-                "pdepend/pdepend": "dev-master as 2.0.0",
-                "phpmd/phpmd": "dev-master",
-                "phpunit/php-invoker": ">=1.1.0,<1.2.0",
-                "phpunit/phpunit": "3.7.*@stable",
-                "sebastian/finder-facade": "dev-master",
-                "sebastian/phpcpd": "1.4.*@stable",
-                "squizlabs/php_codesniffer": "1.4.*@stable",
-                "theseer/fdomdocument": "dev-master"
+                "symfony/stopwatch": "^2.2|^3.0",
+                "symfony/yaml": "^2.1|^3.0"
             },
             "suggest": {
                 "symfony/http-kernel": "Allows Symfony integration"
             },
             "bin": [
-                "composer/bin/coveralls"
+                "bin/coveralls"
             ],
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.7-dev"
+                    "dev-master": "0.8-dev"
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Satooshi\\Component": "src/",
-                    "Satooshi\\Bundle": "src/"
+                "psr-4": {
+                    "Satooshi\\": "src/Satooshi/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -11889,7 +11916,7 @@
                 "github",
                 "test"
             ],
-            "time": "2014-11-11 15:35:34"
+            "time": "2015-12-17 18:04:18"
         },
         {
             "name": "sebastian/finder-facade",

@@ -83,4 +83,5 @@ return [
     'api.error_codes.unauthorized'                     => 'You must be authenticated to make this request.',
     'api.error_codes.unauthorized_check_server'        => 'Unauthorized. If you are using apache and feel that this is incorrect, please see this article for help: https://support.deskpro.com/kb/articles/415',
     'api.error_codes.unique_entity'                    => 'This value already exists in the system.',
+    'api.error_codes.not_an_image'                     => 'Uploaded file is not an image',
 ];
