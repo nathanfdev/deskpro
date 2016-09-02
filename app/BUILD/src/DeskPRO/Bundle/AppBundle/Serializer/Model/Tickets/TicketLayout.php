@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Department as DepartmentEntity;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\LayoutField as LayoutFieldModel;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -53,11 +54,11 @@ class TicketLayout
     /**
      * An array of fields describing layout.
      *
-     * @JMS\Type("array<Application\DeskPRO\TicketLayout\LayoutField>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\LayoutField>")
      *
      * @var LayoutField[]
      */
-    private $fields;
+    private $fields = [];
 
     /**
      * Agent or user context.
@@ -78,8 +79,12 @@ class TicketLayout
     public function __construct(Layout $layout, $context, DepartmentEntity $department = null)
     {
         $this->department = $department;
-        $this->fields     = $this->getOrderedFields($layout, $context);
         $this->context    = $context;
+
+        $fields = $this->getOrderedFields($layout, $context);
+        foreach ($fields as $field) {
+            $this->fields[] = new LayoutFieldModel($field, $context);
+        }
     }
 
     /**

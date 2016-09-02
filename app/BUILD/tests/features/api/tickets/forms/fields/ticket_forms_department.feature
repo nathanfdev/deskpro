@@ -37,10 +37,10 @@ Feature: /ticket_forms
       | f1 | text | Text field |
       | f2 | text | Text field |
     And no TicketLayout records exist
-    And the ticket layout exists for "d1" department with fields:
+    And the ticket layout exists for "{d1}" department with fields:
       | agent_layout      |
       | ticket_field_{f1} |
-    And the ticket layout exists for "d2" department with fields:
+    And the ticket layout exists for "{d2}" department with fields:
       | agent_layout      |
       | ticket_field_{f2} |
 

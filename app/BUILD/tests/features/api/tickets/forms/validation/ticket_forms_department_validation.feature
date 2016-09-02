@@ -62,10 +62,10 @@ Feature: /ticket_forms validation
       | d1 | Department 1 | [{defaultBrand}] | 1                  |
       | d2 | Department 2 | [{defaultBrand}] | 1                  |
     And no TicketLayout records exist
-    And the ticket layout exists for "d1" department with fields:
+    And the ticket layout exists for "{d1}" department with fields:
       | agent_layout       | user_layout        |
       | ticket_field_{ta1} | ticket_field_{tu1} |
-    And the ticket layout exists for "d2" department with fields:
+    And the ticket layout exists for "{d2}" department with fields:
       | agent_layout       | user_layout        |
       | ticket_field_{ta2} | ticket_field_{tu2} |
 

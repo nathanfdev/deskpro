@@ -44,7 +44,7 @@ Feature: New ticket form
       | department  |
       | person      |
       | message     |
-    And the ticket layout exists for "d2" department with fields:
+    And the ticket layout exists for "{d2}" department with fields:
       | user_layout |
       | person      |
       | message     |

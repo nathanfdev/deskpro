@@ -164,11 +164,6 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.layout_field:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\LayoutFieldHandler
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
   api_serializer.handler.api_token:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ApiTokenHandler
     arguments:
@@ -236,6 +231,15 @@ services:
     tags:
       - { name: "jms_serializer.event_subscriber" }
 
+  api_serializer.layout_field_required_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\LayoutFieldRequiredListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_field_settings"
+    tags:
+      - { name: "jms_serializer.event_subscriber" }
+
+  # helpers
   api_serializer.twig:
     class: DeskPRO\Bundle\AppBundle\Serializer\Twig\SerializerTwigExtension
     tags:

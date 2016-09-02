@@ -14,7 +14,7 @@ Feature: New ticket form validation
     And there are no TicketLayout records
 
   Scenario: I check unexpected field on layout
-    Given the ticket layout exists for "d1" department with fields:
+    Given the ticket layout exists for "{d1}" department with fields:
       | user_layout |
       | cc          |
     And I go to "/new-ticket"

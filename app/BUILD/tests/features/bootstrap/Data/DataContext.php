@@ -342,7 +342,7 @@ class DataContext extends BaseContext
      *
      * @return object
      */
-    private static function resolveReference($ref)
+    public static function resolveReference($ref)
     {
         $ref = trim($ref, '{}~');
         if (!array_key_exists($ref, self::$references)) {
