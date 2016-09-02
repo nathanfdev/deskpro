@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\EventListener;
 
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\NewSettings\SettingsBag;
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -43,9 +49,13 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class RedirectToUrlExceptionListenerSpec extends ObjectBehavior
 {
-    public function let(LoggerInterface $logger)
+    public function let(LoggerInterface $logger, SettingsResolver $resolver, BrandStack $brandStack, Brand $brand,
+                        BrandContainer $brandContainer, SettingsBag $settingsBag)
     {
-        $this->beConstructedWith($logger);
+        $this->beConstructedWith($logger, $resolver, $brandStack);
+        $brandStack->getActive()->willReturn($brandContainer);
+        $brandContainer->getBrand()->willReturn($brand);
+        $resolver->getBrandSettings($brand)->willReturn($settingsBag);
     }
 
     public function it_subscrbied_to_kernel_exceptions()
