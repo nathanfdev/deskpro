@@ -1,16 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 import Isvg from 'react-inlinesvg';
+import classNames from 'classnames';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
-import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
 import { resumeOnboarding } from '../../Onboarding/Actions/onboardingActions';
+// import { IMContainer } from '../IM/Components/IMContainer';
+// import { HeaderWidget } from '../IM/Components/HeaderWidget';
 
 @connect(state => ({
   agents:          collectionSelectorFactory('Person', 'agents')(state),
@@ -149,7 +151,7 @@ class AgentTopBar extends SeparateComponent {
           onUserInput={this.onSearch}
           onFocus={this.onSearchFocus}
           onBlur={this.onSearchBlur}
-          placeholder="Search ..."
+          placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
         />
       </TopBarItem>
       <TopBarItem classes={['legacy-omnibox recent']}>

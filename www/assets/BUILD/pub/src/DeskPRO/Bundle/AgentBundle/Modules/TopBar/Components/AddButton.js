@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
+import Isvg from 'react-inlinesvg';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
-import Isvg from 'react-inlinesvg';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class AddButton extends React.Component {
   static propTypes = {
@@ -12,28 +13,37 @@ class AddButton extends React.Component {
   };
 
   getPopupContent() {
-    let items = [];
+    const items = [];
     if (window.DESKPRO_PERSON_PERMS) {
       if (window.DESKPRO_PERSON_PERMS['agent_tickets.create']) {
-        items.push(<MenuItem key="ticket" onClick={this.addTicket}><i className="icon mail" /> Ticket</MenuItem>);
+        items.push(<MenuItem key="ticket" onClick={this.addTicket}>
+          <i className="icon mail" /> {agentPhrases.get('agent.general.ticket')}
+        </MenuItem>);
       }
       if (window.DESKPRO_PERSON_PERMS['agent_people.create']) {
-        items.push(<MenuItem key="person" onClick={this.addPerson}><i className="icon user" /> Person</MenuItem>);
+        items.push(<MenuItem key="person" onClick={this.addPerson}>
+          <i className="icon user" /> {agentPhrases.get('agent.general.person')}</MenuItem>);
       }
       if (window.DESKPRO_PERSON_PERMS['agent_org.create']) {
-        items.push(<MenuItem key="organisation" onClick={this.addOrganisation}><i className="icon users" /> Organisation</MenuItem>);
+        items.push(<MenuItem key="organisation" onClick={this.addOrganisation}>
+          <i className="icon users" /> {agentPhrases.get('agent.general.organization')}</MenuItem>);
       }
       // if (app.getConfig('enable_twitter') && app.user.getTwitterAccountIds()|length %}
       //   items.push(<MenuItem key="twitter" onClick={this.addTweet}><i className="icon twitter" /> Tweet</MenuItem>);
       // }
       if (window.DESKPRO_PERSON_PERMS['agent_publish.create']) {
-        items.push(<MenuItem key="article" onClick={this.addArticle}><i className="icon edit" /> Article</MenuItem>);
-        items.push(<MenuItem key="news" onClick={this.addNewsPost}><i className="icon calendar outline" /> News post</MenuItem>);
-        items.push(<MenuItem key="download" onClick={this.addDownload}><i className="icon download" /> Download</MenuItem>);
-        items.push(<MenuItem key="feedback" onClick={this.addFeedback}><i className="icon thumbs outline up" /> Feedback</MenuItem>);
+        items.push(<MenuItem key="article" onClick={this.addArticle}>
+          <i className="icon edit" /> {agentPhrases.get('agent.general.article')}</MenuItem>);
+        items.push(<MenuItem key="news" onClick={this.addNewsPost}>
+          <i className="icon calendar outline" /> {agentPhrases.get('agent.general.news_post')}</MenuItem>);
+        items.push(<MenuItem key="download" onClick={this.addDownload}>
+          <i className="icon download" /> {agentPhrases.get('agent.general.download')}</MenuItem>);
+        items.push(<MenuItem key="feedback" onClick={this.addFeedback}>
+          <i className="icon thumbs outline up" /> {agentPhrases.get('agent.general.feedback')}</MenuItem>);
       }
       if (window.DESKPRO_PERSON_PERMS['agent_tasks.use']) {
-        items.push(<MenuItem key="task" onClick={this.addTask}><i className="icon check circle outline" /> Task</MenuItem>);
+        items.push(<MenuItem key="task" onClick={this.addTask}>
+          <i className="icon check circle outline" /> {agentPhrases.get('agent.general.task')}</MenuItem>);
       }
     }
     return (<div id="add-menu">
@@ -90,15 +100,16 @@ class AddButton extends React.Component {
   }
 
   closePopup = () => {
-    this.refs.addPopup.closePopup();
+    this.addPopup.closePopup();
     this.props.closeIframes();
   };
 
   togglePopup = () => {
-    this.refs.addPopup.togglePopup();
+    this.addPopup.togglePopup();
   };
 
   render() {
+    const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     return (<div className="item add" onClick={this.togglePopup}>
       <PopUp
         positionMy="center top"
@@ -107,12 +118,12 @@ class AddButton extends React.Component {
         elementId="add-menu-popup"
         zIndex={99999}
         content={this.getPopupContent()}
-        ref="addPopup"
+        ref={(c) => { this.addPopup = c; }}
         classes={['add_menu_popup']}
         autoOpen={false}
       >
         <button className="ui button">
-          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '')}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
+          <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
         </button>
       </PopUp>
     </div>);
