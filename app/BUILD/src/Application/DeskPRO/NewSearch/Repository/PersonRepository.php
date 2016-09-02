@@ -46,7 +46,7 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
      */
     protected function getQueryFields()
     {
-        return ['name', 'first_name', 'last_name', 'emails', 'phone_numbers'];
+        return ['name', 'first_name', 'last_name', 'emails', 'email_domains', 'phone_numbers'];
     }
 
     /**

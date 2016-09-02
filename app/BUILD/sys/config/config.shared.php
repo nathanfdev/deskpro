@@ -582,7 +582,7 @@ $container->loadFromExtension(
                                     'stop',
                                     'lowercase',
                                     'asciifolding',
-                                    'edge_ngram_filter_4',
+                                    'edge_ngram_filter_3',
                                 ),
                             ),
                             'text_content_analyzer' => array(
@@ -599,6 +599,11 @@ $container->loadFromExtension(
                                 'type'      => 'custom',
                                 'tokenizer' => 'keyword',
                                 'filter'    => array('lowercase', 'email_filter', 'unique'),
+                            ),
+                            'email_domain_analyzer' => array(
+                                'type'      => 'custom',
+                                'tokenizer' => 'standard',
+                                'filter'    => array('standard', 'lowercase', 'edge_ngram_filter_4'),
                             ),
                             'phone_analyzer' => array(
                                 'type'      => 'custom',
@@ -696,7 +701,7 @@ $container->loadFromExtension(
                     'organization' => array(
                         'mappings' => array(
                             'name'          => array('type' => 'string', 'analyzer' => 'name_analyzer'),
-                            'email_domains' => array('type' => 'string', 'analyzer' => 'email_analyzer'),
+                            'email_domains' => array('type' => 'string', 'analyzer' => 'email_domain_analyzer'),
                             'labels'        => array('analyzer' => 'title_content_analyzer'),
                             'date_created'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
                             'date_active'   => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
@@ -739,6 +744,7 @@ $container->loadFromExtension(
                             'last_name'     => array('type' => 'string', 'analyzer' => 'name_analyzer'),
                             'labels'        => array('analyzer' => 'title_content_analyzer'),
                             'emails'        => array('type' => 'string', 'analyzer' => 'email_analyzer'),
+                            'email_domains' => array('type' => 'string', 'analyzer' => 'email_domain_analyzer'),
                             'phone_numbers' => array('type' => 'string', 'analyzer' => 'phone_analyzer'),
                             'date_created'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
                             'date_active'   => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
