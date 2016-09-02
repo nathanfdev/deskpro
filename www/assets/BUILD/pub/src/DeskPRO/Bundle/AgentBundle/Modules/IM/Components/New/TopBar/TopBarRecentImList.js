@@ -8,8 +8,9 @@ import RecentList from '../RecentList';
 class TopBarRecentImList extends RecentList {
 
   static propTypes = {
-    chats:    PropTypes.object.isRequired,
-    children: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    chats:         PropTypes.object.isRequired,
+    children:      PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    onRecentClick: PropTypes.func.isRequired
   };
 
   getItems() {
@@ -29,7 +30,7 @@ class TopBarRecentImList extends RecentList {
     if (!agent.get('online')) {
       classes.push('offline');
     }
-    return (<span className="im wrapper" id={`chat-${chat.get('id')}`}>
+    return (<span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>
       <PersonAvatar
         color={chooseColor(agent.get('id'))}
         person={agent} size={24}
@@ -42,7 +43,7 @@ class TopBarRecentImList extends RecentList {
     const department = this.props.departments.get(chat.get('departments')[0]);
 
     return (
-      <span className="im wrapper" id={`chat-${chat.get('id')}`}>
+      <span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>
         <DepartmentAvatar department={department} size={24} classes={['ui avatar image im']} />
       </span>
     );

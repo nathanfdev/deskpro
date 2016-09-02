@@ -62,7 +62,7 @@ class Container extends React.Component {
       <Detached
         isOpen={this.state.isOpen}
         positionTarget={document.getElementById(`chat-${this.props.chats.getIn([this.props.current, 'id'])}`)}
-        positionMy="left-45 top+3"
+        positionMy="left-40 top+3"
       >
         <ClickOut onClickOut={this.closePopup}>
           <div className="ui popup left bottom im chat drawer">

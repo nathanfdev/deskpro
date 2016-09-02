@@ -4,15 +4,10 @@ import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 class Message extends React.Component
 {
   static propTypes = {
-    me:           PropTypes.object.isRequired,
-    uuid:         PropTypes.string.isRequired,
-    id:           PropTypes.number.isRequired,
-    message:      PropTypes.string.isRequired,
-    person_name:  PropTypes.string.isRequired,
-    person:       PropTypes.number.isRequired,
-    status:       PropTypes.number.isRequired,
-    timestamp:    PropTypes.number.isRequired,
-    date_created: PropTypes.string.isRequired
+    me:          PropTypes.object.isRequired,
+    id:          PropTypes.number.isRequired,
+    message:     PropTypes.object.isRequired,
+    person_name: PropTypes.string.isRequired
   };
 
   getMessage() {

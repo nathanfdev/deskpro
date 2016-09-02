@@ -6,7 +6,8 @@ import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Component
 class EveryoneSegment extends React.Component {
 
   static propTypes = {
-    agents: PropTypes.object.isRequired
+    agents:             PropTypes.object.isRequired,
+    onParticipantClick: PropTypes.func.isRequired
   };
 
   static getAvatar(agent) {
@@ -20,8 +21,14 @@ class EveryoneSegment extends React.Component {
 
   render() {
     return (
-      <Segment classes={['everyone-list']} raised vertical>
-        {this.props.agents.map(agent => EveryoneSegment.getAvatar(agent))}
+      <Segment
+        classes={['everyone-list']}
+        raised
+        vertical
+      >
+        <div onClick={() => this.props.onParticipantClick(null, 'everyone')}>
+          {this.props.agents.map(agent => EveryoneSegment.getAvatar(agent))}
+        </div>
       </Segment>);
   }
 }

@@ -5,8 +5,8 @@ import { Header } from 'DeskPRO/Component/Semantic/Common';
 class Segment extends React.Component {
 
   static propTypes = {
-    children:  PropTypes.object.isRequired,
-    className: PropTypes.arrayOf(PropTypes.string),
+    children:  PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
+    className: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.object])),
     header:    PropTypes.shape({
       size:    PropTypes.integer,
       content: PropTypes.string

@@ -14,7 +14,8 @@ class RecentList extends React.Component {
     agents:        PropTypes.object.isRequired,
     departments:   PropTypes.object.isRequired,
     notifications: PropTypes.object.isRequired,
-    chats:         PropTypes.object.isRequired
+    chats:         PropTypes.object.isRequired,
+    onRecentClick: PropTypes.func.isRequired
   };
 
   getItem(chat) {
@@ -70,8 +71,12 @@ class RecentList extends React.Component {
       classes.push('offline');
     }
     return (
-      <ListElement key={agent.get('id')} classes={classes} imageNode={AgentList.getAvatar(agent)}>
-        <div className="content agent recent">
+      <ListElement
+        key={agent.get('id')}
+        classes={classes}
+        imageNode={AgentList.getAvatar(agent)}
+      >
+        <div className="content agent recent" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">{agent.get('name')}</div>
           <div
             className={classNames(
@@ -93,18 +98,25 @@ class RecentList extends React.Component {
   renderDepartment(chat) {
     const department = this.props.departments.get(chat.get('departments')[0]);
     const classes = ['im', 'department', 'recent'];
-    return (<ListElement key={department.get('id')} classes={classes} imageNode={DepartmentList.getAvatar(department)}>
-      <div className="content department">
-        <div className="header">department</div>
-        <div className="description">
-          {department.get('title')}
-          <span className="agents-list">{this.getAgents(department)}</span>
+    return (
+      <ListElement
+        onClick={() => this.props.onRecentClick(chat.get('id'))}
+        key={department.get('id')}
+        classes={classes}
+        imageNode={DepartmentList.getAvatar(department)}
+      >
+        <div className="content department" onClick={() => this.props.onRecentClick(chat.get('id'))}>
+          <div className="header">department</div>
+          <div className="description">
+            {department.get('title')}
+            <span className="agents-list">{this.getAgents(department)}</span>
+          </div>
         </div>
-      </div>
-      <div className="timestamp content right floated">
-        {chat.get('date_last_message') ? <TimeAgo date={chat.get('date_last_message')} /> : 'never'}
-      </div>
-    </ListElement>);
+        <div className="timestamp content right floated">
+          {chat.get('date_last_message') ? <TimeAgo date={chat.get('date_last_message')} /> : 'never'}
+        </div>
+      </ListElement>
+    );
   }
 
   render() {

@@ -10,8 +10,10 @@ import TopBarRecentImList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components
 import { imState, messages } from 'DemoState/AgentBundle/Modules/IM/im';
 
 
-const chatState = { ...imState, messages };
-console.log(chatState);
+const chatState = {
+  ...imState,
+  messages
+};
 
 storiesOf('Agent: IM', module)
   .addDecorator(story => css(story()))
@@ -30,8 +32,13 @@ storiesOf('Agent: IM', module)
       <i className="icon wait" />
     </TopBarItem>
     <TopBarItem childrenWrapper="im-list">
-      <TopBarRecentImList {...imState}>
-        <IMOverlay {...imState}>
+      <TopBarRecentImList {...imState} onRecentClick={action('recent chat (top bar) click')}>
+        <IMOverlay
+          {...imState}
+          onRecentClick={action('recent chat (list) click')}
+          onParticipantClick={action('participant click')}
+          createNewGroup={action('create new group')}
+        >
           <IMButton />
         </IMOverlay>
       </TopBarRecentImList>
@@ -48,9 +55,11 @@ storiesOf('Agent: IM', module)
         <i className="icon wait" />
       </TopBarItem>
       <TopBarItem childrenWrapper="im-list">
-        <TopBarRecentImList {...imState}>
-          <Container isOpen {...chatState} current={1} />
-        </TopBarRecentImList>
+        <span>
+          <TopBarRecentImList {...imState} onRecentClick={action('recent chat (top bar) click')}>
+            <Container isOpen {...chatState} current={1} />
+          </TopBarRecentImList>
+        </span>
       </TopBarItem>
     </TopBar>
   )

@@ -7,9 +7,10 @@ import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Component
 class DepartmentList extends React.Component {
 
   static propTypes = {
-    me:          PropTypes.object.isRequired,
-    agents:      PropTypes.object.isRequired,
-    departments: PropTypes.object.isRequired
+    me:                 PropTypes.object.isRequired,
+    agents:             PropTypes.object.isRequired,
+    departments:        PropTypes.object.isRequired,
+    onParticipantClick: PropTypes.func.isRequired
   };
 
   static getAvatar(department) {
@@ -20,8 +21,15 @@ class DepartmentList extends React.Component {
     const classes = ['im', 'department'];
 
     return (
-      <ListElement key={department.get('id')} classes={classes} imageNode={DepartmentList.getAvatar(department)}>
-        <div className="content department">
+      <ListElement
+        key={department.get('id')}
+        classes={classes}
+        imageNode={DepartmentList.getAvatar(department)}
+      >
+        <div
+          onClick={() => this.props.onParticipantClick(department.get('id'), 'department')}
+          className="content department"
+        >
           <div className="header">
             {department.get('title')}
             <span className="agents-counter">({department.get('agents').length - 1})</span>

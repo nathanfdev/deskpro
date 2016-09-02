@@ -12,12 +12,15 @@ import { Header } from 'DeskPRO/Component/Semantic/Common';
 class IMOverlay extends React.Component {
 
   static propTypes = {
-    me:            PropTypes.object.isRequired,
-    agents:        PropTypes.object.isRequired,
-    departments:   PropTypes.object.isRequired,
-    notifications: PropTypes.object.isRequired,
-    chats:         PropTypes.object.isRequired,
-    children:      PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    me:                 PropTypes.object.isRequired,
+    agents:             PropTypes.object.isRequired,
+    departments:        PropTypes.object.isRequired,
+    notifications:      PropTypes.object.isRequired,
+    chats:              PropTypes.object.isRequired,
+    children:           PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    onRecentClick:      PropTypes.func.isRequired,
+    onParticipantClick: PropTypes.func.isRequired,
+    createNewGroup:     PropTypes.func.isRequired
   };
 
   getRecentTab() {
@@ -29,16 +32,16 @@ class IMOverlay extends React.Component {
   }
 
   getAgentsTab() {
-    const { agents, notifications } = this.props;
+    const { agents, notifications, onParticipantClick } = this.props;
     return  {
       id:      'agents',
-      content: <AgentList agents={agents} notifications={notifications} />,
+      content: <AgentList agents={agents} notifications={notifications} onParticipantClick={onParticipantClick} />,
       title:   <span><i className="fa fa-user dp-im-tab-menu-icon" />Agents</span>
     };
   }
 
   getGroupsTab() {
-    const { agents, departments, me } = this.props;
+    const { agents, departments, me, onParticipantClick, createNewGroup } = this.props;
     const content = (
       <div>
         <Header
@@ -46,13 +49,13 @@ class IMOverlay extends React.Component {
           classes={['group-list']}
           content={<span>everyone<span className="agents-counter">({agents.size})</span></span>}
         />
-        <EveryoneSegment agents={agents} />
+        <EveryoneSegment agents={agents} onParticipantClick={onParticipantClick} />
         <div className="ui divider"></div>
         <Header size={4} classes={['group-list']} content="im groups" />
-        <Segment classes={['new-im-group']} raised vertical>+ create new im group</Segment>
+        <Segment classes={['new-im-group']} raised vertical><span onClick={() => createNewGroup()}>+ create new im group</span></Segment>
         <div className="ui divider"></div>
         <Header size={4} classes={['group-list']} content="department" />
-        <DepartmentList agents={agents} departments={departments} me={me} />
+        <DepartmentList agents={agents} departments={departments} me={me} onParticipantClick={onParticipantClick} />
       </div>
     );
     return  {
@@ -98,7 +101,7 @@ class IMOverlay extends React.Component {
     return (<PopUp
       classes={['im wrapper']}
       innerClasses={['im']}
-      positionMy="center-2 top-5"
+      positionMy="center-3 top-5"
       positionAt="center bottom"
       id={100500}
       zIndex={99999}
