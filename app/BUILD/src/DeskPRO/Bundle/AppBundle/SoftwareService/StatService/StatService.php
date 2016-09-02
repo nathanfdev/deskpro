@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\SoftwareService\StatService;
 
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use GuzzleHttp;
 
 class StatService
@@ -78,7 +79,7 @@ class StatService
     /**
      * @param int $timeout
      *
-     * @return GuzzleHttp\Client
+     * @return HttpClient
      */
     private function getClient($timeout = 5)
     {
@@ -99,7 +100,7 @@ class StatService
             ]);
         }
 
-        return new GuzzleHttp\Client($options);
+        return new HttpClient($options);
     }
 
     /**

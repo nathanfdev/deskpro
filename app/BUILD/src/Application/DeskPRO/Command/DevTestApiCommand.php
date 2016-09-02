@@ -35,6 +35,8 @@ namespace Application\DeskPRO\Command;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ApiKey;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use GuzzleHttp\RequestOptions;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -68,9 +70,9 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $asForm  = $input->getOption('as-form');
         $curl    = ['curl'];
 
-        #------------------------------
-        # Get the data to post
-        #------------------------------
+        //------------------------------
+        // Get the data to post
+        //------------------------------
 
         $dataArg = $input->getArgument('data');
         $data    = null;
@@ -111,9 +113,9 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             $reqType = 'DELETE';
         }
 
-        #------------------------------
-        # Get the path and api token
-        #------------------------------
+        //------------------------------
+        // Get the path and api token
+        //------------------------------
 
         if ($input->getOption('url')) {
             $baseUrl = trim($input->getOption('url'), '/').'/';
@@ -170,9 +172,9 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             }
         }
 
-        #------------------------------
-        # Make the request
-        #------------------------------
+        //------------------------------
+        // Make the request
+        //------------------------------
 
         $headers = array();
 
@@ -184,15 +186,15 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             $curl[]                       = '-H \'X-DeskPRO-API-Key: '.$apiKey.'\'';
         }
 
-        $httpClient = new \Guzzle\Http\Client($baseUrl, array(
-            'ssl.certificate_authority' => false,
-            'request.options'           => array('headers' => $headers),
-        ));
         if ($apiKey !== 'NONE') {
-            $httpClient->setDefaultHeaders(array(
-                'X-DeskPRO-API-Key' => $apiKey,
-            ));
+            $headers['X-DeskPRO-API-Key'] = $apiKey;
         }
+
+        $httpClient = new HttpClient([
+            'base_uri'              => $baseUrl,
+            RequestOptions::VERIFY  => false,
+            RequestOptions::HEADERS => $headers,
+        ]);
 
         switch ($reqType) {
             case 'GET':

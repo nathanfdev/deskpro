@@ -30,7 +30,9 @@ namespace DeskPRO\Bundle\ApiBundle\Log;
 
 use DeskPRO\Bundle\ApiBundle\Log\Helper\LogComposer;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use GuzzleHttp\RequestOptions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -141,19 +143,19 @@ class Replayer
     private function sendRequest(ApiLog $log)
     {
         // wont work with :8080 ie
-        $client = new \GuzzleHttp\Client([
+        $client = new HttpClient([
             'base_uri'        => $this->brandStack->getActive()->getSetting('core.deskpro_url'),
             'allow_redirects' => true,
         ]);
 
-        $request = new \GuzzleHttp\Psr7\Request(
+        $response = $client->request(
             $log->getMethod(),
             $log->getRequestedUri().'?'.http_build_query($log->getRequestData('query')),
-            $log->getRequestData('headers'),
-            $log->getRequestData('body')
+            [
+                RequestOptions::HEADERS => $log->getRequestData('headers'),
+                RequestOptions::BODY    => $log->getRequestData('body'),
+            ]
         );
-
-        $response         = $client->send($request);
         $response_content = $response->getBody()->read($response->getBody()->getSize());
 
         return new Response($response_content, $response->getStatusCode(), $response->getHeaders());

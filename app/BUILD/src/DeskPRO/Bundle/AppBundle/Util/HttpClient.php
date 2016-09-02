@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,43 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Orb\Jira\Entity;
+namespace DeskPRO\Bundle\AppBundle\Util;
 
-use Orb\Jira\Entity;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 
-/**
- * Jira Project wrapper
- * Emulates a Jira Proect.
- *
- * @author Abhinav Kumar <work@abhinavkumar.in>
- */
-class Project extends Entity
+class HttpClient extends Client
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(array $params = array())
+    public function __construct($config = [])
     {
-        if (!isset($params['id']) || !isset($params['name'])) {
-            return false;
+        // cp from \DeskPRO_LowUtil_RequestCurl::setCaBundle
+        if (false !== @$config[RequestOptions::VERIFY] && !defined('DP_CURL_USE_SYS_CA_BUNDLE') && defined('DP_ROOT')) {
+            $config[RequestOptions::VERIFY] = DP_ROOT.implode(DIRECTORY_SEPARATOR, ['sys', 'Resources', 'cacert.pem']);
         }
-
-        $this->_id = $params['id'];
-
-        $this->setName($params['name']);
-
-        if (isset($params['description'])) {
-            $this->setDescription($params['description']);
-        }
-
-        if (isset($params['key'])) {
-            $this->setKey($params['key']);
-        }
-
-        if (isset($params['avatarUrls']) && count($params['avatarUrls'])) {
-            foreach ($params['avatarUrls'] as $size => $url) {
-                $this->_avatars[$size] = $url;
-            }
-        }
+        parent::__construct($config);
     }
 }
