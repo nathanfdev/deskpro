@@ -6,7 +6,7 @@ import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortc
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/sideBarActions';
-import { resumeOnboarding } from '../../Onboarding/Actions/onboardingActions';
+import * as onboardingActions from '../../Onboarding/Actions/onboardingActions';
 
 @connect(state => ({
   me:             meSelector(state),
@@ -92,7 +92,7 @@ export class SideBarContainer extends SeparateComponent {
   };
 
   resumeOnboarding = () => {
-    this.props.dispatch(resumeOnboarding());
+    this.props.dispatch(onboardingActions.resumeOnboarding());
   };
 
   render() {
