@@ -187,15 +187,15 @@ class FacebookApi
         );
 
         if ($output['success']) {
-            $params = array(
+            $params = [
                 'object'       => 'page',
                 'fields'       => 'feed',
                 'callback_url' => App::getRouter()->generate(
-                        'api_channel_facebook_incoming', array(), UrlGeneratorInterface::ABSOLUTE_URL
+                        'api_channel_facebook_incoming', [], UrlGeneratorInterface::ABSOLUTE_URL
                     ),
                 'verify_token' => $page->verify_token,
                 'access_token' => $this->app_token,
-            );
+            ];
             $output = $this->sendPostRequest(
                 sprintf('/%s/subscriptions', $page->app->app_id),
                 $params
