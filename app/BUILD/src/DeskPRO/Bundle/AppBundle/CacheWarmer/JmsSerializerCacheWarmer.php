@@ -42,6 +42,8 @@ class JmsSerializerCacheWarmer implements CacheWarmerInterface
     private $metadataFactory;
 
     /**
+     * Constructor.
+     *
      * @param MetadataFactoryInterface $metadataFactory
      */
     public function __construct(MetadataFactoryInterface $metadataFactory)
@@ -50,7 +52,7 @@ class JmsSerializerCacheWarmer implements CacheWarmerInterface
     }
 
     /**
-     * @param string $cacheDir
+     * {@inheritdoc}
      */
     public function warmUp($cacheDir)
     {
@@ -75,7 +77,7 @@ class JmsSerializerCacheWarmer implements CacheWarmerInterface
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function isOptional()
     {

@@ -33,12 +33,27 @@ use DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataFactory;
 use DeskPRO\Bundle\AppBundle\Util\ApiControllersFinder;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
+/**
+ * Class ApiLimitsCacheWarmer.
+ */
 class ApiLimitsCacheWarmer implements CacheWarmerInterface
 {
+    /**
+     * @var MetadataFactory
+     */
     protected $metadataFactory;
 
+    /**
+     * @var ApiControllersFinder
+     */
     protected $finder;
 
+    /**
+     * Constructor.
+     *
+     * @param MetadataFactory      $metadataFactory
+     * @param ApiControllersFinder $finder
+     */
     public function __construct(MetadataFactory $metadataFactory, ApiControllersFinder $finder)
     {
         $this->metadataFactory = $metadataFactory;
@@ -46,7 +61,7 @@ class ApiLimitsCacheWarmer implements CacheWarmerInterface
     }
 
     /**
-     * @param string $cacheDir
+     * {@inheritdoc}
      */
     public function warmUp($cacheDir)
     {
@@ -62,7 +77,7 @@ class ApiLimitsCacheWarmer implements CacheWarmerInterface
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function isOptional()
     {
