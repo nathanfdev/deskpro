@@ -1,5 +1,7 @@
 import './AgentBundle/Modules/Application/AppSwitcher';
 import './AgentBundle/Modules/Application/notifications';
+import './AgentBundle/Modules/Application/topbar';
+import './AgentBundle/Modules/Application/onboarding';
 import './AgentBundle/Modules/Common/NavFrame/Section';
 import './AgentBundle/Modules/Common/NavFrame/grouping-control';
 import './AgentBundle/Modules/Common/NavFrame/Lists/NestedList';
@@ -9,4 +11,3 @@ import './Semantic/Form/form';
 import './Semantic/List/list';
 import './Semantic/Menu/menu';
 import './Semantic/PopUp/popup';
-import './AgentBundle/Modules/Application/topbar';

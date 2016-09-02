@@ -7,10 +7,6 @@ class User extends React.Component {
     src: PropTypes.string
   };
 
-  static clickLogout() {
-    window.location = `${window.DESKPRO_AGENT_LOGOUT}?to=agent`;
-  }
-
   getPopupContent() {
     return (<div id="user-menu">
       <div className="header">Your Profile</div>
@@ -44,6 +40,11 @@ class User extends React.Component {
     }
 
     window.Orb.shimClickCallback(closeFn, 'zindex-chrome0');
+    this.closePopup();
+  };
+
+  clickLogout = () => {
+    window.location = `${window.DESKPRO_AGENT_LOGOUT}?to=agent`;
     this.closePopup();
   };
 

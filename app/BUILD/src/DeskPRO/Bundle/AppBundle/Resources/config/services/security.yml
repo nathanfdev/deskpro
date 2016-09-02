@@ -196,6 +196,11 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.person_onboarding:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\PersonOnboardingVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.tasks:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TasksVoter
     tags:

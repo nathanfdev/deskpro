@@ -100,7 +100,13 @@
 			{% endif %}
 
 			<li id="users_section" class="no-click-switch is-nav-btn">
-				<a title="Go to User Interface" href="{{ path('portal_home') }}">
+				<a id="portal_interface_trigger"
+				   title="Go to User Interface"
+				   href="{{ path('portal_home') }}"
+				   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
+				   data-frame-id="user"
+				   data-win-title="DeskPRO Portal"
+				>
 					<i class="app-icon app-icon-user-ifce"></i>
 				</a>
 			</li>

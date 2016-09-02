@@ -1,28 +1,33 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import classNames from 'classnames';
+import Isvg from 'react-inlinesvg';
+import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
-import { connect } from 'react-redux';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { SeparateComponent } from '../Common/Components/SeparateComponent';
-// import { IMContainer } from '../IM/Components/IMContainer';
-// import { HeaderWidget } from '../IM/Components/HeaderWidget';
-import Isvg from 'react-inlinesvg';
+import { resumeOnboarding } from '../../Onboarding/Actions/onboardingActions';
 
 @connect(state => ({
   agents:          collectionSelectorFactory('Person', 'agents')(state),
   chatDepartments: collectionSelectorFactory('Department', 'all_tickets')(state),
-  me:              meSelector(state)
+  me:              meSelector(state),
+  logoCallback:    state.Onboarding.onboarding.get('logoCallback'),
+  logoActive:      state.Onboarding.onboarding.get('logoActive'),
 }))
 class AgentTopBar extends SeparateComponent {
 
   static propTypes = {
     agents:          PropTypes.object.isRequired,
     chatDepartments: PropTypes.object.isRequired,
-    me:              PropTypes.object
+    me:              PropTypes.object,
+    logoCallback:    PropTypes.func,
+    logoActive:      PropTypes.bool,
+    TopBar:          PropTypes.object
   };
 
   constructor(props) {
@@ -119,16 +124,26 @@ class AgentTopBar extends SeparateComponent {
     }
   }
 
+  clickLogo = () => {
+    if (this.props.logoActive) {
+      this.props.logoCallback();
+      this.props.dispatch(resumeOnboarding());
+    } else {
+      this.openDeskPro();
+    }
+  };
+
   openDeskPro() {
     window.open('http://deskpro.com', '_blank');
   }
 
   render() {
     const { notificationCount } = this.state;
-    const { agents, chatDepartments } = this.props;
+    const { agents, chatDepartments, logoActive } = this.props;
     const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
+
     return (<TopBar>
-      <div className="logo" onClick={this.openDeskPro} />
+      <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo} />
       <TopBarItem classes={['search-box legacy-omnibox']}>
         <SearchBox
           onUserInput={this.onSearch}
@@ -137,7 +152,7 @@ class AgentTopBar extends SeparateComponent {
           placeholder="Search ..."
         />
       </TopBarItem>
-      <TopBarItem classes={['legacy-omnibox']}>
+      <TopBarItem classes={['legacy-omnibox recent']}>
         <i className="icon wait" onClick={this.onRecent} />
       </TopBarItem>
       {/* <TopBarItem classes={['z-index-stub']}>*/}
@@ -150,7 +165,7 @@ class AgentTopBar extends SeparateComponent {
         <TopBarItem classes={['view_mode']} onClick={this.toggleViewMode}>
           <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
         </TopBarItem>
-        <TopBarItem classes={['legacy-omnibox']} onClick={this.onNotification}>
+        <TopBarItem classes={['legacy-omnibox notifications']} onClick={this.onNotification}>
           <TopBarNotificationIcon
             elementId="notifications"
             icon="alarm outline hover pointer"
