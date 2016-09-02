@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2f9eed58e094c852844b27b7cb291ced",
-    "content-hash": "1390b6a4b67f823468622c15393883aa",
+    "hash": "79bbc418126765d3528e8a7f6db59cc8",
+    "content-hash": "5856458c69a244aea118d7f4ee6bdf71",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -5658,16 +5658,16 @@
         },
         {
             "name": "ruflin/elastica",
-            "version": "dev-master",
+            "version": "3.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ruflin/Elastica.git",
-                "reference": "8ce983b6cc6420f7bc4ad15d5c44d5c39d0de0bb"
+                "reference": "1aa1b70d0c778323cb77a46ec872475136ed8c1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ruflin/Elastica/zipball/8ce983b6cc6420f7bc4ad15d5c44d5c39d0de0bb",
-                "reference": "8ce983b6cc6420f7bc4ad15d5c44d5c39d0de0bb",
+                "url": "https://api.github.com/repos/ruflin/Elastica/zipball/1aa1b70d0c778323cb77a46ec872475136ed8c1e",
+                "reference": "1aa1b70d0c778323cb77a46ec872475136ed8c1e",
                 "shasum": ""
             },
             "require": {
@@ -5711,7 +5711,7 @@
                 "client",
                 "search"
             ],
-            "time": "2016-08-25 18:36:07"
+            "time": "2016-08-23 13:01:58"
         },
         {
             "name": "sebastian/comparator",
@@ -12306,7 +12306,6 @@
         "doctrine/doctrine-bundle": 20,
         "deskpro/deskpro-api-php": 20,
         "friendsofsymfony/elastica-bundle": 20,
-        "ruflin/elastica": 20,
         "onelogin/php-saml": 20,
         "google/apiclient": 20,
         "zendesk/zendesk_api_client_php": 20,
