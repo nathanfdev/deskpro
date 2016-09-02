@@ -93,7 +93,7 @@ class ApiLogContext extends BaseContext
             'eager'          => $eager,
         ];
 
-        $this->rest_context->iAddHeaderEqualTo('X-DeskPRO-Client-Request-Options', json_encode($header));
+        $this->rest_context->iAddHeaderEqualTo('X-DeskPRO-Client-Request-Options', json_encode($header), true);
     }
 
     /** @BeforeScenario */

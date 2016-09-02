@@ -1,8 +1,7 @@
 Feature: Usersource Settings
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as "admin"
 
   Scenario: I retrieve usersource settings
     When I send a GET request to "/api/v2/settings/user_source"

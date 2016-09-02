@@ -5,7 +5,8 @@ Feature:
   I need /people/csv endpoint
 
   Background:
-    Given I'm authenticated as agent
+    Given there are no "Person" records
+    And I'm authenticated as agent
 
   Scenario: I retrieve list of people in CSV format
     When I send a GET request to "/api/v2/people/csv?count=200"

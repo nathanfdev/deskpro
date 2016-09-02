@@ -5,7 +5,8 @@ Feature: /organizations/{id}/members endpoint
   I want an API endpoint
 
   Background:
-    Given I'm authenticated as "admin"
+    Given there are no "Person" records
+    And I'm authenticated as "admin"
     And "user@deskpro.dev" user exists
     And only the following "Organization" records exist:
       | #             | name          |

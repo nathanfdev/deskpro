@@ -2,12 +2,10 @@
 Feature: task counts endpoints
   I want to check task counts
 
-  Background:
-    Given I'm authenticated as "admin"
-
   Scenario: I get group counts
-    Given "tu1@deskpro.dev" user exists
-    Given "tu2@deskpro.dev" user exists
+    Given I'm authenticated as "admin"
+    And "tu1@deskpro.dev" user exists
+    And "tu2@deskpro.dev" user exists
     And only the following "Task" records exist:
       | #  | title | visibility | creator           |
       | t1 | Task1 | 1          | {tu1@deskpro.dev} |
@@ -50,6 +48,7 @@ Feature: task counts endpoints
       | #  | title          |
       | tp1 | Test project 1 |
       | tp2 | Test project 2 |
+    And there are no "Person" records
     And "ta1@deskpro.dev" agent exists
     And "ta2@deskpro.dev" agent exists
     And "ta3@deskpro.dev" agent exists
@@ -69,28 +68,29 @@ Feature: task counts endpoints
       | {t4} | {ta2@deskpro.dev} |
       | {t5} | {ta3@deskpro.dev} |
       | {t6} | {ta3@deskpro.dev} |
+    And I'm authenticated as "admin"
     When I send a GET request to "/api/v2/tasks/counts/agents"
     Then the response should be in JSON
     And the response status code should be 200
 
     And the JSON node "data.grouped_by" should be equal to "agent"
     And the JSON node "data.count" should be equal to 6
-    And print last JSON response
 
-    And the JSON node "data.nested[1].id" should be equal to "{ta1@deskpro.dev}"
+    And the JSON node "data.nested[0].id" should be equal to "{ta1@deskpro.dev}"
+    And the JSON node "data.nested[0].count" should be equal to 2
+    And the JSON node "data.nested[0].title" should be equal to "Agent Agent"
+
+    And the JSON node "data.nested[1].id" should be equal to "{ta2@deskpro.dev}"
     And the JSON node "data.nested[1].count" should be equal to 2
     And the JSON node "data.nested[1].title" should be equal to "Agent Agent"
 
-    And the JSON node "data.nested[2].id" should be equal to "{ta2@deskpro.dev}"
+    And the JSON node "data.nested[2].id" should be equal to "{ta3@deskpro.dev}"
     And the JSON node "data.nested[2].count" should be equal to 2
     And the JSON node "data.nested[2].title" should be equal to "Agent Agent"
 
-    And the JSON node "data.nested[3].id" should be equal to "{ta3@deskpro.dev}"
-    And the JSON node "data.nested[3].count" should be equal to 2
-    And the JSON node "data.nested[3].title" should be equal to "Agent Agent"
-
   Scenario: I get group counts
-    Given only the following "TaskProject" records exist:
+    Given I'm authenticated as "admin"
+    And only the following "TaskProject" records exist:
       | #  | title          |
       | t1 | Test project 1 |
       | t2 | Test project 2 |
