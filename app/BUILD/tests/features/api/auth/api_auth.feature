@@ -71,8 +71,8 @@ Feature: API Authentication
     And the JSON node "data.app_id" should be equal to "12"
 
   Scenario: I have a valid session ID but I am NOT an agent
-    Given "anderson@deskpro.dev" agent exists
-    And the agent session auth "UZER" is valid for "anderson@deskpro.dev" and referenced as "userSession"
+    Given "user@deskpro.dev" user exists
+    And the agent session auth "UZER" is valid for "user@deskpro.dev" and referenced as "userSession"
     When I add session cookie named "dpsid-agent" for session "userSession"
     And I send a GET request to "/api/v2/me"
     And the response status code should be 401
