@@ -100,9 +100,15 @@ Feature: New ticket form
     Given the only default ticket layout exists with fields:
       | user_layout | user_layout_options     |
       | department  | {"on_newticket": false} |
+      | subject     | {"on_newticket": false} |
+      | message     | {"on_newticket": false} |
+      | person      | {"on_newticket": false} |
 
     When I go to "/new-ticket"
     Then I should see ".form-ticket" form fields in following order:
-      | name               |
-      | ticket[department] |
-      | ticket[subject]    |
+      | name                       |
+      | ticket[department]         |
+      | ticket[subject]            |
+      | ticket[message][message]   |
+      | ticket[message][format]    |
+      | ticket[person][user_name]  |

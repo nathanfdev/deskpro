@@ -162,6 +162,11 @@ class TicketLayoutHelper
      */
     public static function shouldBeAlwaysOnTheForm(LayoutField $field)
     {
-        return in_array($field->getId(), [FormFields::DEPARTMENT]);
+        return in_array($field->getId(), [
+            FormFields::DEPARTMENT,
+            FormFields::PERSON,
+            FormFields::SUBJECT,
+            FormFields::MESSAGE,
+        ]);
     }
 }
