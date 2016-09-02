@@ -118,6 +118,11 @@ class PersonHandler extends AbstractEntityHandler
             }
         }
 
+        // update primary email if it was unset during 'emails' collection update
+        if (!$entity->getPrimaryEmail() && $entity->getEmails()->count()) {
+            $entity->setPrimaryEmail($entity->getEmails()->first());
+        }
+
         // update common props
         $this->helpers->getUserGroupHelper()->updateUserGroups($model, $entity);
         $this->helpers->getUserGroupHelper()->updateAgentGroups($model, $entity);

@@ -86,6 +86,10 @@ class ArticleHandler extends AbstractEntityHandler
                 $categoryPath
             );
 
+            if ($entity->getCategories()->contains($categoryEntity)) {
+                continue;
+            }
+
             $entity->addToCategory($categoryEntity);
             $newCategories->add($categoryEntity);
         }

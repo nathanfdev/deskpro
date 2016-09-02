@@ -29,8 +29,10 @@
 namespace Application\ImportBundle\Writer\Helper;
 
 use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\ImportMap;
 use Application\ImportBundle\Writer\EntityPersister;
 use Application\ImportBundle\Writer\Mapper\CategoryMapperInterface;
+use Application\ImportBundle\Writer\Mapper\ImportMapMapper;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -38,6 +40,11 @@ use Psr\Log\LoggerInterface;
  */
 class CategoryHelper
 {
+    /**
+     * @var ImportMapMapper
+     */
+    private $importMapMapper;
+
     /**
      * @var EntityPersister
      */
@@ -51,13 +58,15 @@ class CategoryHelper
     /**
      * Constructor.
      *
+     * @param ImportMapMapper $importMapMapper
      * @param EntityPersister $persister
      * @param LoggerInterface $logger
      */
-    public function __construct(EntityPersister $persister, LoggerInterface $logger)
+    public function __construct(ImportMapMapper $importMapMapper, EntityPersister $persister, LoggerInterface $logger)
     {
-        $this->persister = $persister;
-        $this->logger    = $logger;
+        $this->importMapMapper = $importMapMapper;
+        $this->persister       = $persister;
+        $this->logger          = $logger;
     }
 
     /**
@@ -75,34 +84,73 @@ class CategoryHelper
             throw new \RuntimeException('Category path expected to be a string');
         }
 
-        $categoryPath = explode('>', $categoryPath);
-        $categoryPath = array_map('trim', $categoryPath);
+        // if it's numeric then try to get category by id
+        if (is_int($categoryPath) || ctype_digit($categoryPath)) {
+            $entity = null;
 
-        /** @var CategoryAbstract $parent */
-        $parent = null;
-        $entity = null;
-        foreach ($categoryPath as $categoryTitle) {
-            $entity = $mapper->findOneByTitle($categoryTitle, $parent ? $parent->getId() : null);
-            if ($entity) {
-                $this->logger->debug("Found existing category `$categoryTitle`");
-            } else {
-                $this->logger->debug("Create a new category `$categoryTitle`");
+            $typename = ImportMapMapper::getImportMapKey($mapper->getEntityClass());
+            /** @var ImportMap $importMap */
+            $importMap = $this->importMapMapper->findOneBy([
+                'old_id'   => $categoryPath,
+                'typename' => $typename,
+            ]);
 
+            if ($importMap) {
+                $entity = $mapper->find($importMap->getNewId());
+            }
+
+            $categoryTitle = 'Category '.$categoryPath;
+            if (!$entity) {
+                // try to find a category by title
+                $entity = $mapper->findOneByTitle($categoryTitle);
+            }
+            if (!$entity) {
+                // if no category then create a new category by oid
                 $categoryClass = $mapper->getEntityClass();
 
                 /** @var CategoryAbstract $entity */
                 $entity = new $categoryClass();
                 $entity->setTitle($categoryTitle);
-                $entity->setParent($parent);
-
-                if ($parent) {
-                    $parent->getChildren()->add($entity);
-                }
 
                 $this->persister->persistAndFlush($entity);
-            }
 
-            $parent = $entity;
+                $importMap = new ImportMap();
+                $importMap->setOldId($categoryPath);
+                $importMap->setNewId($entity->getId());
+                $importMap->setTypename($typename);
+
+                $this->persister->persistAndFlush($importMap);
+            }
+        } else {
+            $categoryPath = explode('>', $categoryPath);
+            $categoryPath = array_map('trim', $categoryPath);
+
+            /** @var CategoryAbstract $parent */
+            $parent = null;
+            $entity = null;
+            foreach ($categoryPath as $categoryTitle) {
+                $entity = $mapper->findOneByTitle($categoryTitle, $parent ? $parent->getId() : null);
+                if ($entity) {
+                    $this->logger->debug("Found existing category `$categoryTitle`");
+                } else {
+                    $this->logger->debug("Create a new category `$categoryTitle`");
+
+                    $categoryClass = $mapper->getEntityClass();
+
+                    /** @var CategoryAbstract $entity */
+                    $entity = new $categoryClass();
+                    $entity->setTitle($categoryTitle);
+                    $entity->setParent($parent);
+
+                    if ($parent) {
+                        $parent->getChildren()->add($entity);
+                    }
+
+                    $this->persister->persistAndFlush($entity);
+                }
+
+                $parent = $entity;
+            }
         }
 
         return $entity;

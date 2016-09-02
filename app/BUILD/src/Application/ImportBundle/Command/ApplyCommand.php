@@ -29,6 +29,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Importer\ImporterContext;
 use Application\ImportBundle\Model\BatchConfig;
@@ -120,6 +121,8 @@ class ApplyCommand extends AbstractImporterCommand
             $output  = new NullOutput();
             $command->run($input, $output);
         }
+
+        $em->getRepository(Ticket::class)->fillSearchTable();
 
         unset($GLOBALS['DP_IS_IMPORTING']);
         $GLOBALS['DP_NOSQL_LOG'] = false;
