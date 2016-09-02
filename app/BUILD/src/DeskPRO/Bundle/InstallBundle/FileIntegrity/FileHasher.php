@@ -39,11 +39,11 @@ class FileHasher
      */
     public function hash($path)
     {
-        $ext  = $this->getExt($path) ?: '';
+        $ext  = $this->getExt($path) ?: 'bin';
         $file = null;
 
         // ext-less files might be executable files files
-        if ($ext === 'bin') {
+        if ($ext === 'bin' && filesize($path) < 20000) {
             $file = file_get_contents($path);
             if (strpos($file, '<?php') !== false) {
                 $ext = 'php';
