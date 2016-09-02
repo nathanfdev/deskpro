@@ -1,6 +1,7 @@
 define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_Main_Ctrl_MainPage extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_Main_Ctrl_MainPage'
+    @CTRL_AS   = 'Ctrl'
     @DEPS      = ['$rootScope', '$location', '$stateParams']
 
     init: ->
@@ -30,7 +31,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       @$scope.brandId = @$stateParams.brandId
 
-      console.log @$stateParams
+      if !@$scope.brandId
+        @$scope.brandId = 1
 
       @portalSettings.setBrandId(@$scope.brandId)
 
@@ -42,6 +44,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       @$scope.$on 'dp-update-brands', (e) =>
         @getBrands()
+        @portalSettings.getSettings().then((s) => @settings = s)
 
       @$scope.$watch('Ctrl.portalSettings.version', =>
         @portalSettings.getSettings().then((s) => @settings = s)
