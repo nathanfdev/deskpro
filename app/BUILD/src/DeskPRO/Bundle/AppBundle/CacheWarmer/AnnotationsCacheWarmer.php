@@ -89,10 +89,16 @@ class AnnotationsCacheWarmer implements CacheWarmerInterface
      */
     private function cacheAnnotations($fqcns)
     {
+        $annotaionReader = $this->container->get('annotation_reader');
+
         foreach ($fqcns as $fqcn) {
+            if (!class_exists($fqcn)) {
+                continue;
+            }
+
             try {
                 $reflection = new \ReflectionClass($fqcn);
-                $this->container->get('annotation_reader')->getClassAnnotations($reflection);
+                $annotaionReader->getClassAnnotations($reflection);
             } catch (\Exception $e) {
             }
         }
