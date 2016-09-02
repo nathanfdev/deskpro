@@ -67,7 +67,7 @@ class QuickSearchRequest
     private $words;
 
     /**
-     * @var string[];
+     * @var string[]
      */
     private $types;
 
@@ -251,7 +251,11 @@ class QuickSearchRequest
         }
 
         if (!$this->person->hasPerm('agent_people.use')) {
-            $types = array_diff($types, [QuickSearchContext::TYPE_PERSON, QuickSearchContext::TYPE_ORGANIZATION]);
+            $types = array_diff($types, [
+                QuickSearchContext::TYPE_AGENT,
+                QuickSearchContext::TYPE_PERSON,
+                QuickSearchContext::TYPE_ORGANIZATION,
+            ]);
         }
 
         return $types;

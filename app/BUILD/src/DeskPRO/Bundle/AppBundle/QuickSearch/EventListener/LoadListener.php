@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use Application\DeskPRO\Entity\Person;
@@ -130,7 +131,8 @@ class LoadListener implements EventSubscriberInterface
         }
 
         $personContext = $context->getResponse()->getContext(QuickSearchContext::TYPE_PERSON);
-        if (!$personContext) {
+        $agentContext  = $context->getResponse()->getContext(QuickSearchContext::TYPE_AGENT);
+        if (!$personContext && !$agentContext) {
             return;
         }
 
@@ -159,7 +161,12 @@ class LoadListener implements EventSubscriberInterface
             /** @var \Application\DeskPRO\Entity\Person[] $people */
             $people = $qb->getQuery()->getResult();
             foreach ($people as $person) {
-                $personContext->addRelatedEntity($person);
+                if ($personContext) {
+                    $personContext->addRelatedEntity($person);
+                }
+                if ($agentContext) {
+                    $agentContext->addRelatedEntity($person);
+                }
             }
         }
     }

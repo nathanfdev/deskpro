@@ -38,7 +38,8 @@ Feature: JSON API fetch ids only
       | {news}         | news         | 3     |
       | {ticket}       | ticket       | 4     |
       | {me}           | person       | 5     |
-      | {organization} | organization | 6     |
+      | {me}           | agent        | 6     |
+      | {organization} | organization | 7     |
 
   Scenario Outline: I get lists of data
     Given I re-fill ticket search table

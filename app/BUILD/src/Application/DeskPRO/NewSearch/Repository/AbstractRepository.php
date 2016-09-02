@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace Application\DeskPRO\NewSearch\Repository;
 
 use Elastica\Query;
+use Elastica\Search;
 use Elastica\Util as ElasticaUtil;
 use FOS\ElasticaBundle\Repository;
 use Orb\Util\Strings;
@@ -67,15 +68,15 @@ abstract class AbstractRepository extends Repository
      * Prepares an updated query object and passes back to parent function
      * for actual execution.
      *
-     * @param $query
-     * @param null  $limit
-     * @param array $options
+     * @param string $query
+     * @param null   $limit
+     * @param array  $options
      *
      * @return array
      */
     public function find($query, $limit = null, $options = [])
     {
-        $queryObj = $this->getQuery($query);
+        $queryObj = $this->getQuery($query, $options);
         $queryObj->setSize(50);
 
         if (isset($options['sort_type'])) {
@@ -93,11 +94,24 @@ abstract class AbstractRepository extends Repository
                     ]);
                     break;
             }
-
-            unset($options['sort_type']);
         }
 
         $this->setHighlight($queryObj);
+
+        $options = array_intersect_key($options, array_fill_keys([
+            Search::OPTION_SEARCH_TYPE,
+            Search::OPTION_ROUTING,
+            Search::OPTION_PREFERENCE,
+            Search::OPTION_VERSION,
+            Search::OPTION_TIMEOUT,
+            Search::OPTION_FROM,
+            Search::OPTION_SIZE,
+            Search::OPTION_SCROLL,
+            Search::OPTION_SCROLL_ID,
+            Search::OPTION_SEARCH_TYPE_SUGGEST,
+            Search::OPTION_SEARCH_IGNORE_UNAVAILABLE,
+            Search::OPTION_QUERY_CACHE,
+        ], true));
 
         return parent::find($queryObj, $limit, $options);
     }
@@ -105,11 +119,12 @@ abstract class AbstractRepository extends Repository
     /**
      * Constructs the raw query.
      *
-     * @param $q
+     * @param string $q
+     * @param array  $options
      *
      * @return Query
      */
-    protected function getQuery($q)
+    protected function getQuery($q, array $options = [])
     {
         if (isset($q[self::MAX_LEN])) {
             $q = substr($q, 0, self::MAX_LEN);
@@ -124,7 +139,7 @@ abstract class AbstractRepository extends Repository
                 'query' => [
                     'filtered' => [
                         'query'  => $queryString->toArray(),
-                        'filter' => $this->getFilters(),
+                        'filter' => $this->getFilters($options),
                     ],
                 ],
             ]);
@@ -133,7 +148,7 @@ abstract class AbstractRepository extends Repository
                 'query' => [
                     'filtered' => [
                         'query'  => $this->getQueryString($q)->toArray(),
-                        'filter' => $this->getFilters(),
+                        'filter' => $this->getFilters($options),
                     ],
                 ],
             ]);
@@ -197,9 +212,11 @@ abstract class AbstractRepository extends Repository
     /**
      * Constructs the filters array (override as needed).
      *
+     * @param array $options
+     *
      * @return array
      */
-    protected function getFilters()
+    protected function getFilters(array $options = [])
     {
         return [];
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -52,6 +52,7 @@ class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
         $document->set('name', $object->name);
         $document->set('first_name', $object->first_name);
         $document->set('last_name', $object->last_name);
+        $document->set('is_agent', $object->isAgent());
 
         $emails = [];
         foreach ($object->emails as $e) {
