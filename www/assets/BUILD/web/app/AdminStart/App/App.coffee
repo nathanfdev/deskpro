@@ -59,6 +59,7 @@ define [
       Api.sendGet('/my/session/renew-request-token').success( (data) ->
         if data.request_token
           window.DP_REQUEST_TOKEN = data.request_token
+          window.DP_SESSION_ID = data.session_id
       )
     , 30000)
   ])
