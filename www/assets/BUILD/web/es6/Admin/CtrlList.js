@@ -207,6 +207,7 @@ require('../../compiled/Admin/Settings/Ctrl/RegSettings');
 require('../../compiled/Admin/Settings/Ctrl/PasswordSettings');
 require('../../compiled/Admin/Settings/Ctrl/ServerSettings');
 require('../../compiled/Admin/Settings/Ctrl/ResetHelpdesk');
+require('../../compiled/Admin/Settings/Ctrl/UpdaterSettings');
 
 require('../../compiled/Admin/UserFields/Ctrl/List');
 

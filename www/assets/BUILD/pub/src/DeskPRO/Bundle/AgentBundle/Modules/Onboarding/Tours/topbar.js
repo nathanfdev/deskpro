@@ -23,7 +23,7 @@ const topbar = {
     {
       title:    'Manage views',
       text:     'Click the \'views icon\' when you want to change the layout of your screen.',
-      selector: '#react_dp_agent_top_bar .item.view_mode',
+      selector: '#react_dp_agent_top_bar .item.views',
       position: 'bottom'
     },
     {
