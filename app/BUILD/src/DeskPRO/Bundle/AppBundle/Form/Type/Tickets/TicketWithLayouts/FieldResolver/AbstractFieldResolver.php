@@ -142,8 +142,6 @@ abstract class AbstractFieldResolver
                 return $this->createCaptcha($context);
             case FormFields::CC:
                 return $this->createCc($context);
-            case FormFields::FOLLOWERS:
-                return $this->createFollowers($context);
             case FormFields::ATTACHMENTS:
                 return $this->createAttach($context);
             case FormFields::USER_TIMEZONE:
@@ -474,13 +472,6 @@ abstract class AbstractFieldResolver
      * @return FormField
      */
     abstract protected function createCc(TicketWithLayoutsContext $context);
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return FormField
-     */
-    abstract protected function createFollowers(TicketWithLayoutsContext $context);
 
     /**
      * @param TicketWithLayoutsContext $context

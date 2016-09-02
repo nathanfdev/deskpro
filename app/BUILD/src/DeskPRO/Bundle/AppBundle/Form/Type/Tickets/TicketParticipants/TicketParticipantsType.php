@@ -67,6 +67,8 @@ class TicketParticipantsType extends AbstractTicketParticipantType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
+
         $resolver
             ->setDefaults([
                 'inline'         => false,
@@ -77,18 +79,15 @@ class TicketParticipantsType extends AbstractTicketParticipantType
                 'entry_type'     => TicketParticipantType::class,
                 'entry_options'  => function (Options $options) {
                     return [
-                        'error_bubbling' => $options['inline'],
-                        'is_agent'       => $options['is_agent'],
-                        'owner'          => $options['owner'],
-                        'constraints'    => new Assert\Valid(),
-                        'inline'         => true,
-                        'set_owner'      => false,
+                        'error_bubbling'  => $options['inline'],
+                        'owner'           => $options['owner'],
+                        'constraints'     => new Assert\Valid(),
+                        'inline'          => true,
+                        'set_owner'       => false,
+                        'agent_interface' => $options['agent_interface'],
                     ];
                 },
             ])
-            ->setRequired(['is_agent', 'owner'])
-            ->setAllowedTypes('owner', Ticket::class)
-            ->setAllowedTypes('is_agent', 'boolean')
         ;
     }
 
@@ -101,10 +100,10 @@ class TicketParticipantsType extends AbstractTicketParticipantType
      */
     public function onPreSetData(FormEvent $event)
     {
-        $isAllEnabled     = $this->isAllParticipantsEnabled($event->getForm()->getConfig()->getOptions());
+        $isAllEnabled     = $event->getForm()->getConfig()->getOption('allow_all');
         $allParticipants  = $this->getAllParticipants($event);
         $formParticipants = $allParticipants->filter(function (TicketParticipant $participant) use ($event, $isAllEnabled) {
-            return $participant->getPerson() && ($isAllEnabled || $participant->getPerson()->isAgent() === $this->isAgent($event));
+            return $participant->getPerson() && ($isAllEnabled || !$participant->getPerson()->isAgent());
         });
 
         $event->setData($formParticipants);
@@ -119,7 +118,7 @@ class TicketParticipantsType extends AbstractTicketParticipantType
      */
     public function onMergeData(FormEvent $event)
     {
-        $isAllEnabled     = $this->isAllParticipantsEnabled($event->getForm()->getConfig()->getOptions());
+        $isAllEnabled     = $event->getForm()->getConfig()->getOption('allow_all');
         $allParticipants  = $this->getAllParticipants($event);
         $formParticipants = $this->getFormParticipants($event);
 
@@ -133,7 +132,10 @@ class TicketParticipantsType extends AbstractTicketParticipantType
         }
         foreach ($allParticipants as $participant) {
             $person = $participant->getPerson();
-            if ($person && ($isAllEnabled || $person->isAgent() === $this->isAgent($event)) && !$formParticipants->contains($participant)) {
+            if (!$person) {
+                continue;
+            }
+            if (($isAllEnabled || !$person->isAgent()) && !$formParticipants->contains($participant)) {
                 $ticket->removeParticipant($participant);
             }
         }
@@ -147,16 +149,6 @@ class TicketParticipantsType extends AbstractTicketParticipantType
     protected function getAllParticipants(FormEvent $event)
     {
         return $this->getTicket($event)->getParticipants();
-    }
-
-    /**
-     * @param FormEvent $event
-     *
-     * @return bool
-     */
-    protected function isAgent(FormEvent $event)
-    {
-        return $event->getForm()->getConfig()->getOption('is_agent');
     }
 
     /**
