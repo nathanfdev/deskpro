@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Isvg from 'react-inlinesvg';
-import classNames from 'classnames';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
@@ -11,7 +10,6 @@ import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortc
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
-import { resumeOnboarding } from '../../Onboarding/Actions/onboardingActions';
 // import { IMContainer } from '../IM/Components/IMContainer';
 // import { HeaderWidget } from '../IM/Components/HeaderWidget';
 
@@ -19,8 +17,6 @@ import { resumeOnboarding } from '../../Onboarding/Actions/onboardingActions';
   agents:          collectionSelectorFactory('Person', 'agents')(state),
   chatDepartments: collectionSelectorFactory('Department', 'all_tickets')(state),
   me:              meSelector(state),
-  logoCallback:    state.Onboarding.onboarding.get('logoCallback'),
-  logoActive:      state.Onboarding.onboarding.get('logoActive'),
 }))
 class AgentTopBar extends SeparateComponent {
 
@@ -28,8 +24,6 @@ class AgentTopBar extends SeparateComponent {
     agents:          PropTypes.object.isRequired,
     chatDepartments: PropTypes.object.isRequired,
     me:              PropTypes.object,
-    logoCallback:    PropTypes.func,
-    logoActive:      PropTypes.bool,
     TopBar:          PropTypes.object
   };
 
@@ -127,26 +121,12 @@ class AgentTopBar extends SeparateComponent {
     }
   }
 
-  clickLogo = () => {
-    if (this.props.logoActive) {
-      this.props.logoCallback();
-      this.props.dispatch(resumeOnboarding());
-    } else {
-      this.openDeskPro();
-    }
-  };
-
-  openDeskPro() {
-    window.open('http://deskpro.com', '_blank');
-  }
-
   render() {
     const { notificationCount } = this.state;
-    const { agents, chatDepartments, logoActive } = this.props;
+    const { agents, chatDepartments } = this.props;
     const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
 
     return (<TopBar>
-      <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo} />
       <TopBarItem classes={['search-box legacy-omnibox']}>
         <SearchBox
           onUserInput={this.onSearch}

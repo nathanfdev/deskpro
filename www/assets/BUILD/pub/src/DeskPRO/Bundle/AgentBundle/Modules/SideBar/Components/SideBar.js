@@ -6,15 +6,20 @@ import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortc
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/sideBarActions';
+import { resumeOnboarding } from '../../Onboarding/Actions/onboardingActions';
 
 @connect(state => ({
   me:             meSelector(state),
-  currentSection: state.SideBar.sections.get('current')
+  currentSection: state.SideBar.sections.get('current'),
+  logoCallback:   state.Onboarding.onboarding.get('logoCallback'),
+  logoActive:     state.Onboarding.onboarding.get('logoActive')
 }))
 export class SideBarContainer extends SeparateComponent {
   static propTypes = {
     me:             PropTypes.object.isRequired,
     currentSection: PropTypes.string.isRequired,
+    logoCallback:   PropTypes.func,
+    logoActive:     PropTypes.bool,
     dispatch:       PropTypes.func.isRequired
   };
 
@@ -86,23 +91,28 @@ export class SideBarContainer extends SeparateComponent {
     this.props.dispatch(actions.changeSection({ section }));
   };
 
+  resumeOnboarding = () => {
+    this.props.dispatch(resumeOnboarding());
+  };
+
   render() {
     const props = {
-      canUseTicket:   this.canUseTicket(),
-      canUseChat:     this.canUseChat(),
-      canUsePeople:   this.canUsePeople(),
-      canUseFeedback: this.canUseFeedback(),
-      canUsePublish:  this.canUsePublish(),
-      canUseTasks:    this.canUseTasks(),
-      canUseReports:  this.canUseReports(),
-      canUseAdmin:    this.canUseAdmin(),
-      canUseBilling:  this.canUseBilling(),
-      canUsePortal:   this.canUsePortal(),
-      closeIframes:   this.closeIframes,
-      openAdmin:      this.openAdmin,
-      openReports:    this.openReports,
-      openBilling:    this.openBilling,
-      changeSection:  this.changeSection
+      canUseTicket:     this.canUseTicket(),
+      canUseChat:       this.canUseChat(),
+      canUsePeople:     this.canUsePeople(),
+      canUseFeedback:   this.canUseFeedback(),
+      canUsePublish:    this.canUsePublish(),
+      canUseTasks:      this.canUseTasks(),
+      canUseReports:    this.canUseReports(),
+      canUseAdmin:      this.canUseAdmin(),
+      canUseBilling:    this.canUseBilling(),
+      canUsePortal:     this.canUsePortal(),
+      closeIframes:     this.closeIframes,
+      openAdmin:        this.openAdmin,
+      openReports:      this.openReports,
+      openBilling:      this.openBilling,
+      changeSection:    this.changeSection,
+      resumeOnboarding: this.resumeOnboarding
     };
     return <SideBar {...this.props} {...props} />;
   }
@@ -110,23 +120,26 @@ export class SideBarContainer extends SeparateComponent {
 
 export class SideBar extends React.Component {
   static propTypes = {
-    me:             PropTypes.object,
-    canUseTicket:   PropTypes.bool.isRequired,
-    canUseChat:     PropTypes.bool.isRequired,
-    canUsePeople:   PropTypes.bool.isRequired,
-    canUseFeedback: PropTypes.bool.isRequired,
-    canUsePublish:  PropTypes.bool.isRequired,
-    canUseTasks:    PropTypes.bool.isRequired,
-    canUseReports:  PropTypes.bool.isRequired,
-    canUseAdmin:    PropTypes.bool.isRequired,
-    canUseBilling:  PropTypes.bool.isRequired,
-    canUsePortal:   PropTypes.bool.isRequired,
-    closeIframes:   PropTypes.func.isRequired,
-    openAdmin:      PropTypes.func.isRequired,
-    openReports:    PropTypes.func.isRequired,
-    openBilling:    PropTypes.func.isRequired,
-    changeSection:  PropTypes.func.isRequired,
-    currentSection: PropTypes.string.isRequired
+    me:               PropTypes.object,
+    canUseTicket:     PropTypes.bool.isRequired,
+    canUseChat:       PropTypes.bool.isRequired,
+    canUsePeople:     PropTypes.bool.isRequired,
+    canUseFeedback:   PropTypes.bool.isRequired,
+    canUsePublish:    PropTypes.bool.isRequired,
+    canUseTasks:      PropTypes.bool.isRequired,
+    canUseReports:    PropTypes.bool.isRequired,
+    canUseAdmin:      PropTypes.bool.isRequired,
+    canUseBilling:    PropTypes.bool.isRequired,
+    canUsePortal:     PropTypes.bool.isRequired,
+    closeIframes:     PropTypes.func.isRequired,
+    openAdmin:        PropTypes.func.isRequired,
+    openReports:      PropTypes.func.isRequired,
+    openBilling:      PropTypes.func.isRequired,
+    changeSection:    PropTypes.func.isRequired,
+    currentSection:   PropTypes.string.isRequired,
+    logoCallback:     PropTypes.func,
+    logoActive:       PropTypes.bool,
+    resumeOnboarding: PropTypes.func
   };
 
   getMenus = () => {
@@ -268,17 +281,27 @@ export class SideBar extends React.Component {
     }
   };
 
+  clickLogo = () => {
+    if (this.props.logoActive) {
+      this.props.logoCallback();
+      this.props.resumeOnboarding();
+    } else {
+      this.openDeskPro();
+    }
+  };
+
   openDeskPro() {
     window.open('http://deskpro.com', '_blank');
   }
 
   render() {
+    const { logoActive } = this.props;
     const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     return (
       <div
         className={classNames('sidebar-menu', 'ui', 'vertical', 'menu')}
       >
-        <div className="logo" onClick={this.openDeskPro}>
+        <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo}>
           <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logo.svg`} />
         </div>
         {this.getMenuItems()}
