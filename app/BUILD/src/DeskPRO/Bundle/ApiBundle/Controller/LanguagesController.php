@@ -71,6 +71,9 @@ class LanguagesController extends CrudController
     public function agentPhrasesAction(Request $request)
     {
         $phrases = [
+            'agent.chat.online_for_chat',
+            'agent.chat.notification_volume',
+            'agent.chat.by_department',
             'agent.chrome.link_help',
             'agent.chrome.link_logout',
             'agent.chrome.link_preferences',
