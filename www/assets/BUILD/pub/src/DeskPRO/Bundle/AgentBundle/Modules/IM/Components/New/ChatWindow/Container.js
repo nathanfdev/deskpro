@@ -12,7 +12,8 @@ class Container extends React.Component {
     departments: PropTypes.object.isRequired,
     current:     PropTypes.number.isRequired,
     isOpen:      PropTypes.bool.isRequired,
-    children:    PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    children:    PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    onChange:    PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -57,6 +58,12 @@ class Container extends React.Component {
     });
   }
 
+  handleChange(message) {
+    console.log(message);
+    this.setState({ message });
+    this.props.onChange(message);
+  }
+
   render() {
     return (
       <Detached
@@ -71,6 +78,9 @@ class Container extends React.Component {
               <Scrollable vertical>
                 <MessageList {...this.props} />
               </Scrollable>
+            </div>
+            <div className="reply">
+              <input type="text" onChange={this.props.onChange} />
             </div>
           </div>
         </ClickOut>

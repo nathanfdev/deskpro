@@ -176,7 +176,7 @@ export const imState = {
 
 const messageOne = {
   chat:         1,
-  date_created: '2016-08-28T11:19:14+0000',
+  date_created: moment().subtract(moment().f, 'years').format(),
   id:           1,
   message:      '<p>Zombie ipsum brains reversus ab cerebellum viral inferno, brein nam rick mend grimes malum cerveau cerebro. De carne cerebro lumbering animata cervello corpora quaeritis. Summus thalamus brains sit​​, morbo basal ganglia vel maleficia?</p>',
   metadata:     [],
@@ -189,7 +189,7 @@ const messageOne = {
 
 const messageTwo = {
   chat:         1,
-  date_created: '2016-08-28T11:19:15+0000',
+  date_created: moment().subtract(1, 'hour').format(),
   id:           2,
   message:      '<p>De braaaiiiins apocalypsi gorger omero prefrontal cortex undead survivor fornix dictum mauris.</p>',
   metadata:     [],
@@ -202,7 +202,7 @@ const messageTwo = {
 
 const messageThree = {
   chat:         1,
-  date_created: '2016-08-28T11:19:16+0000',
+  date_created: moment().subtract(12, 'minutes').format(),
   id:           3,
   message:      '<p>Hi brains mindless mortuis limbic cortex soulless creaturas optic nerve, imo evil braaiinns stalking monstra hypothalamus adventus resi hippocampus dentevil vultus brain comedat cerebella pitiutary gland viventium.</p>',
   metadata:     [],

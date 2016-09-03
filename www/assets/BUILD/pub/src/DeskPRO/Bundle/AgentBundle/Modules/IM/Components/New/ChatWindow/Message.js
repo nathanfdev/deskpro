@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
+import TimeAgo from 'react-timeago';
 
 class Message extends React.Component
 {
@@ -16,14 +17,21 @@ class Message extends React.Component
     };
   }
 
+  timestamp() {
+    return (<div className="timestamp">
+      <TimeAgo date={this.props.message.date_created} />
+    </div>);
+  }
+
   render() {
     const my = this.props.message.person === this.props.me.get('id');
     return (<Segment classes={['row', { my }]}>
+      {my ? this.timestamp() : null}
       <div className="message">
         {!my ? <div className="agent name">{this.props.message.person_name}</div> : null}
-
         <div dangerouslySetInnerHTML={this.getMessage()}></div>
       </div>
+      {!my ? this.timestamp() : null}
     </Segment>);
   }
 }
