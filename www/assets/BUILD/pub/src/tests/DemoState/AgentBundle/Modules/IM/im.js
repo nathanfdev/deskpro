@@ -107,6 +107,33 @@ const depThree = {
   agents: [1, 4, 2, 6]
 };
 
+const teamOne = {
+  id:     1,
+  name:   'Tarley',
+  agents: [1, 4],
+  avatar: Immutable.Map({
+    default_url_pattern: 'http://localhost/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1'
+  })
+};
+
+const teamTwo = {
+  id:     2,
+  name:   'Martell',
+  agents: [1, 4, 6],
+  avatar: Immutable.Map({
+    default_url_pattern: 'http://localhost/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1'
+  })
+};
+
+const teamThree = {
+  id:     3,
+  name:   'Clegane',
+  agents: [1, 2, 3, 4, 6],
+  avatar: Immutable.Map({
+    default_url_pattern: 'http://localhost/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1'
+  })
+};
+
 const chatOne = {
   id:                1,
   chat_type:         'agent',
@@ -137,6 +164,18 @@ const chatThree = {
   date_last_message: moment().subtract(2, 'hours').format()
 };
 
+
+const chatFour = {
+  id:                4,
+  chat_type:         'team',
+  agents:            [],
+  departments:       [],
+  agent_teams:       [2],
+  date_created:      moment().subtract(12, 'days').format(),
+  date_last_message: moment().subtract(2, 'hours').format()
+};
+
+
 const notifications = {
   [agentOne.id]:   3,
   [agentTwo.id]:   4,
@@ -149,7 +188,8 @@ const notifications = {
 const chats = {
   [chatOne.id]:   Immutable.Map(chatOne),
   [chatTwo.id]:   Immutable.Map(chatTwo),
-  [chatThree.id]: Immutable.Map(chatThree)
+  [chatThree.id]: Immutable.Map(chatThree),
+  [chatFour.id]:  Immutable.Map(chatFour)
 };
 
 export const imState = {
@@ -169,6 +209,11 @@ export const imState = {
     [depOne.id]:   Immutable.Map(depOne),
     [depTwo.id]:   Immutable.Map(depTwo),
     [depThree.id]: Immutable.Map(depThree)
+  }),
+  teams: Immutable.Seq({
+    [teamOne.id]:   Immutable.Map(teamOne),
+    [teamTwo.id]:   Immutable.Map(teamTwo),
+    [teamThree.id]: Immutable.Map(teamThree)
   }),
   notifications: Immutable.Seq(notifications),
   chats:         Immutable.Seq(chats)

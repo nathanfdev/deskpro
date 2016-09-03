@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
-import MessageList from './MessageList';
-import EmojiBox from './EmojiBox';
+import { MessageList } from './MessageList';
+import { EmojiBox } from './EmojiBox';
 
-class Container extends React.Component {
+export class Container extends React.Component {
   static propTypes = {
     me:          PropTypes.object.isRequired,
     chats:       PropTypes.object.isRequired,
@@ -119,5 +119,3 @@ class Container extends React.Component {
     );
   }
 }
-
-export default Container;

@@ -1,25 +1,19 @@
 import React, { PropTypes } from 'react';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import classNames from 'classnames';
 import TimeAgo from 'react-timeago';
 import moment from 'moment';
-import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
+import { AvatarHelper } from './AvatarHelper';
+import { AbstractList } from './AbstractList';
 
-class AgentList extends React.Component {
+export class AgentList extends AbstractList {
 
   static propTypes = {
-    agents:             PropTypes.object.isRequired,
-    notifications:      PropTypes.object.isRequired,
-    onParticipantClick: PropTypes.func.isRequired
+    notifications: PropTypes.object.isRequired
   };
 
-  static getAvatar(agent) {
-    return (<PersonAvatar
-      color={chooseColor(agent.get('id'))}
-      person={agent} size={24}
-      classes={['ui avatar image im']}
-    />);
+  getAvatar(agent) {
+    return AvatarHelper.renderAgentAvatar(agent);
   }
 
   static getTimestamp(date) {
@@ -40,10 +34,9 @@ class AgentList extends React.Component {
 
     return (
       <ListElement
-
         key={agent.get('id')}
         classes={classes}
-        imageNode={AgentList.getAvatar(agent)}
+        imageNode={this.getAvatar(agent)}
       >
         <div
           onClick={() => this.props.onParticipantClick(agent.get('id'), 'agent')}
@@ -78,5 +71,3 @@ class AgentList extends React.Component {
       </List>);
   }
 }
-
-export default AgentList;

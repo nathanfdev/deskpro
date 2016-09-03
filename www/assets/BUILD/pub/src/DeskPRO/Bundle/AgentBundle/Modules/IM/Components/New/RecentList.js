@@ -4,15 +4,15 @@ import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 import classNames from 'classnames';
 import TimeAgo from 'react-timeago';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
-import AgentList from './AgentList';
-import DepartmentList from './DepartmentList';
+import { AvatarHelper } from './AvatarHelper';
 
-class RecentList extends React.Component {
+export class RecentList extends React.Component {
 
   static propTypes = {
     me:            PropTypes.object.isRequired,
     agents:        PropTypes.object.isRequired,
     departments:   PropTypes.object.isRequired,
+    teams:         PropTypes.object.isRequired,
     notifications: PropTypes.object.isRequired,
     chats:         PropTypes.object.isRequired,
     onRecentClick: PropTypes.func.isRequired
@@ -24,13 +24,15 @@ class RecentList extends React.Component {
         return this.renderAgent(chat);
       case 'department':
         return this.renderDepartment(chat);
+      case 'team':
+        return this.renderTeam(chat);
       default:
         return null;
     }
   }
 
   getItems() {
-    return this.props.chats.map(agent => this.getItem(agent));
+    return this.props.chats.map(this.getItem.bind(this));
   }
 
   getAgents(department) {
@@ -74,7 +76,7 @@ class RecentList extends React.Component {
       <ListElement
         key={agent.get('id')}
         classes={classes}
-        imageNode={AgentList.getAvatar(agent)}
+        imageNode={AvatarHelper.renderAgentAvatar(agent)}
       >
         <div className="content agent recent" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">{agent.get('name')}</div>
@@ -103,13 +105,36 @@ class RecentList extends React.Component {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
         key={department.get('id')}
         classes={classes}
-        imageNode={DepartmentList.getAvatar(department)}
+        imageNode={AvatarHelper.renderDepartmentAvatar(department)}
       >
         <div className="content department" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">department</div>
           <div className="description">
             {department.get('title')}
             <span className="agents-list">{this.getAgents(department)}</span>
+          </div>
+        </div>
+        <div className="timestamp content right floated">
+          {chat.get('date_last_message') ? <TimeAgo date={chat.get('date_last_message')} /> : 'never'}
+        </div>
+      </ListElement>
+    );
+  }
+
+  renderTeam(chat) {
+    const team = this.props.teams.get(chat.get('agent_teams')[0]);
+    const classes = ['im', 'team', 'recent'];
+    return (
+      <ListElement
+        onClick={() => this.props.onRecentClick(chat.get('id'))}
+        key={team.get('id')}
+        classes={classes}
+        imageNode={AvatarHelper.renderAgentTeamAvatar(team)}
+      >
+        <div className="content team" onClick={() => this.props.onRecentClick(chat.get('id'))}>
+          <div className="header">
+            {team.get('name')}
+            <span className="agents-list">{this.getAgents(team)}</span>
           </div>
         </div>
         <div className="timestamp content right floated">
@@ -126,5 +151,3 @@ class RecentList extends React.Component {
       </List>);
   }
 }
-
-export default RecentList;

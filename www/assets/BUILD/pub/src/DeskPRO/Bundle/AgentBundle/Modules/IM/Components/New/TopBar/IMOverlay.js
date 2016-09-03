@@ -2,19 +2,21 @@ import React, { PropTypes } from 'react';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
 import { Segment, SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
-import AgentList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/AgentList';
-import DepartmentList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/DepartmentList';
-import RecentList from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/RecentList';
-import EveryoneSegment from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/EveryoneSegment';
+import { AgentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/AgentList';
+import { DepartmentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/DepartmentList';
+import { AgentTeamList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/AgentTeamList';
+import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/RecentList';
+import { EveryoneSegment } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/EveryoneSegment';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
 
-class IMOverlay extends React.Component {
+export class IMOverlay extends React.Component {
 
   static propTypes = {
     me:                 PropTypes.object.isRequired,
     agents:             PropTypes.object.isRequired,
     departments:        PropTypes.object.isRequired,
+    teams:              PropTypes.object.isRequired,
     notifications:      PropTypes.object.isRequired,
     chats:              PropTypes.object.isRequired,
     children:           PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -41,7 +43,7 @@ class IMOverlay extends React.Component {
   }
 
   getGroupsTab() {
-    const { agents, departments, me, onParticipantClick, createNewGroup } = this.props;
+    const { agents, departments, me, onParticipantClick, createNewGroup, teams } = this.props;
     const content = (
       <div>
         <Header
@@ -56,6 +58,9 @@ class IMOverlay extends React.Component {
         <div className="ui divider"></div>
         <Header size={4} classes={['group-list']} content="department" />
         <DepartmentList agents={agents} departments={departments} me={me} onParticipantClick={onParticipantClick} />
+        <div className="ui divider"></div>
+        <Header size={4} classes={['group-list']} content="teams" />
+        <AgentTeamList agents={agents} teams={teams} me={me} onParticipantClick={onParticipantClick} />
       </div>
     );
     return  {
@@ -114,5 +119,3 @@ class IMOverlay extends React.Component {
     </PopUp>);
   }
 }
-
-export default IMOverlay;

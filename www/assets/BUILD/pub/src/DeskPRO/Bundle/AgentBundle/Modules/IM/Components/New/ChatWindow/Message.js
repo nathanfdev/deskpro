@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import TimeAgo from 'react-timeago';
 
-class Message extends React.Component
+export class Message extends React.Component
 {
   static propTypes = {
     me:      PropTypes.object.isRequired,
@@ -33,5 +33,3 @@ class Message extends React.Component
     </Segment>);
   }
 }
-
-export default Message;

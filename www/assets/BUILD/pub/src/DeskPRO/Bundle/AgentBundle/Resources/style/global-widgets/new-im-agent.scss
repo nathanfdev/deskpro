@@ -1,7 +1,7 @@
 @import '../variables';
 
 .ui.topbar > .item > .im-list {
-  > .im {
+  .im.recent {
     margin: 0 3px;
     &.empty {
       margin: 0 8px;
@@ -247,7 +247,7 @@
         .item {
           &:hover {
             background: $dp-morning-sky;
-            &.agent, &.department {
+            &.agent, &.department, &.team {
               .content {
                 .header, .description {
                   color: $dp-sonic-primary;
@@ -257,7 +257,7 @@
             }
           }
 
-          &.agent, &.department {
+          &.agent, &.department, &.team {
 
             padding: 8px 15px;
             margin-top: 2px;
@@ -271,7 +271,7 @@
             }
           }
           >.content {
-            &.agent, &.department {
+            &.agent, &.department, &.team {
 
 
               .header {

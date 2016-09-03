@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Message from './Message';
+import { Message } from './Message';
 import { SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
 
 export class MessageList extends React.Component {
@@ -49,5 +49,3 @@ export class MessageList extends React.Component {
     return msg.size > 0 ? this.renderList(msg) : MessageList.renderEmpty();
   }
 }
-
-export default MessageList;

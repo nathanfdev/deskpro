@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';
+import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/AgentTeamAvatar';
 import classNames from 'classnames';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
-import RecentList from '../RecentList';
+import { RecentList } from '../RecentList';
 
-class TopBarRecentImList extends RecentList {
+export class TopBarRecentImList extends RecentList {
 
   static propTypes = {
     chats:         PropTypes.object.isRequired,
@@ -49,13 +50,21 @@ class TopBarRecentImList extends RecentList {
     );
   }
 
+  renderTeam(chat) {
+    const team = this.props.teams.get(chat.get('agent_teams')[0]);
+
+    return (
+      <span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>
+        <AgentTeamAvatar agentTeam={team} size={24} classes={['ui avatar image im']} />
+      </span>
+    );
+  }
+
   render() {
     return (
-      <div className={classNames(['im', { empty: this.props.chats.size < 1 }])}>
+      <div className={classNames(['im', 'recent', { empty: this.props.chats.size < 1 }])}>
         {this.getItems()}
         {this.props.children}
       </div>);
   }
 }
-
-export default TopBarRecentImList;
