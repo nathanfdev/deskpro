@@ -57,7 +57,7 @@ storiesOf('Agent: IM', module)
       <TopBarItem childrenWrapper="im-list">
         <span>
           <TopBarRecentImList {...imState} onRecentClick={action('recent chat (top bar) click')}>
-            <Container isOpen {...chatState} current={1} onChange={action('reply')} />
+            <Container isOpen {...chatState} current={1} onChange={action('reply')} onAttach={action('attach')} />
           </TopBarRecentImList>
         </span>
       </TopBarItem>

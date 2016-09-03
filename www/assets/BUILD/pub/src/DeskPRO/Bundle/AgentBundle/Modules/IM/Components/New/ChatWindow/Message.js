@@ -5,10 +5,8 @@ import TimeAgo from 'react-timeago';
 class Message extends React.Component
 {
   static propTypes = {
-    me:          PropTypes.object.isRequired,
-    id:          PropTypes.number.isRequired,
-    message:     PropTypes.object.isRequired,
-    person_name: PropTypes.string.isRequired
+    me:      PropTypes.object.isRequired,
+    message: PropTypes.object.isRequired
   };
 
   getMessage() {

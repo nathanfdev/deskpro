@@ -3,6 +3,7 @@ import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 import MessageList from './MessageList';
+import EmojiBox from './EmojiBox';
 
 class Container extends React.Component {
   static propTypes = {
@@ -13,16 +14,22 @@ class Container extends React.Component {
     current:     PropTypes.number.isRequired,
     isOpen:      PropTypes.bool.isRequired,
     children:    PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-    onChange:    PropTypes.func.isRequired
+    onChange:    PropTypes.func.isRequired,
+    onAttach:    PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: !!this.props.isOpen
+      isOpen:      !!this.props.isOpen,
+      emojiOpened: false
     };
 
-    this.closePopup = this.closePopup.bind(this);
+    this.closePopup   = this.closePopup.bind(this);
+    this.openEmoji    = this.openEmoji.bind(this);
+    this.closeEmoji   = this.closeEmoji.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.addEmoji     = this.addEmoji.bind(this);
   }
 
   getAgentHeader(chat) {
@@ -58,10 +65,26 @@ class Container extends React.Component {
     });
   }
 
+  openEmoji() {
+    console.log('1');
+    this.setState({ emojiOpened: true });
+  }
+
+  closeEmoji() {
+    this.setState({ emojiOpened: false });
+  }
+
+  addEmoji(emoji) {
+    console.log(emoji);
+  }
+
   handleChange(message) {
-    console.log(message);
     this.setState({ message });
     this.props.onChange(message);
+  }
+
+  handleAttach() {
+    this.props.onAttach();
   }
 
   render() {
@@ -71,7 +94,7 @@ class Container extends React.Component {
         positionTarget={document.getElementById(`chat-${this.props.chats.getIn([this.props.current, 'id'])}`)}
         positionMy="left-40 top+3"
       >
-        <ClickOut onClickOut={this.closePopup}>
+        <ClickOut onClickOut={this.closePopup} ignoreNodes={['.emoji.box']}>
           <div className="ui popup left bottom im chat drawer">
             <div className="header">{this.getHeader()}</div>
             <div className="box">
@@ -80,7 +103,15 @@ class Container extends React.Component {
               </Scrollable>
             </div>
             <div className="reply">
-              <input type="text" onChange={this.props.onChange} />
+              <input type="text" onChange={this.handleChange} />
+              <i className="fa fa-paperclip reply-icon" onClick={this.handleAttach} />
+              <i className="fa fa-smile-o reply-icon emoji trigger" onClick={this.openEmoji} ref="emoji" />
+              <EmojiBox
+                isOpen={this.state.emojiOpened}
+                clickOut={this.closeEmoji}
+                emojiNode={this.refs.emoji}
+                emojiClick={this.addEmoji}
+              />
             </div>
           </div>
         </ClickOut>
