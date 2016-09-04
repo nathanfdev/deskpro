@@ -108,7 +108,7 @@ export class IMOverlay extends React.Component {
   render() {
     return (<PopUp
       classes={['im wrapper']}
-      innerClasses={['im']}
+      innerClasses={['im tabs']}
       positionMy="center-3 top-5"
       positionAt="center bottom"
       id={100500}

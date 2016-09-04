@@ -7,6 +7,7 @@ import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { IMOverlay } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar/IMOverlay';
 import { IMButton } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar/IMButton';
 import { TopBarRecentImList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar/TopBarRecentImList';
+import { GroupAddDrawer } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar/GroupAddDrawer';
 import { imState, messages } from 'DemoState/AgentBundle/Modules/IM/im';
 
 
@@ -60,6 +61,22 @@ storiesOf('Agent: IM', module)
             <Container isOpen {...chatState} current={1} onChange={action('reply')} onAttach={action('attach')} />
           </TopBarRecentImList>
         </span>
+      </TopBarItem>
+    </TopBar>
+  )
+  .add(
+    'Agent: IM: Group creation',
+    () => <TopBar>
+      <div className="logo">
+        <img src="/assets/BUILD/web/images/dp-logo-48.png" alt="DeskPRO logo" />
+      </div>
+      <SearchBox onUserInput={action('Search')} placeholder="Search ..." />
+      <TopBarItem>
+        <i className="icon wait" />
+      </TopBarItem>
+      <TopBarItem>
+        <IMButton />
+        <GroupAddDrawer isOpen target={document.getElementById('im-button')} {...imState} />
       </TopBarItem>
     </TopBar>
   )
