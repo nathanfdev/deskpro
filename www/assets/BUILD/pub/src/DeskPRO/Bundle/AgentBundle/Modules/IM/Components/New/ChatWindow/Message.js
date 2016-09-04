@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
-import TimeAgo from 'react-timeago';
+import moment from 'moment';
 
 export class Message extends React.Component
 {
@@ -16,8 +16,9 @@ export class Message extends React.Component
   }
 
   timestamp() {
+    const m = moment(this.props.message.date_created);
     return (<div className="timestamp">
-      <TimeAgo date={this.props.message.date_created} />
+      {m.format('h:mm a')}
     </div>);
   }
 

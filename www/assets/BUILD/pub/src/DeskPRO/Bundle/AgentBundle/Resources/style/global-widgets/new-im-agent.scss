@@ -367,7 +367,7 @@
           .message {
             font-size: 12px;
             color: $dp-greyscale-850;
-            max-width: 75%;
+            max-width: 80%;
             padding: 10px;
             background-color: white;
             border-radius: 8px;
@@ -411,6 +411,7 @@
             .timestamp {
               text-align: right;
               padding-right: 5px;
+              padding-left: 0;
             }
           }
         }

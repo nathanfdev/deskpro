@@ -221,8 +221,21 @@ export const imState = {
 
 const messageOne = {
   chat:         1,
-  date_created: moment().subtract(59, 'minutes').format(),
+  date_created: moment().subtract(71, 'minutes').format(),
   id:           1,
+  message:      '<p>Ut pretium risus neque maximus</p>',
+  metadata:     [],
+  person:       1,
+  person_name:  'Admin Admin',
+  status:       1,
+  timestamp:    1472383153,
+  uuid:         'a6e789a6-cd72-4a1b-888c-c93e1868c6b3'
+};
+
+const messageTwo = {
+  chat:         1,
+  date_created: moment().subtract(70, 'minutes').format(),
+  id:           2,
   message:      '<p>Zombie ipsum brains reversus ab cerebellum viral inferno, brein nam rick mend grimes malum cerveau cerebro. De carne cerebro lumbering animata cervello corpora quaeritis. Summus thalamus brains sit​​, morbo basal ganglia vel maleficia?</p>',
   metadata:     [],
   person:       6,
@@ -232,10 +245,10 @@ const messageOne = {
   uuid:         'a6e789a6-cd72-4a1b-888c-c93e1868c6b4'
 };
 
-const messageTwo = {
+const messageThree = {
   chat:         1,
   date_created: moment().subtract(1, 'hour').format(),
-  id:           2,
+  id:           3,
   message:      '<p>De braaaiiiins apocalypsi gorger omero prefrontal cortex undead survivor fornix dictum mauris.</p>',
   metadata:     [],
   person:       1,
@@ -245,10 +258,10 @@ const messageTwo = {
   uuid:         'b6e789a6-cd72-4a1b-888c-c93e1868c6b5'
 };
 
-const messageThree = {
+const messageFour = {
   chat:         1,
   date_created: moment().subtract(12, 'minutes').format(),
-  id:           3,
+  id:           4,
   message:      '<p>Hi brains mindless mortuis limbic cortex soulless creaturas optic nerve, imo evil braaiinns stalking monstra hypothalamus adventus resi hippocampus dentevil vultus brain comedat cerebella pitiutary gland viventium.</p>',
   metadata:     [],
   person:       6,
@@ -261,5 +274,6 @@ const messageThree = {
 export const messages = Immutable.Seq({
   [messageOne.uuid]:   messageOne,
   [messageTwo.uuid]:   messageTwo,
-  [messageThree.uuid]: messageThree
+  [messageThree.uuid]: messageThree,
+  [messageFour.uuid]:  messageFour
 });
