@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import classNames from 'classnames';
-import TimeAgo from 'react-timeago';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import { AvatarHelper } from './AvatarHelper';
+import { AbstractList } from './AbstractList';
 
 export class RecentList extends React.Component {
 
@@ -89,10 +89,9 @@ export class RecentList extends React.Component {
             {notificationCount}
           </div>
         </div>
-        <div className="timestamp last-seen content right floated">
-          {chat.get('date_last_message') ? <TimeAgo date={chat.get('date_last_message')} /> : 'never'}
+        <div className="timestamp content right floated">
+          {AbstractList.getTimestamp(chat.get('date_last_message'))}
         </div>
-
       </ListElement>
     );
   }
@@ -115,7 +114,7 @@ export class RecentList extends React.Component {
           </div>
         </div>
         <div className="timestamp content right floated">
-          {chat.get('date_last_message') ? <TimeAgo date={chat.get('date_last_message')} /> : 'never'}
+          {AbstractList.getTimestamp(chat.get('date_last_message'))}
         </div>
       </ListElement>
     );
@@ -138,7 +137,7 @@ export class RecentList extends React.Component {
           </div>
         </div>
         <div className="timestamp content right floated">
-          {chat.get('date_last_message') ? <TimeAgo date={chat.get('date_last_message')} /> : 'never'}
+          {AbstractList.getTimestamp(chat.get('date_last_message'))}
         </div>
       </ListElement>
     );

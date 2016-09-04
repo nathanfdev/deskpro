@@ -39,6 +39,7 @@
   max-width: initial;
   background-color: $dp-greyscale-50;
   border: 1px solid $dp-sonic-primary;
+  height: 535px;
 
   .im.header {
     padding-right: 15px;
@@ -137,9 +138,9 @@
         padding-left: 5px;
 
         .im.avatar {
-          width: 12px;
-          height: 12px;
-          margin-right: 1px;
+          width: 14px;
+          height: 14px;
+          margin-right: 5px;
 
           .text {
             font-size: 6px;
@@ -153,6 +154,8 @@
         margin-right: 0;
         padding: 0;
         width: 100%;
+        height: 355px;
+        position: relative;
 
         .everyone-list {
           padding: 5px;
@@ -253,12 +256,10 @@
                   color: $dp-sonic-primary;
                 }
               }
-
             }
           }
 
           &.agent, &.department, &.team {
-
             padding: 8px 15px;
             margin-top: 2px;
 
@@ -272,7 +273,11 @@
           }
           >.content {
             &.agent, &.department, &.team {
-
+              overflow: hidden;
+              height: 30px;
+              line-height: 28px;
+              white-space: nowrap;
+              max-width: 240px;
 
               .header {
                 font-family: "Open Sans", serif;
@@ -292,15 +297,20 @@
                 font-weight: 600;
               }
             }
+            &.agent {
+              max-width: 190px;
+            }
           }
 
           &.department.recent {
             .content {
               line-height: 12px;
-
               .header {
                 font-size: 10px;
                 text-transform: uppercase;
+              }
+              .description {
+                max-width: 185px;
               }
             }
           }

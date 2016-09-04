@@ -9,6 +9,7 @@ import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New
 import { EveryoneSegment } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/EveryoneSegment';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
+import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 
 export class IMOverlay extends React.Component {
 
@@ -28,7 +29,7 @@ export class IMOverlay extends React.Component {
   getRecentTab() {
     return  {
       id:      'recent',
-      content: <RecentList {...this.props} />,
+      content: <Scrollable vertical><RecentList {...this.props} /></Scrollable>,
       title:   <span><i className="fa fa-clock-o dp-im-tab-menu-icon" />Recent</span>
     };
   }
@@ -37,7 +38,7 @@ export class IMOverlay extends React.Component {
     const { agents, notifications, onParticipantClick } = this.props;
     return  {
       id:      'agents',
-      content: <AgentList agents={agents} notifications={notifications} onParticipantClick={onParticipantClick} />,
+      content: <Scrollable vertical><AgentList agents={agents} notifications={notifications} onParticipantClick={onParticipantClick} /></Scrollable>,
       title:   <span><i className="fa fa-user dp-im-tab-menu-icon" />Agents</span>
     };
   }
@@ -45,22 +46,24 @@ export class IMOverlay extends React.Component {
   getGroupsTab() {
     const { agents, departments, me, onParticipantClick, createNewGroup, teams } = this.props;
     const content = (
-      <div>
-        <Header
-          size={4}
-          classes={['group-list']}
-          content={<span>everyone<span className="agents-counter">({agents.size})</span></span>}
-        />
-        <EveryoneSegment agents={agents} onParticipantClick={onParticipantClick} />
-        <div className="ui divider"></div>
-        <Header size={4} classes={['group-list']} content="im groups" />
-        <Segment classes={['new-im-group']} raised vertical><span onClick={() => createNewGroup()}>+ create new im group</span></Segment>
-        <div className="ui divider"></div>
-        <Header size={4} classes={['group-list']} content="department" />
-        <DepartmentList agents={agents} departments={departments} me={me} onParticipantClick={onParticipantClick} />
-        <div className="ui divider"></div>
-        <Header size={4} classes={['group-list']} content="teams" />
-        <AgentTeamList agents={agents} teams={teams} me={me} onParticipantClick={onParticipantClick} />
+      <div style={{ height: '355px' }}>
+        <Scrollable vertical>
+          <Header
+            size={4}
+            classes={['group-list']}
+            content={<span>everyone<span className="agents-counter">({agents.size})</span></span>}
+          />
+          <EveryoneSegment agents={agents} onParticipantClick={onParticipantClick} />
+          <div className="ui divider"></div>
+          <Header size={4} classes={['group-list']} content="im groups" />
+          <Segment classes={['new-im-group']} raised vertical><span onClick={() => createNewGroup()}>+ create new im group</span></Segment>
+          <div className="ui divider"></div>
+          <Header size={4} classes={['group-list']} content="department" />
+          <DepartmentList agents={agents} departments={departments} me={me} onParticipantClick={onParticipantClick} />
+          <div className="ui divider"></div>
+          <Header size={4} classes={['group-list']} content="teams" />
+          <AgentTeamList agents={agents} teams={teams} me={me} onParticipantClick={onParticipantClick} />
+        </Scrollable>
       </div>
     );
     return  {

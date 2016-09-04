@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
+import TimeAgo from 'react-timeago';
+import moment from 'moment';
 
 export class AbstractList extends React.Component {
   static propTypes = {
@@ -9,6 +11,20 @@ export class AbstractList extends React.Component {
     agents:             PropTypes.object.isRequired,
     onParticipantClick: PropTypes.func.isRequired
   };
+
+  static getTimestamp(date) {
+    const m = date ? moment(date) : null;
+    if (!m) return 'never';
+
+    const now = moment();
+    const diff = now.unix() - m.unix();
+    const mObj = m.toObject();
+    const nObj = now.toObject();
+    if (nObj.years === mObj.years && nObj.months === mObj.months && (nObj.date - mObj.date) === 1) {
+      return 'Yesterday';
+    }
+    return m && (diff < 60 * 60 * 24) ? m.format('h:mm a') : <TimeAgo date={date} />;
+  }
 
   getItem(item, type, titleProp) {
     const classes = ['im', type];
@@ -26,8 +42,8 @@ export class AbstractList extends React.Component {
           <div className="header">
             {item.get(titleProp)}
             <span className="agents-counter">({item.get('agents').length - 1})</span>
-            <span className="agents-list">{this.getAgents(item)}</span>
           </div>
+          <span className="agents-list">{this.getAgents(item)}</span>
         </div>
       </ListElement>
     );
@@ -48,7 +64,7 @@ export class AbstractList extends React.Component {
 
         return (<PersonAvatar
           person={agent}
-          size={12}
+          size={14}
           classes={classes}
           color={chooseColor(agent)}
         />);

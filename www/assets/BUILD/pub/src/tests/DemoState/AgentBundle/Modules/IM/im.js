@@ -221,7 +221,7 @@ export const imState = {
 
 const messageOne = {
   chat:         1,
-  date_created: moment().subtract(moment().f, 'years').format(),
+  date_created: moment().subtract(59, 'minutes').format(),
   id:           1,
   message:      '<p>Zombie ipsum brains reversus ab cerebellum viral inferno, brein nam rick mend grimes malum cerveau cerebro. De carne cerebro lumbering animata cervello corpora quaeritis. Summus thalamus brains sit​​, morbo basal ganglia vel maleficia?</p>',
   metadata:     [],

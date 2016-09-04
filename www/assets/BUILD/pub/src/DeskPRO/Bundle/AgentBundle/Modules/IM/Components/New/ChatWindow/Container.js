@@ -11,6 +11,7 @@ export class Container extends React.Component {
     chats:       PropTypes.object.isRequired,
     agents:      PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
+    teams:       PropTypes.object.isRequired,
     current:     PropTypes.number.isRequired,
     isOpen:      PropTypes.bool.isRequired,
     children:    PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -47,6 +48,9 @@ export class Container extends React.Component {
     return this.props.departments.getIn([chat.get('departments')[0], 'title']);
   }
 
+  getAgentTeamHeader(chat) {
+    return this.props.teams.getIn([chat.get('agent_teams')[0], 'name']);
+  }
   getHeader() {
     const current = this.props.chats.get(this.props.current);
     switch (current.get('chat_type')) {
@@ -54,6 +58,8 @@ export class Container extends React.Component {
         return this.getAgentHeader(current);
       case 'department':
         return this.getDepartmentHeader(current);
+      case 'team':
+        return this.getAgentTeamHeader(current);
       default:
         return 'some im';
     }
@@ -66,9 +72,9 @@ export class Container extends React.Component {
   }
 
   openEmoji() {
-    console.log('1');
     this.setState({ emojiOpened: true });
   }
+
 
   closeEmoji() {
     this.setState({ emojiOpened: false });

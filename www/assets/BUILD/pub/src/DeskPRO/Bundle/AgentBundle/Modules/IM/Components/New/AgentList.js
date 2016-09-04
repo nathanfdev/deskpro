@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import classNames from 'classnames';
-import TimeAgo from 'react-timeago';
-import moment from 'moment';
 import { AvatarHelper } from './AvatarHelper';
 import { AbstractList } from './AbstractList';
 
@@ -14,15 +12,6 @@ export class AgentList extends AbstractList {
 
   getAvatar(agent) {
     return AvatarHelper.renderAgentAvatar(agent);
-  }
-
-  static getTimestamp(date) {
-    const m = date ? moment(date) : null;
-    if (!m) return 'never';
-
-    const now = moment();
-    const seen = now.unix() - m.unix();
-    return m && (seen > 3600 && seen < 60 * 60 * 24) ? m.format('h:mm a') : <TimeAgo date={date} />;
   }
 
   getItem(agent) {
@@ -53,7 +42,7 @@ export class AgentList extends AbstractList {
           </div>
         </div>
         <div className="timestamp last-seen content right floated">
-          {AgentList.getTimestamp(agent.get('last_seen'))}
+          {AbstractList.getTimestamp(agent.get('last_seen'))}
         </div>
 
       </ListElement>
