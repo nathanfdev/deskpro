@@ -4,7 +4,7 @@ import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Comp
 import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/AgentTeamAvatar';
 import classNames from 'classnames';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
-import { RecentList } from '../RecentList';
+import { RecentList } from '../IMTabs/RecentList';
 
 export class TopBarRecentImList extends RecentList {
 
