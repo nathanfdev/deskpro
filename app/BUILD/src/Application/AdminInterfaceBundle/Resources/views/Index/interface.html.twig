@@ -190,65 +190,6 @@
                 {{ nav.list_end() }}
             </div>
         </nav>
-        {#<nav class="dp-appstrip">
-            <ul ng-hide="isBillingInterface">
-                <li tooltip="{{ phrase('adm.general.home') }}" tooltip-append-to-body="true" tooltip-placement="right"
-                    dp-state-mark="home" class="state-on">
-                    <a href="#/"><i class="app-icon app-icon-home"></i></a>
-                </li>
-                <li tooltip="{{ phrase('adm.general.apps_setup') }}"
-                    tooltip-append-to-body="true"
-                    tooltip-placement="right"
-                    dp-state-mark="setup">
-                    <a href="#/setup"><i class="app-icon app-icon-setup"></i></a>
-                </li>
-                <li tooltip="{{ phrase('adm.general.apps_agents') }}" tooltip-append-to-body="true"
-                    tooltip-placement="right" dp-state-mark="agents">
-                    <a href="#/agents"><i class="app-icon app-icon-agents"></i></a>
-                </li>
-                <li tooltip="{{ phrase('adm.general.apps_tickets') }}" tooltip-append-to-body="true"
-                    tooltip-placement="right" dp-state-mark="tickets">
-                    <a href="#/tickets"><i class="app-icon app-icon-tickets"></i></a>
-                </li>
-                <li tooltip="{{ phrase('adm.general.apps_crm') }}"
-                    tooltip-append-to-body="true"
-                    tooltip-placement="right"
-                    dp-state-mark="crm">
-                    <a href="#/crm"><i class="app-icon app-icon-users"></i></a>
-                </li>
-                <li tooltip="User Interface" tooltip-append-to-body="true"
-                    tooltip-placement="right" dp-state-mark="portal">
-                    <a href="#/portal/{{  app.getSetting('portal.default_brand') }}">
-                        <i class="app-icon app-icon-portal"></i>
-                    </a>
-                </li>
-                <li tooltip="{{ phrase('adm.general.apps_chat') }}"
-                    tooltip-append-to-body="true"
-                    tooltip-placement="right"
-                    dp-state-mark="chat">
-                    <a href="#/chat"><i class="app-icon app-icon-chat"></i></a>
-                </li>
-                {#
-                    <li tooltip="{{ phrase('adm.general.apps_twitter') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="twitter">
-                        <a href="#/twitter"><i class="app-icon app-icon-twitter"></i></a>
-                    </li>
-                #}
-                {#<li tooltip="{{ phrase('adm.general.apps') }}" tooltip-append-to-body="true" tooltip-placement="right"
-                    dp-state-mark="apps">
-                    <a href="#/apps"><i class="app-icon app-icon-apps"></i></a>
-                </li>
-                <li tooltip="{{ phrase('adm.general.tasks') }}" tooltip-append-to-body="true" tooltip-placement="right"
-                    dp-state-mark="tasks">
-                    <a href="#/tasks"><i class="app-icon app-icon-tasks"></i></a>
-                </li>
-                {% if not app.isCloud() %}
-                    <li tooltip="{{ phrase('adm.general.apps_server') }}" tooltip-append-to-body="true"
-                        tooltip-placement="right" dp-state-mark="server">
-                        <a href="#/server"><i class="app-icon app-icon-server"></i></a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>#}
         <div class="dp-layout" ui-view></div>
     </div>
 
