@@ -118,7 +118,7 @@ class DpCaptchaType extends AbstractType
         $resolver->setDefaults([
             'label'  => false,
             'mapped' => false,
-            'help'   => function () {
+            'help'   => function (Options $options) {
                 if ($this->isRecaptchaEnabled()) {
                     return false;
                 }
