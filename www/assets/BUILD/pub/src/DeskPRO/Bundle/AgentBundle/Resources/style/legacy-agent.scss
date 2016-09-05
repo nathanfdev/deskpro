@@ -516,13 +516,12 @@ $transition-close-delay: 0.1s;
   transition-delay: $transition-close-delay;
   z-index: 10000;
   .logo {
-    height: 52px;
+    height: 54px;
     width: 52px;
     background-color: $dp-sonic-primary;
     cursor: pointer;
-    border-bottom: 3px solid #2b2f33;
     margin-bottom: -3px;
-    padding: 12px 13px;
+    padding: 13px;
     transition: width $transition-close-time;
     transition-delay: $transition-close-delay;
     &.active {
