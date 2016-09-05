@@ -6,7 +6,11 @@ Feature: /user_chats endpoint
 
   Background:
     Given I'm authenticated as agent
-    And I have permissions to use feedback
+    And I have only default brand
+    And I have permissions to use agent_chat
+    And only the following Department records exist:
+      | #  | Title        | Brands           | Is Chat Enabled |
+      | d1 | Department 1 | [{defaultBrand}] | 1               |
     And only the following Chat records exist:
       | #  | subject |
       | c1 | Chat1   |
