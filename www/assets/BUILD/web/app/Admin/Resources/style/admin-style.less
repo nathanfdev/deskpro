@@ -1610,20 +1610,21 @@ section.dp-help-content-wrapper.open {
 			}
 		}
 
+		&.active > .link,
 		&.active > a {
 			color: #3476BE;
 			background: #D4E4FF;
 		}
 
-		&.with-drag-handle > a {
+		&.with-drag-handle > a, &.with-drag-handle > .link {
 			padding-left: 41px;
 		}
 
-		&.with-drag-handle.with-row-toggle > a {
+		&.with-drag-handle.with-row-toggle > a, &.with-drag-handle.with-row-toggle > .link {
 			padding-left: 49px;
 		}
 
-		> a {
+		> a, > .link {
 			position: relative;
 			display: block;
 			text-decoration: none;
@@ -1654,6 +1655,7 @@ section.dp-help-content-wrapper.open {
 			}
 		}
 
+		&.active > .link .sub-item-indent > i,
 		&.active > a .sub-item-indent > i {
 			color: #3476BE;
 		}
@@ -1667,18 +1669,21 @@ section.dp-help-content-wrapper.open {
 		}
 	}
 
-	a:hover > .drag-handle {
+	a:hover > .drag-handle
+	.link:hover > .drag-handle {
 		color: #888;
 	}
 
-	a h4 > .title-text {
+	a h4 > .title-text,
+	.link h4 > .title-text {
 		vertical-align: text-bottom;
 	}
-	a:hover h4 > .title-text {
+	a:hover h4 > .title-text,
+	.link:hover h4 > .title-text {
 		text-decoration: underline;
 	}
 
-	h4:hover .title-copy, a:hover .title-copy, .title-copy.zeroclipboard-is-hover {
+	h4:hover .title-copy, a:hover .title-copy, .link:hover .title-copy, .title-copy.zeroclipboard-is-hover {
 		visibility: visible;
 	}
 
@@ -1858,7 +1863,7 @@ section.dp-help-content-wrapper.open {
 		font-size: 14px;
 	}
 
-	> a {
+	> a, > .link {
 		cursor: pointer;
 	}
 
@@ -1901,7 +1906,7 @@ section.dp-help-content-wrapper.open {
 	}
 
 	&.group-open {
-		> a {
+		> a, > .link {
 			background-color: #d4e4fe;
 		}
 		.group-section-wrapper {
@@ -1916,13 +1921,13 @@ section.dp-help-content-wrapper.open {
 	ul.dp-item-list {
 		li {
 			margin: 3px 8px;
-			a {
+			a, .link {
 				padding: 6px 5px 6px 10px;
 				border-radius: 3px;
 			}
 		}
 		li.active {
-			> a { background: #dbddde; color: #000; }
+			> a, > .link { background: #dbddde; color: #000; }
 		}
 	}
 }

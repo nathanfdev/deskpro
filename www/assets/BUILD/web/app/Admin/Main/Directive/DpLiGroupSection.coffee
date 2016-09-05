@@ -8,7 +8,7 @@ define ->
 
         contentEls = element.find('.group-section-content')
 
-        a = element.find('a.toggle').first();
+        a = element.find('a.toggle, .link.toggle').first();
         a.on('click', ->
           mode = if element.hasClass('group-open') then 'close' else 'open'
 

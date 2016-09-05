@@ -122,8 +122,13 @@ class AcceptPathsStep extends AbstractStep
             }
         }
 
+        $dpRoot    = $this->getContext()->getDpEnv()->getDpRoot();
+        $validator = $this->validator;
+
         $q = new Question('Enter \'php\' Path> ');
-        $q->setValidator([$this->validator, 'validatePhpPath']);
+        $q->setValidator(function ($path) use ($validator, $dpRoot) {
+            return $validator->validatePhpPath($path, $dpRoot);
+        });
         $result = $this->askQuestion($q, 'path_php');
 
         $this->writeln('');
