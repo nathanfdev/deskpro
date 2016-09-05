@@ -2,16 +2,18 @@ import React, { PropTypes } from 'react';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
 import { Segment, SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
-import { AgentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs/AgentList';
-import { DepartmentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs/DepartmentList';
-import { AgentTeamList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs/AgentTeamList';
-import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs/RecentList';
-import { EveryoneSegment } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs/EveryoneSegment';
+import {
+  AgentList,
+  DepartmentList,
+  AgentTeamList,
+  RecentList,
+  EveryoneSegment }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 
-export class IMOverlay extends React.Component {
+export default class IMOverlay extends React.Component {
 
   static propTypes = {
     me:                 PropTypes.object.isRequired,
@@ -23,7 +25,8 @@ export class IMOverlay extends React.Component {
     children:           PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     onRecentClick:      PropTypes.func.isRequired,
     onParticipantClick: PropTypes.func.isRequired,
-    createNewGroup:     PropTypes.func.isRequired
+    createNewGroup:     PropTypes.func.isRequired,
+    isOpen:             PropTypes.bool.isRequired
   };
 
   getRecentTab() {
@@ -54,13 +57,13 @@ export class IMOverlay extends React.Component {
             content={<span>everyone<span className="agents-counter">({agents.size})</span></span>}
           />
           <EveryoneSegment agents={agents} onParticipantClick={onParticipantClick} />
-          <div className="ui divider"></div>
+          <div className="ui divider" />
           <Header size={4} classes={['group-list']} content="im groups" />
           <Segment classes={['new-im-group']} raised vertical><span onClick={() => createNewGroup()}>+ create new im group</span></Segment>
-          <div className="ui divider"></div>
+          <div className="ui divider" />
           <Header size={4} classes={['group-list']} content="department" />
           <DepartmentList agents={agents} departments={departments} me={me} onParticipantClick={onParticipantClick} />
-          <div className="ui divider"></div>
+          <div className="ui divider" />
           <Header size={4} classes={['group-list']} content="teams" />
           <AgentTeamList agents={agents} teams={teams} me={me} onParticipantClick={onParticipantClick} />
         </Scrollable>
@@ -116,7 +119,7 @@ export class IMOverlay extends React.Component {
       content={this.getContent()}
       autoClose={false}
       autoOpen={false}
-      opened
+      opened={this.props.isOpen}
     >
       {this.props.children}
     </PopUp>);

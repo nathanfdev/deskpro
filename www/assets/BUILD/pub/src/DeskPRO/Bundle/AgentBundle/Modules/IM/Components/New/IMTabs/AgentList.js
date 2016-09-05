@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
-import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import classNames from 'classnames';
-import { AvatarHelper } from './AvatarHelper';
-import { AbstractList } from './AbstractList';
+import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
+import AvatarHelper from './AvatarHelper';
+import AbstractList from './AbstractList';
 
-export class AgentList extends AbstractList {
+class AgentList extends AbstractList {
 
   static propTypes = {
     notifications: PropTypes.object.isRequired
@@ -60,3 +60,5 @@ export class AgentList extends AbstractList {
       </List>);
   }
 }
+
+export default AgentList;

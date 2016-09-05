@@ -25,8 +25,6 @@ if (!assetsUrl) {
   });
 }
 
-export const appAssetsUrl = assetsUrl;
-
 export function css(jsx) {
   return (
     <div>
@@ -66,3 +64,6 @@ export function redux(state, jsx) {
     </Provider>
   );
 }
+
+window.DESKPRO_APP_ASSETS_URL = assetsUrl;
+export const appAssetsUrl = assetsUrl;

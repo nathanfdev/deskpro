@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
-import { MessageList } from './MessageList';
-import { EmojiBox } from './EmojiBox';
+import MessageList from './MessageList';
+import EmojiBox from './EmojiBox';
 
-export class Container extends React.Component {
+class Container extends React.Component {
   static propTypes = {
     me:          PropTypes.object.isRequired,
     chats:       PropTypes.object.isRequired,
@@ -111,11 +111,11 @@ export class Container extends React.Component {
             <div className="reply">
               <input type="text" onChange={this.handleChange} />
               <i className="fa fa-paperclip reply-icon" onClick={this.handleAttach} />
-              <i className="fa fa-smile-o reply-icon emoji trigger" onClick={this.openEmoji} ref="emoji" />
+              <i className="fa fa-smile-o reply-icon emoji trigger" onClick={this.openEmoji} ref={(c) => { this.emoji = c; }} />
               <EmojiBox
                 isOpen={this.state.emojiOpened}
                 clickOut={this.closeEmoji}
-                emojiNode={this.refs.emoji}
+                emojiNode={this.emoji}
                 emojiClick={this.addEmoji}
               />
             </div>
@@ -125,3 +125,5 @@ export class Container extends React.Component {
     );
   }
 }
+
+export default Container;

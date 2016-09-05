@@ -3,12 +3,12 @@ import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { Toggle } from 'DeskPRO/Component/Semantic/Form';
-import { AvatarHelper } from '../IMTabs/AvatarHelper';
+import { AvatarHelper } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 
-export class GroupAddDrawer extends React.Component
+class GroupAddDrawer extends React.Component
 {
   static propTypes = {
     me:            PropTypes.object.isRequired,
@@ -33,7 +33,7 @@ export class GroupAddDrawer extends React.Component
   static recalculateChecked(checked) {
     let count = 0;
     for (const key of Object.keys(checked)) {
-      if (checked.hasOwnProperty(key) && checked[key]) {
+      if (checked[key]) {
         count++;
       }
     }
@@ -138,3 +138,5 @@ export class GroupAddDrawer extends React.Component
     );
   }
 }
+
+export default GroupAddDrawer;

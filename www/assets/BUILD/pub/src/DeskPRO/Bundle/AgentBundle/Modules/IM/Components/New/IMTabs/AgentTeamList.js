@@ -1,8 +1,8 @@
 import { PropTypes } from 'react';
-import { AbstractList } from './AbstractList';
-import { AvatarHelper } from './AvatarHelper';
+import AbstractList from './AbstractList';
+import AvatarHelper from './AvatarHelper';
 
-export class AgentTeamList extends AbstractList {
+class AgentTeamList extends AbstractList {
 
   static propTypes = {
     me:    PropTypes.object.isRequired,
@@ -15,3 +15,5 @@ export class AgentTeamList extends AbstractList {
     return this.props.teams.map(team => this.getItem(team, 'team', 'name'));
   }
 }
+
+export default AgentTeamList;

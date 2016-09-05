@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function IMButton() {
+function IMButton() {
   return (
     <span className="ui image avatar im" id="im-button">
       <i className="icons">
@@ -10,3 +10,5 @@ export function IMButton() {
     </span>
   );
 }
+
+export default IMButton;

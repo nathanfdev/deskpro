@@ -3,7 +3,7 @@ import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
 
-export class EmojiBox extends React.Component
+class EmojiBox extends React.Component
 {
 
   static propTypes = {
@@ -40,3 +40,5 @@ export class EmojiBox extends React.Component
     </Detached>);
   }
 }
+
+export default EmojiBox;

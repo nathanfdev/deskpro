@@ -4,9 +4,9 @@ import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Comp
 import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/AgentTeamAvatar';
 import classNames from 'classnames';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
-import { RecentList } from '../IMTabs/RecentList';
+import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
 
-export class TopBarRecentImList extends RecentList {
+class TopBarRecentImList extends RecentList {
 
   static propTypes = {
     chats:         PropTypes.object.isRequired,
@@ -68,3 +68,5 @@ export class TopBarRecentImList extends RecentList {
       </div>);
   }
 }
+
+export default TopBarRecentImList;

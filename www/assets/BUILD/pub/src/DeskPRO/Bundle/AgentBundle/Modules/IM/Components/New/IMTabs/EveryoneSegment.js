@@ -3,7 +3,7 @@ import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 
-export class EveryoneSegment extends React.Component {
+class EveryoneSegment extends React.Component {
 
   static propTypes = {
     agents:             PropTypes.object.isRequired,
@@ -32,3 +32,5 @@ export class EveryoneSegment extends React.Component {
       </Segment>);
   }
 }
+
+export default EveryoneSegment;

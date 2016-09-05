@@ -5,7 +5,7 @@ import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import TimeAgo from 'react-timeago';
 import moment from 'moment';
 
-export class AbstractList extends React.Component {
+class AbstractList extends React.Component {
   static propTypes = {
     me:                 PropTypes.object.isRequired,
     agents:             PropTypes.object.isRequired,
@@ -79,3 +79,5 @@ export class AbstractList extends React.Component {
       </List>);
   }
 }
+
+export default AbstractList;

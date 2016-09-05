@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import moment from 'moment';
+import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 
-export class Message extends React.Component
+class Message extends React.Component
 {
   static propTypes = {
     me:      PropTypes.object.isRequired,
@@ -28,9 +28,11 @@ export class Message extends React.Component
       {my ? this.timestamp() : null}
       <div className="message">
         {!my ? <div className="agent name">{this.props.message.person_name}</div> : null}
-        <div dangerouslySetInnerHTML={this.getMessage()}></div>
+        <div dangerouslySetInnerHTML={this.getMessage()} />
       </div>
       {!my ? this.timestamp() : null}
     </Segment>);
   }
 }
+
+export default Message;

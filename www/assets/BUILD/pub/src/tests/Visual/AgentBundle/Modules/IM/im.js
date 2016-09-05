@@ -1,15 +1,11 @@
 import React from 'react';
-import { storiesOf, action } from '@kadira/storybook';
+import { storiesOf, action } from '@kadira/storybook'; // eslint-disable-line import/no-extraneous-dependencies
 import { css } from 'Visual/decorators';
-import { Container } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow';
 import { TopBar, TopBarItem } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
-import { IMOverlay } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar/IMOverlay';
-import { IMButton } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar/IMButton';
-import { TopBarRecentImList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar/TopBarRecentImList';
-import { GroupAddDrawer } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar/GroupAddDrawer';
+import { Container } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow';
+import { IMOverlay, IMButton, TopBarRecentImList, GroupAddDrawer } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar';
 import { imState, messages } from 'DemoState/AgentBundle/Modules/IM/im';
-
 
 const chatState = {
   ...imState,

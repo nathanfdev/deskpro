@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
-import classNames from 'classnames';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
-import { AvatarHelper } from './AvatarHelper';
-import { AbstractList } from './AbstractList';
+import AvatarHelper from './AvatarHelper';
+import AbstractList from './AbstractList';
 
-export class RecentList extends React.Component {
+class RecentList extends React.Component {
 
   static propTypes = {
     me:            PropTypes.object.isRequired,
@@ -150,3 +150,5 @@ export class RecentList extends React.Component {
       </List>);
   }
 }
+
+export default RecentList;

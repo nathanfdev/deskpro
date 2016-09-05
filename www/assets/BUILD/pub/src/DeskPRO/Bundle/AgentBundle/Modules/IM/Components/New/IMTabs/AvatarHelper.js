@@ -4,7 +4,7 @@ import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compo
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 
-export class AvatarHelper
+class AvatarHelper
 {
   static renderDepartmentAvatar(department) {
     return <DepartmentAvatar department={department} size={24} classes={['ui avatar image im']} />;
@@ -22,3 +22,5 @@ export class AvatarHelper
     />);
   }
 }
+
+export default AvatarHelper;
