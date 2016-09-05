@@ -173,7 +173,7 @@
                 {% if not app.isCloud() %}
                     {{ nav.list_item_group(phrase('adm.general.apps_server'), 'fa-database', '', 'server') }}
                         {{ nav.list_subitem('Server Settings', ng_href('server.server_settings'), 'server.server_settings', 'fa-cog') }}
-                        {{ nav.list_subitem('ElasticSearch', ng_href('server.elastic_search'), 'setup.elastic_search', 'fa-search') }}
+                        {{ nav.list_subitem('ElasticSearch', ng_href('server.elastic_search'), 'server.settings_elastic_search', 'fa-search') }}
                         {{ nav.list_subitem('Report File', ng_href('server.report_file'), 'server.report_file', 'fa-download') }}
                         {{ nav.list_subitem('Server Requirements', ng_href('server.server_reqs'), 'server.server_reqs', 'fa-check-square-o') }}
                         {{ nav.list_subitem('File Check', ng_href('server.file_check'), 'server.file_check', 'fa-shield') }}

@@ -63,7 +63,9 @@ define [
         # This sets the active state immediately on click
         # which makes the UI feel faster
         element.on('click', ->
-          element.closest('.dp-layout-appnav').find('.state-on').removeClass('state-on active')
+          element.closest('.dp-layout-appnav').find('.state-on').each (index, e) ->
+            if myStateId.indexOf($(e).attr('dp-state-mark')) != 0
+              $(e).removeClass('state-on active')
           element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active')
           element.addClass('state-on active')
         )
