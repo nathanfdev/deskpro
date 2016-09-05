@@ -2,21 +2,85 @@ import React, { PropTypes } from 'react';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
+import { Toggle } from 'DeskPRO/Component/Semantic/Form';
 import { AvatarHelper } from '../IMTabs/AvatarHelper';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
+import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 
 export class GroupAddDrawer extends React.Component
 {
   static propTypes = {
-    me:     PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    target: PropTypes.node.isRequired,
-    isOpen: PropTypes.bool.isRequired
+    me:            PropTypes.object.isRequired,
+    agents:        PropTypes.object.isRequired,
+    target:        PropTypes.node.isRequired,
+    isOpen:        PropTypes.bool.isRequired,
+    agentClick:    PropTypes.func,
+    clickOut:      PropTypes.func,
+    checkedAgents: PropTypes.object
   };
 
+  static defaultProps = {
+    agentClick() {
+
+    },
+    clickOut() {
+
+    },
+    checkedAgents: {}
+  };
+
+  static recalculateChecked(checked) {
+    let count = 0;
+    for (const key of Object.keys(checked)) {
+      if (checked.hasOwnProperty(key) && checked[key]) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      checkedAgents:      props.checkedAgents,
+      checkedAgentsCount: GroupAddDrawer.recalculateChecked(props.checkedAgents),
+      groupName:          ''
+    };
+    this.agentClick = this.agentClick.bind(this);
+  }
+
+  getAgentsHeader() {
+    return (
+      <span>
+        <span>Agents</span>
+        <span className="selected counter">{this.state.checkedAgentsCount} selected</span>
+      </span>
+    );
+  }
+
+  agentClick(agent) {
+    this.props.agentClick(agent);
+    const alreadyChecked = !!this.state.checkedAgents[agent.get('id')];
+    const newCheckedAgents = this.state.checkedAgents;
+    newCheckedAgents[agent.get('id')] = !alreadyChecked;
+
+    this.setState(
+      {
+        checkedAgents:      newCheckedAgents,
+        checkedAgentsCount: GroupAddDrawer.recalculateChecked(this.state.checkedAgents)
+      }
+    );
+  }
+
+  clickOut() {
+    this.props.clickOut();
+  }
+
   renderAgent(agent) {
-    const classes = ['im', 'agent'];
+    const classes = [];
     if (!agent.get('online')) {
       classes.push('offline');
     }
@@ -24,11 +88,14 @@ export class GroupAddDrawer extends React.Component
       <ListElement
         key={agent.get('id')}
         classes={classes}
-        imageNode={AvatarHelper.renderAgentAvatar(agent)}
       >
-        <div className="content agent add-in-group">
-          <div className="header">{agent.get('name')}</div>
-        </div>
+        <Toggle checkbox active={!!this.state.checkedAgents[agent.get('id')]} onChange={() => this.agentClick(agent)}>
+          {AvatarHelper.renderAgentAvatar(agent)}
+          <div className="content agent add-in-group">
+            <div className="header">{agent.get('name')}</div>
+          </div>
+        </Toggle>
+
       </ListElement>
     );
   }
@@ -42,17 +109,28 @@ export class GroupAddDrawer extends React.Component
         positionTarget={target}
         positionMy="center-17 top-2"
       >
-        <ClickOut onClickOut={this.closePopup}>
+        <ClickOut onClickOut={this.clickOut}>
           <div className="ui popup im center bottom">
             <div className="header">Agent IM</div>
             <div className="im add group">
-              <Segment>
-                <Header size={4} classes={['group-list']} content="im groups" />
-                <List classes={['im', 'middle', 'aligned', 'selection']}>
-                  {agents.map((agent) => this.renderAgent(agent))}
+              <Segment vertical>
+                <Header
+                  size={5}
+                  classes={['add group']}
+                  content={<span><i className="fa fa-users" />&nbsp;Create group</span>}
+                />
+              </Segment>
+              <Segment vertical>
+                <Header size={4} classes={['group name']} content="Group name" />
+              </Segment>
+              <Segment vertical>
+                <Header size={4} classes={['group-list']} content={this.getAgentsHeader()} />
+                <List classes={['im', 'middle', 'aligned', 'selection', 'agent']}>
+                  <Scrollable vertical>
+                    {agents.map((agent) => this.renderAgent(agent))}
+                  </Scrollable>
                 </List>
               </Segment>
-
             </div>
           </div>
         </ClickOut>

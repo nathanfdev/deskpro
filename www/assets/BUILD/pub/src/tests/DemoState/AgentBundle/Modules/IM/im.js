@@ -89,6 +89,84 @@ const agentSix = {
   })
 };
 
+const agentSeven = {
+  id:           8,
+  name:         'Jeor Mormont',
+  first_name:   'Jeor',
+  last_name:    'Mormont',
+  last_seen:    moment().subtract(7, 'days').format(),
+  gravatar_url: `http://lorempixel.com/22/22/people/?random=${random()}`,
+  online:       false,
+  avatar:       Immutable.Map({
+    default_url_pattern: 'http://localhost/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1'
+  })
+};
+
+const agentEight = {
+  id:           9,
+  name:         'Jon Snow',
+  first_name:   'Jon',
+  last_name:    'Snow',
+  last_seen:    moment().subtract(7, 'days').format(),
+  gravatar_url: `http://lorempixel.com/22/22/people/?random=${random()}`,
+  online:       false,
+  avatar:       Immutable.Map({
+    default_url_pattern: 'http://localhost/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1'
+  })
+};
+
+const agentNine = {
+  id:           10,
+  name:         'Jojen Reed',
+  first_name:   'Jojen',
+  last_name:    'Reed',
+  last_seen:    moment().subtract(7, 'minutes').format(),
+  gravatar_url: `http://lorempixel.com/22/22/people/?random=${random()}`,
+  online:       true,
+  avatar:       Immutable.Map({
+    default_url_pattern: 'http://localhost/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1'
+  })
+};
+
+const agentTen = {
+  id:           11,
+  name:         'Mira Reed',
+  first_name:   'Mira',
+  last_name:    'Reed',
+  last_seen:    moment().subtract(7, 'minutes').format(),
+  gravatar_url: `http://lorempixel.com/22/22/people/?random=${random()}`,
+  online:       true,
+  avatar:       Immutable.Map({
+    default_url_pattern: 'http://localhost/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1'
+  })
+};
+
+const agentEleven = {
+  id:           12,
+  name:         'Brandon Stark',
+  first_name:   'Brandon',
+  last_name:    'Stark',
+  last_seen:    moment().subtract(1, 'minutes').format(),
+  gravatar_url: `http://lorempixel.com/22/22/people/?random=${random()}`,
+  online:       true,
+  avatar:       Immutable.Map({
+    default_url_pattern: 'http://localhost/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1'
+  })
+};
+
+const agentTwelve = {
+  id:           13,
+  name:         'Arya Stark',
+  first_name:   'Arya',
+  last_name:    'Stark',
+  last_seen:    moment().subtract(300, 'days').format(),
+  gravatar_url: `http://lorempixel.com/22/22/people/?random=${random()}`,
+  online:       true,
+  avatar:       Immutable.Map({
+    default_url_pattern: 'http://localhost/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1'
+  })
+};
+
 const depOne = {
   id:     1,
   title:  'Stark, Winter is Coming',
@@ -198,12 +276,18 @@ export const imState = {
     name: 'Jon Snow'
   }),
   agents: Immutable.Seq({
-    [agentOne.id]:   Immutable.Map(agentOne),
-    [agentTwo.id]:   Immutable.Map(agentTwo),
-    [agentThree.id]: Immutable.Map(agentThree),
-    [agentFour.id]:  Immutable.Map(agentFour),
-    [agentFive.id]:  Immutable.Map(agentFive),
-    [agentSix.id]:   Immutable.Map(agentSix)
+    [agentOne.id]:    Immutable.Map(agentOne),
+    [agentTwo.id]:    Immutable.Map(agentTwo),
+    [agentThree.id]:  Immutable.Map(agentThree),
+    [agentFour.id]:   Immutable.Map(agentFour),
+    [agentFive.id]:   Immutable.Map(agentFive),
+    [agentSix.id]:    Immutable.Map(agentSix),
+    [agentSeven.id]:  Immutable.Map(agentSeven),
+    [agentEight.id]:  Immutable.Map(agentEight),
+    [agentNine.id]:   Immutable.Map(agentNine),
+    [agentTen.id]:    Immutable.Map(agentTen),
+    [agentEleven.id]: Immutable.Map(agentEleven),
+    [agentTwelve.id]: Immutable.Map(agentTwelve)
   }),
   departments: Immutable.Seq({
     [depOne.id]:   Immutable.Map(depOne),

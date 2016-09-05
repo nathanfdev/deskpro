@@ -274,7 +274,7 @@
             margin-top: 10px;
           }
         }
-        >.content {
+        .content {
           &.agent, &.department, &.team {
             overflow: hidden;
             height: 30px;
@@ -453,10 +453,63 @@
       }
     }
   }
+
+  .im.group.add {
+    width: 300px;
+    height: 535px;
+
+    .ui.segment{
+      padding: 5px 20px 15px 20px;
+      border: none;
+      margin-top: 20px;
+      margin-bottom: 0;
+
+      .ui.header {
+        font-family: "Open Sans", serif;
+        font-size: 16px;
+        font-weight: 400;
+        color: $dp-greyscale-850;
+
+        &.group.name {
+          font-weight: 600;
+          margin-bottom: 0;
+        }
+
+        &.add.group {
+          font-family: "Open Sans", serif;
+          font-size: 14px;
+          font-weight: 600;
+        }
+
+        .selected.counter {
+          color: $dp-sonic-primary;
+          float: right;
+        }
+      }
+
+      .ui.list.agent {
+        border: 1px solid $dp-greyscale-350;
+        padding-top: 5px;
+        width: 258px;
+        height: 258px;
+        position: relative;
+
+        .item {
+          padding: 2px 15px;
+          .checkbox {
+            label {
+              &:before, &:after {
+                top: 7px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .emoji.box {
-
   font-size: 12px;
   color: $dp-greyscale-850;
   background-color: white;

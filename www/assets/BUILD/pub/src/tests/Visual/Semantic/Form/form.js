@@ -73,4 +73,12 @@ storiesOf('Semantic: form', module)
     'Select with filter', () =>
       <Select options={optionsColours} onChange={action('Range change')} placeholder="Colour" filter />
   )
+  .add(
+    'Checkbox off',
+    () => <Toggle checkbox onChange={linkTo('Semantic: form', 'Checkbox on')}>Label</Toggle>
+  )
+  .add(
+    'Checkbox on',
+    () => <Toggle active checkbox onChange={linkTo('Semantic: form', 'Checkbox off')}>Label</Toggle>
+  )
 ;

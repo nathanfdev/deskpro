@@ -15,7 +15,7 @@ export class AgentList extends AbstractList {
   }
 
   getItem(agent) {
-    const notificationCount = this.props.notifications.get(`${agent.get('id')}`);
+    const notificationCount = this.props.notifications.get(`${agent.get('id')}`) || 0;
     const classes = ['im', 'agent'];
     if (!agent.get('online')) {
       classes.push('offline');

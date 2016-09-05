@@ -76,7 +76,7 @@ storiesOf('Agent: IM', module)
       </TopBarItem>
       <TopBarItem>
         <IMButton />
-        <GroupAddDrawer isOpen target={document.getElementById('im-button')} {...imState} />
+        <GroupAddDrawer isOpen target={document.getElementById('im-button')} {...imState} checkedAgents={{ 2: true, 6: true }} />
       </TopBarItem>
     </TopBar>
   )

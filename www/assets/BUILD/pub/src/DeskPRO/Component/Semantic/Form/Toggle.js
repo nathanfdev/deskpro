@@ -9,14 +9,22 @@ class Toggle extends React.Component {
     onChange:  PropTypes.func,
     elementId: PropTypes.string,
     children:  PropTypes.node,
-    className: PropTypes.string
+    className: PropTypes.string,
+    checkbox:  PropTypes.bool
   };
 
   static defaultProps = {
-    onChange: () => {}
+    onChange: () => {},
+    checkbox: false
+    
   };
 
-  onClick = () => {
+  constructor(props) {
+    super(props);
+    this.onClick = this.onClick.bind(this);
+  }
+
+  onClick() {
     const { active, disabled, onChange } = this.props;
     if (disabled) {
       return;
@@ -26,10 +34,10 @@ class Toggle extends React.Component {
   };
 
   render() {
-    const { children, elementId, active, disabled, className } = this.props;
+    const { children, elementId, active, disabled, className, checkbox } = this.props;
 
     return  (
-      <div className={classNames('ui', 'toggle', 'checkbox', className, { disabled })}>
+      <div className={classNames('ui', 'checkbox', className, { disabled, toggle: !checkbox, checked: active })}>
         <input
           type="checkbox"
           id={elementId}
