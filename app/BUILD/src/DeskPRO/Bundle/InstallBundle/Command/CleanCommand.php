@@ -176,7 +176,7 @@ class CleanCommand extends ContainerAwareCommand
         $pdo = \DpRun\LowUtil::getPdoFromMysqlInfo($dpEnv->getConfig('database'));
 
         $output->write("Deleting tables in database $dbName ... ");
-        $q      = $pdo->prepare('SHOW TABLES');
+        $q      = $pdo->query('SHOW TABLES');
         $tables = $q->fetchAll(\PDO::FETCH_COLUMN);
 
         $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
