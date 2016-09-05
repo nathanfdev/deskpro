@@ -837,7 +837,7 @@ class TicketMessage extends DomainObject
             $hashable_msg
         );
 
-        $hashes[] = sha1($hashable_msg.($this->person ? $this->person->getId() : 'noperson'));
+        $hashes[] = sha1($hashable_msg.($this->person ? $this->person->getEmailAddress() : 'noperson'));
 
         foreach ($this->attachments as $a) {
             $hashes[] = $a->blob['blob_hash'];

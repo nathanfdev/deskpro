@@ -1,9 +1,8 @@
 Feature: Person primary email CRUD
 
   Background:
-    Given I install the api data set
-    And there are no registered users
-    And my request is authenticated
+    Given there are no registered users
+    And  I'm authenticated as "admin"
 
   Scenario: I create a person with primary email
     When I send a POST request to "/api/v2/people" with body:

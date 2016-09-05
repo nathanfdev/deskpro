@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\BlobAuthTransformer;
@@ -56,14 +52,6 @@ class BlobAuthType extends AbstractType
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'auth_blob';
     }
 
     /**

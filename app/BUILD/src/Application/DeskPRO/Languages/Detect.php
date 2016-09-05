@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\Languages;
 
 use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
@@ -140,13 +137,13 @@ class Detect
         }
 
         $this->lang_detect = new \Text_LanguageDetect();
-        $this->lang_detect->setNameMode(3);
+        $this->lang_detect->setNameMode(2);
 
-        $this->detectable_langs = array();
-        foreach ($this->lang_data->getLangCodes() as $code) {
+        $this->detectable_langs = [];
+        foreach ($this->lang_data->getLocaleCodes() as $code) {
             if ($this->lang_detect->languageExists($code)) {
-                $this->detectable_langs[] = $code;
-            } elseif ($code == 'jpn') {
+                $this->detectable_langs[$code] = $code;
+            } elseif ($code == 'ja') {
                 $this->has_jpn = true;
             }
         }
@@ -164,7 +161,7 @@ class Detect
         $this->getLanguageDetect();
 
         if ($this->has_jpn) {
-            return array_merge($this->detectable_langs, array('jpn'));
+            return array_merge($this->detectable_langs, ['ja']);
         }
 
         return $this->detectable_langs;

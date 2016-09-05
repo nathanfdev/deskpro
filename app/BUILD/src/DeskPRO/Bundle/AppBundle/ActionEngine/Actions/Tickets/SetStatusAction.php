@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -37,19 +33,23 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
+/**
+ * Class SetStatusAction.
+ */
 class SetStatusAction extends AbstractAction implements ActionWithOptionsInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired('set_status');
         $resolver->setAllowedTypes('set_status', 'string');
-        $resolver->setAllowedValues('set_status',
-            [
-                Ticket::STATUS_AWAITING_AGENT,
-                Ticket::STATUS_AWAITING_USER,
-                Ticket::STATUS_RESOLVED,
-                Ticket::STATUS_ARCHIVED,
-            ]
-        );
+        $resolver->setAllowedValues('set_status', [
+            Ticket::STATUS_AWAITING_AGENT,
+            Ticket::STATUS_AWAITING_USER,
+            Ticket::STATUS_RESOLVED,
+            Ticket::STATUS_ARCHIVED,
+        ]);
     }
 }

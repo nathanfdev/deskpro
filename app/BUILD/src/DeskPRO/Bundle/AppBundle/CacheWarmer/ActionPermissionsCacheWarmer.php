@@ -42,6 +42,8 @@ class ActionPermissionsCacheWarmer implements CacheWarmerInterface
     protected $tagsCollector;
 
     /**
+     * Constructor.
+     *
      * @param TagsCollector $tagsCollector
      */
     public function __construct(TagsCollector $tagsCollector)
@@ -50,7 +52,7 @@ class ActionPermissionsCacheWarmer implements CacheWarmerInterface
     }
 
     /**
-     * @param string $cacheDir
+     * {@inheritdoc}
      */
     public function warmUp($cacheDir)
     {
@@ -58,7 +60,7 @@ class ActionPermissionsCacheWarmer implements CacheWarmerInterface
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function isOptional()
     {

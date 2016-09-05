@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\PasswordHistory;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PasswordResetRequestType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -162,10 +163,10 @@ class PasswordController extends AbstractController
 
         $person = $reset['person'];
 
-        $form = $this->createForm('person_change_password', $person, array(
+        $form = $this->createForm(PersonChangePasswordType::class, $person, [
             'settings'                 => $this->getBrandContainer()->getSettings(),
             'require_current_password' => false,
-        ));
+        ]);
 
         $history = null;
         if ('POST' === $request->getMethod()) {

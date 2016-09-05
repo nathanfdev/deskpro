@@ -764,14 +764,14 @@ var RLANG = {
 
 				}, this), 1);
 
+				this.$editor.click($.proxy(function()
+				{
+					this.saveSelection();
+				}, this));
+
 				// FF fix
 				if (this.browser('mozilla'))
 				{
-					this.$editor.click($.proxy(function()
-					{
-						this.saveSelection();
-					}, this));
-
 					try
 					{
 						this.document.execCommand('enableObjectResizing', false, false);
@@ -822,8 +822,7 @@ var RLANG = {
 			{
 				var key = e.keyCode || e.which;
 
-				if (this.browser('mozilla') && !this.pasteRunning)
-				{
+				if (!this.pasteRunning) {
 					this.saveSelection();
 				}
 
@@ -1195,14 +1194,6 @@ var RLANG = {
 		insertHtml: function(html)
 		{
 			this.$editor.focus();
-			this.pasteHtmlAtCaret(html);
-			this.observeImages();
-			this.syncCode();
-		},
-
-		insertSnippetHtml: function(html)
-		{
-			//this.snippetFocus();
 			this.pasteHtmlAtCaret(html);
 			this.observeImages();
 			this.syncCode();
@@ -2656,7 +2647,7 @@ var RLANG = {
 					try {
 						sel.collapse(orgn, orgo);
 						sel.extend(focn, foco);
-					} catch (e) {}
+					} catch (e) {console.errro(e);}
 				}
 				else // IE9
 				{

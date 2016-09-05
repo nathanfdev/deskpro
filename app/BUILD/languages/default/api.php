@@ -70,9 +70,9 @@ return [
     'api.error_codes.numeric'                          => 'Please enter a number, with no other characters.',
     'api.error_codes.only_one_value'                   => 'You should set exactly only one of {{ values }}',
     'api.error_codes.op_not_supported'                 => 'Op "{{ op }}" not supported. Supported ops are: {{ ops }}',
-    'api.error_codes.person_not_agent'                 => 'Person with identifier "{{ value }}" is not agent.',
+    'api.error_codes.person_not_agent'                 => 'Person with identifier "{{ value }}" is not an agent.',
     'api.error_codes.person_not_found'                 => 'Person with identifier "{{ value }}" not found.',
-    'api.error_codes.person_not_user'                  => 'Person with identifier "{{ value }}" is not user.',
+    'api.error_codes.person_not_user'                  => 'Person with identifier "{{ value }}" is not a user.',
     'api.error_codes.required'                         => 'This value should not be blank.',
     'api.error_codes.resource_not_found'               => 'The value was not found.',
     'api.error_codes.system_email'                     => 'Email "{{ email }}" is already being used as email account.',
@@ -83,4 +83,5 @@ return [
     'api.error_codes.unauthorized'                     => 'You must be authenticated to make this request.',
     'api.error_codes.unauthorized_check_server'        => 'Unauthorized. If you are using apache and feel that this is incorrect, please see this article for help: https://support.deskpro.com/kb/articles/415',
     'api.error_codes.unique_entity'                    => 'This value already exists in the system.',
+    'api.error_codes.not_an_image'                     => 'Uploaded file is not an image',
 ];

@@ -39,6 +39,7 @@ use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoa
 use Application\DeskPRO\People\PersonEditManager;
 use Application\DeskPRO\Tickets\Filters\TicketFilterCollection;
 use Application\DeskPRO\UI\RuleBuilder;
+use Symfony\Component\HttpFoundation\Request;
 
 class SettingsController extends AbstractController
 {
@@ -63,13 +64,18 @@ class SettingsController extends AbstractController
         ]);
     }
 
-    public function profileSaveAction()
+    /**
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function profileSaveAction(Request $request)
     {
         $edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person);
         $edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
         $form         = $this->get('form.factory')->create($edit_form, $edit_profile);
 
-        $form->handleRequest($this->get('request'));
+        $form->handleRequest($request);
         $edit_profile->new_emails    = $this->in->getCleanValueArray('new_emails', 'string', 'discard');
         $edit_profile->remove_emails = $this->in->getCleanValueArray('remove_emails', 'uint', 'discard');
 

@@ -258,17 +258,15 @@ class PersonEditProfileType extends AbstractType
             ->setDefaults([
                 'data_class' => Person::class,
             ])
-            ->setRequired(['settings'])
-            ->setAllowedTypes([
-                'settings' => SettingsBag::class,
-            ])
+            ->setRequired('settings')
+            ->setAllowedTypes('settings', SettingsBag::class)
         ;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'person_profile';
     }

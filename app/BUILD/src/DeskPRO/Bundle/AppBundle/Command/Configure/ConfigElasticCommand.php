@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Command\Configure;
 
-use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -59,10 +58,6 @@ class ConfigElasticCommand extends ContainerAwareCommand
         /* @var \DpRun\DpEnv */
         global $DP_ENV;
 
-        if (!$DP_ENV->getDatManager()->hasTxtFile('server_info_auth')) {
-            $DP_ENV->getDatManager()->writeTxtFile('server_info_auth', Strings::random(30, Strings::CHARS_ALPHANUM_IU));
-        }
-
         $rawUrl = $input->getArgument('elasticUrl');
         if ($rawUrl === 'OFF') {
             $this->setSetting('elastica.enabled', '0');
@@ -84,7 +79,17 @@ class ConfigElasticCommand extends ContainerAwareCommand
             $parts['port'] = $parts['scheme'] === 'https' ? '443' : '80';
         }
 
-        $elasticUrl = $parts['scheme'].'://'.$parts['host'].':'.$parts['port'].$parts['path'];
+        if (!empty($parts['user'])) {
+            $userPart = $parts['user'];
+            if (!empty($parts['pass'])) {
+                $userPart .= ':'.$parts['pass'];
+            }
+            $userPart .= '@';
+        } else {
+            $userPart = '';
+        }
+
+        $elasticUrl = $parts['scheme'].'://'.$userPart.$parts['host'].':'.$parts['port'].$parts['path'];
 
         $this->setSetting('elastica.enabled', '1');
         $this->setSetting('elastica.clients.default.url', $elasticUrl);

@@ -14,16 +14,16 @@ Feature: Organizations list filters based on parent_id
       | o2a | Org 2a | {o2}   |
       | o3  | Org 3  | NULL   |
 
-    When I send a GET request to "/api/v2/organizations?parent={o1}"
+    When I send a GET request to "/api/v2/organizations?parent={o1}&order_by=id&order_dir=asc"
     Then the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to "{o1a}"
     And the JSON node "data[1].id" should be equal to "{o1b}"
 
-    When I send a GET request to "/api/v2/organizations?parent={o2}"
+    When I send a GET request to "/api/v2/organizations?parent={o2}&order_by=id&order_dir=asc"
     Then the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to "{o2a}"
 
-    When I send a GET request to "/api/v2/organizations?parent[]={o1}&parent[]={o2}"
+    When I send a GET request to "/api/v2/organizations?parent[]={o1}&parent[]={o2}&order_by=id&order_dir=asc"
     Then the JSON node "data" should have 3 elements
     And the JSON node "data[0].id" should be equal to "{o1a}"
     And the JSON node "data[1].id" should be equal to "{o1b}"
@@ -40,12 +40,12 @@ Feature: Organizations list filters based on parent_id
     When I send a GET request to "/api/v2/organizations"
     Then the JSON node "data" should have 4 elements
 
-    When I send a GET request to "/api/v2/organizations?is_child=0"
+    When I send a GET request to "/api/v2/organizations?is_child=0&order_by=id&order_dir=asc"
     Then the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to "{o1}"
     And the JSON node "data[1].id" should be equal to "{o2}"
 
-    When I send a GET request to "/api/v2/organizations?is_child=1"
+    When I send a GET request to "/api/v2/organizations?is_child=1&order_by=id&order_dir=asc"
     Then the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to "{o1a}"
     And the JSON node "data[1].id" should be equal to "{o2a}"

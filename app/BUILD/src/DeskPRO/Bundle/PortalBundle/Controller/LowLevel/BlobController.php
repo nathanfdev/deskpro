@@ -57,8 +57,8 @@ class BlobController extends BaseController
     {
         $assetManager = $this->container->get('dp.portal.designer.assets_manager');
         $asset        = $this->isPreviewMode($this->container)
-            ? $assetManager->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG)
-            : $assetManager->getBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG);
+            ? $this->getEditThemeSetBlobAsset($assetManager)
+            : $this->getBlobAsset($assetManager);
 
         $blob = $asset ? $asset->getBlob() : null;
         $bs   = $this->container->get('blob.storage');
@@ -77,6 +77,28 @@ class BlobController extends BaseController
         $response->setPublic();
 
         return $response;
+    }
+
+    /**
+     * @param AssetsManager $assetManager
+     *
+     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset|null
+     */
+    private function getEditThemeSetBlobAsset(AssetsManager $assetManager)
+    {
+        return $assetManager->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_FALLBACK)
+            ?: $assetManager->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG);
+    }
+
+    /**
+     * @param AssetsManager $assetManager
+     *
+     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset|null
+     */
+    private function getBlobAsset(AssetsManager $assetManager)
+    {
+        return $assetManager->getBlobAsset(AssetsManager::CUSTOM_FAVICON_FALLBACK)
+            ?: $assetManager->getBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG);
     }
 
     /**

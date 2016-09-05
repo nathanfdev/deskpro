@@ -1012,6 +1012,7 @@ class TicketSearch extends SearcherAbstract
             $where .= ')';
         } elseif (!empty($user_parts['wheres_any']) || !empty($org_parts['wheres_any'])) {
             $where .= 'AND (';
+            $where .= '0';
             if (!empty($user_parts['wheres_any'])) {
                 $where .= ' OR '.implode(' OR ', $user_parts['wheres_any']);
             }

@@ -3538,7 +3538,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $hashes   = [];
         $hashes[] = sha1(
             $this->subject
-            .($this->person ? $this->person->getId() : '')
+            .($this->person ? $this->person->getEmailAddress() : '')
             .$this->getAgentId()
             .$this->getAgentTeamId()
             .$this->getDepartmentId()
@@ -3695,7 +3695,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             unset($data['email_account']['incoming_account']);
             unset($data['email_account']['outgoing_account']);
         }
-        $data['department']['parent'] = $this->department->parent
+        $data['department']['parent'] = $this->department && $this->department->parent
             ? $this->department->parent->toApiData(true, false)
             : [];
         $data['total_user_waiting_real']   = $this->getRealTotalUserWaiting();

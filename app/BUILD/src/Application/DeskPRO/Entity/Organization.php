@@ -50,7 +50,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * An organization is a grouping we put similar people into (eg companies).
  */
-class Organization extends DomainObject implements HighlightableModelInterface, AvatarOwner, Entity\Labels\LabelsOwner
+class Organization extends DomainObject
+    implements HighlightableModelInterface, AvatarOwner, Entity\Labels\LabelsOwner, Entity\Hierarchy\Hierarchical
 {
     /**
      * The unique ID.
@@ -761,6 +762,14 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     public function getDateCreated()
     {
         return $this->date_created;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getChildren()
+    {
+        return $this->children;
     }
 
     public function __toString()

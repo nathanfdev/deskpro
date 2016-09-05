@@ -247,6 +247,14 @@ class LayoutField implements \Serializable
     }
 
     /**
+     * @return string
+     */
+    public function getOnViewticketMode()
+    {
+        return $this->on_viewticket_mode;
+    }
+
+    /**
      * @return bool
      */
     public function isVisibleOnViewAlways()
@@ -333,12 +341,12 @@ class LayoutField implements \Serializable
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
         $data['version']    = 1;
         $data['field_type'] = $this->field_type;
         $data['field_id']   = $this->field_id;
-        $data['options']    = array();
+        $data['options']    = [];
 
         if ($this->criteria) {
             $data['options']['criteria'] = $this->criteria->exportToArray();
@@ -346,12 +354,12 @@ class LayoutField implements \Serializable
             $data['options']['criteria'] = null;
         }
 
-        foreach (array(
+        foreach ([
             'on_newticket',
             'on_viewticket',
             'on_viewticket_mode',
             'on_editticket',
-        ) as $prop) {
+                 ] as $prop) {
             $data['options'][$prop] = $this->$prop;
         }
 

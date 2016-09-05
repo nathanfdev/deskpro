@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HiddenEntityType;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsWebType;
@@ -94,21 +95,9 @@ class WebFieldResolver extends AbstractFieldResolver
     protected function createCc(TicketWithLayoutsContext $context)
     {
         return new FormField(TicketParticipantsWebType::class, [
-            'owner'    => $context->getTicket(),
-            'is_agent' => false,
-            'required' => false,
-        ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function createFollowers(TicketWithLayoutsContext $context)
-    {
-        return new FormField(TicketParticipantsWebType::class, [
-            'owner'    => $context->getTicket(),
-            'is_agent' => true,
-            'required' => false,
+            'owner'           => $context->getTicket(),
+            'required'        => false,
+            'agent_interface' => $context->isAgentView(),
         ]);
     }
 
@@ -229,7 +218,7 @@ class WebFieldResolver extends AbstractFieldResolver
         if ($person->isUser()) {
             return [
                 'name'    => FormFields::USER_EMAIL,
-                'type'    => 'deskpro_person_email_choice',
+                'type'    => PersonEmailChoiceType::class,
                 'options' => [
                     'property_path' => 'ticket_person_email',
                     'label'         => $this->phrase('portal.forms.label_email'),

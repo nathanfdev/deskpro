@@ -32,6 +32,6 @@ class Build1458048785 extends AbstractBuild
 {
     public function run()
     {
-        $this->execMutateSql('CREATE INDEX sys_name_idx ON blobs (sys_name)');
+        $this->execSlowAlterTable('blobs', 'ADD INDEX sys_name_idx (sys_name)');
     }
 }

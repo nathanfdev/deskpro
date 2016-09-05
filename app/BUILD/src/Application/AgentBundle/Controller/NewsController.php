@@ -43,6 +43,7 @@ use Application\DeskPRO\Publish\RelatedContentUpdate;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Handles listing and editing of news.
@@ -431,7 +432,7 @@ class NewsController extends AbstractController
         ]);
     }
 
-    public function newNewsSaveAction()
+    public function newNewsSaveAction(Request $request)
     {
         $newNews = new \Application\AgentBundle\Form\Model\NewNews($this->person);
 
@@ -440,8 +441,8 @@ class NewsController extends AbstractController
 
         $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newnews' AND person_id = ?", [$this->person->id]);
 
-        if ($this->get('request')->getMethod() == 'POST') {
-            $form->handleRequest($this->get('request'));
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
             $form->isValid();
 
             $validator = new \Application\AgentBundle\Validator\NewNewsValidator();

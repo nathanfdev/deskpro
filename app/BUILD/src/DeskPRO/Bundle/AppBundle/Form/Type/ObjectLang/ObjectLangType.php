@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\ObjectLang;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
+use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -52,7 +53,7 @@ class ObjectLangType extends AbstractType
             ->add('language', EntityType::class, [
                 'class' => Language::class,
             ])
-            ->add('value', 'html_textarea');
+            ->add('value', HtmlTextareaType::class);
 
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSetRelations']);
     }

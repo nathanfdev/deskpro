@@ -33,6 +33,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -58,7 +59,7 @@ class SessionController extends BaseController
      */
     public function getSessionAction(Request $request)
     {
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'dp_auth')->getForm();
+        $form = $this->get('form.factory')->createNamedBuilder(null, AuthenticationType::class)->getForm();
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {

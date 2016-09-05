@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Renderer;
+
+use Application\DeskPRO\Dpql\ResultHandler;
 
 /**
  * Renders DPQL results to HTML.
@@ -120,7 +123,9 @@ class Html extends AbstractRenderer
             return '';
         }
 
-        if ($this->_handler->getGroupXColumns()) {
+        // If data is hierarchical, then X-grouping is applied to bar charts only, in tables hierarchy
+        // is denoted by sorting and indentation
+        if ($this->_handler->getGroupXColumns() && !$this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL)) {
             return $this->_renderMatrixTable($rows);
         }
 
@@ -159,6 +164,10 @@ class Html extends AbstractRenderer
         }
         foreach ($this->_handler->getSelectColumns() as $column) {
             $columnHtml[] = '<th>'.$this->_valueRenderer->escapeValue($column['title']).'</th>';
+        }
+
+        if ($this->_withRollup()) {
+            $columnHtml[] = '<th>Total</th>';
         }
 
         return '<thead><tr class="row-header">'.implode("\n\t", $columnHtml).'</tr></thead>';
@@ -239,14 +248,24 @@ class Html extends AbstractRenderer
                         ? ' rowspan="'.($groupSkipCount[$groupId] + 1).'"'
                         : ''
                     );
-                    $rendered = $this->_renderCellValue($row, $groupColumn);
 
-                    $cells[] = "<th$rowSpan>$rendered</th>";
+                    $padding = ($this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL) && empty($cells))
+                              ? $this->_getRowPadding($row)
+                              : '';
+                    $rendered = $padding.$this->_renderCellValue($row, $groupColumn);
+                    $cells[]  = "<th$rowSpan>{$rendered}</th>";
                 }
             }
 
             foreach ($selectColumns as $column) {
-                $cells[] = '<td>'.$this->_renderCellValue($row, $column).'</td>';
+                $padding = ($this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL) && empty($cells))
+                          ? $this->_getRowPadding($row)
+                          : '';
+                $rendered = $padding.$this->_renderCellValue($row, $column);
+                $cells[]  = '<td>'.$rendered.'</td>';
+            }
+            if ($this->_withRollup()) {
+                $cells[] = '<td>'.$this->_renderCellValue($row, 'hierarchy_rollup_count').'</td>';
             }
 
             ++$rowCount;
@@ -260,6 +279,16 @@ class Html extends AbstractRenderer
         } else {
             return '';
         }
+    }
+
+    private function _getRowPadding(array $row)
+    {
+        $padding = '';
+        if (array_key_exists('hierarchy_depth', $row) && ($depth = $row['hierarchy_depth'])) {
+            $padding = str_repeat('&nbsp;', 4 * $depth).'&#8209;&#8209;&nbsp;';
+        }
+
+        return $padding;
     }
 
     protected function _renderFooter(array $rows)
@@ -629,7 +658,9 @@ class Html extends AbstractRenderer
             $headerCols = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['xDistinct']);
 
             foreach ($headerCols as $xPath => $printable) {
-                $category          = implode(' / ', $printable);
+                $category = $this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL)
+                                   ? str_replace('root|', '', $xPath)
+                                   : implode(' / ', $printable);
                 $maxCategoryLength = max($maxCategoryLength, strlen($category));
 
                 $rowData = array('category' => $category);
@@ -1041,5 +1072,14 @@ class Html extends AbstractRenderer
         } else {
             return $value;
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _withRollup()
+    {
+        return $this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL)
+               && $this->_handler->hasFlag(ResultHandler::FLAG_WITH_ROLLUP);
     }
 }

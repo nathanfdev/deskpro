@@ -28,17 +28,26 @@
 
 namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
+use DeskPRO\Bundle\AppBundle\Util\BinariesPathValidator;
+use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
 use DeskPRO\Bundle\InstallBundle\InstallSession\Model\Paths;
-use DeskPRO\Component\Util\EnvUtils;
-use DpSys\SoftwareRequirements\DeskproRequirements;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\PhpExecutableFinder;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\ProcessBuilder;
 
 class AcceptPathsStep extends AbstractStep
 {
+    /**
+     * @var BinariesPathValidator
+     */
+    protected $validator;
+
+    public function __construct(InstallerContext $context)
+    {
+        parent::__construct($context);
+        $this->validator = new BinariesPathValidator();
+    }
+
     public function run()
     {
         $this->writeBigTitle('Paths');
@@ -52,9 +61,8 @@ class AcceptPathsStep extends AbstractStep
         $paths = $this->getSession()->getPaths();
         if (!$paths) {
             $paths = new Paths();
+            $this->getSession()->setPaths($paths);
         }
-
-        $this->getSession()->setPaths($paths);
 
         if (!$paths->php_path) {
             if ($p = $this->determinePhpPath()) {
@@ -102,7 +110,7 @@ class AcceptPathsStep extends AbstractStep
 
             if ($path) {
                 try {
-                    $path = $this->validatePhpPath($path);
+                    $path = $this->validator->validatePhpPath($path, $this->getContext()->getDpEnv()->getDpRoot());
                     $this->writeln('<info>We detected the path to a PHP binary:</info>');
                     $this->writeln("<info>$path</info>");
                     $this->writeln('Do you want to use this path?');
@@ -114,8 +122,13 @@ class AcceptPathsStep extends AbstractStep
             }
         }
 
+        $dpRoot    = $this->getContext()->getDpEnv()->getDpRoot();
+        $validator = $this->validator;
+
         $q = new Question('Enter \'php\' Path> ');
-        $q->setValidator([$this, 'validatePhpPath']);
+        $q->setValidator(function ($path) use ($validator, $dpRoot) {
+            return $validator->validatePhpPath($path, $dpRoot);
+        });
         $result = $this->askQuestion($q, 'path_php');
 
         $this->writeln('');
@@ -124,102 +137,6 @@ class AcceptPathsStep extends AbstractStep
         $this->writeln('');
 
         return $result;
-    }
-
-    /**
-     * @internal
-     *
-     * @param string $path
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
-    public function validatePhpPath($path)
-    {
-        $path = $this->validateStandard($path);
-
-        #------------------------------
-        # Verify its php
-        #------------------------------
-
-        $builder = new ProcessBuilder([
-            $path,
-            '-v',
-        ]);
-
-        $proc = $builder->getProcess();
-        $proc->run();
-
-        if (!$proc->isSuccessful()) {
-            $this->throwCmdVerifyError($proc);
-        }
-
-        $res   = $proc->getOutput();
-        $match = 0;
-
-        if (!preg_match('#^PHP\s+([\d\.]+)(.*?)?\s+\((.*?)\)#m', $res, $match)) {
-            $this->throwCmdVerifyError($proc);
-        }
-
-        $sapi    = $match[3];
-        $version = $match[1];
-
-        if ($sapi !== 'cli') {
-            print_r($res);
-            print_r($match);
-            throw new \Exception(
-                'We detected that the binary you specified is not the path to the PHP command-line binary.'
-                .'You cannot use the binary for PHP-FPM or CGI, it must be the CLI.'
-                .'Check with this command: '.$proc->getCommandLine()
-            );
-        }
-
-        if (version_compare($version, '5.5', '>=') < 1) {
-            throw new \Exception(
-                'We detected that the binary you specified is to an older version of PHP.'
-                .'Check with this command: '.$proc->getCommandLine()
-            );
-        }
-
-        #------------------------------
-        # Verify requirements too
-        #------------------------------
-
-        $builder = new ProcessBuilder([
-            $path,
-            $this->getContext()->getDpEnv()->getDpRoot().DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'check_requirements',
-            '--encode-output',
-        ]);
-
-        $proc = $builder->getProcess();
-        $proc->run();
-
-        if (!$proc->isSuccessful()) {
-            $this->throwCmdVerifyError($proc);
-        }
-
-        $res   = $proc->getOutput();
-        $match = 0;
-
-        if (!preg_match('#\-{10,}BEGIN\-{10,}(.*?)\-{10,}END\-{10,}#s', $res, $match)) {
-            $this->throwCmdVerifyError($proc);
-        }
-
-        $checker = @unserialize(base64_decode(trim($match[1])));
-
-        if (!$checker || !$checker instanceof DeskproRequirements) {
-            $this->throwCmdVerifyError($proc);
-        }
-
-        if ($checker->getFailedRequirements()) {
-            $msg = 'The path to PHP is valid, but it appears to be different from the version of PHP you are using to run this tool. '
-                .'Server requirements did not pass on this separate version of PHP. You can get details by trying to run the command yourself: '
-                .$proc->getCommandLine();
-            throw new \Exception($msg);
-        }
-
-        return $path;
     }
 
     /**
@@ -241,7 +158,7 @@ class AcceptPathsStep extends AbstractStep
 
             if ($path) {
                 try {
-                    $path = $this->validateMysqlPath($path);
+                    $path = $this->validator->validateMysqlPath($path);
                     $this->writeln('<info>We detected the path to a MySQL binary:</info>');
                     $this->writeln("<info>$path</info>");
                     $this->writeln('Do you want to use this path?');
@@ -254,7 +171,7 @@ class AcceptPathsStep extends AbstractStep
         }
 
         $q = new Question('Enter \'mysql\' Path> ');
-        $q->setValidator([$this, 'validateMysqlPath']);
+        $q->setValidator([$this->validator, 'validateMysqlPath']);
         $result = $this->askQuestion($q, 'path_mysql');
 
         $this->writeln('');
@@ -263,48 +180,6 @@ class AcceptPathsStep extends AbstractStep
         $this->writeln('');
 
         return $result;
-    }
-
-    /**
-     * @internal
-     *
-     * @param string $path
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
-    public function validateMysqlPath($path)
-    {
-        $path = $this->validateStandard($path);
-
-        #------------------------------
-        # Verify its mysql
-        #------------------------------
-
-        $builder = new ProcessBuilder([
-            $path,
-            '--version',
-        ]);
-
-        $proc = $builder->getProcess();
-        $proc->run();
-
-        if (!$proc->isSuccessful()) {
-            $this->throwCmdVerifyError($proc);
-        }
-
-        $res   = $proc->getOutput();
-        $match = 0;
-
-        // Output is like:
-        // /some/path/mysql  Ver 15.1 Distrib 10.1.10-MariaDB, for osx10.11 (x86_64) using readline 5.1
-
-        if (!preg_match('#^([a-zA-Z0-9 \\/\.\-_:\\\\]*)mysql(\.exe)?\s*#m', $res, $match)) {
-            $this->throwCmdVerifyError($proc);
-        }
-
-        return $path;
     }
 
     /**
@@ -326,7 +201,7 @@ class AcceptPathsStep extends AbstractStep
 
             if ($path) {
                 try {
-                    $path = $this->validateMysqldumpPath($path);
+                    $path = $this->validator->validateMysqldumpPath($path);
                     $this->writeln('<info>We detected the path to a mysqldump binary:</info>');
                     $this->writeln("<info>$path</info>");
                     $this->writeln('Do you want to use this path?');
@@ -339,7 +214,7 @@ class AcceptPathsStep extends AbstractStep
         }
 
         $q = new Question('Enter \'mysqldump\' Path> ');
-        $q->setValidator([$this, 'validateMysqldumpPath']);
+        $q->setValidator([$this->validator, 'validateMysqldumpPath']);
         $result = $this->askQuestion($q, 'path_mysqldump');
 
         $this->writeln('');
@@ -348,96 +223,6 @@ class AcceptPathsStep extends AbstractStep
         $this->writeln('');
 
         return $result;
-    }
-
-    /**
-     * @internal
-     *
-     * @param string $path
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
-    public function validateMysqldumpPath($path)
-    {
-        $path = $this->validateStandard($path);
-
-        #------------------------------
-        # Verify its mysqldump
-        #------------------------------
-
-        $builder = new ProcessBuilder([
-            $path,
-            '--version',
-        ]);
-
-        $proc = $builder->getProcess();
-        $proc->run();
-
-        if (!$proc->isSuccessful()) {
-            $this->throwCmdVerifyError($proc);
-        }
-
-        $res   = $proc->getOutput();
-        $match = 0;
-
-        // Output is like:
-        // /some/path/mysqldump  Ver 10.16 Distrib 10.1.10-MariaDB, for osx10.11 (x86_64)
-
-        if (!preg_match('#^([a-zA-Z0-9 \\/\.\-_:\\\\]*)mysqldump(\.exe)?\s*#m', $res, $match)) {
-            $this->throwCmdVerifyError($proc);
-        }
-
-        return $path;
-    }
-
-    /**
-     * @internal
-     *
-     * @param string $path
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
-    public function validateStandard($path)
-    {
-        if (!$path) {
-            throw new \Exception('Please enter a path');
-        }
-
-        if (!file_exists($path)) {
-            throw new \Exception('The path specified does not exist.');
-        }
-
-        if (is_dir($path)) {
-            throw new \Exception('The path specified is a directory. Please enter the full path to an executable.');
-        }
-
-        $path = realpath($path);
-        if (!$path || !is_file($path)) {
-            if (EnvUtils::isWindows()) {
-                throw new \Exception('Please enter the full path. I.e., including the drive letter like C:\\');
-            } else {
-                throw new \Exception("Please enter the full path from root. I.e., the path should begin with '/'.");
-            }
-        }
-
-        if (!is_executable($path)) {
-            throw new \Exception('The path specified exists, but is not an executable. Did you enter the full path?');
-        }
-
-        return $path;
-    }
-
-    private function throwCmdVerifyError(Process $proc)
-    {
-        throw new \Exception(sprintf(
-            "The path you entered appears to be invalid. We executed the following command as a test:\n%s\nThe command did not succeed. Output:\n%s\n",
-            $proc->getCommandLine(),
-            trim($proc->getOutput()."\n".$proc->getErrorOutput())
-        ));
     }
 
     public function isComplete()

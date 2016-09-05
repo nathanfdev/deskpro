@@ -29,10 +29,15 @@
 namespace DpBehat\Data;
 
 use Application\DeskPRO\Entity\Ticket;
+use Behat\Behat\Hook\Scope\BeforeFeatureScope;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
 use Doctrine\Common\Collections\ArrayCollection;
 use DpBehat\BaseContext;
 use DpBehat\Data\Factory\SimpleFactory;
+use DpBehat\Data\PeopleContext as PeopleDataContext;
+use DpBehat\DataSetContext;
 
 /**
  * Class DataContext.
@@ -42,6 +47,16 @@ use DpBehat\Data\Factory\SimpleFactory;
  */
 class DataContext extends BaseContext
 {
+    /**
+     * @var DataSetContext
+     */
+    private $dataSetContext;
+
+    /**
+     * @var PeopleDataContext
+     */
+    private $peopleDataContext;
+
     /**
      * @var array Map of string reference names to actual objects
      */
@@ -53,14 +68,118 @@ class DataContext extends BaseContext
     private static $placeholders = [];
 
     /**
+     * @var bool
+     */
+    private static $isTheFirstSuiteScenario = true;
+
+    /**
+     * @var bool
+     */
+    private static $isNew = false;
+
+    /**
+     * @var bool
+     */
+    private static $needCleanup = false;
+
+    /**
+     * @var string
+     */
+    private static $setName;
+
+    /**
+     * @BeforeSuite
+     */
+    public static function onBeforeSuite(BeforeSuiteScope $scope)
+    {
+        switch ($scope->getSuite()->getName()) {
+            case 'api':
+                self::$setName = 'api';
+                break;
+            default:
+                self::$setName = 'fresh';
+                break;
+        }
+    }
+
+    /**
+     * @BeforeFeature
+     *
+     * @param BeforeFeatureScope $scope
+     */
+    public static function checkNew(BeforeFeatureScope $scope)
+    {
+        if ($scope->getFeature()->hasTag('new')) {
+            self::$isNew = true;
+        }
+    }
+
+    /**
+     * Schedule DB cleanup before next login.
+     *
+     * @BeforeFeature
+     */
+    public static function scheduleCleanup()
+    {
+        self::$needCleanup = true;
+    }
+
+    /**
+     * @BeforeScenario
+     *
+     * @param BeforeScenarioScope $scope
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment             = $scope->getEnvironment();
+        $this->dataSetContext    = $environment->getContext('DpBehat\DataSetContext');
+        $this->peopleDataContext = $environment->getContext('DpBehat\Data\PeopleContext');
+    }
+
+    /**
      * @BeforeScenario
      */
-    public function ensureOm()
+    public function ensureDb()
     {
+        if (self::$isTheFirstSuiteScenario) {
+            if (self::$isNew) {
+                $statement = $this->em()->getConnection()->executeQuery('SHOW TABLES LIKE "people"');
+                $statement->execute();
+                if (!$statement->rowCount()) {
+                    $this->dataSetContext->iInstallDataSet(self::$setName);
+                }
+            } else {
+                $this->dataSetContext->iInstallDataSet(self::$setName);
+            }
+
+            $this->peopleDataContext->everyoneGroupExists();
+            $this->peopleDataContext->registeredGroupExists();
+            $this->peopleDataContext->agentAllSafePermGroupExists();
+            $this->peopleDataContext->agentAllPermGroupExists();
+
+            self::$isTheFirstSuiteScenario = false;
+        }
+
+        if (self::$needCleanup) {
+            $this->cleanup();
+            self::$needCleanup = false;
+        }
+
         // re-create objects manager with new $em for each scenario
         // because kernel reboots for each scenario
-
         self::initOm();
+    }
+
+    /**
+     * Clean up DB.
+     */
+    private function cleanup()
+    {
+        $this->em()->getConnection()->executeQuery('
+            DELETE FROM permissions_cache;
+        ');
+        $this->em()->clear();
+        self::clear();
     }
 
     /**
@@ -342,7 +461,7 @@ class DataContext extends BaseContext
      *
      * @return object
      */
-    private static function resolveReference($ref)
+    public static function resolveReference($ref)
     {
         $ref = trim($ref, '{}~');
         if (!array_key_exists($ref, self::$references)) {
@@ -438,10 +557,10 @@ class DataContext extends BaseContext
         };
 
         if (!$isJson) {
-            $content = preg_replace_callback('/\{(.+)\}/U', $callback, $content);
+            $content = preg_replace_callback('/\{(.+)\}.*/U', $callback, $content);
         }
 
-        $content = preg_replace_callback('/\~(.+)\~/U', $callback, $content);
+        $content = preg_replace_callback('/\~(.+)\~.*/U', $callback, $content);
 
         return $content;
     }

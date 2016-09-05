@@ -199,6 +199,14 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('auth', substr($auth_code, 0, 15));
     }
 
+    /**
+     * @return string
+     */
+    public function getAuth()
+    {
+        return $this->auth;
+    }
+
     public function setData($data)
     {
         $this->setModelField('data', $data);

@@ -1,9 +1,11 @@
+@new
 Feature: Portal Anti-Abuse Setup
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as "admin"
 
+  # defalut configuration comes from config files shipped with deskpro, so I consider this is normal to know
+  # out-of-the-box system state
   Scenario: I get default configuration
     When I send a GET request to "/api/v2/settings/anti_abuse/portal"
     Then the response should be in JSON

@@ -86,6 +86,11 @@ class Display
     protected $_groupBy = array();
 
     /**
+     * @var bool
+     */
+    protected $_withRollup = false;
+
+    /**
      * ORDER BY clause expressions.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
@@ -194,6 +199,7 @@ class Display
         'custom_def_products'         => 'DeskPRO:CustomDefProduct',
         'custom_def_ticket'           => 'DeskPRO:CustomDefTicket',
         'custom_def_billing'          => 'DeskPRO:CustomDefBilling',
+        'custom_field_definition'     => 'DeskPRO:CustomFieldDefinition',
         'departments'                 => 'DeskPRO:Department',
         'downloads'                   => 'DeskPRO:Download',
         'download_categories'         => 'DeskPRO:DownloadCategory',
@@ -202,6 +208,7 @@ class Display
         'email_sources'               => 'DeskPRO:EmailSource',
         'feedback'                    => 'DeskPRO:Feedback',
         'feedback_attachments'        => 'DeskPRO:FeedbackAttachment',
+        'feedback_categories'         => 'DeskPRO:FeedbackCategory',
         'feedback_comments'           => 'DeskPRO:FeedbackComment',
         'glossary_words'              => 'DeskPRO:GlossaryWord',
         'glossary_word_definitions'   => 'DeskPRO:GlossaryWordDefinition',
@@ -266,6 +273,11 @@ class Display
     );
 
     /**
+     * @var Dpql\SqlSelectContext
+     */
+    private $_sqlSelectContext;
+
+    /**
      * @param array  $display Type of display (must not be empty)
      * @param array  $select  Fields to select
      * @param string $from    Table to select from
@@ -276,8 +288,11 @@ class Display
         $this->setSelect($select);
         $this->setFrom($from);
 
-        $this->_sql           = new Dpql\SqlSelect();
-        $this->_resultHandler = new Dpql\ResultHandler();
+        $this->_sql              = new Dpql\SqlSelect();
+        $this->_resultHandler    = new Dpql\ResultHandler();
+        $this->_sqlSelectContext = new Dpql\SqlSelectContext($this->_resultHandler, [
+            new Dpql\Plugin\Hierarchy\HierarchyPlugin($this),
+        ]);
     }
 
     /**
@@ -326,13 +341,15 @@ class Display
                         }
                     }
 
-                    $queryResults = $db->executeQuery($sql->toSql())->fetchAll(\PDO::FETCH_NUM);
+                    $queryResults = $this->_sqlSelectContext->execute($sql);
                     $results->addSplitResults($this->_fillResults($queryResults), $splitResult);
                 }
             } else {
-                $queryResults = $db->executeQuery($this->_sql->toSql())->fetchAll(\PDO::FETCH_NUM);
+                $queryResults = $this->_sqlSelectContext->execute($this->_sql);
                 $results->setResults($this->_fillResults($queryResults));
             }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         } catch (\Exception $e) {
             throw new Exception('This DPQL statement generated an invalid MySQL query. Please try a different query.');
         }
@@ -543,15 +560,16 @@ class Display
         $display = array_map('strtoupper', $this->_display);
 
         return array(
-            'DISPLAY' => $display,
-            'SELECT'  => implode(', ', $selectFields),
-            'FROM'    => $this->_from,
-            'WHERE'   => ($this->_where ? $this->_where->toDpql($this, 'where', array()) : ''),
-            'SPLIT'   => implode(', ', $splitFields),
-            'GROUP'   => implode(', ', $groupFields),
-            'ORDER'   => implode(', ', $orderFields),
-            'LIMIT'   => $this->_limitAmount,
-            'OFFSET'  => $this->_limitOffset,
+            'DISPLAY'     => $display,
+            'SELECT'      => implode(', ', $selectFields),
+            'FROM'        => $this->_from,
+            'WHERE'       => ($this->_where ? $this->_where->toDpql($this, 'where', array()) : ''),
+            'SPLIT'       => implode(', ', $splitFields),
+            'GROUP'       => implode(', ', $groupFields),
+            'ORDER'       => implode(', ', $orderFields),
+            'LIMIT'       => $this->_limitAmount,
+            'OFFSET'      => $this->_limitOffset,
+            'WITH_ROLLUP' => $this->_withRollup,
         );
     }
 
@@ -722,7 +740,10 @@ class Display
                 }
 
                 $resultTitle = ($alias !== false ? $alias : $groupBy->name());
-                $this->_resultHandler->addGroupYColumn($resultTitle, $groupId, $printId, $groupBy->renderer());
+                $renderer    = $groupBy->renderer() ?: function ($valueRenderer, $value, $row) {
+                    return array_key_exists('hierarchy_title', $row) ? $row['hierarchy_title'] : $value;
+                };
+                $this->_resultHandler->addGroupYColumn($resultTitle, $groupId, $printId, $renderer);
             }
         }
     }
@@ -836,7 +857,19 @@ class Display
      */
     public function getFromEntityRepository()
     {
-        $table = strtolower($this->_from);
+        return self::getRepositoryByTable($this->_from);
+    }
+
+    /**
+     * @param $table
+     *
+     * @throws Exception
+     *
+     * @return bool|\Doctrine\ORM\EntityRepository
+     */
+    public static function getRepositoryByTable($table)
+    {
+        $table = strtolower($table);
         if (!isset(self::$_tableEntityMap[$table])) {
             return false;
         }
@@ -1140,6 +1173,7 @@ class Display
                 .(!empty($parts['where'])   ? "\nWHERE $parts[where]"        : '')
                 .(!empty($parts['splitBy']) ? "\nSPLIT BY $parts[splitBy]"   : '')
                 .(!empty($parts['groupBy']) ? "\nGROUP BY $parts[groupBy]"   : '')
+                .(!empty($parts['withRollup']) ? "\nWITH ROLLUP"   : '')
                 .(!empty($parts['orderBy']) ? "\nORDER BY $parts[orderBy]"   : '')
                 .(!empty($parts['limit'])   ? "\nLIMIT $parts[limit]$offset" : '');
         }
@@ -1153,5 +1187,31 @@ class Display
     public static function getTableEntityList()
     {
         return self::$_tableEntityMap;
+    }
+
+    /**
+     * @return Dpql\SqlSelectContext
+     */
+    public function getSqlSelectContext()
+    {
+        return $this->_sqlSelectContext;
+    }
+
+    /**
+     * @param bool $withRollup
+     */
+    public function setWithRollup($withRollup)
+    {
+        if ($this->_withRollup = $withRollup) {
+            $this->_resultHandler->addFlag(Dpql\ResultHandler::FLAG_WITH_ROLLUP);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function withRollup()
+    {
+        return $this->_withRollup;
     }
 }

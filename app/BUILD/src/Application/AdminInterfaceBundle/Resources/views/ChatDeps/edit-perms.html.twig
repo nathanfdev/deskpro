@@ -7,10 +7,7 @@
 	</div>
 	<div class="panel-help" dp-inhelp-body="admin.ticket_deps.edit.usergroup_perms">
 		<p>
-			{{ phrase('adm.departments.usergroup_perms_explain') }}
-		</p>
-		<p>
-			{{ phrase('adm.departments.usergroup_perms_explain2') }}
+			{{ phrase('adm.departments.usergroup_perms_explain_chat') }}
 		</p>
 	</div>
 	<table class="table table-hover">
@@ -21,8 +18,7 @@
 				</th>
 				<th width="120" class="text-center">
 					{{ phrase('adm.general.perm_use') }}
-					<span class="help-icon" tooltip-placement="left"
-						  tooltip="{{ phrase('adm.departments.usergroup_perm_toggle') }}">
+					<span class="help-icon" tooltip-placement="left" tooltip="{{ phrase('adm.departments.usergroup_perm_toggle_chat') }}">
 					</span>
 					<div class="toggle-all-button-2">
 						<em ng-click="EditCtrl.all_perms.user_full = !EditCtrl.all_perms.user_full; EditCtrl.changeAllPerms('user');">Toggle All</em>
@@ -38,7 +34,7 @@
 					<span class="text-middle"><a href="#">{{ ng_var('usergroup.title') }}</a></span>
 				</td>
 				<td class="text-center">
-					<button dp-toggle-switch ng-model="EditCtrl.form.usergroup_perms[usergroup.id].full"></button>
+					<button dp-toggle-switch ng-model="EditCtrl.form.usergroup_perms[usergroup.id].full" locked-model="usergroups_locked[usergroup.id]" locked-tip="{{ phrase('adm.departments.perm_assign_locked_priv') }}"></button>
 				</td>
 			</tr>
 		</tbody>
@@ -54,14 +50,7 @@
 	</div>
 	<div class="panel-help" dp-inhelp-body="admin.ticket_deps.edit.agent_perms">
 		<p>
-			{{ phrase('adm.departments.agent_perms_explain') }}
-		</p>
-		<ol>
-			<li>{{ phrase('adm.departments.agent_perms_explain_assign') }}</li>
-			<li>{{ phrase('adm.departments.agent_perms_explain_full') }}</li>
-		</ol>
-		<p>
-			{{ phrase('adm.departments.agent_perms_explain_participant') }}
+			{{ phrase('adm.departments.agent_perms_explain_chat') }}
 		</p>
 	</div>
 	<table class="table table-hover">

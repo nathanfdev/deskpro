@@ -36,6 +36,12 @@ use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use Doctrine\ORM\EntityManager;
+use Imagine\Gd\Image;
+use Imagine\Gd\Imagine;
+use Imagine\Image\Box;
+use Imagine\Image\Point;
+use Orb\Data\ContentTypes;
+use Ossobuffo\PhpIco\IcoConverter;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -43,9 +49,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class AssetsManager
 {
-    const CUSTOM_ASSET_TAG   = 'custom_asset';
-    const CUSTOM_LOGO_TAG    = 'custom_logo';
+    const CUSTOM_ASSET_TAG = 'custom_asset';
+
+    const CUSTOM_LOGO_TAG = 'custom_logo';
+
     const CUSTOM_FAVICON_TAG = 'custom_favicon';
+
+    const CUSTOM_FAVICON_FALLBACK = 'custom_favicon_fallback';
 
     /**
      * @var EntityManager
@@ -135,15 +145,27 @@ class AssetsManager
      */
     public function uploadBlob(UploadedFile $file, $blobType = self::CUSTOM_LOGO_TAG)
     {
-        if ($logo = $this->getEditThemeSetBlobAsset($blobType)) {
-            if ($logo->getBlob()) {
-                $this->bs->deleteBlobRecord($logo->getBlob());
+        if ($blobAsset = $this->getEditThemeSetBlobAsset($blobType)) {
+            if ($blobAsset->getBlob()) {
+                $this->bs->deleteBlobRecord($blobAsset->getBlob());
             }
-            $this->em->remove($logo);
+            $this->em->remove($blobAsset);
             $this->em->flush();
         }
 
-        return $this->upload($file, $blobType);
+        if ($blobType === self::CUSTOM_FAVICON_TAG) {
+            if ($blobAsset = $this->getEditThemeSetBlobAsset(self::CUSTOM_FAVICON_FALLBACK)) {
+                if ($blobAsset->getBlob()) {
+                    $this->bs->deleteBlobRecord($blobAsset->getBlob());
+                }
+                $this->em->remove($blobAsset);
+                $this->em->flush();
+            }
+        }
+
+        return $blobType === self::CUSTOM_FAVICON_TAG
+            ? $this->uploadFavicon($file, $blobType)
+            : $this->upload($file, $blobType);
     }
 
     /**
@@ -194,20 +216,103 @@ class AssetsManager
      */
     private function upload(UploadedFile $file, $tag)
     {
-        $name = uniqid().'_'.$file->getClientOriginalName();
-        $name = preg_replace('/\s+/', '_', $name);
+        $context = new UploadFileContext($file, $this->edit_theme_set, $tag);
+        $name    = uniqid().'_'.$file->getClientOriginalName();
+        $name    = preg_replace('/\s+/', '_', $name);
+        $context->setName($name);
 
-        $asset = new ThemeSetAsset();
-        $asset->setThemeSet($this->edit_theme_set);
-        $asset->setName($name);
-        $asset->setTags([$tag]);
+        return $this->doUpload($context);
+    }
 
-        $blob = $this->bs->createBlobRecordFromFile($file->getRealPath(), $name, $file->getClientMimeType(), ['brand_asset.'.$tag]);
-        $asset->setBlob($blob);
+    /**
+     * @param UploadFileContext $context
+     *
+     * @return ThemeSetAsset
+     */
+    private function doUpload(UploadFileContext $context)
+    {
+        $blob = $this->bs->createBlobRecordFromFile(
+            $context->getFilename(),
+            $context->getName(),
+            $context->getMimeType(),
+            ['brand_asset.'.$context->getTag()]
+        );
+        $context->getAsset()->setBlob($blob);
 
-        $this->em->persist($asset);
+        $this->em->persist($context->getAsset());
         $this->em->flush();
 
+        return $context->getAsset();
+    }
+
+    /**
+     * @param UploadedFile $file
+     * @param string       $tag
+     *
+     * @return ThemeSetAsset
+     */
+    private function uploadFavicon(UploadedFile $file, $tag)
+    {
+        $context   = new UploadFileContext($file, $this->edit_theme_set, $tag);
+        $extension = ContentTypes::findExtensionForContentType($context->getMimeType());
+
+        if ($extension === 'ico') {
+            return $this->upload($file, $tag);
+        }
+
+        $imagine = new Imagine();
+        $image   = $imagine->open($file->getRealPath());
+        $size    = $image->getSize();
+
+        if ($size->getHeight() != $size->getWidth()) {
+            // we're about to crop favicon to square shape
+            $edge = min($size->getHeight(), $size->getWidth());
+            $image->crop(new Point(0, 0), new Box($edge, $edge));
+        }
+
+        // allowed types for favicon gif, png
+        if (!in_array($extension, ['gif', 'png'])) {
+            $context->setExtension('png');
+            $context->setMimeType('image/png');
+            $name = str_ireplace(".{$extension}", '.png', $context->getName());
+            $context->setName($name);
+        }
+
+        $filename = sprintf(
+            '%s%s.%s',
+            $file->getRealPath(),
+            uniqid(),
+            $context->getExtension()
+        );
+
+        $image->save($filename, ['format' => $context->getExtension()]);
+        $context->setFilename($filename);
+
+        $this->createFallbackIcon($file, $filename, $context);
+
+        $asset = $this->doUpload($context);
+        unlink($filename);
+
         return $asset;
+    }
+
+    /**
+     * @param UploadedFile      $file
+     * @param string            $filename
+     * @param UploadFileContext $previousContext
+     */
+    private function createFallbackIcon(
+        UploadedFile $file,
+        $filename, UploadFileContext $previousContext
+    ) {
+        $context     = new UploadFileContext($file, $this->edit_theme_set, self::CUSTOM_FAVICON_FALLBACK);
+        $icoFilename = str_ireplace(".{$previousContext->getExtension()}", '.ico', $filename);
+        $name        = str_ireplace(".{$previousContext->getExtension()}", '.ico', $previousContext->getName());
+        $context->setFilename($icoFilename);
+        $context->setName($name);
+        $ico = new IcoConverter($filename, [16, 16]);
+        $ico->saveIco($icoFilename);
+        $this->doUpload($context);
+        unlink($icoFilename);
     }
 }

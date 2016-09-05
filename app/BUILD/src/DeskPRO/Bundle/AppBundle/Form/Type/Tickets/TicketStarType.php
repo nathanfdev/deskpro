@@ -68,10 +68,8 @@ class TicketStarType extends AbstractType
                 'data_class' => TicketFlagged::class,
                 'inline'     => false,
             ])
-            ->setAllowedTypes([
-                'ticket' => Ticket::class,
-                'person' => Person::class,
-            ])
+            ->setAllowedTypes('ticket', Ticket::class)
+            ->setAllowedTypes('person', Person::class)
         ;
     }
 

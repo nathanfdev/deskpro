@@ -371,7 +371,7 @@ abstract class AbstractBuild
             $logger->info('BEGIN: LIVE');
             $logger->debug('Command: '.str_replace($params['{db_pass}'], '***', $cmd_exec));
             $proc = new Process($cmd_exec, DP_ROOT);
-            $proc->setTimeout(600);
+            $proc->setTimeout(43200);
             $proc->run(function ($type, $data) use ($logger) {
                 $logger->info(sprintf("\t%s\n", str_replace("\n", "\n\t", trim($data))));
             });

@@ -281,7 +281,7 @@ class TicketMessage extends AbstractEntityRepository
             }
 
             // The previous message is also by us, so it is a dupe
-            if ($prev_message->person->id == $message->person->id) {
+            if ($prev_message->getPersonId() == $message->getPersonId()) {
                 if ($logger) {
                     $logger->logDebug("[EntityRepository:TicketMessage] {$check['id']} is a match because prev message is by us");
                 }

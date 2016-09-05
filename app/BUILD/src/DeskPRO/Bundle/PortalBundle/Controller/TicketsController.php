@@ -46,6 +46,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayou
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimelinePagerfantaAdapter;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketReplyType;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
@@ -163,7 +164,7 @@ class TicketsController extends AbstractController
         $message->setVisitorId($visitor_id);
         $message->setIpAddress($request->getClientIp());
 
-        $form = $this->createForm('ticket_reply', $form_data, [
+        $form = $this->createForm(TicketReplyType::class, $form_data, [
             'ticket'         => $ticket,
             'ticket_message' => $message,
             'person'         => $this->getUser(),

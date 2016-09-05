@@ -376,7 +376,17 @@ JS;
             $url .= (strpos($url, '?') ? '&' : '?').http_build_query($passData);
         }
 
-        $ch = curl_init($url);
+        $ch     = curl_init($url);
+        $cainfo = $this->getParameter('kernel.root_dir')
+            .DIRECTORY_SEPARATOR
+            .'Resources'
+            .DIRECTORY_SEPARATOR
+            .'cacert.pem';
+        if (file_exists($cainfo)) {
+            @curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            @curl_setopt($ch, CURLOPT_CAINFO, $cainfo);
+        }
+        @curl_setopt($ch, CURLOPT_CAINFO, $cainfo);
         if ($method != 'GET') {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
             curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($passData) ? http_build_query($passData) : $passData);

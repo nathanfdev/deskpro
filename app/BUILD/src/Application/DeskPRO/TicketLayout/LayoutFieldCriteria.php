@@ -199,18 +199,18 @@ class LayoutFieldCriteria implements \Serializable, \Countable
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
         $data['version'] = 1;
         $data['mode']    = $this->mode;
-        $data['terms']   = array();
+        $data['terms']   = [];
 
         foreach ($this->terms as $t) {
-            $data['terms'][] = array(
+            $data['terms'][] = [
                 'type'    => $t->getTermType(),
                 'op'      => $t->getTermOperator(),
                 'options' => $t->getTermOptions(),
-            );
+            ];
         }
 
         return $data;

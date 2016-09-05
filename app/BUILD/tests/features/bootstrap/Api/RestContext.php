@@ -28,11 +28,14 @@
 
 namespace DpBehat\Api;
 
+use Application\DeskPRO\Entity\Session;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 use DpBehat\Data\DataContext;
+use Orb\Util\Util;
 use Sanpi\Behatch\Context\BaseContext;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 class RestContext extends BaseContext
 {
@@ -43,11 +46,15 @@ class RestContext extends BaseContext
      *
      * @Then I add :name header equal to :value
      */
-    public function iAddHeaderEqualTo($name, $value)
+    public function iAddHeaderEqualTo($name, $value, $isJson = false)
     {
         // we need to pass them as $_SERVER...
         $name = str_replace('-', '_', strtoupper(trim($name)));
         $name = 'HTTP_'.$name;
+
+        if (!$isJson) {
+            $value = DataContext::replace($value);
+        }
 
         $this->server_params[$name] = trim($value);
     }
@@ -68,7 +75,20 @@ class RestContext extends BaseContext
      */
     public function iAddACookie($name, $value)
     {
-        $this->getSession()->getDriver()->setCookie($name, $value);
+        $this->getSession()->getDriver()->setCookie($name, DataContext::replace($value));
+    }
+
+    /**
+     * Add a session cookie.
+     *
+     * @Then I add session cookie named :name for session :session
+     */
+    public function iAddASessionCookie($name, $session)
+    {
+        /** @var Session $session */
+        $session   = DataContext::getReference($session);
+        $sessionId = Util::baseEncode($session->getId(), 'base36');
+        $this->getSession()->getDriver()->setCookie($name, implode('-', [$sessionId, $session->getAuth()]));
     }
 
     /**

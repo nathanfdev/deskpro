@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -44,7 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Accepts array of emails.
  */
-class TicketParticipantsType extends AbstractType
+class TicketParticipantsType extends AbstractTicketParticipantType
 {
     /**
      * {@inheritdoc}
@@ -68,6 +67,8 @@ class TicketParticipantsType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
+
         $resolver
             ->setDefaults([
                 'inline'         => false,
@@ -78,19 +79,14 @@ class TicketParticipantsType extends AbstractType
                 'entry_type'     => TicketParticipantType::class,
                 'entry_options'  => function (Options $options) {
                     return [
-                        'error_bubbling' => $options['inline'],
-                        'is_agent'       => $options['is_agent'],
-                        'owner'          => $options['owner'],
-                        'constraints'    => new Assert\Valid(),
-                        'inline'         => true,
-                        'set_owner'      => false,
+                        'error_bubbling'  => $options['inline'],
+                        'owner'           => $options['owner'],
+                        'constraints'     => new Assert\Valid(),
+                        'inline'          => true,
+                        'set_owner'       => false,
+                        'agent_interface' => $options['agent_interface'],
                     ];
                 },
-            ])
-            ->setRequired(['is_agent', 'owner'])
-            ->setAllowedTypes([
-                'owner'    => Ticket::class,
-                'is_agent' => 'boolean',
             ])
         ;
     }
@@ -104,9 +100,10 @@ class TicketParticipantsType extends AbstractType
      */
     public function onPreSetData(FormEvent $event)
     {
+        $isAllEnabled     = $event->getForm()->getConfig()->getOption('allow_all');
         $allParticipants  = $this->getAllParticipants($event);
-        $formParticipants = $allParticipants->filter(function (TicketParticipant $participant) use ($event) {
-            return $participant->getPerson() && $participant->getPerson()->isAgent() === $this->isAgent($event);
+        $formParticipants = $allParticipants->filter(function (TicketParticipant $participant) use ($event, $isAllEnabled) {
+            return $participant->getPerson() && ($isAllEnabled || !$participant->getPerson()->isAgent());
         });
 
         $event->setData($formParticipants);
@@ -121,6 +118,7 @@ class TicketParticipantsType extends AbstractType
      */
     public function onMergeData(FormEvent $event)
     {
+        $isAllEnabled     = $event->getForm()->getConfig()->getOption('allow_all');
         $allParticipants  = $this->getAllParticipants($event);
         $formParticipants = $this->getFormParticipants($event);
 
@@ -134,7 +132,10 @@ class TicketParticipantsType extends AbstractType
         }
         foreach ($allParticipants as $participant) {
             $person = $participant->getPerson();
-            if ($person && $person->isAgent() === $this->isAgent($event) && !$formParticipants->contains($participant)) {
+            if (!$person) {
+                continue;
+            }
+            if (($isAllEnabled || !$person->isAgent()) && !$formParticipants->contains($participant)) {
                 $ticket->removeParticipant($participant);
             }
         }
@@ -148,16 +149,6 @@ class TicketParticipantsType extends AbstractType
     protected function getAllParticipants(FormEvent $event)
     {
         return $this->getTicket($event)->getParticipants();
-    }
-
-    /**
-     * @param FormEvent $event
-     *
-     * @return bool
-     */
-    protected function isAgent(FormEvent $event)
-    {
-        return $event->getForm()->getConfig()->getOption('is_agent');
     }
 
     /**

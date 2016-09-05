@@ -4,7 +4,7 @@ Feature: New ticket form validation
 
   Background:
     Given I'm authenticated as user
-    And I have default brand
+    And I have only default brand
     And only the following Department records exist:
       | #  | Title        | Brands           | Is Tickets Enabled |
       | d1 | Department 1 | [{defaultBrand}] | 1                  |
@@ -14,7 +14,7 @@ Feature: New ticket form validation
     And there are no TicketLayout records
 
   Scenario: I check unexpected field on layout
-    Given the ticket layout exists for "d1" department with fields:
+    Given the ticket layout exists for "{d1}" department with fields:
       | user_layout |
       | cc          |
     And I go to "/new-ticket"

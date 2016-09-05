@@ -68,12 +68,8 @@ class TaskProjectMemberType extends AbstractType
             ->setDefaults([
                 'data_class' => ProjectMember::class,
             ])
-            ->setAllowedTypes([
-                'project' => TaskProject::class,
-            ])
-            ->setAllowedValues([
-                'type' => ['person', 'team', 'department'],
-            ])
+            ->setAllowedTypes('project', TaskProject::class)
+            ->setAllowedValues('type', ['person', 'team', 'department'])
         ;
     }
 

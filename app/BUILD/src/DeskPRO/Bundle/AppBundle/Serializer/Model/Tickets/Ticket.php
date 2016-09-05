@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketCategory;
+use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Entity\TicketWorkflow;
@@ -575,15 +576,6 @@ class Ticket
     private $cc;
 
     /**
-     * Agents that follows this ticket.
-     *
-     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
-     *
-     * @var Person[]
-     */
-    private $followers;
-
-    /**
      * Person star color.
      *
      * @JMS\Type("deferred<string>")
@@ -660,10 +652,11 @@ class Ticket
         $this->worstSlaStatus       = $ticket->getWorstSlaStatus();
         $this->waitingTimes         = $ticket->getWaitingTimes();
         $this->ticketSlas           = $ticket->getTicketSlas();
-        $this->cc                   = $ticket->getUserParticipants();
-        $this->followers            = $ticket->getAgentParticipants();
-        $this->children             = $ticket->getChildrenTickets();
-        $this->siblings             = $ticket->getSiblingsTickets();
+        $this->cc                   = $ticket->getParticipants()->map(function (TicketParticipant $participant) {
+            return $participant->getPerson();
+        });
+        $this->children = $ticket->getChildrenTickets();
+        $this->siblings = $ticket->getSiblingsTickets();
     }
 
     /**

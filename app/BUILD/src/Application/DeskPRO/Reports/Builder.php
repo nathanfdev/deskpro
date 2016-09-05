@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -328,30 +328,32 @@ class Builder
     {
         if (!$statement) {
             return array(
-                'display' => 'TABLE',
-                'select'  => '',
-                'from'    => '',
-                'where'   => '',
-                'splitBy' => '',
-                'groupBy' => '',
-                'orderBy' => '',
-                'limit'   => '',
-                'offset'  => '',
+                'display'    => 'TABLE',
+                'select'     => '',
+                'from'       => '',
+                'where'      => '',
+                'splitBy'    => '',
+                'groupBy'    => '',
+                'withRollup' => '',
+                'orderBy'    => '',
+                'limit'      => '',
+                'offset'     => '',
             );
         }
 
         $parts = $statement->getDpqlParts();
 
         return array(
-            'display' => $parts['DISPLAY'],
-            'select'  => $parts['SELECT'],
-            'from'    => $parts['FROM'],
-            'where'   => $parts['WHERE'],
-            'splitBy' => $parts['SPLIT'],
-            'groupBy' => $parts['GROUP'],
-            'orderBy' => $parts['ORDER'],
-            'limit'   => $parts['LIMIT'] ?: '',
-            'offset'  => $parts['OFFSET'] ?: '',
+            'display'    => $parts['DISPLAY'],
+            'select'     => $parts['SELECT'],
+            'from'       => $parts['FROM'],
+            'where'      => $parts['WHERE'],
+            'splitBy'    => $parts['SPLIT'],
+            'groupBy'    => $parts['GROUP'],
+            'orderBy'    => $parts['ORDER'],
+            'withRollup' => $parts['WITH_ROLLUP'],
+            'limit'      => $parts['LIMIT'] ?: '',
+            'offset'     => $parts['OFFSET'] ?: '',
         );
     }
 

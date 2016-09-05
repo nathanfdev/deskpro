@@ -31,11 +31,12 @@
  *
  * @category Entities
  */
+
 namespace deskpro_slack\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
-use GuzzleHttp\Client as GuzzleClient;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -80,7 +81,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $log[] = 'webhook url: '.$webhook_url;
 
         try {
-            $client = new GuzzleClient();
+            $client = new HttpClient();
             $res    = $client->request(
                 'POST',
                 $webhook_url,

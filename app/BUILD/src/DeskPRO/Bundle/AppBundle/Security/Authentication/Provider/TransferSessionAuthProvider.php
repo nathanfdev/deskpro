@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\AppBundle\Security\Authentication\Provider;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\AuthenticationManager as DpAuthManager;
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
 use Doctrine\ORM\EntityManager;

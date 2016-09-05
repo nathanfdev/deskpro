@@ -537,7 +537,7 @@ DeskPRO.Agent.RteEditor = {
 
       } while (didChange && counter++ < 40); //counter as safety
 
-      this.$el.val(copy.html());
+      origSyncCode.call(api);
     }, api);
 
     var origPasteCleanup = api.pasteClean;
@@ -623,7 +623,7 @@ DeskPRO.Agent.RteEditor = {
     }, api);
 
 		api.syncCode = $.proxy(function(){
-			this.$el.val(this.$editor.html());
+			origSyncCode.call(api);
 			this.$editor.trigger('synced');
 		}, api);
 

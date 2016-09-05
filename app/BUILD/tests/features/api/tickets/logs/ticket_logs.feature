@@ -16,7 +16,7 @@ Feature: Ticket logs
       | Ticket        | Person  |
       | {demo_ticket} | {agent} |
     And I reset the "{demo_ticket}" ticket logs
-    When I send a DELETE request to "/api/v2/tickets/{demo_ticket}/followers/{agent}"
+    When I send a DELETE request to "/api/v2/tickets/{demo_ticket}/cc/{agent}"
     And the "{demo_ticket}" ticket should have "changed_agent_participants" log
 
   Scenario: I create a ticket and check its' logs
@@ -44,7 +44,7 @@ Feature: Ticket logs
     """
 {
   "subject": "Modified 3",
-  "followers": [~agent~]
+  "cc": [~agent~]
 }
     """
     Then the "{demo_ticket}" ticket should have no the following logs:

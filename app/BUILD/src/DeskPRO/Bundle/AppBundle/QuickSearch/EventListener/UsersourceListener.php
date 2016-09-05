@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use Application\DeskPRO\Usersource\UsersourceManager;
+use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -79,6 +81,10 @@ class UsersourceListener implements EventSubscriberInterface
         }
 
         $person = $this->usersource_manager->findPersonByEmail($request->getQuery());
+        if (!$person->isAgent() && $context->getType() === QuickSearchContext::TYPE_AGENT) {
+            return;
+        }
+
         if ($person) {
             $context->addEntity($person);
         }

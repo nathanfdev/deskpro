@@ -40,6 +40,12 @@ services:
           - "@session"
           - "@dp_sys.alerts.event_logger"
 
+    dp_security.legacy_remember_me.provider:
+      class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\LegacyRememberMeProvider
+      arguments:
+        - "@dp_person_user_provider"
+        - "@session"
+
     dp_security.agent_impersonate.provider:
         class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\AgentImpersonateProvider
         arguments:

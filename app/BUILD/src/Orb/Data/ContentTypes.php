@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Data;
 
 use Orb\Util\Strings;
@@ -96,15 +97,15 @@ class ContentTypes
         'htm'      => 'text/html',
         'html'     => 'text/html',
         'htt'      => 'text/webviewhtml',
-        'ico'      => 'image/x-icon',
+        'ico'      => 'image/vnd.microsoft.icon',
         'ief'      => 'image/ief',
         'iii'      => 'application/x-iphone',
         'ins'      => 'application/x-internet-signup',
         'isp'      => 'application/x-internet-signup',
         'jfif'     => 'image/pipeg',
+        'jpg'      => 'image/jpeg',
         'jpe'      => 'image/jpeg',
         'jpeg'     => 'image/jpeg',
-        'jpg'      => 'image/jpeg',
         'js'       => 'text/javascript',
         'json'     => 'application/json',
         'latex'    => 'application/x-latex',

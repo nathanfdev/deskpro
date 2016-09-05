@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\UpdateBundle\Distro;
 
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Bundle\UpdateBundle\Distro\Manifest\DistroRelease;
 use DeskPRO\Bundle\UpdateBundle\Distro\Manifest\DistroReleaseCollection;
 use DeskPRO\Bundle\UpdateBundle\Logger\LogKeyEvent;
@@ -74,7 +75,7 @@ class DistroManifestLoader implements LoggerAwareInterface
             ));
         }
 
-        $client = new GuzzleHttp\Client([
+        $client = new HttpClient([
             'base_uri' => $versionApiRoot,
 
             GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true,

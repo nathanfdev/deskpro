@@ -2380,4 +2380,5 @@ return [
   'vendor/willdurand/negotiation/src/Negotiation/NegotiatorInterface.php',
   'vendor/zendframework/zend-filter/src/AbstractFilter.php',
   'vendor/zendframework/zend-filter/src/FilterInterface.php',
+  'vendor/shopblocks/php-ico/src/IcoConverter.php',
 ];

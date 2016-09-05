@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonRegistrationType;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -77,7 +78,7 @@ class ProfileController extends AbstractController
         $person = $this->getPersonFactory()->createNewPerson();
 
         // FORM
-        $form = $this->createForm('person_registration', $person, [
+        $form = $this->createForm(PersonRegistrationType::class, $person, [
             'settings'              => $this->getBrandContainer()->getSettings(),
             'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
             'action'                => $this->generateUrl('portal_user_registration'),

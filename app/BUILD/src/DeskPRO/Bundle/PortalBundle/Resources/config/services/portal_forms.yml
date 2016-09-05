@@ -65,19 +65,19 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketReplyType
     arguments: ["@language_manager", "@doctrine.orm.default_entity_manager"]
     tags:
-      - { name: form.type, alias: ticket_reply }
+      - { name: form.type }
 
   form.person_registration:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonRegistrationType
     arguments: ["@custom_field_manager", "@language_manager", "@captcha_decider"]
     tags:
-      - { name: form.type, alias: person_registration }
+      - { name: form.type }
 
   form.person_profile:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType
     arguments: ["@custom_field_manager", "@language_manager", "@blob.storage", "@doctrine.orm.default_entity_manager"]
     tags:
-      - { name: form.type, alias: person_profile }
+      - { name: form.type }
 
   form.comment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CommentType
@@ -115,7 +115,7 @@ services:
   form.person_change_password:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType
     tags:
-      - { name: form.type, alias: person_change_password }
+      - { name: form.type }
     arguments:
       - "@captcha_decider"
       - "@deskpro.core.translate"
@@ -137,11 +137,6 @@ services:
     arguments: ["@doctrine.orm.default_entity_manager", "@blob.storage", "@blob_repository"]
     tags:
       - { name: form.type, alias: deskpro_blob }
-
-  form.heirarchical_entity:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\HeirarchicalEntityType
-    tags:
-      - { name: form.type, alias: deskpro_heirarchical_entity }
 
   form.api.chat_create:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType

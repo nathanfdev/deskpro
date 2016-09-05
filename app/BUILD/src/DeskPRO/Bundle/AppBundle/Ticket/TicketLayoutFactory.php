@@ -265,7 +265,7 @@ class TicketLayoutFactory
             ->where('l.department IS NULL')
             ->getQuery()
             ->getOneOrNullResult()
-            ;
+        ;
     }
 
     /**

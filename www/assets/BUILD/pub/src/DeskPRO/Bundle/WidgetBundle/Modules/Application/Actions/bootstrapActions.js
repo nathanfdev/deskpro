@@ -1,4 +1,8 @@
+import $ from 'jquery';
+import lscache from 'lscache';
 import { createAction } from 'DeskPRO/Component/Ampliflux';
+import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { loadOnlineAgents } from './peopleActions';
 import { loadOptions, fetchOptions, openWidget, reopenWidget, closeWidget } from './dpWindowActions';
@@ -13,10 +17,6 @@ import {
 
 import { liveDemoSelector, noFetchOptionsSelector, widgetEnabledSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
-import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
-import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
-import $ from 'jquery';
-import lscache from 'lscache';
 
 export const ajaxOptions = { crossDomain: true, dataType: 'json' };
 export const setSettings = createAction('WIDGET_SET_SETTINGS', settings => $.extend(true, {}, settings));
@@ -151,7 +151,8 @@ export const bootstrapWidget = createAction(
     const options = window.DP_OPTIONS;
 
     dispatch(loadOptions(options));
-    const state = getState();
+    let state = getState();
+
     const liveDemo = liveDemoSelector(state);
     const noFetchOptions = noFetchOptionsSelector(state);
 
@@ -178,6 +179,9 @@ export const bootstrapWidget = createAction(
       }
 
       Promise.all(promises).then(response => {
+        // get updated state after the ajax requests
+        state = getState();
+
         const enabled = widgetEnabledSelector(state);
         if (enabled) {
           // possibly reload translations with proper user's lang

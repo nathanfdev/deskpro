@@ -256,7 +256,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('category 4', $entity->getCategories()[1]->getTitle());
     }
 
-    public function test_crate_and_update_article_with_custom_data()
+    public function test_create_and_update_article_with_custom_data()
     {
         $customField1 = new Model\CustomField();
         $customField1->setName('field 1');
@@ -280,7 +280,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('field 1', $entity->getCustomData()[0]->root_field->getTitle());
 
         $this->assertEquals('val2', $entity->getCustomData()[1]->getInput());
-        $this->assertEquals('Custom field1', $entity->getCustomData()[1]->root_field->getTitle());
+        $this->assertEquals('Custom field 1', $entity->getCustomData()[1]->root_field->getTitle());
     }
 
     public function test_dynamically_add_choice_defs()

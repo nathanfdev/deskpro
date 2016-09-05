@@ -265,15 +265,19 @@ abstract class AbstractRenderer
      * Renders the value for a specific cell.
      *
      * @param mixed [int] $row
-     * @param array       $column
+     * @param mixed       $column
      *
      * @return string
      */
-    protected function _renderCellValue(array $row, array $column)
+    protected function _renderCellValue(array $row, $column)
     {
-        $value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
+        if (is_string($column)) {
+            $value = array_key_exists($column, $row) ? $row[$column] : '';
+        } else {
+            $value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
+        }
 
-        $renderer = $column['renderer'];
+        $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : null;
         if ($renderer instanceof \Closure) {
             /* @var $renderer \Closure */
 
@@ -286,18 +290,22 @@ abstract class AbstractRenderer
     /**
      * Gets the value of a particular column for the given row.
      *
-     * @param array     $row
-     * @param int|array $id
+     * @param array $row
+     * @param mixed $id
      *
      * @return string
      */
     public function getColumnValue(array $row, $id)
     {
         if (is_array($id) && isset($id['resultId'])) {
-            $id = $id['resultId'];
+            $index = $id['resultId'] - 1;
+        } elseif (is_string($id) && !ctype_digit($id)) {
+            $index = $id;
+        } else {
+            $index = $id - 1;
         }
 
-        return $id ? $row[$id - 1] : '';
+        return $id && array_key_exists($index, $row) ? $row[$index] : '';
     }
 
     /**

@@ -46,9 +46,7 @@ class FeedbackCategoryType extends AbstractType
     {
         $resolver
             ->setRequired('person')
-            ->setAllowedTypes([
-                'person' => Person::class,
-            ])
+            ->setAllowedTypes('person', Person::class)
             ->setDefaults([
                 'choice_list' => function (Options $options) {
                     return $options['hierarchy_generator']->generateForFeedbackCategories($options['person'])->getChoiceList();

@@ -84,7 +84,7 @@ services:
 
   widget_loader_code_renderer:
     class: DeskPRO\Bundle\AppBundle\Templating\WidgetLoader
-    arguments: ["@widget_settings_resolver", "@serializer"]
+    arguments: ["@deskpro.app_env", "@widget_settings_resolver", "@serializer"]
 
   app.environment:
     class: DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService
@@ -95,4 +95,3 @@ services:
 
   portal_mode_storage:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
-      

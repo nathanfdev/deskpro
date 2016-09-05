@@ -33,7 +33,6 @@ use Application\DeskPRO\Entity\TicketParticipant;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDisableAutoProcessListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -44,20 +43,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class TicketParticipantType.
  */
-class TicketParticipantType extends AbstractType
+class TicketParticipantType extends AbstractTicketParticipantType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $personConstraints = [];
+        if (!$options['allow_all']) {
+            $personConstraints[] = new AppAssert\Person\PersonType([
+                'type' => 'user',
+            ]);
+        }
+
         $builder->add('person', PersonAssignType::class, [
             'error_bubbling' => $options['inline'],
-            'constraints'    => [
-                new AppAssert\Person\PersonType([
-                    'type' => $options['is_agent'] ? 'agent' : 'user',
-                ]),
-            ],
+            'constraints'    => $personConstraints,
         ]);
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
@@ -74,6 +76,8 @@ class TicketParticipantType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
+
         $resolver
             ->setDefaults([
                 'inline'         => false,
@@ -84,13 +88,8 @@ class TicketParticipantType extends AbstractType
                     return $options['inline'] ? [] : ['.' => 'person'];
                 },
             ])
-            ->setRequired(['is_agent', 'owner'])
-            ->setAllowedTypes([
-                'is_agent'  => 'boolean',
-                'inline'    => 'boolean',
-                'set_owner' => 'boolean',
-                'owner'     => Ticket::class,
-            ])
+            ->setAllowedTypes('inline', 'boolean')
+            ->setAllowedTypes('set_owner', 'boolean')
         ;
     }
 

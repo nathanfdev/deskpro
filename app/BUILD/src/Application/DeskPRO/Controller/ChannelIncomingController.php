@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @todo
+ *
+ * This is unfinished code that only works in dev mode
+ */
 class ChannelIncomingController extends AbstractController
 {
     ####################################################################################################################
@@ -43,6 +49,10 @@ class ChannelIncomingController extends AbstractController
 
     public function facebookAction()
     {
+        if ($this->get('deskpro.app_env')->getEnvId() !== 'dev') {
+            exit;
+        }
+
         file_put_contents(
             '/var/www/html/file.txt', 'Time: '.date('j M, Y - h:m:s')."\n----------------------\n".print_r(
                 $_REQUEST, true
@@ -75,6 +85,10 @@ class ChannelIncomingController extends AbstractController
 
     public function twilioSmsAction()
     {
+        if ($this->get('deskpro.app_env')->getEnvId() !== 'dev') {
+            exit;
+        }
+
         $payload                = array();
         $payload['message']     = $this->request->request->get('Body', '');
         $payload['from_number'] = $this->request->request->get('From');

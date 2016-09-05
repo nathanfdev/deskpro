@@ -3,7 +3,8 @@ Feature: Quick Search
   Doctrine search adapter
 
   Background:
-    Given I'm authenticated as "admin"
+    Given there are no "Person" records
+    And I'm authenticated as "admin"
     And the setting "elastica.enabled" is set to 0
     And I set permission "articles.use" = 1 for "registered" usergroup
     And I set permission "downloads.use" = 1 for "registered" usergroup
@@ -47,7 +48,8 @@ Feature: Quick Search
       | {news}         | news         | 3     |
       | {ticket}       | ticket       | 4     |
       | {me}           | person       | 5     |
-      | {organization} | organization | 6     |
+      | {me}           | agent        | 6     |
+      | {organization} | organization | 7     |
 
   Scenario: I search person by full email
     Given "user@deskpro.dev" user exists
@@ -72,11 +74,14 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results[0].id" should be equal to "{admin}"
     And the JSON node "data.grouped_results[5].results[0].name" should be equal to "Admin Admin"
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
-    And the JSON node "data.grouped_results[6].results" should have 1 elements
-    And the JSON node "data.grouped_results[6].results[0].id" should be equal to "{organization}"
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
-    And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
+    And the JSON node "data.grouped_results[6].results[0].id" should be equal to "{admin}"
+    And the JSON node "data.grouped_results[6].results[0].name" should be equal to "Admin Admin"
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[7].results" should have 1 elements
+    And the JSON node "data.grouped_results[7].results[0].id" should be equal to "{organization}"
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
     When I send a GET request to "/api/v2/search?q=user@deskpro.dev"
     Then the response should be in JSON
@@ -95,11 +100,13 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[5].results" should have 1 element
     And the JSON node "data.grouped_results[5].results[0].id" should be equal to "{user}"
     And the JSON node "data.grouped_results[5].results[0].name" should be equal to "User User"
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
-    And the JSON node "data.grouped_results[6].results" should have 1 elements
-    And the JSON node "data.grouped_results[6].results[0].id" should be equal to "{organization}"
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
-    And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
+    And the JSON node "data.grouped_results[6].results" should have 0 elements
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[7].results" should have 1 elements
+    And the JSON node "data.grouped_results[7].results[0].id" should be equal to "{organization}"
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario: I search people by partial email (domain)
     Given agent and user exist
@@ -127,12 +134,14 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[5].results[0].emails[0]" should be equal to "admin@deskpro.dev"
     And the JSON node "data.grouped_results[5].results[1].emails[0]" should be equal to "user@deskpro.dev"
     And the JSON node "data.grouped_results[5].results[2].emails[0]" should be equal to "agent@deskpro.dev"
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 2 elements
-    And the JSON node "data.grouped_results[6].results[0].id" should be equal to "{organization1}"
-    And the JSON node "data.grouped_results[6].results[1].id" should be equal to "{organization2}"
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
-    And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[7].results" should have 2 elements
+    And the JSON node "data.grouped_results[7].results[0].id" should be equal to "{organization1}"
+    And the JSON node "data.grouped_results[7].results[1].id" should be equal to "{organization2}"
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
     When I send a GET request to "/api/v2/search?q=@dev"
     Then the response should be in JSON
@@ -162,11 +171,13 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 1 element
     And the JSON node "data.grouped_results[5].results[0].emails[0]" should be equal to "agent@deskpro.dev"
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 1 element
-    And the JSON node "data.grouped_results[6].results[0].id" should be equal to "{organization1}"
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
-    And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[7].results" should have 1 element
+    And the JSON node "data.grouped_results[7].results[0].id" should be equal to "{organization1}"
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario: I search articles by title
     Given only the following "Article" records exist:
@@ -189,10 +200,12 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[4].results" should have 0 elements
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 0 elements
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
     And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario: I search downloads by title
     Given only the following "Download" records exist:
@@ -215,10 +228,12 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[4].results" should have 0 elements
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 0 elements
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
     And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario: I search feedback by title
     Given only the following "Feedback" records exist:
@@ -241,10 +256,12 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[4].results" should have 0 elements
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 0 elements
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
     And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario: I search news by title
     Given only the following "News" records exist:
@@ -267,10 +284,12 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[4].results" should have 0 elements
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 0 elements
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
     And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario: I search ticket by subject
     And only the following "Ticket" records exist:
@@ -293,10 +312,12 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[4].results[1].subject" should be equal to "Ticket2"
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 0 elements
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
     And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario: I search organization by name
     Given only the following "Organization" records exist:
@@ -318,31 +339,33 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 1 elements
     And the JSON node "data.grouped_results[5].results[0].id" should be equal to "{me}"
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 1 elements
-    And the JSON node "data.grouped_results[6].results[0].name" should be equal to "Vector ltd"
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
-    And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[7].results" should have 1 elements
+    And the JSON node "data.grouped_results[7].results[0].name" should be equal to "Vector ltd"
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario: I search by word
     Given only the following "Feedback" records exist:
-      | #        | person  | is_reviewed | slug      | title     | content   | status |
+      | #        | person  | is_reviewed | slug      | title          | content   | status |
       | feedback | {admin} | 1           | feedback1 | Test Feedback1 | Feedback1 | active |
     And only the following "Article" records exist:
-      | #       | slug     | title    | content  | status  |
+      | #       | slug     | title         | content  | status  |
       | article | article1 | Test Article1 | Article1 | visible |
     And only the following "Download" records exist:
-      | #        | slug      | title     |  status   |
+      | #        | slug      | title          | status    |
       | download | Download1 | Test Download1 | published |
     And only the following "News" records exist:
-      | #    | slug  | title | status    |
+      | #    | slug  | title      | status    |
       | news | News1 | Test News1 | published |
     And only the following "Organization" records exist:
-      | #            | name       | summary                                    |
+      | #            | name            | summary                                    |
       | organization | Test Vector ltd | Vector is a common fake org name in Russia |
     And only the following "Ticket" records exist:
-      | #      | status        | ref  | subject |
-      | ticket | awaiting_user | AAAA | Test Ticket  |
+      | #      | status        | ref  | subject     |
+      | ticket | awaiting_user | AAAA | Test Ticket |
     When I send a GET request to "/api/v2/search?q=Test"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
@@ -357,10 +380,12 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[4].results" should have 1 element
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
-    And the JSON node "data.grouped_results[6].results" should have 1 elements
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
-    And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
+    And the JSON node "data.grouped_results[6].results" should have 0 elements
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[7].results" should have 1 elements
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario: I search ticket by ref
     Given only the following "Ticket" records exist:
@@ -381,10 +406,12 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[4].results[0].id" should be equal to "{ticket}"
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 0 elements
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
     And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario: I search by label
     Given only the following "LabelDef" records exist:
@@ -424,10 +451,12 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[4].results[1].id" should be equal to "{ticket2}"
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 0 elements
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
     And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
     When I send a GET request to "/api/v2/search?q=label1"
     Then the response should be in JSON
@@ -445,10 +474,12 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[4].results[1].id" should be equal to "{ticket2}"
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 0 elements
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
     And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
     When I send a GET request to "/api/v2/search?q=label2"
     Then the response should be in JSON
@@ -464,10 +495,12 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[4].results" should have 1 element
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 0 elements
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
     And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario: I send empty query request without "agent_people.use" permission
     Given I remove "admin" usergroup relation "agent_all_perms"
@@ -501,10 +534,12 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[4].results" should have 0 elements
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].type" should be equal to "agent"
     And the JSON node "data.grouped_results[6].results" should have 0 elements
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[7].type" should be equal to "organization"
     And the JSON node "data.grouped_results[7].results" should have 0 elements
+    And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario Outline: I search ticket by id with view restriction
     Given I set permission "agent_people.use" = <ticket_use> for "registered" usergroup

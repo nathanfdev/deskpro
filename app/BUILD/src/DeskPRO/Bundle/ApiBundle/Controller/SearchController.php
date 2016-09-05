@@ -68,7 +68,7 @@ class SearchController extends BaseController
      *          },
      *          {
      *              "name"="types",
-     *              "requirement"="(article|download|feedback|news|ticket|person|organization|chat_conversation)+",
+     *              "requirement"="(article|download|feedback|news|ticket|person|agent|organization|chat_conversation)+",
      *              "description"="comma separated list of types",
      *              "dataType"="string"
      *          }
@@ -88,7 +88,16 @@ class SearchController extends BaseController
     {
         $searchRequest = $this->getSearchRequest($request);
 
-        $types = explode(',', $request->query->get('types', ''));
+        if ($request->query->get('types', '')) {
+            $types        = explode(',', $request->query->get('types', ''));
+            $unknownTypes = array_diff($types, array_keys(QuickSearchContext::getDoctrineMapping()));
+            if ($unknownTypes) {
+                throw $this->createBadRequestException('Unknown types: '.implode(',', $unknownTypes));
+            }
+        } else {
+            $types = [];
+        }
+
         $searchRequest->setTypes($types);
 
         return $this->getSearchResults($searchRequest);
@@ -158,7 +167,7 @@ class SearchController extends BaseController
      *         200="Returned if everything is ok"
      *     }
      * )
-     * @Rest\Get("/search/{type}", requirements={"type"="(article|download|feedback|news|ticket|person|organization|chat_conversation)"})
+     * @Rest\Get("/search/{type}", requirements={"type"="(article|download|feedback|news|ticket|person|agent|organization|chat_conversation)"})
      *
      * @param string  $type
      * @param Request $request

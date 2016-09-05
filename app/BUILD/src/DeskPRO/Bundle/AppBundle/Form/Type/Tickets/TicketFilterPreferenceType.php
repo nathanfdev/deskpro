@@ -77,6 +77,8 @@ class TicketFilterPreferenceType extends AbstractType
                 'result_grouping' => '',
             ])
             ->setRequired(['filter', 'agent'])
-            ->setAllowedTypes(['filter' => TicketFilter::class, 'agent' => Person::class]);
+            ->setAllowedTypes('filter', TicketFilter::class)
+            ->setAllowedTypes('agent', Person::class)
+        ;
     }
 }

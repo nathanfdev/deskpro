@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,8 +31,10 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\PropertyAccess\Exception\AccessException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -1523,6 +1525,10 @@ class Arrays
      */
     public static function getLastItem($array)
     {
+        if ($array instanceof Collection) {
+            return $array->last();
+        }
+
         return self::getNthItem($array, sizeof($array) - 1);
     }
 

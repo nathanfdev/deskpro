@@ -4,7 +4,7 @@ Feature: /ticket_forms
 
   Background:
     Given I'm authenticated as admin
-    And I have default brand
+    And I have only default brand
     And only the following Department records exist:
       | #  | Title        | Brands           | Is Tickets Enabled |
       | d1 | Department 1 | [{defaultBrand}] | 1                  |

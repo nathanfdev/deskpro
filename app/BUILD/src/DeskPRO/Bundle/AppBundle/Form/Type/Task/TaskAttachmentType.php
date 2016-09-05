@@ -69,10 +69,8 @@ class TaskAttachmentType extends AbstractType
             ->setDefaults([
                 'data_class' => TaskAttachment::class,
             ])
-            ->setAllowedTypes([
-                'person' => Person::class,
-                'task'   => Task::class,
-            ])
+            ->setAllowedTypes('person', Person::class)
+            ->setAllowedTypes('task', Task::class)
         ;
     }
 
