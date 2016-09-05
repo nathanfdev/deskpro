@@ -50,14 +50,14 @@ class DefaultDepartmentSettingsType extends AbstractType
     {
         $builder
             ->add('brand', EntityType::class, [
-                'class'    => Brand::class,
-                'property' => 'id',
-                'required' => true,
+                'class'        => Brand::class,
+                'choice_label' => 'id',
+                'required'     => true,
             ])
             ->add('department', EntityType::class, [
-                'class'    => Department::class,
-                'property' => 'id',
-                'required' => true,
+                'class'        => Department::class,
+                'choice_label' => 'id',
+                'required'     => true,
             ])
             ->add('type', ChoiceType::class, [
                 'required' => true,

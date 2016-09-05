@@ -26,14 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Gregwar\CaptchaBundle\Type\CaptchaType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -44,7 +41,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class CaptchaType.
  */
-class CaptchaType extends AbstractType
+class DpCaptchaType extends AbstractType
 {
     /**
      * @var LanguageManager
@@ -91,9 +88,9 @@ class CaptchaType extends AbstractType
             }
 
             if ($this->isRecaptchaEnabled()) {
-                $form->add('captcha', 'deskpro_recaptcha');
+                $form->add('captcha', ReCaptchaType::class);
             } else {
-                $form->add('captcha', 'captcha', [
+                $form->add('captcha', CaptchaType::class, [
                     'label'           => false,
                     'as_url'          => true,
                     'invalid_message' => 'portal.forms.error_captcha',
@@ -108,7 +105,7 @@ class CaptchaType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'deskpro_captcha';
     }
@@ -121,7 +118,7 @@ class CaptchaType extends AbstractType
         $resolver->setDefaults([
             'label'  => false,
             'mapped' => false,
-            'help'   => function (Options $options) {
+            'help'   => function () {
                 if ($this->isRecaptchaEnabled()) {
                     return false;
                 }

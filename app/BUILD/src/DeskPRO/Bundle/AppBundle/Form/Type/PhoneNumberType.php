@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Orb\Util\PhoneNumbers;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -55,11 +56,11 @@ class PhoneNumberType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('number', 'hidden', [
+            ->add('number', HiddenType::class, [
                 'required' => false,
 
             ])
-            ->add('extension', 'hidden', [
+            ->add('extension', HiddenType::class, [
                 'required'      => false,
                 'property_path' => 'ext',
             ])
@@ -86,10 +87,8 @@ class PhoneNumberType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'data_class' => PhoneNumber::class,
-            ]
-        );
+        $resolver->setDefaults([
+            'data_class' => PhoneNumber::class,
+        ]);
     }
 }

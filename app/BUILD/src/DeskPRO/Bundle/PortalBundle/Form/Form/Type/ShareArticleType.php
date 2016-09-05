@@ -109,7 +109,7 @@ class ShareArticleType extends AbstractType
                 $form = $event->getForm();
 
                 if ($this->captcha_decider->shouldRequireShareCaptchaForCurrentPerson()) {
-                    $form->add('captcha', 'deskpro_captcha');
+                    $form->add('captcha', DpCaptchaType::class);
                 }
             }
         );

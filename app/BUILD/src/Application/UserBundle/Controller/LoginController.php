@@ -61,6 +61,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType;
 use DeskPRO\Bundle\PortalBundle\Twig\Environment;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\OptimisticLockException;
@@ -108,9 +109,6 @@ class LoginController extends AbstractController
      */
     protected $auth_manager;
 
-    /**
-     *
-     */
     public function init()
     {
         parent::init();
@@ -197,9 +195,6 @@ class LoginController extends AbstractController
         return false;
     }
 
-    /**
-     *
-     */
     protected function _logoutPerson()
     {
         // When an agent actually logs out, we should be clearing the state
@@ -269,7 +264,7 @@ class LoginController extends AbstractController
                 return $this->createJsonResponse(['logged_out' => true]);
             }
         } elseif ($this->in->getString('quicklogout') == 'pop') {
-            $html = <<<HTML
+            $html = <<<'HTML'
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -414,7 +409,7 @@ HTML;
         $captcha = null;
 
         if ($check->isCaptchaRecommended()) {
-            $form = $this->createForm('deskpro_captcha');
+            $form = $this->createForm(DpCaptchaType::class);
 
             $form->submit($request->request->get('deskpro_captcha'));
             if (!$form->isValid()) {
@@ -681,9 +676,6 @@ HTML;
         }
     }
 
-    /**
-     *
-     */
     public function _doLoginSuccess()
     {
         return;
@@ -714,9 +706,9 @@ HTML;
         return $authResult;
     }
 
-    ############################################################################
-    # Usersource auth
-    ############################################################################
+    //###########################################################################
+    // Usersource auth
+    //###########################################################################
 
     /**
      * @param $usersource_id
@@ -741,17 +733,17 @@ HTML;
         }
         $adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'));
 
-        #------------------------------
-        # This needs to be an allowed adapter via settings
-        # -----------------------------
+        //------------------------------
+        // This needs to be an allowed adapter via settings
+        // -----------------------------
 
         if (!$usersource_test && !$this->auth_manager->isUsableUsersource($usersource)) {
             throw $this->createNotFoundException('it is illegal to use this usersource in this context');
         }
 
-        #------------------------------
-        # Callback types require us to redirect
-        #------------------------------
+        //------------------------------
+        // Callback types require us to redirect
+        //------------------------------
 
         $route_type = 'user';
         if (defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
@@ -832,9 +824,9 @@ HTML;
                 return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
             }
 
-            #------------------------------
-            # Other types should return a result right away
-            #------------------------------
+            //------------------------------
+            // Other types should return a result right away
+            //------------------------------
         } else {
             $result = $adapter->authenticate();
 
@@ -970,9 +962,9 @@ HTML;
         return $factory->getAuthAdapter($usersource, $displayContext, $useInterface);
     }
 
-    ############################################################################
-    # Resetting passwords
-    ############################################################################
+    //###########################################################################
+    // Resetting passwords
+    //###########################################################################
 
     /**
      * @param string  $_format
@@ -983,7 +975,7 @@ HTML;
      *
      * @return Response
      */
-    public function sendResetPasswordAction($_format = 'html', Request $request)
+    public function sendResetPasswordAction($_format, Request $request)
     {
         $p = $this->session->getPerson();
         if ($p && !$p instanceof PersonGuest) {
@@ -1181,9 +1173,9 @@ HTML;
         ]);
     }
 
-    ############################################################################
-    # agent-login
-    ############################################################################
+    //###########################################################################
+    // agent-login
+    //###########################################################################
 
     /**
      * @param Request $request
@@ -1284,12 +1276,12 @@ HTML;
         return $this->redirectRoute('agent');
     }
 
-    ############################################################################
-    # Usersource SSO
-    #
-    # This action should ONLY be used when logging in via the background (iframe)
-    # Use the standard callback URL if user is to see the response of this
-    ############################################################################
+    //###########################################################################
+    // Usersource SSO
+
+    // This action should ONLY be used when logging in via the background (iframe)
+    // Use the standard callback URL if user is to see the response of this
+    //###########################################################################
 
     /**
      * @param $usersource_id

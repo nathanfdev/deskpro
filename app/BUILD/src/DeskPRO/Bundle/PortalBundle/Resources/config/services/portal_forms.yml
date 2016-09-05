@@ -81,62 +81,51 @@ services:
 
   form.comment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CommentType
-    tags:
-      - { name: form.type, alias: comment }
     arguments:
       - "@captcha_decider"
       - "@language_manager"
+    tags:
+      - { name: form.type, alias: comment }
 
   form.new_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType
     arguments: ["@captcha_decider", "@language_manager", "@custom_field_manager", "@form_hierarchy_generator"]
     tags:
-      - { name: form.type, alias: new_feedback }
+      - { name: form.type }
 
   form.feedback_attachment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentType
     arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
     tags:
-      - { name: form.type, alias: feedback_attachment }
-
-  form.feedback_attachment_collection:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentCollectionType
-    tags:
-      - { name: form.type, alias: feedback_attachment_collection }
+      - { name: form.type }
 
   form.request_password_reset:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PasswordResetRequestType
-    tags:
-      - { name: form.type }
     arguments:
       - "@captcha_decider"
       - "@language_manager"
+    tags:
+      - { name: form.type }
 
   form.person_change_password:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType
-    tags:
-      - { name: form.type }
     arguments:
       - "@captcha_decider"
       - "@deskpro.core.translate"
+    tags:
+      - { name: form.type }
 
   form.captcha:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CaptchaType
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType
     arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
     tags:
-      - { name: form.type, alias: deskpro_captcha }
+      - { name: form.type }
 
   form.recaptcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType
     arguments: ["@brand_stack", "@language_manager"]
     tags:
-      - { name: form.type, alias: deskpro_recaptcha }
-
-  form.blob:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\BlobType
-    arguments: ["@doctrine.orm.default_entity_manager", "@blob.storage", "@blob_repository"]
-    tags:
-      - { name: form.type, alias: deskpro_blob }
+      - { name: form.type }
 
   form.api.chat_create:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType

@@ -38,6 +38,10 @@ use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -84,7 +88,7 @@ class PersonRegistrationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', [
+            ->add('name', TextType::class, [
                 'label'       => $this->language_manager->phrase('portal.forms.label_name'),
                 'required'    => true,
                 'constraints' => [
@@ -95,7 +99,7 @@ class PersonRegistrationType extends AbstractType
                 'label'    => $this->language_manager->phrase('portal.forms.label_email'),
                 'required' => true,
             ])
-            ->add('password', 'repeated', [
+            ->add('password', RepeatedType::class, [
                 'first_name'    => 'password',
                 'first_options' => [
                     'label' => $this->language_manager->phrase('portal.forms.label_password'),
@@ -104,7 +108,7 @@ class PersonRegistrationType extends AbstractType
                 'second_options' => [
                     'label' => $this->language_manager->phrase('portal.forms.label_password_confirm'),
                 ],
-                'type'        => 'password',
+                'type'        => PasswordType::class,
                 'mapped'      => false,
                 'required'    => true,
                 'constraints' => [
@@ -112,7 +116,7 @@ class PersonRegistrationType extends AbstractType
                     new DpPassword(['person' => new PersonGuest()]),
                 ],
             ])
-            ->add('timezone', 'timezone', [
+            ->add('timezone', TimezoneType::class, [
                 'label' => $this->language_manager->phrase('portal.forms.label_timezone'),
             ])
         ;
@@ -134,7 +138,7 @@ class PersonRegistrationType extends AbstractType
             }
 
             if ($captcha_decider->shouldRequireRegistrationCaptchaForCurrentPerson()) {
-                $event->getForm()->add('captcha', 'deskpro_captcha');
+                $event->getForm()->add('captcha', DpCaptchaType::class);
             }
         });
 
