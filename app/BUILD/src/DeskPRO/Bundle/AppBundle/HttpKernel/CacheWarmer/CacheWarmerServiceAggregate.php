@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\HttpKernel\CacheWarmer;
 
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
@@ -48,6 +49,12 @@ class CacheWarmerServiceAggregate implements CacheWarmerInterface
      */
     private $optionalsEnabled = false;
 
+    /**
+     * Constructor.
+     *
+     * @param ContainerInterface $container
+     * @param array              $warmerServiceIds
+     */
     public function __construct(ContainerInterface $container, array $warmerServiceIds)
     {
         $this->container        = $container;
@@ -78,6 +85,14 @@ class CacheWarmerServiceAggregate implements CacheWarmerInterface
      */
     public function warmUp($cacheDir)
     {
+        // we need to ensure that proxy auto generation is disabled to warm up doctrine proxy cache
+        // otherwise it will be just skipped
+        /** @var EntityManager[] $ems */
+        $ems = $this->container->get('doctrine')->getManagers();
+        foreach ($ems as $em) {
+            $em->getConfiguration()->setAutoGenerateProxyClasses(false);
+        }
+
         foreach ($this->warmerServiceIds as $sid) {
             $warmer = $this->container->get($sid);
             if (!$warmer instanceof CacheWarmerInterface) {
@@ -86,6 +101,7 @@ class CacheWarmerServiceAggregate implements CacheWarmerInterface
             if (!$this->optionalsEnabled && $warmer->isOptional()) {
                 continue;
             }
+
             $warmer->warmUp($cacheDir);
         }
     }

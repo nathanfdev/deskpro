@@ -49,7 +49,7 @@ class AnnotationsCacheWarmer implements CacheWarmerInterface
     private $container;
 
     /**
-     * AnnotationsCacheWarmer constructor.
+     * Constructor.
      *
      * @param ContainerInterface $container
      */
@@ -58,15 +58,16 @@ class AnnotationsCacheWarmer implements CacheWarmerInterface
         $this->container = $container;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isOptional()
     {
         return true; // we dont want to do this in dev env
     }
 
     /**
-     * Warms up the cache.
-     *
-     * @param string $cacheDir The cache directory
+     * {@inheritdoc}
      */
     public function warmUp($cacheDir)
     {
@@ -83,12 +84,21 @@ class AnnotationsCacheWarmer implements CacheWarmerInterface
         }
     }
 
+    /**
+     * @param $fqcns
+     */
     private function cacheAnnotations($fqcns)
     {
+        $annotaionReader = $this->container->get('annotation_reader');
+
         foreach ($fqcns as $fqcn) {
+            if (!class_exists($fqcn)) {
+                continue;
+            }
+
             try {
                 $reflection = new \ReflectionClass($fqcn);
-                $this->container->get('annotation_reader')->getClassAnnotations($reflection);
+                $annotaionReader->getClassAnnotations($reflection);
             } catch (\Exception $e) {
             }
         }
