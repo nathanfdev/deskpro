@@ -57,7 +57,7 @@ export class AgentOnboarding extends React.Component {
     onboarding:        PropTypes.object.isRequired,
     pauseOnboarding:   PropTypes.func.isRequired,
     resumeOnboarding:  PropTypes.func.isRequired,
-    updateCurrentStep: PropTypes.func.isRequired,
+    updateCurrentStep: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -115,6 +115,7 @@ export class AgentOnboarding extends React.Component {
     if (!intro || currentStep > 0) {
       return null;
     }
+
     const width = $(window).width();
     const height = $(window).height();
     const style = { left: (width / 2) - 280, top: (height / 2) - 320 };
