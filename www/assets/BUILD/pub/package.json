@@ -183,7 +183,7 @@
     "eslint": "eslint src || true",
     "eslint-pre-commit": "eslint",
     "eslint-fix": "eslint --fix",
-    "resources:copy": "cpx src/**/Resources/**/*.{gif,png,jpg,svg} build",
+    "resources:copy": "cpx \"src/**/Resources/**/*.{gif,png,jpg,svg}\" build",
     "gulp": "gulp && npm run resources:copy",
     "gulp-dev-agent": "gulp dev:agent",
     "gulp-dev-all": "gulp dev:all",

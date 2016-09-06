@@ -37,7 +37,7 @@ class HttpClient extends Client
     {
         // cp from \DeskPRO_LowUtil_RequestCurl::setCaBundle
         if (false !== @$config[RequestOptions::VERIFY] && !defined('DP_CURL_USE_SYS_CA_BUNDLE') && defined('DP_ROOT')) {
-            $config[RequestOptions::VERIFY] = DP_ROOT.implode(DIRECTORY_SEPARATOR, ['sys', 'Resources', 'cacert.pem']);
+            $config[RequestOptions::VERIFY] = DP_ROOT.DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, ['sys', 'Resources', 'cacert.pem']);
         }
         parent::__construct($config);
     }

@@ -79,7 +79,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 					@$scope.settings.deskpro_url += '/'
 					me = @
 
-					pingUrl = @$scope.settings.deskpro_url + 'index.php?_sys=ping&type=jsonp&callback=JSON_CALLBACK'
+					pingUrl = @$scope.settings.deskpro_url + '/__serverinfo/ping?jsonp&callback=angular.callbacks._0'
 					@$http.jsonp(pingUrl).success(=>
 						@orig_url = @$scope.settings.deskpro_url
 						@save()

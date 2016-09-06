@@ -45,13 +45,13 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Numbers;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * An organization is a grouping we put similar people into (eg companies).
  */
-class Organization extends DomainObject
-    implements HighlightableModelInterface, AvatarOwner, Entity\Labels\LabelsOwner, Entity\Hierarchy\Hierarchical
+class Organization extends DomainObject implements HighlightableModelInterface, AvatarOwner, Entity\Labels\LabelsOwner, Entity\Hierarchy\Hierarchical
 {
     /**
      * The unique ID.
@@ -607,23 +607,23 @@ class Organization extends DomainObject
         if ($this->picture_blob) {
             $url = App::get('router')->generate(
                 'serve_blob_sizefit',
-                array(
+                [
                     'blob_auth_id' => $this->picture_blob->getAuthId(),
                     'filename'     => $this->picture_blob->getFilenameSafe(),
                     's'            => $size,
-                ),
-                true
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
             );
         }
 
         if (!$url) {
             $url = App::get('router')->generate(
                 'serve_org_picture_default',
-                array(
+                [
                     's'        => $size,
                     'size-fit' => 1,
-                ),
-                true
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
             );
         }
 
@@ -858,9 +858,9 @@ class Organization extends DomainObject
         return $this->tickets->count();
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\FeedbackAttachment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -88,8 +89,8 @@ class FeedbackAttachmentCollectionType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'type'    => 'feedback_attachment',
-                'options' => function (Options $options) {
+                'entry_type'    => FeedbackAttachmentType::class,
+                'entry_options' => function (Options $options) {
                     return [
                         'person' => $options['person'],
                         'label'  => false,
@@ -109,13 +110,13 @@ class FeedbackAttachmentCollectionType extends AbstractType
      */
     public function getParent()
     {
-        return 'collection';
+        return CollectionType::class;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'feedback_attachment_collection';
     }

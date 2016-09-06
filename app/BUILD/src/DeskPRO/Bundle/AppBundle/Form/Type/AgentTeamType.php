@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -51,12 +47,16 @@ class AgentTeamType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, ['required' => true])
-            ->add('avatar', BlobAuthType::class, ['required' => false])
+            ->add('name', TextType::class, [
+                'required' => true,
+            ])
+            ->add('avatar', BlobAuthType::class, [
+                'required' => false,
+            ])
             ->add('members', EntityType::class, [
-                'class'    => Person::class,
-                'property' => 'id',
-                'multiple' => true,
+                'class'        => Person::class,
+                'choice_label' => 'id',
+                'multiple'     => true,
             ]);
     }
 
@@ -65,6 +65,8 @@ class AgentTeamType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => AgentTeam::class]);
+        $resolver->setDefaults([
+            'data_class' => AgentTeam::class,
+        ]);
     }
 }

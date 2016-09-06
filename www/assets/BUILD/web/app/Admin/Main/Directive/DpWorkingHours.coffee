@@ -37,7 +37,7 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 
         currentYear = new Date().getFullYear();
         scope.years = []
-        for i in [currentYear..currentYear+3]
+        for i in [currentYear..currentYear+9]
           scope.years.push {id: i, label: i + ""}
 
 

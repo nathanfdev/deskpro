@@ -58,6 +58,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -124,8 +125,13 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @JMS\ExclusionPolicy("all")
  * @Assert\GroupSequenceProvider
  */
-class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable,
-    EquatableInterface, LabelsOwner, GroupSequenceProviderInterface
+class Person extends DomainObject implements
+HighlightableModelInterface,
+UserInterface,
+\Serializable,
+    EquatableInterface,
+LabelsOwner,
+GroupSequenceProviderInterface
 {
     const CREATED_WEB_PERSON     = 'web.person';
     const CREATED_WEB_AGENT      = 'web.agent';
@@ -652,7 +658,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             try {
                 $this->setTimezone(App::$container->getSetting('core.default_timezone'));
             } catch (\Exception $e) {
-            };
+            }
         }
         if (!$this->timezone) {
             $this->setModelField('timezone', 'UTC');
@@ -1357,7 +1363,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * Sets the hashed form of the password for this user. Used with local auth.
      *
      * @param string $plain_password     The password to set
-     * @param bool   $expire_immediately True to make the user enter a new password next time they log in.
+     * @param bool   $expire_immediately True to make the user enter a new password next time they log in
      *
      * @return string
      */
@@ -2751,7 +2757,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                         'filename'     => $this->picture_blob->getFilenameSafe(),
                         's'            => $size,
                     ],
-                    true
+                    UrlGeneratorInterface::ABSOLUTE_URL
                 );
             } elseif (App::getSetting('core.use_gravatar') && $this->primary_email && $this->primary_email->getId()) {
                 $url = $this->getGravatarUrl($size, $secure);
@@ -2768,7 +2774,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                         's'        => $size,
                         'size-fit' => 1,
                     ],
-                    true
+                    UrlGeneratorInterface::ABSOLUTE_URL
                 );
             }
         }
@@ -3035,8 +3041,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->_person_logger;
     }
 
-    /**
-     */
     public function _savePersonLogs()
     {
         if (isset($GLOBALS['DP_IS_IMPORTING'])) {
@@ -3097,7 +3101,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             try {
                 $this->setTimezone(App::$container->getSetting('core.default_timezone'));
             } catch (\Exception $e) {
-            };
+            }
         }
 
         if ($this->_person_logger) {
@@ -3396,7 +3400,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      *
      * @deprecated see \Application\DeskPRO\DependencyInjection\SystemServices\PersonApiDataFactoryService
      *             The factory service is better suited. This method is still widely used, but its encourages
-     *             to use the factory service going forward.
+     *             to use the factory service going forward
      */
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
@@ -3623,9 +3627,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         });
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

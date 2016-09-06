@@ -244,9 +244,12 @@ function getWebpackConfig(mode, isProd) {
   };
 
   if (mode === 'all' || mode === 'portal') {
-    config.entry.widget_loader               = ['./src/DeskPRO/Bundle/WidgetBundle/widget_loader.js'];
+    config.entry.widget_loader               = [path.join(__dirname, 'build/widget_loader.js')];
     config.entry['widget_loader.min']        = [path.join(__dirname, 'build/widget_loader.min.js')];
-    config.entry.embed_loader                = ['./src/DeskPRO/Bundle/WidgetBundle/embed_loader.js'];
+    config.entry.embed_loader                = [path.join(__dirname, 'build/embed_loader.js')];
+    config.entry['embed_loader.min']         = [path.join(__dirname, 'build/embed_loader.min.js')];
+    config.entry.hit_recorder                = [path.join(__dirname, 'build/hit_recorder.js')];
+    config.entry['hit_recorder.min']         = [path.join(__dirname, 'build/hit_recorder.min.js')];
     config.entry.iframeResizer_contentWindow = ['./node_modules/iframe-resizer/js/iframeResizer.contentWindow.js'];
     config.entry.DeskPRO_PortalBundle        = ['./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle'];
 

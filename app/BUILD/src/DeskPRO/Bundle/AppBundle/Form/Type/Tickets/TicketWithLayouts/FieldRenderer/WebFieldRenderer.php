@@ -70,7 +70,7 @@ class WebFieldRenderer implements FieldRendererInterface
 
         // attachments field should have more_attachments button for portal
         if ($field->getFieldType() === FormFields::ATTACHMENTS) {
-            $form->add('more_attachments', 'submit', [
+            $form->add('more_attachments', SubmitType::class, [
                 'validation_groups' => false,
                 'label'             => $this->languageManager->phrase('portal.forms.label_add_attachment'),
             ]);

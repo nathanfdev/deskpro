@@ -105,10 +105,12 @@ class PermissionContext extends BaseContext
                 'DELETE FROM permissions WHERE usergroup_id = ? AND name = ?',
                 [$gid, $permissionName]
             );
-            $connection->executeUpdate(
-                'INSERT INTO permissions SET usergroup_id = ?, name = ?, value = ?',
-                [$gid, $permissionName, $value]
-            );
+            if ($value) {
+                $connection->executeUpdate(
+                    'INSERT INTO permissions SET usergroup_id = ?, name = ?, value = ?',
+                    [$gid, $permissionName, $value]
+                );
+            }
         }
 
         $connection->executeUpdate('DELETE FROM permissions_cache');

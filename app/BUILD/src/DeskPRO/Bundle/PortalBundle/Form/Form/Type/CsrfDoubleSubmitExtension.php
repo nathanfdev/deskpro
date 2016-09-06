@@ -26,15 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -103,7 +100,7 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
 
             $csrfForm = $factory->createNamed(
                 $options['csrf_double_submit_cookie_name'],
-                'hidden',
+                HiddenType::class,
                 '',
                 [
                     'mapped' => false,

@@ -51,9 +51,11 @@ class UrlHostChecker
             return false;
         }
 
-        $checkScheme = parse_url($checkUrl, PHP_URL_SCHEME) ?: 'http';
-        $checkHost   = parse_url($checkUrl, PHP_URL_HOST);
-        $checkPort   = parse_url($checkUrl, PHP_URL_PORT);
+        $parsed = parse_url($checkUrl);
+
+        $checkScheme = @$parsed['scheme'] ?: 'http';
+        $checkHost   = @$parsed['host'];
+        $checkPort   = @$parsed['port'];
         if (!$checkPort) {
             $checkPort = $checkScheme === 'https' ? 443 : 80;
         }
@@ -94,14 +96,14 @@ class UrlHostChecker
             return true;
         }
 
-        $scheme = parse_url($verifiedUrl, PHP_URL_SCHEME) ?: 'http';
+        $parsed = parse_url($verifiedUrl);
+        $scheme = @$parsed['scheme'] ?: 'http';
 
-        if (!$host = parse_url($verifiedUrl, PHP_URL_HOST)) {
+        if (!$host = @$parsed['host']) {
             return false;
         }
 
-        $port = parse_url($verifiedUrl, PHP_URL_PORT);
-        if (!$port) {
+        if (!$port = @$parsed['port']) {
             $port = $scheme === 'https' ? 443 : 80;
         }
 
@@ -114,9 +116,10 @@ class UrlHostChecker
         if (substr($url, 0, 2) != '//' && substr($url, 0, 4) != 'http') {
             $url = '//'.$url;
         }
-        $host = parse_url($url, PHP_URL_HOST);
-        $host = preg_replace('/^www\./', '', $host);
-        $port = parse_url($url, PHP_URL_PORT);
+        $parsed = parse_url($url);
+        $host   = @$parsed['host'];
+        $host   = preg_replace('/^www\./', '', $host);
+        $port   = @$parsed['port'];
 
         return $host.(($port && $port != 80) ? ':'.$port : '');
     }

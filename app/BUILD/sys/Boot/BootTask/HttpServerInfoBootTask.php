@@ -88,7 +88,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
                     if ($msg) {
                         $ret['message'] = $msg;
                     }
-                    echo $_GET['callback'];
+                    echo preg_replace('/[^a-zA-Z0-9\._]/', '', $_GET['callback']);
                     echo '(';
                     echo json_encode($ret);
                     echo ');';
@@ -104,7 +104,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
 
             case 'check_http_methods':
                 header('Content-Type: text/plain');
-                echo 'HTTP_METHOD_'.strtoupper(@$_SERVER['REQUEST_METHOD']);
+                echo 'HTTP_METHOD_'.htmlspecialchars_decode(strtoupper(@$_SERVER['REQUEST_METHOD']));
                 exit;
         }
     }

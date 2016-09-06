@@ -240,7 +240,7 @@ class TemplatingExtension extends \Twig_Extension
     public function getPath($name, $parameters = [])
     {
         try {
-            return $this->container->getRouter()->generate($name, $parameters, false);
+            return $this->container->getRouter()->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_PATH);
         } catch (\Exception $e) {
             if ($this->container->isDebug()) {
                 throw $e;
@@ -253,7 +253,7 @@ class TemplatingExtension extends \Twig_Extension
     public function getUrl($name, $parameters = [])
     {
         try {
-            return $this->container->getRouter()->generate($name, $parameters, true);
+            return $this->container->getRouter()->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
         } catch (\Exception $e) {
             if ($this->container->isDebug()) {
                 throw $e;
@@ -346,7 +346,7 @@ class TemplatingExtension extends \Twig_Extension
     {
         $hash = strtolower(md5($email));
         $url  = 'http://www.gravatar.com/avatar/'.$hash.'?';
-        $url .= '&d='.$this->container->getRouter()->generate('serve_default_picture', ['s' => $size], true);
+        $url .= '&d='.$this->container->getRouter()->generate('serve_default_picture', ['s' => $size], UrlGeneratorInterface::ABSOLUTE_URL);
 
         return $url;
     }

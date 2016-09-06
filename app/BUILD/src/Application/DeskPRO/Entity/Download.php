@@ -46,6 +46,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -388,7 +389,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
             $data['downloadurl'] = App::getRouter()->generate(
                 'serve_blob',
                 ['blob_auth_id' => $this->blob->auth_id, 'filename' => $this->getFilenameSafe()],
-                true
+                UrlGeneratorInterface::ABSOLUTE_URL
             );
         }
 
@@ -453,9 +454,9 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
         return $history;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
