@@ -7,7 +7,7 @@ import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
 import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
-import AgentTopBar from './Modules/TopBar/Components/AgentTopBar';
+import { AgentTopBarContainer } from './Modules/TopBar/Components/AgentTopBar';
 import { SideBarContainer } from './Modules/SideBar/Components/SideBar';
 import { AgentList } from './Modules/Agent/Components/AgentList';
 import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
@@ -31,7 +31,7 @@ class AgentLegacyApp {
       || !this.store.getState().Application.bootstrap.get('isBootstrapped')) {
       setTimeout(this.start.bind(this), 100);
     } else {
-      this.renderPiece(AgentTopBar, AgentTopBar.getType());
+      this.renderPiece(AgentTopBarContainer, AgentTopBarContainer.getType());
       this.renderPiece(AgentList, AgentList.getType());
       this.renderPiece(SideBarContainer, SideBarContainer.getType());
       this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());

@@ -1,10 +1,16 @@
 import React from 'react';
+import Isvg from 'react-inlinesvg';
+import Immutable from 'immutable';
 import { storiesOf, action } from '@kadira/storybook';
 import User from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/User';
 import AddButton from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AddButton';
 import Chat from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/Chat';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
+import recentSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg';
+import viewsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg';
+import notificationsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg';
+import teleOperator from '../../../Resources/teleoperator.jpg';
 import { css } from '../../../decorators';
 
 const agents = [
@@ -712,27 +718,36 @@ storiesOf('App: top bar', module)
   .addDecorator(story => css(story()))
   .add(
     'Top bar',
-    () => <TopBar>
-      <div className="logo">
-        <img src="/assets/BUILD/web/images/dp-logo-48.png" alt="DeskPRO logo" />
-      </div>
-      <SearchBox onUserInput={action('Search')} placeholder="Search ..." />
-      <TopBarItem>
-        <i className="icon wait" />
-      </TopBarItem>
-      <AddButton />
-      <TopBarRightMenu>
-        <TopBarItem>
-          <div className="views" />
+    () => <div id="react_dp_agent_top_bar">
+      <TopBar>
+        <TopBarItem classes={['search-box legacy-omnibox']}>
+          <SearchBox onUserInput={action('Search')} placeholder="Search ..." />
         </TopBarItem>
-        <TopBarItem>
-          <TopBarNotificationIcon elementId="notifications" icon="alarm outline" count="2" />
+        <TopBarItem classes={['recent']}>
+          <Isvg src={recentSvg} />
         </TopBarItem>
-        <TopBarItem>
-          <User src="teleoperator.jpg" />
-          <Chat agents={agents} onlineAgents={['1', '8', '6']} />
-        </TopBarItem>
-      </TopBarRightMenu>
-    </TopBar>
+        <AddButton />
+        <TopBarRightMenu>
+          <TopBarItem classes={['views']}>
+            <Isvg src={viewsSvg} />
+          </TopBarItem>
+          <TopBarItem>
+            <TopBarNotificationIcon
+              elementId="notifications"
+              svg={notificationsSvg}
+              count="2"
+            />
+          </TopBarItem>
+          <TopBarItem>
+            <User src={teleOperator} />
+            <Chat
+              agents={Immutable.fromJS(agents)}
+              onlineAgents={['1', '8', '6']}
+              updateVolume={action('Update volume')}
+            />
+          </TopBarItem>
+        </TopBarRightMenu>
+      </TopBar>
+    </div>
   )
 ;

@@ -21,13 +21,11 @@ import User from './User';
   chatDepartments: collectionSelectorFactory('Department', 'all_tickets')(state),
   me:              meSelector(state),
 }))
-class AgentTopBar extends SeparateComponent {
-
+export class AgentTopBarContainer extends SeparateComponent {
   static propTypes = {
     agents:          PropTypes.object.isRequired,
     chatDepartments: PropTypes.object.isRequired,
-    me:              PropTypes.object,
-    TopBar:          PropTypes.object
+    me:              PropTypes.object
   };
 
   constructor(props) {
@@ -46,8 +44,7 @@ class AgentTopBar extends SeparateComponent {
     return 'AgentTopBar';
   }
 
-  onChatVolumeUpdate(newVal) {
-    const volume = newVal / 10;
+  updateVolume(volume) {
     window.DeskPRO_Window.volume = volume;
 
     window.$('audio').each(function changeVolume() {
@@ -90,6 +87,60 @@ class AgentTopBar extends SeparateComponent {
     }
   }
 
+  toggleViewMode() {
+    if (window.DeskPRO_Window.paneVis.tabs && window.DeskPRO_Window.paneVis.list) {
+      window.DeskPRO_Window.$scope.oneColumnView();
+    } else {
+      window.DeskPRO_Window.$scope.twoColumnsView();
+    }
+  }
+
+  closeIframes() {
+    for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
+      const iframe = window.DP_FRAME_OVERLAYS[key];
+      if (iframe.opened) {
+        iframe.close();
+      }
+    }
+  }
+
+  render() {
+    const props = { ...this.props,
+      updateVolume:      this.updateVolume,
+      onSearch:          this.onSearch,
+      onSearchFocus:     this.onSearchFocus,
+      onSearchBlur:      this.onSearchBlur,
+      toggleViewMode:    this.toggleViewMode,
+      onRecent:          this.onRecent,
+      onNotification:    this.onNotification,
+      closeIframes:      this.closeIframes,
+      notificationCount: this.state.notificationCount
+    };
+    return <AgentTopBar {...props} />;
+  }
+}
+export class AgentTopBar extends React.Component {
+
+  static propTypes = {
+    agents:            PropTypes.object.isRequired,
+    chatDepartments:   PropTypes.object.isRequired,
+    me:                PropTypes.object,
+    TopBar:            PropTypes.object,
+    notificationCount: PropTypes.number,
+    updateVolume:      PropTypes.func,
+    onSearch:          PropTypes.func,
+    onSearchFocus:     PropTypes.func,
+    onSearchBlur:      PropTypes.func,
+    onRecent:          PropTypes.func,
+    onNotification:    PropTypes.func,
+    closeIframes:      PropTypes.func,
+    toggleViewMode:    PropTypes.func,
+  };
+
+  onChatVolumeUpdate = (newVal) => {
+    this.props.updateVolume(newVal / 10);
+  };
+
   getUserPicture = () => {
     const { me } = this.props;
     if (!me) {
@@ -107,37 +158,19 @@ class AgentTopBar extends SeparateComponent {
     return '';
   };
 
-  closeIframes() {
-    for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
-      const iframe = window.DP_FRAME_OVERLAYS[key];
-      if (iframe.opened) {
-        iframe.close();
-      }
-    }
-  }
-
-  toggleViewMode() {
-    if (window.DeskPRO_Window.paneVis.tabs && window.DeskPRO_Window.paneVis.list) {
-      window.DeskPRO_Window.$scope.oneColumnView();
-    } else {
-      window.DeskPRO_Window.$scope.twoColumnsView();
-    }
-  }
-
   render() {
-    const { notificationCount } = this.state;
-    const { agents, chatDepartments } = this.props;
+    const { agents, chatDepartments, notificationCount } = this.props;
 
     return (<TopBar>
       <TopBarItem classes={['search-box legacy-omnibox']}>
         <SearchBox
-          onUserInput={this.onSearch}
-          onFocus={this.onSearchFocus}
-          onBlur={this.onSearchBlur}
+          onUserInput={this.props.onSearch}
+          onFocus={this.props.onSearchFocus}
+          onBlur={this.props.onSearchBlur}
           placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
         />
       </TopBarItem>
-      <TopBarItem classes={['legacy-omnibox recent']} onClick={this.onRecent}>
+      <TopBarItem classes={['legacy-omnibox recent']} onClick={this.props.onRecent}>
         <Isvg src={recentSvg} />
       </TopBarItem>
       {/* <TopBarItem classes={['z-index-stub']}>*/}
@@ -145,12 +178,12 @@ class AgentTopBar extends SeparateComponent {
         {/* <IMContainer />*/}
       {/* </TopBarItem>*/}
 
-      <AddButton closeIframes={this.closeIframes} />
+      <AddButton closeIframes={this.props.closeIframes} />
       <TopBarRightMenu>
-        <TopBarItem classes={['views']} onClick={this.toggleViewMode}>
+        <TopBarItem classes={['views']} onClick={this.props.toggleViewMode}>
           <Isvg src={viewsSvg} />
         </TopBarItem>
-        <TopBarItem classes={['legacy-omnibox notifications']} onClick={this.onNotification}>
+        <TopBarItem classes={['legacy-omnibox notifications']} onClick={this.props.onNotification}>
           <TopBarNotificationIcon
             elementId="notifications"
             svg={notificationsSvg}
@@ -162,7 +195,8 @@ class AgentTopBar extends SeparateComponent {
           <Chat
             agents={agents.toArray()}
             chatDepartments={chatDepartments.toArray()}
-            updateVolume={this.onChatVolumeUpdate} volume={8}
+            updateVolume={this.onChatVolumeUpdate}
+            volume={8}
           />
         </TopBarItem>
       </TopBarRightMenu>
