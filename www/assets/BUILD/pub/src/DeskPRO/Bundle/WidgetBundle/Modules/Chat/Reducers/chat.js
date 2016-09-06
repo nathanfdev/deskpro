@@ -31,7 +31,8 @@ const initialState = {
   },
   messages:      [],
   attachments:   [],
-  feedbackStage: 'dialog'
+  feedbackStage: 'dialog',
+  retries:       0
 };
 
 export default createReducer(initialState, {
@@ -120,5 +121,10 @@ export default createReducer(initialState, {
 
   // Feedback
   [actions.showNotHelpfulForm]: setValue('feedbackStage', 'form'),
-  [actions.sendFeedback]:       setValue('feedbackStage', 'finished')
+  [actions.sendFeedback]:       setValue('feedbackStage', 'finished'),
+
+  [actions.pollingChat]: async({
+    success: setValue('retries', 0),
+    error:   store => store.set('retries', store.get('retries') + 1)
+  })
 });

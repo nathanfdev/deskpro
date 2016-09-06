@@ -4,7 +4,6 @@ import { ChatContentContainer } from './ChatContentContainer';
 import { MessageListContainer } from './List/MessageListContainer';
 import { ReplyFormContainer } from './Reply/ReplyFormContainer';
 import { RateAgentContainer } from './Feedback/RateAgentContainer';
-import { AgentDisconnectedContainer } from './Disconnect/AgentDisconnectedContainer';
 import { TypingEventContainer } from './List/Event/TypingEventContainer';
 
 export class ChatActive extends React.Component {
@@ -16,7 +15,6 @@ export class ChatActive extends React.Component {
         <ChatContentContainer>
           <MessageListContainer />
           <TypingEventContainer />
-          <AgentDisconnectedContainer />
           <RateAgentContainer />
           <ReplyFormContainer />
         </ChatContentContainer>
