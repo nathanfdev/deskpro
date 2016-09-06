@@ -255,7 +255,8 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'portal',
         label:     'Portal',
-        icon:      portalSvg
+        icon:      portalSvg,
+        href:      window.DESKPRO_PORTAL_HOME
       });
     }
     return menus;
@@ -285,9 +286,11 @@ export class SideBar extends React.Component {
   };
 
   clickMenu = (item) => {
-    this.props.changeSection(item.key);
     if (item.callback) {
+      this.props.changeSection(item.key);
       item.callback();
+    } else if (item.href) {
+      window.open(item.href, '_blank');
     }
   };
 

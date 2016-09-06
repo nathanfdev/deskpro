@@ -514,7 +514,7 @@ $transition-close-delay: 0.1s;
   width: $folded-width;
   transition: width $transition-close-time;
   transition-delay: $transition-close-delay;
-  z-index: 10000;
+  z-index: 1000;
   box-shadow: none;
   .logo {
     height: 51px;
