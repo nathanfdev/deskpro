@@ -45,6 +45,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
@@ -142,11 +143,11 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
         if (!$this->hasAvatar()) {
             return App::get('router')->generate(
                 'serve_default_picture',
-                array(
+                [
                     's'        => $size,
                     'size-fit' => 1,
-                ),
-                true
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
             );
         }
 
@@ -176,18 +177,18 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
         return $this->avatar;
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('name', new NotBlank());
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

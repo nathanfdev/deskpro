@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\TwitterStatusMention;
 use Application\DeskPRO\Entity\TwitterStatusTag;
 use Application\DeskPRO\Entity\TwitterStatusUrl;
 use Application\DeskPRO\Entity\TwitterUser;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Twitter
 {
@@ -517,14 +518,14 @@ class Twitter
                         } else {
                             $long_text = 'Read my long message: ';
                         }
-                        $long_text .= App::getRouter()->generate('user_long_tweet_view', array(
+                        $long_text .= App::getRouter()->generate('user_long_tweet_view', [
                             'long_id' => $long_status->id,
-                        ), true);
+                        ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                        $text_parts = array($long_text);
+                        $text_parts = [$long_text];
                     }
                 } else {
-                    $text_parts = array($text);
+                    $text_parts = [$text];
                 }
 
                 $new_account_statuses = $this->_sendStatus(
@@ -544,10 +545,10 @@ class Twitter
                         $long_status = $this->_addLongStatus($text, false, $to_user);
 
                         $long_text = 'I have sent you a long, private message. Sign in to see it. '
-                            .App::getRouter()->generate('user_long_tweet_view', array(
+                            .App::getRouter()->generate('user_long_tweet_view', [
                                 'long_id' => $long_status->id,
-                            ), true);
-                        $text_parts = array($long_text);
+                            ], UrlGeneratorInterface::ABSOLUTE_URL);
+                        $text_parts = [$long_text];
                     }
                 } else {
                     $text_parts = array($text);
@@ -564,10 +565,10 @@ class Twitter
                         $long_status = $this->_addLongStatus($text, false, $to_user);
 
                         $long_text = "@$to_user->screen_name I have sent you a private message. Sign in to see it. "
-                            .App::getRouter()->generate('user_long_tweet_view', array(
+                            .App::getRouter()->generate('user_long_tweet_view', [
                                 'long_id' => $long_status->id,
-                            ), true);
-                        $text_parts = array($long_text);
+                            ], UrlGeneratorInterface::ABSOLUTE_URL);
+                        $text_parts = [$long_text];
                     }
 
                     $new_account_statuses = $this->_sendStatus(
@@ -581,11 +582,11 @@ class Twitter
             $error = $this->getTwitterError($e);
         }
 
-        return array(
+        return [
             'success'              => !$error && !empty($new_account_statuses),
             'error'                => $error,
             'new_account_statuses' => $new_account_statuses,
-        );
+        ];
     }
 
     public function sendRetweet(TwitterAccount $account, TwitterAccountStatus $account_status)

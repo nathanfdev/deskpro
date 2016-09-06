@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -83,15 +83,15 @@ class CheckWhitelistedIP
         $container->getEm()->flush();
 
         $url = $container->get('router')->generate(
-            'agent_whitelist_ip', array('code' => $code_data->getCode()), UrlGeneratorInterface::ABSOLUTE_URL
+            'agent_whitelist_ip', ['code' => $code_data->getCode()], UrlGeneratorInterface::ABSOLUTE_URL
         );
-        $vars = array(
+        $vars = [
             'ip'        => $ip,
             'code'      => $code_data->getCode(),
             'person'    => $person,
             'interface' => DP_INTERFACE,
             'url'       => $url,
-        );
+        ];
 
         $message = $container->getMailer()->createMessage();
         $message->setTemplate('DeskPRO:emails_agent:whitelist-ip.html.twig', $vars);

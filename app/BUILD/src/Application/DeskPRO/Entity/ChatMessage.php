@@ -39,6 +39,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Basic hierarchical category entity. Hierarchy is maintained automatically
@@ -336,7 +337,7 @@ class ChatMessage extends DomainObject
                     's'        => $size,
                     'size-fit' => 1,
                 ],
-                true
+                UrlGeneratorInterface::ABSOLUTE_URL
             );
         }
 
@@ -463,8 +464,6 @@ class ChatMessage extends DomainObject
         return $this;
     }
 
-    /**
-     */
     public function _setUserName()
     {
         // If we have no name, then assume the message is
@@ -564,9 +563,9 @@ class ChatMessage extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 use Doctrine\DBAL\Connection;
@@ -37,6 +38,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class FixBlobPathsCommand extends ContainerAwareCommand
 {
@@ -149,7 +151,7 @@ class FixBlobPathsCommand extends ContainerAwareCommand
 
             $auth_id = $blob['authcode'];
 
-            $url = $this->getContainer()->get('router')->generate('serve_blob', array('blob_auth_id' => $auth_id, 'filename' => $filename_safe), false);
+            $url = $this->getContainer()->get('router')->generate('serve_blob', ['blob_auth_id' => $auth_id, 'filename' => $filename_safe], UrlGeneratorInterface::ABSOLUTE_PATH);
             $url = Strings::extractRegexMatch('#/file.php/\d+[A-Z0-9]+/#', $url, 0);
 
             if ($url === $url_str) {
