@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Labels\LabelManager;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
@@ -135,7 +136,19 @@ class ReplyActionsApplicator implements Loggable
 
             case 'labels':
                 foreach ($param as $l) {
-                    $ticket->addLabelByString($l);
+                    if ($label = LabelManager::normalizeLabel($l)) {
+                        $ticket->addLabelByString($l);
+                    } else {
+                        /* @todo remove after confirmed */
+                        /* @see https://trello.com/c/3yGjrcjU/2114-weird-empty-label */
+                        $this->logger->logError(
+                            'Trying to add an empty label in ReplyActionsApplicator',
+                            [
+                                'labels'    => $param,
+                                'ticket_id' => $ticket->getId(),
+                            ]
+                        );
+                    }
                 }
                 break;
 
