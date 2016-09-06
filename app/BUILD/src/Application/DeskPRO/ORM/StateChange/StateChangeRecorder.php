@@ -43,12 +43,12 @@ class StateChangeRecorder
     /**
      * @var int
      */
-    protected static $global_state_version = 0;
+    private static $global_state_version = 0;
 
     /**
      * @var int
      */
-    protected $state_version;
+    private $state_version;
 
     /**
      * @var array
