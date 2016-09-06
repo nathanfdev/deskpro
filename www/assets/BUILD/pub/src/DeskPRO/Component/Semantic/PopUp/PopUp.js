@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { Detached } from '../../Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import { Detached } from '../../Positioned/Detached';
 
 class PopUp extends React.Component {
   static propTypes = {
@@ -83,31 +83,32 @@ class PopUp extends React.Component {
 
   renderBody() {
     const { content, positionAt, elementId } = this.props;
-    return (<ClickOut
-      onClickOut={this.closePopup}
-    ><div
-      id={elementId}
-      className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen })}
-    >{content}</div>
-    </ClickOut>);
+
+    return (
+      <ClickOut onClickOut={this.closePopup}>
+        <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen })}>
+          {content}
+        </div>
+      </ClickOut>
+      );
   }
 
   render() {
     const { isOpen } = this.state;
-    const { id, children } = this.props;
-
+    const { children } = this.props;
 
     return (
       <div
         style={{ display: 'inline-block' }}
         className={classNames({ active: isOpen })}
-        ref={`button${id}`}
+        ref={c => { this.button = c; }}
         onClick={this.openPopup}
         onMouseEnter={this.onMouseEnter}
-      >{children}
+      >
+        {children}
         <Detached
           isOpen={isOpen}
-          positionTarget={this.refs[`button${id}`]}
+          positionTarget={this.button}
           {...this.props}
         >
           {this.renderBody()}

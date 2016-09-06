@@ -8414,13 +8414,17 @@ body.with-agent-bar {
   }
 }
 
+.datb-dropdown-content-container {
+  display: inline-block;
+  position: relative;
+}
+
 .datb-dropdown-content {
   display: block;
   width: 250px;
   background: #444648;
-  position: fixed;
+  position: absolute;
   top: 40px;
-  @include right(10px);
 
   &:befre {
     position: absolute;

@@ -119,17 +119,19 @@ export class AgentOnboarding extends React.Component {
     const width = $(window).width();
     const height = $(window).height();
     const style = { left: (width / 2) - 280, top: (height / 2) - 320 };
-    return (<div className="joyride">
-      <div className="joyride-overlay" style={{ height }}>
-        <div className="joyride-hole" />
-        <div className="joyride-intro" style={style}>
-          <img src={intro.img} role="presentation" />
-          <h3>{intro.title}</h3>
-          <p>{intro.text}</p>
-          <footer><button className="ui button" onClick={this.closeIntro}>{intro.action}</button></footer>
+    return (
+      <div className="joyride">
+        <div className="joyride-overlay" style={{ height }}>
+          <div className="joyride-hole" />
+          <div className="joyride-intro" style={style}>
+            <img src={intro.img} role="presentation" />
+            <h3>{intro.title}</h3>
+            <p>{intro.text}</p>
+            <footer><button className="ui button" onClick={this.closeIntro}>{intro.action}</button></footer>
+          </div>
         </div>
       </div>
-    </div>);
+    );
   };
 
   closeIntro = () => {

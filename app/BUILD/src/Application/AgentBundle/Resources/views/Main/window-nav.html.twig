@@ -61,7 +61,6 @@
 				<li class="no-click-switch is-nav-btn">
 					<a id="reports_interface_trigger"
 					   title="Go to Reports Interface"
-					   target="_blank"
 					   href="{{ app.request.getBaseUrl() }}/reports"
 					   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
 					   data-frame-id="reports"
@@ -76,11 +75,8 @@
 				<li class="no-click-switch is-nav-btn">
 					<a id="billings_interface_trigger"
 					   title="Go to Billing Interface"
-					   target="_blank"
 					   href="{{ app.request.getBaseUrl() }}/admin/#/license"
-					   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
-					   data-frame-id="billing"
-					   data-win-title="DeskPRO Billing Interface"
+					   data-element-handler="DeskPRO.Agent.ElementHandler.GoToBilling"
 					>
 						<i class="app-icon app-icon-billing-ifce"></i>
 					</a>

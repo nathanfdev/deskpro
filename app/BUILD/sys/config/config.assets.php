@@ -58,9 +58,9 @@ $CONFIG['OPTIONS'] = [
     ) ? DP_SMARTSPRITES_PATH : '/opt/smartsprites-0.2.8/smartsprites.sh',
 ];
 
-###############################################################################
-# JAVASCRIPTS
-###############################################################################
+//##############################################################################
+// JAVASCRIPTS
+//##############################################################################
 
 $CONFIG['agent'] = [
     'out'          => 'js/agent-all.js',
@@ -293,6 +293,7 @@ $CONFIG['agent_element_handlers'] = [
         'javascripts/DeskPRO/Agent/ElementHandler/QuickSearch.js',
         'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
         'javascripts/DeskPRO/Agent/ElementHandler/OverlayFrame.js',
+        'javascripts/DeskPRO/Agent/ElementHandler/GoToBilling.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',
         'javascripts/DeskPRO/Agent/ElementHandler/RadioExpander.js',
         'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
@@ -502,9 +503,9 @@ $CONFIG['user_vendors'] = [
     ],
 ];
 
-###############################################################################
-# CSS
-###############################################################################
+//##############################################################################
+// CSS
+//##############################################################################
 
 $CONFIG['agent_css1'] = [
     'out'          => 'css/agent-pack1.css',

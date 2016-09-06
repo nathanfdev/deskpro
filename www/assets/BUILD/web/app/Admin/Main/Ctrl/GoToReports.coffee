@@ -8,6 +8,5 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       else
         window.parent.DP_FRAME_OVERLAYS.reports.open()
         window.parent.DP_FRAME_OVERLAYS.admin.close()
-        window.parent.DP_FRAME_OVERLAYS.billing.close()
 
   Admin_Main_Ctrl_GoToReports.EXPORT_CTRL()

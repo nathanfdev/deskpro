@@ -59,7 +59,7 @@ define [
     window.location.hash = '/license'
 
   if window.parent == window.self
-    window.location.href = window.DP_BASE_URL + 'agent/#admin:' + window.location.hash.replace(/^#/, '')
+    window.location.href = window.DP_BASE_URL + 'agent/#admin:' + (window.location.hash.replace(/^#/, '') || '/')
 
   if window.parent?.DP_FRAME_OVERLAYS?.admin
     window.parent.DP_FRAME_OVERLAYS.admin.callLoaded()
@@ -68,7 +68,8 @@ define [
 
       if not window.DP_REDIRECT_TO_LICENSE
         $rootScope.$on('$stateChangeSuccess', ->
-          window.parent.DP_FRAME_OVERLAYS.admin.setHash(window.location.hash)
+          if window.parent.DP_FRAME_OVERLAYS.admin.opened
+            window.parent.DP_FRAME_OVERLAYS.admin.setHash(window.location.hash)
         )
     ])
 

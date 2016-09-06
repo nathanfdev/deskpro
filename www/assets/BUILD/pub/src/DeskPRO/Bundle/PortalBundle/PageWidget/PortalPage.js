@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { TicketForm } from './TicketForm';
 import { PortalFormWidget } from './PortalFormWidget';
@@ -13,7 +14,7 @@ import { LoginPage } from './LoginPage';
 import { HtmlLinkToPostWidget } from './HtmlLinkToPostWidget';
 import { OmniSearchWidget } from './OmniSearchWidget';
 import { LanguageChangerWidget } from './LanguageChangerWidget';
-import { AgentBarWidget } from './AgentBarWidget';
+import AgentBarWidget from './AgentBarWidget';
 import { LoginDropdownWidget } from './LoginDropdownWidget';
 import { LogoutButtonWidget } from './LogoutButtonWidget';
 import { SearchResultsPage } from './SearchResultsPage';
@@ -24,9 +25,8 @@ import { CustomPerFieldEdit } from './Common/Form/CustomPerFieldEdit';
 import { Attachment } from './Common/Attachment';
 import { TouchFocusWidget } from './TouchFocusWidget';
 import { WidgetButton } from './WidgetButton';
-import $ from 'jquery';
 
-export class PortalPage extends PageWidget {
+class PortalPage extends PageWidget {
 
   init() {
     this.addWidgetDef(PortalFormWidget, '.dpx-form');
@@ -72,3 +72,5 @@ export class PortalPage extends PageWidget {
     $(document.body).addClass('with-pageload-dpx-done');
   }
 }
+
+export default PortalPage;
