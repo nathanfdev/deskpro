@@ -26,9 +26,12 @@
 					{% elseif grouping_var == 'agent' or grouping_var == 'person' %}
 						{% set agent = app.agents.get(cat.id) %}
 						{% if agent %}
-							<span
-								style="background: url('{{ agent.getPictureUrl(16) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"
-							>{{ cat.title }}</span>
+							<img
+								src="{{ agent.getPictureUrl(64) }}"
+								title="{{ agent.getName() }}"
+								style="position: absolute; height: 16px; width: 16px;"
+							/>
+							<span style="height: 16px; padding-left: 19px; display: block;">{{ cat.title }}</span>
                         {% else %}
                             <span>{{ cat.title }}</span>
 						{% endif %}
