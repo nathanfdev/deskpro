@@ -143,6 +143,11 @@ class TicketEmailBuilder
         $this->ticketLayoutManager = $ticketLayoutManager;
         $this->brandStack          = $brandStack;
         $this->options             = new OptionsArray();
+
+        $this->options->set('mailer', $mailer);
+        $this->options->set('email_accounts', $emailAccountManager);
+        $this->options->set('translate', $translate);
+        $this->options->set('brand_stack', $brandStack);
     }
 
     /**

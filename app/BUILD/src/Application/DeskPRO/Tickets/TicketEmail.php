@@ -51,11 +51,6 @@ class TicketEmail
     const MODE_AGENT = 'agent';
 
     /**
-     * @var \Application\DeskPRO\Settings\Settings
-     */
-    private $settings;
-
-    /**
      * @var \Swift_Mailer
      */
     private $mailer;
@@ -69,26 +64,6 @@ class TicketEmail
      * @var \Application\DeskPRO\Translate\Translate
      */
     private $translate;
-
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    /**
-     * @var \Application\DeskPRO\CustomFields\TicketFieldManager
-     */
-    private $ticketFieldManager;
-
-    /**
-     * @var \Application\DeskPRO\CustomFields\PersonFieldManager
-     */
-    private $userFieldManager;
-
-    /**
-     * @var \Application\DeskPRO\TicketLayout\TicketLayoutManager
-     */
-    private $ticketLayoutManager;
 
     /**
      * @var BrandStack
@@ -181,11 +156,9 @@ class TicketEmail
     {
         $opt = new CheckedOptionsArray();
         $opt->addRequiredNames(
-            'settings',
             'mailer',
             'email_accounts',
             'translate',
-            'em',
             'ticket',
             'to_person',
             'user_mode',
@@ -193,9 +166,6 @@ class TicketEmail
             'brand_stack'
         );
         $opt->addValidNames(
-            'ticket_field_manager',
-            'user_field_manager',
-            'ticket_layout_manager',
             'from_name',
             'from_email_account',
             'cc_users',
@@ -212,16 +182,11 @@ class TicketEmail
         $this->templateName = $opt->get('template_name');
         $this->fromName     = $opt->get('from_name', '');
 
-        $this->settings            = $opt->get('settings');
-        $this->mailer              = $opt->get('mailer');
-        $this->emailAccounts       = $opt->get('email_accounts');
-        $this->translate           = $opt->get('translate');
-        $this->em                  = $opt->get('em');
-        $this->ticketFieldManager  = $opt->get('ticket_field_manager');
-        $this->userFieldManager    = $opt->get('user_field_manager');
-        $this->ticketLayoutManager = $opt->get('ticket_layout_manager');
-        $this->brandStack          = $opt->get('brand_stack');
-        $this->fromEmailAccount    = $opt->get('from_email_account', null);
+        $this->mailer           = $opt->get('mailer');
+        $this->emailAccounts    = $opt->get('email_accounts');
+        $this->translate        = $opt->get('translate');
+        $this->brandStack       = $opt->get('brand_stack');
+        $this->fromEmailAccount = $opt->get('from_email_account', null);
 
         $this->doCcUsers     = $opt->get('cc_users', false);
         $this->isAuto        = $opt->get('is_auto', false);
@@ -333,7 +298,7 @@ class TicketEmail
         // To user - use the selected email address on the ticket
         if ($this->userMode == self::MODE_USER) {
             if ($this->ticket->getPersonEmail() && $this->ticket->getPersonEmail()->getPerson() === $this->toPerson) {
-                $toEmail = $this->ticket->getPersonEmail()->getPerson();
+                $toEmail = $this->ticket->getPersonEmail()->getEmail();
                 $this->logger->info(sprintf('[TicketEmail] to_email(1): %s', $toEmail));
             } elseif ($this->toPerson->getPrimaryEmail()) {
                 $toEmail = $this->toPerson->getPrimaryEmail()->getEmail();
