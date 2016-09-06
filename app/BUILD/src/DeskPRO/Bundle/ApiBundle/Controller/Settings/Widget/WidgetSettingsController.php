@@ -234,7 +234,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      *)
      *
      * @Rest\Delete("/setup")
-     * 
+     *
      * @param Brand $brand
      *
      * @return View
@@ -285,7 +285,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
         );
         $message->setTo($email);
         $attach = \Swift_Attachment::newInstance(
-            $this->get('widget_loader_code_renderer')->getWidgetCode($brand, true),
+            $this->get('widget_loader_code_renderer')->getWidgetCode($brand, false),
             'deskpro-widget.txt',
             'text/plain'
         );
