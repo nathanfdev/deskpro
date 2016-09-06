@@ -846,12 +846,11 @@ var RLANG = {
 					{
 						this.formatNewLine(e);
 					}
+				}
 
-					// convert links
-					if (this.opts.convertLinks)
-					{
-						this.$editor.linkify();
-					}
+				if (this.opts.convertLinks && ((key === 13 && !e.shiftKey && !e.ctrlKey && !e.metaKey) || key === 32)) {
+					this.$editor.linkify();
+					this.focusEnd();
 				}
 
 				this.syncCode();
@@ -1199,45 +1198,24 @@ var RLANG = {
 			this.syncCode();
 		},
 
-		snippetFocus: function()
-		{
-			var selection = this.document.getSelection();
-			var range = selection ? selection.getRangeAt(0) : null;
-			if(range && range.startOffset === 0) {
-				this.focusEnd();
-			}
-		},
-
-		prepareFocusContent: function()
-		{
-			var node = this.$editor[0];
-			var $p = $('p', node);
-
-			if (!$p.length || node.innerHTML === '<p><br></p>') {
-				node.innerHTML = '<p></p>';
-			}
-		},
-
 		focusEnd: function()
 		{
-			var doc, node, $p;
-			doc = this.document;
-			node = this.$editor[0];
-			this.prepareFocusContent();
-
-			$p = $('p', node);
-
-			if (doc.getSelection) {
-				var range = doc.createRange();
-				range.selectNodeContents($p.last().get(0));
+			var el = this.$editor[0];
+			el.focus();
+			if (typeof window.getSelection != "undefined"
+				&& typeof document.createRange != "undefined") {
+				var range = document.createRange();
+				range.selectNodeContents(el);
 				range.collapse(false);
-
-				var sel = doc.getSelection();
+				var sel = window.getSelection();
 				sel.removeAllRanges();
 				sel.addRange(range);
+			} else if (typeof document.body.createTextRange != "undefined") {
+				var textRange = document.body.createTextRange();
+				textRange.moveToElementText(el);
+				textRange.collapse(false);
+				textRange.select();
 			}
-
-			$(node).focus();
 		},
 
 		pasteHtmlAtCaret: function (html)
@@ -2487,7 +2465,7 @@ var RLANG = {
 		// Save and Restore Selection
 		saveSelection: function()
 		{
-			this.$editor.focus();
+			// this.$editor.focus();
 
 			this.savedSel = this.getOrigin();
 			this.savedSelObj = this.getFocus();
@@ -2647,7 +2625,7 @@ var RLANG = {
 					try {
 						sel.collapse(orgn, orgo);
 						sel.extend(focn, foco);
-					} catch (e) {console.errro(e);}
+					} catch (e) {console.error(e);}
 				}
 				else // IE9
 				{
@@ -2801,7 +2779,7 @@ var RLANG = {
 		insertNodeAfterCaret: function(node)
 		{
 			this.saveSelection();
-		    this.insertNodeAtCaret(node);
+			this.insertNodeAtCaret(node);
 			this.restoreSelection();
 		},
 
@@ -4235,8 +4213,8 @@ var RLANG = {
 
 		linkifyThis = function ()
 		{
-			var childNodes = this.childNodes,
-			i = childNodes.length;
+			var childNodes = this.childNodes;
+			var i = childNodes.length;
 			while(i--)
 			{
 				var n = childNodes[i];
