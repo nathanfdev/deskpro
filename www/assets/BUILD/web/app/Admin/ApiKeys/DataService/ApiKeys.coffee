@@ -10,8 +10,8 @@ define [
 
     init: ->
       @limits = {
-        daily_limit: 0
-        hourly_limit: 0
+        daily_limit: -1
+        hourly_limit: -1
       }
 
       @Api.sendGet('/api_keys_settings')

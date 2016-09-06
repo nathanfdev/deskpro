@@ -67,9 +67,9 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         return $multi;
     }
 
-    ###################################################################################################################
-    # list
-    ####################################################################################################################
+    //##################################################################################################################
+    // list
+    //###################################################################################################################
 
     /**
      * SWG\Api(
@@ -94,9 +94,9 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         return $this->createApiResponse($data);
     }
 
-    ###################################################################################################################
-    # get
-    ####################################################################################################################
+    //##################################################################################################################
+    // get
+    //###################################################################################################################
 
     /**
      * SWG\Api(
@@ -128,9 +128,9 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     /**
      * @param   $id
@@ -180,18 +180,34 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
                 }
             }
 
+            // set hourly and daily limits
+            // if hour/daily settings are set to '-1' then it means that it's unlimited value
             $settings = $this->get('settings_resolver')->getDefaultSettings();
 
-            $hourly_limit = $this->in->getInt('hourly_limit', 'req');
-            $hourly_limit = min($hourly_limit, $settings->get('api_limits.key.hour'));
+            $getSettingValue = function ($queryParam, $settingName) use ($settings) {
+                $value        = $this->in->getInt($queryParam, 'req');
+                $settingValue = $settings->get("api_limits.key.$settingName");
 
-            $daily_limit = $this->in->getInt('daily_limit', 'req');
-            $daily_limit = min($daily_limit, $settings->get('api_limits.key.day'));
+                // prevent setting unbound values
+                if ($settingValue > 0) {
+                    $value = min($value, $settingValue);
+                    if ($value < 0) {
+                        $value = $settingValue;
+                    }
+                }
 
-            $limits_data[AbstractLimit::INTERVAL_HOUR]->setLimit($hourly_limit);
-            $limits_data[AbstractLimit::INTERVAL_HOUR]->setCurrent($hourly_limit);
-            $limits_data[AbstractLimit::INTERVAL_DAY]->setLimit($daily_limit);
-            $limits_data[AbstractLimit::INTERVAL_DAY]->setCurrent($daily_limit);
+                $value = max(-1, $value);
+
+                return $value;
+            };
+
+            $hourlyLimit = $getSettingValue('hourly_limit', 'hour');
+            $dailyLimit  = $getSettingValue('daily_limit', 'day');
+
+            $limits_data[AbstractLimit::INTERVAL_HOUR]->setLimit($hourlyLimit);
+            $limits_data[AbstractLimit::INTERVAL_HOUR]->setCurrent($hourlyLimit);
+            $limits_data[AbstractLimit::INTERVAL_DAY]->setLimit($dailyLimit);
+            $limits_data[AbstractLimit::INTERVAL_DAY]->setCurrent($dailyLimit);
 
             foreach ($limits_data as $limit) {
                 $limits_service->saveLimit($key, $limit);
@@ -203,9 +219,9 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         return $this->getAction($key['id']);
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -231,9 +247,9 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         return $this->createSuccessResponse(['old_id' => $old_id]);
     }
 
-    ####################################################################################################################
-    # get-logs
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-logs
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -260,9 +276,9 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         ]);
     }
 
-    ####################################################################################################################
-    # regenerate
-    ####################################################################################################################
+    //###################################################################################################################
+    // regenerate
+    //###################################################################################################################
 
     /**
      * @param $id
