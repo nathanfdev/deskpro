@@ -12,7 +12,8 @@ import moment from 'moment';
 export class TypingEventContainer extends React.Component {
 
   static propTypes = {
-    agentTypingDate: PropTypes.string
+    agentTypingDate: PropTypes.string,
+    onUpdate:        PropTypes.func
   };
 
   constructor(props) {
@@ -29,6 +30,9 @@ export class TypingEventContainer extends React.Component {
 
   componentDidUpdate() {
     this.checkLastTypingDate();
+    if (this.props.onUpdate) {
+      this.props.onUpdate();
+    }
   }
 
   componentWillUnmount() {

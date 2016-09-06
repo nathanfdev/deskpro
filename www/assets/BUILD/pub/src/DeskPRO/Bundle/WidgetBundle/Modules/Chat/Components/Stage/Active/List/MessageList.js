@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import ScrollArea from 'react-scrollbar-versioned';
 import { MessageFactoryContainer } from './MessageFactoryContainer';
+import { TypingEventContainer } from './Event/TypingEventContainer';
 import '../../../../../../Resources/sounds/pop.mp3';
 import '../../../../../../Resources/sounds/pop.ogg';
 import '../../../../../../Resources/sounds/pop.wav';
@@ -32,17 +33,13 @@ export class MessageList extends React.Component {
     this.checkForNewMessages();
   }
 
-  refresh() {
-    const scrollArea = this.refs.scrollArea;
-    if (scrollArea) {
-      scrollArea.setSizesToState();
-      scrollArea.handleWindowResize();
-    }
-  }
+  onUpdateList = () => {
+    this.checkForNewMessages(true);
+  };
 
-  checkForNewMessages() {
+  checkForNewMessages(force) {
     const { messages, lastMessageId, mute } = this.props;
-    if (messages.size !== this.state.messagesCount) {
+    if (messages.size !== this.state.messagesCount || force) {
       this.setState({
         messagesCount: messages.size,
         lastMessageId
@@ -71,18 +68,27 @@ export class MessageList extends React.Component {
     }
   }
 
+  refresh() {
+    const scrollArea = this.refs.scrollArea;
+    if (scrollArea) {
+      scrollArea.setSizesToState();
+      scrollArea.handleWindowResize();
+    }
+  }
+
   render() {
     return (
-      <div className="dpdesignportal-content">
+      <div>
         <audio ref="sound" preload="preload">
-          <source src={`${DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.mp3`} />
-          <source src={`${DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.ogg`} />
-          <source src={`${DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.wav`} />
+          <source src={`${window.DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.mp3`} />
+          <source src={`${window.DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.ogg`} />
+          <source src={`${window.DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.wav`} />
         </audio>
         <ScrollArea ref="scrollArea" ownerDocument={window.widgetFrame.document} vertical>
           <div className="bottom-aligner"></div>
           <div>
             {this.props.messages.map((message, key) => <MessageFactoryContainer key={key} message={message} />)}
+            <TypingEventContainer onUpdate={this.onUpdateList} />
           </div>
         </ScrollArea>
       </div>
