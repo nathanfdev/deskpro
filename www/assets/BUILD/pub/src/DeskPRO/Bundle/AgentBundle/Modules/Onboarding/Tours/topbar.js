@@ -1,3 +1,5 @@
+import introPng from 'DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/topbar_intro.png';
+
 const topbar = {
   force: true,
   steps: [
@@ -49,8 +51,7 @@ const topbar = {
     title:  'New DeskPRO update',
     text:   'We’ve made a few changes to how you navigate DeskPRO. Let’s take a quick look...',
     action: 'Start',
-    img:    `${window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '')}` +
-      '/../src/DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/topbar_intro.png'
+    img:    introPng
   }
 };
 export default topbar;

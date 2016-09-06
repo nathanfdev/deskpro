@@ -9,8 +9,12 @@ const config = {
         include: path.resolve(__dirname, '../../')
       },
       {
-        loader: 'json-loader',
-        test: /\.json$/
+        test: /\.(svg|png)$/,
+        loader:  'url'
+      },
+      {
+        test: /\.json$/,
+        loader: 'json-loader'
       }
     ]
   },
