@@ -356,7 +356,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
     sendInstructions: () ->
       @Api2
-        .sendPostJson('/widget/send-instructions', { email: @$scope.emailSendInstructions })
+        .sendPostJson('/settings/brands/' + @$stateParams.brandId + '/widget/send-instructions', { email: @$scope.emailSendInstructions })
         .success () =>
           @Growl.success "Email sent successfully"
           @$scope.emailSendInstructions = ''
