@@ -144,7 +144,7 @@ class InstallerContext
      *
      * @return \Symfony\Component\DependencyInjection\ContainerInterface
      */
-    public function getMainContainer($reload = false)
+    public function getMainContainer($reload = true)
     {
         if ($this->mainKernel) {
             if (!$reload) {

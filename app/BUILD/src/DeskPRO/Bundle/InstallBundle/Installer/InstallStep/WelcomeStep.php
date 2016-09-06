@@ -77,7 +77,7 @@ class WelcomeStep extends AbstractStep
             $this->getSession()->setUser($user);
         }
 
-        $statService = $this->getContext()->getMainContainer()->get('dp.software_service.stats');
+        $statService = $this->getContext()->getMainContainer(false)->get('dp.software_service.stats');
         SystemErrorHandler::tryRun(function () use ($statService, $event) {
             $statService->sendInstallStart($event);
         });
