@@ -42,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsWebType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -86,7 +87,7 @@ class WebFieldResolver extends AbstractFieldResolver
             'error_bubbling' => false,
         ];
 
-        return new FormField('deskpro_captcha', $options);
+        return new FormField(DpCaptchaType::class, $options);
     }
 
     /**

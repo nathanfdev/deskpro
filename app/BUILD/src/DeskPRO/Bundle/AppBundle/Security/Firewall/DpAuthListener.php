@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 
 use Application\DeskPRO\Auth\LoginProcessor;
@@ -40,7 +36,7 @@ use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CaptchaType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Auth\Result;
 use Orb\Log\Loggable;
@@ -138,7 +134,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         $antiAbuse = $this->container->get('anti_abuse');
         $antiAbuse->check($abuseCheck);
         if ($abuseCheck->isCaptchaRecommended()) {
-            $captchaForm = $this->container->get('form.factory')->create(CaptchaType::class, null, [
+            $captchaForm = $this->container->get('form.factory')->create(DpCaptchaType::class, null, [
                 'csrf_double_submit_protection' => false,
             ]);
             $captchaForm->submit($request->get('deskpro_captcha'));

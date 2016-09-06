@@ -79,6 +79,7 @@ class EntityHierarchyType extends AbstractType
         $resolver
             ->setRequired('choice_list')
             ->setDefaults([
+                'choices_as_values'   => true,
                 'hierarchy_generator' => $this->hierarchyGenerator,
             ])
         ;

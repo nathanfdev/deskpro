@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -44,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType;
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -80,9 +77,8 @@ class FeedbackController extends AbstractController
         $page   = $request->query->getInt('page', 1);
         $person = $this->getUser() ?: new PersonGuest();
 
-        //
         // RSS
-        //
+
         if ('rss' === $_format) {
             $filter = new FeedbackFilter([
                 'status'            => $request->query->get('status', 'all'),
@@ -107,9 +103,8 @@ class FeedbackController extends AbstractController
         }
         $rssLink = $this->generateUrl('portal_feedback', ['_format' => 'rss']);
 
-        //
         // NEW FEEDBACK FORM
-        //
+
         // true if auto-submit SavedFormController wants us to definitely rerender
         $rerenderingSaved = $request->attributes->get('rerender-form', false);
         $permissionBag    = $this->getPermissionBagForCurrentUser();
@@ -122,7 +117,7 @@ class FeedbackController extends AbstractController
             $newFeedback->setStatusCategory($this->getDefaultStatusCategory());
         }
         $newFeedback->setPerson($person);
-        $form = $this->createForm('new_feedback', $newFeedback, [
+        $form = $this->createForm(NewFeedbackType::class, $newFeedback, [
             'person'                => $person,
             'action'                => $this->generateUrl('portal_feedback'),
             'saved_form_subrequest' => $request->attributes->has('saved-form'),
@@ -189,28 +184,24 @@ class FeedbackController extends AbstractController
             $formWasSubmitted = true;
         }
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
 
-        //
         // SUBSCRIPTION
-        //
+
         $isSubscribed = false;
         if ($this->getUser() && $this->getBrandSetting('user.feedback_subscriptions', false)) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('feedback', $this->getUser());
         }
 
-        //
         // FILTER CATEGORIES
-        //
+
         $feedbackTypes = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
 
-        //
         // JS INITIAL DATA
-        //
+
         $filter             = new FeedbackFilter(); // get the defaults$allowed_types_parsed = array();
         $allowedTypesParsed = [];
         foreach ($feedbackTypes as $cat) {
@@ -221,9 +212,8 @@ class FeedbackController extends AbstractController
 
         $check = $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp(), false);
 
-        //
         // RENDER THEME
-        //
+
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
             [
@@ -346,23 +336,20 @@ class FeedbackController extends AbstractController
             ], Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
 
-        //
         // SUBSCRIPTION
-        //
+
         $isSubscribed = false;
         if ($this->getUser() && $this->getBrandSetting('user.feedback_subscriptions', false)) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('feedback', $this->getUser());
         }
 
-        //
         // FILTER CATEGORIES
-        //
+
         $feedbackTypes = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
         $filterJs      = $this->generateFilterJs($filter, $feedbackTypes, $page);
 
@@ -396,7 +383,7 @@ class FeedbackController extends AbstractController
         $person      = $this->getUser() ?: new PersonGuest();
         $newFeedback = new Feedback();
         $newFeedback->setPerson($person);
-        $form = $this->createForm('new_feedback', $newFeedback, [
+        $form = $this->createForm(NewFeedbackType::class, $newFeedback, [
             'person' => $person,
             'action' => $this->generateUrl('portal_feedback'),
         ]);
@@ -409,9 +396,8 @@ class FeedbackController extends AbstractController
             'lockout_time'       => false,
         ]);
 
-        //
         // RENDER THEME
-        //
+
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
             $pageOptions
@@ -437,9 +423,8 @@ class FeedbackController extends AbstractController
             throw $this->createNotFoundException('this feedback item is hidden');
         }
 
-        //
         // COMMENT FORM
-        //
+
         $newCommentForm = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK, $item)) {
             $formHandler = $this->get('form_handler.comment');
@@ -453,25 +438,21 @@ class FeedbackController extends AbstractController
             }
         }
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedbackView($item);
 
-        //
         // RATING
-        //
+
         $rating         = $this->findContentRating($item, $visitor_id);
         $item->can_rate = $this->isGranted(ContentRatingsVoter::RATE_FEEDBACK, $item);
 
-        //
         // NUM RATINGS
-        //
+
         list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($item);
 
-        //
         // SUBSCRIPTION
-        //
+
         $isSubscribed = false;
         if (
             $this->getBrandSetting('user.feedback_subscriptions', false)
@@ -485,9 +466,8 @@ class FeedbackController extends AbstractController
         $check->markAsCheckOnly();
         $this->get('anti_abuse')->check($check);
 
-        //
         // RENDER THEME
-        //
+
         return $this->renderThemeView(
             'Theme:Feedback:view.html.twig',
             [

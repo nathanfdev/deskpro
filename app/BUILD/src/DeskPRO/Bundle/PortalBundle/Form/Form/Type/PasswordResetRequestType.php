@@ -80,7 +80,7 @@ class PasswordResetRequestType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             if ($this->captchaDecider->shouldRequireForgotPasswordCaptchaForCurrentPerson()) {
-                $form->add('captcha', CaptchaType::class);
+                $form->add('captcha', DpCaptchaType::class);
             }
         });
     }

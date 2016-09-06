@@ -34,6 +34,8 @@ use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -49,7 +51,7 @@ class PersonChangePasswordType extends AbstractType
     /**
      * @var CaptchaDecider
      */
-    private $captcha_decider;
+    private $captchaDecider;
 
     /**
      * @var Translate
@@ -59,13 +61,13 @@ class PersonChangePasswordType extends AbstractType
     /**
      * Constructor.
      *
-     * @param CaptchaDecider $captcha_decider
+     * @param CaptchaDecider $captchaDecider
      * @param Translate      $translate
      */
-    public function __construct(CaptchaDecider $captcha_decider, Translate $translate)
+    public function __construct(CaptchaDecider $captchaDecider, Translate $translate)
     {
-        $this->captcha_decider = $captcha_decider;
-        $this->translate       = $translate;
+        $this->captchaDecider = $captchaDecider;
+        $this->translate      = $translate;
     }
 
     /**
@@ -74,10 +76,12 @@ class PersonChangePasswordType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['require_current_password']) {
-            $builder->add('current_password', 'password', [
+            $builder->add('current_password', PasswordType::class, [
                 'required'    => true,
                 'constraints' => [
-                    new UserPassword(['message' => 'portal.forms.error_password_current']),
+                    new UserPassword([
+                        'message' => 'portal.forms.error_password_current',
+                    ]),
                 ],
                 'mapped' => false, // not mapping this, just using it for validation
             ]);
@@ -86,12 +90,12 @@ class PersonChangePasswordType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             $person = $event->getData();
-            $form->add('new_password', 'repeated', [
+            $form->add('new_password', RepeatedType::class, [
                 'first_name'     => 'password',
                 'first_options'  => ['label' => $this->phrase('portal.forms.label_password')],
                 'second_name'    => 'confirm',
                 'second_options' => ['label' => $this->phrase('portal.forms.label_password_confirm')],
-                'type'           => 'password',
+                'type'           => PasswordType::class,
                 'required'       => true,
                 'constraints'    => [
                     new NotBlank(),

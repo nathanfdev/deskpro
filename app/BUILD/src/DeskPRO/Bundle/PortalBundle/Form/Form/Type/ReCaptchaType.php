@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -41,19 +37,36 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class ReCaptchaType.
+ */
 class ReCaptchaType extends AbstractType
 {
     /**
      * @var BrandStack
      */
-    private $brand_stack;
+    private $brandStack;
 
-    public function __construct(BrandStack $brand_stack, LanguageManager $language_manager)
+    /**
+     * @var LanguageManager
+     */
+    private $languageManager;
+
+    /**
+     * Constructor.
+     *
+     * @param BrandStack      $brandStack
+     * @param LanguageManager $languageManager
+     */
+    public function __construct(BrandStack $brandStack, LanguageManager $languageManager)
     {
-        $this->language_manager = $language_manager;
-        $this->brand_stack      = $brand_stack;
+        $this->languageManager = $languageManager;
+        $this->brandStack      = $brandStack;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $site_key = $this->getSiteKey();
@@ -73,11 +86,17 @@ class ReCaptchaType extends AbstractType
         $view->vars['secure_token'] = $secure_token;
     }
 
-    public function getName()
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
     {
         return 'deskpro_recaptcha';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -94,7 +113,7 @@ class ReCaptchaType extends AbstractType
      */
     protected function getSecretKey()
     {
-        $setting_secret = $this->brand_stack->getActive()->getSetting('core.recaptcha2_secret_key');
+        $setting_secret = $this->brandStack->getActive()->getSetting('core.recaptcha2_secret_key');
 
         if (strlen($setting_secret) > 0) {
             return $setting_secret;
@@ -108,7 +127,7 @@ class ReCaptchaType extends AbstractType
      */
     protected function getSiteKey()
     {
-        $setting_key = $this->brand_stack->getActive()->getSetting('core.recaptcha2_site_key');
+        $setting_key = $this->brandStack->getActive()->getSetting('core.recaptcha2_site_key');
 
         if (strlen($setting_key) > 0) {
             return $setting_key;
@@ -138,6 +157,9 @@ class ReCaptchaType extends AbstractType
         ;
     }
 
+    /**
+     * @return null|void
+     */
     public static function getCloudRecaptchaSiteKey()
     {
         if (self::isCloudRecapchaEnabled()) {
@@ -147,6 +169,9 @@ class ReCaptchaType extends AbstractType
         return;
     }
 
+    /**
+     * @return null|void
+     */
     public static function getCloudRecaptchaSecret()
     {
         if (self::isCloudRecapchaEnabled()) {

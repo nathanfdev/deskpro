@@ -90,12 +90,12 @@ class PersonEmailChoiceType extends AbstractType
             ->setRequired('person')
             ->setAllowedTypes('person', Person::class)
             ->setDefaults([
-                'class'      => PersonEmail::class,
-                'property'   => 'email',
-                'multiple'   => false,
-                'expanded'   => false,
-                'required'   => false,
-                'empty_data' => function (FormInterface $form) {
+                'class'        => PersonEmail::class,
+                'choice_label' => 'email',
+                'multiple'     => false,
+                'expanded'     => false,
+                'required'     => false,
+                'empty_data'   => function (FormInterface $form) {
                     $person = $form->getConfig()->getOption('person');
                     // if nothing is selected, use their primary email
                     return (string) $person->getPrimaryEmail()->getId();
