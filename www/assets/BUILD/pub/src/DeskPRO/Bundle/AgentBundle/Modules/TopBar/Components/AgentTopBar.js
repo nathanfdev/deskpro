@@ -7,6 +7,9 @@ import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'Des
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import recentSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg';
+import viewsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg';
+import notificationsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
@@ -124,7 +127,6 @@ class AgentTopBar extends SeparateComponent {
   render() {
     const { notificationCount } = this.state;
     const { agents, chatDepartments } = this.props;
-    const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
 
     return (<TopBar>
       <TopBarItem classes={['search-box legacy-omnibox']}>
@@ -136,7 +138,7 @@ class AgentTopBar extends SeparateComponent {
         />
       </TopBarItem>
       <TopBarItem classes={['legacy-omnibox recent']} onClick={this.onRecent}>
-        <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
+        <Isvg src={recentSvg} />
       </TopBarItem>
       {/* <TopBarItem classes={['z-index-stub']}>*/}
         {/* <HeaderWidget />*/}
@@ -146,12 +148,12 @@ class AgentTopBar extends SeparateComponent {
       <AddButton closeIframes={this.closeIframes} />
       <TopBarRightMenu>
         <TopBarItem classes={['views']} onClick={this.toggleViewMode}>
-          <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
+          <Isvg src={viewsSvg} />
         </TopBarItem>
         <TopBarItem classes={['legacy-omnibox notifications']} onClick={this.onNotification}>
           <TopBarNotificationIcon
             elementId="notifications"
-            svg="notifications.svg"
+            svg={notificationsSvg}
             count={notificationCount}
           />
         </TopBarItem>
