@@ -232,11 +232,13 @@ class JIRA
                 $properties = array_merge($metadata, $properties);
             }
 
-            $session                    = $api->call('rest/auth/1/session');
-            $properties['api_username'] = $session['name'];
+            try {
+                $session                    = $api->call('rest/auth/1/session');
+                $properties['api_username'] = $session['name'];
+            } catch (\Exception $e) {
+                $this->container->get('dp_sys.alerts.event_logger')->log(new JiraApiExceptionEvent($e));
+            }
 
-//            $res = $this->getCreateMeta();
-//            $properties['projects'] = $res['projects'];
             $meta = Meta::fromArray($properties);
 
             $fields     = $api->get('/field');
