@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 namespace Application\DeskPRO\Command;
@@ -104,7 +105,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $this->getContainer()->get('audit_log.doctrine_listener')->disableListener();
 
-        $dbVersion = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
+        $dbVersion     = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
+        $dbVersionName = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build_num'");
+
         if ($dbVersion && $dbVersion <= 1463676536) {
             if (!$input->getOption('info') && !$input->getOption('dobuildrun') && !$input->getOption('runsync') && !$input->getOption('reset')) {
                 $doReset      = true;
@@ -140,7 +143,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         // upgrade because the upgrade scripts need to run from the proper position
         // at build Build1464777281
         if (!$input->getOption('info') && !$input->getOption('dobuildrun') && !$input->getOption('runsync') && !$input->getOption('reset')) {
-            if ($dbVersion == '1470650875' || $dbVersion == '1471618600') {
+            if ($dbVersion == '1470650875' || $dbVersion == '1471618600' || strpos($dbVersionName, '443.') === 0) {
                 // Sanity check -- make sure someone didnt import a database dump over a new database
                 // mysqldump uses 'drop table if exists' by default, so it would work if someone
                 // tried to restore a dump into an existing database (e.g. from a fresh install).
