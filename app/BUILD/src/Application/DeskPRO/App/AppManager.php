@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\App\Native\NativeApp;
@@ -419,5 +420,24 @@ class AppManager implements AppManagerInterface
     public function getAppReposPaths()
     {
         return $this->app_paths;
+    }
+
+    public function removePackage(AppPackage $package)
+    {
+        $name = $package->name;
+        if (isset($this->packages[$name])) {
+            unset($this->packages[$package->name]);
+        }
+
+        if (isset($this->package_to_apps[$name])) {
+            /** @var AppInstance[] $apps */
+            $apps = $this->package_to_apps[$name];
+            foreach ($apps as $app) {
+                if (isset($this->apps[$app->getId()])) {
+                    unset($this->apps[$app->getId()]);
+                }
+            }
+            unset($this->package_to_apps[$package->name]);
+        }
     }
 }
