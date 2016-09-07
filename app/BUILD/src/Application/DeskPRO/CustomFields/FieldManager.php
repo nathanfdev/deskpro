@@ -542,8 +542,9 @@ class FieldManager
      * @param array $form
      * @param mixed $object
      * @param bool  $only_set
+     * @param bool  $flushChanges
      */
-    public function saveFormToObject(array $form, $object, $only_set = false)
+    public function saveFormToObject(array $form, $object, $only_set = false, $flushChanges = true)
     {
         $fields = $this->getFields();
 
@@ -594,7 +595,11 @@ class FieldManager
         }
 
         $this->_orig_display = null;
-        $this->em->flush();
+
+        // BC: $em should be flushed outside this method
+        if ($flushChanges) {
+            $this->em->flush();
+        }
     }
 
     /**
