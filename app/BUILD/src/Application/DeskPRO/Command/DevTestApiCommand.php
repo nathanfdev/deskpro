@@ -196,54 +196,62 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             RequestOptions::HEADERS => $headers,
         ]);
 
-        switch ($reqType) {
-            case 'GET':
-                if ($data) {
-                    $dataUrl = http_build_query($data);
-                    if (strpos($path, '?')) {
-                        $path .= "&$dataUrl";
-                    } else {
-                        $path .= "?$dataUrl";
+        try {
+            switch ($reqType) {
+                case 'GET':
+                    if ($data) {
+                        $dataUrl = http_build_query($data);
+                        if (strpos($path, '?')) {
+                            $path .= "&$dataUrl";
+                        } else {
+                            $path .= "?$dataUrl";
+                        }
                     }
-                }
-                $request = $httpClient->get($path);
-                $curl[]  = '-XGET';
-                $curl[]  = escapeshellarg($baseUrl.$path);
-                break;
+                    $response = $httpClient->get($path);
+                    $curl[]   = '-XGET';
+                    $curl[]   = escapeshellarg($baseUrl.$path);
+                    break;
 
-            case 'POST':
-                $curl[] = '-XPOST';
-                if ($asForm) {
-                    $request = $httpClient->post($path, array('Content-Type' => 'application/x-www-form-urlencoded'), $data);
-                } else {
-                    $request = $httpClient->post($path, array('Content-Type' => 'application/json'), json_encode($data));
-                }
-                break;
-
-            case 'PUT':
-                $curl[] = '-XPUT';
-                if ($asForm) {
-                    $request = $httpClient->put($path, array('Content-Type' => 'application/x-www-form-urlencoded'), $data);
-                } else {
-                    $request = $httpClient->put($path, array('Content-Type' => 'application/json'), json_encode($data));
-                }
-                break;
-
-            case 'DELETE':
-                $curl[] = '-XDELETE';
-                if ($data) {
-                    $dataUrl = http_build_query($data);
-                    if (strpos($path, '?')) {
-                        $path .= "&$dataUrl";
+                case 'POST':
+                    $curl[] = '-XPOST';
+                    if ($asForm) {
+                        $response = $httpClient->post($path, ['Content-Type' => 'application/x-www-form-urlencoded'], $data);
                     } else {
-                        $path .= "?$dataUrl";
+                        $response = $httpClient->post($path, ['Content-Type' => 'application/json'], json_encode($data));
                     }
-                }
-                $request = $httpClient->delete($path);
-                break;
+                    break;
 
-            default:
-                return 1;
+                case 'PUT':
+                    $curl[] = '-XPUT';
+                    if ($asForm) {
+                        $response = $httpClient->put($path, ['Content-Type' => 'application/x-www-form-urlencoded'], $data);
+                    } else {
+                        $response = $httpClient->put($path, ['Content-Type' => 'application/json'], json_encode($data));
+                    }
+                    break;
+
+                case 'DELETE':
+                    $curl[] = '-XDELETE';
+                    if ($data) {
+                        $dataUrl = http_build_query($data);
+                        if (strpos($path, '?')) {
+                            $path .= "&$dataUrl";
+                        } else {
+                            $path .= "?$dataUrl";
+                        }
+                    }
+                    $response = $httpClient->delete($path);
+                    break;
+
+                default:
+                    return 1;
+            }
+        } catch (\Guzzle\Http\Exception\RequestException $e) {
+            if (method_exists($e, 'getResponse')) {
+                $response = $e->getResponse();
+            } else {
+                throw $e;
+            }
         }
 
         if ($input->getOption('curl')) {
@@ -267,41 +275,27 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             return 0;
         }
 
-        try {
-            $response = $request->send();
-        } catch (\Guzzle\Http\Exception\RequestException $e) {
-            if (method_exists($e, 'getResponse')) {
-                $response = $e->getResponse();
-            } else {
-                throw $e;
-            }
-        }
-
         if ($input->getOption('raw')) {
-            echo $response->getBody(true);
+            echo $response->getBody();
         } else {
-            if (!$response->isSuccessful()) {
+            if ($response->getStatusCode() >= 500 && $response->getStatusCode() <= 599) {
                 $output->write("<error>Error</error>\n");
             } else {
                 $output->write("<info>Success</info>\n");
             }
-            $output->writeln('<info>Request URI:    '.$request->getUrl().'</info>');
-            $output->writeln('<info>Request Method: '.$request->getMethod().'</info>');
+            $output->writeln('<info>Request URI:    '.$baseUrl.$path.'</info>');
+            $output->writeln('<info>Request Method: '.$reqType.'</info>');
             $output->writeln('<info>Status Code:    '.$response->getStatusCode().'</info>');
-            $output->writeln('<info>Content Type:   '.$response->getContentType().'</info>');
+            $output->writeln('<info>Content Type:   '.$response->getHeaderLine('Content-Type').'</info>');
 
-            $res  = $response->getBody(true);
+            $res  = $response->getBody();
             $json = @json_decode($res, true);
 
             if ($json) {
                 if ($input->getOption('printr')) {
                     print_r($json);
                 } else {
-                    if (defined('JSON_PRETTY_PRINT')) {
-                        echo json_encode($json, JSON_PRETTY_PRINT);
-                    } else {
-                        echo $this->_jsonpp(json_encode($json));
-                    }
+                    echo json_encode($json, JSON_PRETTY_PRINT);
                 }
             } else {
                 echo $res;
@@ -311,23 +305,5 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         }
 
         return 0;
-    }
-
-    private function _jsonpp($json, $istr = '  ')
-    {
-        $result = '';
-        for ($p = $q = $i = 0; isset($json[$p]); ++$p) {
-            $json[$p] == '"' && ($p > 0 ? $json[$p - 1] : '') != '\\' && $q = !$q;
-            if (strchr('}]', $json[$p]) && !$q && $i--) {
-                strchr('{[', $json[$p - 1]) || $result .= "\n".str_repeat($istr, $i);
-            }
-            $result .= $json[$p];
-            if (strchr(',{[', $json[$p]) && !$q) {
-                $i += strchr('{[', $json[$p]) === false ? 0 : 1;
-                strchr('}]', $json[$p + 1]) || $result .= "\n".str_repeat($istr, $i);
-            }
-        }
-
-        return $result;
     }
 }
