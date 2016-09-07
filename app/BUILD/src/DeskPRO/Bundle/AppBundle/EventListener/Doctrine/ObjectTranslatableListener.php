@@ -34,6 +34,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\LazyCriteriaCollection;
 
 /**
@@ -42,6 +43,11 @@ use Doctrine\ORM\LazyCriteriaCollection;
 class ObjectTranslatableListener implements EventSubscriber
 {
     /**
+     * @var ObjectTranslatableInterface[]
+     */
+    private $updateQueue = [];
+
+    /**
      * {@inheritdoc}
      */
     public function getSubscribedEvents()
@@ -49,8 +55,9 @@ class ObjectTranslatableListener implements EventSubscriber
         return [
             'postLoad',
             'postPersist',
-            'postUpdate',
             'preRemove',
+            'onFlush',
+            'onClear',
         ];
     }
 
@@ -65,6 +72,7 @@ class ObjectTranslatableListener implements EventSubscriber
         }
 
         $entity->setObjectPropsTranslations($this->getLazyCriteriaCollection($entity, $args->getEntityManager()));
+        $this->updateQueue[spl_object_hash($entity)] = $entity;
     }
 
     /**
@@ -72,15 +80,28 @@ class ObjectTranslatableListener implements EventSubscriber
      */
     public function postPersist(LifecycleEventArgs $args)
     {
-        $this->updateObjectTranslations($args);
+        $entity = $args->getEntity();
+        if (!$entity instanceof ObjectTranslatableInterface) {
+            return;
+        }
+
+        $this->updateObjectTranslations($entity, $args->getEntityManager());
+        $args->getEntityManager()->flush();
     }
 
     /**
-     * @param LifecycleEventArgs $args
+     * @param OnFlushEventArgs $args
      */
-    public function postUpdate(LifecycleEventArgs $args)
+    public function onFlush(OnFlushEventArgs $args)
     {
-        $this->updateObjectTranslations($args);
+        foreach ($this->updateQueue as $entity) {
+            $this->updateObjectTranslations($entity, $args->getEntityManager());
+        }
+    }
+
+    public function onClear()
+    {
+        $this->updateQueue = [];
     }
 
     /**
@@ -107,17 +128,11 @@ class ObjectTranslatableListener implements EventSubscriber
     }
 
     /**
-     * @param LifecycleEventArgs $args
+     * @param ObjectTranslatableInterface $entity
+     * @param EntityManager               $em
      */
-    private function updateObjectTranslations(LifecycleEventArgs $args)
+    private function updateObjectTranslations(ObjectTranslatableInterface $entity, EntityManager $em)
     {
-        $entity = $args->getEntity();
-        if (!$entity instanceof ObjectTranslatableInterface) {
-            return;
-        }
-
-        $em = $args->getEntityManager();
-
         $oldCollection = $this->getLazyCriteriaCollection($entity, $em);
         $newCollection = $entity->getObjectPropsTranslations();
 
@@ -126,14 +141,13 @@ class ObjectTranslatableListener implements EventSubscriber
             /* @var ObjectLang $objectLang */
             $objectLang->setObject($entity);
             $em->persist($objectLang);
-            $em->flush($objectLang);
+            $em->getUnitOfWork()->computeChangeSets();
         }
 
         // remove deleted
         foreach ($oldCollection as $objectLang) {
             if (!$newCollection->contains($objectLang)) {
                 $em->remove($objectLang);
-                $em->flush($objectLang);
             }
         }
     }
