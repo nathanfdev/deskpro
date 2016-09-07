@@ -272,4 +272,24 @@ abstract class AbstractStep
 
         $this->writeln($str);
     }
+
+    public function writeBoundary($text, $style = false)
+    {
+        $line_len  = 70;
+        $title_len = strlen($text);
+        $half      = floor(($line_len - $title_len) / 2);
+
+        $left  = $half;
+        $right = $half;
+
+        if ($left + $right + $title_len < $line_len) {
+            ++$right;
+        }
+        $str = str_repeat('#', $left - 1).' '.$text.' '.str_repeat('#', $right - 1);
+
+        if ($style) {
+            $str = "<{$style}>{$str}</{$style}>";
+        }
+        $this->writeln($str);
+    }
 }

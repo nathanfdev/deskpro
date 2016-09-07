@@ -61,9 +61,9 @@ class AcceptWebUrlStep extends AbstractStep
             $this->authcode = '';
         }
 
-        #------------------------------
-        # Get input
-        #------------------------------
+        //------------------------------
+        // Get input
+        //------------------------------
 
         $url = '';
 
@@ -102,6 +102,11 @@ class AcceptWebUrlStep extends AbstractStep
         $this->getSession()->setWebUrl($url);
     }
 
+    /**
+     * @param $url
+     *
+     * @return bool
+     */
     private function validateUrl($url)
     {
         if (
@@ -114,9 +119,9 @@ class AcceptWebUrlStep extends AbstractStep
         $url = rtrim($url, '/');
         $env = $this->getContext()->getDpEnv();
 
-        #------------------------------
-        # Verify its deskpro, and that its *this* deskpro
-        #------------------------------
+        //------------------------------
+        // Verify its deskpro, and that its *this* deskpro
+        //------------------------------
 
         $this->writeln('Verifying the URL is DeskPRO...');
 
@@ -125,43 +130,55 @@ class AcceptWebUrlStep extends AbstractStep
         $res = $this->loadUrl($url.'/index.php?__serverinfo=ping&auth='.$this->authcode);
         $env->getDatManager()->removeTxtFile('pong_message');
 
-        if (!$res || strpos($res, 'pong') === false) {
-            $this->writeln('<error>The URL you entered does not appear to be a DeskPRO URL, or the URL is not loading.</error>');
+        if (!$res['result']) {
+            $this->writeln('<error>The URL you entered is not loading.</error>');
 
             return false;
         }
 
-        if (!$res || strpos($res, $code) === false) {
-            $this->writeln('<error>The URL you appears to be a URL for a *different* DeskPRO instance.</error>');
+        if (strpos($res['result'], 'pong') === false) {
+            $this->writeln('<error>The URL you entered seems to be not a URL for DeskPRO instance</error>');
+            $this->writeCurlInfo($res);
+
+            return false;
+        }
+
+        if (strpos($res['result'], $code) === false) {
+            $this->writeln('<error>The URL you entered appears to be a URL for a *different* DeskPRO instance.</error>');
+            $this->writeCurlInfo($res);
 
             return false;
         }
 
         $this->writeln('  > <info>OK</info>');
 
-        #------------------------------
-        # Verify rewriting is ok
-        #------------------------------
+        //------------------------------
+        // Verify rewriting is ok
+        //------------------------------
 
         $this->writeln('Verifying URL routing...');
 
         $check_url = $url.'/__serverinfo/url_check/path?auth='.$this->authcode;
         $res       = $this->loadUrl($check_url);
-        if (!$res || strpos($res, 'DP_CHECK_SUCCESS') === false) {
+        if (!$res['result'] || strpos($res['result'], 'DP_CHECK_SUCCESS') === false) {
             $this->writeln('<error>Your server is not routing requests properly.</error>');
             $this->writeln('');
             $this->writeln('This is the URL we were testing:');
             $this->writeln('<info>'.$check_url.'</info>');
             $this->writeln('');
 
+            if ($res['result']) {
+                $this->writeCurlInfo($res);
+            }
+
             return false;
         }
 
         $this->writeln('  > <info>OK</info>');
 
-        #------------------------------
-        # Verify the web root is ok
-        #------------------------------
+        //------------------------------
+        // Verify the web root is ok
+        //------------------------------
 
         $this->writeln('Verifying web root is safe...');
 
@@ -170,7 +187,10 @@ class AcceptWebUrlStep extends AbstractStep
             $url.'/../app/run/test_ping.html',
         ] as $test) {
             $res = $this->loadUrl($test);
-            if ($res && (strpos($res, 'DESKPRO_PONG') !== false || strpos($res, 'OK') !== 0)) {
+            if (
+                $res['result']
+                && (strpos($res['result'], 'DESKPRO_PONG') !== false || strpos($res['result'], 'OK') !== 0)
+            ) {
                 $this->writeln('<error>It seems like you have put DeskPRO files within the web root. This is a major security issue. You must only put the www/ directory within the web root.</error>');
 
                 return false;
@@ -179,9 +199,9 @@ class AcceptWebUrlStep extends AbstractStep
 
         $this->writeln('  > <info>OK</info>');
 
-        #------------------------------
-        # Verify the web deps
-        #------------------------------
+        //------------------------------
+        // Verify the web deps
+        //------------------------------
 
         $env = $this->getContext()->getDpEnv();
 
@@ -196,7 +216,7 @@ class AcceptWebUrlStep extends AbstractStep
 
         $res = $this->loadUrl($reqs_url_encoded);
 
-        if (!$res || !$this->validateRequirements($res)) {
+        if (!$res['result'] || !$this->validateRequirements($res['result'])) {
             $this->writeln('<error>The web server does not meet server requirements</error>');
             $this->writeln('You can view the server requirements test page here:');
             $this->writeln('<info>'.$reqs_url.'</info>');
@@ -207,22 +227,31 @@ class AcceptWebUrlStep extends AbstractStep
 
         $this->writeln('  > <info>OK</info>');
 
-        #------------------------------
-        # Verify HTTP verbs
-        #------------------------------
+        //------------------------------
+        // Verify HTTP verbs
+        //------------------------------
 
         $this->writeln('Verifying the web server responds to GET, POST, DELETE, PUT verbs...');
 
         foreach (['GET', 'POST', 'PUT', 'DELETE'] as $method) {
-            $res = $this->loadUrl($url.'/index.php?__serverinfo=check_http_methods&auth='.$this->authcode, $method);
-            if (strpos($res, "HTTP_METHOD_{$method}") === false) {
-                echo $res;
+            $res = $this->loadUrl($url.'/index.php?__serverinfo=check_http_methods&auth='.$this->authcode,
+            $method);
+            if (strpos($res['result'], "HTTP_METHOD_{$method}") === false) {
                 $this->writeln('<error>The web server did not respond properly to a '.$method.' request</error>');
                 $this->writeln('This usually means your server is blocking these HTTP verbs. You must edit your server configuration to allow them.');
                 if (EnvUtils::isWindows()) {
                     $this->writeln('This can be a common problem when using IIS on Windows. Refer to our knowledgebase article for instructions on how to fix it:');
                     $this->writeln('https://support.deskpro.com/kb/articles/210');
                 }
+
+                $this->writeBoundary('Start of response', 'info');
+                $this->writeln($res['result']);
+                $this->writeBoundary('End of response', 'info');
+
+                $this->writeBoundary('Start of headers', 'info');
+                $this->writeln($res['headers']);
+                $this->writeBoundary('End of headers', 'info');
+
                 $this->writeln('');
 
                 return false;
@@ -243,15 +272,28 @@ class AcceptWebUrlStep extends AbstractStep
      */
     private function loadUrl($url, $method = 'GET')
     {
-        $context = stream_context_create([
-            'http' => [
-                'timeout' => 20,
-                'method'  => $method,
-            ],
-            'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
-        ]);
+        $resource = curl_init($url);
+        curl_setopt_array(
+            $resource,
+            [
+                CURLOPT_HEADER         => true,
+                CURLINFO_HEADER_OUT    => true,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT        => 20,
+                CURLOPT_SSL_VERIFYPEER => false,
+            ]
+        );
 
-        return @file_get_contents($url, false, $context);
+        curl_setopt($resource, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+
+        $result = curl_exec(($resource));
+        $info   = curl_getinfo($resource);
+
+        return [
+            'result'  => $result ? substr($result, $info['header_size']) : false,
+            'headers' => $result ? trim(substr($result, 0, $info['header_size'])) : false,
+            'info'    => $info,
+        ];
     }
 
     /**
@@ -292,8 +334,29 @@ class AcceptWebUrlStep extends AbstractStep
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function isComplete()
     {
         return $this->getSession()->getWebUrl();
+    }
+
+    /**
+     * @param array $res
+     */
+    private function writeCurlInfo(array $res)
+    {
+        $this->writeln('');
+
+        $this->writeBoundary('Start of headers', 'info');
+        $this->writeln(sprintf('<info>%s</info>', $res['headers']));
+        $this->writeBoundary('End of headers', 'info');
+
+        $this->writeln('');
+
+        $this->writeBoundary('Start of response', 'info');
+        $this->writeln(sprintf('<info>%s</info>', $res['result']));
+        $this->writeBoundary('End of response', 'info');
     }
 }
