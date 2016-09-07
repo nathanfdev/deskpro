@@ -53,6 +53,9 @@ class EzcReader extends AbstractReader
      */
     protected $mail = null;
 
+    /**
+     * EzcReader constructor.
+     */
     public function __construct()
     {
         $opt = new \ezcMailParserOptions();
@@ -78,6 +81,9 @@ class EzcReader extends AbstractReader
         $this->mail   = null;
     }
 
+    /**
+     * @param $source
+     */
     protected function _setRawSource($source)
     {
         $set        = new \ezcMailVariableSet($source);
@@ -90,6 +96,11 @@ class EzcReader extends AbstractReader
         $this->mail = $this->mail[0];
     }
 
+    /**
+     * @param $name
+     *
+     * @return Item\Header
+     */
     protected function _getHeader($name)
     {
         $name         = strtolower($name);
@@ -106,6 +117,9 @@ class EzcReader extends AbstractReader
         return $header;
     }
 
+    /**
+     * @return array
+     */
     protected function _getCcAddresses()
     {
         $emails = [];
@@ -128,6 +142,9 @@ class EzcReader extends AbstractReader
         return $emails;
     }
 
+    /**
+     * @return array
+     */
     protected function _getToAddresses()
     {
         $emails = [];
@@ -150,6 +167,9 @@ class EzcReader extends AbstractReader
         return $emails;
     }
 
+    /**
+     * @return Item\EmailAddress
+     */
     protected function _getFromAddress()
     {
         if (!$this->mail->from || !$this->mail->from->email) {
@@ -174,6 +194,9 @@ class EzcReader extends AbstractReader
         return $email;
     }
 
+    /**
+     * @return Item\EmailAddress|bool
+     */
     protected function _getReplyToAddress()
     {
         $val = $this->mail->getHeader('Reply-To', false);
@@ -196,6 +219,9 @@ class EzcReader extends AbstractReader
         return $email;
     }
 
+    /**
+     * @return Item\EmailAddress|bool
+     */
     protected function _getOriginalFromAddress()
     {
         $val = $this->mail->getHeader('X-Original-From', false);
@@ -218,6 +244,9 @@ class EzcReader extends AbstractReader
         return $email;
     }
 
+    /**
+     * @return Item\Subject
+     */
     protected function _getSubject()
     {
         if (!$this->mail->subject) {
@@ -241,6 +270,9 @@ class EzcReader extends AbstractReader
         return $subject;
     }
 
+    /**
+     * @return Item\Subject|void
+     */
     protected function _getOriginalSubject()
     {
         $header = $this->getHeader('Thread-Topic');
@@ -256,6 +288,9 @@ class EzcReader extends AbstractReader
         return $subject;
     }
 
+    /**
+     * @return array
+     */
     protected function _getAttachments()
     {
         $attachments = [];
@@ -397,6 +432,9 @@ class EzcReader extends AbstractReader
         return $attachments;
     }
 
+    /**
+     * @return Item\BodyHtml
+     */
     protected function _getBodyHtml()
     {
         $raw_parts = [];
@@ -406,19 +444,25 @@ class EzcReader extends AbstractReader
                 $part->subType == 'html'
                 && !($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')
             ) {
-                $originalCharset = $part->originalCharset;
-                if (!$originalCharset) {
-                    $originalCharset = 'us-ascii';
-                }
-
-                if ($this->hasProperty('override_from_charset')) {
-                    $originalCharset = $this->getProperty('override_from_charset');
-                }
+                $originalCharset = $this->getOriginalCharset($part);
 
                 $body                   = new Item\BodyHtml();
                 $body->body             = Strings::standardEol($part->text);
                 $body->body_utf8        = Strings::convertToUtf8(Strings::standardEol($part->text), $originalCharset);
                 $body->original_charset = $part->originalCharset;
+
+                $raw_parts[] = $body;
+            }
+        }
+
+        //we're going append technical detail to html body if it exists.
+        if ($raw_parts) {
+            foreach ($this->mail->fetchParts(array('ezcMailDeliveryStatus')) as $part) {
+                /* @var \ezcMailDeliveryStatus $part */
+                $generatedBody   = Strings::standardEol($part->generateBody());
+                $body            = new Item\BodyHtml();
+                $body->body      = $generatedBody;
+                $body->body_utf8 = $generatedBody;
 
                 $raw_parts[] = $body;
             }
@@ -475,20 +519,16 @@ class EzcReader extends AbstractReader
         }
     }
 
+    /**
+     * @return Item\BodyText
+     */
     protected function _getBodyText()
     {
         $raw_parts = [];
 
         foreach ($this->mail->fetchParts(['ezcMailText']) as $part) {
             if ($part->subType == 'plain') {
-                $originalCharset = $part->originalCharset;
-                if (!$originalCharset) {
-                    $originalCharset = 'us-ascii';
-                }
-
-                if ($this->hasProperty('override_from_charset')) {
-                    $originalCharset = $this->getProperty('override_from_charset');
-                }
+                $originalCharset = $this->getOriginalCharset($part);
 
                 $body                   = new Item\BodyText();
                 $body->body             = $part->text;
@@ -497,6 +537,16 @@ class EzcReader extends AbstractReader
 
                 $raw_parts[] = $body;
             }
+        }
+
+        foreach ($this->mail->fetchParts(array('ezcMailDeliveryStatus')) as $part) {
+            /* @var \ezcMailDeliveryStatus $part */
+            $generatedBody   = Strings::standardEol($part->generateBody());
+            $body            = new Item\BodyHtml();
+            $body->body      = $generatedBody;
+            $body->body_utf8 = $generatedBody;
+
+            $raw_parts[] = $body;
         }
 
         if ($raw_parts) {
@@ -548,6 +598,25 @@ class EzcReader extends AbstractReader
 
             return $body;
         }
+    }
+
+    /**
+     * @param \ezcMailPart $part
+     *
+     * @return mixed
+     */
+    protected function getOriginalCharset(\ezcMailPart $part)
+    {
+        $originalCharset = $part->originalCharset;
+        if (!$originalCharset) {
+            $originalCharset = 'us-ascii';
+        }
+
+        if ($this->hasProperty('override_from_charset')) {
+            $originalCharset = $this->getProperty('override_from_charset');
+        }
+
+        return $originalCharset;
     }
 
     /**

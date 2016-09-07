@@ -215,7 +215,7 @@ class TicketIncomingEmailMessage
 
             // If the document is too complex then htmlpurifier can crash.
             // We'll try to find a cut-mark now and trim the document down to see if we can still use it
-            // (We dont alway cut first because we want an in-tact 'full body' if possible)
+            // (We dont always cut first because we want an in-tact 'full body' if possible)
             if (substr_count($this->body, '>') > 15000) {
                 if ($do_cut) {
                     $this->logMessage('[TicketIncomingEmailMessage] Document too complex, pre-cut');
