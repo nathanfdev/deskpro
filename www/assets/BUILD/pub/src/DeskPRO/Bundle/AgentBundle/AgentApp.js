@@ -1,20 +1,19 @@
 import 'babel-polyfill';
-import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
+import { IntlProvider } from 'react-intl';
+import Immutable from 'immutable';
+import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
 import AgentReducers from './AgentApp_Reducers';
 import AppReducers from '../AppBundle/AppApp_Reducers';
 import { DpAppContainer } from './Modules/Application/Components/DpAppContainer';
-import { IntlProvider } from 'react-intl';
-import Immutable from 'immutable';
-window.Immutable = Immutable;
-import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
 
+window.Immutable = Immutable;
 /**
  * ---------------------------------------------------------------------------------------------------------------------
  * It's here temporarily
@@ -28,7 +27,7 @@ window.DP_LANG = {
 
 export class AgentApp {
   run() {
-    jQuery(document).on('ready', () => this.start());
+    document.addEventListener('DOMContentLoaded', () => this.start());
   }
 
   start() {
@@ -55,7 +54,7 @@ export class AgentApp {
 
     // This builder calls compile on old-style reducers
     // created via the Reducer class
-    const legacyReducerBuilder = function (reducer) {
+    const legacyReducerBuilder = (reducer) => {
       if (reducer.isAmplifluxReducer) {
         const rInst = new reducer();
         return rInst.compile();
@@ -80,3 +79,4 @@ export class AgentApp {
     return makeStore(reducer, initialState, window.devToolsExtension ? window.devToolsExtension() : f => f);
   }
 }
+export default AgentApp;
