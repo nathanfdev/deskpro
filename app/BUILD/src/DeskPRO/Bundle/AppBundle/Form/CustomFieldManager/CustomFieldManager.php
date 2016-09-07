@@ -182,9 +182,11 @@ class CustomFieldManager
             ->where(
                 'f.is_user_enabled = true',
                 'f.is_enabled = true',
-                'f.handler_class IS NOT NULL'
+                'f.handler_class IS NOT NULL',
+                'f.handler_class != :data_handler_class'
             )
             ->orderBy('f.display_order')
+            ->setParameter('data_handler_class', CustomDefAbstract::HANDLER_CLASS_DATA)
         ;
 
         $result = new ArrayCollection($qb->getQuery()->getResult());
