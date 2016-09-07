@@ -5,8 +5,9 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 export class ReopenOverlay extends React.Component {
 
   static propTypes = {
-    locked:   PropTypes.bool,
-    onReopen: PropTypes.func
+    locked:         PropTypes.bool,
+    onReopen:       PropTypes.func,
+    lostConnection: PropTypes.bool
   };
 
   onReopen = event => {
@@ -15,13 +16,16 @@ export class ReopenOverlay extends React.Component {
   };
 
   render() {
-    const { locked } = this.props;
+    const { locked, lostConnection } = this.props;
 
     return (
       <div className="dpdesignportal-chat-form-disabled">
-        <a href="#" className={classNames('dpdesignportal-button', { locked })} onClick={this.onReopen}>
-          <i className="fa fa-commenting-o" /> {portalPhrases.get('portal.chat.reopen_chat')}
-        </a>
+        {lostConnection
+          ? null
+          : <a href="#" className={classNames('dpdesignportal-button', { locked })} onClick={this.onReopen}>
+            <i className="fa fa-commenting-o" /> {portalPhrases.get('portal.chat.reopen_chat')}
+          </a>
+        }
       </div>
     );
   }

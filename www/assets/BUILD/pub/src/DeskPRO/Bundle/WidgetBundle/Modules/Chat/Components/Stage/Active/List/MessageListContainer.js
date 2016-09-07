@@ -1,8 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { chatLoadedSelector, messagesSelector, lastMessageIdSelector, muteSelector, agentTypingDateSelector }
-from '../../../../Selectors/chat';
+import {
+  chatLoadedSelector,
+  messagesSelector,
+  lastMessageIdSelector,
+  muteSelector,
+  agentTypingDateSelector
+} from '../../../../Selectors/chat';
 import { widgetDimensionsSelector, widgetHeightSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
 import { peopleSelector } from '../../../../../Application/Selectors/peopleSelectors';
 import { MessageList } from './MessageList';

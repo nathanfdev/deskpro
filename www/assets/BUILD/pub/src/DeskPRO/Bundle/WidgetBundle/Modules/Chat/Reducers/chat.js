@@ -29,11 +29,13 @@ const initialState = {
     failed: [],
     repeat: []
   },
-  messages:      [],
-  attachments:   [],
-  feedbackStage: 'dialog',
-  retries:       0
+  messages:       [],
+  attachments:    [],
+  feedbackStage:  'dialog',
+  lostConnection: false
 };
+
+let connectionRetries = 0;
 
 export default createReducer(initialState, {
   // Polling
@@ -124,7 +126,15 @@ export default createReducer(initialState, {
   [actions.sendFeedback]:       setValue('feedbackStage', 'finished'),
 
   [actions.pollingChat]: async({
-    success: setValue('retries', 0),
-    error:   store => store.set('retries', store.get('retries') + 1)
+    success: state => {
+      connectionRetries = 0;
+      return state.set('lostConnection', false);
+    },
+    error: state => {
+      connectionRetries++;
+      return connectionRetries > 2
+        ? state.set('lostConnection', true)
+        : state;
+    },
   })
 });

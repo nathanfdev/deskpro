@@ -223,7 +223,7 @@ export const attachedFilesSelector = createSelector(
   attachments => attachments.filter(attachment => !attachment.get('is_image'))
 );
 
-export const retriesSelector = createSelector(
+export const lostConnectionSelector = createSelector(
   stateSelector,
-  state => state.get('retries')
+  state => state.get('lostConnection')
 );

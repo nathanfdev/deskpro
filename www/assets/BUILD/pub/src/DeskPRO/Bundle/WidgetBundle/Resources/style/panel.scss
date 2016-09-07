@@ -162,10 +162,19 @@ $border-color: #e7e7e7;
       }
     }
 
+    .circle-spinner-wrapper {
+      position: relative;
+    }
+
     .circle-spinner {
       display: block;
       margin: 30px auto 0;
       width: 30px;
+
+      &.central {
+        margin-top: -15px;
+        margin-left: -15px;
+      }
 
       i {
         display: inline-block;

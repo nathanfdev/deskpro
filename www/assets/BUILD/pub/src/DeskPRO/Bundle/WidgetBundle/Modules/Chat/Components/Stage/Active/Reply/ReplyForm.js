@@ -25,6 +25,7 @@ export class ReplyForm extends React.Component {
     agentName:           PropTypes.string,
     attachedImagesCount: PropTypes.number,
     isEnded:             PropTypes.bool,
+    lostConnection:      PropTypes.bool,
     canReopen:           PropTypes.bool,
     onUserTyping:        PropTypes.func,
     onSendMessage:       PropTypes.func
@@ -110,7 +111,7 @@ export class ReplyForm extends React.Component {
   }
 
   render() {
-    const { attachedImagesCount, isEnded, canReopen } = this.props;
+    const { attachedImagesCount, isEnded, canReopen, lostConnection } = this.props;
 
     if (isEnded && !canReopen) {
       return null;
@@ -118,7 +119,7 @@ export class ReplyForm extends React.Component {
 
     return (
       <div className="dpdesignportal-chat-form">
-        {isEnded && <ReopenOverlay {...this.props} />}
+        {(isEnded || lostConnection) && <ReopenOverlay {...this.props} />}
 
         <form onSubmit={this.onSubmit}>
           <div className="message-container message-container-with-attached-images">
