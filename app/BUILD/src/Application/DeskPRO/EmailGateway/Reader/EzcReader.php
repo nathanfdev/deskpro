@@ -64,9 +64,9 @@ class EzcReader extends AbstractReader
         \ezcMailParser::setTmpDir(dp_get_tmp_dir().DIRECTORY_SEPARATOR);
 
         // Dont have ezc try and convert charsets, we'll handle that ourselves tyvm
-        static $has_set_convert = false;
-        if (!$has_set_convert) {
-            $has_set_convert = true;
+        static $hasSetConvert = false;
+        if (!$hasSetConvert) {
+            $hasSetConvert = true;
             \ezcMailCharsetConverter::setConvertMethod(function ($text, $fromCharset) {
                 return $text;
             });
@@ -211,10 +211,16 @@ class EzcReader extends AbstractReader
 
         $addr = array_shift($addrs);
 
-        $email        = new Item\EmailAddress();
-        $email->name  = $addr->name ?: '';
-        $email->name  = $email->name;
-        $email->email = $addr->email;
+        //(sic!) cuase I'm not sure about returnPath (it's set by SMTP server iirc)
+        $charset = $this->mail->from->charset;
+        if (!$charset) {
+            $charset = 'us-ascii';
+        }
+
+        $email            = new Item\EmailAddress();
+        $email->name      = $addr->name ?: '';
+        $email->name_utf8 = Strings::convertToUtf8($email->name, $charset);
+        $email->email     = $addr->email;
 
         return $email;
     }
@@ -236,10 +242,15 @@ class EzcReader extends AbstractReader
 
         $addr = array_shift($addrs);
 
-        $email        = new Item\EmailAddress();
-        $email->name  = $addr->name ?: '';
-        $email->name  = $email->name;
-        $email->email = $addr->email;
+        $charset = $this->mail->from->charset;
+        if (!$charset) {
+            $charset = 'us-ascii';
+        }
+
+        $email            = new Item\EmailAddress();
+        $email->name      = $addr->name ?: '';
+        $email->name_utf8 = Strings::convertToUtf8($email->name, $charset);
+        $email->email     = $addr->email;
 
         return $email;
     }
@@ -336,8 +347,8 @@ class EzcReader extends AbstractReader
                         $attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');
                         file_put_contents($attach->tmp_file, $part->dp_raw_source);
 
-                    // If for some reason we dont have the raw source, this is the original way to read the mail
-                    // based on the parsed source. I dont think this sholud ever happen though.
+                        // If for some reason we dont have the raw source, this is the original way to read the mail
+                        // based on the parsed source. I dont think this sholud ever happen though.
                     } else {
                         // ezc does charset conversion that makes the charset think its utf8
                         // but it may not be. we need to copy the original
@@ -349,8 +360,6 @@ class EzcReader extends AbstractReader
                         $attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');
                         file_put_contents($attach->tmp_file, $part->generateBody());
                     }
-
-                    $attach->tmp_file = $attach->tmp_file;
 
                     if (isset($part->mail->headers) && !empty($part->mail->headers['subject'])) {
                         $filename          = $part->mail->headers['subject'];
@@ -366,9 +375,9 @@ class EzcReader extends AbstractReader
                     }
                     $attach->mime_type = 'message/rfc822';
                 } elseif ($part->mimeType == 'ms-tnef' || $part->mimeType == 'application/ms-tnef') {
-                    $attach         = null;
-                    $winmail_attach = $this->decodeTnef($part);
-                    foreach ($winmail_attach as $a) {
+                    $attach        = null;
+                    $winmailAttach = $this->decodeTnef($part);
+                    foreach ($winmailAttach as $a) {
                         $attachments[] = $a;
                     }
                 } else {
@@ -437,7 +446,7 @@ class EzcReader extends AbstractReader
      */
     protected function _getBodyHtml()
     {
-        $raw_parts = [];
+        $rawParts = [];
 
         foreach ($this->mail->fetchParts(['ezcMailText']) as $part) {
             if (
@@ -451,60 +460,60 @@ class EzcReader extends AbstractReader
                 $body->body_utf8        = Strings::convertToUtf8(Strings::standardEol($part->text), $originalCharset);
                 $body->original_charset = $part->originalCharset;
 
-                $raw_parts[] = $body;
+                $rawParts[] = $body;
             }
         }
 
         //we're going append technical detail to html body if it exists.
-        if ($raw_parts) {
-            foreach ($this->mail->fetchParts(array('ezcMailDeliveryStatus')) as $part) {
+        if ($rawParts) {
+            foreach ($this->mail->fetchParts(['ezcMailDeliveryStatus']) as $part) {
                 /* @var \ezcMailDeliveryStatus $part */
                 $generatedBody   = Strings::standardEol($part->generateBody());
                 $body            = new Item\BodyHtml();
                 $body->body      = $generatedBody;
                 $body->body_utf8 = $generatedBody;
 
-                $raw_parts[] = $body;
+                $rawParts[] = $body;
             }
         }
 
-        if ($raw_parts) {
-            $all_same = true;
-            $charset  = null;
+        if ($rawParts) {
+            $allSame = true;
+            $charset = null;
 
-            $all_utf = '';
-            $all_raw = '';
+            $allUtf = '';
+            $allRaw = '';
 
-            foreach ($raw_parts as $p) {
-                $all_utf .= $p->body_utf8;
-                $all_raw .= $p->body;
+            foreach ($rawParts as $p) {
+                $allUtf .= $p->body_utf8;
+                $allRaw .= $p->body;
 
                 if (!$charset) {
                     $charset = $p->original_charset;
                 } elseif ($charset != $p->original_charset) {
-                    $all_same = false;
+                    $allSame = false;
                 }
             }
 
             // All charsets were the same,
             // so we can have an accurate computed body with
             // accurate original_charset
-            if ($all_same) {
+            if ($allSame) {
                 $body                   = new Item\BodyHtml();
-                $body->body             = $all_raw;
-                $body->body_utf8        = $all_utf;
+                $body->body             = $allRaw;
+                $body->body_utf8        = $allUtf;
                 $body->original_charset = $charset;
 
-            // Charsets differ, so we need
-            // to construct based on the utf8-only body
+                // Charsets differ, so we need
+                // to construct based on the utf8-only body
             } else {
                 $body                   = new Item\BodyHtml();
-                $body->body             = $all_utf;
-                $body->body_utf8        = $all_utf;
+                $body->body             = $allUtf;
+                $body->body_utf8        = $allUtf;
                 $body->original_charset = 'UTF-8';
             }
 
-            $body->raw_parts = $raw_parts;
+            $body->raw_parts = $rawParts;
 
             return $body;
         } else {
@@ -524,7 +533,7 @@ class EzcReader extends AbstractReader
      */
     protected function _getBodyText()
     {
-        $raw_parts = [];
+        $rawParts = [];
 
         foreach ($this->mail->fetchParts(['ezcMailText']) as $part) {
             if ($part->subType == 'plain') {
@@ -535,57 +544,57 @@ class EzcReader extends AbstractReader
                 $body->body_utf8        = Strings::convertToUtf8($part->text, $originalCharset);
                 $body->original_charset = $originalCharset;
 
-                $raw_parts[] = $body;
+                $rawParts[] = $body;
             }
         }
 
-        foreach ($this->mail->fetchParts(array('ezcMailDeliveryStatus')) as $part) {
+        foreach ($this->mail->fetchParts(['ezcMailDeliveryStatus']) as $part) {
             /* @var \ezcMailDeliveryStatus $part */
             $generatedBody   = Strings::standardEol($part->generateBody());
             $body            = new Item\BodyHtml();
             $body->body      = $generatedBody;
             $body->body_utf8 = $generatedBody;
 
-            $raw_parts[] = $body;
+            $rawParts[] = $body;
         }
 
-        if ($raw_parts) {
-            $all_same = true;
-            $charset  = null;
+        if ($rawParts) {
+            $allSame = true;
+            $charset = null;
 
-            $all_utf = '';
-            $all_raw = '';
+            $allUtf = '';
+            $allRaw = '';
 
-            foreach ($raw_parts as $p) {
-                $all_utf .= $p->body_utf8;
-                $all_raw .= $p->body;
+            foreach ($rawParts as $p) {
+                $allUtf .= $p->body_utf8;
+                $allRaw .= $p->body;
 
                 if (!$charset) {
                     $charset = $p->original_charset;
                 } elseif ($charset != $p->original_charset) {
-                    $all_same = false;
+                    $allSame = false;
                 }
             }
 
             // All charsets were the same,
             // so we can have an accurate computed body with
             // accurate original_charset
-            if ($all_same) {
+            if ($allSame) {
                 $body                   = new Item\BodyText();
-                $body->body             = $all_raw;
-                $body->body_utf8        = $all_utf;
+                $body->body             = $allRaw;
+                $body->body_utf8        = $allUtf;
                 $body->original_charset = $charset;
 
                 // Charsets differ, so we need
                 // to construct based on the utf8-only body
             } else {
                 $body                   = new Item\BodyText();
-                $body->body             = $all_utf;
-                $body->body_utf8        = $all_utf;
+                $body->body             = $allUtf;
+                $body->body_utf8        = $allUtf;
                 $body->original_charset = 'UTF-8';
             }
 
-            $body->raw_parts = $raw_parts;
+            $body->raw_parts = $rawParts;
 
             return $body;
         } else {
@@ -622,7 +631,7 @@ class EzcReader extends AbstractReader
     /**
      * Decode a Microsoft Outlook TNEF part (winmail.dat).
      *
-     * @param $part Message part to decode
+     * @param $part \ezcMailPart part to decode
      *
      * @return array
      */
@@ -632,12 +641,12 @@ class EzcReader extends AbstractReader
 
         $tnef = new \tnef();
 
-        $tnef_arr = $tnef->decompress(file_get_contents($part->fileName));
-        if (!$tnef_arr || !is_array($tnef_arr)) {
+        $tnefArr = $tnef->decompress(file_get_contents($part->fileName));
+        if (!$tnefArr || !is_array($tnefArr)) {
             return [];
         }
 
-        foreach ($tnef_arr as $pid => $winatt) {
+        foreach ($tnefArr as $pid => $winatt) {
             $attach = new Item\Attachment();
 
             // We didnt decode it or its a bad file
@@ -654,7 +663,7 @@ class EzcReader extends AbstractReader
 
             $attachments[] = $attach;
 
-            unset($tnef_arr[$pid]);
+            unset($tnefArr[$pid]);
         }
 
         return $attachments;
