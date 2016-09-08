@@ -32,7 +32,9 @@
 
 namespace Application\DeskPRO\Service;
 
-use Guzzle\Http\Client as HttpClient;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\RequestOptions;
 
 class LicenseService
 {
@@ -111,17 +113,18 @@ class LicenseService
         $news = array();
 
         try {
-            $client = new HttpClient(\DpSys\License::getSupportUrl(), array(
-                'ssl.certificate_authority' => false,
-            ));
-            $request  = $client->get('/news/2-product.rss');
-            $response = $request->send();
+            $client = new Client([
+                'base_uri'             => \DpSys\License::getSupportUrl(),
+                RequestOptions::VERIFY => false,
+            ]);
 
-            if (!$response->isSuccessful()) {
+            try {
+                $response = $client->get('/news/2-product.rss');
+            } catch (ClientException $e) {
                 return;
             }
 
-            $rss = @simplexml_load_string($response->getBody(true));
+            $rss = @simplexml_load_string((string) $response->getBody());
             unset($r);
 
             if (!$rss || empty($rss) || empty($rss->channel->item)) {
@@ -153,20 +156,15 @@ class LicenseService
      */
     public static function fetchServiceResult($endpoint, array $post_data = array())
     {
-        $url = \DpSys\License::getSecureLicServer().'/api/'.ltrim($endpoint, '/');
-
         try {
-            $client = new HttpClient(\DpSys\License::getSecureLicServer(), array(
-                'ssl.certificate_authority' => false,
-                'redirect.strict'           => true,
-            ));
-            $r = $client->post(
-                \DpSys\License::getSecureLicServer().'/api/'.ltrim($endpoint, '/'),
-                null,
-                $post_data
-            );
-            $r->send();
-            $result = $r->getResponse()->getBody(true);
+            $client = new Client([
+                'base_uri'                      => \DpSys\License::getSecureLicServer(),
+                RequestOptions::VERIFY          => false,
+                RequestOptions::ALLOW_REDIRECTS => ['strict' => true],
+            ]);
+
+            $response = $client->post('/api/'.ltrim($endpoint, '/'), [RequestOptions::FORM_PARAMS => $post_data]);
+            $result   = (string) $response->getBody();
         } catch (\Exception $e) {
             $result = '';
         }
