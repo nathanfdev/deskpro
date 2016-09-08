@@ -29,6 +29,15 @@ export function css(jsx) {
   );
 }
 
+export function adminCss(jsx) {
+  return (
+    <div>
+      <link type="text/css" rel="stylesheet" href={`${assetsUrl}/DeskPRO_AdminBundle_style.css`} />
+      {jsx}
+    </div>
+  );
+}
+
 export function redux(state, jsx) {
   const store = createStore(s => s, fakeState(state));
 

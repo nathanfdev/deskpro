@@ -177,8 +177,9 @@ function getWebpackConfig(mode, isProd) {
           test:    /\/Reducers\/.*?\.js$/,
           loader:  'app-reducer-gen',
           include: [
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Modules'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AdminBundle/Modules'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Modules'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Modules'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle/Modules')
           ]
         }
@@ -207,6 +208,7 @@ function getWebpackConfig(mode, isProd) {
         {
           test:    /\.scss$/,
           include: [
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AdminBundle/Resources/style'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Resources/style'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle/Resources/style'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Resources/style'),
@@ -279,6 +281,10 @@ function getWebpackConfig(mode, isProd) {
     config.entry.DeskPRO_AgentLegacyBundle       = ['./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentLegacyBundle'];
     config.entry.DeskPRO_AgentLegacyBundle_style = ['./src/DeskPRO/Bundle/AgentBundle/Resources/style/legacy-agent.scss'];
   }
+  if (mode === 'all' || mode === 'admin') {
+    config.entry.DeskPRO_AdminBundle             = ['./src/DeskPRO/Bundle/AdminBundle/DeskPRO_AdminBundle'];
+    config.entry.DeskPRO_AdminBundle_style       = ['./src/DeskPRO/Bundle/AdminBundle/Resources/style/admin-style.scss'];
+  }
 
   //---
   // Prod settings
@@ -300,6 +306,9 @@ function getWebpackConfig(mode, isProd) {
     // .js loader
     config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader?stage=0'];
 
+    if (config.entry.DeskPRO_AdminBundle) {
+      config.entry.DeskPRO_AdminBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
+    }
     if (config.entry.DeskPRO_AgentBundle) {
       config.entry.DeskPRO_AgentBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
     }
@@ -383,12 +392,14 @@ function startWebpackServer(config) {
 
 gulp.task('refresh-reducers', () => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
+  reducerRefresh('Admin', path.join(__dirname, 'src/DeskPRO/Bundle/AdminBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
 });
 
 gulp.task('bundle', callback => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
+  reducerRefresh('Admin', path.join(__dirname, 'src/DeskPRO/Bundle/AdminBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
   refreshWidgetLoader('widget_loader');
@@ -424,6 +435,7 @@ gulp.task('bundle:dev-server', () => {
   refreshWidgetLoader('hit_recorder');
   refreshWidgetLoader('embed_loader');
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
+  reducerRefresh('Admin', path.join(__dirname, 'src/DeskPRO/Bundle/AdminBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
   startWebpackServer(getWebpackConfig('all', false));
