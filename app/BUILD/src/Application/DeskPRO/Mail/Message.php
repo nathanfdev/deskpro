@@ -222,13 +222,13 @@ class Message extends \Orb\Mail\Message
                     try {
                         $h2t = new Html2Text();
                         $h2t->addElementProcessor('a', function ($node) {
-                                $classname = $node->getAttribute('class');
-                                if (strpos($classname, 'dp-reply-help-link') === false) {
-                                    return;
-                                }
+                            $classname = $node->getAttribute('class');
+                            if (strpos($classname, 'dp-reply-help-link') === false) {
+                                return;
+                            }
 
-                                return 'https://deskpro.com/go/reply';
-                            });
+                            return 'https://deskpro.com/go/reply';
+                        });
                         $plaintext = $h2t->convert($plaintext);
                     } catch (\Exception $e) {
                         $plaintext = null;
@@ -260,13 +260,7 @@ class Message extends \Orb\Mail\Message
                     $this->setBody($body, 'text/html');
                 }
             }
-
-        // These need to be unset so the message can be properly serialized
-        // if it needs to be inserted as a queued message
-        $this->template            = null;
-            $this->template_vars   = null;
-            $this->template_engine = null;
-            $this->set_to_person   = null;
+        }
 
         // Attach blobs
         foreach ($this->attach_blobs as $src => $blob) {
@@ -274,7 +268,7 @@ class Message extends \Orb\Mail\Message
                 continue;
             }
 
-            $type = $blob->content_type;
+            $type = $blob->getContentType();
 
             // Bug in attaching message/rfc822 messages
             // results in invalid emails.
@@ -283,20 +277,23 @@ class Message extends \Orb\Mail\Message
                 $type = 'application/octet-stream';
             }
 
-            $this->attach(
-                    \Swift_Attachment::newInstance(
+            $this->attach(\Swift_Attachment::newInstance(
                 App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob),
-                $blob->filename,
+                $blob->getFilename(),
                 $type
-                    )
-                )
-                ;
+            ));
         }
-            $this->attach_blobs = null;
-            $this->embed_only   = true;
 
-            $this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
-        }
+        // These need to be unset so the message can be properly serialized
+        // if it needs to be inserted as a queued message
+        $this->template        = null;
+        $this->template_vars   = null;
+        $this->template_engine = null;
+        $this->set_to_person   = null;
+        $this->attach_blobs    = null;
+        $this->embed_only      = true;
+
+        $this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
     }
 
     /**
