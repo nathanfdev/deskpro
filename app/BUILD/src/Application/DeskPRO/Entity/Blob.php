@@ -43,6 +43,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -404,12 +405,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get a thumbnail for this blob (if its an image).
      *
-     * @param int  $size
-     * @param bool $absolute
+     * @param int        $size
+     * @param int|string $absolute
      *
      * @return string
      */
-    public function getThumbnailUrl($size = 50, $absolute = false)
+    public function getThumbnailUrl($size = 50, $absolute = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         if (!$this->isImage()) {
             return;
@@ -605,9 +606,9 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         ];
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

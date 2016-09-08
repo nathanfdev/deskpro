@@ -115,9 +115,9 @@ class MiscController extends AbstractController
 
     private function _authLocalInput($email, $password)
     {
-        #------------------------------
-        # Auth local
-        #------------------------------
+        //------------------------------
+        // Auth local
+        //------------------------------
 
         $adapter = new \Application\DeskPRO\Auth\Adapter\Local($this->container->getEm());
         $adapter->setCredentials($email, $password);
@@ -134,9 +134,9 @@ class MiscController extends AbstractController
             }
         }
 
-        #------------------------------
-        # Auth usersources that accept local input
-        #------------------------------
+        //------------------------------
+        // Auth usersources that accept local input
+        //------------------------------
 
         $usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
         foreach ($usersources as $us) {
@@ -210,15 +210,15 @@ class MiscController extends AbstractController
 
             // Save login log
             if ($attempt_person) {
-                $this->db->insert('login_log', array(
+                $this->db->insert('login_log', [
                     'person_id'    => $attempt_person->getId(),
                     'area'         => 'api',
                     'is_success'   => 0,
-                    'ip_address'   => $this->getRequest()->getClientIp(),
-                    'hostname'     => @gethostbyaddr($this->getRequest()->getClientIp()) ?: '',
+                    'ip_address'   => $request->getClientIp(),
+                    'hostname'     => @gethostbyaddr($request->getClientIp()) ?: '',
                     'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                     'date_created' => date('Y-m-d H:i:s'),
-                ));
+                ]);
             }
 
             return $this->createApiErrorResponse('invalid_login', 'Invalid login details', 403);
@@ -249,15 +249,15 @@ class MiscController extends AbstractController
         }
 
         // Login log
-        $this->db->insert('login_log', array(
+        $this->db->insert('login_log', [
             'person_id'    => $person->getId(),
             'area'         => 'api',
             'is_success'   => 1,
-            'ip_address'   => $this->getRequest()->getClientIp(),
-            'hostname'     => @gethostbyaddr($this->getRequest()->getClientIp()) ?: '',
+            'ip_address'   => $request->getClientIp(),
+            'hostname'     => @gethostbyaddr($request->getClientIp()) ?: '',
             'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
             'date_created' => date('Y-m-d H:i:s'),
-        ));
+        ]);
 
         /** @var ApiToken $token */
         $token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
@@ -282,15 +282,15 @@ class MiscController extends AbstractController
             $api_url = $this->container->getBrandSetting('core.deskpro_url');
             $api_url .= 'index.php/';
 
-            if ($this->getRequest()->isSecure() && strpos($api_url, 'https://') !== 0 && !defined('DPC_IS_CLOUD')) {
+            if ($request->isSecure() && strpos($api_url, 'https://') !== 0 && !defined('DPC_IS_CLOUD')) {
                 $api_url = preg_replace('#^http://#', 'https://', $api_url);
             }
 
             $data['api_url']       = $api_url;
-            $data['helpdesk_info'] = array(
+            $data['helpdesk_info'] = [
                 'url'  => $this->container->getBrandSetting('core.deskpro_url'),
                 'name' => $this->container->getBrandSetting('core.helpdesk_name'),
-            );
+            ];
             $data['person_id']   = $person->getId();
             $data['person_info'] = $person->toApiData(true);
         }

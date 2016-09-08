@@ -1990,7 +1990,7 @@ class TicketSearchController extends AbstractController
                 foreach ($actions as $name => $opt) {
                     // Cleanup RTE markup
                     if ($name == 'reply') {
-                        $new_message       = $this->cleaner->clean(@$opt['reply_text'] ?: '', 'html');
+                        $new_message       = isset($opt['reply_text']) ? $this->cleaner->clean($opt['reply_text'], 'html') : '';
                         $new_message       = Strings::trimHtml($new_message);
                         $new_message       = Strings::prepareWysiwygHtml($new_message);
                         $opt['reply_text'] = $new_message;
