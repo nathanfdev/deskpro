@@ -83,7 +83,7 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
      */
     public function apply(Ticket $ticket)
     {
-        $this->field_manager->saveFormToObject($this->set_value['custom_fields'], $ticket, true);
+        $this->field_manager->saveFormToObject($this->set_value['custom_fields'], $ticket, true, false);
     }
 
     /**

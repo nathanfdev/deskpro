@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -99,7 +100,7 @@ abstract class HandlerAbstract
             if ($sa === $sb) {
                 $sa = $a->display_order;
                 $sb = $b->display_order;
-            };
+            }
 
             if ($sa === $sb) {
                 return 0;
@@ -380,6 +381,8 @@ abstract class HandlerAbstract
      *
      * This must return an array of array(field_id, type, value)
      * If no value is set, then use null.
+     *
+     * @param $form_data
      *
      * @return array
      */
