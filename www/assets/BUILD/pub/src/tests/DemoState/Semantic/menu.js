@@ -1,6 +1,221 @@
 import React from 'react';
 import List from 'DeskPRO/Component/Semantic/List/List';
 
+
+const customList = {
+  elements: [
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+  ]
+};
+export const customStructure = {
+  panels: [
+    {
+      title:   'Custom templates',
+      icon:    'open folder',
+      count:   customList.elements,
+      content: <List {...customList} />
+    },
+  ]
+};
+export const primaryList = {
+  elements: [
+    {
+      label: 'New ticket auto-response',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket by agent',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket confirmation',
+      icon:  'code'
+    },
+    {
+      label: 'New agent reply',
+      icon:  'code'
+    },
+    {
+      label: 'User reply auto-response',
+      icon:  'code'
+    },
+  ]
+};
+const validationList = {
+  elements: [
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'Ticket new Validate email',
+      icon:  'code'
+    }
+  ]
+};
+const warningList = {
+  elements: [
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+  ]
+};
+const ratingList = {
+  elements: [
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+  ]
+};
+const ccList = {
+  elements: [
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon:  'code'
+    }
+  ]
+};
+export const listStructure = {
+  panels: [
+    {
+      title:   'Validation',
+      icon:    'open folder',
+      count:   validationList.elements,
+      content: <List {...validationList} />
+    },
+    {
+      title:   'Warning, alerts & errors',
+      icon:    'open folder',
+      count:   warningList.elements,
+      content: <List {...warningList} />
+    },
+    {
+      title:   'Rating',
+      icon:    'open folder',
+      count:   ratingList.elements,
+      content: <List {...ratingList} />
+    },
+    {
+      title:   'CC and new participants',
+      icon:    'open folder',
+      count:   ccList.elements,
+      content: <List {...ccList} />
+    }
+  ]
+};
 export const emailStructure = {
   searchBox: true,
   sections:  [
@@ -10,7 +225,13 @@ export const emailStructure = {
         {
           label:      'Ticket emails',
           icon:       'folder open',
-          subContent: {}
+          subContent: {
+            sections: {
+              primary:    primaryList.elements,
+              custom:     customList.elements,
+              additional: listStructure.panels
+            }
+          }
         },
         {
           label:      'Account emails',
@@ -157,217 +378,4 @@ export const variablesStructure = {
     }
   ]
 };
-export const primaryList = {
-  elements: [
-    {
-      label: 'New ticket auto-response',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket by agent',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket confirmation',
-      icon:  'code'
-    },
-    {
-      label: 'New agent reply',
-      icon:  'code'
-    },
-    {
-      label: 'User reply auto-response',
-      icon:  'code'
-    },
-  ]
-};
-const customList = {
-  elements: [
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-  ]
-};
-export const customStructure = {
-  panels: [
-    {
-      title:   'Custom templates',
-      icon:    'open folder',
-      count:   customList.elements,
-      content: <List {...customList} />
-    },
-  ]
-};
-const validationList = {
-  elements: [
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'Ticket new Validate email',
-      icon:  'code'
-    }
-  ]
-};
-const warningList = {
-  elements: [
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-  ]
-};
-const ratingList = {
-  elements: [
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-  ]
-};
-const ccList = {
-  elements: [
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    },
-    {
-      label: 'New ticket (validation required)',
-      icon:  'code'
-    }
-  ]
-};
-export const listStructure = {
-  panels: [
-    {
-      title:   'Validation',
-      icon:    'open folder',
-      count:   validationList.elements,
-      content: <List {...validationList} />
-    },
-    {
-      title:   'Warning, alerts & errors',
-      icon:    'open folder',
-      count:   warningList.elements,
-      content: <List {...warningList} />
-    },
-    {
-      title:   'Rating',
-      icon:    'open folder',
-      count:   ratingList.elements,
-      content: <List {...ratingList} />
-    },
-    {
-      title:   'CC and new participants',
-      icon:    'open folder',
-      count:   ccList.elements,
-      content: <List {...ccList} />
-    }
-  ]
-};
+

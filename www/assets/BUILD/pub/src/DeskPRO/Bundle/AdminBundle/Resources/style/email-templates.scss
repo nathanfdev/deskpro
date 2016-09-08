@@ -1,0 +1,12 @@
+.email-and-block {
+  width: 500px;
+  > div:first-child {
+    width: 260px;
+  }
+  > .right-panel.ui.vertical.menu {
+    width: 340px;
+    .ui.styled.accordion {
+      width: auto;
+    }
+  }
+}
