@@ -59,6 +59,7 @@ class CustomPerDataListener implements EventSubscriber
             'postPersist',
             'preRemove',
             'onFlush',
+            'onClear',
         ];
     }
 
@@ -97,6 +98,11 @@ class CustomPerDataListener implements EventSubscriber
         foreach ($this->updateQueue as $entity) {
             $this->updateCustomPerData($entity, $args->getEntityManager());
         }
+    }
+
+    public function onClear()
+    {
+        $this->updateQueue = [];
     }
 
     /**
@@ -194,7 +200,9 @@ class CustomPerDataListener implements EventSubscriber
         ;
 
         $defs = $qb->getQuery()->getResult();
-        $ids  = array_map(function (CustomFieldDefinition $def) { return $def->getId(); }, $defs);
+        $ids  = array_map(function (CustomFieldDefinition $def) {
+            return $def->getId();
+        }, $defs);
 
         return $ids;
     }

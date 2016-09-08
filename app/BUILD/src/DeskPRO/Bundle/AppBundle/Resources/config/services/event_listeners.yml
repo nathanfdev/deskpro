@@ -21,7 +21,7 @@ services:
   event_listener.object_translatable:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\ObjectTranslatableListener
     tags:
-      - { name: doctrine.event_subscriber }
+      - { name: doctrine.event_subscriber, connection: default }
 
   event_listener.custom_per_data:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomPerDataListener
