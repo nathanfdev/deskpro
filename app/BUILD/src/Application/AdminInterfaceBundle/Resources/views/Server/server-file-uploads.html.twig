@@ -121,14 +121,13 @@
 				We detected a problem while trying to upload your file. The most common reasons are:
 				<ul style="margin-top: 3px;">
 					<li style="margin-bottom: 3px;" ng-if="data.php_vars.upload_tmp_dir_real && !fileUploadResults.is_tmp_writable">
-						The temporary storage directory (upload_tmp_dir in php.ini)
-						is currently set to <strong>{{ ng_var('data.php_vars.upload_tmp_dir_real') }}</strong>. This
-						directory
-						<strong>is not writable</strong> by the web server. This means
-						uploads can not be saved and will always fail. Edit php.ini and
-						specify a
-						path that is writable by the server, or change permissions on the
-						directory so the server can write to it.
+						The temporary storage directory (upload_tmp_dir in php.ini) is currently set to
+						<strong ng-if="php_vars.upload_tmp_dir">{{ ng_var('data.php_vars.upload_tmp_dir') }}</strong>
+						<strong ng-if="!php_vars.upload_tmp_dir">{{ ng_var('data.php_vars.upload_tmp_dir_real') }}</strong>
+						.
+						This directory <strong>is not writable</strong> by the web server. This means
+						uploads can not be saved and will always fail. Edit php.ini and specify a path that is
+						writable by the server, or change permissions on the directory so the server can write to it.
 					</li>
 					<li ng-if="fileUploadResults.upload_failed == '{{ phrase('agent.general.attach_error_size') }}' ">
 						You have chosen a file that is larger than your server
