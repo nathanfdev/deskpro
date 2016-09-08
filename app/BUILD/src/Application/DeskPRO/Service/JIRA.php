@@ -597,6 +597,8 @@ class JIRA
      *
      * @param $id
      * @param $json
+     *
+     * @return mixed
      */
     public function updateIssueJson($id, $json)
     {

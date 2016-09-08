@@ -35,6 +35,7 @@ namespace Application\DeskPRO\JIRA;
 use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Component\Util\GuzzleOauthSubscriber;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
 
@@ -120,15 +121,32 @@ class OAuthWrapper
      * @param bool $token
      * @param bool $tokenSecret
      *
+     * @throws ApiCoreException
+     * @throws ApiErrorsException
      * @throws ApiGeneralException
      *
      * @return array
      */
     protected function requestCredentials($url, $token = false, $tokenSecret = false)
     {
-        $client   = $this->getClient($token, $tokenSecret);
-        $response = $client->post($url);
-        $body     = (string) $response->getBody();
+        $client = $this->getClient($token, $tokenSecret);
+        try {
+            $response = $client->post($url);
+            $body     = (string) $response->getBody();
+        } catch (ClientException $e) {
+            $response = (string) $e->getResponse()->getBody();
+            $json     = @\json_decode($response, 1);
+
+            if (!empty($json['errors'])) {
+                throw new ApiErrorsException($json['errors'], $e);
+            }
+
+            if (!empty($json['errorMessages'])) {
+                throw new ApiCoreException($json['errorMessages'], $e);
+            }
+
+            throw $e;
+        }
 
         $tokens = [];
         parse_str($body, $tokens);

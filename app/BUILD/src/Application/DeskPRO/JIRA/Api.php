@@ -81,11 +81,11 @@ class Api
             $json     = @\json_decode($response, 1);
 
             if (!empty($json['errors'])) {
-                throw new ApiErrorsException($json['errors']);
+                throw new ApiErrorsException($json['errors'], $e);
             }
 
             if (!empty($json['errorMessages'])) {
-                throw new ApiCoreException($json['errorMessages']);
+                throw new ApiCoreException($json['errorMessages'], $e);
             }
 
             throw $e;
@@ -114,8 +114,8 @@ class Api
         return $this->call(
             self::API_BASE_PATH.$endpoint,
             'POST',
-            ['content-type'       => 'application/json'],
-            [RequestOptions::BODY => json_encode($params)]
+            [],
+            [RequestOptions::JSON => $params]
         );
     }
 
@@ -130,8 +130,8 @@ class Api
         return $this->call(
             self::API_BASE_PATH.$endpoint,
             'PUT',
-            ['content-type'       => 'application/json'],
-            [RequestOptions::BODY => json_encode($params)]
+            [],
+            [RequestOptions::JSON => $params]
         );
     }
 
