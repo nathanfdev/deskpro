@@ -142,7 +142,23 @@ class JIRA
             return;
         }
 
-        return $app->getSetting(self::SSL_AUTHORITY);
+        $setting = $app->getSetting(self::SSL_AUTHORITY);
+        if ($setting === 'default') {
+            $cert = $this->container->getParameter('kernel.root_dir')
+                .DIRECTORY_SEPARATOR
+                .'Resources'
+                .DIRECTORY_SEPARATOR
+                .'cacert.pem';
+            if (file_exists($cert)) {
+                $setting = $cert;
+            }
+        } elseif ($setting === 'disabled') {
+            $setting = false;
+        } else {
+            $setting = true;
+        }
+
+        return $setting;
     }
 
     /**
@@ -223,6 +239,8 @@ class JIRA
         if (!$app = $this->getApp()) {
             return;
         }
+
+        $meta = null;
 
         try {
             unset($properties['projects'], $properties['statuses'], $properties['fields'], $properties['api_username']);

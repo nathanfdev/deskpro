@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,14 @@
 /**
  * https://bitbucket.org/atlassian_tutorial/atlassian-oauth-examples/src/d625161454d1ca97b4515c6147b093fac9a68f7e/php/?at=default.
  */
+
 namespace Application\DeskPRO\JIRA;
 
 use Application\DeskPRO\Service\JIRA;
-use Guzzle\Http\Client;
-use Guzzle\Plugin\Oauth\OauthPlugin;
+use DeskPRO\Component\Util\GuzzleOauthSubscriber;
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\RequestOptions;
 
 class OAuthWrapper
 {
@@ -70,17 +73,9 @@ class OAuthWrapper
             throw new ApiGeneralException('JIRA consumer key is required', 1002);
         }
 
-        $this->tokens       = $this->service->getTokens();
-        $this->callback_url = $callbackUrl;
-
-        if ($authority = $service->getSSLAuthority()) {
-            if ('system' === $authority) {
-                $this->ssl_authority = $authority;
-            }
-            if ('disabled' === $authority) {
-                $this->ssl_authority = false;
-            }
-        }
+        $this->tokens        = $this->service->getTokens();
+        $this->callback_url  = $callbackUrl;
+        $this->ssl_authority = $service->getSSLAuthority();
     }
 
     /**
@@ -89,11 +84,11 @@ class OAuthWrapper
     public function requestTempCredentials()
     {
         if (!empty($this->tokens['oauth_token'])) {
-            $this->tokens = array();
+            $this->tokens = [];
         }
 
         return $this->requestCredentials(
-            $this->base_url.$this->request_token_url.'?oauth_callback='.$this->callback_url
+            $this->request_token_url.'?oauth_callback='.$this->callback_url
         );
     }
 
@@ -102,17 +97,14 @@ class OAuthWrapper
      * @param $tokenSecret
      * @param $verifier
      *
-     * @throws Exception
-     * @throws \Exception
-     *
      * @return array
      */
     public function requestAuthCredentials($token, $tokenSecret, $verifier)
     {
-        $this->service->setTokens(array());
+        $this->service->setTokens([]);
 
         $credentials = $this->requestCredentials(
-            $this->base_url.$this->access_tocken_url.'?oauth_callback='.$this->callback_url.'&oauth_verifier='.$verifier,
+            $this->access_tocken_url.'?oauth_callback='.$this->callback_url.'&oauth_verifier='.$verifier,
             $token,
             $tokenSecret
         );
@@ -128,24 +120,17 @@ class OAuthWrapper
      * @param bool $token
      * @param bool $tokenSecret
      *
-     * @throws Exception
-     * @throws \Exception
+     * @throws ApiGeneralException
      *
      * @return array
      */
     protected function requestCredentials($url, $token = false, $tokenSecret = false)
     {
-        $client = $this->getClient($token, $tokenSecret);
-        try {
-            $response = $client->post($url)->send();
-        } catch (\Exception $e) {
-            // todo handle curl errors
-            throw $e;
-        }
+        $client   = $this->getClient($token, $tokenSecret);
+        $response = $client->post($url);
+        $body     = (string) $response->getBody();
 
-        $body = (string) $response->getBody();
-
-        $tokens = array();
+        $tokens = [];
         parse_str($body, $tokens);
 
         if (empty($tokens)) {
@@ -166,8 +151,6 @@ class OAuthWrapper
      * @param null $token
      * @param null $tokenSecret
      *
-     * @throws \Exception
-     *
      * @return Client
      */
     public function getClient($token = null, $tokenSecret = null)
@@ -179,32 +162,25 @@ class OAuthWrapper
         $token  = $token ?: (isset($this->tokens['oauth_token']) ? $this->tokens['oauth_token'] : null);
         $secret = $tokenSecret ?: (isset($this->tokens['oauth_token_secret']) ? $this->tokens['oauth_token_secret'] : null);
 
-        $this->client = new Client($this->base_url, array(
-            Client::SSL_CERT_AUTHORITY => $this->ssl_authority,
-        ));
-        $privateKey = $this->private_key;
+        $stack      = HandlerStack::create();
+        $middleware = new GuzzleOauthSubscriber([
+            'consumer_key'           => $this->consumer_key,
+            'consumer_secret'        => $this->consumer_secret,
+            'token'                  => $token,
+            'token_secret'           => $secret,
+            'signature_method'       => GuzzleOauthSubscriber::SIGNATURE_METHOD_RSA,
+            'private_key'            => $this->private_key,
+            'private_key_passphrase' => '',
+        ]);
+        $stack->push($middleware);
 
-        $plugin = new OauthPlugin(array(
-            'consumer_key'       => $this->consumer_key,
-            'consumer_secret'    => $this->consumer_secret,
-            'token'              => $token,
-            'token_secret'       => $secret,
-            'signature_method'   => 'RSA-SHA1',
-            'signature_callback' => function ($stringToSign, $key) use ($privateKey) {
+        $this->client = new Client([
+            'base_uri' => $this->base_url,
+            'handler'  => $stack,
 
-                $certificate = openssl_pkey_get_private($privateKey);
-                $privateKeyId = openssl_get_privatekey($certificate);
-                $signature = null;
-                if (!@openssl_sign($stringToSign, $signature, $privateKeyId)) {
-                    throw new ApiGeneralException('Invalid Private Key', 1004);
-                }
-                @openssl_free_key($privateKeyId);
-
-                return $signature;
-            },
-        ));
-
-        $this->client->addSubscriber($plugin);
+            RequestOptions::VERIFY => $this->ssl_authority,
+            RequestOptions::AUTH   => 'oauth',
+        ]);
 
         return $this->client;
     }
