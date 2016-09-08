@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,10 +55,15 @@ class IndexFactory
      */
     public function getIndex($index_name)
     {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
         if (defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
             return $this->client->getIndex($index_name.'_'.DPC_SITE_ID);
         } elseif (defined('DP_ELASTIC_INDEX')) {
             return $this->client->getIndex(DP_ELASTIC_INDEX);
+        } elseif ($DP_ENV && $DP_ENV->getConfig('settings.elastic_index_name')) {
+            return $DP_ENV->getConfig('settings.elastic_index_name');
         } else {
             return $this->client->getIndex($index_name);
         }
