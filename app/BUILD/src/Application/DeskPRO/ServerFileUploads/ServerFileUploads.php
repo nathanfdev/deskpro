@@ -206,12 +206,13 @@ class ServerFileUploads
         } else {
             $attachUrl = $accept->accept($file)->getDownloadUrl();
         }
+        $uploadTempDir = Env::getUploadTempDir();
 
         return [
             'upload_failed'     => $uploadFailed,
             'uploaded_file_url' => $attachUrl,
-            'tmp_dir'           => Env::getUploadTempDir(),
-            'is_tmp_writable'   => Env::getUploadTempDir() && is_writable(Env::getUploadTempDir()),
+            'tmp_dir'           => $uploadTempDir,
+            'is_tmp_writable'   => $uploadTempDir && is_writable($uploadTempDir),
         ];
     }
 

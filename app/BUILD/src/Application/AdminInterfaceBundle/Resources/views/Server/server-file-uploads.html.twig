@@ -118,9 +118,9 @@
 			<div class="well danger-message upload-message"
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed">
 				<strong>{{ phrase('admin.server.failed') }}: {{ ng_var('fileUploadResults.upload_failed') }}</strong><br/>
-				We detected a problem while trying to upload your file. The most common reasons are:
+				We detected a problem while trying to upload your file. The most likely reasons are:
 				<ul style="margin-top: 3px;">
-					<li style="margin-bottom: 3px;" ng-if="data.php_vars.upload_tmp_dir_real && !fileUploadResults.is_tmp_writable">
+					<li style="margin-bottom: 3px;" ng-if="tmpIsNotWritable()">
 						The temporary storage directory (upload_tmp_dir in php.ini) is currently set to
 						<strong ng-if="php_vars.upload_tmp_dir">{{ ng_var('data.php_vars.upload_tmp_dir') }}</strong>
 						<strong ng-if="!php_vars.upload_tmp_dir">{{ ng_var('data.php_vars.upload_tmp_dir_real') }}</strong>
@@ -132,11 +132,22 @@
 					<li ng-if="fileUploadResults.upload_failed == '{{ phrase('agent.general.attach_error_size') }}' ">
 						You have chosen a file that is larger than your server
 						configuration allows <strong>({{ ng_var('data.php_vars.upload_max_filesize') }})</strong>. File limits are set using the
-						options in php.ini as displayed below. In addition to these limits, your
-						web server (such as IIS or Apache)
-						may also enforce its own limits. Limits enforced by the web server
-						cannot be detected by the helpdesk and will need to be
+						options in php.ini as displayed below.
+					</li>
+					<li ng-if="fileUploadResults.upload_failed && fileUploadResults.upload_status === 414">
+						Your web server (such as IIS, nginx or Apache) enforces its own limits.
+						Limits enforced by the web server cannot be detected by the helpdesk and need to be
 						checked manually.
+					</li>
+					<li ng-if="fileUploadResults.upload_failed && fileUploadResults.upload_status !== 414">
+						Your web server respond with error while trying to upload test file.<br/>
+						Check the information below and contact your system administrator handing they this information:
+						<br/>
+						<pre>
+Error message: {{ ng_var('fileUploadResults.error_message') }}
+Response status: {{ ng_var('fileUploadResults.upload_status') }}
+Headers: {{ ng_var('fileUploadResults.response_headers') }}
+						</pre>
 					</li>
 				</ul>
 			</div>
