@@ -40,6 +40,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Twig\Extension\TemplatingExtension;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
 
 /**
@@ -60,7 +61,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
      */
     protected function getOptionsDef()
     {
-        $options = new CheckedOptions[];
+        $options = new CheckedOptionsArray();
         $options->addRequiredNames('url');
         $options->addValidNames('username', 'password', 'method', 'custom_data', 'headers', 'timeout', 'payload_type');
 
