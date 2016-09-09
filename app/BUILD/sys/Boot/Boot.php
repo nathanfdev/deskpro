@@ -291,6 +291,10 @@ class Boot
      */
     public static function bootCron(\DpRun\DpEnv $env)
     {
+        $argv    = $_SERVER['argv'];
+        $argv[0] = 'console';
+        array_splice($argv, 1, 0, ['dp:worker-job']);
+
         $tasks = [
             'CliVerifyRequirements',
             'Loader',
@@ -300,14 +304,10 @@ class Boot
             'CliKernel',
         ];
 
-        $res = self::runBootTasks($env, $tasks);
+        $res = self::runBootTasks($env, $tasks, ['argv' => $argv]);
 
         /** @var \Symfony\Component\HttpKernel\KernelInterface $kernel */
         $kernel = $res['cli_kernel'];
-
-        $argv    = $_SERVER['argv'];
-        $argv[0] = 'console';
-        array_splice($argv, 1, 0, ['dp:worker-job']);
 
         $input = new ArgvInput($argv);
 
