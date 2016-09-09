@@ -137,15 +137,17 @@ class AcceptWebUrlStep extends AbstractStep
         }
 
         if (strpos($res['result'], 'pong') === false) {
-            $this->writeln('<error>The URL you entered seems to be not a URL for DeskPRO instance</error>');
             $this->writeCurlInfo($res);
+            $this->writeln('<error>The URL you entered does not point to DeskPRO.</error>');
+            $this->writeln('Refer to the request output above for the result of the test.');
 
             return false;
         }
 
         if (strpos($res['result'], $code) === false) {
-            $this->writeln('<error>The URL you entered appears to be a URL for a *different* DeskPRO instance.</error>');
             $this->writeCurlInfo($res);
+            $this->writeln('<error>The URL you entered appears to be a URL for a *different* DeskPRO instance.</error>');
+            $this->writeln('Refer to the request output above for the result of the test.');
 
             return false;
         }
@@ -161,15 +163,15 @@ class AcceptWebUrlStep extends AbstractStep
         $check_url = $url.'/__serverinfo/url_check/path?auth='.$this->authcode;
         $res       = $this->loadUrl($check_url);
         if (!$res['result'] || strpos($res['result'], 'DP_CHECK_SUCCESS') === false) {
+            $this->writeCurlInfo($res);
+
             $this->writeln('<error>Your server is not routing requests properly.</error>');
+            $this->writeln('Refer to the request output above for the result of the test.');
+
             $this->writeln('');
             $this->writeln('This is the URL we were testing:');
             $this->writeln('<info>'.$check_url.'</info>');
             $this->writeln('');
-
-            if ($res['result']) {
-                $this->writeCurlInfo($res);
-            }
 
             return false;
         }
@@ -237,20 +239,18 @@ class AcceptWebUrlStep extends AbstractStep
             $res = $this->loadUrl($url.'/index.php?__serverinfo=check_http_methods&auth='.$this->authcode,
             $method);
             if (strpos($res['result'], "HTTP_METHOD_{$method}") === false) {
+                $this->writeCurlInfo($res);
+
+                $this->writeln('');
+
                 $this->writeln('<error>The web server did not respond properly to a '.$method.' request</error>');
                 $this->writeln('This usually means your server is blocking these HTTP verbs. You must edit your server configuration to allow them.');
+                $this->writeln('Refer to the request output above for the result of the test.');
+
                 if (EnvUtils::isWindows()) {
                     $this->writeln('This can be a common problem when using IIS on Windows. Refer to our knowledgebase article for instructions on how to fix it:');
                     $this->writeln('https://support.deskpro.com/kb/articles/210');
                 }
-
-                $this->writeBoundary('Start of response', 'info');
-                $this->writeln($res['result']);
-                $this->writeBoundary('End of response', 'info');
-
-                $this->writeBoundary('Start of headers', 'info');
-                $this->writeln($res['headers']);
-                $this->writeBoundary('End of headers', 'info');
 
                 $this->writeln('');
 
@@ -290,6 +290,8 @@ class AcceptWebUrlStep extends AbstractStep
         $info   = curl_getinfo($resource);
 
         return [
+            'method'  => $method,
+            'url'     => $url,
             'result'  => $result ? substr($result, $info['header_size']) : false,
             'headers' => $result ? trim(substr($result, 0, $info['header_size'])) : false,
             'info'    => $info,
@@ -349,14 +351,19 @@ class AcceptWebUrlStep extends AbstractStep
     {
         $this->writeln('');
 
-        $this->writeBoundary('Start of headers', 'info');
-        $this->writeln(sprintf('<info>%s</info>', $res['headers']));
-        $this->writeBoundary('End of headers', 'info');
-
+        $this->writeBoundary('Request', 'info');
+        $this->writeln(sprintf('<info>%s %s</info>', $res['method'], $res['url']));
         $this->writeln('');
 
-        $this->writeBoundary('Start of response', 'info');
-        $this->writeln(sprintf('<info>%s</info>', $res['result']));
-        $this->writeBoundary('End of response', 'info');
+        $this->writeBoundary('Response Headers', 'info');
+        $this->writeln(sprintf('<info>%s</info>', @$res['headers'] ?: ''));
+        $this->writeln('');
+
+        $this->writeBoundary('Response Body', 'info');
+        if ($res['result']) {
+            $this->writeln(sprintf('<info>%s</info>', substr($res['result'], 0, 300)));
+        } else {
+            $this->writeln(sprintf('<info>%s</info>', '(no body)'));
+        }
     }
 }
