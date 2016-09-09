@@ -56,7 +56,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 	<div class="meta-line flat">
 		<div style="float:left;position: relative;top:1px;">
-			{% if feedback.is_reviewed == 0 and feedback_status != 'hidden' %}
+			{% if not(feedback.is_reviewed == 0 and feedback.status == 'hidden') %}
 				<select name="status" id="{{baseId}}_status">
 					<optgroup label="{{ phrase('agent.feedback.status_active') }}">
 						{% for cat in active_status_cats %}
