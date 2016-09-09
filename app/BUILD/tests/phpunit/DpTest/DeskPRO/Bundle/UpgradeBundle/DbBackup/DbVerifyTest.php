@@ -67,9 +67,9 @@ class DbVerifyTest extends DeskProTestCase
     }
 
     /**
-     * @test
-     * @expectedException \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException
-     * @expectedExceptionCode  \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException::DUMP_ERROR_MISSING_TABLE
+     * @ test
+     * @ expectedException \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException
+     * @ expectedExceptionCode  \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException::DUMP_ERROR_MISSING_TABLE
      */
     public function it_rejects_missing_worker_jobs()
     {
