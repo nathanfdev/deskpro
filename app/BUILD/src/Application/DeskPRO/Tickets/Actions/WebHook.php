@@ -38,7 +38,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Twig\Extension\TemplatingExtension;
-use Guzzle\Http\Client as HttpClient;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
 
@@ -82,21 +83,19 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         $username    = $renderer->renderTicketTemplate($this->getActionOption('username') ?: '', $ticket, $context);
         $password    = $renderer->renderTicketTemplate($this->getActionOption('password') ?: '', $ticket, $context);
 
-        $http_client = new HttpClient($url, array(
-            'timeout' => $timeout,
-        ));
+        $http_client = new Client(['timeout' => $timeout]);
 
         if ($headers) {
             $headers = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
         } else {
-            $headers = array();
+            $headers = [];
         }
 
         $method  = strtoupper($this->getActionOption('method')) ?: 'POST';
-        $request = new \Guzzle\Http\Message\EntityEnclosingRequest($method, $url, $headers);
+        $options = [];
 
         if ($method == 'POST' || $method == 'PUT') {
-            $data                    = array();
+            $data                    = [];
             $data['ticket']          = $ticket->toApiData();
             $data['person_context']  = $context->getPersonContext() ? $context->getPersonContext()->toApiData() : null;
             $data['event_performer'] = $context->getEventPerformer();
@@ -104,37 +103,34 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
             $data['event_method']    = $context->getEventMethod();
             $data['custom_data']     = $custom_data;
 
-            if ('json' === $this->getActionOption('payload_type')) {
-                $data                    = json_encode($data);
-                $headers['content-type'] = 'application/json';
-            } else {
-                $headers['content-type'] = 'application/x-www-form-urlencoded';
-            }
-            $request->setBody($data);
+            $format = 'json' === $this->getActionOption('payload_type')
+                ? RequestOptions::JSON
+                : RequestOptions::FORM_PARAMS;
+            $options[$format] = $data;
         }
 
         if ($username || $password) {
-            $request->setAuth($username ?: '', $password ?: '');
+            $options[RequestOptions::AUTH] = [$username, $password];
         }
 
         try {
-            $response = $http_client->send($request);
-            $data     = array(
+            $response = $http_client->request($method, $url, $options);
+            $data     = [
                 'url'     => $url,
                 'reason'  => $response->getReasonPhrase(),
                 'status'  => $response->getStatusCode(),
-                'content' => $response->getBody(true),
-            );
+                'content' => (string) $response->getBody(),
+            ];
             $ticket->getStateChangeRecorder()->recordData('webhook', $data);
         } catch (\Exception $e) {
             $exception = new \Exception('Trigger WebHook failed: '.$e->getMessage(), 0, $e);
             $this->getContainer()->get('dp_sys.alerts.event_logger')->log($exception);
-            $data = array(
+            $data = [
                 'url'     => $url,
                 'reason'  => $e->getMessage(),
                 'status'  => $e->getCode(),
                 'content' => null,
-            );
+            ];
             $ticket->getStateChangeRecorder()->recordData('webhook', $data);
         }
     }

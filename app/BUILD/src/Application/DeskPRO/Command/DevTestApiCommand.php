@@ -36,6 +36,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ApiKey;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -215,18 +216,18 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 case 'POST':
                     $curl[] = '-XPOST';
                     if ($asForm) {
-                        $response = $httpClient->post($path, ['Content-Type' => 'application/x-www-form-urlencoded'], $data);
+                        $response = $httpClient->post($path, [RequestOptions::FORM_PARAMS => $data]);
                     } else {
-                        $response = $httpClient->post($path, ['Content-Type' => 'application/json'], json_encode($data));
+                        $response = $httpClient->post($path, [RequestOptions::JSON => $data]);
                     }
                     break;
 
                 case 'PUT':
                     $curl[] = '-XPUT';
                     if ($asForm) {
-                        $response = $httpClient->put($path, ['Content-Type' => 'application/x-www-form-urlencoded'], $data);
+                        $response = $httpClient->put($path, [RequestOptions::FORM_PARAMS => $data]);
                     } else {
-                        $response = $httpClient->put($path, ['Content-Type' => 'application/json'], json_encode($data));
+                        $response = $httpClient->put($path, [RequestOptions::JSON => $data]);
                     }
                     break;
 
@@ -246,12 +247,8 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 default:
                     return 1;
             }
-        } catch (\Guzzle\Http\Exception\RequestException $e) {
-            if (method_exists($e, 'getResponse')) {
-                $response = $e->getResponse();
-            } else {
-                throw $e;
-            }
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
         }
 
         if ($input->getOption('curl')) {
@@ -288,7 +285,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             $output->writeln('<info>Status Code:    '.$response->getStatusCode().'</info>');
             $output->writeln('<info>Content Type:   '.$response->getHeaderLine('Content-Type').'</info>');
 
-            $res  = $response->getBody();
+            $res  = (string) $response->getBody();
             $json = @json_decode($res, true);
 
             if ($json) {

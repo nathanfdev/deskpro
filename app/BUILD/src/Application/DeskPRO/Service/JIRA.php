@@ -148,7 +148,23 @@ class JIRA
             return;
         }
 
-        return $app->getSetting(self::SSL_AUTHORITY);
+        $setting = $app->getSetting(self::SSL_AUTHORITY);
+        if ($setting === 'default') {
+            $cert = $this->container->getParameter('kernel.root_dir')
+                .DIRECTORY_SEPARATOR
+                .'Resources'
+                .DIRECTORY_SEPARATOR
+                .'cacert.pem';
+            if (file_exists($cert)) {
+                $setting = $cert;
+            }
+        } elseif ($setting === 'disabled') {
+            $setting = false;
+        } else {
+            $setting = true;
+        }
+
+        return $setting;
     }
 
     /**
@@ -581,6 +597,8 @@ class JIRA
      *
      * @param $id
      * @param $json
+     *
+     * @return mixed
      */
     public function updateIssueJson($id, $json)
     {
