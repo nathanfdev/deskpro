@@ -67,8 +67,7 @@ class DbVerifyTest extends DeskProTestCase
     }
 
     /**
-     * todo fix me.
-     *
+     * @test
      * @expectedException \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException
      * @expectedExceptionCode  \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException::DUMP_ERROR_MISSING_TABLE
      */
