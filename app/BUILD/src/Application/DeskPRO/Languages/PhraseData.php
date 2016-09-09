@@ -60,6 +60,14 @@ class PhraseData
         'user'    => 'portal.php',
     ];
 
+    private static $reverseMap = [
+        'admin'   => ['adm', 'admin'],
+        'api'     => ['api'],
+        'agent'   => ['agent'],
+        'general' => ['general'],
+        'portal'  => ['portal', 'user'],
+    ];
+
     /**
      * @var \Application\DeskPRO\EntityRepository\Phrase
      */
@@ -626,7 +634,9 @@ class PhraseData
     public function loadCustom(Language $language)
     {
         $custom_phrases = $this->phrase_repos->getCustomPhrases($language);
-        $custom_phrases = array_filter($custom_phrases, function ($x) { return strpos($x['name'], 'obj_') !== 0; });
+        $custom_phrases = array_filter($custom_phrases, function ($x) {
+            return strpos($x['name'], 'obj_') !== 0;
+        });
 
         if (!$custom_phrases) {
             return array();
@@ -722,6 +732,19 @@ class PhraseData
      */
     private function loadCustomPhrases(Language $language, $group_id)
     {
-        return $this->phrase_repos->getPhrasesInGroup($language, $group_id);
+        // we need to fetch both: portal and user for portal.* group as well as adm and admin for admin.*
+
+        $parts   = explode('.', $group_id);
+        $phrases = [];
+        if (isset(self::$reverseMap[$parts[0]])) {
+            foreach (self::$reverseMap[$parts[0]] as $prefix) {
+                $newParts = $parts;
+                array_shift($newParts);
+                array_unshift($newParts, $prefix);
+                $phrases += $this->phrase_repos->getPhrasesInGroup($language, implode('.', $newParts));
+            }
+        }
+
+        return $phrases;
     }
 }
