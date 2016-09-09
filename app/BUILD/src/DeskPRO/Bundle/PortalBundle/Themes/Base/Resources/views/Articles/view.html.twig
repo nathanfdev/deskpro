@@ -24,7 +24,7 @@
 
       <div class="article-meta">
         <span style="background: url({{ avatar_url(article.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>
-        {{ article.person.name }}
+        {{ article.person.display_name_user }}
         <hr>
         {{ article.date_published | date('Y-m-d') }}
         <hr>
