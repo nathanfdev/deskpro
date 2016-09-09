@@ -16,6 +16,7 @@ storiesOf('Admin: email templates', module)
         emails={Immutable.fromJS(emailBlocks.list.user.groups)}
         emailBlocks={Immutable.fromJS(emailBlocks.list.layout.groups.top.subGroups.primary.templates)}
         onChangeMenu={action('Select Menu')}
+        selectTemplate={action('Select Template')}
       />
     </div>
   )

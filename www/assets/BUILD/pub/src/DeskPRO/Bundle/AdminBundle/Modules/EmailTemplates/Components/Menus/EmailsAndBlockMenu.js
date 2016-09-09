@@ -14,9 +14,10 @@ export class EmailsAndBlockMenuContainer extends React.Component {
 
 export class EmailsAndBlockMenu extends React.Component {
   static propTypes = {
-    emails:       PropTypes.object,
-    emailBlocks:  PropTypes.object,
-    onChangeMenu: PropTypes.func
+    emails:         PropTypes.object,
+    emailBlocks:    PropTypes.object,
+    onChangeMenu:   PropTypes.func,
+    selectTemplate: PropTypes.func
   };
 
   constructor(props) {
@@ -59,11 +60,12 @@ export class EmailsAndBlockMenu extends React.Component {
     if (!this.props.emailBlocks) {
       return null;
     }
-    return this.props.emailBlocks.valueSeq().map((emailBlock, key) =>
+    return this.props.emailBlocks.valueSeq().map((template, key) =>
       <MenuItem
         key={`emailBlock${key}`}
-        label={emailBlock.get('title')}
+        label={template.get('title')}
         icon="code"
+        onClick={() => this.props.selectTemplate(template)}
       />
     );
   };
@@ -73,11 +75,12 @@ export class EmailsAndBlockMenu extends React.Component {
       return null;
     }
     const subGroups = this.state.selectedLeft.get('subGroups');
-    const primary = subGroups.get('primary').get('templates').valueSeq().map((entry, key) =>
+    const primary = subGroups.get('primary').get('templates').valueSeq().map((template, key) =>
       <ListElement
         key={`primary${key}`}
-        label={entry.get('title')}
+        label={template.get('title')}
         icon="code"
+        onClick={() => this.props.selectTemplate(template)}
       />
     );
     const additionalTemplates = subGroups.valueSeq().map((subGroup) => {
@@ -89,6 +92,7 @@ export class EmailsAndBlockMenu extends React.Component {
           key={`${subGroup.get('subGroupId')}${key}`}
           label={template.get('title')}
           icon="code"
+          onClick={() => this.props.selectTemplate(template)}
         />);
       content = <List>{content}</List>;
       return (<AccordionPanel
