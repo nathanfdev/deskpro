@@ -1,7 +1,7 @@
 import React from 'react';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
-export class LostConnection extends React.Component {
+export default class LostConnection extends React.Component {
 
   render() {
     return (
