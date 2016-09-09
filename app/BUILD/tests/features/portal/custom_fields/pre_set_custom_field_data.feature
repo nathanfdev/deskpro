@@ -65,9 +65,9 @@ Feature: Check custom field pre set values
     And the object "user" has "checkbox_group_field" custom data with "{choice_2},{choice_3}"
 
     When I go to "/profile"
-    Then the "person_profile_{checkbox_group_field}_data_{choice_1}" checkbox should not be checked
-    Then the "person_profile_{checkbox_group_field}_data_{choice_2}" checkbox should be checked
-    Then the "person_profile_{checkbox_group_field}_data_{choice_3}" checkbox should be checked
+    Then the "person_profile_{checkbox_group_field}_data_0" checkbox should not be checked
+    Then the "person_profile_{checkbox_group_field}_data_1" checkbox should be checked
+    Then the "person_profile_{checkbox_group_field}_data_2" checkbox should be checked
 
   Scenario: I check radio group
     Given only the following custom person fields exist:

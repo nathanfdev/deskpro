@@ -32,6 +32,7 @@ use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use DeskPRO\Component\Util\ListUtils;
+use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 /**
  * Class TicketLayoutHelper.
@@ -66,9 +67,10 @@ class TicketLayoutHelper
 
                 $choice = null;
                 if (is_scalar($submitted_value)) {
-                    $choiceList = $form->get($key)->getConfig()->getOption('choice_list');
-                    if ($choiceList) {
-                        $choice = current($choiceList->getChoicesForValues([$submitted_value]));
+                    /** @var ChoiceLoaderInterface $choiceLoader */
+                    $choiceLoader = $form->get($key)->getConfig()->getOption('choice_loader');
+                    if ($choiceLoader) {
+                        $choice = current($choiceLoader->loadChoicesForValues([$submitted_value]));
                     }
                 }
 

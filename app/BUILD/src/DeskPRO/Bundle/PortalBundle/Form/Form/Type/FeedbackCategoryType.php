@@ -48,8 +48,11 @@ class FeedbackCategoryType extends AbstractType
             ->setRequired('person')
             ->setAllowedTypes('person', Person::class)
             ->setDefaults([
-                'choice_list' => function (Options $options) {
-                    return $options['hierarchy_generator']->generateForFeedbackCategories($options['person'])->getChoiceList();
+                'choice_loader' => function (Options $options) {
+                    /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchyGenerator */
+                    $hierarchyGenerator = $options['hierarchy_generator'];
+
+                    return $hierarchyGenerator->generateForFeedbackCategories($options['person'])->getChoiceLoader();
                 },
             ])
         ;
