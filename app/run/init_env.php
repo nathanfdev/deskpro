@@ -80,7 +80,15 @@ if (php_sapi_name() === 'cli') {
     }
 }
 
-$DP_ENV = new \DpRun\DpEnv(__DIR__.'/../../', $config ?: null);
+if (isset($_SERVER['DESKPRO_USE_ROOT_DIR'])) {
+    $dp_root = $_SERVER['DESKPRO_USE_ROOT_DIR'];
+} else if (defined('DESKPRO_USE_ROOT_DIR')) {
+    $dp_root = DESKPRO_USE_ROOT_DIR;
+} else {
+    $dp_root = __DIR__.'/../../';
+}
+
+$DP_ENV = new \DpRun\DpEnv($dp_root, $config ?: null);
 
 /**
  * The root path to DeskPRO.
