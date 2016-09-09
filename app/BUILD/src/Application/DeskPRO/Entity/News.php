@@ -294,9 +294,17 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
         return $this->date_updated;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @return string
+     */
+    public function getEndAction()
+    {
+        return $this->end_action;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
