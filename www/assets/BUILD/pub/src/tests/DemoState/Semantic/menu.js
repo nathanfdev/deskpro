@@ -61,10 +61,10 @@ const customList = {
 export const customStructure = {
   panels: [
     {
-      title:   'Custom templates',
-      icon:    'open folder',
-      count:   customList.elements,
-      content: <List {...customList} />
+      title:       'Custom templates',
+      icon:        'open folder',
+      subElements: customList.elements,
+      content:     <List {...customList} />
     },
   ]
 };
@@ -191,28 +191,28 @@ const ccList = {
 export const listStructure = {
   panels: [
     {
-      title:   'Validation',
-      icon:    'open folder',
-      count:   validationList.elements,
-      content: <List {...validationList} />
+      title:       'Validation',
+      icon:        'open folder',
+      subElements: validationList.elements,
+      content:     <List {...validationList} />
     },
     {
-      title:   'Warning, alerts & errors',
-      icon:    'open folder',
-      count:   warningList.elements,
-      content: <List {...warningList} />
+      title:       'Warning, alerts & errors',
+      icon:        'open folder',
+      subElements: warningList.elements,
+      content:     <List {...warningList} />
     },
     {
-      title:   'Rating',
-      icon:    'open folder',
-      count:   ratingList.elements,
-      content: <List {...ratingList} />
+      title:       'Rating',
+      icon:        'open folder',
+      subElements: ratingList.elements,
+      content:     <List {...ratingList} />
     },
     {
-      title:   'CC and new participants',
-      icon:    'open folder',
-      count:   ccList.elements,
-      content: <List {...ccList} />
+      title:       'CC and new participants',
+      icon:        'open folder',
+      subElements: ccList.elements,
+      content:     <List {...ccList} />
     }
   ]
 };

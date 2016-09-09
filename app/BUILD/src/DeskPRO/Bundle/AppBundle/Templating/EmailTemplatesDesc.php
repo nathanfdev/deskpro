@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,18 +29,13 @@
 /**
  * DeskPRO.
  *
- * @deprecated use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc instead;
- *
  * @category Templating
  */
 
-namespace Application\DeskPRO\Templating;
+namespace DeskPRO\Bundle\AppBundle\Templating;
 
 use Application\DeskPRO\Translate\Translate;
 
-/**
- * Class EmailTemplatesDesc.
- */
 class EmailTemplatesDesc
 {
     /**
@@ -49,15 +44,15 @@ class EmailTemplatesDesc
     private $manifest;
 
     /**
-     * @param null $manifest_path
+     * @param null $manifestPath
      */
-    public function __construct($manifest_path = null)
+    public function __construct($manifestPath = null)
     {
-        if ($manifest_path === null) {
-            $manifest_path = DP_ROOT.'/src/Application/DeskPRO/Resources/views/config/email-tpls.php';
+        if ($manifestPath === null) {
+            $manifestPath = DP_ROOT.'/src/Application/DeskPRO/Resources/views/config/email-tpls.php';
         }
 
-        $this->manifest = require $manifest_path;
+        $this->manifest = require $manifestPath;
     }
 
     /**
@@ -92,17 +87,17 @@ class EmailTemplatesDesc
      */
     public function getTplDisplayInfo(array $tpl, Translate $tr)
     {
-        $title_id = $this->_getTplPhraseId($tpl['name']).'_title';
-        $desc_id  = $this->_getTplPhraseId($tpl['name']).'_desc';
+        $titleId = $this->_getTplPhraseId($tpl['name']).'_title';
+        $descId  = $this->_getTplPhraseId($tpl['name']).'_desc';
 
-        $show_name       = $tpl['name'];
-        $show_name       = str_replace('DeskPRO:', '', $show_name);
-        $show_name       = str_replace(':', '/', $show_name);
-        $show_name       = str_replace('.twig', '', $show_name);
-        $tpl['showName'] = $show_name;
+        $showName        = $tpl['name'];
+        $showName        = str_replace('DeskPRO:', '', $showName);
+        $showName        = str_replace(':', '/', $showName);
+        $showName        = str_replace('.twig', '', $showName);
+        $tpl['showName'] = $showName;
 
-        $tpl['title'] = $tr->hasPhrase($title_id) ? $tr->phrase($title_id) : $title_id;
-        $tpl['desc']  = $tr->hasPhrase($desc_id) ? $tr->phrase($desc_id) : $desc_id;
+        $tpl['title'] = $tr->hasPhrase($titleId) ? $tr->phrase($titleId) : $titleId;
+        $tpl['desc']  = $tr->hasPhrase($descId) ? $tr->phrase($descId) : $descId;
 
         return $tpl;
     }
@@ -121,8 +116,9 @@ class EmailTemplatesDesc
         $ret = [];
 
         foreach ($manifest as $tpl) {
-            $type  = $tpl['typeId'];
-            $group = $tpl['groupId'];
+            $type     = $tpl['typeId'];
+            $group    = $tpl['groupId'];
+            $subGroup = $tpl['subGroupId'];
 
             if (!isset($ret[$type])) {
                 $ret[$type] = [
@@ -135,11 +131,18 @@ class EmailTemplatesDesc
                 $ret[$type]['groups'][$group] = [
                     'groupId'   => $group,
                     'title'     => $tr->phrase("adm.email_templates.{$type}_{$group}"),
-                    'templates' => [],
+                    'subGroups' => [],
+                ];
+            }
+            if (!isset($ret[$type]['groups'][$group]['subGroups'][$subGroup])) {
+                $ret[$type]['groups'][$group]['subGroups'][$subGroup] = [
+                    'subGroupId' => $subGroup,
+                    'title'      => $tr->phrase("adm.email_templates.{$type}_{$subGroup}"),
+                    'templates'  => [],
                 ];
             }
 
-            $ret[$type]['groups'][$group]['templates'][] = $tpl;
+            $ret[$type]['groups'][$group]['subGroups'][$subGroup]['templates'][] = $tpl;
         }
 
         return $ret;

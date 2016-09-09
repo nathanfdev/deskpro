@@ -3,8 +3,8 @@ import Immutable from 'immutable';
 import { storiesOf, action } from '@kadira/storybook';
 import { EmailsAndBlockMenu } from 'DeskPRO/Bundle/AdminBundle/Modules/EmailTemplates/Components/Menus/EmailsAndBlockMenu';
 import {
-  emailStructure
-} from '../../../../DemoState/Semantic/menu';
+  emailBlocks
+} from '../../../../DemoState/AdminBundle/Modules/Application/email_templates';
 import { adminCss } from '../../../decorators';
 
 storiesOf('Admin: email templates', module)
@@ -13,8 +13,8 @@ storiesOf('Admin: email templates', module)
     'Email and blocks menu',
     () => <div>
       <EmailsAndBlockMenu
-        emails={Immutable.fromJS(emailStructure.sections[0].items)}
-        emailBlocks={Immutable.fromJS(emailStructure.sections[1].items)}
+        emails={Immutable.fromJS(emailBlocks.list.user.groups)}
+        emailBlocks={Immutable.fromJS(emailBlocks.list.layout.groups.top.subGroups.primary.templates)}
         onChangeMenu={action('Select Menu')}
       />
     </div>

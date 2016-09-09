@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
-import Accordion from 'DeskPRO/Component/Semantic/Accordion/Accordion';
+import { Accordion, AccordionPanel } from 'DeskPRO/Component/Semantic/Accordion';
 import classNames from 'classnames';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 
@@ -43,12 +43,12 @@ export class EmailsAndBlockMenu extends React.Component {
     if (!this.props.emails) {
       return null;
     }
-    return this.props.emails.map((email, key) =>
+    return this.props.emails.valueSeq().map((email, key) =>
       <MenuItem
         key={`email${key}`}
-        label={email.get('label')}
-        icon={email.get('icon')}
-        subContent={email.get('subContent').get('sections')}
+        label={email.get('title')}
+        icon="folder open"
+        subContent={email.get('templates')}
         classes={classNames({ active: this.isActive(email) })}
         onClick={() => this.setActive(email)}
       />
@@ -59,38 +59,53 @@ export class EmailsAndBlockMenu extends React.Component {
     if (!this.props.emailBlocks) {
       return null;
     }
-    const self = this;
-    return this.props.emailBlocks.map((emailBlock, key) =>
+    return this.props.emailBlocks.valueSeq().map((emailBlock, key) =>
       <MenuItem
         key={`emailBlock${key}`}
-        label={emailBlock.get('label')}
-        icon={emailBlock.get('icon')}
-        classes={classNames({ active: self.isActive(emailBlock) })}
-        onClick={() => self.setActive(emailBlock)}
+        label={emailBlock.get('title')}
+        icon="code"
       />
     );
   };
 
   getRightPanel = () => {
-    if (!this.state.selectedLeft || !this.state.selectedLeft.get('subContent').get('sections')) {
+    if (!this.state.selectedLeft || !this.state.selectedLeft.get('subGroups')) {
       return null;
     }
-    const subContentSections = this.state.selectedLeft.get('subContent').get('sections');
-    const primary = subContentSections.get('primary').map((entry, key) =>
+    const subGroups = this.state.selectedLeft.get('subGroups');
+    const primary = subGroups.get('primary').get('templates').valueSeq().map((entry, key) =>
       <ListElement
         key={`primary${key}`}
-        label={entry.get('label')}
-        icon={entry.get('icon')}
+        label={entry.get('title')}
+        icon="code"
       />
     );
+    const additionalTemplates = subGroups.valueSeq().map((subGroup) => {
+      if (subGroup.get('subGroupId') === 'primary') {
+        return null;
+      }
+      let content = subGroup.get('templates').valueSeq().map((template, key) =>
+        <ListElement
+          key={`${subGroup.get('subGroupId')}${key}`}
+          label={template.get('title')}
+          icon="code"
+        />);
+      content = <List>{content}</List>;
+      return (<AccordionPanel
+        key={`addEl${subGroup.get('subGroupId')}`}
+        panel={{
+          title:       subGroup.get('title'),
+          subElements: subGroup.get('templates').size,
+          content
+        }}
+      />);
+    });
     return (
       <MenuWrapper classes={classNames('right-panel')}>
-        <h4>Primary</h4>
+        <h4>{subGroups.get('primary').get('title')}</h4>
         <List>{primary}</List>
-        <h4>Custom</h4>
-        <Accordion />
         <h4>Additional templates</h4>
-        <Accordion />
+        <Accordion>{additionalTemplates}</Accordion>
       </MenuWrapper>
     );
   };

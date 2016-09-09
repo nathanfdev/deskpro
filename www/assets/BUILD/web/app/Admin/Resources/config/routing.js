@@ -879,6 +879,16 @@ define(function() {
     controller: 'Admin_Templates_Ctrl_EmailGroupList'
   });
 
+  //###
+  //# Temporary Email Templates
+  //###
+  routes.push({
+    id: 'tickets.email_templates_old',
+    url: '/email_templates_old',
+    templateName: 'Templates/email-groups-old.html',
+    controller: 'Admin_Templates_Ctrl_EmailGroupListOld'
+  });
+
   routes.push({
     id: 'tickets.email_templates.list',
     url: '/{groupName:.*?}',
