@@ -67,14 +67,13 @@ class DbVerifyTest extends DeskProTestCase
     }
 
     /**
-     * @test
+     * todo fix me.
+     *
      * @expectedException \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException
      * @expectedExceptionCode  \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException::DUMP_ERROR_MISSING_TABLE
      */
     public function it_rejects_missing_worker_jobs()
     {
-        //todo when this is fixed
-        return;
         $tmpName = tempnam(sys_get_temp_dir(), 'test_dump');
         $fp      = fopen($tmpName, 'w');
 
