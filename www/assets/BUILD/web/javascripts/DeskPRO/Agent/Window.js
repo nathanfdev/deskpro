@@ -1097,7 +1097,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				var left = btnMenu.offset().left,
 					top = btnMenu.offset().top,
 					right = left + btnMenu.outerWidth(),
-					bottom = top + btnMenu.outerHeight()
+					bottom = top + btnMenu.outerHeight();
 
 				if (e.pageX < left || e.pageX > right || e.pageY < top || e.pageY > bottom) {
 					return true;
@@ -1110,7 +1110,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				var left = wrap.offset().left,
 					top = wrap.offset().top,
 					right = left + wrap.outerWidth(),
-					bottom = top + wrap.outerHeight()
+					bottom = top + wrap.outerHeight();
 
 				if (e.pageX < left || e.pageX > right || e.pageY < top || e.pageY > bottom) {
 					return true;
@@ -1123,7 +1123,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if (isOutCoords1(e) && isOutCoords2(e)) {
 					if (!isClosingTimeout) {
 						isClosingTimeout = window.setTimeout(function () {
-							isClosingTimeout = null
+							isClosingTimeout = null;
 							$('.zindex-chrome0').trigger('click');
 						}, 350);
 					}

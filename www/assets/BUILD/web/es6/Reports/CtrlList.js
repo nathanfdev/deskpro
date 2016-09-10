@@ -17,6 +17,8 @@ require('Reports/Main/Ctrl/MainPage');
 require('Reports/Main/Ctrl/Bare');
 require('Reports/Main/Ctrl/BackToAgent');
 require('Reports/Main/Ctrl/GoToAdmin');
+require('Reports/Main/Ctrl/GoToBilling');
+require('Reports/Main/Ctrl/GoToUser');
 
 require('Reports/Overview/Ctrl/Overview');
 require('Reports/Builder/Ctrl/List');

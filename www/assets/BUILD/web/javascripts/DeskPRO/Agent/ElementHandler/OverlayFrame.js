@@ -1,206 +1,225 @@
 Orb.createNamespace('DeskPRO.Agent.ElementHandler');
 
 DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
-	Extends: DeskPRO.ElementHandler,
+  Extends: DeskPRO.ElementHandler,
 
-	initPage: function() {
-		var self = this;
-		this.frameUrl  = this.el.data('frame-url') || this.el.attr('href');
-		this.frameId   = this.el.data('frame-id');
-		this.closeKey  = this.el.data('close-key') || 'back_to_agent';
-		this.frameTitle = this.el.data('win-title') || false;
+  initPage: function() {
+    var self = this;
+    this.frameUrl  = this.el.data('frame-url') || this.el.attr('href');
+    this.frameId   = this.el.data('frame-id');
+    this.closeKey  = this.el.data('close-key') || 'back_to_agent';
+    this.frameTitle = this.el.data('win-title') || false;
 
-		this.frameWrap = null;
-		this.frame = null;
-		this.callback = null;
-		this.opened = false;
+    this.frameWrap = null;
+    this.frame = null;
+    this.callback = null;
+    this.opened = false;
 
-		this.el.on('click', function(ev) {
-			Orb.cancelEvent(ev);
-			self.open();
-		});
+    this.el.on('click', function(ev) {
+      Orb.cancelEvent(ev);
+      self.open();
+    });
 
-		self.preload();
-	},
+    self.preload();
+  },
 
-	initFrame: function() {
-		this.frameWrap = $('<div id="overlay-frame-'+this.frameId+'" class="overlay-frame-wrap" style="display:none; position: absolute; top: 50px; right: 0; bottom: 0; left: 0; z-index: 100;"></div>');
-		this.frame = $('<iframe frameborder="0" width="100%" height="100%" scrolling="auto" marginheight="0" marginwidth="0" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: 0; padding: 0;"></iframe>');
-		this.frame.appendTo(this.frameWrap);
+  initFrame: function() {
+    this.frameWrap = $('<div/>', {
+      id:    'overlay-frame-' + this.frameId,
+      class: 'overlay-frame-wrap',
+      css:   {
+        display:         'none',
+        position:        'absolute',
+        top:             '50px',
+        right:           0,
+        bottom:          0,
+        left:            0,
+        zIndex:          100,
+        backgroundColor: '#F5F7FA'
+      }
+    });
 
-		window.addEventListener('message', this.receiveMessage, false);
+    this.frame = $('<iframe/>', {
+      frameborder:  0,
+      width:        '100%',
+      height:       '100%',
+      scrolling:    'auto',
+      marginheight: 0,
+      marginwidth:  0,
+      css:          {
+        margin:  0,
+        padding: 0
+      }
+    });
 
-		window['DP_FRAME_OVERLAY_' + this.frameId] = this;
+    this.frame.appendTo(this.frameWrap);
 
-		if (!window['DP_FRAME_OVERLAYS']) window['DP_FRAME_OVERLAYS'] = {};
-		window['DP_FRAME_OVERLAYS'][this.frameId] = this;
+    window.addEventListener('message', this.receiveMessage, false);
+    window['DP_FRAME_OVERLAY_' + this.frameId] = this;
 
-		this.frameWrap.appendTo('body');
-	},
+    if (!window.DP_FRAME_OVERLAYS) {
+      window.DP_FRAME_OVERLAYS = {};
+    }
 
-	preload: function(with_hash, callback) {
-		var self = this, frameId = this.frameId;
+    window.DP_FRAME_OVERLAYS[this.frameId] = this;
 
-		// if (window['DP_FRAME_OVERLAYS']) {
-		// 	for (var k in window['DP_FRAME_OVERLAYS']) {
-		// 		if (k !== this.frameId && window['DP_FRAME_OVERLAYS'].hasOwnProperty(k)) {
-		// 			window['DP_FRAME_OVERLAYS'][k].close();
-		// 		}
-		// 	}
-		// }
+    this.frameWrap.appendTo('body');
+  },
 
-		if (!this.frame) {
-			this.initFrame(with_hash);
-		}
+  preload: function(withHash, callback) {
+    if (!this.frame) {
+      this.initFrame(withHash);
+    }
 
-		this.callback = callback;
+    this.callback = callback;
+    this.url = this.frameUrl;
 
-		this.url = this.frameUrl;
-		if (with_hash) {
-			if (this.url.indexOf('#') !== -1) {
-				this.url = this.url.substr(0, this.url.indexOf('#'));
-			}
+    if (withHash) {
+      if (this.url.indexOf('#') !== -1) {
+        this.url = this.url.substr(0, this.url.indexOf('#'));
+      }
 
-			this.url += '#' + with_hash
-		}
+      this.url += '#' + withHash;
+    }
 
-		this.frame.attr('src', this.url);
+    this.frame.attr('src', this.url);
+  },
 
-		DeskPRO_Window.disableHashPath(function(hash) {
-			if (hash.indexOf(self.frameId + ':') !== 0) {
-				return;
-			}
+  open: function(path, callback) {
+    this.opened = true;
+    this.frameWrap.css('display', 'block');
 
-			var frame = self.frame.get(0);
-			var iWin = frame.contentWindow;
-			var localHash = hash.substr(frameId.length+1);
+    if (path) {
+      var frameWindow = this.getFrameWindow();
+      frameWindow.location.href = this.frameUrl + '#' + path;
+    }
 
-			if (localHash == '/' + self.closeKey) {
-				self.close();
-				return;
-			}
+    if (!path && this.url.indexOf('#') !== -1) {
+      path = this.url.substr(url.indexOf('#') + 1);
+    }
 
-			if (!iWin) {
-				return;
-			}
+    this.setHash(path);
+    this.frameWrap.show();
 
-			try {
-				iWin.location.hash = '#' + localHash;
-			} catch (e) {}
-		});
-	},
+    if (this.frameTitle) {
+      this.originalTitle = document.title;
+      document.title = this.frameTitle;
+    }
 
-	open: function() {
-		var hash;
-		this.opened = true;
+    if (callback) {
+      callback();
+    }
+  },
 
-		this.frameWrap.css('display', 'block');
+  callLoaded: function() {
+    if (this.callback) {
+      this.callback();
+    }
 
-		if (this.url.indexOf('#') !== -1) {
-			hash = this.url.substr(url.indexOf('#')+1);
-		} else {
-			hash = '';
-		}
+    var loadingEl = document.getElementById('dp_loading');
+    if (loadingEl && loadingEl.parentNode) {
+      loadingEl.parentNode.removeChild(loadingEl);
+    }
+  },
 
-		this.setHash(hash);
-		this.frameWrap.show();
+  setHash: function (path) {
+    if (path === '#/go_to_agent') {
+      return;
+    }
 
-		if (this.frameTitle) {
-			this.originalTitle = document.title;
-			document.title = this.frameTitle;
-		}
-	},
+    var frameWindow = this.getFrameWindow();
 
-	callLoaded: function() {
-		if (this.callback) {
-			this.callback();
-		}
-	},
+    path = path || '/';
+    path = path.replace(/^#/, '');
 
-	setHash: function (hash) {
-		if (!hash) {
-			hash = '';
-		}
+    frameWindow.location.hash = '#' + path;
+    frameWindow.parent.location.hash = '#' + this.frameId + ':' + (path || '');
+  },
 
-		hash = hash.replace(/^#/, '');
-		hash = this.frameId + ':' + hash;
-		window.location.hash = '#' + hash;
-	},
+  close: function() {
+    this.opened = false;
+    this.frameWrap.css('display', 'none');
 
-	close: function() {
-		this.opened = false;
-		this.frameWrap.css('display', 'none');
+    if (this.frameTitle) {
+      document.title = this.originalTitle;
+    }
 
-		if (this.frameTitle) {
-			document.title = this.originalTitle;
-		}
-	},
+    var frameWindow = this.getFrameWindow();
+    frameWindow.parent.location.hash = '';
+    DeskPRO_Window.enableHashPath();
+  },
 
-	deleteFrame: function() {
-		if (this.frameWrap) {
-			this.frameWrap.remove();
-			this.frame = null;
-			this.frameWrap = null;
-			delete window['DP_FRAME_OVERLAY_' + this.frameId];
-			delete window['DP_FRAME_OVERLAYS'][this.frameId];
-		}
+  getFrameWindow: function() {
+    var frame = this.frame ? this.frame[0] : null;
 
-		if (this.frameTitle) {
-			document.title = this.originalTitle;
-		}
+    return frame ? frame.contentWindow : null;
+  },
 
-		window.location.hash = '';
-		DeskPRO_Window.enableHashPath();
-	},
+  deleteFrame: function() {
+    if (this.frameWrap) {
+      this.frameWrap.remove();
+      this.frame = null;
+      this.frameWrap = null;
+      delete window['DP_FRAME_OVERLAY_' + this.frameId];
+      delete window['DP_FRAME_OVERLAYS'][this.frameId];
+    }
 
-	receiveMessage: function(event) {
-		if (event.isTrusted && event.data) {
-			if (event.data.reload) {
-				window.location.href = event.data.location;
-			}
-		}
-	}
+    if (this.frameTitle) {
+      document.title = this.originalTitle;
+    }
+
+    window.location.hash = '';
+    DeskPRO_Window.enableHashPath();
+  },
+
+  receiveMessage: function(event) {
+    if (event.isTrusted && event.data) {
+      if (event.data.reload) {
+        window.location.href = event.data.location;
+      }
+    }
+  }
 });
 
 
 DeskPRO.Agent.ElementHandler.OverlayFrameSimple = new Orb.Class({
-	Extends: DeskPRO.Agent.ElementHandler.OverlayFrame,
+  Extends: DeskPRO.Agent.ElementHandler.OverlayFrame,
 
-	initFrame: function(with_hash) {
-		this.frameWrap = $('<div class="overlay-frame-wrap" style="position: absolute; top: 51px; right: 0; bottom: 0; left: 55px; z-index: 9999999999;"></div>');
-		this.frame = $('<iframe frameborder="0" width="100%" height="100%" scrolling="auto" marginheight="0" marginwidth="0" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: 0; padding: 0;"></iframe>');
-		this.frame.appendTo(this.frameWrap);
+  initFrame: function(with_hash) {
+    this.frameWrap = $('<div class="overlay-frame-wrap" style="position: absolute; top: 51px; right: 0; bottom: 0; left: 55px; z-index: 9999999999;"></div>');
+    this.frame = $('<iframe frameborder="0" width="100%" height="100%" scrolling="auto" marginheight="0" marginwidth="0" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: 0; padding: 0;"></iframe>');
+    this.frame.appendTo(this.frameWrap);
 
-		var url = this.frameUrl;
-		if (with_hash) {
-			if (url.indexOf('#') !== -1) {
-				url = url.substr(0, url.indexOf('#'));
-			}
+    var url = this.frameUrl;
+    if (with_hash) {
+      if (url.indexOf('#') !== -1) {
+        url = url.substr(0, url.indexOf('#'));
+      }
 
-			url += '#' + with_hash
-		}
-		this.frame.attr('src', url);
+      url += '#' + with_hash
+    }
+    this.frame.attr('src', url);
 
-		window['DP_FRAME_OVERLAY_' + this.frameId] = this;
-		if (!window['DP_FRAME_OVERLAYS']) window['DP_FRAME_OVERLAYS'] = {};
-		window['DP_FRAME_OVERLAYS'][this.frameId] = this;
+    window['DP_FRAME_OVERLAY_' + this.frameId] = this;
+    if (!window['DP_FRAME_OVERLAYS']) window['DP_FRAME_OVERLAYS'] = {};
+    window['DP_FRAME_OVERLAYS'][this.frameId] = this;
 
-		this.frameWrap.insertAfter('#dp_center');
-	},
+    this.frameWrap.insertAfter('#dp_center');
+  },
 
-	open: function(with_hash, callback) {
-		this.parent(with_hash, callback);
-		$('#dp_center').hide();
-		$('#dp_nav_sections').find('.is-nav-section').hide();
-		$('#dp_nav_sections').find('.is-nav-btn').removeClass('section-on');
-		this.el.closest('li').addClass('section-on');
-	},
+  open: function(with_hash, callback) {
+    this.parent(with_hash, callback);
+    $('#dp_center').hide();
+    $('#dp_nav_sections').find('.is-nav-section').hide();
+    $('#dp_nav_sections').find('.is-nav-btn').removeClass('section-on');
+    this.el.closest('li').addClass('section-on');
+  },
 
-	close: function() {
-		this.parent();
-		$('#dp_center').show();
-		$('#dp_nav_sections').find('.is-nav-section').hide();
-		$('#dp_nav_sections').find('.is-nav-section').filter('.is-default').show();
-		$('#dp_nav_sections').find('.is-nav-btn').removeClass('section-on').filter('.is-default').addClass('section-on');
-	}
+  close: function() {
+    this.parent();
+    $('#dp_center').show();
+    $('#dp_nav_sections').find('.is-nav-section').hide();
+    $('#dp_nav_sections').find('.is-nav-section').filter('.is-default').show();
+    $('#dp_nav_sections').find('.is-nav-btn').removeClass('section-on').filter('.is-default').addClass('section-on');
+  }
 });

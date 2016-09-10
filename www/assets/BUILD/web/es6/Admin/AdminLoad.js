@@ -32,10 +32,6 @@ export const start = () => {
   require('../../bower_components/spectrum/spectrum');
   require('./CtrlList');
 
-  let loadingEl = document.getElementById('dp_loading');
-  loadingEl.parentNode.removeChild(loadingEl);
-  loadingEl = null;
-
   window.DP_UID_COUNTER = 0;
   window.dp_get_uid     = () => window.DP_UID_COUNTER++;
 

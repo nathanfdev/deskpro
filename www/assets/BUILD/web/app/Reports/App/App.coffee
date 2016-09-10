@@ -35,11 +35,11 @@ define [
 
   ReportsModule.factory('dpHttpSessionInterceptor', ['$q', ($q) ->
     return {
-    responseError: (rejection) ->
-      if rejection.status? and rejection.data?.error? and rejection.status == 403 and rejection.data.error == "session_expired"
-        window.location = window.DP_BASE_URL + 'agent/login?timeout=1&return=' + encodeURIComponent(window.DP_BASE_URL + 'reports/' + window.location.hash)
-      else
-        return $q.reject(rejection)
+      responseError: (rejection) ->
+        if rejection.status? and rejection.data?.error? and rejection.status == 403 and rejection.data.error == "session_expired"
+          window.location = window.DP_BASE_URL + 'agent/login?timeout=1&return=' + encodeURIComponent(window.DP_BASE_URL + 'reports/' + window.location.hash)
+        else
+          return $q.reject(rejection)
     }
   ])
   ReportsModule.config(['$httpProvider', ($httpProvider) ->
@@ -55,16 +55,16 @@ define [
     , 20000)
   ])
 
-
   if window.parent == window.self
-    window.location.href = window.DP_BASE_URL + 'agent/#reports:' + window.location.hash.replace(/^#/, '')
+    window.location.href = window.DP_BASE_URL + 'agent/#reports:' + (window.location.hash.replace(/^#/, '') || '/')
 
   if window.parent?.DP_FRAME_OVERLAYS?.reports
     window.parent.DP_FRAME_OVERLAYS.reports.callLoaded()
 
     ReportsModule.run(['$rootScope', ($rootScope) ->
       $rootScope.$on('$stateChangeSuccess', ->
-        window.parent.DP_FRAME_OVERLAYS.reports.setHash(window.location.hash)
+        if window.parent.DP_FRAME_OVERLAYS.reports.opened
+          window.parent.DP_FRAME_OVERLAYS.reports.setHash(window.location.hash)
       )
     ])
 

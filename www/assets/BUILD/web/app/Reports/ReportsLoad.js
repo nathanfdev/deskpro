@@ -33,6 +33,8 @@ define([
 
   'Reports/Main/Ctrl/BackToAgent',
   'Reports/Main/Ctrl/GoToAdmin',
+  'Reports/Main/Ctrl/GoToBilling',
+  'Reports/Main/Ctrl/GoToUser',
 
   'Reports/Overview/Ctrl/Overview',
   'Reports/Builder/Ctrl/List',

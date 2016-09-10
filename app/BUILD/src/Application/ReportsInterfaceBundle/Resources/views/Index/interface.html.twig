@@ -12,7 +12,7 @@
 
 	<link rel="stylesheet" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('node_modules/Select2/select2.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('app-build/reports.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('app-build/reports-style.css') }}"/>
 	<style type="text/css" media="print">
 		.dp-appstrip { display: none !important; }
 		.dp-app-header { display: none !important; }
@@ -91,29 +91,37 @@
                 <li class="section-on"
                     tooltip="You are currently using the Reports Interface"
                     tooltip-append-to-body="true"
-                    tooltip-placement="right">
+                    tooltip-placement="right"
+                >
                     <a href="#/"><i class="app-icon app-icon-reports-ifce"></i></a>
                 </li>
                 <li tooltip="Go to Billing Interface"
                     tooltip-append-to-body="true"
                     tooltip-placement="right"
                     class="agent-ifce-btn">
-                    <a href="/{{ path('user')|ltrim('/') }}admin/#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+                    <a href="/{{ path('user')|ltrim('/') }}admin/#/license" dp-click-href="#/go_to_billing">
+                        <i class="app-icon app-icon-billing-ifce"></i>
+                    </a>
                 </li>
                 {% if app.user.can_admin %}
-                    <li tooltip="Go to Admin Interface"
-                        tooltip-append-to-body="true"
-                        tooltip-placement="right"
-                        class="agent-ifce-btn">
-                        <a href="/{{ path('user')|ltrim('/') }}admin/" dp-click-href="#/go_to_admin"><i class="app-icon app-icon-admin-ifce"></i></a>
+                    <li
+                      tooltip="Go to Admin Interface"
+                      tooltip-append-to-body="true"
+                      tooltip-placement="right"
+                      class="agent-ifce-btn"
+                    >
+                        <a href="/{{ path('user')|ltrim('/') }}admin/" dp-click-href="#/go_to_admin">
+                            <i class="app-icon app-icon-admin-ifce"></i>
+                        </a>
                     </li>
                 {% endif %}
                 <li tooltip="Go to User Interface"
                     tooltip-append-to-body="true"
                     tooltip-placement="right"
                     class="user-ifce-btn">
-                    <a href="{{ path('user') }}"
-                       dp-click-href="#/go_to_user"><i class="app-icon app-icon-user-ifce"></i></a>
+                    <a href="{{ path('user') }}" dp-click-href="#/go_to_user">
+                        <i class="app-icon app-icon-user-ifce"></i>
+                    </a>
                 </li>
             </ul>
         </nav>

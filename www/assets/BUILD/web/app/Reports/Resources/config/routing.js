@@ -20,6 +20,20 @@ define(function() {
     controller: 'Reports_Main_Ctrl_GoToAdmin'
   });
 
+  routes.push({
+    id: 'go_to_billing',
+    url: '/go_to_billing',
+    templateName: 'Index/blank.html',
+    controller: 'Reports_Main_Ctrl_GoToBilling'
+  });
+
+  routes.push({
+    id: 'go_to_user',
+    url: '/go_to_user',
+    templateName: 'Index/blank.html',
+    controller: 'Reports_Main_Ctrl_GoToUser'
+  });
+
   //##################################################################################################################
   // Overview page
   //##################################################################################################################

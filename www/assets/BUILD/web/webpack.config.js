@@ -6,14 +6,14 @@ var WebpackNotifierPlugin = require('webpack-notifier');
 module.exports = {
   devtool: 'eval',
   entry:   {
-    vendor:       ['jquery', 'underscore', 'angular'],
-    Admin:        './es6/Admin/AdminApp.js',
-    Reports:      './es6/Reports/ReportsApp.js',
-    AdminUpdate:  './es6/AdminUpdate/AdminUpdateApp.js',
-    AdminStart:   './es6/AdminStart/AdminStartApp.js',
-    styles:       './app/Admin/Resources/style/admin2-style.scss',
-    reports:      './app/Reports/Resources/style/reports-style.less',
-    less:         './app/Admin/Resources/style/admin-style.less'
+    vendor:          ['jquery', 'underscore', 'angular'],
+    Admin:           './es6/Admin/AdminApp.js',
+    Reports:         './es6/Reports/ReportsApp.js',
+    AdminUpdate:     './es6/AdminUpdate/AdminUpdateApp.js',
+    AdminStart:      './es6/AdminStart/AdminStartApp.js',
+    styles:          './app/Admin/Resources/style/admin2-style.scss',
+    'reports-style': './app/Reports/Resources/style/reports-style.less',
+    less:            './app/Admin/Resources/style/admin-style.less'
   },
   output:  {
     path:              path.join(__dirname, 'app-build/'),

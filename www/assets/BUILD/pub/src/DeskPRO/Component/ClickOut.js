@@ -84,7 +84,7 @@ export class ClickOut extends React.Component {
     }
 
     const nodes = Array.isArray(additionalNodes) ? [...additionalNodes] : [additionalNodes];
-    nodes.push(this.refs.container);
+    nodes.push(this.container);
     let outside = true;
     nodes.forEach(node => {
       const $container = $(node);
@@ -109,12 +109,21 @@ export class ClickOut extends React.Component {
   };
 
   getContext() {
-    return this.props.context || document;
+    if (this.props.context) {
+      return this.props.context;
+    }
+
+    const context = [document];
+    $('iframe').each((i, iframe) => {
+      context.push(iframe.contentWindow.document);
+    });
+
+    return context;
   }
 
   render() {
     return (
-      <div ref="container">
+      <div ref={c => { this.container = c; }}>
         {this.props.children}
       </div>
     );
