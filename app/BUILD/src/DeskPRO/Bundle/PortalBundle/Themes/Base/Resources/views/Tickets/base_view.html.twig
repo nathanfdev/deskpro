@@ -170,7 +170,7 @@
                                         {% if property.isVisible %}
                                             <li>
                                                 <h3>{{ property.label }}</h3>
-                                                <p>{{ property.value }}</p>
+                                                <p>{{ property.value|smart_wrap(35) }}</p>
                                             </li>
                                         {% endif %}
                                     {% endfor %}
