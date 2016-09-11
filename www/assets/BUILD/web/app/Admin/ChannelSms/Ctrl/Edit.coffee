@@ -76,7 +76,6 @@ define [
             url = "/channel/sms/account/#{@accountId}"
             @$timeout =>
               @Api.sendGet(url).then((result) =>
-                console.log(result)
                 if result.data.is_tested
                   @stopSpinner('sms_test_provider')
                   @account = result.data
