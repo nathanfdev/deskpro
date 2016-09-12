@@ -41,12 +41,11 @@ define [
     $httpProvider.interceptors.push('dpHttpInterceptor');
   ])
 
-  AdminStartModule.service('Api', ['$http', 'Growl', ($http, Growl) ->
+  AdminStartModule.service('Api', ['$http', ($http) ->
     return new DeskPRO_Main_Service_DpApi(
       $http,
       window.DP_BASE_API_URL,
-      window.DP_API_TOKEN,
-      Growl
+      window.DP_API_TOKEN
     )
   ])
 
