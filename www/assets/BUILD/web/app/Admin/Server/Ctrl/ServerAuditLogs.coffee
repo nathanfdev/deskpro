@@ -17,6 +17,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
         api_key: ''
       }
       @logs = []
+      @purge = 'day';
       @pagination = {
         total: 0
         count: 0
@@ -65,6 +66,28 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
           @pagination.page_nums = page_nums
           @is_loading = false
       )
+
+    purgeLogs: ->
+      @is_loading = true
+      inst = @$modal.open({
+        templateUrl: @getTemplatePath('Server/server-audit-logs-delete-modal.html'),
+        controller: ['$scope', '$modalInstance',  ($scope, $modalInstance) ->
+          $scope.confirm = ->
+            $modalInstance.close()
+
+          $scope.dismiss = ->
+            $modalInstance.dismiss()
+        ]
+      });
+
+      inst.result.then( () =>
+        @Api2.sendPostJson('/audit_logs/purge', {period: @purge}).then(
+          () =>
+            @clearFilter()
+            @is_loading = false
+        )
+      ).catch ( () => @is_loading = false );
+
 
     goPrevPage: ->
       @pagination.current_page = @pagination.virtual_current_page = parseInt(@pagination.current_page) - 1

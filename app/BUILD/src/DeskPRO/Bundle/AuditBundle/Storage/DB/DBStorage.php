@@ -106,8 +106,13 @@ class DBStorage extends AbstractStorage
         /** @var EntityManager $manager */
         $manager = $this->manager;
         $qb      = $manager->createQueryBuilder();
-        $qb->delete(AuditLogEntity::class, 'al')->where('al.dateCreated < :date_created')->setParameter('date_created',
-            "NOW() - INTERVAL {$period}")->getQuery()->execute();
+        $qb
+            ->delete(AuditLogEntity::class, 'al')
+            ->where('al.dateCreated < :date_created')
+            ->setParameter('date_created', $this->getDate($period))
+            ->getQuery()
+            ->execute()
+        ;
     }
 
     public function deleteAll()
@@ -115,6 +120,6 @@ class DBStorage extends AbstractStorage
         /** @var EntityManager $manager */
         $manager = $this->manager;
         $qb      = $manager->createQueryBuilder();
-        $str     = $qb->delete(AuditLogEntity::class)->__toString();
+        $qb->delete(AuditLogEntity::class)->getQuery()->execute();
     }
 }

@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\AuditBundle\Storage\MongoDB;
 
 use DeskPRO\Bundle\AuditBundle\Document\AuditLog as AuditLogDocument;
-use DeskPRO\Bundle\AuditBundle\Log\AuditLogService;
 use DeskPRO\Bundle\AuditBundle\Storage\AbstractStorage;
 use DeskPRO\Component\Util\StringUtils;
 use Doctrine\Common\Persistence\ObjectRepository;
@@ -131,30 +130,9 @@ class MongoDBStorage extends AbstractStorage
 
         $qb->field('dateCreated');
 
-        switch ($period) {
-            case AuditLogService::PERIOD_1_DAY:
-                $date = new \DateTime('-1 day');
-                break;
-            case AuditLogService::PERIOD_1_WEEK:
-                $date = new \DateTime('-7 days');
-                break;
-            case AuditLogService::PERIOD_1_MONTH:
-                $date = new \DateTime('-30 days');
-                break;
-            case AuditLogService::PERIOD_3_MONTHS:
-                $date = new \DateTime('-3 months');
-                break;
-            case AuditLogService::PERIOD_6_MONTHS:
-                $date = new \DateTime('-6 months');
-                break;
-            case AuditLogService::PERIOD_1_YEAR:
-                $date = new \DateTime('-1 year');
-                break;
-            default:
-                $date = null;
-        }
+        $date = $this->getDate($period);
         if ($date) {
-            $qb->lte($date);
+            $qb->lt($date);
         }
         $qb->remove()->getQuery()->execute();
     }
