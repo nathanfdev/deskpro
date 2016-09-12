@@ -1117,6 +1117,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * @return bool
      */
+    public function isDisplayType()
+    {
+        return $this->handler_class === self::HANDLER_CLASS_DISPLAY;
+    }
+
+    /**
+     * @return bool
+     */
     public function getDateExpectedFormat()
     {
         switch ($this->handler_class) {
