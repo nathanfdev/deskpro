@@ -32,6 +32,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\ResourceScanner\TemplateFiles;
 use Application\DeskPRO\Templating\EmailTemplatesDesc;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
@@ -87,16 +88,20 @@ class TemplatesController extends AbstractController implements ProtectedControl
         $tpl_desc = new EmailTemplatesDesc();
         $list     = $tpl_desc->getProcessedList($this->container->getTranslator());
 
-        $custom_templates = [];
-        $custom_templates = array_filter($custom_templates, function ($x) {
-            return preg_match('#^DeskPRO:emails_#', $x['name']);
+        $customTemplates = $this->container->getEm()->getRepository(Template::class)->findAll();
+        $customTemplates = array_filter($customTemplates, function (Template $template) {
+            return preg_match('#^DeskPRO:emails_#', $template->getName());
         });
 
-        if ($custom_templates) {
+        $customTemplateNames = array_map(function (Template $template) {
+            return $template->getName();
+        }, $customTemplates);
+
+        if ($customTemplates) {
             foreach ($list as &$type_coll) {
                 foreach ($type_coll['groups'] as &$group_coll) {
                     foreach ($group_coll['templates'] as &$tpl) {
-                        if (isset($custom_templates[$tpl['name']])) {
+                        if (in_array($tpl['name'], $customTemplateNames)) {
                             $tpl['is_custom'] = true;
                         } else {
                             $tpl['is_custom'] = false;
@@ -133,7 +138,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
 
         return $this->createApiResponse([
             'list'             => $list,
-            'custom_templates' => $custom_templates,
+            'custom_templates' => $customTemplates,
         ]);
     }
 
