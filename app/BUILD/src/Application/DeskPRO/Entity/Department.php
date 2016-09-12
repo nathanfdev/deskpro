@@ -441,12 +441,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string    $property  If supplied, the property on the object we want to translate
-     * @param Translate $translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseName($property, Translate $translate)
     {
@@ -467,12 +462,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     }
 
     /**
-     * Get the default value phrase for the object.
-     *
-     * @param string    $property  If supplied, the property on the object we want to translate
-     * @param Translate $translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseDefault($property, Translate $translate)
     {

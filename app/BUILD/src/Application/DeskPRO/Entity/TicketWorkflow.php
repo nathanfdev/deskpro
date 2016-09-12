@@ -104,9 +104,7 @@ class TicketWorkflow extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param string $property
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseName($property, Translate $translate)
     {
@@ -119,9 +117,7 @@ class TicketWorkflow extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param string $property
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseDefault($property, Translate $translate)
     {
