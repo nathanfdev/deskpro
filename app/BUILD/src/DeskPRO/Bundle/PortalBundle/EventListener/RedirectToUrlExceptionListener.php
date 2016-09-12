@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -62,7 +58,14 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
      */
     private $brandStack;
 
-    public function __construct(LoggerInterface $logger, SettingsResolver $resolver, BrandStack $brandStack)
+    /**
+     * Constructor.
+     *
+     * @param LoggerInterface  $logger
+     * @param SettingsResolver $resolver
+     * @param BrandStack       $brandStack
+     */
+    public function __construct(LoggerInterface $logger, SettingsResolver $resolver = null, BrandStack $brandStack = null)
     {
         $this->logger     = $logger;
         $this->resolver   = $resolver;
@@ -79,6 +82,11 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @internal
+     *
+     * @param GetResponseForExceptionEvent $event
+     */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $e = $event->getException();
@@ -86,6 +94,10 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
         // only interested in a particular exception here
         // the PortalRouter throws this
         if (!$e instanceof RedirectToUrlException) {
+            return;
+        }
+
+        if (!$this->resolver || !$this->brandStack) {
             return;
         }
 
