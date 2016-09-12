@@ -36,24 +36,26 @@ class Build1475832285 extends AbstractBuild
         $con = $this->getDbConnection();
         $con->exec("ALTER TABLE usersources ADD actions LONGTEXT NOT NULL COMMENT '(DC2Type:dp_json_obj)'");
 
-        $q = 'select u.id, u.app_id, u.agent_permission_group_id pgid, ai.settings from usersources u join app_instances ai on ai.id = u.app_id';
+        $q = 'select u.id, u.app_id, u.agent_permission_group_id pgid, ai.settings from usersources u left join app_instances ai on ai.id = u.app_id';
         foreach ($con->fetchAll($q) as $row) {
-            if ($row['pgid']) {
-                $con->update(
-                    'usersources',
-                    ['actions' => '{"@CLASS":"Application\\DeskPRO\\Usersource\\ActionsCollection","@DATA":[{"type":"AddToPermissionGroup","data": '.$row['pgid'].'}]}'],
-                    ['id'      => $row['id']]
-                );
+            $actions = $row['pgid']
+                ? [['type' => 'AddToPermissionGroup', 'data' => $row['pgid']]]
+                : [];
 
-                $settings = str_replace(
-                    '"auto_agent_permission_group":"'.$row['pgid'].'"',
-                    '"actions":[{"type":"AddToPermissionGroup","data":"'.$row['pgid'].'"}]',
-                    $row['settings']
-                );
+            $con->update(
+                'usersources',
+                ['actions' => '{"@CLASS":"Application\\DeskPRO\\Usersource\\ActionsCollection","@DATA":'.json_encode($actions).'}'],
+                ['id'      => $row['id']]
+            );
+
+            if ($row['settings']) {
+                $settings = json_decode($row['settings'], 1);
+                unset($settings['auto_agent_permission_group']);
+                $settings['actions'] = $actions;
 
                 $con->update(
                     'app_instances',
-                    ['settings' => $settings],
+                    ['settings' => json_encode($settings)],
                     ['id'       => $row['app_id']]
                 );
             }
