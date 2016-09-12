@@ -26,38 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace Application\DeskPRO\Usersource;
 
-namespace deskpro_us_xenforo;
+use Application\DeskPRO\Usersource\Actions\AbstractAction;
+use DpSys\LowError\SystemErrorHandler;
+use Orb\Types\JsonObjectSerializable;
 
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
-use Application\DeskPRO\Entity\AppInstance;
-use Application\DeskPRO\Entity\Usersource;
-use deskpro_us_xenforo\Usersource\AppOptionsMapper;
-use Doctrine\ORM\EntityManager;
-
-class InstallerHandler extends AbstractUsersourceInstallerHandler
+class ActionsCollection extends \ArrayObject implements JsonObjectSerializable
 {
     /**
      * {@inheritdoc}
      */
-    protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+    public function serializeJsonArray()
     {
-        $us->title             = $app->title;
-        $us->options           = AppOptionsMapper::getOptions($app);
-        $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-        $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
-        $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Xenforo';
+        $data = [];
 
-        $this->setupAutoAgent();
-        $this->setupUsergroup($us, $app->getSetting('auto_user_permission_group'));
+        foreach ($this as $v) {
+            $data[] = $v->toArray();
+        }
 
-        $em->persist($us);
-        $em->persist($app);
-        $em->flush();
+        return $data;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+        foreach ($data as $v) {
+            try {
+                $action = AbstractAction::fromArray($v);
+                $obj[]  = $action;
+            } catch (\Exception $e) {
+                SystemErrorHandler::logException($e, false, md5('action_'.$v['type']));
+            }
+        }
+
+        return $obj;
     }
 }

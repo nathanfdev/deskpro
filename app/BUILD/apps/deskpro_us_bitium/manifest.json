@@ -83,10 +83,8 @@
       "usersource_display": "agent",
       "default_value": true,
       "inline_dependant": {
-        "name": "auto_agent_permission_group",
+        "name": "actions",
         "type": "choice",
-        "label": "Add new agents to this permission group",
-        "options_variable": "permission_groups",
         "is_required": true
       }
     },

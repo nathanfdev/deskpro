@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\Usersource\ActionsCollection;
 use Application\DeskPRO\Usersource\Adapter as UsersourceAdapter;
 use deskpro_us_jwt\Usersource\Adapter\Jwt as JwtAdapter;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -55,6 +55,7 @@ use Orb\Util\Util;
  * @property $is_sso_auto
  * @property $is_sso_background
  * @property $auto_agent
+ * @property $auto_agent_props
  * @property $agent_permission_group
  * @property $user_permission_group
  * @property $app
@@ -181,6 +182,11 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     protected $_adapter_instance = null;
 
     /**
+     * @var ActionsCollection
+     */
+    protected $actions;
+
+    /**
      * @var array
      */
     public static $callbackAdapters = [
@@ -191,6 +197,11 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         UsersourceAdapter\Twitter::class,
         UsersourceAdapter\Saml::class,
     ];
+
+    public function __construct()
+    {
+        $this->actions = new ActionsCollection();
+    }
 
     /**
      * @return int
@@ -542,22 +553,6 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
             'nullable'   => false,
             'columnName' => 'auto_agent',
         ]);
-
-        $metadata->mapManyToOne([
-            'fieldName'    => 'agent_permission_group',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-            'mappedBy'     => null,
-            'inversedBy'   => null,
-            'joinColumns'  => [
-                [
-                    'name'                 => 'agent_permission_group_id',
-                    'referencedColumnName' => 'id',
-                    'nullable'             => true,
-                    'onDelete'             => 'set null',
-                    'columnDefinition'     => null,
-                ],
-            ],
-        ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'user_permission_group',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
@@ -572,6 +567,12 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
                     'columnDefinition'     => null,
                 ],
             ],
+        ]);
+        $metadata->mapField([
+            'columnName' => 'actions',
+            'fieldName'  => 'actions',
+            'type'       => 'dp_json_obj',
+            'nullable'   => false,
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

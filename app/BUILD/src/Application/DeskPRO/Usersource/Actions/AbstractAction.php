@@ -26,38 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace Application\DeskPRO\Usersource\Actions;
 
-namespace deskpro_us_xenforo;
-
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
-use Application\DeskPRO\Entity\AppInstance;
-use Application\DeskPRO\Entity\Usersource;
-use deskpro_us_xenforo\Usersource\AppOptionsMapper;
-use Doctrine\ORM\EntityManager;
-
-class InstallerHandler extends AbstractUsersourceInstallerHandler
+abstract class AbstractAction
 {
+    abstract public function getData();
+
+    abstract public function setData($value);
+
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+    public function toArray()
     {
-        $us->title             = $app->title;
-        $us->options           = AppOptionsMapper::getOptions($app);
-        $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-        $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
-        $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Xenforo';
+        $class = get_class($this);
 
-        $this->setupAutoAgent();
-        $this->setupUsergroup($us, $app->getSetting('auto_user_permission_group'));
+        return [
+            'type' => substr($class, strrpos($class, '\\') + 1),
+            'data' => $this->getData(),
+        ];
+    }
 
-        $em->persist($us);
-        $em->persist($app);
-        $em->flush();
+    /**
+     * @param array $action
+     *
+     * @return AbstractAction
+     */
+    public static function fromArray(array $action)
+    {
+        $class = '\Application\DeskPRO\Usersource\Actions\\'.@$action['type'];
+        /** @var self $obj */
+        $obj = new $class();
+        $obj->setData(@$action['data']);
+
+        return $obj;
     }
 }

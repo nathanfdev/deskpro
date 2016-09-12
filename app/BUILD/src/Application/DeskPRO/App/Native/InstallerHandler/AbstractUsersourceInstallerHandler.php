@@ -36,6 +36,7 @@ namespace Application\DeskPRO\App\Native\InstallerHandler;
 
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Usersource\ActionsCollection;
 use Doctrine\ORM\EntityManager;
 
 abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandler
@@ -76,29 +77,31 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
         return;
     }
 
-    public function setupAutoAgent(Usersource $us, $auto_agent, $permission_group_id)
+    public function setupAutoAgent()
     {
-        if ($context = $this->context) {
-            if (Usersource::TYPE_AGENT == $us->type && $auto_agent) {
-                $us->auto_agent = true;
-
-                // PERMISSION GROUPS
-                if ($permission_group_id) {
-                    $permission_group = $context->getEm()->getRepository('DeskPRO:Usergroup')->find($permission_group_id);
-
-                    if ($permission_group) {
-                        $us->agent_permission_group = $permission_group;
-                    }
-                } else {
-                    $us->user_permission_group = null;
-                }
-            } else {
-                $us->auto_agent             = false;
-                $us->agent_permission_group = null;
-            }
-        } else {
+        if (!$context = $this->context) {
             throw new \RuntimeException('please ensure an installer context is present');
         }
+
+        $us  = $context->getUsersource();
+        $app = $context->getApp();
+
+        if (Usersource::TYPE_AGENT !== $us->type) {
+            $us->auto_agent = false;
+            $us->actions    = new ActionsCollection();
+
+            return;
+        }
+
+        if (!$app->getSetting('auto_agent')) {
+            $us->auto_agent = false;
+            $us->actions    = new ActionsCollection();
+
+            return;
+        }
+
+        $us->auto_agent = true;
+        $us->actions    = ActionsCollection::unserializeJsonArray($app->getSetting('actions') ?: []);
     }
 
     public function setupUsergroup(Usersource $us, $permission_group_id)

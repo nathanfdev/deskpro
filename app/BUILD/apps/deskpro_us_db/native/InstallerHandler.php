@@ -74,7 +74,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
         $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\DbTablePhpPasswordCheck';
 
         $us->setSyncEnabled($app->getSetting('sync_enabled') ? true : false);
-        $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
+        $this->setupAutoAgent();
         $this->setupUsergroup($us, $app->getSetting('auto_user_permission_group'));
 
         $em->persist($app);
