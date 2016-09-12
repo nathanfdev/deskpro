@@ -115,9 +115,9 @@ class TicketController extends AbstractController
         return parent::requireRequestToken($action, $arguments);
     }
 
-    ############################################################################
-    # view
-    ############################################################################
+    //###########################################################################
+    // view
+    //###########################################################################
 
     public function viewAction($ticket_id)
     {
@@ -143,9 +143,9 @@ class TicketController extends AbstractController
             $ticket_attachments = [];
         }
 
-        #------------------------------
-        # Custom fields
-        #------------------------------
+        //------------------------------
+        // Custom fields
+        //------------------------------
 
         $layout      = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($ticket->getDepartmentId());
         $layout      = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
@@ -185,9 +185,9 @@ class TicketController extends AbstractController
             );
         }
 
-        #------------------------------
-        # Messages
-        #------------------------------
+        //------------------------------
+        // Messages
+        //------------------------------
 
         $ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 1, $ticket_attachments, $isPdf, $is_print);
         $ticket_messages_block      = $ticket_messages_blockcache['ticket_messages_block'];
@@ -224,9 +224,9 @@ class TicketController extends AbstractController
         $agents      = $this->container->getAgentData()->getAgents();
         $agent_teams = $this->container->getDataService('AgentTeam')->getTeams();
 
-        #------------------------------
-        # Linked tasks
-        #------------------------------
+        //------------------------------
+        // Linked tasks
+        //------------------------------
 
         $tasks = $this->em->getRepository(Task::class)->findLinkedTicketTasks($ticket, $this->person, true);
         usort($tasks, function ($a, $b) {
@@ -321,9 +321,9 @@ class TicketController extends AbstractController
         }
         unset($agent_map[$this->person->getId()]);
 
-        #------------------------------
-        # Validate a ticket to see if we need to lock the reply form
-        #------------------------------
+        //------------------------------
+        // Validate a ticket to see if we need to lock the reply form
+        //------------------------------
 
         $newticket = new NewTicket($this->em, $this->person);
         $newticket->setValuesFromTicket($ticket);
@@ -340,9 +340,9 @@ class TicketController extends AbstractController
             }
         }
 
-        #------------------------------
-        # Linked tickets
-        #------------------------------
+        //------------------------------
+        // Linked tickets
+        //------------------------------
 
         $linked_tickets = [
             'parent'   => null,
@@ -379,9 +379,9 @@ class TicketController extends AbstractController
             count($linked_tickets['children']),
         ]);
 
-        #------------------------------
-        # Pre-load person and org
-        #------------------------------
+        //------------------------------
+        // Pre-load person and org
+        //------------------------------
 
         $logs_block_info = $this->_getTicketLogsBlockInfo($ticket);
 
@@ -806,9 +806,9 @@ class TicketController extends AbstractController
         return $ticket_messages_blockcache;
     }
 
-    ############################################################################
-    # ajax-save-flagged
-    ############################################################################
+    //###########################################################################
+    // ajax-save-flagged
+    //###########################################################################
 
     public function ajaxSaveFlaggedAction($ticket_id)
     {
@@ -818,9 +818,9 @@ class TicketController extends AbstractController
         return $this->createJsonResponse(['success' => 1]);
     }
 
-    ############################################################################
-    # ajax-save-options
-    ############################################################################
+    //###########################################################################
+    // ajax-save-options
+    //###########################################################################
 
     public function ajaxSaveOptionsAction($ticket_id)
     {
@@ -901,9 +901,9 @@ class TicketController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # add-participant
-    ############################################################################
+    //###########################################################################
+    // add-participant
+    //###########################################################################
 
     public function addParticipantAction($ticket_id)
     {
@@ -982,9 +982,9 @@ class TicketController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # remove-participant
-    ############################################################################
+    //###########################################################################
+    // remove-participant
+    //###########################################################################
 
     protected function _getTicketCcList($ticket)
     {
@@ -1076,9 +1076,9 @@ class TicketController extends AbstractController
         return $this->createJsonResponse(['sucess' => true, 'cc_list' => $this->_getTicketCcList($ticket)]);
     }
 
-    ############################################################################
-    # ajax-save-labels
-    ############################################################################
+    //###########################################################################
+    // ajax-save-labels
+    //###########################################################################
 
     public function ajaxSaveLabelsAction($ticket_id)
     {
@@ -1097,9 +1097,9 @@ class TicketController extends AbstractController
         return $this->createJsonResponse(['success' => 1]);
     }
 
-    ############################################################################
-    # ajax-save-reply
-    ############################################################################
+    //###########################################################################
+    // ajax-save-reply
+    //###########################################################################
 
     public function ajaxSaveReplyAction($ticket_id)
     {
@@ -1193,9 +1193,9 @@ class TicketController extends AbstractController
             }
         }
 
-        #------------------------------
-        # Handle new message
-        #------------------------------
+        //------------------------------
+        // Handle new message
+        //------------------------------
 
         $message                    = new Entity\TicketMessage();
         $message['ticket']          = $ticket;
@@ -1342,9 +1342,9 @@ class TicketController extends AbstractController
             $message->primary_translation = $message_translated;
         }
 
-        #------------------------------
-        # Handle CC'ing/parts
-        #------------------------------
+        //------------------------------
+        // Handle CC'ing/parts
+        //------------------------------
 
         $add_parts     = [];
         $new_user_ids  = [];
@@ -1399,9 +1399,9 @@ class TicketController extends AbstractController
             }
         }
 
-        #------------------------------
-        # Save
-        #------------------------------
+        //------------------------------
+        // Save
+        //------------------------------
 
         $this->db->beginTransaction();
 
@@ -1423,9 +1423,9 @@ class TicketController extends AbstractController
                 }
             }
 
-            #------------------------------
-            # Handle actions
-            #------------------------------
+            //------------------------------
+            // Handle actions
+            //------------------------------
 
             if ($this->in->getInt('options.agent_id') != -1 && $this->in->getBool('options.do_assign_agent')) {
                 $changed_agent      = true;
@@ -1662,9 +1662,9 @@ class TicketController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    ############################################################################
-    # ajax-get-message-text
-    ############################################################################
+    //###########################################################################
+    // ajax-get-message-text
+    //###########################################################################
 
     public function ajaxGetMessageTextAction($message_id)
     {
@@ -1961,9 +1961,9 @@ class TicketController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # ajax-save-actions
-    ############################################################################
+    //###########################################################################
+    // ajax-save-actions
+    //###########################################################################
 
     public function ajaxSaveActionsAction($ticket_id)
     {
@@ -2392,9 +2392,9 @@ class TicketController extends AbstractController
         return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # ajax-get-macro-actions
-    ############################################################################
+    //###########################################################################
+    // ajax-get-macro-actions
+    //###########################################################################
 
     public function ajaxGetMacroAction($ticket_id)
     {
@@ -2549,9 +2549,9 @@ class TicketController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # get-full-message
-    ############################################################################
+    //###########################################################################
+    // get-full-message
+    //###########################################################################
 
     public function ajaxGetFullMessageAction($message_id)
     {
@@ -2571,9 +2571,9 @@ class TicketController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    ############################################################################
-    # save-agent-parts, save-user-parts
-    ############################################################################
+    //###########################################################################
+    // save-agent-parts, save-user-parts
+    //###########################################################################
 
     public function saveAgentPartsAction($ticket_id)
     {
@@ -2617,9 +2617,9 @@ class TicketController extends AbstractController
         );
     }
 
-    ############################################################################
-    # add-charge
-    ############################################################################
+    //###########################################################################
+    // add-charge
+    //###########################################################################
 
     public function addChargeAction($ticket_id)
     {
@@ -2738,9 +2738,9 @@ class TicketController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # edit-charge
-    ############################################################################
+    //###########################################################################
+    // edit-charge
+    //###########################################################################
 
     public function editChargeAction($ticket_id, $charge_id)
     {
@@ -2923,9 +2923,9 @@ class TicketController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # add-sla
-    ############################################################################
+    //###########################################################################
+    // add-sla
+    //###########################################################################
 
     public function addSlaAction($ticket_id)
     {
@@ -3017,9 +3017,9 @@ class TicketController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    ############################################################################
-    # delete
-    ############################################################################
+    //###########################################################################
+    // delete
+    //###########################################################################
 
     /**
      * Soft-deletes a ticket.
@@ -3165,9 +3165,9 @@ class TicketController extends AbstractController
         ];
     }
 
-    ############################################################################
-    # change-user
-    ############################################################################
+    //###########################################################################
+    // change-user
+    //###########################################################################
 
     public function changeUserOverlayAction($ticket_id)
     {
@@ -3277,9 +3277,9 @@ class TicketController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # merge
-    ############################################################################
+    //###########################################################################
+    // merge
+    //###########################################################################
 
     public function mergeOverlayAction($ticket_id, $other_ticket_id = 0)
     {
@@ -3345,9 +3345,9 @@ class TicketController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # split
-    ############################################################################
+    //###########################################################################
+    // split
+    //###########################################################################
 
     public function splitAction($ticket_id, $message_id = 0)
     {
@@ -3545,13 +3545,19 @@ class TicketController extends AbstractController
 
         $top .= '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
         $top .= '--- Forwarded Message ---<br/>';
-        $top .= 'From: '.$message->person->getDisplayName().' &lt;<a href="mailto:'.$message->person->getPrimaryEmailAddress().'">'.$message->person->getPrimaryEmailAddress().'</a>&gt;<br/>';
+        $top .= 'From: '.$message->getPerson()->getDisplayName().' &lt;<a href="mailto:'.$message->getPerson()->getPrimaryEmailAddress().'">'.$message->getPerson()->getPrimaryEmailAddress().'</a>&gt;<br/>';
 
-        if ($ticket->email_account) {
-            $from = $ticket->email_account;
-            $top .= 'To: &lt;<a href="mailto:'.$from['address'].'">'.$from['address'].'</a>&gt;<br/>';
+        if ($message->getPerson()->isAgent()) {
+            $to = $ticket->getPerson();
+            $top .= 'To: '.$to->getDisplayName().' &lt;<a href="mailto:'.$to->getPrimaryEmailAddress().'">'.$to->getPrimaryEmailAddress().'</a>&gt;<br/>';
+        } else {
+            if ($ticket->getEmailAccount()) {
+                $to = $ticket->getEmailAccount();
+                $top .= 'To: &lt;<a href="mailto:'.$to['address'].'">'.$to['address'].'</a>&gt;<br/>';
+            }
         }
-        $top .= 'Subject: '.htmlspecialchars($ticket->subject).'<br/>';
+
+        $top .= 'Subject: '.htmlspecialchars($ticket->getSubject()).'<br/>';
         $top .= 'Date: '.$date_created.'<br/>';
         $top .= '</div>';
 
@@ -3670,9 +3676,9 @@ class TicketController extends AbstractController
         return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # view-raw-message
-    ############################################################################
+    //###########################################################################
+    // view-raw-message
+    //###########################################################################
 
     public function viewRawMessageAction($ticket_id, $message_id)
     {
@@ -3782,9 +3788,9 @@ class TicketController extends AbstractController
         return $this->render('AgentBundle:Ticket:ticket-message-window.html.twig', $vars);
     }
 
-    ############################################################################
-    # new
-    ############################################################################
+    //###########################################################################
+    // new
+    //###########################################################################
 
     public function newAction()
     {
@@ -3797,9 +3803,9 @@ class TicketController extends AbstractController
 
         $brands = $this->getAgentBrands();
 
-        #------------------------------
-        # Custom fields
-        #------------------------------
+        //------------------------------
+        // Custom fields
+        //------------------------------
 
         if ($this->in->getUInt('ticket_id')) {
             $ticket = $this->getTicketOr404($this->in->getUInt('ticket_id'));
@@ -3975,9 +3981,9 @@ class TicketController extends AbstractController
             $form->handleRequest($request);
             $form->isValid();
 
-            #------------------------------
-            # Validate
-            #------------------------------
+            //------------------------------
+            // Validate
+            //------------------------------
 
             $errors = [];
 
@@ -4083,9 +4089,9 @@ class TicketController extends AbstractController
                 return $this->createJsonResponse(['error' => true, 'error_codes' => ['free' => true], 'error_messages' => $free]);
             }
 
-            #------------------------------
-            # Save
-            #------------------------------
+            //------------------------------
+            // Save
+            //------------------------------
 
             $this->db->beginTransaction();
 
@@ -4134,17 +4140,17 @@ class TicketController extends AbstractController
                     $this->em->flush();
                 }
 
-                #------------------------------
-                # Labels
-                #------------------------------
+                //------------------------------
+                // Labels
+                //------------------------------
 
                 $labels = $this->in->getCleanValue('labels');
                 $ticket->getLabelManager()->addLabels(explode(',', $labels));
                 $this->em->flush();
 
-                #------------------------------
-                # Billing/time
-                #------------------------------
+                //------------------------------
+                // Billing/time
+                //------------------------------
 
                 if ($this->settings->get('core_tickets.enable_billing') || $this->settings->get('core_tickets.enable_timelog')) {
                     if ($this->in->getString('billing_type') == 'amount') {
@@ -4206,9 +4212,9 @@ class TicketController extends AbstractController
                     }
                 }
 
-                #------------------------------
-                # Add CC's
-                #------------------------------
+                //------------------------------
+                // Add CC's
+                //------------------------------
 
                 $new_cc_people_ids = array_merge(
                     array_keys($this->container->getIn()->getCleanValueArray('new_cc_person_name', 'raw', 'string')),
@@ -4244,9 +4250,9 @@ class TicketController extends AbstractController
                     $this->em->flush();
                 }
 
-                #------------------------------
-                # Add Followers
-                #------------------------------
+                //------------------------------
+                // Add Followers
+                //------------------------------
 
                 $add_followers = $this->in->getCleanValueArray('add_followers', 'uint', 'discard');
                 if ($add_followers) {
@@ -4255,9 +4261,9 @@ class TicketController extends AbstractController
                     $this->em->flush();
                 }
 
-                #------------------------------
-                # Related chat
-                #------------------------------
+                //------------------------------
+                // Related chat
+                //------------------------------
 
                 $chat_id = $this->in->getUInt('for_chat_id');
                 $chat    = null;
@@ -4269,9 +4275,9 @@ class TicketController extends AbstractController
                     $this->em->flush();
                 }
 
-                #------------------------------
-                # Related comment
-                #------------------------------
+                //------------------------------
+                // Related comment
+                //------------------------------
 
                 if ($comment) {
                     switch ($comment_action) {
@@ -4552,9 +4558,9 @@ class TicketController extends AbstractController
         return $output;
     }
 
-    ############################################################################
-    # download-ticket-debug
-    ############################################################################
+    //###########################################################################
+    // download-ticket-debug
+    //###########################################################################
 
     public function downloadTicketDebugAction($ticket_id)
     {
@@ -4729,7 +4735,7 @@ CSS;
         exit;
     }
 
-    ############################################################################
+    //###########################################################################
 
     public function checkPerm($ticket, $check_perm)
     {
