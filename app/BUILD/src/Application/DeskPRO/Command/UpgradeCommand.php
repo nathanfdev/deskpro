@@ -46,6 +46,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
+    /**
+     * Special exit code used to indicate bad paths.
+     */
+    const ERR_BAD_PATHS = 190;
+
     protected function configure()
     {
         $this->setName('dp:upgrade')
@@ -96,7 +101,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $output->writeln('You need to edit your config.paths.php file and correct the paths. The full path to the config fileis:');
             $output->writeln('<info>'.$root.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.paths.php</info>');
 
-            return 1;
+            return self::ERR_BAD_PATHS;
         }
 
         $doReset       = $input->getOption('reset');
