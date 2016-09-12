@@ -192,25 +192,27 @@ class ServerFileUploads
      */
     public function getUploadResults($file)
     {
-        $upload_failed = false;
-        $attachUrl     = '';
+        $uploadFailed = false;
+        $attachUrl    = '';
 
         $accept = App::getContainer()->getAttachmentAccepter();
         $error  = $accept->getError($file, 'agent');
 
         if ($error) {
-            $upload_failed = App::getContainer()->getTranslator()->phrase(
+            $uploadFailed = App::getContainer()->getTranslator()->phrase(
                 'agent.general.attach_error_'.$error['error_code'],
                 $error
             );
         } else {
             $attachUrl = $accept->accept($file)->getDownloadUrl();
         }
+        $uploadTempDir = Env::getUploadTempDir();
 
         return [
-            'upload_failed'     => $upload_failed,
+            'upload_failed'     => $uploadFailed,
             'uploaded_file_url' => $attachUrl,
-            'is_tmp_writable'   => Env::getUploadTempDir() && is_writable(Env::getUploadTempDir()),
+            'tmp_dir'           => $uploadTempDir,
+            'is_tmp_writable'   => $uploadTempDir && is_writable($uploadTempDir),
         ];
     }
 

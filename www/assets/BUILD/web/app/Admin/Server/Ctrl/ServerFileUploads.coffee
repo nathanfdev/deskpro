@@ -12,6 +12,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
       @$scope.fileTransferStarted = false
       @setupUploadListeners()
 
+      @$scope.tmpIsNotWritable = () => @$scope.fileUploadResults.is_tmp_writable != undefined && !@$scope.fileUploadResults.is_tmp_writable
+
 
     initialLoad: ->
       data_promise = @Api.sendGet('/server_file_uploads').then( (res) =>
@@ -29,8 +31,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
       )
 
       @$scope.$on('fileuploadfail', (e, data) =>
-        @$scope.fileUploadResults = {}
-        @$scope.fileUploadResults.upload_failed = true;
+        @$scope.fileUploadResults = {
+          upload_failed: true
+          error_message: data.errorThrown
+          upload_status: 413,
+          response_headers: data.jqXHR.getAllResponseHeaders()
+        }
         @$scope.fileSelected = false
       )
 
