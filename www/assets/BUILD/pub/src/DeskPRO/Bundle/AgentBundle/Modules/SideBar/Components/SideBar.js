@@ -34,6 +34,26 @@ export class SideBarContainer extends SeparateComponent {
     dispatch:       PropTypes.func.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    window.document.addEventListener('dpOpenOverlayFrame', (e) => {
+      if (e.detail.id === 'reports') {
+        this.changeSection('menu_reports');
+      } else if (e.detail.id === 'admin') {
+        this.changeSection('menu_admin');
+      }
+    });
+  }
+
+  componentWillMount = () => {
+    if (window.parent.DP_FRAME_OVERLAYS.reports.opened) {
+      this.changeSection('menu_reports');
+    }
+    if (window.parent.DP_FRAME_OVERLAYS.admin.opened) {
+      this.changeSection('menu_admin');
+    }
+  };
+
   static getType() {
     return 'SideBarContainer';
   }
