@@ -31,6 +31,10 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
     initialLoad: ->
       @updateFilter()
 
+    newSearch: ->
+      @pagination.current_page = @pagination.virtual_current_page = 1;
+      @updateFilter()
+
     updateFilter: ->
       @is_loading = true
       params = {}
