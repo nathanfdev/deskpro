@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,44 +26,53 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Component\Hierarchy\HierarchyNode;
 use DeskPRO\Component\Util\EntityUtils;
-use Symfony\Component\Form\ChoiceList\LegacyChoiceListAdapter;
+use Symfony\Component\Form\ChoiceList\LazyChoiceList;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;
 
+/**
+ * Class HierarchyNodeTransformer.
+ */
 class HierarchyNodeTransformer implements DataTransformerInterface
 {
     /**
      * @var ChoiceListInterface
      */
-    private $choice_list;
+    private $choiceList;
 
     /**
      * @var bool
      */
     private $multiple;
 
-    public function __construct(LegacyChoiceListAdapter $choice_list, $multiple = false)
+    /**
+     * Constructor.
+     *
+     * @param LazyChoiceList $choiceList
+     * @param bool           $multiple
+     */
+    public function __construct(LazyChoiceList $choiceList, $multiple = false)
     {
-        $this->choice_list = $choice_list;
-        $this->multiple    = $multiple;
+        $this->choiceList = $choiceList;
+        $this->multiple   = $multiple;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function transform($value)
     {
         if (!$value) {
             return '';
         }
 
-        $choices = $this->choice_list->getChoices();
+        $choices = $this->choiceList->getChoices();
 
         if (count($choices) < 1) {
             return '';
@@ -92,6 +101,9 @@ class HierarchyNodeTransformer implements DataTransformerInterface
         return '';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function reverseTransform($value)
     {
         if ($value instanceof HierarchyNode) {

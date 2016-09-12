@@ -26,38 +26,54 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Form\Hierarchy;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\EntityHierarchyType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
+use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 /**
- * Class TicketCategoryType.
+ * Class HierarchyChoiceLoader.
  */
-class TicketCategoryType extends AbstractType
+class HierarchyChoiceLoader implements ChoiceLoaderInterface
 {
     /**
-     * {@inheritdoc}
+     * @var HierarchyNode[]
      */
-    public function getParent()
+    private $nodes;
+
+    /**
+     * Constructor.
+     *
+     * @param HierarchyNode[] $nodes
+     */
+    public function __construct(array $nodes)
     {
-        return EntityHierarchyType::class;
+        $this->nodes = $nodes;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function loadChoiceList($value = null)
     {
-        $resolver->setDefaults([
-            'choice_loader' => function (Options $options) {
-                /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchyGenerator */
-                $hierarchyGenerator = $options['hierarchy_generator'];
+        return new ArrayChoiceList($this->nodes, function ($choice) {
+            return $choice instanceof HierarchyNode ? (string) $choice->getHierarchy()->getNodeId($choice) : '0';
+        });
+    }
 
-                return $hierarchyGenerator->generateTicketCategoriesHierarchy()->getChoiceLoader();
-            },
-        ]);
+    /**
+     * {@inheritdoc}
+     */
+    public function loadValuesForChoices(array $choices, $value = null)
+    {
+        return $this->loadChoiceList()->getValuesForChoices($choices);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function loadChoicesForValues(array $values, $value = null)
+    {
+        return $this->loadChoiceList()->getChoicesForValues($values);
     }
 }

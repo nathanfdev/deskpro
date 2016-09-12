@@ -114,7 +114,7 @@ class HierarchyGenerator
     /**
      * @param CustomDefAbstract $def
      *
-     * @return mixed
+     * @return Hierarchy
      */
     public function generateForCustomFormField(CustomDefAbstract $def)
     {
@@ -170,7 +170,7 @@ class HierarchyGenerator
      * @param CustomFieldDefinition $field
      * @param array                 $contextual_choices
      *
-     * @return mixed
+     * @return Hierarchy
      */
     public function generateForCustomPerFormField(CustomFieldDefinition $field, array $contextual_choices = [])
     {
@@ -203,7 +203,7 @@ class HierarchyGenerator
     }
 
     /**
-     * @return mixed
+     * @return Hierarchy
      */
     public function generateTicketProductsHierarchy()
     {
@@ -350,7 +350,7 @@ class HierarchyGenerator
     }
 
     /**
-     * @return mixed
+     * @return Hierarchy
      */
     public function generateTicketCategoriesHierarchy()
     {
@@ -405,7 +405,6 @@ class HierarchyGenerator
                 $person,
             ],
             function () use ($feedback_data_service, $person) {
-
                 $categories = $feedback_data_service->getFeedbackCategoriesForPerson($person);
 
                 $root_nodes = [];

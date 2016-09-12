@@ -58,13 +58,12 @@ class TicketDepartmentChoiceType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'ticket'      => null, // provide a ticket so the ticket's dep is always in the hierarchy list
-                'choice_list' => function (Options $options) {
+                'ticket'        => null, // provide a ticket so the ticket's dep is always in the hierarchy list
+                'choice_loader' => function (Options $options) {
                     /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $generator */
                     $generator = $options['hierarchy_generator'];
-                    $choiceList = $generator->generateTicketDepartmentsHierarchy($options['person'], $options['ticket'])->getChoiceList();
 
-                    return $choiceList;
+                    return $generator->generateTicketDepartmentsHierarchy($options['person'], $options['ticket'])->getChoiceLoader();
                 },
             ])
             ->setRequired('person')

@@ -52,11 +52,11 @@ class TicketProductType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'choice_list' => function (Options $options) {
+            'choice_loader' => function (Options $options) {
                 /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchy_generator */
                 $hierarchy_generator = $options['hierarchy_generator'];
 
-                return $hierarchy_generator->generateTicketProductsHierarchy()->getChoiceList();
+                return $hierarchy_generator->generateTicketProductsHierarchy()->getChoiceLoader();
             },
         ]);
     }
