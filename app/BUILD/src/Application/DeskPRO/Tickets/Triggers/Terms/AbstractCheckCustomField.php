@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -73,9 +74,9 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         $options = $this->getTermOptions();
         $op      = $this->getTermOperator();
 
-        #------------------------------
-        # Get the field value
-        #------------------------------
+        //------------------------------
+        // Get the field value
+        //------------------------------
 
         $custom_data_array = $this->getCustomDataArray($ticket, $context);
 
@@ -90,7 +91,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
                 break;
             } elseif ($custom_data->field->parent && $custom_data->field->parent->id == $field_id) {
                 $field      = $custom_data->field->parent;
-                $field_data = array();
+                $field_data = [];
                 break;
             }
         }
@@ -103,9 +104,9 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
             }
         }
 
-        #------------------------------
-        # Check for existence
-        #------------------------------
+        //------------------------------
+        // Check for existence
+        //------------------------------
 
         if ($op == 'isset') {
             return (bool) $field_data;
@@ -129,15 +130,15 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
             }
         }
 
-        #------------------------------
-        # Handle choice check
-        #------------------------------
+        //------------------------------
+        // Handle choice check
+        //------------------------------
 
         if ($field->getTypeName() == 'choice') {
             $check_value = $options->get('value');
             $check_ids   = array_fill_keys($field_data, true);
             if (!is_array($check_value)) {
-                $check_value = array($check_value);
+                $check_value = [$check_value];
             }
 
             $has = false;
@@ -165,15 +166,15 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
 
             return false;
 
-        #------------------------------
-        # Handle toggle
-        #------------------------------
+        //------------------------------
+        // Handle toggle
+        //------------------------------
         } elseif ($field->getTypeName() == 'toggle') {
             return $this->isIntMatch($ticket, $context, TermValue::createWithValue($field_data), (int) $options->get('value'));
 
-        #------------------------------
-        # Handle dates
-        #------------------------------
+        //------------------------------
+        // Handle dates
+        //------------------------------
         } elseif ($field->getTypeName() === 'date' || $field->getTypeName() === 'datetime') {
 
             /*
@@ -238,9 +239,9 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
                     return false;
             }
 
-        #------------------------------
-        # Handle text check
-        #------------------------------
+        //------------------------------
+        // Handle text check
+        //------------------------------
         } else {
             return $this->isStringMatch($ticket, $context, TermValue::createWithValue($field_data), $options->get('value'));
         }

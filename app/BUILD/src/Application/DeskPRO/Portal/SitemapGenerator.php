@@ -183,9 +183,9 @@ class SitemapGenerator
             'changefreq' => 'daily',
         ];
 
-        #------------------------------
-        # Categories
-        #------------------------------
+        //------------------------------
+        // Categories
+        //------------------------------
 
         $cats = $this->structure->getArticleCategories();
 
@@ -198,9 +198,9 @@ class SitemapGenerator
             }
         }
 
-        #------------------------------
-        # Articles
-        #------------------------------
+        //------------------------------
+        // Articles
+        //------------------------------
 
         $articles = $this->em->createQuery(
             "
@@ -240,9 +240,9 @@ class SitemapGenerator
             'changefreq' => 'daily',
         ];
 
-        #------------------------------
-        # Categories
-        #------------------------------
+        //------------------------------
+        // Categories
+        //------------------------------
 
         $cats = $this->structure->getNewsCategories();
 
@@ -255,9 +255,9 @@ class SitemapGenerator
             }
         }
 
-        #------------------------------
-        # News
-        #------------------------------
+        //------------------------------
+        // News
+        //------------------------------
 
         if ($cat_ids) {
             $news = $this->em->createQuery(
@@ -298,9 +298,9 @@ class SitemapGenerator
             'changefreq' => 'daily',
         ];
 
-        #------------------------------
-        # Categories
-        #------------------------------
+        //------------------------------
+        // Categories
+        //------------------------------
 
         $cats = $this->structure->getDownloadCategories();
 
@@ -313,9 +313,9 @@ class SitemapGenerator
             }
         }
 
-        #------------------------------
-        # Downloads
-        #------------------------------
+        //------------------------------
+        // Downloads
+        //------------------------------
 
         $downloads = $this->em->createQuery(
             "
@@ -354,9 +354,9 @@ class SitemapGenerator
             'changefreq' => 'daily',
         ];
 
-        #------------------------------
-        # Downloads
-        #------------------------------
+        //------------------------------
+        // Downloads
+        //------------------------------
 
         $feedback = $this->em->createQuery(
             '

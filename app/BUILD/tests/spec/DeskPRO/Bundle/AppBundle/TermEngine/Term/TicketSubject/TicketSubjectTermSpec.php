@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubject;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -60,12 +61,12 @@ class TicketSubjectTermSpec extends ObjectBehavior
     public function it_defines_its_supported_options()
     {
         $this->getSupportedOps()->shouldBeLike(
-            array(
+            [
                 TermInterface::OP_IS,
                 TermInterface::OP_NOT,
                 TermInterface::OP_HAS,
                 TermInterface::OP_NOT_HAS,
-            )
+            ]
         );
     }
 
@@ -76,16 +77,16 @@ class TicketSubjectTermSpec extends ObjectBehavior
         $resolver->isDefined('wildcard_prefix')->shouldBe(true);
         $resolver->isDefined('wildcard_postfix')->shouldBe(true);
         $resolver->getConstraints()->shouldBeLike(
-            array(
-                'subject' => array(
+            [
+                'subject' => [
                     new Assert\NotNull(),
                     new Assert\All(
-                        array(
+                        [
                             'constraints' => new Assert\NotBlank(),
-                        )
+                        ]
                     ),
-                ),
-            )
+                ],
+            ]
         );
     }
 }

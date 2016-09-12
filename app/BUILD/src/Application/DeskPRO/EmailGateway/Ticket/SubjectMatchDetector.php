@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -182,7 +183,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
             $extra_where = "AND email_sources.email_account_id = {$this->enable_same_account->id}";
         }
 
-        $ticket_ids = array();
+        $ticket_ids = [];
 
         if ($this->enable_exact_subject) {
             $this->getLogger()->logDebug('[SubjectMatchDetector] (Standard) Trying to find exact subject: '.$subject);
@@ -194,7 +195,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
                 $extra_where
                 ORDER BY tickets.id DESC
                 LIMIT 20
-            ", array($subject, $subject, $this->_time_cutoff)));
+            ", [$subject, $subject, $this->_time_cutoff]));
         }
 
         // handle prefixes
@@ -224,7 +225,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
                     $extra_where
                     ORDER BY tickets.id DESC
                     LIMIT 20
-                ", array($subject_re, $subject_re, $this->_time_cutoff)));
+                ", [$subject_re, $subject_re, $this->_time_cutoff]));
             }
         }
 
@@ -288,7 +289,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         // Strip off Re: prefix (and alternatives in some other langs)
         // The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
         $last_subject = $subject_orig;
-        $ticket_ids   = array();
+        $ticket_ids   = [];
         while (true) {
             $subject_re = preg_replace('#^.*?:\s*#i', '', trim($last_subject));
             $subject_re = trim($subject_re);
@@ -310,7 +311,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
                 $extra_where
                 ORDER BY tickets.id DESC
                 LIMIT 20
-            ", array($subject_re, $subject_re, $this->_time_cutoff)));
+            ", [$subject_re, $subject_re, $this->_time_cutoff]));
         }
 
         $ticket_ids = Arrays::removeFalsey($ticket_ids);

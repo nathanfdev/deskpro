@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Application\NewSettings;
 
 use Application\DeskPRO\NewSettings\SettingsBag;
@@ -42,7 +43,7 @@ class SettingsResolverTest extends DeskProTestCase
         $mock1 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
         $mock2 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
 
-        $loaders = array($mock1, $mock2);
+        $loaders = [$mock1, $mock2];
 
         $resolver = new SettingsResolver(
             $loaders, \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface'),
@@ -60,32 +61,32 @@ class SettingsResolverTest extends DeskProTestCase
         $mock2 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
 
         $resolver = new SettingsResolver(
-            array($mock1, $mock2), $mockCache,
+            [$mock1, $mock2], $mockCache,
             \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface')
         );
 
         $mock1->shouldReceive('load')->andReturn(
-            $settings1 = array(
+            $settings1 = [
                 'core.key1' => 'eighteen',
                 'core.key2' => 'sixteen',
                 'core.key3' => 'number4',
-            )
+            ]
         );
 
         $mock2->shouldReceive('load')->andReturn(
-            $settings2 = array(
+            $settings2 = [
                 'core.key2' => 16,
                 'core.key3' => 'some_new-string',
-            )
+            ]
         );
 
         // reflects the order of the loader return values
         $expectedResolvedSettingsBag = new SettingsBag(
-            array(
+            [
                 'core.key1' => 'eighteen',
                 'core.key2' => 16,
                 'core.key3' => 'some_new-string',
-            )
+            ]
         );
 
         $mockCache->shouldReceive('delete')->with('settings.bag.global')->never();
@@ -106,32 +107,32 @@ class SettingsResolverTest extends DeskProTestCase
         $mock2 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
 
         $resolver = new SettingsResolver(
-            array($mock1, $mock2), $mockCache,
+            [$mock1, $mock2], $mockCache,
             \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface')
         );
 
         $mock1->shouldReceive('load')->with(true)->andReturn(
-            $settings1 = array(
+            $settings1 = [
                 'core.key1' => 'eighteen',
                 'core.key2' => 'sixteen',
                 'core.key3' => 'number4',
-            )
+            ]
         );
 
         $mock2->shouldReceive('load')->with(true)->andReturn(
-            $settings2 = array(
+            $settings2 = [
                 'core.key2' => 16,
                 'core.key3' => 'some_new-string',
-            )
+            ]
         );
 
         // reflects the order of the loader return values
         $expectedResolvedSettingsBag = new SettingsBag(
-            array(
+            [
                 'core.key1' => 'eighteen',
                 'core.key2' => 16,
                 'core.key3' => 'some_new-string',
-            )
+            ]
         );
 
         $mockCache->shouldReceive('delete')->with('settings.bag.global')->once();
@@ -152,23 +153,23 @@ class SettingsResolverTest extends DeskProTestCase
         $mock2 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
 
         $resolver = new SettingsResolver(
-            array($mock1, $mock2), $mockCache,
+            [$mock1, $mock2], $mockCache,
             \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface')
         );
 
         $mock1->shouldReceive('load')->andReturn(
-            $settings1 = array(
+            $settings1 = [
                 'core.key1' => 'eighteen',
                 'core.key2' => 'sixteen',
                 'core.key3' => 'number4',
-            )
+            ]
         );
 
         $mock2->shouldReceive('load')->andReturn(
-            $settings2 = array(
+            $settings2 = [
                 'core.key2' => 16,
                 'core.key3' => 'some_new-string',
-            )
+            ]
         );
 
         // reflects the order of the loader return values
@@ -194,23 +195,23 @@ class SettingsResolverTest extends DeskProTestCase
         $mock2 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
 
         $resolver = new SettingsResolver(
-            array($mock1, $mock2), $mockCache,
+            [$mock1, $mock2], $mockCache,
             \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface')
         );
 
         $mock1->shouldReceive('load')->with(true)->andReturn(
-            $settings1 = array(
+            $settings1 = [
                 'core.key1' => 'eighteen',
                 'core.key2' => 'sixteen',
                 'core.key3' => 'number4',
-            )
+            ]
         );
 
         $mock2->shouldReceive('load')->with(true)->andReturn(
-            $settings2 = array(
+            $settings2 = [
                 'core.key2' => 16,
                 'core.key3' => 'some_new-string',
-            )
+            ]
         );
 
         // reflects the order of the loader return values
@@ -233,10 +234,10 @@ class SettingsResolverTest extends DeskProTestCase
         $mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
 
         $mock1 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
-        $mock1->shouldReceive('load')->andReturn(array('core.default_timezone' => 'non_virtual_val'));
+        $mock1->shouldReceive('load')->andReturn(['core.default_timezone' => 'non_virtual_val']);
 
         $resolver = new SettingsResolver(
-            array($mock1), $mockCache,
+            [$mock1], $mockCache,
             \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface')
         );
 
@@ -258,10 +259,10 @@ class SettingsResolverTest extends DeskProTestCase
         $mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
 
         $mock1 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
-        $mock1->shouldReceive('load')->andReturn(array('core.default_timezone' => 'non_virtual_val'));
+        $mock1->shouldReceive('load')->andReturn(['core.default_timezone' => 'non_virtual_val']);
 
         $resolver = new SettingsResolver(
-            array($mock1), $mockCache,
+            [$mock1], $mockCache,
             \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface')
         );
 

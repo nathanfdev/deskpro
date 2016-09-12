@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -52,9 +53,9 @@ class DeleteSpamTickets extends AbstractJob
 
         $date_cut = new \DateTime('@'.(time() - $secs));
 
-        #------------------------------
-        # find tickets to proc
-        #------------------------------
+        //------------------------------
+        // find tickets to proc
+        //------------------------------
 
         $ticket_count = 0;
 
@@ -63,7 +64,7 @@ class DeleteSpamTickets extends AbstractJob
 			FROM tickets
 			WHERE tickets.hidden_status = 'spam' AND tickets.date_status < ?
 			LIMIT 1000
-		", array($date_cut->format('Y-m-d H:i:s')));
+		", [$date_cut->format('Y-m-d H:i:s')]);
 
         $this->logger->log(sprintf('[DeleteSpamTickets] %d tickets to delete', count($all_tickets)), 'DEBUG');
         $date_str = date('Y-m-d H:i:s');
@@ -75,11 +76,11 @@ class DeleteSpamTickets extends AbstractJob
 
                 TicketUtil::deleteTicketAttachments($ticket['id'], App::getDb());
 
-                App::getDb()->delete('tickets_deleted', array('ticket_id' => $ticket['id']));
-                App::getDb()->replace('tickets_deleted', array('ticket_id' => $ticket['id'], 'by_person_id' => null, 'new_ticket_id' => 0, 'date_created' => $date_str, 'reason' => 'Deleted as spam (system cleanup)'));
+                App::getDb()->delete('tickets_deleted', ['ticket_id' => $ticket['id']]);
+                App::getDb()->replace('tickets_deleted', ['ticket_id' => $ticket['id'], 'by_person_id' => null, 'new_ticket_id' => 0, 'date_created' => $date_str, 'reason' => 'Deleted as spam (system cleanup)']);
 
-                App::getDb()->delete('tickets', array('id' => $ticket['id']));
-                App::getDb()->delete('tickets_search_active', array('id' => $ticket['id']));
+                App::getDb()->delete('tickets', ['id' => $ticket['id']]);
+                App::getDb()->delete('tickets_search_active', ['id' => $ticket['id']]);
 
                 ++$ticket_count;
 

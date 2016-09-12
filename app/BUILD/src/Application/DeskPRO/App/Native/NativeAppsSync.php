@@ -142,7 +142,7 @@ class NativeAppsSync
         } catch (\Exception $e) {
             $this->logger->error("EXCEPTION: {$e->getMessage()}");
             if ($this->exception_handler) {
-                call_user_func($this->exception_handler, $e, array('mode' => 'install', 'package' => $app_package, 'manager' => $this->manager));
+                call_user_func($this->exception_handler, $e, ['mode' => 'install', 'package' => $app_package, 'manager' => $this->manager]);
             } else {
                 throw $e;
             }
@@ -164,7 +164,7 @@ class NativeAppsSync
                 } catch (\Exception $e) {
                     $this->logger->error("EXCEPTION: {$e->getMessage()}");
                     if ($this->exception_handler) {
-                        call_user_func($this->exception_handler, $e, array('mode' => 'update', 'package' => $app_package, 'app' => $app, 'manager' => $this->manager));
+                        call_user_func($this->exception_handler, $e, ['mode' => 'update', 'package' => $app_package, 'app' => $app, 'manager' => $this->manager]);
                     } else {
                         throw $e;
                     }
@@ -227,7 +227,7 @@ class NativeAppsSync
             } catch (\Exception $e) {
                 $this->logger->error("EXCEPTION: {$e->getMessage()}");
                 if ($this->exception_handler) {
-                    call_user_func($this->exception_handler, $e, array('mode' => 'install', 'package' => $app_package, 'manager' => $this->manager));
+                    call_user_func($this->exception_handler, $e, ['mode' => 'install', 'package' => $app_package, 'manager' => $this->manager]);
                 } else {
                     throw $e;
                 }

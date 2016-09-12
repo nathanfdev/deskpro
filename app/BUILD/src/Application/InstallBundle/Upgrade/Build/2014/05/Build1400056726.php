@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056726 extends AbstractBuild
@@ -39,11 +40,11 @@ class Build1400056726 extends AbstractBuild
 
         $this->out('Updating registration settings');
 
-        $settings = array(
+        $settings = [
             'core.reg_enabled'      => 0,
             'core.reg_required'     => 0,
             'core.agent_validation' => 0,
-        );
+        ];
 
         $mode = $db->fetchColumn("SELECT value FROM settings WHERE name = 'core.user_mode'");
 
@@ -80,9 +81,9 @@ class Build1400056726 extends AbstractBuild
         }
 
         foreach ($settings as $k => $v) {
-            $db->replace('settings', array('name' => $k, 'value' => $v));
+            $db->replace('settings', ['name' => $k, 'value' => $v]);
         }
 
-        $db->delete('settings', array('name' => 'core.user_mode'));
+        $db->delete('settings', ['name' => 'core.user_mode']);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,42 +31,43 @@
  *
  * @category People
  */
+
 namespace Application\DeskPRO\People\AgentPermissions\Value;
 
 class PeoplePermissions implements PermissionValueInterface
 {
-    /** @var bool  */
+    /** @var bool */
     public $use = false;
-    /** @var bool  */
+    /** @var bool */
     public $create = false;
-    /** @var bool  */
+    /** @var bool */
     public $edit = false;
-    /** @var bool  */
+    /** @var bool */
     public $validate = false;
-    /** @var bool  */
+    /** @var bool */
     public $manage_emails = false;
-    /** @var bool  */
+    /** @var bool */
     public $reset_password = false;
-    /** @var bool  */
+    /** @var bool */
     public $notes = false;
-    /** @var bool  */
+    /** @var bool */
     public $delete = false;
-    /** @var bool  */
+    /** @var bool */
     public $disable = false;
-    /** @var bool  */
+    /** @var bool */
     public $login_as = false;
-    /** @var bool  */
+    /** @var bool */
     public $merge = false;
-    /** @var bool  */
+    /** @var bool */
     public $create_labels = false;
 
     public function getNames()
     {
-        return array('use', 'create', 'edit', 'validate', 'manage_emails', 'reset_password', 'notes', 'delete', 'disable', 'login_as', 'merge', 'create_labels');
+        return ['use', 'create', 'edit', 'validate', 'manage_emails', 'reset_password', 'notes', 'delete', 'disable', 'login_as', 'merge', 'create_labels'];
     }
 
     public function getDestructiveNames()
     {
-        return array('delete');
+        return ['delete'];
     }
 }

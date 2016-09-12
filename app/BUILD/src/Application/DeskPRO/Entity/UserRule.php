@@ -61,7 +61,7 @@ class UserRule extends DomainObject
      *
      * @var array
      */
-    protected $email_patterns = array();
+    protected $email_patterns = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Organization
@@ -103,7 +103,7 @@ class UserRule extends DomainObject
      */
     public function setPatternsString($patterns)
     {
-        $items = array();
+        $items = [];
 
         $patterns = Strings::standardEol($patterns);
         $patterns = explode("\n", $patterns);
@@ -153,9 +153,9 @@ class UserRule extends DomainObject
         return false;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

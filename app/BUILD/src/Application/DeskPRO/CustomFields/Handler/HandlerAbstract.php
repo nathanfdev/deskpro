@@ -234,27 +234,27 @@ abstract class HandlerAbstract
      */
     public function getRenderTemplateVars($context = 'html')
     {
-        return array();
+        return [];
     }
 
     /**
      * Render the field to HTML for use in a web page.
      */
-    public function renderHtml($data = null, array $template_vars = array())
+    public function renderHtml($data = null, array $template_vars = [])
     {
         if ($data === null) {
-            $data = array();
+            $data = [];
         }
 
         $templating = $this->getTemplateEngine();
 
-        $vars = array_merge($this->getRenderTemplateVars('html'), $template_vars, array(
+        $vars = array_merge($this->getRenderTemplateVars('html'), $template_vars, [
             'data'               => $data,
             'field_def'          => $this->field_def,
             'field_handler'      => $this,
             'field_handler_name' => Util::getBaseClassname($this),
             'field_type'         => $this->field_def->getTableName(),
-        ));
+        ]);
 
         return $templating->render($this->getRenderTemplateName('html'), $vars);
     }
@@ -262,21 +262,21 @@ abstract class HandlerAbstract
     /**
      * Render the field.
      */
-    public function renderText($data = null, array $template_vars = array())
+    public function renderText($data = null, array $template_vars = [])
     {
         if ($data === null) {
-            $data = array();
+            $data = [];
         }
 
         $templating = $this->getTemplateEngine();
 
-        $vars = array_merge($this->getRenderTemplateVars('text'), $template_vars, array(
+        $vars = array_merge($this->getRenderTemplateVars('text'), $template_vars, [
             'data'               => $data,
             'field_def'          => $this->field_def,
             'field_handler'      => $this,
             'field_handler_name' => Util::getBaseClassname($this),
             'field_type'         => $this->field_def->getTableName(),
-        ));
+        ]);
 
         return $templating->render($this->getRenderTemplateName('text'), $vars);
     }
@@ -289,7 +289,7 @@ abstract class HandlerAbstract
      *
      * @return string
      */
-    public function renderFormHtml($formView, array $template_vars = array())
+    public function renderFormHtml($formView, array $template_vars = [])
     {
         $templating = $this->getTemplateEngine();
 
@@ -303,13 +303,13 @@ abstract class HandlerAbstract
             $field_group->remove($f->getName());
         }
 
-        $vars = array_merge($this->getRenderTemplateVars(), $template_vars, array(
+        $vars = array_merge($this->getRenderTemplateVars(), $template_vars, [
             'formView'           => $formView,
             'field_def'          => $this->field_def,
             'field_handler'      => $this,
             'field_handler_name' => Util::getBaseClassname($this),
             'field_type'         => $this->field_def->getTableName(),
-        ));
+        ]);
 
         return $templating->render($this->getFormTemplateName(), $vars);
     }
@@ -357,10 +357,10 @@ abstract class HandlerAbstract
                 ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
             );
 
-        $options = array(
+        $options = [
             'required' => $required,
-            'attr'     => $this->field_def->getOption('attr', array()),
-        );
+            'attr'     => $this->field_def->getOption('attr', []),
+        ];
 
         if ($class = $this->field_def->getOption('custom_css_classname')) {
             $options['attr']['class'] = @$options['attr']['class'].' '.$class;
@@ -400,7 +400,7 @@ abstract class HandlerAbstract
      */
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -426,7 +426,7 @@ abstract class HandlerAbstract
     public function getSearchCapabilities()
     {
         // Not searchable by default
-        return array();
+        return [];
     }
 
     public function getFilterCapabilities()

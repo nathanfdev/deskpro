@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -56,7 +57,7 @@ class MethodCheckHelper implements TermCompilerHelperInterface
         // get any args, since we allow arbitrary args
         $args     = func_get_args();
         $arg_num  = func_num_args();
-        $contains = array();
+        $contains = [];
         for ($i = 0; $i < $arg_num; ++$i) {
             if ($i > 1) {
                 $contains[] = $args[$i];
@@ -75,7 +76,7 @@ class MethodCheckHelper implements TermCompilerHelperInterface
 
     protected function canTraverse($thing)
     {
-        return (is_array($thing) || (is_object($thing) && $thing instanceof \Traversable));
+        return is_array($thing) || (is_object($thing) && $thing instanceof \Traversable);
     }
 
     public function checkTraverse($val, $property_name, $op, $target)

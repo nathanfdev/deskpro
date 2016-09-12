@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Monolog\Processor;
 
 use Monolog\Handler\AbstractProcessingHandler;
@@ -46,14 +47,14 @@ class LogTrackerHandler extends AbstractProcessingHandler
      *
      * @var array
      */
-    private $messages = array();
+    private $messages = [];
 
     /**
      * Array of (channel => true).
      *
      * @var array
      */
-    private $track_channels = array();
+    private $track_channels = [];
 
     /**
      * @var bool
@@ -78,7 +79,7 @@ class LogTrackerHandler extends AbstractProcessingHandler
      */
     public function resetMessages()
     {
-        $this->messages = array();
+        $this->messages = [];
     }
 
     /**
@@ -103,7 +104,7 @@ class LogTrackerHandler extends AbstractProcessingHandler
     public function stopTracking()
     {
         $this->is_tracking    = false;
-        $this->track_channels = array();
+        $this->track_channels = [];
     }
 
     /**
@@ -131,7 +132,7 @@ class LogTrackerHandler extends AbstractProcessingHandler
      */
     protected function write(array $record)
     {
-        $this->messages[] = array($record['channel'], $record['formatted']);
+        $this->messages[] = [$record['channel'], $record['formatted']];
     }
 
     /**
@@ -139,7 +140,7 @@ class LogTrackerHandler extends AbstractProcessingHandler
      */
     public function getMessages()
     {
-        $ret = array();
+        $ret = [];
         foreach ($this->messages as $x) {
             $ret[] = $x[1];
         }
@@ -156,7 +157,7 @@ class LogTrackerHandler extends AbstractProcessingHandler
     {
         $channels = array_fill_keys($channels, true);
 
-        $ret = array();
+        $ret = [];
         foreach ($this->messages as $x) {
             if (isset($channels[$x[0]])) {
                 $ret[] = $x[1];

@@ -177,7 +177,7 @@ class TicketsVoterSpec extends ObjectBehavior
     public function verifyGrantedVote($attribute, $token, $object)
     {
         if (!is_array($attribute)) {
-            $attribute = array($attribute);
+            $attribute = [$attribute];
         }
 
         $this->vote($token, $object, $attribute)
@@ -187,7 +187,7 @@ class TicketsVoterSpec extends ObjectBehavior
     public function verifyDeniedVote($attribute, $token, $object)
     {
         if (!is_array($attribute)) {
-            $attribute = array($attribute);
+            $attribute = [$attribute];
         }
 
         $this->vote($token, $object, $attribute)
@@ -197,7 +197,7 @@ class TicketsVoterSpec extends ObjectBehavior
     public function verifyAbstainVote($attribute, $token, $object)
     {
         if (!is_array($attribute)) {
-            $attribute = array($attribute);
+            $attribute = [$attribute];
         }
 
         $this->vote($token, $object, $attribute)

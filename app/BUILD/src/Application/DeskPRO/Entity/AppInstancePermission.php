@@ -84,9 +84,9 @@ class AppInstancePermission extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('person', $v);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -64,11 +64,11 @@ class ServerErrorLogs
         $log_reader = new ErrorLogReader($this->logsPath.'/error.log');
         $log_reader->setDateTimezone(App::getSession()->getPerson()->getDateTimezone());
 
-        return array(
+        return [
             'logs'                  => array_values($log_reader->getAll()),
             'deskpro_error_log_url' => $this->_generateUrl('logs/errors'),
             'web_error_log_url'     => $this->_generateUrl('logs/php-errors'),
-        );
+        ];
     }
 
     /**

@@ -81,11 +81,11 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $tester = UsersourceTester::createFromOptions('Application\\DeskPRO\\Usersource\\Adapter\\DbTablePhpPasswordCheck', $options);
         $tester->test($username, $password);
 
-        $result_data = array(
+        $result_data = [
             'log'      => $tester->getLog(),
             'raw_data' => $tester->getRawData(),
             'is_valid' => $tester->isValid(),
-        );
+        ];
 
         return $context->createJsonResponse($result_data);
     }
@@ -101,14 +101,14 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         /*
          * null means installed, "description" - not installed
          */
-        $drivers = array(
+        $drivers = [
             'pdo_mysql'  => 'You have to install PDO_MYSQL database driver. <a href="http://php.net/manual/en/ref.pdo-mysql.php">http://php.net/manual/en/ref.pdo-mysql.php</a>',
             'pdo_pgsql'  => 'You have to install PDO_PGSQL database driver. <a href="http://php.net/manual/en/ref.pdo-pgsql.php">http://php.net/manual/en/ref.pdo-pgsql.php</a>',
             'pdo_sqlite' => 'You have to install PDO_SQLITE database driver. <a href="http://php.net/manual/en/ref.pdo-sqlite.php">http://php.net/manual/en/ref.pdo-sqlite.php</a>',
             'pdo_odbc'   => 'You have to install PDO_ODBC database driver. <a href="http://php.net/manual/en/ref.pdo-odbc.php">http://php.net/manual/en/ref.pdo-odbc.php</a>',
             'sqlsrv'     => 'You have to install SQLSRV database driver. <a href="http://php.net/manual/en/sqlsrv.installation.php">http://php.net/manual/en/sqlsrv.installation.php</a>',
             'oci8'       => 'You have to install OCI8 extension. <a href="http://php.net/manual/en/ref.pdo-odbc.php">http://php.net/manual/en/ref.pdo-odbc.php</a>',
-        );
+        ];
 
         $pdo = \PDO::getAvailableDrivers();
         if (in_array('mysql', $pdo)) {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
@@ -66,9 +67,9 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        #------------------------------
-        # Add org managers
-        #------------------------------
+        //------------------------------
+        // Add org managers
+        //------------------------------
 
         if ($this->getActionOption('add_org_managers') && $ticket->organization) {
             $managers = $this->getContainer()->getEm()->getRepository('DeskPRO:Organization')->getManagers($ticket->organization);
@@ -80,9 +81,9 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
             }
         }
 
-        #------------------------------
-        # Add people
-        #------------------------------
+        //------------------------------
+        // Add people
+        //------------------------------
 
         $account_manager = $this->getContainer()->getEmailAccountManager();
         $reg_closed      = !$this->getContainer()->getSetting('core.reg_enabled');
@@ -128,9 +129,9 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
             }
         }
 
-        #------------------------------
-        # Remove people
-        #------------------------------
+        //------------------------------
+        // Remove people
+        //------------------------------
 
         if ($this->getActionOption('remove_emails')) {
             foreach ($this->getActionOption('remove_emails') as $email) {
@@ -152,10 +153,10 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'cc')) {
-            return array('cc');
+            return ['cc'];
         }
 
-        return array();
+        return [];
     }
 
     /**

@@ -246,9 +246,9 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
      */
     public function _loadQueued()
     {
-        #-------------------------
-        # Fetch from the cache first
-        #-------------------------
+        //-------------------------
+        // Fetch from the cache first
+        //-------------------------
 
         if (!$this->is_loaded && $this->enable_caching) {
             $caches = App::getEntityRepository(PermissionCache::class)->loadPermissionTypes($this->usergroups_key, $this->person->getId());
@@ -274,9 +274,9 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
         $this->is_loaded = true;
 
-        #-------------------------
-        # Load the rest for the first time
-        #-------------------------
+        //-------------------------
+        // Load the rest for the first time
+        //-------------------------
 
         $queued_types       = $this->queued_types;
         $this->queued_types = [];

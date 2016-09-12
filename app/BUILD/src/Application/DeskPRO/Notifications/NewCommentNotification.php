@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -72,7 +72,7 @@ class NewCommentNotification extends AbstractAgentNotification
 
     public function send()
     {
-        $this->sendBrowserNotifications('AgentBundle:Publish:alert-new-comment.html.twig', array('comment' => $this->comment, 'notify_data' => array('notify_type' => 'new_comment')));
-        $this->sendEmailNotifications('DeskPRO:emails_agent:new-comment.html.twig', array('comment' => $this->comment));
+        $this->sendBrowserNotifications('AgentBundle:Publish:alert-new-comment.html.twig', ['comment' => $this->comment, 'notify_data' => ['notify_type' => 'new_comment']]);
+        $this->sendEmailNotifications('DeskPRO:emails_agent:new-comment.html.twig', ['comment' => $this->comment]);
     }
 }

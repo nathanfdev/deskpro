@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketStatusTermCompiler;
@@ -51,9 +52,9 @@ class PhpAgentTeamTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testSimpleIsCompile()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(1, 3, 199),
-            )
+            [
+                'agent_team_ids' => [1, 3, 199],
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -67,9 +68,9 @@ class PhpAgentTeamTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testSimpleIsNOTCompile()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(1, 3, 199),
-            ),
+            [
+                'agent_team_ids' => [1, 3, 199],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -83,9 +84,9 @@ class PhpAgentTeamTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testSimpleIsWithMeCompile()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(1, 3, 199, AgentTeamTerm::TEAM_ID_ME),
-            )
+            [
+                'agent_team_ids' => [1, 3, 199, AgentTeamTerm::TEAM_ID_ME],
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -100,9 +101,9 @@ class PhpAgentTeamTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testNotWithMeCompile()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(1, 3, 199, AgentTeamTerm::TEAM_ID_ME),
-            ),
+            [
+                'agent_team_ids' => [1, 3, 199, AgentTeamTerm::TEAM_ID_ME],
+            ],
             TermInterface::OP_NOT
         );
 

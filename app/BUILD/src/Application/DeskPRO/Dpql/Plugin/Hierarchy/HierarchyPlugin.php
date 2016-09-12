@@ -268,7 +268,9 @@ class HierarchyPlugin implements PluginInterface
 
         $children                        = $root->getChildren();
         is_array($children) or $children = $children->toArray();
-        $children                        = array_map(function (Hierarchical $entity) { return $entity->getId(); }, $children);
+        $children                        = array_map(function (Hierarchical $entity) {
+            return $entity->getId();
+        }, $children);
 
         return $children;
     }

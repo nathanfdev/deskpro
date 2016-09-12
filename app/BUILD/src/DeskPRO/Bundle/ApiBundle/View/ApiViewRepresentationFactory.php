@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\View;
 
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
@@ -50,7 +51,7 @@ class ApiViewRepresentationFactory
      *
      * @return array
      */
-    public function createBatchRepresentation(array $responses = array())
+    public function createBatchRepresentation(array $responses = [])
     {
         return [
             'responses' => $responses,
@@ -65,7 +66,7 @@ class ApiViewRepresentationFactory
      *
      * @return array
      */
-    public function createErrorRepresentation($status, $code, $message, $errors_data = array())
+    public function createErrorRepresentation($status, $code, $message, $errors_data = [])
     {
         return [
             'status'  => $status,
@@ -78,18 +79,18 @@ class ApiViewRepresentationFactory
     /**
      * Serializes a grouped count array.
      *
-     * @param mixed $data is the grouped count's data.
+     * @param mixed $data is the grouped count's data
      *
-     * @return StandardRepresentation an ordered and ready-to-eat representation of the grouped count.
+     * @return StandardRepresentation an ordered and ready-to-eat representation of the grouped count
      */
     protected function serializeGroupedCount($data)
     {
         $repr = $this->serializeSingleGroupedCount($data);
 
-        return new StandardRepresentation($repr['data'], array(
+        return new StandardRepresentation($repr['data'], [
             'count'       => $repr['total'],
             'total_count' => $repr['total'],
-        ));
+        ]);
     }
 
     protected function serializeSingleGroupedCount($data, $group = null, array $group_values = null)
@@ -109,7 +110,7 @@ class ApiViewRepresentationFactory
         }
 
         $total         = 0;
-        $grouped_count = array();
+        $grouped_count = [];
         foreach ($data as $count_row) {
             if ($group_values) {
                 foreach ($group_values as $key => $value) {
@@ -120,10 +121,10 @@ class ApiViewRepresentationFactory
             }
 
             if (!isset($grouped_count[$count_row[$group]])) {
-                $grouped_count[$count_row[$group]] = array(
+                $grouped_count[$count_row[$group]] = [
                     'count' => $count_row['count'],
                     $group  => $count_row[$group],
-                );
+                ];
                 if (count($groups) > $group_id + 1) {
                     $my_group_values         = $group_values;
                     $my_group_values[$group] = $count_row[$group];
@@ -140,9 +141,9 @@ class ApiViewRepresentationFactory
             }
         }
 
-        return array(
+        return [
             'total' => $total,
             'data'  => array_values($grouped_count),
-        );
+        ];
     }
 }

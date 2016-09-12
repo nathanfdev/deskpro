@@ -119,7 +119,7 @@ class WorkflowAction extends AbstractAction implements PermissionableAction
                 $name = $as_html ? htmlspecialchars($names[$this->workflow_id]) : $names[$this->workflow_id];
             }
 
-            return $tr->phrase('agent.tickets.set_workflow_action', array('workflow' => $name));
+            return $tr->phrase('agent.tickets.set_workflow_action', ['workflow' => $name]);
         }
     }
 }

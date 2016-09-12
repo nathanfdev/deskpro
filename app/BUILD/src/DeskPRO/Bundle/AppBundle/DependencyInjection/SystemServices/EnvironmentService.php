@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices;
 
-use Symfony\Component\HttpFoundation\RequestStack;
 use GeoIp2\Database\Reader;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class EnvironmentService
 {
@@ -56,17 +57,17 @@ class EnvironmentService
     public function getGeoIp()
     {
         if (!$this->geo_reader) {
-            $this->geo_reader = new Reader(DP_ROOT . '/vendor-src/geoip-db/GeoLite2-City.mmdb');
+            $this->geo_reader = new Reader(DP_ROOT.'/vendor-src/geoip-db/GeoLite2-City.mmdb');
         }
 
-        $result = array(
+        $result = [
             'continent_code' => null,
             'country_code'   => null,
             'region'         => null,
             'city'           => null,
             'latitude'       => null,
             'longitude'      => null,
-        );
+        ];
 
         $ip = $this->getUserIp();
         try {
@@ -81,9 +82,9 @@ class EnvironmentService
         }
 
         if ($record->city && $record->city->name) {
-            $result['city']       = $record->city;
-            $result['latitude']   = $record->location->latitude;
-            $result['longitude']  = $record->location->longitude;
+            $result['city']      = $record->city;
+            $result['latitude']  = $record->location->latitude;
+            $result['longitude'] = $record->location->longitude;
         }
 
         return $result;

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_slack;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
@@ -52,7 +53,7 @@ class InstallerHandler extends AbstractInstallerHandler
     public function uninstall(InstallerContext $context)
     {
         $action_name = $this->getActionName($context);
-        $context->getDb()->executeUpdate('DELETE FROM ticket_actions_def WHERE action_name = ?', array($action_name));
+        $context->getDb()->executeUpdate('DELETE FROM ticket_actions_def WHERE action_name = ?', [$action_name]);
     }
 
     /**
@@ -77,16 +78,16 @@ class InstallerHandler extends AbstractInstallerHandler
     private function refreshTriggerAction(InstallerContext $context)
     {
         $action_name = $this->getActionName($context);
-        $rec         = array(
+        $rec         = [
             'app_id'      => $context->getApp()->id,
             'action_name' => $action_name,
             'def_class'   => 'deskpro_slack\\Ticket\\Actions\\ActionDef\\SlackActionDef',
             'settings'    => null,
-        );
+        ];
 
-        $exist_id = $context->getDb()->fetchColumn('SELECT id FROM ticket_actions_def WHERE action_name = ?', array($action_name));
+        $exist_id = $context->getDb()->fetchColumn('SELECT id FROM ticket_actions_def WHERE action_name = ?', [$action_name]);
         if ($exist_id) {
-            $context->getDb()->update('ticket_actions_def', $rec, array('id' => $exist_id));
+            $context->getDb()->update('ticket_actions_def', $rec, ['id' => $exist_id]);
         } else {
             $context->getDb()->insert('ticket_actions_def', $rec);
         }

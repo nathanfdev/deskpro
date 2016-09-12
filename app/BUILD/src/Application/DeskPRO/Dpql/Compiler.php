@@ -74,7 +74,7 @@ class Compiler
      *
      * @return \Application\DeskPRO\Dpql\Statement\Display
      */
-    public function compile($input, array $placeholders = array())
+    public function compile($input, array $placeholders = [])
     {
         $input     = $this->replacePlaceholders($input, $placeholders);
         $statement = $this->lexAndParse($input);
@@ -103,7 +103,7 @@ class Compiler
         return $this->_parser->getResult();
     }
 
-    public function replacePlaceholders($input, array $placeholders = array())
+    public function replacePlaceholders($input, array $placeholders = [])
     {
         $repository = \Application\DeskPRO\App::getEntityRepository(ReportBuilder::class);
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -153,11 +154,11 @@ class UsersourceUpgrader
      */
     private function updateUsersource($adapter_class, $adapter_settings, AppInstance $app = null)
     {
-        $this->container->getDb()->update('usersources', array(
+        $this->container->getDb()->update('usersources', [
             'source_type' => $adapter_class,
             'options'     => json_encode($adapter_settings),
             'app_id'      => $app ? $app->id : null,
-        ), array('id' => $this->us_info['id']));
+        ], ['id' => $this->us_info['id']]);
     }
 
     /**
@@ -170,7 +171,7 @@ class UsersourceUpgrader
 
         $app_package_name = 'deskpro_us_active_directory';
         $o                = new OptionsArray($adapter_settings);
-        $app_settings     = array(
+        $app_settings     = [
             'port'              => $o->get('port', ''),
             'host'              => $o->get('host', ''),
             'base_dn'           => $o->get('baseDn', ''),
@@ -179,7 +180,7 @@ class UsersourceUpgrader
             'domain_name'       => $o->get('accountDomainName'),
             'short_domain_name' => $o->get('accountDomainNameShort'),
             'filter'            => $o->get('accountFilterFormat'),
-        );
+        ];
 
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
@@ -196,15 +197,15 @@ class UsersourceUpgrader
         $php = $o->get('password_php', '');
         $php .= "\n\n\$is_valid = \$pass;\n";
 
-        $adapter_settings = array(
-            'connection_options' => array(
+        $adapter_settings = [
+            'connection_options' => [
                 'driver'   => 'pdo_mysql',
                 'host'     => null,
                 'port'     => null,
                 'dbname'   => '',
                 'user'     => $o->get('db_username', ''),
                 'password' => $o->get('db_password', ''),
-            ),
+            ],
             'table'            => $o->get('table', ''),
             'field_id'         => $o->get('field_id', ''),
             'field_username'   => $o->get('field_username', ''),
@@ -213,7 +214,7 @@ class UsersourceUpgrader
             'field_first_name' => $o->get('field_first_name', ''),
             'field_last_name'  => $o->get('field_last_name', ''),
             'password_php'     => $php,
-        );
+        ];
 
         $params = $this->parseDsn($o->get('db_dsn'));
         if (isset($params['driver'])) {
@@ -230,7 +231,7 @@ class UsersourceUpgrader
         }
 
         $app_package_name = 'deskpro_us_db';
-        $app_settings     = array(
+        $app_settings     = [
             'db_type'          => $adapter_settings['connection_options']['driver'],
             'db_host'          => $adapter_settings['connection_options']['host'],
             'db_port'          => $adapter_settings['connection_options']['port'],
@@ -246,7 +247,7 @@ class UsersourceUpgrader
             'field_first_name' => $adapter_settings['field_first_name'],
             'field_last_name'  => $adapter_settings['field_last_name'],
             'password_php'     => $adapter_settings['password_php'],
-        );
+        ];
 
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
@@ -273,7 +274,7 @@ class UsersourceUpgrader
                 break;
         }
 
-        $params           = array();
+        $params           = [];
         $params['driver'] = $driver;
 
         $parts = explode(';', $info);
@@ -346,14 +347,14 @@ class UsersourceUpgrader
 
         $app_package_name = 'deskpro_us_ldap';
         $o                = new OptionsArray($adapter_settings);
-        $app_settings     = array(
+        $app_settings     = [
             'port'             => $o->get('port', ''),
             'host'             => $o->get('host', ''),
             'base_dn'          => $o->get('baseDn', ''),
             'service_username' => $o->get('username', ''),
             'service_password' => $o->get('password', ''),
             'filter'           => $o->get('accountFilterFormat'),
-        );
+        ];
 
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
@@ -429,10 +430,10 @@ class UsersourceUpgrader
     private function upgradeJoomla()
     {
         $adapter_class    = 'deskpro_us_joomla\\Usersource\\Adapter\\Joomla';
-        $adapter_settings = array(
+        $adapter_settings = [
             'joomla_url'    => $this->container->getSetting('Joomla.joomla_url'),
             'joomla_secret' => $this->container->getSetting('Joomla.joomla_secret'),
-        );
+        ];
 
         $app_package_name = 'deskpro_us_joomla';
         $app_settings     = $adapter_settings;
@@ -447,12 +448,12 @@ class UsersourceUpgrader
     private function upgradeMagento()
     {
         $adapter_class    = 'deskpro_magento\\Usersource\\Adapter\\Magento';
-        $adapter_settings = array(
+        $adapter_settings = [
             'url'      => $this->container->getSetting('Magento.url'),
             'api_user' => $this->container->getSetting('Magento.api_user'),
             'api_key'  => $this->container->getSetting('Magento.api_key'),
             'sso_js'   => !empty($this->options['sso_js']) && $this->options['sso_js'] ? true : false,
-        );
+        ];
 
         // Should already have a magento app from previous upgrade step
 

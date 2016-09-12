@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Commands
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -48,7 +49,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tableDescriptions = array(
+        $tableDescriptions = [
             'articles'                  => 'Articles and information in the knowledgebase',
             'article_attachments'       => 'Attachments to knowledgebase articles',
             'article_comments'          => 'Comments for each knowledgebase article',
@@ -82,26 +83,26 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             'ticket_charges'            => 'Ticket billing charges',
             'ticket_feedback'           => 'Feedback on ticket responses',
             'ticket_slas'               => 'SLA status records for tickets',
-        );
+        ];
 
-        $conditionResolvers = array(
-            'custom_data_article'       => array('#', ' (Gets data for the article field with ID #)'),
-            'custom_data_feedback'      => array('#', ' (Gets data for the feedback field with ID #)'),
-            'custom_data_organizations' => array('#', ' (Gets data for the organization field with ID #)'),
-            'custom_data_person'        => array('#', ' (Gets data for the person field with ID #)'),
-            'custom_data_ticket'        => array('#', ' (Gets data for the ticket field with ID #)'),
-            'ticket_slas'               => array('#', ' (Gets ticket SLA data for the SLA with ID #)'),
-        );
+        $conditionResolvers = [
+            'custom_data_article'       => ['#', ' (Gets data for the article field with ID #)'],
+            'custom_data_feedback'      => ['#', ' (Gets data for the feedback field with ID #)'],
+            'custom_data_organizations' => ['#', ' (Gets data for the organization field with ID #)'],
+            'custom_data_person'        => ['#', ' (Gets data for the person field with ID #)'],
+            'custom_data_ticket'        => ['#', ' (Gets data for the ticket field with ID #)'],
+            'ticket_slas'               => ['#', ' (Gets ticket SLA data for the SLA with ID #)'],
+        ];
 
         $tableEntities = \Application\DeskPRO\Dpql\Statement\Display::getTableEntityList();
 
-        $entityMap = array();
+        $entityMap = [];
         $toProcess = $tableEntities;
 
         while ($entityName = array_shift($toProcess)) {
             /** @var $repository \Application\DeskPRO\EntityRepository\AbstractEntityRepository */
             $repository = App::getEntityRepository($entityName);
-            $fields     = array();
+            $fields     = [];
 
             foreach ($repository->getFieldMappings() as $key => $field) {
                 if (isset($field['dpqlAccess']) && !$field['dpqlAccess']) {
@@ -140,7 +141,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
                         break;
                 }
 
-                $fields[$key] = array('type' => $type);
+                $fields[$key] = ['type' => $type];
             }
 
             foreach ($repository->getAssociationMappings() as $association) {
@@ -151,12 +152,12 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
                 foreach ($association['joinColumns'] as $joinColumn) {
                     if (!isset($fields[$joinColumn['name']])) {
-                        $fields[$joinColumn['name']] = array('type' => 'number');
+                        $fields[$joinColumn['name']] = ['type' => 'number'];
                     }
                 }
             }
 
-            $associations = array();
+            $associations = [];
 
             foreach ($repository->getAssociationMappings() as $association) {
                 $target          = $association['targetEntity'];
@@ -185,7 +186,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
                 $childTable = $childRepository->getTableName();
                 if (isset($conditionResolvers[$childTable])) {
                     $condition                                                 = $conditionResolvers[$childTable];
-                    $associations[$association['fieldName']."[$condition[0]]"] = array($target, $condition[1]);
+                    $associations[$association['fieldName']."[$condition[0]]"] = [$target, $condition[1]];
                 }
             }
 
@@ -202,18 +203,18 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
                 $childTable = $childRepository->getTableName();
                 if (isset($conditionResolvers[$childTable])) {
                     $condition                             = $conditionResolvers[$childTable];
-                    $associations[$name."[$condition[0]]"] = array($target, $condition[1]);
+                    $associations[$name."[$condition[0]]"] = [$target, $condition[1]];
                 }
             }
 
             uksort($fields, 'strnatcasecmp');
             uksort($associations, 'strnatcasecmp');
 
-            $entityMap[$repository->getName()] = array(
+            $entityMap[$repository->getName()] = [
                 'repository'   => $repository,
                 'fields'       => $fields,
                 'associations' => $associations,
-            );
+            ];
 
             foreach ($associations as $toProcessAssociation) {
                 if (is_array($toProcessAssociation)) {
@@ -228,7 +229,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         uksort($entityMap, 'strnatcasecmp');
         uksort($tableEntities, 'strnatcasecmp');
 
-        $tableList = array();
+        $tableList = [];
         foreach ($tableEntities as $table => $entityName) {
             /** @var $repository \Application\DeskPRO\EntityRepository\AbstractEntityRepository */
             $repository  = App::getEntityRepository($entityName);
@@ -246,7 +247,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             $repository = $info['repository'];
             $entityName = $repository->getName();
 
-            $columnList = array();
+            $columnList = [];
             foreach ($info['fields'] as $fieldId => $fieldInfo) {
                 $columnList[] = '<tr><td>'.$fieldId.'</td><td>'.$fieldInfo['type'].'</td></tr>';
             }

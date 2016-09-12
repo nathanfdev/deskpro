@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\Service\JIRA;
@@ -56,16 +57,16 @@ class CoreExtension extends Extension
         $definition = new Definition('Application\\DeskPRO\\CacheInvalidator\\QueryListener');
         $container->setDefinition('deskpro.cache.query_listener', $definition);
 
-        $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', array(
+        $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', [
             new Reference('doctrine.orm.entity_manager'),
-        ));
+        ]);
         $container->setDefinition('deskpro.person_activity_logger', $definition);
 
-        $definition = new Definition('Application\DeskPRO\Log\Handler\LogEventHandler', array(new Reference('doctrine.orm.entity_manager')));
+        $definition = new Definition('Application\DeskPRO\Log\Handler\LogEventHandler', [new Reference('doctrine.orm.entity_manager')]);
         $container->setDefinition('deskpro.log_handler.log_event', $definition);
 
-        $definition = new Definition('Application\DeskPRO\Monolog\Logger', array('changelog'));
-        $definition->addMethodCall('pushHandler', array(new Reference('deskpro.log_handler.log_event')));
+        $definition = new Definition('Application\DeskPRO\Monolog\Logger', ['changelog']);
+        $definition->addMethodCall('pushHandler', [new Reference('deskpro.log_handler.log_event')]);
         $container->setDefinition('deskpro.logger.changelog', $definition);
 
         $container
@@ -77,8 +78,8 @@ class CoreExtension extends Extension
 
         $definition = new Definition();
         $definition->setClass('Application\DeskPRO\Form\Type\CleanerExtension');
-        $definition->setArguments(array(new Reference('deskpro.core.input_cleaner')));
-        $definition->addTag('form.type_extension', array('alias' => 'form'));
+        $definition->setArguments([new Reference('deskpro.core.input_cleaner')]);
+        $definition->addTag('form.type_extension', ['alias' => 'form']);
         $container->setDefinition('form.cleaner_extension', $definition);
 
         $this->loadPeople($container);
@@ -89,7 +90,7 @@ class CoreExtension extends Extension
 
     protected function loadPeople(ContainerBuilder $container)
     {
-        $definition = new Definition('Application\\DeskPRO\\Groups\\GroupsReposFactory', array(new Reference('doctrine.orm.entity_manager')));
+        $definition = new Definition('Application\\DeskPRO\\Groups\\GroupsReposFactory', [new Reference('doctrine.orm.entity_manager')]);
         $definition->setFactory('Application\\DeskPRO\\Groups\\GroupsReposFactory::createFromEntityManager');
         $container->setDefinition('deskpro.people.groups_repos_factory', $definition);
 
@@ -107,34 +108,34 @@ class CoreExtension extends Extension
      */
     protected function loadTranslation(ContainerBuilder $container)
     {
-        $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\SystemLoader', array(array(
+        $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\SystemLoader', [[
             DP_ROOT.'/languages',
-        )));
+        ]]);
         $container->setDefinition('deskpro.core.translate_loader_system', $definition);
 
-        $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DbLoader', array(
+        $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DbLoader', [
             new Reference('database_connection'),
-        ));
+        ]);
         $container->setDefinition('deskpro.core.translate_loader_db', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DeskproLoader');
-        $definition->addMethodCall('setSystemLoader', array(new Reference('deskpro.core.translate_loader_system')));
-        $definition->addMethodCall('setDbLoader', array(new Reference('deskpro.core.translate_loader_db')));
+        $definition->addMethodCall('setSystemLoader', [new Reference('deskpro.core.translate_loader_system')]);
+        $definition->addMethodCall('setDbLoader', [new Reference('deskpro.core.translate_loader_db')]);
         $container->setDefinition('deskpro.core.translate_loader', $definition);
 
         // Now create the translate object
-        $definition = new Definition('Application\\DeskPRO\\Translate\\Translate', array(
+        $definition = new Definition('Application\\DeskPRO\\Translate\\Translate', [
             new Reference('deskpro.core.translate_loader'),
             new Reference('event_dispatcher'),
-        ));
-        $definition->addMethodCall('setSession', array(new Reference('session')));
+        ]);
+        $definition->addMethodCall('setSession', [new Reference('session')]);
         $container->setDefinition('deskpro.core.translate', $definition);
 
         // Attach listener for no phrase
         $definition = $container->getDefinition('deskpro.sys_events_loader');
         $definition->addMethodCall('addNoPhraseEventListener');
 
-        $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\EventListener', array(new Reference('service_container')));
+        $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\EventListener', [new Reference('service_container')]);
         $definition->addTag('doctrine.event_subscriber');
         $container->setDefinition('deskpro.orm.event_listener.activity_stream', $definition);
     }
@@ -172,10 +173,10 @@ class CoreExtension extends Extension
      */
     protected function loadSettings(ContainerBuilder $container)
     {
-        $definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
+        $definition = new Definition('Application\\DeskPRO\\Settings\\Settings', [
             DP_ROOT.'/sys/config/settings.php',
             new Reference('database_connection'),
-        ));
+        ]);
         $container->setDefinition('deskpro.core.settings', $definition);
     }
 

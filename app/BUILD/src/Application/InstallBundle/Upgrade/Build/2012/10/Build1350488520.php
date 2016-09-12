@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1350488520 extends AbstractBuild
 {
-    /** @var array  */
-    protected $deps = array();
-    /** @var array  */
-    protected $id_map = array();
+    /** @var array */
+    protected $deps = [];
+    /** @var array */
+    protected $id_map = [];
 
     public function run()
     {
@@ -45,7 +46,7 @@ class Build1350488520 extends AbstractBuild
         $this->deps = $this->container->getDb()->fetchAllKeyed('
             SELECT * FROM departments
             ORDER BY id ASC
-        ', array(), 'id');
+        ', [], 'id');
 
         $proc_deps = $this->container->getDb()->fetchAllCol('
             SELECT id FROM departments
@@ -99,15 +100,15 @@ class Build1350488520 extends AbstractBuild
             SELECT usergroup_id, person_id
             FROM department_permissions
             WHERE app = 'chat' AND department_id = ?
-        ", array($dep['id']));
+        ", [$dep['id']]);
 
         foreach ($perms as $p) {
-            $this->container->getDb()->insert('department_permissions', array(
+            $this->container->getDb()->insert('department_permissions', [
                 'department_id' => $new_dep['id'],
                 'usergroup_id'  => $p['usergroup_id'],
                 'person_id'     => $p['person_id'],
                 'app'           => 'chat',
-            ));
+            ]);
         }
 
         // Update chats
@@ -115,6 +116,6 @@ class Build1350488520 extends AbstractBuild
             UPDATE chat_conversations
             SET department_id = ?
             WHERE department_id = ?
-        ', array($new_dep['id'], $dep['id']));
+        ', [$new_dep['id'], $dep['id']]);
     }
 }

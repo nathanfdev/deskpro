@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,11 @@
 /**
  * Orb.
  */
+
 namespace Orb\HttpFoundation\Session;
 
 use Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface;
 
-/**
- *
- */
 class Session implements SessionInterface
 {
     /**
@@ -56,7 +54,7 @@ class Session implements SessionInterface
      *
      * @var array
      */
-    protected $namespaces = array();
+    protected $namespaces = [];
 
     /**
      * The raw data we'll save to storage. This is public for efficiencies sake in
@@ -64,14 +62,14 @@ class Session implements SessionInterface
      *
      * @var array
      */
-    public $data = array();
+    public $data = [];
 
     /**
      * Various metadata.
      *
      * @var array
      */
-    public $metadata = array();
+    public $metadata = [];
 
     /**
      * @param SessionStorageInterface $storage
@@ -110,7 +108,7 @@ class Session implements SessionInterface
 
         $this->storage->start();
         $this->data     = $this->storage->read('orb_sess');
-        $this->metadata = array();
+        $this->metadata = [];
         if (isset($this->data['__metadata'])) {
             $this->metadata = $this->data['__metadata'];
             unset($this->data['__metadata']);
@@ -188,7 +186,7 @@ class Session implements SessionInterface
      */
     public function removeAllData()
     {
-        $this->data = array();
+        $this->data = [];
     }
 
     /**
@@ -206,7 +204,7 @@ class Session implements SessionInterface
     {
         if ($this->has_started === true) {
             if ($this->metadata) {
-                $data = array_merge($this->data, array('__metadata' => $this->metadata));
+                $data = array_merge($this->data, ['__metadata' => $this->metadata]);
             } else {
                 $data = $this->data;
             }

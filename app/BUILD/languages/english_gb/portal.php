@@ -26,6 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'user.lang.lang_title' => 'English (UK)',
-);
+];

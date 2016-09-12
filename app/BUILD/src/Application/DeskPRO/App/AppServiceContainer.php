@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\App\Native\NativeApp;
@@ -50,7 +51,7 @@ class AppServiceContainer
      *
      * @var array
      */
-    private $package_service_names = array();
+    private $package_service_names = [];
 
     /**
      * Map of service instances: array('app_id' => array('service_name' => instance))
@@ -58,7 +59,7 @@ class AppServiceContainer
      *
      * @var array
      */
-    private $app_services = array();
+    private $app_services = [];
 
     /**
      * @param DeskproContainer $container
@@ -80,15 +81,17 @@ class AppServiceContainer
             return;
         }
 
-        $this->package_service_names[$package->name] = array();
+        $this->package_service_names[$package->name] = [];
 
         // Set up services
         $app_services = $native_app->getConfig()->getServices();
         if ($app_services) {
             $app_services = Arrays::keyFromData($app_services, 'id');
-            $app_services = array_map(function ($x) use ($app) { $x['app'] = $app;
+            $app_services = array_map(function ($x) use ($app) {
+                $x['app'] = $app;
 
-return $x; }, $app_services);
+                return $x;
+            }, $app_services);
             $this->package_service_names[$package->name] = $app_services;
 
             if ($package->is_single) {
@@ -103,7 +106,7 @@ return $x; }, $app_services);
 
     /**
      * @param string $name The name of the service
-     * @param null   $app  The app the service belongs to. If the app is a single-install app, this can be left out.
+     * @param null   $app  The app the service belongs to. If the app is a single-install app, this can be left out
      *
      * @throws \InvalidArgumentException
      *
@@ -111,9 +114,9 @@ return $x; }, $app_services);
      */
     public function getService($name, $app = null)
     {
-        #------------------------------
-        # Get service for an app
-        #------------------------------
+        //------------------------------
+        // Get service for an app
+        //------------------------------
 
         if ($app !== null) {
             if ($app instanceof NativeApp) {
@@ -131,14 +134,14 @@ return $x; }, $app_services);
                 $service         = $service_factory::create($this->container, $app, isset($service_info['options']) ? $service_info['options'] : null);
 
                 if (!isset($this->app_services[$app->id])) {
-                    $this->app_services[$app->id] = array();
+                    $this->app_services[$app->id] = [];
                 }
 
                 $this->app_services[$app->id][$name] = $service;
 
                 if ($app->package->is_single) {
                     if (!isset($this->app_services['@single'])) {
-                        $this->app_services['@single'] = array();
+                        $this->app_services['@single'] = [];
                     }
                     $this->app_services['@single'][$name] = $service;
                 }
@@ -147,9 +150,9 @@ return $x; }, $app_services);
             return $this->app_services[$app->id][$name];
         }
 
-        #------------------------------
-        # Get a service for a single person
-        #------------------------------
+        //------------------------------
+        // Get a service for a single person
+        //------------------------------
 
         if (!isset($this->app_services['@single'][$name])) {
             if (!isset($this->package_service_names['@single'][$name])) {
@@ -161,7 +164,7 @@ return $x; }, $app_services);
             $service         = $service_factory::create($this->container, $service_info['app'], isset($service_info['options']) ? $service_info['options'] : null);
 
             if (!isset($this->app_services['@single'])) {
-                $this->app_services['@single'] = array();
+                $this->app_services['@single'] = [];
             }
             $this->app_services['@single'][$name] = $service;
         }

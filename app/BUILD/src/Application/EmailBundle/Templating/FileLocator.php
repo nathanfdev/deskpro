@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Templating;
 
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
@@ -40,7 +41,7 @@ class FileLocator extends BaseFileLocator
     /** @var \Symfony\Component\HttpKernel\KernelInterface */
     private $kernel;
 
-    public function __construct(KernelInterface $kernel, $path = null, array $paths = array())
+    public function __construct(KernelInterface $kernel, $path = null, array $paths = [])
     {
         $this->kernel = $kernel;
 

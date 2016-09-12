@@ -59,9 +59,9 @@ class DisableListenerListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             ConsoleEvents::COMMAND => ['onCommand', 0],
-        );
+        ];
     }
 
     public function onCommand(ConsoleCommandEvent $event)

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -67,14 +67,14 @@ class ServerMysqlStatus
         }
 
         try {
-            $mysql_status = App::getDb()->fetchAllKeyValue('SHOW STATUS', array(), array(), 0, 1);
+            $mysql_status = App::getDb()->fetchAllKeyValue('SHOW STATUS', [], [], 0, 1);
         } catch (\Exception $e) {
             $mysql_status = null;
         }
 
-        return array(
+        return [
             'mysql_processes' => $mysql_processes,
             'mysql_status'    => $mysql_status,
-        );
+        ];
     }
 }

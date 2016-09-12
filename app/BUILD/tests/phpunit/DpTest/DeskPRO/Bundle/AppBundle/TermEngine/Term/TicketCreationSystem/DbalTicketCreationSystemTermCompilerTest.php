@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCreationSystem;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -52,18 +53,18 @@ class DbalTicketCreationSystemTermCompilerTest extends AbstractDbalTicketFilterT
     public function testCompileIs()
     {
         $term = new TicketCreationSystemTerm(
-            array(
+            [
                 'creation_system' => 'web.person',
-            )
+            ]
         );
 
         $query_part = $this->term_compiler->compile($term);
 
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'string0' => 'web.person%',
-            )
+            ]
         );
 
         $this->assertWhere($query_part, 'ticket.creation_system LIKE :string0');
@@ -74,9 +75,9 @@ class DbalTicketCreationSystemTermCompilerTest extends AbstractDbalTicketFilterT
     public function testCompileIsNot()
     {
         $term = new TicketCreationSystemTerm(
-            array(
+            [
                 'creation_system' => 'web.person',
-            ),
+            ],
             TermInterface::OP_NOT
         );
 
@@ -84,9 +85,9 @@ class DbalTicketCreationSystemTermCompilerTest extends AbstractDbalTicketFilterT
 
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'string0' => 'web.person%',
-            )
+            ]
         );
 
         $this->assertWhere($query_part, 'ticket.creation_system NOT LIKE :string0');

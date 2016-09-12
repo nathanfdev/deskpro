@@ -65,7 +65,7 @@ class SitemapFile extends AbstractJob
             $file,
             'sitemap.xml',
             'text/xml',
-            array('sys_name' => 'sitemap_xml')
+            ['sys_name' => 'sitemap_xml']
         );
 
         App::getContainer()->getSettingsHandler()->setSetting('core.sitemap_blob_id', $blob_info['id']);

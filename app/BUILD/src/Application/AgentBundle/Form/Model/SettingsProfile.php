@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
@@ -113,12 +114,12 @@ class SettingsProfile
         $this->timezone              = $person->timezone;
         $this->language_id           = $person->getLanguage()->getId();
 
-        $this->ticket_close_reply   = (bool) $person->getPref('agent.ticket_close_reply', true);
-        $this->ticket_close_note    = (bool) $person->getPref('agent.ticket_close_note', false);
-        $this->ticket_go_next_reply = (bool) $person->getPref('agent.ticket_go_next_reply', false);
-        $this->hide_claimed_chat    = (bool) $person->getPref('agent.hide_claimed_chat', false);
-        $this->default_team_id      = $person->getPref('agent.ticket_default_team_id');
-        $this->ticket_reverse_order = (bool) $person->getPref('agent.ticket_reverse_order');
+        $this->ticket_close_reply     = (bool) $person->getPref('agent.ticket_close_reply', true);
+        $this->ticket_close_note      = (bool) $person->getPref('agent.ticket_close_note', false);
+        $this->ticket_go_next_reply   = (bool) $person->getPref('agent.ticket_go_next_reply', false);
+        $this->hide_claimed_chat      = (bool) $person->getPref('agent.hide_claimed_chat', false);
+        $this->default_team_id        = $person->getPref('agent.ticket_default_team_id');
+        $this->ticket_reverse_order   = (bool) $person->getPref('agent.ticket_reverse_order');
         $this->enable_plaintext_email = (bool) $person->getPref('agent.enable_plaintext_email');
         if ($this->default_team_id === null) {
             $teams                 = $person->getAgent()->getTeams();
@@ -196,7 +197,7 @@ class SettingsProfile
             }
 
             // Delete old sessions for this user
-            $this->em->getConnection()->delete('sessions', array('person_id' => $this->person->getId()));
+            $this->em->getConnection()->delete('sessions', ['person_id' => $this->person->getId()]);
         }
 
         if ($this->language_id) {

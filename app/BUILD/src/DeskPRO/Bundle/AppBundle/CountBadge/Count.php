@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\CountBadge;
 
 use JMS\Serializer\Annotation as JMS;

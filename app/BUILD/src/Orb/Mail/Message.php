@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Mail;
 
 /**
@@ -56,11 +57,11 @@ class Message extends \Swift_Message
      *
      * @var array
      */
-    public $meta = array();
+    public $meta = [];
 
     public function __construct($subject = null, $body = null, $contentType = null, $charset = null)
     {
-        call_user_func_array(array($this, 'Swift_Mime_SimpleMessage::__construct'), \Swift_DependencyContainer::getInstance()->createDependenciesFor('mime.message'));
+        call_user_func_array([$this, 'Swift_Mime_SimpleMessage::__construct'], \Swift_DependencyContainer::getInstance()->createDependenciesFor('mime.message'));
 
         if (!isset($charset)) {
             $charset = \Swift_DependencyContainer::getInstance()->lookup('properties.charset');

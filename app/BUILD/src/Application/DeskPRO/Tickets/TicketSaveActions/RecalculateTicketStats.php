@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -42,7 +43,7 @@ class RecalculateTicketStats implements TicketSaveActionInterface
     /**
      * @var int[]
      */
-    private $agent_ids = array();
+    private $agent_ids = [];
 
     /**
      * @var Connection
@@ -81,13 +82,13 @@ class RecalculateTicketStats implements TicketSaveActionInterface
                 SELECT COUNT(*)
                 FROM tickets_messages
                 WHERE ticket_id = ? AND is_agent_note = 0 AND person_id IN ($agent_ids_in)
-            ", array($ticket->id));
+            ", [$ticket->id]);
 
             $ticket->count_user_replies = $this->db->fetchColumn("
                 SELECT COUNT(*)
                 FROM tickets_messages
                 WHERE ticket_id = ? AND person_id NOT IN ($agent_ids_in)
-            ", array($ticket->id));
+            ", [$ticket->id]);
         }
     }
 }

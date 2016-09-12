@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Orb\Util\Arrays;
@@ -41,29 +42,29 @@ class FilterQuery
     /**
      * @var array
      */
-    private $joins = array();
+    private $joins = [];
 
     /**
      * @var array
      */
-    private $wheres_and = array();
+    private $wheres_and = [];
 
     /**
      * @var array
      */
-    private $wheres_or = array();
+    private $wheres_or = [];
 
     /**
      * @var array
      */
-    private $params = array();
+    private $params = [];
 
     /**
      * Array of string replacements to do on the resulting query parts.
      *
      * @var array
      */
-    private $var_renamed = array();
+    private $var_renamed = [];
 
     /**
      * Appends a unique string to the end of a name to make it unique.
@@ -98,13 +99,13 @@ class FilterQuery
             $this->var_renamed["{table.{$input_alias}}"] = $alias;
         }
 
-        $this->joins[$input_alias] = array(
+        $this->joins[$input_alias] = [
             'fromAlias'   => $fromAlias,
             'join'        => $join,
             'input_alias' => $input_alias,
             'alias'       => $alias,
             'condition'   => $condition,
-        );
+        ];
     }
 
     /**
@@ -134,7 +135,7 @@ class FilterQuery
             return;
         }
 
-        $names = array();
+        $names = [];
         foreach (array_values($params) as $k => $p) {
             $names[] = "{param.in$k}";
             $this->setParameter("in$k", $p);
@@ -163,7 +164,7 @@ class FilterQuery
             return;
         }
 
-        $names = array();
+        $names = [];
         foreach (array_values($params) as $k => $p) {
             $names[] = "{param.in$k}";
             $this->setParameter("in$k", $p);
@@ -195,12 +196,12 @@ class FilterQuery
             $this->var_renamed["{param.{$input_name}}"] = $name;
         }
 
-        $this->params[$name] = array(
+        $this->params[$name] = [
             'name'       => $name,
             'input_name' => $input_name,
             'value'      => $value,
             'type'       => $type,
-        );
+        ];
     }
 
     /**
@@ -228,7 +229,7 @@ class FilterQuery
         }
 
         if ($where_or || $where_and) {
-            $where = array($where_and, $where_or);
+            $where = [$where_and, $where_or];
             $where = Arrays::removeFalsey($where);
             $where = '('.implode(') AND (', $where).')';
             $where = str_replace(array_keys($this->var_renamed), array_values($this->var_renamed), $where);
@@ -236,10 +237,10 @@ class FilterQuery
             $where = '1';
         }
 
-        return array(
+        return [
             'joins'  => $joins,
             'params' => $params,
             'where'  => $where,
-        );
+        ];
     }
 }

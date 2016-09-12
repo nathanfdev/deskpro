@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Orb\Serializer;
 
 use DpTest\DeskProTestCase;
@@ -40,12 +41,12 @@ class SerializerRegistryTest extends DeskProTestCase
     public function testAFullSerializationFlowArrayToArray()
     {
         $serializer = new SerializerRegistry(
-            array(
+            [
                 new ArraySerializer(),
-            )
+            ]
         );
 
-        $arr = array('data', 'in' => 'here');
+        $arr = ['data', 'in' => 'here'];
         $this->assertEquals($arr, $serializer->serialize($arr));
     }
 
@@ -60,13 +61,13 @@ class SerializerRegistryTest extends DeskProTestCase
 
         $serializer2 = \Mockery::mock('Orb\Serializer\SerializerInterface');
         $serializer2->shouldReceive('supports')->with($data, $view, $format)->andReturn(true);
-        $serializer2->shouldReceive('serialize')->with($data, $view, $format)->andReturn(array('string'));
+        $serializer2->shouldReceive('serialize')->with($data, $view, $format)->andReturn(['string']);
 
         $registry->addSerializer($serializer1);
         $registry->addSerializer($serializer2);
 
         $result = $registry->serialize($data, $view, $format);
 
-        $this->assertEquals(array('string'), $result);
+        $this->assertEquals(['string'], $result);
     }
 }

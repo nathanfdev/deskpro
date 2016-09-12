@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
@@ -93,7 +94,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
      */
     public function makePathForBlob(Blob $blob)
     {
-        $path = array();
+        $path = [];
         if ($blob->getMeta('batch')) {
             $path[] = $blob->getMeta('batch');
         }
@@ -142,10 +143,10 @@ class AmazonS3Storage extends AbstractStorageAdapter
     {
         $path = $this->resolvePath($blob->getPath());
 
-        $this->s3->deleteObject(array(
+        $this->s3->deleteObject([
             'Bucket' => $this->bucket,
             'Key'    => $path,
-        ));
+        ]);
 
         return true;
     }
@@ -161,19 +162,19 @@ class AmazonS3Storage extends AbstractStorageAdapter
         $path = $this->resolvePath($blob->getPath());
 
         $disposition = $blob->getMeta('content_disposition') ?: 'attachment';
-        $disposition .= '; filename="'.str_replace(array('\'', '"'), '-', $blob->getFilename()).'"';
+        $disposition .= '; filename="'.str_replace(['\'', '"'], '-', $blob->getFilename()).'"';
 
         $try = $this->attempts;
         while (--$try >= 0) {
             try {
-                $this->s3->putObject(array(
+                $this->s3->putObject([
                     'Bucket'             => $this->bucket,
                     'Body'               => $data,
                     'Key'                => $this->resolvePath($blob->getPath()),
                     'ContentType'        => $blob->getContentType(),
                     'ContentDisposition' => $disposition,
                     'ACL'                => CannedAcl::PUBLIC_READ,
-                ));
+                ]);
                 break;
             } catch (\Exception $e) {
                 if ($try == 0) {
@@ -229,10 +230,10 @@ class AmazonS3Storage extends AbstractStorageAdapter
         while (--$try >= 0) {
             try {
                 /** @var $model \Guzzle\Service\Resource\Model */
-                $model = $this->s3->getObject(array(
+                $model = $this->s3->getObject([
                     'Bucket' => $this->bucket,
                     'Key'    => $this->resolvePath($blob->getPath()),
-                ));
+                ]);
                 break;
             } catch (\Exception $e) {
                 if ($try == 0) {

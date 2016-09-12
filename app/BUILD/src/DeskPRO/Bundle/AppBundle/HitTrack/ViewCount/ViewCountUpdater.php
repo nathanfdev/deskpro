@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -76,7 +76,7 @@ class ViewCountUpdater
 
         foreach ($row_map as $id => $num) {
             $cur_num = isset($vals[$id]) ? $vals[$id] : 0;
-            $this->db->update($table, array('view_count' => $cur_num + $num), array('id' => $id));
+            $this->db->update($table, ['view_count' => $cur_num + $num], ['id' => $id]);
         }
     }
 }

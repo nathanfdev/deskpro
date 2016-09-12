@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Model;
 
 class TicketFilter
@@ -115,7 +116,7 @@ class TicketFilter
      */
     public function setType($type)
     {
-        if (!in_array($type, array(self::TYPE_OWN, self::TYPE_ORGANIZATION))) {
+        if (!in_array($type, [self::TYPE_OWN, self::TYPE_ORGANIZATION])) {
             $type = self::TYPE_OWN;
         }
 
@@ -135,7 +136,7 @@ class TicketFilter
      */
     public function setCategory($category)
     {
-        if (!in_array($category, array(self::CATEGORY_AWAITING_AGENT, self::CATEGORY_AWAITING_USER, self::CATEGORY_RESOLVED))) {
+        if (!in_array($category, [self::CATEGORY_AWAITING_AGENT, self::CATEGORY_AWAITING_USER, self::CATEGORY_RESOLVED])) {
             $category = self::CATEGORY_AWAITING_USER;
         }
 
@@ -155,7 +156,7 @@ class TicketFilter
      */
     public function setSort($sort)
     {
-        if (!in_array($sort, array(self::SORT_ACTIVITY, self::SORT_CREATED, self::SORT_DEPARTMENT, self::SORT_SUBJECT, self::SORT_AGENT, self::SORT_LAST_AGENT, self::SORT_LAST_USER, self::SORT_USER))) {
+        if (!in_array($sort, [self::SORT_ACTIVITY, self::SORT_CREATED, self::SORT_DEPARTMENT, self::SORT_SUBJECT, self::SORT_AGENT, self::SORT_LAST_AGENT, self::SORT_LAST_USER, self::SORT_USER])) {
             $sort = self::SORT_ACTIVITY;
         }
 
@@ -175,7 +176,7 @@ class TicketFilter
      */
     public function setSortDirection($sort_direction)
     {
-        if (!in_array($sort_direction, array(self::SORT_DIRECTION_DESC, self::SORT_DIRECTION_ASC))) {
+        if (!in_array($sort_direction, [self::SORT_DIRECTION_DESC, self::SORT_DIRECTION_ASC])) {
             $sort_direction = self::SORT_DIRECTION_DESC;
         }
 

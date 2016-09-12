@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Twig\PostRenderFilter;
 
 use Orb\Util\Strings;
@@ -54,7 +55,7 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
 
         // Dont run emog on messages, only on the email template
         // This takes out email messages and replaces them with tokens until we're done
-        $save_blocks = array();
+        $save_blocks = [];
         $code        = preg_replace_callback('#<!-- DP_MESSAGE_BEGIN -->(.*?)<!-- DP_MESSAGE_END -->#', function ($m) use (&$save_blocks) {
             $rand = uniqid('DPBLOCK', true);
             $save_blocks[$rand] = $m[0];

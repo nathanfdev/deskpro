@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -49,9 +50,9 @@ class AgentModeTicketReassign extends AbstractJob
         $db  = App::getDb();
         $max = 2000;
 
-        #------------------------------
-        # Deleted -> unassign awaiting agent
-        #------------------------------
+        //------------------------------
+        // Deleted -> unassign awaiting agent
+        //------------------------------
 
         $agent_ids = $db->fetchAllCol('SELECT id FROM people WHERE is_agent = 1 AND is_deleted = 1');
 
@@ -61,23 +62,23 @@ class AgentModeTicketReassign extends AbstractJob
                 FROM tickets
                 WHERE status IN ('awaiting_agent') AND agent_id IN (?)
                 LIMIT $max
-            ", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
+            ", [$agent_ids], [Connection::PARAM_INT_ARRAY]);
 
             if ($ticket_ids) {
                 $chunks = array_chunk($ticket_ids, 250);
                 foreach ($chunks as $ids) {
-                    $log_batch = array();
+                    $log_batch = [];
 
-                    $db->updateIn('tickets', array('agent_id' => null), $ids);
-                    $db->updateIn('tickets_search_active', array('agent_id' => null), $ids);
+                    $db->updateIn('tickets', ['agent_id' => null], $ids);
+                    $db->updateIn('tickets_search_active', ['agent_id' => null], $ids);
 
                     foreach ($ids as $id) {
-                        $log_batch[] = array(
+                        $log_batch[] = [
                             'ticket_id'    => $id,
                             'action_type'  => 'free',
-                            'details'      => serialize(array('message' => 'Unassigned deleted agent')),
+                            'details'      => serialize(['message' => 'Unassigned deleted agent']),
                             'date_created' => date('Y-m-d H:i:s'),
-                        );
+                        ];
                     }
 
                     $db->batchInsert('tickets_logs', $log_batch, true);
@@ -87,9 +88,9 @@ class AgentModeTicketReassign extends AbstractJob
             }
         }
 
-        #------------------------------
-        # Converted into a user -> unassign all
-        #------------------------------
+        //------------------------------
+        // Converted into a user -> unassign all
+        //------------------------------
 
         $agent_ids = $db->fetchAllCol('SELECT id FROM people WHERE was_agent = 1 AND is_agent = 0');
 
@@ -99,23 +100,23 @@ class AgentModeTicketReassign extends AbstractJob
                 FROM tickets
                 WHERE agent_id IN (?)
                 LIMIT $max
-            ", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
+            ", [$agent_ids], [Connection::PARAM_INT_ARRAY]);
 
             if ($ticket_ids) {
                 $chunks = array_chunk($ticket_ids, 250);
                 foreach ($chunks as $ids) {
-                    $log_batch = array();
+                    $log_batch = [];
 
-                    $db->updateIn('tickets', array('agent_id' => null), $ids);
-                    $db->updateIn('tickets_search_active', array('agent_id' => null), $ids);
+                    $db->updateIn('tickets', ['agent_id' => null], $ids);
+                    $db->updateIn('tickets_search_active', ['agent_id' => null], $ids);
 
                     foreach ($ids as $id) {
-                        $log_batch[] = array(
+                        $log_batch[] = [
                             'ticket_id'    => $id,
                             'action_type'  => 'free',
-                            'details'      => serialize(array('message' => 'Unassigned agent that was converted to a user')),
+                            'details'      => serialize(['message' => 'Unassigned agent that was converted to a user']),
                             'date_created' => date('Y-m-d H:i:s'),
-                        );
+                        ];
                     }
 
                     $db->batchInsert('tickets_logs', $log_batch, true);

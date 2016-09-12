@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 
 class PhpMethod
@@ -40,7 +41,7 @@ class PhpMethod
 
     public function __construct()
     {
-        $this->arguments  = array();
+        $this->arguments  = [];
         $this->visibility = 'public';
     }
 
@@ -71,7 +72,7 @@ PHPCODE;
         if (
             is_int($default)
             || is_float($default)
-            || in_array($default, array('null', 'array()', 'array', 'true', 'false'))
+            || in_array($default, ['null', 'array()', 'array', 'true', 'false'])
         ) {
             return $default;
         }
@@ -84,7 +85,7 @@ PHPCODE;
      */
     protected function generateArgumentsString()
     {
-        $args = array();
+        $args = [];
         foreach ($this->getArguments() as $arg) {
             $arg_string = '';
             if ($type = $arg['type']) {
@@ -145,11 +146,11 @@ PHPCODE;
 
     public function addArgument($name, $type = null, $default = null)
     {
-        $this->arguments[$name] = array(
+        $this->arguments[$name] = [
             'name'    => $name,
             'type'    => $type,
             'default' => $default,
-        );
+        ];
     }
 
     public function removeArgument($name)

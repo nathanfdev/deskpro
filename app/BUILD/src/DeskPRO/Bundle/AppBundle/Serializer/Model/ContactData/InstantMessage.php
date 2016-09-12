@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;

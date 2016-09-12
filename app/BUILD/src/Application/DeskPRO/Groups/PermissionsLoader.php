@@ -72,7 +72,7 @@ class PermissionsLoader
             SELECT usergroup_id, name, value
             FROM permissions
             WHERE person_id IS NULL
-        ', array(), 'usergroup_id');
+        ', [], 'usergroup_id');
 
         return $this->ug_perms;
     }
@@ -86,7 +86,7 @@ class PermissionsLoader
     {
         $ug_ids = array_fill_keys($ug_ids, true);
 
-        $ret = array();
+        $ret = [];
         foreach ($this->getAllPermissions() as $ugid => $p) {
             if (isset($ug_ids[$ugid])) {
                 $ret[$ugid] = $p;
@@ -109,7 +109,7 @@ class PermissionsLoader
             SELECT person_id, name, value
             FROM permissions
             WHERE person_id IS NOT NULL AND is_active = 1
-        ', array(), 'person_id');
+        ', [], 'person_id');
 
         return $this->agent_override_perms;
     }
@@ -123,7 +123,7 @@ class PermissionsLoader
     {
         $this->getAllAgentOverridePermissions();
         if (!isset($this->agent_override_perms[$agent_id])) {
-            return array();
+            return [];
         }
 
         return $this->agent_override_perms[$agent_id];

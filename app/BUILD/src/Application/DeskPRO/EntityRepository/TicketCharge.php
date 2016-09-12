@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -60,7 +61,7 @@ class TicketCharge extends AbstractEntityRepository
             $q->setFirstResult($offset);
         }
 
-        return $q->execute(array($person));
+        return $q->execute([$person]);
     }
 
     public function getTotalChargesForPerson(\Application\DeskPRO\Entity\Person $person)
@@ -69,7 +70,7 @@ class TicketCharge extends AbstractEntityRepository
             SELECT COUNT(*) AS count, SUM(charge_time) AS charge_time, SUM(amount) AS charge
             FROM ticket_charges
             WHERE person_id = ?
-        ', array($person->id));
+        ', [$person->id]);
     }
 
     public function getChargesForOrganization(\Application\DeskPRO\Entity\Organization $org, $limit = null, $offset = null)
@@ -95,7 +96,7 @@ class TicketCharge extends AbstractEntityRepository
             $q->setFirstResult($offset);
         }
 
-        return $q->execute(array($org));
+        return $q->execute([$org]);
     }
 
     public function getTotalChargesForOrganization(\Application\DeskPRO\Entity\Organization $org)
@@ -104,6 +105,6 @@ class TicketCharge extends AbstractEntityRepository
             SELECT COUNT(*) AS count, SUM(charge_time) AS charge_time, SUM(amount) AS charge
             FROM ticket_charges
             WHERE organization_id = ?
-        ', array($org->id));
+        ', [$org->id]);
     }
 }

@@ -41,8 +41,6 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-/**
- */
 abstract class AbstractContentLinkGenerator implements LinkGeneratorInterface
 {
     /** @var EntityManager */

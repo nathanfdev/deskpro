@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -43,7 +44,7 @@ class CommentAbstract extends AbstractEntityRepository
     public function getByIds(array $ids, $keep_order = false)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $ids = implode(',', $ids);
@@ -76,7 +77,7 @@ class CommentAbstract extends AbstractEntityRepository
 
     public function getDisplayComments($object, PersonEntity $person_context = null, $visitor_id = 0)
     {
-        $params = array('obj_id' => $object->getId());
+        $params = ['obj_id' => $object->getId()];
         $dql    = "SELECT c FROM {$this->_entityName} c WHERE c.".static::FIELD." = :obj_id AND (c.status = 'visible'";
         if ($person_context && $person_context->getId()) {
             $dql .= ' OR c.person = :person_id';

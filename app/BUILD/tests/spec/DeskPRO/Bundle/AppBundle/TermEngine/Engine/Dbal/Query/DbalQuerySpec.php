@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
@@ -147,13 +148,13 @@ class DbalQuerySpec extends ObjectBehavior
         $this->setFrom('tickets', 't');
         $this->addGroupBy('{from}.subject');
 
-        $this->getGroupBy()->shouldBeLike(array('{from}.subject'));
+        $this->getGroupBy()->shouldBeLike(['{from}.subject']);
         $this->generateGroupByString()->shouldBe('{from}.subject');
         $this->__toString()->shouldBe('SELECT * FROM tickets t GROUP BY t.subject WITH ROLLUP');
 
         $this->addGroupBy('{from}.date_created');
 
-        $this->getGroupBy()->shouldBeLike(array('{from}.subject', '{from}.date_created'));
+        $this->getGroupBy()->shouldBeLike(['{from}.subject', '{from}.date_created']);
         $this->generateGroupByString()->shouldBe('{from}.subject, {from}.date_created');
         $this->__toString()->shouldBe('SELECT * FROM tickets t GROUP BY t.subject, t.date_created WITH ROLLUP');
     }
@@ -167,12 +168,12 @@ class DbalQuerySpec extends ObjectBehavior
         );
 
         $this->getOrderBy()->shouldBeLike(
-            array(
-                array(
+            [
+                [
                     '{from}.subject',
                     \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery::ORDER_ASC,
-                ),
-            )
+                ],
+            ]
         );
         $this->generateOrderByString()->shouldBe('{from}.subject ASC');
         $this->__toString()->shouldBe('SELECT * FROM tickets t ORDER BY t.subject ASC');
@@ -180,13 +181,13 @@ class DbalQuerySpec extends ObjectBehavior
         $this->addOrderBy('{from}.date_created', DbalQuery::ORDER_DESC);
 
         $this->getOrderBy()->shouldBeLike(
-            array(
-                array('{from}.subject', DbalQuery::ORDER_ASC),
-                array(
+            [
+                ['{from}.subject', DbalQuery::ORDER_ASC],
+                [
                     '{from}.date_created',
                     \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery::ORDER_DESC,
-                ),
-            )
+                ],
+            ]
         );
         $this->generateOrderByString()->shouldBe('{from}.subject ASC, {from}.date_created DESC');
         $this->__toString()->shouldBe('SELECT * FROM tickets t ORDER BY t.subject ASC, t.date_created DESC');
@@ -277,10 +278,10 @@ class DbalQuerySpec extends ObjectBehavior
         $param2->shouldBe('param_1');
 
         $this->getParameters()->shouldBeLike(
-            array(
+            [
                 'param_0' => 1,
                 'param_1' => 'bar',
-            )
+            ]
         );
 
         $param3 = $this->addParameter('new_param', 'new value');
@@ -288,11 +289,11 @@ class DbalQuerySpec extends ObjectBehavior
         $param3->shouldBe('new_param_0');
 
         $this->getParameters()->shouldBeLike(
-            array(
+            [
                 'param_0'     => 1,
                 'param_1'     => 'bar',
                 'new_param_0' => 'new value',
-            )
+            ]
         );
     }
 
@@ -301,7 +302,7 @@ class DbalQuerySpec extends ObjectBehavior
         $this->shouldThrow('\InvalidArgumentException')
             ->during(
                 'replaceParameter',
-                array('new_param', 'new value')
+                ['new_param', 'new value']
             );
     }
 
@@ -334,11 +335,11 @@ class DbalQuerySpec extends ObjectBehavior
         $this->replaceParameter($foo_p_name, new TermEngineExpression('func(my.expression)'));
 
         $this->getParameters()->shouldBeLike(
-            array(
+            [
                 'agent_0' => 2,
                 'time_0'  => new TermEngineExpression('agent.dateLastLogin'),
                 'foo_0'   => new TermEngineExpression('func(my.expression)'),
-            )
+            ]
         );
     }
 

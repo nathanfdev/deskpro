@@ -621,7 +621,7 @@ class PortalSupportExtension extends \Twig_Extension
             try {
                 $timezone = new \DateTimeZone($timezone);
             } catch (\Exception $e) {
-            };
+            }
         }
 
         if (!$timezone) {

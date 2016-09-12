@@ -51,7 +51,7 @@ class TagProcessorSpec extends ObjectBehavior
         TagHandlerInterface $inline_handler,
         EventLogger $logger
     ) {
-        $this->beConstructedWith($tag_request_factory, array($esi_handler, $inline_handler), $logger);
+        $this->beConstructedWith($tag_request_factory, [$esi_handler, $inline_handler], $logger);
     }
 
     public function it_returns_the_result_of_the_first_handler_that_supports_the_tag_request(
@@ -62,7 +62,7 @@ class TagProcessorSpec extends ObjectBehavior
         TagHandlerInterface $inline_handler,
         Response $response
     ) {
-        $arguments = array();
+        $arguments = [];
         $tag_request_factory->create($tag, $arguments)->willReturn($tag_request);
 
         $esi_handler->supports($tag, $tag_request)->willReturn(true);
@@ -84,7 +84,7 @@ class TagProcessorSpec extends ObjectBehavior
         TagHandlerInterface $esi_handler,
         Response $response
     ) {
-        $arguments = array();
+        $arguments = [];
         $tag_request_factory->create($tag, $arguments)->willReturn($tag_request);
 
         $esi_handler->supports($tag, $tag_request)->willReturn(true);

@@ -116,6 +116,6 @@ class LanguageAction extends AbstractAction implements PermissionableAction
             $name = $as_html ? htmlspecialchars($names[$this->language_id]) : $names[$this->language_id];
         }
 
-        return $tr->phrase('agent.tickets.set_language_action', array('language' => $name));
+        return $tr->phrase('agent.tickets.set_language_action', ['language' => $name]);
     }
 }

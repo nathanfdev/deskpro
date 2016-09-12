@@ -42,7 +42,7 @@ class ReqCheckCommandDecoderTest extends DeskProTestCase
      */
     public function it_decodes_correctly()
     {
-        $json = <<<JSON
+        $json = <<<'JSON'
 {
     "failed_requirements": [
         {
@@ -78,7 +78,7 @@ JSON;
      */
     public function it_decodes_correctly_with_no_errors()
     {
-        $json = <<<JSON
+        $json = <<<'JSON'
 {
     "failed_requirements": [],
     "failed_recommendations": []
@@ -102,7 +102,7 @@ JSON;
      */
     public function it_requires_known_shape()
     {
-        $json = <<<JSON
+        $json = <<<'JSON'
 {
     "foo": 123,
     "bar": [null]
@@ -141,7 +141,7 @@ JSON;
      */
     public function it_requires_valid_json()
     {
-        $json = <<<JSON
+        $json = <<<'JSON'
 this is totally invalid json
 JSON;
 
@@ -160,7 +160,7 @@ JSON;
      */
     public function it_requires_delims()
     {
-        $json = <<<JSON
+        $json = <<<'JSON'
 {
     "failed_requirements": [
         {

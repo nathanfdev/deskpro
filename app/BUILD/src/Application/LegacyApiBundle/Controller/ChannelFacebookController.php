@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -61,9 +61,9 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
         return $multi;
     }
 
-    ####################################################################################################################
-    # list facebook pages
-    ####################################################################################################################
+    //###################################################################################################################
+    // list facebook pages
+    //###################################################################################################################
 
     public function listAction()
     {
@@ -71,12 +71,12 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
 
         $data = $this->getContainer()->getSerializer()->serializeArray($pages);
 
-        return $this->createApiResponse(array('facebook_pages' => $data));
+        return $this->createApiResponse(['facebook_pages' => $data]);
     }
 
-    ####################################################################################################################
-    # create a facebook page
-    ####################################################################################################################
+    //###################################################################################################################
+    // create a facebook page
+    //###################################################################################################################
 
     public function createAction()
     {
@@ -87,7 +87,7 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
         }
 
         $fb_app_repo   = $this->container->getEm()->getRepository('DeskPRO:FacebookPage');
-        $existing_page = $fb_app_repo->findOneBy(array('graph_id' => $page_postdata['graph_id']));
+        $existing_page = $fb_app_repo->findOneBy(['graph_id' => $page_postdata['graph_id']]);
 
         if ($existing_page) {
             return $this->createApiErrorResponse('page_exists', 'this page already exists as a channel');
@@ -97,7 +97,7 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
             $existing_app = null;
             if (isset($page_postdata['app']) && isset($page_postdata['app']['app_id'])) {
                 $fb_app_repo  = $this->container->getEm()->getRepository('DeskPRO:FacebookApp');
-                $existing_app = $fb_app_repo->findOneBy(array('app_id' => $page_postdata['app']['app_id']));
+                $existing_app = $fb_app_repo->findOneBy(['app_id' => $page_postdata['app']['app_id']]);
             }
 
             $page      = new FacebookPage();
@@ -119,9 +119,9 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
         }
     }
 
-    ####################################################################################################################
-    # get facebook page
-    ####################################################################################################################
+    //###################################################################################################################
+    // get facebook page
+    //###################################################################################################################
 
     public function getAction($id)
     {
@@ -136,9 +136,9 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # save facebook page
-    ####################################################################################################################
+    //###################################################################################################################
+    // save facebook page
+    //###################################################################################################################
 
     public function saveAction($id = null)
     {
@@ -164,9 +164,9 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
         return $this->createApiSuccessResponse($data);
     }
 
-    ####################################################################################################################
-    # delete facebook page
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete facebook page
+    //###################################################################################################################
 
     public function deleteAction($id)
     {

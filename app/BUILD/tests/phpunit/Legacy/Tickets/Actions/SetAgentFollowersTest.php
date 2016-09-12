@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -63,7 +63,7 @@ class SetAgentFollowersTest extends DeskProTestCase
         $ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(10));
         $ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(20));
 
-        $action = new SetAgentFollowers(array('add_agent_ids' => array(2, 3), 'remove_agent_ids' => array(10, 20)));
+        $action = new SetAgentFollowers(['add_agent_ids' => [2, 3], 'remove_agent_ids' => [10, 20]]);
         $action->setContainer($this->getMockContainer());
         $action->applyAction($ticket, $exec);
 
@@ -82,7 +82,7 @@ class SetAgentFollowersTest extends DeskProTestCase
         $ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(10));
         $ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(20));
 
-        $action = new SetAgentFollowers(array('add_agent_ids' => array(120), 'remove_agent_ids' => array(121)));
+        $action = new SetAgentFollowers(['add_agent_ids' => [120], 'remove_agent_ids' => [121]]);
         $action->setContainer($this->getMockContainer());
         $action->applyAction($ticket, $exec);
 

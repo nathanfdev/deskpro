@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;

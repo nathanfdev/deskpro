@@ -45,9 +45,9 @@ class AccountProcessor extends AbstractCommandProcessor
         $cmd_path = realpath(DP_ROOT.'/../cmd.php');
         $cmd      = dp_get_php_command($cmd_path, 'dp:collect-email '.$account_id);
 
-        $this->logger->info("[AccountProcessor] <EmailAccount::{$account_id}> process command: $cmd", array(
+        $this->logger->info("[AccountProcessor] <EmailAccount::{$account_id}> process command: $cmd", [
             'task' => $task,
-        ));
+        ]);
 
         return $cmd;
     }

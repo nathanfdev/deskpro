@@ -143,7 +143,7 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
             }
         }
 
-        $temps  = array();
+        $temps  = [];
         $parser = new YamlParser();
 
         if (is_dir($this->getBaseTemplateDir())) {
@@ -186,7 +186,7 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
      */
     public function setTags(array $tags)
     {
-        $tags_with_names = array();
+        $tags_with_names = [];
 
         foreach ($tags as $tag) {
             $tags_with_names[$tag->getName()] = $tag;

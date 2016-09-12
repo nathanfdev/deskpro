@@ -119,7 +119,7 @@ class FeedbackDataService extends AbstractDataService
                 }
 
                 $filter->setTypes($types);
-                //
+
                 // end filter types
 
                 // status

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -176,9 +177,9 @@ class AgentChatController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    ############################################################################
-    # List old chats
-    ############################################################################
+    //###########################################################################
+    // List old chats
+    //###########################################################################
 
     /**
      * List the articles.

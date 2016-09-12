@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Storage;
 
 use Application\DeskPRO\EmailGateway\Protocol\Pop3 as Pop3Protocol;
@@ -61,25 +62,25 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
             return;
         }
 
-        $host      = isset($params->host)     ? $params->host     : 'localhost';
+        $host      = isset($params->host) ? $params->host : 'localhost';
         $password  = isset($params->password) ? $params->password : '';
-        $user      = isset($params->user)     ? $params->user     : '';
-        $port      = isset($params->port)     ? $params->port     : null;
-        $ssl       = isset($params->ssl)      ? strtoupper($params->ssl) : false;
-        $logger    = isset($params->logger)   ? $params->logger   : null;
+        $user      = isset($params->user) ? $params->user : '';
+        $port      = isset($params->port) ? $params->port : null;
+        $ssl       = isset($params->ssl) ? strtoupper($params->ssl) : false;
+        $logger    = isset($params->logger) ? $params->logger : null;
         $test_mode = isset($params->test_mode) && $params->test_mode;
 
         $this->protocol = new Pop3Protocol();
         if ($logger) {
             $this->protocol->setLogger($logger);
 
-            $logger->logDebug(Arrays::implodeTemplate(array(
+            $logger->logDebug(Arrays::implodeTemplate([
                 'host'     => $host,
                 'user'     => $user,
                 'password' => $test_mode ? $password : 'xxxxxx',
                 'port'     => $port,
                 'ssl'      => $ssl,
-            ), "[options] {KEY}: {VAL}\n"));
+            ], "[options] {KEY}: {VAL}\n"));
         }
 
         try {

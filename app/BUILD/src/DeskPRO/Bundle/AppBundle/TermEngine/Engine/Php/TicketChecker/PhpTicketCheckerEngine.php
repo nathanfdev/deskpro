@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -99,10 +100,10 @@ class PhpTicketCheckerEngine extends PhpEngine
 
         $this->logger->info(
             'START EVALUATE FILTER',
-            array(
+            [
                 'filter_id'    => $filter->getId(),
                 'filter_title' => $filter->getTitle(),
-            )
+            ]
         );
         $this->logger->info('dispatching PRE_COMPILE event');
         $pre_compile_timer = new SimpleTimer();
@@ -110,7 +111,7 @@ class PhpTicketCheckerEngine extends PhpEngine
         $this->event_dispatcher->dispatch(PhpEngineEvents::PRE_COMPILE, $event);
         $this->logger->info(
             'finished PRE_COMPILE event',
-            array('time' => $pre_compile_timer->getElapsedTime())
+            ['time' => $pre_compile_timer->getElapsedTime()]
         );
 
         $php_check = $this->compiler->compile($filter);
@@ -121,16 +122,16 @@ class PhpTicketCheckerEngine extends PhpEngine
         $this->event_dispatcher->dispatch(PhpEngineEvents::POST_COMPILE, $event);
         $this->logger->info(
             'finished POST_COMPILE event',
-            array('time' => $post_compile_timer->getElapsedTime())
+            ['time' => $post_compile_timer->getElapsedTime()]
         );
 
         $this->logger->info(
             'END EVALUATE FILTER',
-            array(
+            [
                 'filter_id'    => $filter->getId(),
                 'filter_title' => $filter->getTitle(),
                 'time'         => $timer->getElapsedTime(),
-            )
+            ]
         );
 
         return new TicketChecker($php_check, $context, $this->expression_language, $this->helper_pool, $this->logger);

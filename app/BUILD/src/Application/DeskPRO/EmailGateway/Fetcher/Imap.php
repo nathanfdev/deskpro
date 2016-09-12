@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
@@ -70,21 +71,21 @@ class Imap extends AbstractFetcher
     /**
      * Messages retrieved in the current fetch.
      *
-     * @var Array An array of message ids
+     * @var array An array of message ids
      */
     private $message_uids;
 
     /**
      * Mailbox name to move messages after processing.
      *
-     * @var String Mailbox name
+     * @var string Mailbox name
      */
     private $archive_mailbox;
 
     /**
      * Mailbox name to read messages from.
      *
-     * @var String Mailbox name
+     * @var string Mailbox name
      */
     private $read_mailbox;
 
@@ -95,7 +96,7 @@ class Imap extends AbstractFetcher
      */
     protected function _initConnection()
     {
-        $options = array();
+        $options = [];
 
         $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
 

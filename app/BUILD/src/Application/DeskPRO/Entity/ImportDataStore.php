@@ -52,11 +52,11 @@ class ImportDataStore extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
-    protected $data = array();
+    protected $data = [];
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

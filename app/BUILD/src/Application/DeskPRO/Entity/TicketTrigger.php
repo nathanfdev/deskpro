@@ -126,22 +126,22 @@ class TicketTrigger extends DomainObject
     /**
      * @var array
      */
-    protected $event_flags = array();
+    protected $event_flags = [];
 
     /**
      * @var array
      */
-    protected $by_agent_mode = array();
+    protected $by_agent_mode = [];
 
     /**
      * @var array
      */
-    protected $by_user_mode = array();
+    protected $by_user_mode = [];
 
     /**
      * @var array
      */
-    protected $by_app_mode = array();
+    protected $by_app_mode = [];
 
     /**
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
@@ -182,7 +182,7 @@ class TicketTrigger extends DomainObject
     public function setByAgentMode($modes)
     {
         if (!$modes) {
-            $this->setModelField('by_agent_mode', array());
+            $this->setModelField('by_agent_mode', []);
         } else {
             if (!is_array($modes)) {
                 $modes = explode(',', $modes);
@@ -201,7 +201,7 @@ class TicketTrigger extends DomainObject
     public function setByUserMode($modes)
     {
         if (!$modes) {
-            $this->setModelField('by_user_mode', array());
+            $this->setModelField('by_user_mode', []);
         } else {
             if (!is_array($modes)) {
                 $modes = explode(',', $modes);
@@ -220,7 +220,7 @@ class TicketTrigger extends DomainObject
     public function setByAppMode($modes)
     {
         if (!$modes) {
-            $this->setModelField('by_app_mode', array());
+            $this->setModelField('by_app_mode', []);
         } else {
             if (!is_array($modes)) {
                 $modes = explode(',', $modes);
@@ -314,11 +314,11 @@ class TicketTrigger extends DomainObject
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data                             = parent::toApiData($primary, $deep, $visited);
-        $data['department']               = $this->department ? array('id' => $this->department->id, 'title' => $this->department->title, 'title_full' => $this->department->getFullTitle()) : null;
-        $data['email_account']            = $this->email_account ? array('id' => $this->email_account->id, 'address' => $this->email_account->address) : null;
+        $data['department']               = $this->department ? ['id' => $this->department->id, 'title' => $this->department->title, 'title_full' => $this->department->getFullTitle()] : null;
+        $data['email_account']            = $this->email_account ? ['id' => $this->email_account->id, 'address' => $this->email_account->address] : null;
         $data['by_agent_mode']            = $this->by_agent_mode;
         $data['by_user_mode']             = $this->by_user_mode;
         $data['by_app_mode']              = $this->by_app_mode;
@@ -331,9 +331,9 @@ class TicketTrigger extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

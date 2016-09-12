@@ -56,7 +56,7 @@ class CloudCallController extends AbstractController
 
     public function pingAction()
     {
-        return $this->createJsonResponse(array('time' => time()));
+        return $this->createJsonResponse(['time' => time()]);
     }
 
     public function resetPasswordAction($person_id)
@@ -70,9 +70,9 @@ class CloudCallController extends AbstractController
 
         $email = $person->getPrimaryEmailAddress();
 
-        #------------------------------
-        # Send reset as a link
-        #------------------------------
+        //------------------------------
+        // Send reset as a link
+        //------------------------------
 
         if ($this->in->getBool('link')) {
             $interface = 'agent';
@@ -80,16 +80,16 @@ class CloudCallController extends AbstractController
                 $interface = 'billing';
             }
 
-            $code_data = TmpData::create('reset-password', array('person_id' => $person['id'], 'interface' => $interface), '+3 days');
+            $code_data = TmpData::create('reset-password', ['person_id' => $person['id'], 'interface' => $interface], '+3 days');
             $this->em->persist($code_data);
             $this->em->flush();
 
-            $vars = array(
+            $vars = [
                 'code'      => $code_data->getCode(),
                 'person'    => $person,
                 'email'     => $email,
                 'interface' => $interface,
-            );
+            ];
 
             $message = $this->container->getMailer()->createMessage();
             $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
@@ -97,21 +97,21 @@ class CloudCallController extends AbstractController
 
             $this->container->getMailer()->send($message);
 
-            return $this->createJsonResponse(array('sent_reset_link' => $email));
+            return $this->createJsonResponse(['sent_reset_link' => $email]);
 
-        #------------------------------
-        # Reset password
-        #------------------------------
+        //------------------------------
+        // Reset password
+        //------------------------------
         } else {
             $new_pass = $this->in->getString('password');
 
             if (!$new_pass) {
-                return $this->createJsonResponse(array('error' => 'no_pass'));
+                return $this->createJsonResponse(['error' => 'no_pass']);
             }
 
             $person->setPassword($new_pass);
 
-            return $this->createJsonResponse(array('reset_password' => $email));
+            return $this->createJsonResponse(['reset_password' => $email]);
         }
     }
 }

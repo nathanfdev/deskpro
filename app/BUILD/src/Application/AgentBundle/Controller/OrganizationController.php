@@ -53,17 +53,17 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class OrganizationController extends AbstractController
 {
-    ############################################################################
-    # view
-    ############################################################################
+    //###########################################################################
+    // view
+    //###########################################################################
 
     public function viewAction(Request $request, $organization_id)
     {
         $org = $this->getOrgOr404($organization_id);
 
-        #------------------------------
-        # Custom fields
-        #------------------------------
+        //------------------------------
+        // Custom fields
+        //------------------------------
 
         $field_manager = $this->container->getSystemService('org_fields_manager');
         $custom_fields = $field_manager->getDisplayArrayForObject($org);
@@ -73,9 +73,9 @@ class OrganizationController extends AbstractController
         $form                      = $new_field_manager->createDefinitionsFormForContext($org);
         $custom_fields_definitions = $form->createView();
 
-        #------------------------------
-        # Misc info needed
-        #------------------------------
+        //------------------------------
+        // Misc info needed
+        //------------------------------
 
         $notes = $this->em->getRepository('DeskPRO:OrganizationNote')->getNotesForOrganization($org);
 
@@ -86,7 +86,7 @@ class OrganizationController extends AbstractController
         $search->addTerm(TicketSearch::TERM_ORGANIZATION, 'is', $org->getId());
         $search->setOrderBy('ticket.status', 'ASC');
 
-        $org_tickets       = $search->getMatches(array('offset' => 0, 'limit' => 30));
+        $org_tickets       = $search->getMatches(['offset' => 0, 'limit' => 30]);
         $org_tickets       = $this->em->getRepository('DeskPRO:Ticket')->getByIds($org_tickets, true);
         $org_tickets_count = $search->getCount(1000);
 
@@ -104,10 +104,10 @@ class OrganizationController extends AbstractController
         $usergroup_names = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
         $org_usergroups  = $org->usergroups;
 
-        $contact_data = array();
+        $contact_data = [];
         foreach ($org->contact_data as $cd) {
             if (!isset($contact_data[$cd->contact_type])) {
-                $contact_data[$cd->contact_type] = array();
+                $contact_data[$cd->contact_type] = [];
             }
             $contact_data[$cd->contact_type][] = $cd->getTemplateVars();
         }
@@ -116,21 +116,21 @@ class OrganizationController extends AbstractController
 
         $org_members = $this->em->getRepository('DeskPRO:Person')->getOrganizationMembers($org);
 
-        $org_api = array();
-        foreach (array('id', 'name', 'summary') as $key) {
+        $org_api = [];
+        foreach (['id', 'name', 'summary'] as $key) {
             $org_api[$key] = $org->$key;
         }
         $org_api['date_created'] = $org->date_created->getTimestamp();
 
         foreach ($custom_fields as $field) {
-            $org_api['custom'][$field['id']] = array(
+            $org_api['custom'][$field['id']] = [
                 'id'    => $field['id'],
                 'title' => $field['title'],
                 'value' => isset($field['value']['value']) ? $field['value']['value'] : false,
-            );
+            ];
         }
 
-        return $this->render('AgentBundle:Organization:view.html.twig', array(
+        return $this->render('AgentBundle:Organization:view.html.twig', [
             'org'                           => $org,
             'org_email_domains'             => $org_domain_data['org_email_domains'],
             'org_count_domain_nonmembers'   => $org_domain_data['org_count_domain_nonmembers'],
@@ -154,21 +154,21 @@ class OrganizationController extends AbstractController
             'members_count'                 => $members_count,
             'custom_fields'                 => $custom_fields,
             'custom_fields_definitions'     => $custom_fields_definitions,
-        ));
+        ]);
     }
 
-    ############################################################################
-    # ajax-save
-    ############################################################################
+    //###########################################################################
+    // ajax-save
+    //###########################################################################
 
     public function ajaxSaveAction($organization_id)
     {
         $org = $this->getOrgOr404($organization_id);
 
         $this->em->beginTransaction();
-        $data = array(
+        $data = [
             'success' => true,
-        );
+        ];
 
         $action = $this->in->getString('action');
         if (!$this->person->hasPerm('agent_org.edit') && ($action != 'add-person' && $action != 'remove-person' && $action != 'get-person-row')) {
@@ -213,14 +213,14 @@ class OrganizationController extends AbstractController
                     $person->organization_position = $this->in->getString('position');
                     $this->em->persist($person);
                     $data['add_person_id'] = $person['id'];
-                    $data['row_html']      = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person, 'org' => $org));
+                    $data['row_html']      = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', ['person' => $person, 'org' => $org]);
                 }
                 break;
 
             case 'get-person-row':
                 $person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
                 if ($person->organization->id == $org->id) {
-                    $data['row_html'] = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person, 'org' => $org));
+                    $data['row_html'] = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', ['person' => $person, 'org' => $org]);
                 }
                 break;
 
@@ -249,15 +249,15 @@ class OrganizationController extends AbstractController
                         FROM usergroups
                         WHERE id IN (?)
                             AND sys_name IS NULL
-                    ', array($usergroup_ids), array(Connection::PARAM_INT_ARRAY));
+                    ', [$usergroup_ids], [Connection::PARAM_INT_ARRAY]);
                 }
 
-                $this->container->getDb()->delete('organization2usergroups', array('organization_id' => $org->id));
+                $this->container->getDb()->delete('organization2usergroups', ['organization_id' => $org->id]);
 
                 if ($usergroup_ids) {
-                    $inserts = array();
+                    $inserts = [];
                     foreach ($usergroup_ids as $uid) {
-                        $inserts[] = array('organization_id' => $org->getId(), 'usergroup_id' => $uid);
+                        $inserts[] = ['organization_id' => $org->getId(), 'usergroup_id' => $uid];
                     }
 
                     $this->container->getDb()->batchInsert('organization2usergroups', $inserts);
@@ -359,16 +359,16 @@ class OrganizationController extends AbstractController
 
         // Build contact_data before modifying collection,
         // adding to the collection causes dupe values to be added (doctrine bug w/ add() on collection indexed by id?)
-        $contact_data_array = array();
+        $contact_data_array = [];
         foreach ($org->contact_data as $cd) {
             if (!isset($contact_data_array[$cd->contact_type])) {
-                $contact_data_array[$cd->contact_type] = array();
+                $contact_data_array[$cd->contact_type] = [];
             }
             $contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
         }
 
         // Adding contact data
-        $added = array();
+        $added = [];
         foreach ($this->in->getCleanValueArray('new_contact_data') as $type => $inputs) {
             foreach ($inputs as $input) {
                 try {
@@ -437,39 +437,39 @@ class OrganizationController extends AbstractController
         $this->em->commit();
 
         // Reset display array
-        $contact_data_array = array();
+        $contact_data_array = [];
         foreach ($org->contact_data as $cd) {
             if (!isset($contact_data_array[$cd->contact_type])) {
-                $contact_data_array[$cd->contact_type] = array();
+                $contact_data_array[$cd->contact_type] = [];
             }
             $contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
         }
 
         foreach ($added as $cd) {
             if (!isset($contact_data_array[$cd->contact_type])) {
-                $contact_data_array[$cd->contact_type] = array();
+                $contact_data_array[$cd->contact_type] = [];
             }
             $contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
         }
 
         $org_email_domains = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
 
-        $display_html = $this->renderView('AgentBundle:Organization:view-contact-display.html.twig', array(
+        $display_html = $this->renderView('AgentBundle:Organization:view-contact-display.html.twig', [
             'org_email_domains' => $org_email_domains,
             'org'               => $org,
             'contact_data'      => $contact_data_array,
-        ));
-        $editor_overlay_html = $this->renderView('AgentBundle:Organization:contact-overlay.html.twig', array(
+        ]);
+        $editor_overlay_html = $this->renderView('AgentBundle:Organization:contact-overlay.html.twig', [
             'org_email_domains' => $org_email_domains,
             'org'               => $org,
             'contact_data'      => $contact_data_array,
-        ));
+        ]);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'             => 1,
             'display_html'        => $display_html,
             'editor_overlay_html' => $editor_overlay_html,
-        ));
+        ]);
     }
 
     public function savePositionAction($organization_id, $person_id)
@@ -486,7 +486,7 @@ class OrganizationController extends AbstractController
             $this->em->flush();
         }
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     public function saveManagerAction($organization_id, $person_id)
@@ -498,14 +498,14 @@ class OrganizationController extends AbstractController
         $this->db->executeUpdate('
             UPDATE people SET organization_manager = ?
             WHERE id = ? AND organization_id = ?
-        ', array((int) $this->in->getBool('organization_manager'), $person_id, $organization_id));
+        ', [(int) $this->in->getBool('organization_manager'), $person_id, $organization_id]);
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # ajax-save-note
-    ############################################################################
+    //###########################################################################
+    // ajax-save-note
+    //###########################################################################
 
     public function ajaxSaveNoteAction($organization_id)
     {
@@ -529,11 +529,11 @@ class OrganizationController extends AbstractController
         $em->flush();
         $em->commit();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'         => true,
             'organization_id' => $org['id'],
-            'note_li_html'    => $this->renderView('AgentBundle:Organization:note-li.html.twig', array('note' => $note)),
-        ));
+            'note_li_html'    => $this->renderView('AgentBundle:Organization:note-li.html.twig', ['note' => $note]),
+        ]);
     }
 
     /**
@@ -558,12 +558,12 @@ class OrganizationController extends AbstractController
         $this->em->remove($note);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # ajax-save-file
-    ############################################################################
+    //###########################################################################
+    // ajax-save-file
+    //###########################################################################
 
     public function ajaxSaveFileAction($organization_id)
     {
@@ -596,16 +596,16 @@ class OrganizationController extends AbstractController
         $em->flush();
         $em->commit();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'         => true,
             'organization_id' => $org['id'],
-            'html'            => $this->renderView('AgentBundle:Person:file-row.html.twig', array('file' => $file)),
-        ));
+            'html'            => $this->renderView('AgentBundle:Person:file-row.html.twig', ['file' => $file]),
+        ]);
     }
 
-    ############################################################################
-    # ajax-save-labels
-    ############################################################################
+    //###########################################################################
+    // ajax-save-labels
+    //###########################################################################
 
     public function ajaxSaveLabelsAction($organization_id)
     {
@@ -622,12 +622,12 @@ class OrganizationController extends AbstractController
         $this->em->persist($org);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => 1));
+        return $this->createJsonResponse(['success' => 1]);
     }
 
-    ############################################################################
-    # org domains
-    ############################################################################
+    //###########################################################################
+    // org domains
+    //###########################################################################
 
     protected function getOrgEmailDisplayData($org)
     {
@@ -637,13 +637,13 @@ class OrganizationController extends AbstractController
         $org_count_domain_takenmembers = $this->em->getRepository('DeskPRO:PersonEmail')->countDomainsWithOtherCompany($org_email_domains, $org);
         $org_count_domain_members      = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->countMembersAtDomains($org, $org_email_domains);
 
-        return array(
+        return [
             'org'                           => $org,
             'org_email_domains'             => $org_email_domains,
             'org_count_domain_nonmembers'   => $org_count_domain_nonmembers,
             'org_count_domain_takenmembers' => $org_count_domain_takenmembers,
             'org_count_domain_members'      => $org_count_domain_members,
-        );
+        ];
     }
 
     public function assignDomainAction($organization_id)
@@ -735,9 +735,9 @@ class OrganizationController extends AbstractController
         return $this->render('AgentBundle:Organization:orgemail-display.html.twig', $data);
     }
 
-    ############################################################################
-    # delete
-    ############################################################################
+    //###########################################################################
+    // delete
+    //###########################################################################
 
     public function deleteOrganizationAction($organization_id, $security_token)
     {
@@ -763,12 +763,12 @@ class OrganizationController extends AbstractController
         $edit_manager = $this->container->getSystemService('org_edit_manager');
         $edit_manager->deleteOrganization($org);
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # New person
-    ############################################################################
+    //###########################################################################
+    // New person
+    //###########################################################################
 
     public function newOrganizationAction()
     {
@@ -778,9 +778,9 @@ class OrganizationController extends AbstractController
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.neworg', $this->person->id);
 
-        #------------------------------
-        # Custom fields
-        #------------------------------
+        //------------------------------
+        // Custom fields
+        //------------------------------
 
         $custom_fields_form = $this->get('form.factory')->createNamedBuilder('org_custom_fields', 'form');
         $field_manager      = $this->container->getOrgFieldManager();
@@ -829,14 +829,14 @@ class OrganizationController extends AbstractController
             }
             $this->em->flush();
 
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'success' => true,
                 'org_id'  => $org['id'],
-            ));
+            ]);
         } else {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'success' => false,
-            ));
+            ]);
         }
     }
 
@@ -889,7 +889,7 @@ class OrganizationController extends AbstractController
                     throw new AccessDeniedHttpException('You don\t have permission to create an organization.');
                 }
 
-                if ($this->em->getRepository('DeskPRO:Organization')->findOneBy(array('name' => $title))) {
+                if ($this->em->getRepository('DeskPRO:Organization')->findOneBy(['name' => $title])) {
                     throw new BadRequestHttpException(sprintf('Organization with the name "%s" already exists.', $title));
                 }
 
@@ -902,10 +902,10 @@ class OrganizationController extends AbstractController
             $child->parent = $org;
             $this->em->flush();
 
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'id'   => $child->id,
                 'name' => $child->name,
-            ));
+            ]);
         } catch (HttpException $e) {
             return $this->createJsonResponse($e->getMessage(), 400);
         }
@@ -940,10 +940,10 @@ class OrganizationController extends AbstractController
                 $this->em->flush();
             }
 
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'id'   => $child->id,
                 'name' => $child->name,
-            ));
+            ]);
         } catch (HttpException $e) {
             return $this->createJsonResponse($e->getMessage(), 400);
         }

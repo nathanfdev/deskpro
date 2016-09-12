@@ -194,7 +194,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 

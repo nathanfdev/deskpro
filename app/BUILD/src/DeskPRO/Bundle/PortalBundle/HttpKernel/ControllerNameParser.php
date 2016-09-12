@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\HttpKernel;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
@@ -86,13 +87,13 @@ class ControllerNameParser extends BaseParser
         // if the controller is a string, we're going to array cache the resolved controller based on brand to avoid over-computing
         if (is_string($controller)) {
             return $this->generateAndCache(
-                array(
+                [
                     'parse',
                     $brand_container->getBrand()->getId(),
                     $controller,
-                ),
-                array($this, 'doParse'),
-                array($brand_container, $controller)
+                ],
+                [$this, 'doParse'],
+                [$brand_container, $controller]
             );
         }
 
@@ -118,7 +119,7 @@ class ControllerNameParser extends BaseParser
      *
      * @return mixed|null
      */
-    protected function generateAndCache($params, $callable, array $args = array())
+    protected function generateAndCache($params, $callable, array $args = [])
     {
         return $this->getCache()->get($this->generateHash($params), $callable, $args);
     }

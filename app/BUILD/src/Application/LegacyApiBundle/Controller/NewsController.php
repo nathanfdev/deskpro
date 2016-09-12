@@ -96,33 +96,33 @@ class NewsController extends AbstractController
      */
     public function searchAction()
     {
-        $search_map = array(
+        $search_map = [
             'category_id'          => NewsSearch::TERM_CATEGORY,
             'category_id_specific' => NewsSearch::TERM_CATEGORY_SPECIFIC,
             'label'                => NewsSearch::TERM_LABEL,
             'status'               => NewsSearch::TERM_STATUS,
-        );
+        ];
 
-        $terms = array();
+        $terms = [];
 
         foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
-                $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
+                $terms[] = ['type' => $search_key, 'op' => 'contains', 'options' => $value];
             }
         }
 
         $date_created_start = $this->in->getUint('date_created_start');
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
-            $terms[] = array('type' => NewsSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => NewsSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
                 'date1' => $date_created_start,
                 'date2' => $date_created_end,
-            ));
+            ]];
         } elseif ($date_created_start) {
-            $terms[] = array('type' => NewsSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => NewsSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
                 'date1' => $date_created_start,
-            ));
+            ]];
         }
 
         $order_by = $this->in->getString('order');
@@ -130,7 +130,7 @@ class NewsController extends AbstractController
             $order_by = 'date:desc';
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -149,13 +149,13 @@ class NewsController extends AbstractController
         $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
         $news     = App::getEntityRepository('DeskPRO:News')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => count($ids),
             'cache_id' => $result_cache->id,
             'news'     => $this->getApiData($news),
-        ));
+        ]);
     }
 
     /**
@@ -179,21 +179,21 @@ class NewsController extends AbstractController
      */
     public function newNewsAction()
     {
-        $errors = array();
+        $errors = [];
         $news   = new News();
 
         $title = $this->in->getString('title');
         if ($title) {
             $news->title = $title;
         } else {
-            $errors['title'] = array('required_field.title', 'title is required');
+            $errors['title'] = ['required_field.title', 'title is required'];
         }
 
         $content = $this->in->getHtml('content');
         if ($content) {
             $news->content = $content;
         } else {
-            $errors['content'] = array('required_field.content', 'content is required');
+            $errors['content'] = ['required_field.content', 'content is required'];
         }
 
         $status = $this->in->getString('status');
@@ -212,7 +212,7 @@ class NewsController extends AbstractController
 
         $cat = $this->em->find('DeskPRO:NewsCategory', $this->in->getUint('category_id'));
         if (!$cat) {
-            $errors['category_id'] = array('invalid_argument.category_id', 'category_id not found');
+            $errors['category_id'] = ['invalid_argument.category_id', 'category_id not found'];
         } else {
             $news->category = $cat;
         }
@@ -267,7 +267,7 @@ class NewsController extends AbstractController
     {
         $news = $this->_getNewsOr404($news_id);
 
-        return $this->createApiResponse(array('news' => $news->toApiData()));
+        return $this->createApiResponse(['news' => $news->toApiData()]);
     }
 
     /**
@@ -329,7 +329,7 @@ class NewsController extends AbstractController
     {
         $news = $this->_getNewsOr404($news_id, 'edit');
 
-        $revs = array();
+        $revs = [];
 
         $title = $this->in->getString('title');
         if ($title) {
@@ -355,7 +355,7 @@ class NewsController extends AbstractController
         if ($content && $content != $news->content) {
             $news->content = $this->in->getHtml('content');
 
-            $rev          = ContentRevisionUtil::findOrCreate($news, array('content'), $this->person);
+            $rev          = ContentRevisionUtil::findOrCreate($news, ['content'], $this->person);
             $rev->content = $news->content;
 
             $revs['content'] = $rev;
@@ -434,7 +434,7 @@ class NewsController extends AbstractController
         $news     = $this->_getNewsOr404($news_id);
         $comments = $this->em->getRepository('DeskPRO:NewsComment')->getComments($news);
 
-        return $this->createApiResponse(array('comments' => $this->getApiData($comments)));
+        return $this->createApiResponse(['comments' => $this->getApiData($comments)]);
     }
 
     /**
@@ -558,7 +558,7 @@ class NewsController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        return $this->createApiResponse(array('comment' => $comment->toApiData()));
+        return $this->createApiResponse(['comment' => $comment->toApiData()]);
     }
 
     /**
@@ -698,7 +698,7 @@ class NewsController extends AbstractController
     {
         $news = $this->_getNewsOr404($news_id);
 
-        return $this->createApiResponse(array('labels' => $this->getApiData($news->labels)));
+        return $this->createApiResponse(['labels' => $this->getApiData($news->labels)]);
     }
 
     /**
@@ -785,9 +785,9 @@ class NewsController extends AbstractController
         $news = $this->_getNewsOr404($news_id);
 
         if ($news->getLabelManager()->hasLabel($label)) {
-            return $this->createApiResponse(array('exists' => true));
+            return $this->createApiResponse(['exists' => true]);
         } else {
-            return $this->createApiResponse(array('exists' => false));
+            return $this->createApiResponse(['exists' => false]);
         }
     }
 
@@ -842,7 +842,7 @@ class NewsController extends AbstractController
     {
         $comments   = $this->em->getRepository('DeskPRO:NewsComment')->getValidatingComments();
         $entity_key = 'news';
-        $output     = array();
+        $output     = [];
         foreach ($comments as $key => $value) {
             $output[$key] = $value->toApiData(false, true);
             if ($value->$entity_key) {
@@ -850,7 +850,7 @@ class NewsController extends AbstractController
             }
         }
 
-        return $this->createApiResponse(array('comments' => $output));
+        return $this->createApiResponse(['comments' => $output]);
     }
 
     /**
@@ -867,7 +867,7 @@ class NewsController extends AbstractController
     {
         $categories = $this->em->getRepository('DeskPRO:NewsCategory')->getFlatHierarchy();
 
-        return $this->createApiResponse(array('categories' => $categories));
+        return $this->createApiResponse(['categories' => $categories]);
     }
 
     /**
@@ -881,11 +881,11 @@ class NewsController extends AbstractController
      */
     public function postCategoriesAction()
     {
-        $errors = array();
+        $errors = [];
 
         $title = $this->in->getString('title');
         if (!$title) {
-            $errors['title'] = array('required_field.title', 'title empty or missing');
+            $errors['title'] = ['required_field.title', 'title empty or missing'];
         }
 
         $category = new \Application\DeskPRO\Entity\NewsCategory();
@@ -909,7 +909,7 @@ class NewsController extends AbstractController
         if ($this->in->checkIsset('usergroup_id')) {
             $usergroup_ids = $this->in->getCleanValueArray('usergroup_id', 'uint');
         } else {
-            $usergroup_ids = array(1);
+            $usergroup_ids = [1];
         }
 
         $this->db->beginTransaction();
@@ -922,10 +922,10 @@ class NewsController extends AbstractController
                 if (!$usergroup_id) {
                     continue;
                 }
-                App::getDb()->insert('news_category2usergroup', array(
+                App::getDb()->insert('news_category2usergroup', [
                     'category_id'  => $category->getId(),
                     'usergroup_id' => $usergroup_id,
-                ));
+                ]);
             }
 
             $this->db->commit();
@@ -969,7 +969,7 @@ class NewsController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        return $this->createApiResponse(array('category' => $category->toApiData()));
+        return $this->createApiResponse(['category' => $category->toApiData()]);
     }
 
     /**
@@ -1017,12 +1017,12 @@ class NewsController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        $errors = array();
+        $errors = [];
 
         if ($this->in->checkIsset('title')) {
             $title = $this->in->getString('title');
             if (!$title) {
-                $errors['title'] = array('required_field.title', 'title empty or missing');
+                $errors['title'] = ['required_field.title', 'title empty or missing'];
             }
             $category->title = $title;
         }
@@ -1103,16 +1103,16 @@ class NewsController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        $terms = array(
-            array('type' => NewsSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id)),
-        );
+        $terms = [
+            ['type' => NewsSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => [$category->id]],
+        ];
 
         $order_by = $this->in->getString('order');
         if (!$order_by) {
             $order_by = 'date:desc';
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -1131,13 +1131,13 @@ class NewsController extends AbstractController
         $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
         $news     = App::getEntityRepository('DeskPRO:News')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => count($ids),
             'cache_id' => $result_cache->id,
             'news'     => $this->getApiData($news),
-        ));
+        ]);
     }
 
     /**
@@ -1163,7 +1163,7 @@ class NewsController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        return $this->createApiResponse(array('groups' => $this->getApiData($category->usergroups)));
+        return $this->createApiResponse(['groups' => $this->getApiData($category->usergroups)]);
     }
 
     /**
@@ -1212,10 +1212,10 @@ class NewsController extends AbstractController
         }
 
         if (!$exists) {
-            $this->db->insert('news_category2usergroup', array(
+            $this->db->insert('news_category2usergroup', [
                 'category_id'  => $category->id,
                 'usergroup_id' => $group_id,
-            ));
+            ]);
         }
 
         return $this->createApiCreateResponse(
@@ -1266,7 +1266,7 @@ class NewsController extends AbstractController
             }
         }
 
-        return $this->createApiResponse(array('exists' => $exists));
+        return $this->createApiResponse(['exists' => $exists]);
     }
 
     /**

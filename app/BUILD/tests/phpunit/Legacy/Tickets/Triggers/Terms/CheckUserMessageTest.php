@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -79,7 +79,7 @@ class CheckUserMessageTest extends AbstractStringCheckTest
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $check = $this->createChecker('is', array('%OPT%' => $this->getString1()));
+        $check = $this->createChecker('is', ['%OPT%' => $this->getString1()]);
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
     }
 
@@ -88,10 +88,10 @@ class CheckUserMessageTest extends AbstractStringCheckTest
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $check = $this->createChecker('isset', array('%OPT%' => $this->getString1()));
+        $check = $this->createChecker('isset', ['%OPT%' => $this->getString1()]);
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
 
-        $check = $this->createChecker('not_isset', array('%OPT%' => $this->getString1()));
+        $check = $this->createChecker('not_isset', ['%OPT%' => $this->getString1()]);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
     }
 }

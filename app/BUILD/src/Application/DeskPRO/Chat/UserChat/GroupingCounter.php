@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
@@ -43,13 +44,13 @@ class GroupingCounter
     /** @var ChatConversationSearch */
     protected $searcher;
     /** @var array */
-    protected $groups = array(
+    protected $groups = [
         'none'           => '',
         'department'     => 'department_id',
         'agent'          => 'agent_id',
         'date_created'   => 'date_created',
         'total_to_ended' => 'total_to_ended',
-    );
+    ];
 
     public function __construct($group_by)
     {
@@ -59,7 +60,7 @@ class GroupingCounter
     public function getCounts(ChatConversationSearch $searcher)
     {
         if (empty($this->group_by)) {
-            return array();
+            return [];
         }
 
         $searcher->setGroupBy($this->group_by);
@@ -76,7 +77,7 @@ class GroupingCounter
                 $searcher->setColumns('department_id AS id, COUNT(*) AS count');
                 $searcher->setOrderBy('departments.title');
                 $counts            = $db->fetchAll($searcher->getSql());
-                $counts_department = array();
+                $counts_department = [];
 
                 foreach ($counts as $count) {
                     $counts_department[$count['id']] = $count;
@@ -148,7 +149,7 @@ class GroupingCounter
 
         $sql = 'CASE ';
 
-        $parts = array();
+        $parts = [];
         foreach ($times as $t) {
             $parts[] = " WHEN chat_conversations.total_to_ended < $t THEN $t ";
         }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_highrise;
 
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestContext;
@@ -63,13 +64,13 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         $token = $context->getAppSetting('api_token');
 
         if (!$url || !$token) {
-            return $context->createJsonResponse(array('error' => 'API token or URL missing. Please configure the plugin.'));
+            return $context->createJsonResponse(['error' => 'API token or URL missing. Please configure the plugin.']);
         }
 
         $parts = parse_url($url);
         $url   = $parts['scheme'].'://'.$parts['host'];
 
-        $matches = array();
+        $matches = [];
 
         $email = $context->getIn()->getString('email');
         if ($email) {
@@ -79,11 +80,11 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                 $error = error_reporting();
                 error_reporting($error & ~E_WARNING);
 
-                $output = $personApi->findPeopleWithCriteria(array('email' => $email));
+                $output = $personApi->findPeopleWithCriteria(['email' => $email]);
 
                 error_reporting($error);
             } catch (\Exception $e) {
-                return $context->createJsonResponse(array('error' => 'Invalid Highrise API URL or token.', 'error_type' => get_class($e), 'error_code' => $e->getCode(), 'error_message' => $e->getMessage()));
+                return $context->createJsonResponse(['error' => 'Invalid Highrise API URL or token.', 'error_type' => get_class($e), 'error_code' => $e->getCode(), 'error_message' => $e->getMessage()]);
             }
 
             foreach ($output as $person) {
@@ -113,17 +114,17 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                     $companyTitle = false;
                 }
 
-                $matches[] = array(
+                $matches[] = [
                     'id'      => $person['id'],
                     'name'    => $name,
                     'email'   => $email,
                     'title'   => isset($person['title']) ? $person['title'] : '',
                     'company' => isset($person['company-name']) ? $person['company-name'] : '',
                     'profile' => $url.'/people/'.$person['id'],
-                );
+                ];
             }
         }
 
-        return $context->createJsonResponse(array('matched' => count($matches), 'matches' => $matches));
+        return $context->createJsonResponse(['matched' => count($matches), 'matches' => $matches]);
     }
 }

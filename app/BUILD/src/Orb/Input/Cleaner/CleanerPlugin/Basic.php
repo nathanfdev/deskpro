@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Input
  */
+
 namespace Orb\Input\Cleaner\CleanerPlugin;
 
 use Orb\Input\Cleaner\Cleaner;
@@ -56,36 +57,36 @@ class Basic implements CleanerPlugin
 
     public function getCleanerTypes()
     {
-        return array(
-            'discard'      ,
-            'raw'          ,
-            'bool'         ,
-            'boolean'      ,
-            'bool_int'     ,
-            'ibool'        ,
-            'int'          ,
-            'integer'      ,
-            'uint'         ,
-            'float'        ,
-            'ufloat'       ,
-            'num'          ,
-            'number'       ,
-            'unum'         ,
-            'str'          ,
-            'string'       ,
-            'str_notrim'   ,
-            'str_nohtml'   ,
-            'nohtml'       ,
+        return [
+            'discard',
+            'raw',
+            'bool',
+            'boolean',
+            'bool_int',
+            'ibool',
+            'int',
+            'integer',
+            'uint',
+            'float',
+            'ufloat',
+            'num',
+            'number',
+            'unum',
+            'str',
+            'string',
+            'str_notrim',
+            'str_nohtml',
+            'nohtml',
             'str_striphtml',
-            'striphtml'    ,
-            'str_simple'   ,
-            'simplestr'    ,
-            'str_key'      ,
-            'str_raw'      ,
-            'rawstr'       ,
-            'rawstring'    ,
-            'array'        ,
-        );
+            'striphtml',
+            'str_simple',
+            'simplestr',
+            'str_key',
+            'str_raw',
+            'rawstr',
+            'rawstring',
+            'array',
+        ];
     }
 
     /**
@@ -99,9 +100,9 @@ class Basic implements CleanerPlugin
      */
     public function cleanValue($value, $type, array $options, Cleaner $cleaner)
     {
-        #----------------------------------------
-        # Do the cleaning
-        #----------------------------------------
+        //----------------------------------------
+        // Do the cleaning
+        //----------------------------------------
 
         switch ($type) {
             case 'bool':
@@ -217,9 +218,9 @@ class Basic implements CleanerPlugin
      */
     public function cleanString($string)
     {
-        #-------------------------
-        # Recursively clean arrays
-        #-------------------------
+        //-------------------------
+        // Recursively clean arrays
+        //-------------------------
 
         if (is_array($string)) {
             foreach ($string as $k => $v) {
@@ -232,9 +233,9 @@ class Basic implements CleanerPlugin
             return $string;
         }
 
-        #-------------------------
-        # Clean normal strings
-        #-------------------------
+        //-------------------------
+        // Clean normal strings
+        //-------------------------
 
         if (!is_string($string)) {
             return $string;

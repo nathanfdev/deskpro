@@ -94,9 +94,9 @@ class Doctrine extends Provider
     {
         parent::configureOptions();
 
-        $this->resolver->setDefaults(array(
+        $this->resolver->setDefaults([
             'single_batch' => false,
-        ));
+        ]);
     }
 
     public function getCounts()

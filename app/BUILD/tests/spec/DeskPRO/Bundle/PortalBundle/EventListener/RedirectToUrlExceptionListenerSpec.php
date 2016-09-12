@@ -60,9 +60,9 @@ class RedirectToUrlExceptionListenerSpec extends ObjectBehavior
 
     public function it_subscrbied_to_kernel_exceptions()
     {
-        $this->getSubscribedEvents()->shouldReturn(array(
-            KernelEvents::EXCEPTION => array('onKernelException', 129),
-        ));
+        $this->getSubscribedEvents()->shouldReturn([
+            KernelEvents::EXCEPTION => ['onKernelException', 129],
+        ]);
     }
 
     public function it_does_nothing_if_wrong_exception(

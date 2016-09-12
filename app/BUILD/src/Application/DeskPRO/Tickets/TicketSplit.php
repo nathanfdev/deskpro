@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -124,15 +125,15 @@ class TicketSplit implements PersonContextInterface
      */
     private function doSplit($subject, array $message_ids)
     {
-        #------------------------------
-        # Get and verify messages
-        #------------------------------
+        //------------------------------
+        // Get and verify messages
+        //------------------------------
 
         $messages = $this->em->createQuery('
             SELECT m
             FROM DeskPRO:TicketMessage m
             WHERE m.id IN (?0) AND m.ticket = ?1
-        ')->execute(array($message_ids, $this->ticket->id));
+        ')->execute([$message_ids, $this->ticket->id]);
 
         if (!count($messages)) {
             throw new \InvalidArgumentException('No messages', 100);
@@ -142,19 +143,19 @@ class TicketSplit implements PersonContextInterface
             SELECT COUNT(*)
             FROM tickets_messages
             WHERE ticket_id = ?
-        ', array($this->ticket->id));
+        ', [$this->ticket->id]);
         if ($count_all == count($messages)) {
             throw new \InvalidArgumentException('Cannot split the entire ticket', 200);
         }
 
-        #------------------------------
-        # Create new ticket copy
-        #------------------------------
+        //------------------------------
+        // Create new ticket copy
+        //------------------------------
 
         $new_ticket = $this->ticket_manager->createTicket();
         $this->ticket->copyTo($new_ticket);
 
-        $message_ids = array();
+        $message_ids = [];
 
         $first      = null;
         $firstAgent = null;
@@ -224,9 +225,9 @@ class TicketSplit implements PersonContextInterface
             $new_ticket->organization = $message->person->organization;
         }
 
-        #------------------------------
-        # Save new ticket
-        #------------------------------
+        //------------------------------
+        // Save new ticket
+        //------------------------------
 
         $context = $this->ticket_manager->createAgentExecutorContext(
             $this->person_context,
@@ -239,9 +240,9 @@ class TicketSplit implements PersonContextInterface
 
         $this->ticket_manager->saveTicket($new_ticket, $context);
 
-        #------------------------------
-        # Save old ticket
-        #------------------------------
+        //------------------------------
+        // Save old ticket
+        //------------------------------
 
         $split_to_change = new ChangeSplitTo('split_to', $new_ticket->id, $message_ids);
         $this->ticket->getStateChangeRecorder()->recordChange($split_to_change);

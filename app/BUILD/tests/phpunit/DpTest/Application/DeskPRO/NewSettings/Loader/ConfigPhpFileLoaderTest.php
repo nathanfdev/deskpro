@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Application\NewSettings\Loader;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
@@ -51,10 +52,10 @@ class ConfigPhpFileLoaderTest extends DeskProTestCase
     {
         $config_file_path = __DIR__.'/fixtures/configs_file.php';
 
-        $expectedSettings = array(
+        $expectedSettings = [
             'key'       => 'val',
             'extra_key' => 'extra_val',
-        );
+        ];
 
         $cache_key = 'settings.loader.config_php_file.'.$config_file_path;
 
@@ -76,10 +77,10 @@ class ConfigPhpFileLoaderTest extends DeskProTestCase
     {
         $config_file_path = __DIR__.'/fixtures/configs_file.php';
 
-        $expectedSettings = array(
+        $expectedSettings = [
             'key'       => 'val',
             'extra_key' => 'extra_val',
-        );
+        ];
 
         $cache_key = 'settings.loader.config_php_file.'.$config_file_path;
 
@@ -101,10 +102,10 @@ class ConfigPhpFileLoaderTest extends DeskProTestCase
     {
         $config_file_path = __DIR__.'/fixtures/configs_file.php';
 
-        $expectedSettings = array(
+        $expectedSettings = [
             'key'       => 'val',
             'extra_key' => 'extra_val',
-        );
+        ];
 
         $cache_key = 'settings.loader.config_php_file.'.$config_file_path;
 

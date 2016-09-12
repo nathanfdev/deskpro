@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Email\EmailSource;
 
 use Application\DeskPRO\Entity\EmailAccount;
@@ -55,7 +56,7 @@ class FinderFilter
     /**
      * @var array
      */
-    private $statuses = array();
+    private $statuses = [];
 
     /**
      * @var null|\DateTime
@@ -123,7 +124,7 @@ class FinderFilter
      */
     public function setStatuses(array $statuses = null)
     {
-        $this->statuses = $statuses ?: array();
+        $this->statuses = $statuses ?: [];
 
         return $this;
     }
@@ -161,14 +162,14 @@ class FinderFilter
      */
     public function getValidStatuses()
     {
-        static $valid = array(
+        static $valid = [
             EmailSource::STATUS_INSERTED,
             EmailSource::STATUS_PROCESSING,
             EmailSource::STATUS_COMPLETE,
             EmailSource::STATUS_REJECTED,
             EmailSource::STATUS_RETRY,
             EmailSource::STATUS_ERROR,
-        );
+        ];
 
         return $valid;
     }

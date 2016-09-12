@@ -48,13 +48,13 @@ class ApiDupeListener extends AbstractLogListener
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             KernelEvents::RESPONSE => ['onResponse', 31],
             // the priority doesn't make sense because we are using DP_START_TIME, that defined
             // at the very beginning of request handling
             // so you have to be sure, that it will run AFTER Auth
             KernelEvents::REQUEST => ['onRequest', 4],
-        );
+        ];
     }
 
     /**

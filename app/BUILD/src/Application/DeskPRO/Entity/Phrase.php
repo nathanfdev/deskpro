@@ -154,9 +154,9 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
         return $groupname;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

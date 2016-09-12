@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -71,10 +71,10 @@ class LegacyControllerEventsListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::CONTROLLER => array('onController', 100),
-            KernelEvents::RESPONSE   => array('onResponse', 100),
-        );
+        return [
+            KernelEvents::CONTROLLER => ['onController', 100],
+            KernelEvents::RESPONSE   => ['onResponse', 100],
+        ];
     }
 
     /**
@@ -110,13 +110,13 @@ class LegacyControllerEventsListener implements EventSubscriberInterface
         $this->lastControllerArgs = $arguments;
 
         // Run pre event
-        $legacyEvent = new PrePostEvent(array(
+        $legacyEvent = new PrePostEvent([
             'request_type' => $event->getRequestType(),
             'request'      => $request,
             'controller'   => $controller[0],
             'action'       => $controller[1],
             'arguments'    => $arguments,
-        ));
+        ]);
         $controller[0]->DeskPRO_onControllerPreActionHandler($legacyEvent);
 
         if ($legacyEvent->hasResponse()) {
@@ -152,14 +152,14 @@ class LegacyControllerEventsListener implements EventSubscriberInterface
         }
 
         // Run pre event
-        $legacyEvent = new PrePostEvent(array(
+        $legacyEvent = new PrePostEvent([
             'request_type' => $event->getRequestType(),
             'request'      => $event->getRequest(),
             'controller'   => $controller[0],
             'action'       => $controller[1],
             'arguments'    => $arguments,
             'response'     => $event->getResponse(),
-        ));
+        ]);
         $controller[0]->DeskPRO_onControllerPostActionHandler($legacyEvent);
 
         if ($legacyEvent->hasResponse()) {

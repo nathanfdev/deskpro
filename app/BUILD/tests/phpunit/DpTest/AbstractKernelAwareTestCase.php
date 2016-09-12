@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest;
 
 use Application\DeskPRO\Entity\Template;
@@ -76,7 +77,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
      *
      * @return \Symfony\Bundle\FrameworkBundle\Client
      */
-    public function getClient($server = array())
+    public function getClient($server = [])
     {
         // TODO: we need a good way of setting the 'HTTP_HOST' key on $server to the dev's machine
         // maybe just use the a global we declare in config.test.php ?? might be best option.
@@ -258,12 +259,12 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
             return false;
         }
 
-        return array(
+        return [
             'from'    => $last_source->getHeaderFrom(),
             'to'      => $last_source->getHeaderTo(),
             'subject' => $last_source->getHeaderSubject(),
             'message' => $this->getMessageFromEmailSource($last_source),
-        );
+        ];
     }
 
     /**

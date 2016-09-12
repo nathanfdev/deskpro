@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -66,8 +66,12 @@ class SortListener implements EventSubscriberInterface
         $entities = $context->getEntities();
         $ids      = $context->getIds();
 
-        usort($ids, function ($a, $b) {return $a - $b; });
-        usort($entities, function ($a, $b) { return $a->id - $b->id; });
+        usort($ids, function ($a, $b) {
+            return $a - $b;
+        });
+        usort($entities, function ($a, $b) {
+            return $a->id - $b->id;
+        });
 
         $context->setEntities($entities);
         $context->setIds($ids);

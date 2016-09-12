@@ -143,7 +143,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      */
     protected function createPermissionErrorResponse($message)
     {
-        return $this->createJsonResponse(array('error' => 'not_allowed', 'message' => $message), 403);
+        return $this->createJsonResponse(['error' => 'not_allowed', 'message' => $message], 403);
     }
 
     /**

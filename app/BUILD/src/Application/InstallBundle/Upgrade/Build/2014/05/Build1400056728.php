@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\InstallBundle\Upgrade\Build\Helper201405\LayoutGenerator;
@@ -55,29 +56,29 @@ class Build1400056728 extends AbstractBuild
         } catch (\Exception $e) {
         }
 
-        #------------------------------
-        # Get current layouts
-        #------------------------------
+        //------------------------------
+        // Get current layouts
+        //------------------------------
 
-        $old_layouts = array();
+        $old_layouts = [];
 
-        $data = $this->getUpgradeData('201404', 'ticket_page_display') ?: array();
+        $data = $this->getUpgradeData('201404', 'ticket_page_display') ?: [];
         foreach ($data as $r) {
             if (!isset($old_layouts[$r['department_id']])) {
-                $old_layouts[$r['department_id'] ?: 0] = array();
+                $old_layouts[$r['department_id'] ?: 0] = [];
             }
             $old_layouts[$r['department_id'] ?: 0][$r['zone']] = unserialize($r['data']);
         }
 
         $dep_ids = array_keys($old_layouts);
-        $deps    = array();
+        $deps    = [];
         if ($dep_ids) {
             $deps = $em->getRepository('DeskPRO:Department')->getByIds($dep_ids);
         }
 
-        #------------------------------
-        # Upgrade layouts
-        #------------------------------
+        //------------------------------
+        // Upgrade layouts
+        //------------------------------
 
         if (!isset($old_layouts[0])) {
             $this->out('No default layout exists, generating one');
@@ -94,9 +95,9 @@ class Build1400056728 extends AbstractBuild
                 continue;
             }
 
-            $form_new  = !empty($old['create']) ? $old['create'] : array();
-            $form_view = !empty($old['view']) ? $old['view'] : array();
-            $form_edit = !empty($old['modify']) ? $old['modify'] : array();
+            $form_new  = !empty($old['create']) ? $old['create'] : [];
+            $form_view = !empty($old['view']) ? $old['view'] : [];
+            $form_edit = !empty($old['modify']) ? $old['modify'] : [];
 
             $this->out("Upgrading layout for dep $dep_id ...");
 

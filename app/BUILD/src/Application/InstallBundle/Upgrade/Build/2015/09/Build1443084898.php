@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1443084898 extends AbstractBuild
@@ -54,21 +55,21 @@ class Build1443084898 extends AbstractBuild
 
                 $term['options'] = $term['options']['custom_fields']['field_'.$id];
                 if (0 === strpos($term['options'], 'date')) {
-                    $term['options'] = array(
+                    $term['options'] = [
                         'date1'               => time(),
                         'date2'               => '',
                         'date1_relative'      => '',
                         'date1_relative_type' => 'days',
                         'date2_relative'      => '',
                         'date2_relative_type' => 'days',
-                    );
+                    ];
                 }
 
                 $update = true;
             }
 
             if ($update) {
-                $db->update('ticket_filters', array('terms' => json_encode($terms)), array('id' => $row['id']));
+                $db->update('ticket_filters', ['terms' => json_encode($terms)], ['id' => $row['id']]);
             }
         }
     }

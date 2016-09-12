@@ -102,7 +102,9 @@ class DistroReleaseCollection implements \Countable
             return;
         }
 
-        return ListUtils::first($this->releases, function (DistroRelease $r) use ($id) { return $r->getId() === $id; });
+        return ListUtils::first($this->releases, function (DistroRelease $r) use ($id) {
+            return $r->getId() === $id;
+        });
     }
 
     /**

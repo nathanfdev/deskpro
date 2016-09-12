@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Log;
 
 /**
@@ -57,7 +58,7 @@ class Logger
      *
      * @var array
      */
-    protected $_priorities = array(
+    protected $_priorities = [
         self::EMERG  => 'EMERG',
         self::ALERT  => 'ALERT',
         self::CRIT   => 'CRIT',
@@ -67,7 +68,7 @@ class Logger
         self::INFO   => 'INFO',
         self::DEBUG  => 'DEBUG',
         self::STRICT => 'STRICT',
-    );
+    ];
 
     /**
      * Main filter chain that will apply to all writers.
@@ -86,7 +87,7 @@ class Logger
     /**
      * @var array
      */
-    protected $_timers = array();
+    protected $_timers = [];
 
     /**
      * True to disable logger.
@@ -221,7 +222,7 @@ class Logger
      * @param int    $priority
      * @param array  $info
      */
-    public function log($message, $priority, array $info = array())
+    public function log($message, $priority, array $info = [])
     {
         if ($this->disabled) {
             return;
@@ -259,7 +260,7 @@ class Logger
      * @param $message
      * @param array $info
      */
-    public function logDebug($message, array $info = array())
+    public function logDebug($message, array $info = [])
     {
         $this->log($message, self::DEBUG, $info);
     }
@@ -296,7 +297,7 @@ class Logger
             return sprintf('[object](%s)', get_class($var));
         }
         if (is_array($var)) {
-            $a = array();
+            $a = [];
             foreach ($var as $k => $v) {
                 if ($_depth > 8) {
                     $a[] = sprintf('%s => %s', $k, '(string)');
@@ -324,7 +325,7 @@ class Logger
      * @param $message
      * @param array $info
      */
-    public function logInfo($message, array $info = array())
+    public function logInfo($message, array $info = [])
     {
         $this->log($message, self::INFO, $info);
     }
@@ -335,7 +336,7 @@ class Logger
      * @param $message
      * @param array $info
      */
-    public function logError($message, array $info = array())
+    public function logError($message, array $info = [])
     {
         $this->log($message, self::ERR, $info);
     }
@@ -346,7 +347,7 @@ class Logger
      * @param $message
      * @param array $info
      */
-    public function logEmergency($message, array $info = array())
+    public function logEmergency($message, array $info = [])
     {
         $this->log($message, self::EMERG, $info);
     }
@@ -357,7 +358,7 @@ class Logger
      * @param $message
      * @param array $info
      */
-    public function logCritical($message, array $info = array())
+    public function logCritical($message, array $info = [])
     {
         $this->log($message, self::CRIT, $info);
     }
@@ -368,7 +369,7 @@ class Logger
      * @param $message
      * @param array $info
      */
-    public function logAlert($message, array $info = array())
+    public function logAlert($message, array $info = [])
     {
         $this->log($message, self::ALERT, $info);
     }
@@ -379,7 +380,7 @@ class Logger
      * @param $message
      * @param array $info
      */
-    public function logWarn($message, array $info = array())
+    public function logWarn($message, array $info = [])
     {
         $this->log($message, self::WARN, $info);
     }
@@ -390,7 +391,7 @@ class Logger
      * @param $message
      * @param array $info
      */
-    public function logNotice($message, array $info = array())
+    public function logNotice($message, array $info = [])
     {
         $this->log($message, self::NOTICE, $info);
     }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle;
 
 use Application\LegacyApiBundle\DependencyInjection\AccessDecisionPass;

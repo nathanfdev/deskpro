@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,7 +36,7 @@ use Pagerfanta\View\Template\Template;
 
 class DeskproTemplate extends Template
 {
-    protected static $defaultOptions = array(
+    protected static $defaultOptions = [
         'prev_message'        => '&larr; Previous',
         'next_message'        => 'Next &rarr;',
         'dots_message'        => '&hellip;',
@@ -47,7 +47,7 @@ class DeskproTemplate extends Template
         'css_disabled_class'  => 'disabled',
         'css_dots_class'      => 'disabled',
         'css_active_class'    => 'active-page',
-    );
+    ];
 
     public function container()
     {
@@ -165,7 +165,7 @@ class DeskproTemplate extends Template
         $host     = isset($parsed_url['host']) ? $parsed_url['host'] : '';
         $port     = isset($parsed_url['port']) ? ':'.$parsed_url['port'] : '';
         $user     = isset($parsed_url['user']) ? $parsed_url['user'] : '';
-        $pass     = isset($parsed_url['pass']) ? ':'.$parsed_url['pass']  : '';
+        $pass     = isset($parsed_url['pass']) ? ':'.$parsed_url['pass'] : '';
         $pass     = ($user || $pass) ? "$pass@" : '';
         $path     = isset($parsed_url['path']) ? $parsed_url['path'] : '';
         $query    = isset($parsed_url['query']) ? '?'.$parsed_url['query'] : '';

@@ -39,9 +39,9 @@ use Orb\Util\Dates;
 
 class LicenseController extends BaseLicenseController
 {
-    ####################################################################################################################
-    # get-license
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-license
+    //###################################################################################################################
 
     public function getLicenseAction()
     {
@@ -67,32 +67,32 @@ class LicenseController extends BaseLicenseController
 
         $max_agents = License::getLicense()->getMaxAgents();
 
-        return $this->createApiResponse(array(
-            'license' => array(
+        return $this->createApiResponse([
+            'license' => [
                 'expireDate'  => $lic->getExpireDate() ? $lic->getExpireDate()->format($this->settings->get('core.date_full')) : null,
                 'isExpired'   => $is_expired,
                 'expireDays'  => $expire_in_days,
                 'isDemo'      => $lic->isDemo() ? true : false,
                 'maxAgents'   => $lic->getMaxAgents(),
                 'licenseCode' => '',
-            ),
-            'limits' => array(
+            ],
+            'limits' => [
                 'max_agents'    => $max_agents,
                 'count_agents'  => $current_agents,
                 'remain_agents' => 1, // override for cloud because we handle it automatically
-            ),
-        ));
+            ],
+        ]);
     }
 
-    ####################################################################################################################
-    # get-billing-login-token
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-billing-login-token
+    //###################################################################################################################
 
     public function getBillingLoginTokenAction()
     {
         $tmpdata = new TmpData();
         $tmpdata->setType('dpc_billing_access');
-        $tmpdata->setData('person_info', array(
+        $tmpdata->setData('person_info', [
             'helpdesk_url'   => rtrim($this->container->getBrandSetting('core.deskpro_url'), '/'),
             'asset_url'      => str_replace('/index.php', '', rtrim($this->container->getBrandSetting('core.deskpro_url'), '/')),
             'person_id'      => $this->person->getId(),
@@ -106,7 +106,7 @@ class LicenseController extends BaseLicenseController
             'can_billing'    => $this->person->can_billing,
             'can_reports'    => $this->person->can_reports,
             'can_portal'     => $this->container->getSetting('user.portal_enabled'),
-        ));
+        ]);
         $tmpdata->date_expire = new \DateTime('+15 minutes');
 
         $this->em->persist($tmpdata);
@@ -117,15 +117,15 @@ class LicenseController extends BaseLicenseController
         $url = DP_MA_SERVER_SECURE.'/cloud/start/'.DPC_SITE_ID.'/'.$code;
         if (defined('DP_CLOUD_LIC_URL')) {
             $url = str_replace(
-                array('{SITE_ID}', '{SITE_AUTH}'),
-                array(DPC_SITE_ID, $code),
+                ['{SITE_ID}', '{SITE_AUTH}'],
+                [DPC_SITE_ID, $code],
                 DP_CLOUD_LIC_URL
             );
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'code'   => $code,
             'ma_url' => $url,
-        ));
+        ]);
     }
 }

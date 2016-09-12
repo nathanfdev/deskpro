@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -52,9 +52,9 @@ class CsvUploadController extends AbstractController implements ProtectedControl
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # upload
-    ####################################################################################################################
+    //###################################################################################################################
+    // upload
+    //###################################################################################################################
 
     public function uploadAction()
     {
@@ -72,9 +72,9 @@ class CsvUploadController extends AbstractController implements ProtectedControl
         return $this->createApiResponse($result);
     }
 
-    ####################################################################################################################
-    # import
-    ####################################################################################################################
+    //###################################################################################################################
+    // import
+    //###################################################################################################################
 
     public function importAction()
     {
@@ -96,9 +96,9 @@ class CsvUploadController extends AbstractController implements ProtectedControl
         return $this->createApiResponse($result);
     }
 
-    ####################################################################################################################
-    # status
-    ####################################################################################################################
+    //###################################################################################################################
+    // status
+    //###################################################################################################################
 
     public function statusAction()
     {
@@ -117,7 +117,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
      */
     public function logsAction()
     {
-        $logs      = array();
+        $logs      = [];
         $deletions = $this->getDeletionStatus();
         foreach ($this->em->getRepository('DeskPRO:DataStore')->getByPrefix('csv_import.') as $entity) {
             $data                    = $entity->toApiData();
@@ -139,19 +139,19 @@ class CsvUploadController extends AbstractController implements ProtectedControl
 
         $statuses = $this->getDeletionStatus();
         if ('waiting' === @$statuses[$ref]) {
-            return $this->createApiResponse(array());
+            return $this->createApiResponse([]);
         }
 
         $queue = $this->container->getJobQueue();
         $queue->add(
             UsersImportProcessor::JOB_TYPE,
-            array(
+            [
             'context_person_id' => $this->person['id'],
             'labeled_by'        => 'import-'.$ref,
-        ));
+        ]);
         $this->em->flush();
 
-        return $this->createApiResponse(array());
+        return $this->createApiResponse([]);
     }
 
     /**
@@ -161,12 +161,12 @@ class CsvUploadController extends AbstractController implements ProtectedControl
      */
     protected function getDeletionStatus()
     {
-        $res = array();
+        $res = [];
         $rep = $this->em->getRepository('DeskPRO:Job');
 
         foreach ($rep->findBy(
-            array('type' => UsersImportProcessor::JOB_TYPE),
-            array('date_created' => 'desc'),
+            ['type' => UsersImportProcessor::JOB_TYPE],
+            ['date_created' => 'desc'],
             1
         ) as $job) {
             /* @var $job Job */
@@ -180,10 +180,10 @@ class CsvUploadController extends AbstractController implements ProtectedControl
 
             $ref    = str_replace('import-', '', $ref);
             $status = $job['status'];
-            if (in_array($status, array('rejected', 'aborted'))) {
+            if (in_array($status, ['rejected', 'aborted'])) {
                 $status = 'error';
             }
-            if (in_array($status, array('inserting', 'reserved', 'processing'))) {
+            if (in_array($status, ['inserting', 'reserved', 'processing'])) {
                 $status = 'waiting';
             }
 

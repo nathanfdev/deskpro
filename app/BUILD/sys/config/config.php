@@ -39,9 +39,9 @@ $loader->import(__DIR__.'/config.legacy.yml');
 $loader->import(__DIR__.'/updater/loggers.yml');
 $loader->import(__DIR__.'/updater/services.yml');
 
-############################################################################
-# Parameters
-############################################################################
+//###########################################################################
+// Parameters
+//###########################################################################
 
 $container->setParameter('kernel.include_core_classes', false);
 $container->setParameter('controller_resolver.class', 'Application\\DeskPRO\\HttpKernel\\Controller\\ControllerResolver');
@@ -65,37 +65,37 @@ $container->setParameter('twig.class', 'Application\\DeskPRO\\Twig\\Environment'
 $container->setParameter('templating.globals.class', 'Application\\DeskPRO\\Templating\\GlobalVariables');
 $container->setParameter('twig.extension.trans.class', 'Application\\DeskPRO\\Twig\\Extension\\TranslationExtension');
 
-############################################################################
-# Services
-############################################################################
+//###########################################################################
+// Services
+//###########################################################################
 
 // session.storage
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\HttpFoundation\\SessionStorage\\SessionEntityStorage');
 $definition->setArguments(
-    array(
+    [
         new Reference('doctrine.orm.entity_manager'),
         '%session.storage.options%',
         new Reference('settings_resolver'),
-    )
+    ]
 );
 $container->setDefinition('session.storage', $definition);
 
 // twig.helpers.deskpro_templating
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Twig\\Extension\\TemplatingExtension');
-$definition->setArguments(array(
+$definition->setArguments([
     new Reference('service_container'),
-));
-$definition->addTag('twig.extension', array());
+]);
+$definition->addTag('twig.extension', []);
 $container->setDefinition('twig.helpers.deskpro_templating', $definition);
 
 // twig.helpers.deskpro_userdate
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Twig\\Extension\\UserDateExtension');
-$definition->setArguments(array(
+$definition->setArguments([
     new Reference('service_container'),
-));
+]);
 $definition->addTag('twig.extension');
 $container->setDefinition('twig.helpers.deskpro_userdate', $definition);
 
@@ -107,17 +107,17 @@ $container->setDefinition('deskpro.interface_value', $definition);
 // doctrine.orm.default_result_cache
 $definition = new Definition();
 $definition->setClass('Orb\\Doctrine\\Common\\Cache\\PreloadedMysqlCache');
-$definition->setArguments(array(
+$definition->setArguments([
     new Reference('database_connection'),
-));
-$definition->addMethodCall('setPrefix', array('dres', new Reference('deskpro.interface_value')));
+]);
+$definition->addMethodCall('setPrefix', ['dres', new Reference('deskpro.interface_value')]);
 $container->setDefinition('default_result_cache', $definition);
 
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\ORM\\ContainerAwareEntityListenerResolver');
-$definition->setArguments(array(
+$definition->setArguments([
     new Reference('service_container'),
-));
+]);
 $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
 
 // deskpro.logging.null_handler
@@ -128,23 +128,23 @@ $container->setDefinition('deskpro.logging.null_handler', $definition);
 // deskpro.service_urls
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
-$definition->addMethodCall('loadPack', array('%kernel.root_dir%/config/service-urls.php'));
+$definition->addMethodCall('loadPack', ['%kernel.root_dir%/config/service-urls.php']);
 $container->setDefinition('deskpro.service_urls', $definition);
 
-############################################################################
-# Validators and Constraints
-############################################################################
+//###########################################################################
+// Validators and Constraints
+//###########################################################################
 
 // deskpro.constraint_factory
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Validator\\Constraints\\ConstraintFactory');
-$definition->setArguments(array(new Reference('service_container')));
+$definition->setArguments([new Reference('service_container')]);
 $container->setDefinition('deskpro.constraint_factory', $definition);
 
-foreach (array(
+foreach ([
     'Application\\DeskPRO\\Validator\\Constraints\\AgentGroupValidator',
     'Application\\DeskPRO\\Validator\\Constraints\\AgentTeamValidator',
-) as $class) {
+] as $class) {
     $parts     = explode('\\', $class);
     $base_name = array_pop($parts);
 
@@ -153,67 +153,67 @@ foreach (array(
     $definition = new Definition();
     $definition->setClass($class);
     $definition->setFactory([new Reference('deskpro.constraint_factory'), 'get'.ucfirst($base_name)]);
-    $definition->addTag('validator.constraint_validator', array('alias' => $alias));
+    $definition->addTag('validator.constraint_validator', ['alias' => $alias]);
     $container->setDefinition('validator.deskpro.'.strtolower($alias), $definition);
 }
 
-############################################################################
-# Framework Configuration
-############################################################################
+//###########################################################################
+// Framework Configuration
+//###########################################################################
 
-$container->loadFromExtension('framework', array(
+$container->loadFromExtension('framework', [
     'secret'     => 'irrelevant - compiler pass will override this',
-    'templating' => array(
-        'engines'          => array('twig', 'php', 'jsonphp'),
+    'templating' => [
+        'engines'          => ['twig', 'php', 'jsonphp'],
         'assets_base_urls' => 'http://bogus/SET_IN_ASSET_PACKAGE_PASS',
-        'packages'         => array(
-            'app_assets'    => array('base_url' => 'http://bogus/SET_IN_ASSET_PACKAGE_PASS'),
-            'appsrc_assets' => array('base_url' => 'http://bogus/SET_IN_ASSET_PACKAGE_PASS'),
-        ),
-    ),
-    'validation' => array('enabled' => true, 'static_method' => array('loadValidatorMetadata'), 'api' => '2.4'),
-    'session'    => array(),
-    'form'       => array('enabled' => true),
-    'router'     => array(
+        'packages'         => [
+            'app_assets'    => ['base_url' => 'http://bogus/SET_IN_ASSET_PACKAGE_PASS'],
+            'appsrc_assets' => ['base_url' => 'http://bogus/SET_IN_ASSET_PACKAGE_PASS'],
+        ],
+    ],
+    'validation' => ['enabled' => true, 'static_method' => ['loadValidatorMetadata'], 'api' => '2.4'],
+    'session'    => [],
+    'form'       => ['enabled' => true],
+    'router'     => [
         'resource' => DP_ROOT.'/sys/config/routing.php',
-    ),
-));
+    ],
+]);
 
 // templating.engine.jsonphp
 $definition = new Definition();
 $definition->setClass('Orb\\Templating\\Engine\\PhpVarJsonEngine');
 $definition->setArguments(
-    array(
+    [
         new Reference('templating.name_parser'),
         new Reference('service_container'),
         new Reference('templating.loader'),
         new Reference('templating.globals'),
-    )
+    ]
 );
-$definition->addTag('templating.engine', array('alias' => 'jsonphp'));
+$definition->addTag('templating.engine', ['alias' => 'jsonphp']);
 $container->setDefinition('templating.engine.jsonphp', $definition);
 
-############################################################################
-# Twig Configuration
-############################################################################
+//###########################################################################
+// Twig Configuration
+//###########################################################################
 
-$container->loadFromExtension('twig', array(
-    'form' => array(
-        'resources' => array(
+$container->loadFromExtension('twig', [
+    'form' => [
+        'resources' => [
             'DeskPRO:Form:form_div_layout.html.twig',
-        ),
-    ),
-    'globals' => array(
+        ],
+    ],
+    'globals' => [
         'experimental_admin_features' => false,
-    ),
-));
+    ],
+]);
 
-############################################################################
-# DeskPRO Configuration
-############################################################################
+//###########################################################################
+// DeskPRO Configuration
+//###########################################################################
 
-$container->loadFromExtension('deskpro_core', array());
+$container->loadFromExtension('deskpro_core', []);
 //$container->loadFromExtension('deskpro_search', array()); -- already included in config.shared.php
 if ($container->hasExtension('deskpro_api_core')) {
-    $container->loadFromExtension('deskpro_api_core', array());
+    $container->loadFromExtension('deskpro_api_core', []);
 }

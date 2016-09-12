@@ -174,22 +174,22 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 date_touch = :date_touch
             WHERE id = :job_id
             ',
-            array(
+            [
                 'log_summary'      => $log_summary,
                 'detailed_logs'    => $detailed_logs,
                 'completed_status' => Job::STATUS_COMPLETE,
                 'status_code'      => $status_code,
                 'date_touch'       => new \DateTime(),
                 'job_id'           => $job['id'],
-            ),
-            array(
+            ],
+            [
                 'log_summary'      => 'string',
                 'detailed_logs'    => 'text',
                 'completed_status' => 'string',
                 'status_code'      => 'string',
                 'date_touch'       => 'datetime',
                 'job_id'           => 'integer',
-            )
+            ]
         );
     }
 
@@ -214,22 +214,22 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 date_touch = :date_touch
             WHERE id = :job_id
             ',
-            array(
+            [
                 'log_summary'      => $log_summary,
                 'detailed_logs'    => $detailed_logs,
                 'completed_status' => Job::STATUS_REJECTED,
                 'status_code'      => $status_code,
                 'date_touch'       => new \DateTime(),
                 'job_id'           => $job['id'],
-            ),
-            array(
+            ],
+            [
                 'log_summary'      => 'string',
                 'detailed_logs'    => 'text',
                 'completed_status' => 'string',
                 'status_code'      => 'string',
                 'date_touch'       => 'datetime',
                 'job_id'           => 'integer',
-            )
+            ]
         );
     }
 
@@ -256,22 +256,22 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 has_warning = 1
             WHERE id = :job_id
             ',
-            array(
+            [
                 'log_summary'   => $log_summary,
                 'detailed_logs' => $this->formatExceptionIntoString($e),
                 'error_status'  => Job::STATUS_ERROR,
                 'status_code'   => $status_code,
                 'date_touch'    => new \DateTime(),
                 'job_id'        => $job['id'],
-            ),
-            array(
+            ],
+            [
                 'log_summary'   => 'string',
                 'detailed_logs' => 'text',
                 'error_status'  => 'string',
                 'status_code'   => 'string',
                 'date_touch'    => 'datetime',
                 'job_id'        => 'integer',
-            )
+            ]
         );
     }
 
@@ -300,18 +300,18 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 worker_id = NULL
             WHERE id = :job_id
             ',
-            array(
+            [
                 'date_now'       => new \DateTime(),
                 'date_retry'     => $retry_date,
                 'waiting_status' => Job::STATUS_WAITING,
                 'job_id'         => $job['id'],
-            ),
-            array(
+            ],
+            [
                 'date_now'       => 'datetime',
                 'date_retry'     => 'datetime',
                 'waiting_status' => 'string',
                 'job_id'         => 'integer',
-            )
+            ]
         );
     }
 
@@ -331,14 +331,14 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
             SET date_touch = :date_now
             WHERE id = :job_id
             ',
-            array(
+            [
                 'date_now' => new \DateTime(),
                 'job_id'   => $job['id'],
-            ),
-            array(
+            ],
+            [
                 'date_now' => 'datetime',
                 'job_id'   => 'integer',
-            )
+            ]
         );
     }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,15 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat\Portal\Page;
 
 class AgentBar extends BasePage
 {
     protected $path       = '/';
-    protected $parameters = array('base_url' => '/');
-    protected $elements   = array(
-        'Agent Bar' => array('css' => '#agent-bar'),
-    );
+    protected $parameters = ['base_url' => '/'];
+    protected $elements   = [
+        'Agent Bar' => ['css' => '#agent-bar'],
+    ];
 
     public function isAgentBarOnPage()
     {

@@ -222,7 +222,7 @@ class PersonController extends AbstractController implements ProtectedController
      */
     public function searchAction()
     {
-        $search_map = array(
+        $search_map = [
             'address'         => PersonSearch::TERM_CONTACT_ADDRESS,
             'agent_team_id'   => PersonSearch::TERM_AGENT_TEAM,
             'alpha'           => PersonSearch::TERM_ALPHA,
@@ -235,43 +235,43 @@ class PersonController extends AbstractController implements ProtectedController
             'organization_id' => PersonSearch::TERM_ORGANIZATION,
             'phone'           => PersonSearch::TERM_CONTACT_PHONE,
             'usergroup_id'    => PersonSearch::TERM_USERGROUP,
-        );
+        ];
 
-        $terms = array();
+        $terms = [];
 
         foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
-                $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
+                $terms[] = ['type' => $search_key, 'op' => 'contains', 'options' => $value];
             }
         }
 
         if ($this->in->checkIsset('is_agent')) {
             if ($this->in->getBool('is_agent')) {
-                $terms[] = array('type' => PersonSearch::TERM_AGENT_MODE, 'op' => 'is', 'options' => 1);
+                $terms[] = ['type' => PersonSearch::TERM_AGENT_MODE, 'op' => 'is', 'options' => 1];
             } else {
-                $terms[] = array('type' => PersonSearch::TERM_USER_MODE, 'op' => 'is', 'options' => 1);
+                $terms[] = ['type' => PersonSearch::TERM_USER_MODE, 'op' => 'is', 'options' => 1];
             }
         }
 
         $date_created_start = $this->in->getUint('date_created_start');
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
-            $terms[] = array('type' => PersonSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => PersonSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
                 'date1' => $date_created_start,
                 'date2' => $date_created_end,
-            ));
+            ]];
         } elseif ($date_created_start) {
-            $terms[] = array('type' => PersonSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => PersonSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
                 'date1' => $date_created_start,
-            ));
+            ]];
         }
 
         foreach ($this->container->getSystemService('person_fields_manager')->getFields() as $field) {
             if ($this->in->checkIsset('field.'.$field->getId())) {
                 $in_val = $this->in->getString('field.'.$field->getId());
                 if ($in_val) {
-                    $terms[] = array('type' => 'person_field['.$field->getId().']', 'op' => 'is', 'options' => array('value' => $in_val));
+                    $terms[] = ['type' => 'person_field['.$field->getId().']', 'op' => 'is', 'options' => ['value' => $in_val]];
                 }
             }
         }
@@ -285,7 +285,7 @@ class PersonController extends AbstractController implements ProtectedController
             }
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -304,13 +304,13 @@ class PersonController extends AbstractController implements ProtectedController
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
         $people   = App::getEntityRepository('DeskPRO:Person')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => count($person_ids),
             'cache_id' => $result_cache->id,
             'people'   => $this->getApiData($people),
-        ));
+        ]);
     }
 
     /**
@@ -457,7 +457,7 @@ class PersonController extends AbstractController implements ProtectedController
         }
 
         $person = new Person();
-        $errors = array();
+        $errors = [];
 
         if ($this->in->checkIsset('name')) {
             $person->name = $this->in->getString('name');
@@ -512,11 +512,11 @@ class PersonController extends AbstractController implements ProtectedController
 
         $email = $this->in->getString('email');
         if (!$email || !\Orb\Validator\StringEmail::isValueValid($email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($email)) {
-            $errors['email'] = array('required_field.email', 'email is empty or invalid');
+            $errors['email'] = ['required_field.email', 'email is empty or invalid'];
         } else {
             $check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
             if ($check_exists) {
-                $errors['email'] = array('invalid_argument.email', 'email already exists');
+                $errors['email'] = ['invalid_argument.email', 'email already exists'];
             } else {
                 $person->setEmail($email);
             }
@@ -524,11 +524,11 @@ class PersonController extends AbstractController implements ProtectedController
 
         foreach ($this->in->getCleanValueArray('secondary_email', 'string') as $secondary_email) {
             if (!$secondary_email || !\Orb\Validator\StringEmail::isValueValid($secondary_email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($secondary_email)) {
-                $errors['secondary_email'] = array('invalid_argument.secondary_email', 'secondary_email is empty or invalid');
+                $errors['secondary_email'] = ['invalid_argument.secondary_email', 'secondary_email is empty or invalid'];
             } else {
                 $check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($secondary_email);
                 if ($check_exists) {
-                    $errors['secondary_email'] = array('invalid_argument.secondary_email', 'secondary_email already exists');
+                    $errors['secondary_email'] = ['invalid_argument.secondary_email', 'secondary_email already exists'];
                 } else {
                     $person->addEmailAddressString($secondary_email);
                 }
@@ -576,9 +576,9 @@ class PersonController extends AbstractController implements ProtectedController
             if ($this->in->getBool('via_agent')) {
                 $tpl = 'DeskPRO:emails_user:register-welcome-byagent.html.twig';
             }
-            $message->setTemplate($tpl, array(
+            $message->setTemplate($tpl, [
                 'person' => $person,
-            ));
+            ]);
             App::getMailer()->send($message);
         }
 
@@ -617,7 +617,7 @@ class PersonController extends AbstractController implements ProtectedController
     {
         $person = $this->_getPersonOr404($person_id);
 
-        return $this->createApiResponse(array('person' => $person->toApiData()));
+        return $this->createApiResponse(['person' => $person->toApiData()]);
     }
 
     /**
@@ -720,7 +720,7 @@ class PersonController extends AbstractController implements ProtectedController
     {
         $person = $this->_getPersonOr404($person_id, 'edit');
 
-        $errors = array();
+        $errors = [];
 
         if ($this->in->checkIsset('name')) {
             $person->name = $this->in->getString('name');
@@ -740,7 +740,7 @@ class PersonController extends AbstractController implements ProtectedController
             $check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
             if ($check_exists) {
                 if ($check_exists->id != $person->id) {
-                    $errors['primary_email'] = array('invalid_argument.primary_email', 'email already exists');
+                    $errors['primary_email'] = ['invalid_argument.primary_email', 'email already exists'];
                 }
             } else {
                 $person->setEmail($email);
@@ -820,20 +820,20 @@ class PersonController extends AbstractController implements ProtectedController
             $person->timezone = $this->in->getString('timezone');
         }
 
-        $bulk_set = array(
+        $bulk_set = [
             'summary'               => 'String',
             'disable_autoresponses' => 'Bool',
             'is_disabled'           => 'Bool',
-        );
+        ];
         foreach ($bulk_set as $input => $type) {
             if ($this->in->checkIsset($input)) {
                 $person->$input = $this->in->{'get'.$type}($input);
             }
         }
 
-        return array(
+        return [
             'new_org' => $org,
-        );
+        ];
     }
 
     /**
@@ -931,11 +931,11 @@ class PersonController extends AbstractController implements ProtectedController
             $size = 80;
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'has_picture' => $person->hasPicture(),
             'picture_url' => $person->getPictureUrl($size),
             'size'        => $size,
-        ));
+        ]);
     }
 
     /**
@@ -982,7 +982,7 @@ class PersonController extends AbstractController implements ProtectedController
             $error = $accept->getError($file, 'agent');
             if (!$error) {
                 $set = new \Application\DeskPRO\Attachments\RestrictionSet();
-                $set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+                $set->setAllowedExts(['gif', 'png', 'jpg', 'jpeg']);
                 $accept->addRestrictionSet('only_images', $set);
                 $error = $accept->getError($file, 'only_images');
             }
@@ -1061,7 +1061,7 @@ class PersonController extends AbstractController implements ProtectedController
     {
         $person = $this->_getPersonOr404($person_id);
 
-        return $this->createApiResponse(array('emails' => $this->getApiData($person->emails)));
+        return $this->createApiResponse(['emails' => $this->getApiData($person->emails)]);
     }
 
     /**
@@ -1196,7 +1196,7 @@ class PersonController extends AbstractController implements ProtectedController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        return $this->createApiResponse(array('email' => $this->getApiData($email)));
+        return $this->createApiResponse(['email' => $this->getApiData($email)]);
     }
 
     /**
@@ -1487,12 +1487,12 @@ class PersonController extends AbstractController implements ProtectedController
         $activity = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person, $per_page, $offset);
         $total    = $this->em->getRepository('DeskPRO:PersonActivity')->countForPerson($person);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => $total,
             'activity' => $this->getApiData($activity),
-        ));
+        ]);
     }
 
     /**
@@ -1539,13 +1539,13 @@ class PersonController extends AbstractController implements ProtectedController
     {
         $person = $this->_getPersonOr404($person_id);
 
-        $terms = array(
-            array(
+        $terms = [
+            [
                 'type'    => \Application\DeskPRO\Searcher\TicketSearch::TERM_PERSON,
                 'op'      => 'contains',
-                'options' => array($person->id),
-            ),
-        );
+                'options' => [$person->id],
+            ],
+        ];
 
         if ($this->in->checkIsset('order')) {
             $order_by = $this->in->getString('order');
@@ -1553,7 +1553,7 @@ class PersonController extends AbstractController implements ProtectedController
             $order_by = 'ticket.date_created:desc';
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -1572,13 +1572,13 @@ class PersonController extends AbstractController implements ProtectedController
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
         $tickets  = App::getEntityRepository('DeskPRO:Ticket')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => count($person_ids),
             'cache_id' => $result_cache->id,
             'tickets'  => $this->getApiData($tickets),
-        ));
+        ]);
     }
 
     /**
@@ -1618,17 +1618,17 @@ class PersonController extends AbstractController implements ProtectedController
     {
         $person = $this->_getPersonOr404($person_id);
 
-        $terms = array(
-            array(
+        $terms = [
+            [
                 'type'    => \Application\DeskPRO\Searcher\ChatConversationSearch::TERM_PERSON,
                 'op'      => 'contains',
-                'options' => array($person->id),
-            ),
-        );
+                'options' => [$person->id],
+            ],
+        ];
 
         $order_by = 'chat_conversations.id:desc';
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -1647,13 +1647,13 @@ class PersonController extends AbstractController implements ProtectedController
         $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
         $chats    = App::getEntityRepository('DeskPRO:ChatConversation')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => count($ids),
             'cache_id' => $result_cache->id,
             'chats'    => $this->getApiData($chats),
-        ));
+        ]);
     }
 
     /**
@@ -1705,15 +1705,15 @@ class PersonController extends AbstractController implements ProtectedController
         }
 
         $person->setPassword($password);
-        $this->db->delete('sessions', array('person_id' => $person->id));
+        $this->db->delete('sessions', ['person_id' => $person->id]);
         $this->em->persist($person);
 
         if ($send_email) {
             $message = $this->container->getMailer()->createMessage();
             $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-            $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
+            $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', [
                 'person' => $person,
-            ));
+            ]);
             $this->container->getMailer()->send($message);
         }
 
@@ -1743,7 +1743,7 @@ class PersonController extends AbstractController implements ProtectedController
     public function clearSessionAction($person_id)
     {
         $person = $this->_getPersonOr404($person_id, 'reset_password');
-        $this->db->delete('sessions', array('person_id' => $person->id));
+        $this->db->delete('sessions', ['person_id' => $person->id]);
 
         return $this->createSuccessResponse();
     }
@@ -1772,7 +1772,7 @@ class PersonController extends AbstractController implements ProtectedController
         $person = $this->_getPersonOr404($person_id);
         $notes  = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
 
-        return $this->createApiResponse(array('notes' => $this->getApiData($notes)));
+        return $this->createApiResponse(['notes' => $this->getApiData($notes)]);
     }
 
     /**
@@ -1864,14 +1864,14 @@ class PersonController extends AbstractController implements ProtectedController
         $person_charges       = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForPerson($person, $per_page, $offset);
         $person_charge_totals = $this->em->getRepository('DeskPRO:TicketCharge')->getTotalChargesForPerson($person);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'total_charge_time'   => $person_charge_totals['charge_time'],
             'total_charge_amount' => $person_charge_totals['charge'],
             'total'               => $person_charge_totals['count'],
             'per_page'            => $per_page,
             'page'                => $page,
             'charges'             => $this->getApiData($person_charges),
-        ));
+        ]);
     }
 
     /**
@@ -1897,7 +1897,7 @@ class PersonController extends AbstractController implements ProtectedController
     {
         $person = $this->_getPersonOr404($person_id);
 
-        return $this->createApiResponse(array('details' => $this->getApiData($person->contact_data)));
+        return $this->createApiResponse(['details' => $this->getApiData($person->contact_data)]);
     }
 
     /**
@@ -1955,7 +1955,7 @@ class PersonController extends AbstractController implements ProtectedController
             return $this->createApiErrorResponse('required_field.data', 'data is empty or missing');
         }
 
-        if (in_array($type, array('fax', 'mobile', 'phone'))) {
+        if (in_array($type, ['fax', 'mobile', 'phone'])) {
             return $this->createApiErrorResponse('error', 'Please use "/people/{person_id}/phone_numbers" API.');
         }
 
@@ -2028,11 +2028,11 @@ class PersonController extends AbstractController implements ProtectedController
 
         foreach ($person->contact_data as $contact) {
             if ($contact->id == $contact_id) {
-                return $this->createApiResponse(array('exists' => true));
+                return $this->createApiResponse(['exists' => true]);
             }
         }
 
-        return $this->createApiResponse(array('exists' => false));
+        return $this->createApiResponse(['exists' => false]);
     }
 
     /**
@@ -2100,7 +2100,7 @@ class PersonController extends AbstractController implements ProtectedController
     {
         $person = $this->_getPersonOr404($person_id);
 
-        return $this->createApiResponse(array('groups' => $this->getApiData($person->usergroups)));
+        return $this->createApiResponse(['groups' => $this->getApiData($person->usergroups)]);
     }
 
     /**
@@ -2141,7 +2141,7 @@ class PersonController extends AbstractController implements ProtectedController
             WHERE id = ?
                 AND sys_name IS NULL
                 AND is_agent_group = 0
-        ', array($group_id));
+        ', [$group_id]);
         if (!$match) {
             return $this->createApiErrorResponse('required_field', 'id must be specified as a non-system group');
         }
@@ -2154,10 +2154,10 @@ class PersonController extends AbstractController implements ProtectedController
         }
 
         if (!$exists) {
-            $this->db->insert('person2usergroups', array(
+            $this->db->insert('person2usergroups', [
                 'person_id'    => $person->id,
                 'usergroup_id' => $group_id,
-            ));
+            ]);
         }
 
         return $this->createApiCreateResponse(
@@ -2202,11 +2202,11 @@ class PersonController extends AbstractController implements ProtectedController
 
         foreach ($person->usergroups as $group) {
             if ($group->id == $usergroup_id) {
-                return $this->createApiResponse(array('exists' => true));
+                return $this->createApiResponse(['exists' => true]);
             }
         }
 
-        return $this->createApiResponse(array('exists' => false));
+        return $this->createApiResponse(['exists' => false]);
     }
 
     /**
@@ -2277,7 +2277,7 @@ class PersonController extends AbstractController implements ProtectedController
     {
         $person = $this->_getPersonOr404($person_id);
 
-        return $this->createApiResponse(array('labels' => $this->getApiData($person->labels)));
+        return $this->createApiResponse(['labels' => $this->getApiData($person->labels)]);
     }
 
     /**
@@ -2360,9 +2360,9 @@ class PersonController extends AbstractController implements ProtectedController
         $person = $this->_getPersonOr404($person_id);
 
         if ($person->getLabelManager()->hasLabel($label)) {
-            return $this->createApiResponse(array('exists' => true));
+            return $this->createApiResponse(['exists' => true]);
         } else {
-            return $this->createApiResponse(array('exists' => false));
+            return $this->createApiResponse(['exists' => false]);
         }
     }
 
@@ -2417,7 +2417,7 @@ class PersonController extends AbstractController implements ProtectedController
         $field_manager = $this->container->getSystemService('person_fields_manager');
         $fields        = $field_manager->getFields();
 
-        return $this->createApiResponse(array('fields' => $this->getApiData($fields)));
+        return $this->createApiResponse(['fields' => $this->getApiData($fields)]);
     }
 
     /**
@@ -2438,7 +2438,7 @@ class PersonController extends AbstractController implements ProtectedController
             ORDER BY g.id
         ')->execute();
 
-        return $this->createApiResponse(array('groups' => $this->getApiData($groups)));
+        return $this->createApiResponse(['groups' => $this->getApiData($groups)]);
     }
 
     /**
@@ -2470,11 +2470,11 @@ class PersonController extends AbstractController implements ProtectedController
         $secret = sha1($person->secret_string.$person->salt);
         $token  = Util::generateStaticSecurityToken($secret, 300);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'person_id'        => $person_id,
             'login_token'      => $token,
-            'direct_login_url' => $this->generateUrl('user_login', array('tok' => $person_id.'-'.$token), UrlGeneratorInterface::ABSOLUTE_URL),
-        ));
+            'direct_login_url' => $this->generateUrl('user_login', ['tok' => $person_id.'-'.$token], UrlGeneratorInterface::ABSOLUTE_URL),
+        ]);
     }
 
     public function isPersonEditable(Person $person)
@@ -2542,7 +2542,7 @@ class PersonController extends AbstractController implements ProtectedController
             $request->get('exclude_org'), $request->get('limit')
         );
 
-        $ret = array();
+        $ret = [];
         foreach ($res as $item) {
             $ret[] = $item;
         }
@@ -2608,18 +2608,18 @@ class PersonController extends AbstractController implements ProtectedController
         }
 
         if (!$result->isValid()) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'error_code'    => 'invalid_credentials',
                 'error_message' => 'Invalid email address or password',
-            ), 401);
+            ], 401);
         }
 
         $identity = $result->getIdentity();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => 'true',
             'person'  => $identity['person']->toApiData(),
-        ), 200);
+        ], 200);
     }
 
     /**

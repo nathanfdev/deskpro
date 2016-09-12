@@ -56,7 +56,7 @@ class TicketFieldManager extends FieldManager
     public function getFields()
     {
         if ($this->fields === null) {
-            $this->fields = array();
+            $this->fields = [];
             $all_fields   = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 
             foreach ($all_fields as $f) {
@@ -68,7 +68,7 @@ class TicketFieldManager extends FieldManager
 
                 if ($p = $f->getParentId()) {
                     if (!isset($this->field_to_children[$p])) {
-                        $this->field_to_children[$p] = array();
+                        $this->field_to_children[$p] = [];
                     }
                     $this->field_to_children[$p][$f->getId()] = $f;
                 }
@@ -116,7 +116,7 @@ class TicketFieldManager extends FieldManager
             $old_value = $handler->renderText($all_display_data[$field_def->id]['value']);
 
             if ($old_value) {
-                $old_value = trim(str_replace(array("\n", "\r\n"), ' ', strip_tags($old_value)));
+                $old_value = trim(str_replace(["\n", "\r\n"], ' ', strip_tags($old_value)));
             }
         }
 
@@ -128,15 +128,15 @@ class TicketFieldManager extends FieldManager
             $handler          = $all_display_data[$field_def->id]['handler'];
             $new_value        = $handler->renderText($all_display_data[$field_def->id]['value']);
             if ($new_value) {
-                $new_value = trim(str_replace(array("\n", "\r\n"), ' ', strip_tags($new_value)));
+                $new_value = trim(str_replace(["\n", "\r\n"], ' ', strip_tags($new_value)));
             }
         }
 
         if (($new_value || $old_value) && ($new_value != $old_value)) {
             $ticket->getTicketLogger()->recordMultiPropertyChanged(
                 'custom_data',
-                array('field_def' => $field_def, 'value' => $old_value),
-                array('field_def' => $field_def, 'value' => $new_value)
+                ['field_def' => $field_def, 'value' => $old_value],
+                ['field_def' => $field_def, 'value' => $new_value]
             );
         }
 

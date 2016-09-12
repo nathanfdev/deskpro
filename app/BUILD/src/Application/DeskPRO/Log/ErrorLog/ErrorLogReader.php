@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Log\ErrorLog;
 
 class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
@@ -138,11 +139,11 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
      */
     protected function _initItems()
     {
-        if ($this->items !==  null) {
+        if ($this->items !== null) {
             return;
         }
 
-        $this->items = array();
+        $this->items = [];
 
         $fp = @fopen($this->path, 'r');
         if (!$fp) {
@@ -150,7 +151,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         }
 
         $last_id   = null;
-        $log_lines = array();
+        $log_lines = [];
 
         while (($l = fgets($fp)) !== false) {
             $m = null;
@@ -160,7 +161,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
                 if ($log_lines && $last_id) {
                     $this->_initItem($last_id, $log_lines);
                 }
-                $log_lines = array();
+                $log_lines = [];
                 continue;
             }
 
@@ -169,7 +170,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 
             if ($log_lines && $last_id != $id) {
                 $this->_initItem($last_id, $log_lines);
-                $log_lines = array();
+                $log_lines = [];
             }
 
             $log_lines[] = $txt;
@@ -202,14 +203,14 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 
         $log_lines = implode("\n", $log_lines);
 
-        $item = array(
+        $item = [
             'id'      => $id,
             'summary' => \Orb\Util\Strings::extractRegexMatch('#^(Error|Exception): (.*?)$#m', $log_lines, 2),
             'date'    => \Orb\Util\Strings::extractRegexMatch('#^Date: (.*?)(\(.*?\))?$#m', $log_lines, 1),
             'type'    => \Orb\Util\Strings::extractRegexMatch('#^Type: (.*?)$#m', $log_lines, 1),
             'build'   => \Orb\Util\Strings::extractRegexMatch('#^Build: (.*?)$#m', $log_lines, 1),
             'log'     => $this->store_raw ? $log_lines : null,
-        );
+        ];
 
         if ($this->timezone) {
             $date = \DateTime::createFromFormat('Y-m-d H:i:s', $item['date'], new \DateTimeZone('UTC'));
@@ -280,7 +281,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
     {
         // Already done a full parse,
         // just return the real count
-        if ($this->items !==  null) {
+        if ($this->items !== null) {
             return $this->count();
         }
 

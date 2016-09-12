@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Cloud\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\Controller\AgentsController as BaseAgentsController;
@@ -65,7 +66,7 @@ class AgentsController extends BaseAgentsController
             $url = DP_MA_SERVER_SECURE.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
 
             try {
-                $client = new \Zend\Http\Client(null, array('timeout' => 15, 'sslverifypeer' => false));
+                $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
                 $client->setMethod(\Zend\Http\Request::METHOD_GET);
                 $client->setUri($url);
                 $client->send();

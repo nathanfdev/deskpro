@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 /**
@@ -44,10 +45,10 @@ class RecycleBinController extends AbstractController
             $ticket_html = $tickets['html'];
         }
 
-        return $this->render('AgentBundle:RecycleBin:list.html.twig', array(
+        return $this->render('AgentBundle:RecycleBin:list.html.twig', [
             'tickets_html'            => $ticket_html,
             'tickets_no_more_results' => $tickets['no_more_results'],
-        ));
+        ]);
     }
 
     public function listMoreAction($type, $page)
@@ -55,26 +56,26 @@ class RecycleBinController extends AbstractController
         $method = '_get'.ucfirst($type);
         $res    = $this->$method($page);
 
-        $return_res = array(
+        $return_res = [
             'html'            => $res['html'],
             'count'           => $res['count'],
             'no_more_results' => $res['no_more_results'],
-        );
+        ];
 
         return $this->createJsonResponse($return_res);
     }
 
-    ############################################################################
-    # fetcher methods for different types
-    ############################################################################
+    //###########################################################################
+    // fetcher methods for different types
+    //###########################################################################
 
     protected function _getTickets($page = 1)
     {
         $per_page = 10;
-        $pageinfo = array(
+        $pageinfo = [
             'limit'  => $per_page,
             'offset' => ($page - 1) * $per_page,
-        );
+        ];
 
         $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
         $searcher->addTerm('deleted', 'is', 1);
@@ -82,7 +83,7 @@ class RecycleBinController extends AbstractController
         $results = $searcher->getMatches($pageinfo);
 
         if (!$results) {
-            return array('no_more_results' => true);
+            return ['no_more_results' => true];
         }
 
         $no_more = false;
@@ -90,16 +91,16 @@ class RecycleBinController extends AbstractController
             $no_more = true;
         }
 
-        $deleted_tickets = array();
+        $deleted_tickets = [];
         $tickets         = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($results);
 
-        $vars = array(
+        $vars = [
             'tickets'         => $tickets,
             'count'           => count($tickets),
             'deleted_tickets' => $deleted_tickets,
             'page'            => $page,
             'no_more_results' => $no_more,
-        );
+        ];
 
         $vars['html'] = $this->renderView('AgentBundle:RecycleBin:list-tickets.html.twig', $vars);
 

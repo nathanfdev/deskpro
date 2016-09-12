@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Cutter\Def;
 
 use Orb\Util\Strings;
@@ -125,10 +126,10 @@ class Generic implements ForwardDef, QuoteDef
             return;
         }
 
-        $parts = array(
+        $parts = [
             array_slice($body, 0, $start_line),
             array_slice($body, $start_line),
-        );
+        ];
 
         $parts[0] = implode("\n", $parts[0]);
         $parts[1] = implode("\n", $parts[1]);
@@ -146,7 +147,7 @@ class Generic implements ForwardDef, QuoteDef
      */
     public function getForwardInfo($body, $is_html = false)
     {
-        $forward_data = array(
+        $forward_data = [
             'message_body'        => null,
             'fwd_message_body'    => null,
             'fwd_message_headers' => null,
@@ -154,7 +155,7 @@ class Generic implements ForwardDef, QuoteDef
             'fwd_from_name'       => null,
             'fwd_cc_addresses'    => null,
             'fwd_cc_unknown'      => null,
-        );
+        ];
 
         $parts_pattern = null;
         foreach ($this->fwd_patterns as $pattern) {
@@ -193,10 +194,10 @@ class Generic implements ForwardDef, QuoteDef
 
         $forward_data['message_body'] = trim($parts[0]);
 
-        #------------------------------
-        # Split the forwarded message into
-        # a header section and a body
-        #------------------------------
+        //------------------------------
+        // Split the forwarded message into
+        // a header section and a body
+        //------------------------------
 
         // Dequote
         $fwd_message_body = explode("\n", Strings::standardEol($parts[1]));
@@ -209,14 +210,14 @@ class Generic implements ForwardDef, QuoteDef
         $fwd_message_body = implode("\n", $fwd_message_body);
 
         if ($is_html) {
-            $fwd_message_body = str_replace(array('<br />', '<br/>'), '<br>', $fwd_message_body);
+            $fwd_message_body = str_replace(['<br />', '<br/>'], '<br>', $fwd_message_body);
             $fwd_parts        = preg_split('#<br>\s*<br>#i', $fwd_message_body, 2);
         } else {
             $fwd_parts = preg_split('#\n{2}#i', $fwd_message_body, 2);
         }
 
         if (count($fwd_parts) != 2) {
-            $fwd_parts = array($fwd_message_body, $fwd_message_body);
+            $fwd_parts = [$fwd_message_body, $fwd_message_body];
         }
 
         $forward_data['fwd_message_headers'] = trim($fwd_parts[0]);
@@ -226,9 +227,9 @@ class Generic implements ForwardDef, QuoteDef
             $forward_data['fwd_message_body'] = $fwd_message_body;
         }
 
-        #------------------------------
-        # Try to read the email address from the fwd headers
-        #------------------------------
+        //------------------------------
+        // Try to read the email address from the fwd headers
+        //------------------------------
 
         $pos = stripos($forward_data['fwd_message_headers'], 'from');
         if ($pos === false) {
@@ -268,20 +269,20 @@ class Generic implements ForwardDef, QuoteDef
             $forward_data['fwd_from_name'] = $name;
         }
 
-        #------------------------------
-        # Try to read CC addresses
-        #------------------------------
+        //------------------------------
+        // Try to read CC addresses
+        //------------------------------
 
         $cc_line = Strings::extractRegexMatch('#^(CC|Cc): (.*?)$#m', $forward_data['fwd_message_headers'], 2);
         if ($cc_line) {
             $emails = \ezcMailTools::parseEmailAddresses($cc_line, 'UTF-8');
             if ($emails) {
-                $forward_data['fwd_cc_addresses'] = array();
+                $forward_data['fwd_cc_addresses'] = [];
                 foreach ($emails as $e) {
-                    $forward_data['fwd_cc_addresses'][] = array(
+                    $forward_data['fwd_cc_addresses'][] = [
                         'name'  => $e->name,
                         'email' => $e->email,
-                    );
+                    ];
                 }
             } else {
                 $forward_data['fwd_cc_unknown'] = $cc_line;
@@ -311,14 +312,14 @@ class Generic implements ForwardDef, QuoteDef
             $pos = strpos($body, 'DP_TOP_MARK_USER');
             if ($pos === false) {
                 // Try to detect '=== REPLY ABOVE THIS LINE ===' bits
-                $matches = array();
+                $matches = [];
                 if (preg_match(
                         '#(?:=(?:3D)?){3}(?:\s|&nbsp;)*.+(?: \[.+\])?(?:\s|&nbsp;)*(?:=(?:3D)?){3}#',
                         $body,
                         $matches,
                         \PREG_OFFSET_CAPTURE
                 )) {
-                        $pos = $matches[0][1];
+                    $pos = $matches[0][1];
                 }
 
                 if ($pos === false) {

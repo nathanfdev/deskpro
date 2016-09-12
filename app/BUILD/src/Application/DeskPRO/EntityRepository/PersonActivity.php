@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
@@ -45,7 +46,7 @@ class PersonActivity extends AbstractEntityRepository
             FROM DeskPRO:PersonActivity a
             WHERE a.person = ?1
             ORDER BY a.id DESC
-        ')->setMaxResults($max)->setFirstResult($offset)->execute(array(1 => $person['id']));
+        ')->setMaxResults($max)->setFirstResult($offset)->execute([1 => $person['id']]);
     }
 
     public function countForPerson(PersonEntity $person)
@@ -54,7 +55,7 @@ class PersonActivity extends AbstractEntityRepository
             SELECT COUNT(*)
             FROM person_activity
             WHERE person_id = ?
-        ', array($person->id));
+        ', [$person->id]);
     }
 
     public function getForOrganization(OrganizationEntity $org, $max = 30, $offset = 0)
@@ -65,7 +66,7 @@ class PersonActivity extends AbstractEntityRepository
             LEFT JOIN a.person p
             WHERE p.organization = ?1
             ORDER BY a.id DESC
-        ')->setMaxResults($max)->setFirstResult($offset)->execute(array(1 => $org['id']));
+        ')->setMaxResults($max)->setFirstResult($offset)->execute([1 => $org['id']]);
     }
 
     public function countForOrganization(OrganizationEntity $org)
@@ -75,6 +76,6 @@ class PersonActivity extends AbstractEntityRepository
             FROM people
             INNER JOIN person_activity AS act ON (act.person_id = people.id)
             WHERE people.organization_id = ?
-        ', array($org->id));
+        ', [$org->id]);
     }
 }

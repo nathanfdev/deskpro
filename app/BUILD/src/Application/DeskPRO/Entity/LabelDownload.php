@@ -49,9 +49,9 @@ class LabelDownload extends LabelAssocAbstract
      */
     protected $download;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

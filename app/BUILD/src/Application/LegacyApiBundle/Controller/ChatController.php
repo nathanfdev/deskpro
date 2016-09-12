@@ -123,34 +123,34 @@ class ChatController extends AbstractController
      */
     public function searchAction()
     {
-        $search_map = array(
+        $search_map = [
             'agent_id'      => ChatConversationSearch::TERM_AGENT_ID,
             'department_id' => ChatConversationSearch::TERM_DEPARTMENT_ID,
             'label'         => ChatConversationSearch::TERM_LABEL,
             'person_id'     => ChatConversationSearch::TERM_PERSON_ID,
             'status'        => ChatConversationSearch::TERM_STATUS,
-        );
+        ];
 
-        $terms = array();
+        $terms = [];
 
         foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
-                $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
+                $terms[] = ['type' => $search_key, 'op' => 'contains', 'options' => $value];
             }
         }
 
         $date_created_start = $this->in->getUint('date_created_start');
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
-            $terms[] = array('type' => ChatConversationSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => ChatConversationSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
                 'date1' => $date_created_start,
                 'date2' => $date_created_end,
-            ));
+            ]];
         } elseif ($date_created_start) {
-            $terms[] = array('type' => ChatConversationSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => ChatConversationSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
                 'date1' => $date_created_start,
-            ));
+            ]];
         }
 
         /*if ($this->in->checkIsset('order')) {
@@ -161,7 +161,7 @@ class ChatController extends AbstractController
 
         $order_by = 'chat_conversations.id:desc';
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -180,13 +180,13 @@ class ChatController extends AbstractController
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
         $chats    = App::getEntityRepository('DeskPRO:ChatConversation')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => count($person_ids),
             'cache_id' => $result_cache->id,
             'chats'    => $this->getApiData($chats),
-        ));
+        ]);
     }
 
     /**
@@ -214,7 +214,7 @@ class ChatController extends AbstractController
     {
         $chat = $this->_getChatOr404($chat_id);
 
-        return $this->createApiResponse(array('chat' => $chat->toApiData()));
+        return $this->createApiResponse(['chat' => $chat->toApiData()]);
     }
 
     /**
@@ -379,7 +379,7 @@ class ChatController extends AbstractController
     {
         $chat = $this->_getChatOr404($chat_id);
 
-        return $this->createApiResponse(array('messages' => $this->getApiData($chat->messages)));
+        return $this->createApiResponse(['messages' => $this->getApiData($chat->messages)]);
     }
 
     /**
@@ -454,7 +454,7 @@ class ChatController extends AbstractController
     {
         $chat = $this->_getChatOr404($chat_id);
 
-        return $this->createApiResponse(array('participants' => $this->getApiData($chat->participants)));
+        return $this->createApiResponse(['participants' => $this->getApiData($chat->participants)]);
     }
 
     /**
@@ -540,10 +540,10 @@ class ChatController extends AbstractController
         $person = $this->em->find('DeskPRO:Person', $person_id);
 
         if (!$person || !$chat->hasParticipant($person)) {
-            return $this->createApiResponse(array('exists' => false));
+            return $this->createApiResponse(['exists' => false]);
         }
 
-        return $this->createApiResponse(array('exists' => true));
+        return $this->createApiResponse(['exists' => true]);
     }
 
     /**
@@ -611,7 +611,7 @@ class ChatController extends AbstractController
     {
         $chat = $this->_getChatOr404($chat_id);
 
-        return $this->createApiResponse(array('labels' => $this->getApiData($chat->labels)));
+        return $this->createApiResponse(['labels' => $this->getApiData($chat->labels)]);
     }
 
     /**
@@ -694,9 +694,9 @@ class ChatController extends AbstractController
         $chat = $this->_getChatOr404($chat_id);
 
         if ($chat->getLabelManager()->hasLabel($label)) {
-            return $this->createApiResponse(array('exists' => true));
+            return $this->createApiResponse(['exists' => true]);
         } else {
-            return $this->createApiResponse(array('exists' => false));
+            return $this->createApiResponse(['exists' => false]);
         }
     }
 

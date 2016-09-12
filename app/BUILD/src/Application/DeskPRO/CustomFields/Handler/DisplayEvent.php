@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\EventDispatcher\DataEvent;
@@ -39,7 +40,7 @@ class DisplayEvent extends DataEvent implements FilterPluginInterface
     /** @var array */
     protected $field_def;
 
-    public function __construct($field_def, $data = array())
+    public function __construct($field_def, $data = [])
     {
         parent::__construct($data);
         $this->field_def = $field_def;

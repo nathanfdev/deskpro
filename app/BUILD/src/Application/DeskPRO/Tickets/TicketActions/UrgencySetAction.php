@@ -114,9 +114,9 @@ class UrgencySetAction extends AbstractAction implements PermissionableAction
         $tr = App::getTranslator();
 
         if ($this->allow_lower) {
-            return $tr->phrase('admin.tickets.set_urgency_to_x', array('urgency' => $this->num));
+            return $tr->phrase('admin.tickets.set_urgency_to_x', ['urgency' => $this->num]);
         } else {
-            return $tr->phrase('admin.tickets.set_urgency_to_x_when_lower', array('urgency' => $this->num));
+            return $tr->phrase('admin.tickets.set_urgency_to_x_when_lower', ['urgency' => $this->num]);
         }
     }
 }

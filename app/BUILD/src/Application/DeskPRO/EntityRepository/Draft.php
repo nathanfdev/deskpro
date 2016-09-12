@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -57,18 +58,18 @@ class Draft extends AbstractEntityRepository
             WHERE d.content_type = ?0
                 AND d.content_id = ?1
                 AND d.person = ?2
-        ')->setParameters(array($content_type, $content_id, $person))->getOneOrNullResult();
+        ')->setParameters([$content_type, $content_id, $person])->getOneOrNullResult();
     }
 
     public function getActiveDrafts($content_type, $content_id, $update_offset = 600)
     {
         if (!$content_id) {
-            return array();
+            return [];
         }
 
         if (!is_array($content_id)) {
             $single_set = $content_id;
-            $content_id = array($content_id);
+            $content_id = [$content_id];
         } else {
             $single_set = false;
         }
@@ -81,15 +82,15 @@ class Draft extends AbstractEntityRepository
                 AND d.content_id IN (?1)
                 AND d.date_created >= ?2
             ORDER BY d.date_created
-        ')->execute(array($content_type, $content_id, new \DateTime("-$update_offset seconds")));
+        ')->execute([$content_type, $content_id, new \DateTime("-$update_offset seconds")]);
 
-        $output = array();
+        $output = [];
         foreach ($drafts as $draft) {
             $output[$draft->content_id][$draft->person->getId()] = $draft;
         }
 
         if ($single_set) {
-            return isset($output[$single_set]) ? $output[$single_set] : array();
+            return isset($output[$single_set]) ? $output[$single_set] : [];
         } else {
             return $output;
         }
@@ -105,7 +106,7 @@ class Draft extends AbstractEntityRepository
      *
      * @return \Application\DeskPRO\Entity\Draft
      */
-    public function insertDraft($content_type, $content_id, $message, $message_html, array $extras = array(), Entity\Person $person = null)
+    public function insertDraft($content_type, $content_id, $message, $message_html, array $extras = [], Entity\Person $person = null)
     {
         if (!$person) {
             $person = App::getCurrentPerson();
@@ -129,21 +130,21 @@ class Draft extends AbstractEntityRepository
                 $this->getEntityManager()->getConnection()->executeUpdate('
                     DELETE FROM drafts
                     WHERE content_type = ? AND content_id = ? AND person_id =? AND id != ?
-                ', array(
+                ', [
                     $content_type,
                     $content_id,
                     $person->getId(),
                     $draft->id,
-                ));
+                ]);
             } else {
                 $this->getEntityManager()->getConnection()->executeUpdate('
                     DELETE FROM drafts
                     WHERE content_type = ? AND content_id = ? AND person_id =?
-                ', array(
+                ', [
                     $content_type,
                     $content_id,
                     $person->getId(),
-                ));
+                ]);
             }
 
             $this->getEntityManager()->persist($draft);
@@ -167,25 +168,25 @@ class Draft extends AbstractEntityRepository
             App::getOrm()->flush();
 
             if ($content_type == 'ticket') {
-                App::getDb()->insert('client_messages', array(
+                App::getDb()->insert('client_messages', [
                     'channel'      => 'agent.ticket-draft-updated',
                     'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                     'date_created' => date('Y-m-d H:i:s'),
-                    'data'         => serialize(array(
+                    'data'         => serialize([
                         'ticket_id'  => $content_id,
                         'draft_html' => false,
                         'via_person' => $person->getId(),
-                    )),
-                ));
+                    ]),
+                ]);
             }
         }
     }
 
     public function deleteDraftsForContent($content_type, $content_id)
     {
-        App::getDb()->delete('drafts', array(
+        App::getDb()->delete('drafts', [
             'content_type' => $content_type,
             'content_id'   => $content_id,
-        ));
+        ]);
     }
 }

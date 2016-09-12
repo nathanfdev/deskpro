@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth\Adapter;
 
 use Orb\Auth\Result;
@@ -154,7 +155,7 @@ abstract class OrbRemoteLoginAuth extends PluginAdapter implements SessionStateI
      *
      * @var array
      */
-    protected $got_data = array();
+    protected $got_data = [];
 
     /**
      * @param string $consumer_key
@@ -204,19 +205,19 @@ abstract class OrbRemoteLoginAuth extends PluginAdapter implements SessionStateI
             return $this->_initiate();
         }
 
-        #------------------------------
-        # Verify the callback
-        #------------------------------
+        //------------------------------
+        // Verify the callback
+        //------------------------------
 
         $check_verify = sha1($this->got_data['orba_access_token'].$state['orba_user_key']);
 
         if ($check_verify != $this->got_data['orba_verify']) {
-            return new Result(Result::FAILURE, null, array('error_code' => self::ERR_INVALID_TOKEN, 'error_message' => 'Invalid verify token'));
+            return new Result(Result::FAILURE, null, ['error_code' => self::ERR_INVALID_TOKEN, 'error_message' => 'Invalid verify token']);
         }
 
-        #------------------------------
-        # Now fetch the data
-        #------------------------------
+        //------------------------------
+        // Now fetch the data
+        //------------------------------
 
         $http = $this->getHttpClient();
         $http->resetParameters();
@@ -236,10 +237,10 @@ abstract class OrbRemoteLoginAuth extends PluginAdapter implements SessionStateI
         }
 
         if (isset($data['is_error'])) {
-            return new Result(Result::FAILURE, null, array('error_code' => self::ERR_SERVICE_ERR, 'error_message' => 'Service reported error', 'service_data' => $data));
+            return new Result(Result::FAILURE, null, ['error_code' => self::ERR_SERVICE_ERR, 'error_message' => 'Service reported error', 'service_data' => $data]);
         }
 
-        $identity = new \Orb\Auth\Identity($data['identity'], isset($data['userinfo']) ? $data['userinfo'] : array());
+        $identity = new \Orb\Auth\Identity($data['identity'], isset($data['userinfo']) ? $data['userinfo'] : []);
         $result   = new Result(Result::SUCCESS, $identity);
 
         return $result;
@@ -253,9 +254,9 @@ abstract class OrbRemoteLoginAuth extends PluginAdapter implements SessionStateI
         // The user key used in various signings
         $user_key = \Orb\Util\DpStrings::random(20, \Orb\Util\Strings::CHARS_ALPHANUM_IU);
 
-        #------------------------------
-        # Initiate the request on the service
-        #------------------------------
+        //------------------------------
+        // Initiate the request on the service
+        //------------------------------
 
         $http = $this->getHttpClient();
         $http->resetParameters();
@@ -271,10 +272,10 @@ abstract class OrbRemoteLoginAuth extends PluginAdapter implements SessionStateI
             throw new \UnexpectedValueException('Invalid JSON returned from service');
         }
 
-        #------------------------------
-        # Now store the tokens in the session and
-        # redirect the user
-        #------------------------------
+        //------------------------------
+        // Now store the tokens in the session and
+        // redirect the user
+        //------------------------------
 
         $state['orba_user_key'] = $user_key;
 
@@ -288,7 +289,7 @@ abstract class OrbRemoteLoginAuth extends PluginAdapter implements SessionStateI
         $redirect_url .= '&orba_verify='.sha1($service_data['orba_token'].$user_key);
         $redirect_url .= '&redirect_url='.urlencode($this->redirect_url);
 
-        $result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
+        $result = new Result(Result::REQUIRES_REDIRECT, null, [Result::MSG_REDIRECT => $redirect_url]);
 
         return $result;
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,13 +31,14 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
 class CheckedOptionsException extends \Exception
 {
-    /** @var array  */
+    /** @var array */
     public $validator_errors;
-    /** @var array  */
+    /** @var array */
     public $validator_error_info;
 
     public function __construct($message, array $errors, array $error_info, $code = 0, $previous = null)

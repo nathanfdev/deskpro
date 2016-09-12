@@ -195,7 +195,7 @@ class Runner
     }
 
     /**
-     * @param int $time_limit The max time spent processing email before we break.
+     * @param int $time_limit The max time spent processing email before we break
      */
     public function execute($time_limit = 0)
     {
@@ -219,14 +219,14 @@ class Runner
                 // this round. This prevents some accounts from being 'skipped'
                 // if checking is particularly slow (ie due to "Breaking, out of time" below)
                 usort($accounts, function ($a, $b) {
-                   $ad = Util::coalesce($a->date_last_incoming, $a->date_read_start, new \DateTime('-7 days'));
-                   $bd = Util::coalesce($b->date_last_incoming, $b->date_read_start, new \DateTime('-7 days'));
+                    $ad = Util::coalesce($a->date_last_incoming, $a->date_read_start, new \DateTime('-7 days'));
+                    $bd = Util::coalesce($b->date_last_incoming, $b->date_read_start, new \DateTime('-7 days'));
 
-                   if ($ad == $bd) {
-                       return 0;
-                   }
+                    if ($ad == $bd) {
+                        return 0;
+                    }
 
-                   return $ad < $bd ? -1 : 1;
+                    return $ad < $bd ? -1 : 1;
                 });
             }
 
@@ -283,7 +283,7 @@ class Runner
         switch ($result->created_object_type) {
             case 'ticket':
                 $this->logger->logDebug("--> Verifying ticket {$id}");
-                $t = App::$container->getDb()->fetchColumn('SELECT id FROM tickets WHERE id = ?', array($id));
+                $t = App::$container->getDb()->fetchColumn('SELECT id FROM tickets WHERE id = ?', [$id]);
                 if ($t) {
                     $this->logger->logDebug("--> Ticket {$id} OKAY");
                     $check_result = true;
@@ -295,7 +295,7 @@ class Runner
 
             case 'ticket_message':
                 $this->logger->logDebug("--> Verifying ticket message {$id}");
-                $t = App::$container->getDb()->fetchColumn('SELECT id FROM tickets_messages WHERE id = ?', array($id));
+                $t = App::$container->getDb()->fetchColumn('SELECT id FROM tickets_messages WHERE id = ?', [$id]);
                 if ($t) {
                     $this->logger->logDebug("--> Ticket message {$id} OKAY");
                     $check_result = true;
@@ -332,28 +332,27 @@ class Runner
     {
         global $DP_SET_SOURCE_STATUS;
         if (!$DP_SET_SOURCE_STATUS) {
-            $DP_SET_SOURCE_STATUS = array();
+            $DP_SET_SOURCE_STATUS = [];
         }
 
         $db = App::$container->getDb();
         $id = $source->id;
 
         if (!isset($DP_SET_SOURCE_STATUS[$id])) {
-            $DP_SET_SOURCE_STATUS[$id] = array();
+            $DP_SET_SOURCE_STATUS[$id] = [];
         }
 
-        $DP_SET_SOURCE_STATUS[$id] = array_merge($DP_SET_SOURCE_STATUS[$id], array(
+        $DP_SET_SOURCE_STATUS[$id] = array_merge($DP_SET_SOURCE_STATUS[$id], [
             'status'      => $source->status,
             'error_code'  => $source->error_code,
-            'source_info' => serialize($source->source_info ?: array()),
-        ));
+            'source_info' => serialize($source->source_info ?: []),
+        ]);
 
         if ($manual_set) {
             $DP_SET_SOURCE_STATUS[$id] = array_merge($DP_SET_SOURCE_STATUS[$id], $manual_set);
         }
 
         \DpShutdown::add(function () use ($db, $id) {
-
             global $DP_SET_SOURCE_STATUS;
             if (empty($DP_SET_SOURCE_STATUS[$id])) {
                 return;
@@ -370,7 +369,7 @@ class Runner
             }
 
             try {
-                $db->update('email_sources', $set, array('id' => $id));
+                $db->update('email_sources', $set, ['id' => $id]);
             } catch (\Exception $e) {
                 SystemErrorHandler::logException($e);
             }
@@ -479,16 +478,16 @@ class Runner
         } catch (\Exception $e) {
             $message = substr($e->getMessage(), 0, 500);
             $source_logger->logDebug("--> Processor exception: {$e->getCode()} ".$message);
-            $result = array(
+            $result = [
                 'status'      => 'error',
                 'error_code'  => 'server_error',
-                'source_info' => array(
+                'source_info' => [
                     'exception' => get_class($e),
                     'message'   => $message,
                     'code'      => $e->getCode(),
                     'trace'     => SystemErrorHandler::formatBacktrace($e->getTrace()),
-                ),
-            );
+                ],
+            ];
 
             if ($allow_retry) {
                 $do_retry = true;
@@ -511,14 +510,14 @@ class Runner
         // Verify object
         if ($result->status == 'okay') {
             if (!$this->verifyCreatedObject($result)) {
-                $new_result = new OptionsArray(array(
+                $new_result = new OptionsArray([
                     'status'      => 'error',
                     'error_code'  => 'server_error',
-                    'source_info' => array(
+                    'source_info' => [
                         'Failed to verify created object',
                         'Expected: '.$result->created_object_type.' '.$result->created_object_id,
-                    ),
-                ));
+                    ],
+                ]);
 
                 $result = $new_result;
 
@@ -539,7 +538,7 @@ class Runner
                 $return_result       = true;
                 $source->status      = 'complete';
                 $source->error_code  = null;
-                $source->source_info = $result->source_info ?: array();
+                $source->source_info = $result->source_info ?: [];
                 $source->object_type = $result->created_object_type;
                 $source->object_id   = $result->created_object_id;
                 $source->object_info = $result->created_object_info;
@@ -550,7 +549,7 @@ class Runner
                 $return_result       = true;
                 $source->status      = 'rejected';
                 $source->error_code  = $result->error_code ?: 'server_error';
-                $source->source_info = $result->source_info ?: array();
+                $source->source_info = $result->source_info ?: [];
                 $source_logger->logError("Status: REJECTED {$source->error_code}");
                 break;
 
@@ -558,7 +557,7 @@ class Runner
                 $return_result       = true;
                 $source->status      = 'rejected_soft';
                 $source->error_code  = $result->error_code ?: 'server_error';
-                $source->source_info = $result->source_info ?: array();
+                $source->source_info = $result->source_info ?: [];
                 $source_logger->logError("Status: REJECTED SOFT {$source->error_code}");
                 break;
 
@@ -566,7 +565,7 @@ class Runner
                 $return_result       = false;
                 $source->status      = 'error';
                 $source->error_code  = $result->error_code ?: 'server_error';
-                $source->source_info = $result->source_info ?: array();
+                $source->source_info = $result->source_info ?: [];
                 $source_logger->logError("Status: ERROR {$source->error_code}");
                 break;
 
@@ -574,7 +573,7 @@ class Runner
                 $return_result       = true;
                 $source->status      = 'error';
                 $source->error_code  = $result->error_code ?: 'server_error';
-                $source->source_info = $result->source_info ?: array();
+                $source->source_info = $result->source_info ?: [];
                 $source_logger->logWarn("Unknown status type: {$result->status}");
                 break;
         }
@@ -627,11 +626,11 @@ BODY;
                 $log_messages,
                 'email-process.log',
                 'plain/text',
-                array('tag' => 'logs.email_source_log')
+                ['tag' => 'logs.email_source_log']
             );
             $source_logger->logInfo("Log blob {$log_blob_row['id']}");
 
-            $this->ensureSourceStatus($source, array('log_blob_id' => $log_blob_row['id']));
+            $this->ensureSourceStatus($source, ['log_blob_id' => $log_blob_row['id']]);
 
             if (!$did_rollback) {
                 $blob               = App::$container->getEm()->find('DeskPRO:Blob', $log_blob_row['id']);
@@ -650,7 +649,7 @@ BODY;
 
         if (!$saved_log) {
             $source_logger->logDebug('Couldnt save log blob, saving to source info instead');
-            $source->source_info = array_merge($source->source_info, array('log' => $log_messages));
+            $source->source_info = array_merge($source->source_info, ['log' => $log_messages]);
             $this->ensureSourceStatus($source);
         }
 
@@ -682,8 +681,8 @@ BODY;
      * limit will be exceeded (e.g., time limit of 10, message starts processing at 9 seconds so it continues).
      *
      * @param \Application\DeskPRO\Entity\EmailAccount $account
-     * @param int                                      $time_limit   The max time spent processing email before we break.
-     * @param bool                                     $only_collect Only collect and save the emails, don't process them now.
+     * @param int                                      $time_limit   The max time spent processing email before we break
+     * @param bool                                     $only_collect Only collect and save the emails, don't process them now
      *
      * @throws \Exception
      */
@@ -700,8 +699,8 @@ BODY;
         $account->date_read_start = new \DateTime();
         App::$container->getDb()->update(
             'email_accounts',
-            array('date_read_start' => $account->date_read_start->format('Y-m-d H:i:s')),
-            array('id'              => $account->id)
+            ['date_read_start' => $account->date_read_start->format('Y-m-d H:i:s')],
+            ['id'              => $account->id]
         );
 
         /** @var $fetcher \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher */
@@ -721,7 +720,7 @@ BODY;
         $created_obj = null;
         $reader      = null;
 
-        $inserted_source_ids = array();
+        $inserted_source_ids = [];
 
         $only_collect = $only_collect || $DP_ENV->getConfig('adv_email_process');
 
@@ -731,12 +730,12 @@ BODY;
                 email_sources
                 WHERE status IN ('inserted', 'retry') AND email_account_id = ?
                 ORDER BY id ASC
-            ", array($account->getId()));
+            ", [$account->getId()]);
 
             $this->logger->logDebug(sprintf('%d inserted messages being processed first', count($inserted_source_ids)));
         }
 
-        $processed_source_ids = array();
+        $processed_source_ids = [];
 
         while (true) {
             // Make sure any records are flusehd
@@ -824,10 +823,10 @@ BODY;
                         $this->logger->log('Sending too-big email response', 'debug');
 
                         $message = App::getMailer()->createMessage();
-                        $message->setTemplate('DeskPRO:emails_user:email-too-big.html.twig', array(
+                        $message->setTemplate('DeskPRO:emails_user:email-too-big.html.twig', [
                             'subject'  => $subject,
                             'max_size' => Numbers::filesizeDisplay($max_size),
-                        ));
+                        ]);
                         $message->setTo($from_email);
                         App::getMailer()->send($message);
                     }
@@ -847,8 +846,8 @@ BODY;
                     $source->status = 'retry';
                     App::$container->getDb()->update(
                         'email_sources',
-                        array('status' => $source->status, 'date_status' => $source->date_status->format('Y-m-d H:i:s')),
-                        array('id'     => $source->id)
+                        ['status' => $source->status, 'date_status' => $source->date_status->format('Y-m-d H:i:s')],
+                        ['id'     => $source->id]
                     );
                 }
             }
@@ -902,8 +901,8 @@ BODY;
         $account->is_read_active     = false;
         App::$container->getDb()->update(
             'email_accounts',
-            array('date_last_incoming' => $account->date_last_incoming->format('Y-m-d H:i:s'), 'is_read_active' => 0),
-            array('id'                 => $account->id)
+            ['date_last_incoming' => $account->date_last_incoming->format('Y-m-d H:i:s'), 'is_read_active' => 0],
+            ['id'                 => $account->id]
         );
 
         $fetcher->close();
@@ -932,7 +931,7 @@ BODY;
         $from_headers = Arrays::removeFalsey($from_headers);
 
         if (!$from_headers) {
-            $from_headers = array('from');
+            $from_headers = ['from'];
         }
 
         return $from_headers;

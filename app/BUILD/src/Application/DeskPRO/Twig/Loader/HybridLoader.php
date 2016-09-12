@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,8 +44,8 @@ use Application\DeskPRO\App;
  */
 class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 {
-    protected $crashed_custom_templates = array();
-    protected $template_info            = array();
+    protected $crashed_custom_templates = [];
+    protected $template_info            = [];
 
     public function markCustomTemplateAsCrashed($name)
     {
@@ -102,7 +102,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
                 FROM templates
                 WHERE id = ?
             ',
-                array($this->template_info[$name]['id'])
+                [$this->template_info[$name]['id']]
             );
         }
 

@@ -35,7 +35,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplySetProductAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
-    /** @var  Product */
+    /** @var Product */
     private $product;
 
     public function init()

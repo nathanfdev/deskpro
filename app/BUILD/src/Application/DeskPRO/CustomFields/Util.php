@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
@@ -74,7 +75,7 @@ class Util
     public function createDataHierarchy($field_datas, $field_defs)
     {
         // Create a map of keys
-        $data_keys = array();
+        $data_keys = [];
         foreach ($field_datas as $k => $v) {
             $data_keys[$v['field']['id']] = $k;
         }
@@ -84,10 +85,10 @@ class Util
 
     protected function _createDataHierarchy($data_keys, $field_datas, $field_defs)
     {
-        $structure = array();
+        $structure = [];
 
         foreach ($field_defs as $def) {
-            $structure[$def['id']] = array('value' => null, 'children' => null);
+            $structure[$def['id']] = ['value' => null, 'children' => null];
             if (isset($data_keys[$def['id']])) {
                 $structure[$def['id']]['value'] = $field_datas[$data_keys[$def['id']]]->getData();
             }
@@ -117,7 +118,7 @@ class Util
         $field_defs = App::getEntityRepository($entity_def)->getFields();
         $field      = App::getEntityRepository($entity_def)->find($field_id);
 
-        $action_custm_datas = array();
+        $action_custm_datas = [];
 
         $data_classname = App::getEntityRepository($entity_data)->getEntityName();
 

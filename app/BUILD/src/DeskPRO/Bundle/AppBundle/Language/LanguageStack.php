@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Language;
 
 use Application\DeskPRO\Entity\Language;
@@ -85,8 +86,8 @@ class LanguageStack
 
     public function __construct(SettingsResolver $settings_resolver, LanguageRepo $language_repo)
     {
-        $this->stack             = array();
-        $this->languages         = array();
+        $this->stack             = [];
+        $this->languages         = [];
         $this->settings_resolver = $settings_resolver;
         $this->language_repo     = $language_repo;
     }

@@ -41,7 +41,7 @@ use Application\DeskPRO\Entity\Ticket;
 class AddSlaAction extends AbstractAction
 {
     /** @var array */
-    protected $sla_ids = array();
+    protected $sla_ids = [];
 
     public function __construct($sla_id)
     {
@@ -102,7 +102,7 @@ class AddSlaAction extends AbstractAction
         $tr   = App::getTranslator();
         $slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
 
-        $titles = array();
+        $titles = [];
         foreach ($slas as $sla) {
             $titles[$sla->id] = $as_html ? htmlspecialchars($sla->title) : $sla->title;
         }
@@ -113,6 +113,6 @@ class AddSlaAction extends AbstractAction
             }
         }
 
-        return $tr->phrase('agent.tickets.add_sla_action', array('sla' => $titles ? implode(', ', $titles) : '[unknown]'));
+        return $tr->phrase('agent.tickets.add_sla_action', ['sla' => $titles ? implode(', ', $titles) : '[unknown]']);
     }
 }

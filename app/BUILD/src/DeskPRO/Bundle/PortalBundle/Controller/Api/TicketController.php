@@ -84,7 +84,7 @@ class TicketController extends AbstractApiController
             ]);
         }
 
-        /** @var NewTicket $ticket_service */
+        /* @var NewTicket $ticket_service */
         $ticketService = $this->get('tickets.new_ticket');
         $ticket        = $ticketService->createNewTicket(
             $request,

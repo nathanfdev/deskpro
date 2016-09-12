@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -58,14 +59,14 @@ class TicketStatusTermSpec extends ObjectBehavior
         $resolver = $this->getOptionsResolver();
         $resolver->isDefined('status')->shouldBe(true);
         $resolver->getConstraints()->shouldBeLike(
-            array(
-                'status' => array(
+            [
+                'status' => [
                     new Assert\NotBlank(),
                     new Assert\Type('array'),
                     new Assert\Choice(
-                        array(
+                        [
                             'multiple' => true,
-                            'choices'  => array(
+                            'choices'  => [
                                 Ticket::STATUS_ARCHIVED,
                                 Ticket::STATUS_AWAITING_AGENT,
                                 Ticket::STATUS_AWAITING_USER,
@@ -74,11 +75,11 @@ class TicketStatusTermSpec extends ObjectBehavior
                                 Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_DELETED,
                                 Ticket::HIDDEN_STATUS_SPAM,
                                 Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_SPAM,
-                            ),
-                        )
+                            ],
+                        ]
                     ),
-                ),
-            )
+                ],
+            ]
         );
     }
 }

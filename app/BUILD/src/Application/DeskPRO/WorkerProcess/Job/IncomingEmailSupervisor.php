@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -40,7 +41,7 @@ class IncomingEmailSupervisor extends AbstractJob
     /**
      * @var array
      */
-    private $report = array();
+    private $report = [];
 
     /**
      * @var int
@@ -90,9 +91,9 @@ class IncomingEmailSupervisor extends AbstractJob
     {
         $db = App::$container->getDb();
 
-        #------------------------------
-        # Check for accounts that arent running
-        #------------------------------
+        //------------------------------
+        // Check for accounts that arent running
+        //------------------------------
 
         $cutoff = date('Y-m-d H:i:s', time() - 600);
 
@@ -100,15 +101,15 @@ class IncomingEmailSupervisor extends AbstractJob
             SELECT id
             FROM email_accounts
             WHERE date_read_start < ? AND is_enabled = 1 AND account_type = 'tickets' AND is_read_active = 0
-        ", array($cutoff));
+        ", [$cutoff]);
 
         if ($ids) {
             $this->report[] = '[WARNING] The following email accounts have not been read in >= 10 minutes: '.implode(', ', $ids).'. This could indicate that your mail collection routine is not running properly.';
         }
 
-        #------------------------------
-        # Check for timeouts
-        #------------------------------
+        //------------------------------
+        // Check for timeouts
+        //------------------------------
 
         $cutoff = date('Y-m-d H:i:s', time() - 1500);
 
@@ -116,12 +117,12 @@ class IncomingEmailSupervisor extends AbstractJob
             SELECT id
             FROM email_accounts
             WHERE is_read_active = 1 AND date_read_start < ?
-        ', array($cutoff));
+        ', [$cutoff]);
 
         if ($ids) {
-            $db->updateIn('email_accounts', array(
+            $db->updateIn('email_accounts', [
                 'is_read_active' => 0,
-            ), $ids);
+            ], $ids);
             $this->report[] = '[WARNING] The following email accounts timed-out during a collection task: '.implode(', ', $ids).'. The accounts were re-started.';
         }
     }
@@ -130,10 +131,10 @@ class IncomingEmailSupervisor extends AbstractJob
     {
         $db = App::$container->getDb();
 
-        #------------------------------
-        # Try to re-queue old inserted messages
-        # as a way for error-retying
-        #------------------------------
+        //------------------------------
+        // Try to re-queue old inserted messages
+        // as a way for error-retying
+        //------------------------------
 
         $cutoff = date('Y-m-d H:i:s', $this->last_check - 360);
 
@@ -143,20 +144,20 @@ class IncomingEmailSupervisor extends AbstractJob
             SELECT id
             FROM email_sources
             WHERE status = 'inserted' AND date_status <= ?
-        ", array($cutoff));
+        ", [$cutoff]);
 
         if ($ids) {
-            $db->updateIn('email_sources', array(
+            $db->updateIn('email_sources', [
                 'status'      => 'retry',
                 'date_status' => date('Y-m-d H:i:s'),
-            ), $ids);
+            ], $ids);
         }
 
         $db->commit();
 
-        #------------------------------
-        # Warn about emails taking too long
-        #------------------------------
+        //------------------------------
+        // Warn about emails taking too long
+        //------------------------------
 
         $cutoff = date('Y-m-d H:i:s', $this->last_check - 900);
 
@@ -164,15 +165,15 @@ class IncomingEmailSupervisor extends AbstractJob
             SELECT COUNT(*)
             FROM email_sources
             WHERE status = 'retry' AND date_status BETWEEN ? AND ? AND exec_count = 0
-        ", array($cutoff, $this->last_check));
+        ", [$cutoff, $this->last_check]);
 
         if ($count) {
             $this->report[] = "[WARNING] Detected {$count} emails that have been waiting for processing for more than 15 minutes. This could indicate a problem with your mail processing tasks.";
         }
 
-        #------------------------------
-        # Error-out emails waiting for too long
-        #------------------------------
+        //------------------------------
+        // Error-out emails waiting for too long
+        //------------------------------
 
         $cutoff = date('Y-m-d H:i:s', $this->last_check - 2700);
 
@@ -180,14 +181,14 @@ class IncomingEmailSupervisor extends AbstractJob
             SELECT id
             FROM email_sources
             WHERE status = 'retry' AND date_status <= ?
-        ", array($cutoff));
+        ", [$cutoff]);
 
         if ($ids) {
-            $db->updateIn('email_sources', array(
+            $db->updateIn('email_sources', [
                 'status'      => 'error',
                 'error_code'  => 'timeout',
                 'date_status' => date('Y-m-d H:i:s'),
-            ), $ids);
+            ], $ids);
 
             $count          = count($ids);
             $this->report[] = "[WARNING] Detected {$count} emails that have been in the 'retry' status for a long time. They have been logged as an error::timeout status.";
@@ -204,7 +205,7 @@ class IncomingEmailSupervisor extends AbstractJob
             SELECT COUNT(*)
             FROM email_sources
             WHERE status = 'error' AND date_status BETWEEN ? AND ?
-        ", array($cutoff, $this->last_check));
+        ", [$cutoff, $this->last_check]);
 
         if ($count) {
             $this->report[] = "[WARNING] Detected {$count} emails marked with an 'error' status.";
@@ -230,10 +231,10 @@ class IncomingEmailSupervisor extends AbstractJob
             SELECT id FROM email_sources
             WHERE status = 'retry'
             AND date_status >= ?
-        ", array($cutoff));
+        ", [$cutoff]);
 
         if ($ids) {
-            $db->updateIn('email_sources', array('date_status' => date('Y-m-d H:i:s')), $ids);
+            $db->updateIn('email_sources', ['date_status' => date('Y-m-d H:i:s')], $ids);
         }
 
         $db->commit();

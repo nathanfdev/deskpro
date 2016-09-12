@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -98,7 +98,7 @@ class AgentHours
         if ($dt2) {
             $vars['view_date2'] = $dt2;
 
-            $days     = array();
+            $days     = [];
             $date_run = clone $dt;
             while ($date_run <= $dt2) {
                 $y = $date_run->format('Y');
@@ -106,10 +106,10 @@ class AgentHours
                 $d = $date_run->format('j');
 
                 if (!isset($days[$y])) {
-                    $days[$y] = array();
+                    $days[$y] = [];
                 }
                 if (!isset($days[$y][$m])) {
-                    $days[$y][$m] = array();
+                    $days[$y][$m] = [];
                 }
 
                 $days[$y][$m][$d] = $d;
@@ -145,7 +145,7 @@ class AgentHours
             $end_date->sub(new \DateInterval('PT1S')); // Remove a single second to stop overlap.
         }
 
-        $date_range = array($start_date->format('Y-m-d H:i:s'), $end_date->format('Y-m-d H:i:s'));
+        $date_range = [$start_date->format('Y-m-d H:i:s'), $end_date->format('Y-m-d H:i:s')];
 
         $agent_ids = $db->fetchAll(
             'SELECT DISTINCT agent_id FROM agent_activity WHERE date_active BETWEEN ? AND ?',
@@ -155,10 +155,10 @@ class AgentHours
 
         $block_size = 5;
 
-        $agents     = array();
-        $times      = array();
-        $times_hour = array();
-        $totals     = array();
+        $agents     = [];
+        $times      = [];
+        $times_hour = [];
+        $totals     = [];
 
         foreach ($agent_ids as $agent_id) {
             $agent_id = $agent_id['agent_id'];
@@ -166,11 +166,11 @@ class AgentHours
 
             $active_times = $db->fetchAll(
                 'SELECT date_active FROM agent_activity WHERE agent_id = ? AND date_active BETWEEN ? AND ? ORDER BY date_active',
-                array_merge(array($agent_id), $date_range)
+                array_merge([$agent_id], $date_range)
             );
 
-            $times[$agent_id]      = array();
-            $times_hour[$agent_id] = array();
+            $times[$agent_id]      = [];
+            $times_hour[$agent_id] = [];
 
             foreach ($active_times as $time) {
                 $dt = $this->mysqlDateToPhpDate($time['date_active']);
@@ -182,23 +182,23 @@ class AgentHours
                 $minute = $dt->format('i');
 
                 if (!isset($times[$agent_id][$year])) {
-                    $times[$agent_id][$year] = array();
+                    $times[$agent_id][$year] = [];
                 }
                 if (!isset($times[$agent_id][$year][$month])) {
-                    $times[$agent_id][$year][$month] = array();
+                    $times[$agent_id][$year][$month] = [];
                 }
                 if (!isset($times[$agent_id][$year][$month][$day])) {
-                    $times[$agent_id][$year][$month][$day] = array();
+                    $times[$agent_id][$year][$month][$day] = [];
                 }
 
                 if (!isset($times_hour[$agent_id][$year])) {
-                    $times_hour[$agent_id][$year] = array();
+                    $times_hour[$agent_id][$year] = [];
                 }
                 if (!isset($times_hour[$agent_id][$year][$month])) {
-                    $times_hour[$agent_id][$year][$month] = array();
+                    $times_hour[$agent_id][$year][$month] = [];
                 }
                 if (!isset($times_hour[$agent_id][$year][$month][$day])) {
-                    $times_hour[$agent_id][$year][$month][$day] = array();
+                    $times_hour[$agent_id][$year][$month][$day] = [];
                 }
 
                 $times[$agent_id][$year][$month][$day][intval(($hour * 60) / $block_size + $minute / $block_size)] = true;
@@ -206,13 +206,13 @@ class AgentHours
             }
 
             $total_minutes     = count($active_times) * $block_size;
-            $totals[$agent_id] = array('hours' => intval($total_minutes / 60), 'minutes' => $total_minutes % 60);
+            $totals[$agent_id] = ['hours' => intval($total_minutes / 60), 'minutes' => $total_minutes % 60];
         }
 
         $min_date = $this->mysqlDateToPhpDate($db->fetchColumn('SELECT MIN(date_active) FROM agent_activity'));
         $max_date = $this->mysqlDateToPhpDate($db->fetchColumn('SELECT MAX(date_active) FROM agent_activity'));
 
-        return array(
+        return [
             'agents'     => $agents,
             'view_date'  => $date,
             'times'      => $times,
@@ -221,7 +221,7 @@ class AgentHours
             'totals'     => $totals,
             'max_date'   => $max_date,
             'min_date'   => $min_date,
-        );
+        ];
     }
 
     /**

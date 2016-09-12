@@ -172,7 +172,7 @@ class GenericContext extends BasePortalContext
     {
         $this->em()->getConnection()->executeUpdate(
             'REPLACE INTO settings (name, value) VALUES (:name, :value)',
-            array('name' => $setting_name, 'value' => $val)
+            ['name' => $setting_name, 'value' => $val]
         );
     }
 

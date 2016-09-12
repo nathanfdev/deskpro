@@ -51,13 +51,13 @@ class TicketLayoutData extends AbstractDefaultData
             $ticket_layout->user_layout  = new Layout();
             $ticket_layout->agent_layout = new Layout();
 
-            foreach (array(
+            foreach ([
                 FormFields::PERSON,
                 FormFields::DEPARTMENT,
                 FormFields::SUBJECT,
                 FormFields::MESSAGE,
                 FormFields::ATTACHMENTS,
-            ) as $field) {
+            ] as $field) {
                 $ticket_layout->user_layout->add(new LayoutField($field));
                 $ticket_layout->agent_layout->add(new LayoutField($field));
             }
@@ -73,7 +73,7 @@ class TicketLayoutData extends AbstractDefaultData
     {
         $exists = $this->getDb()->fetchColumn('SELECT id FROM ticket_layouts WHERE department_id IS NULL');
         if ($exists) {
-            $this->getDb()->delete('ticket_layouts', array('id' => $exists));
+            $this->getDb()->delete('ticket_layouts', ['id' => $exists]);
         }
         $this->runInstall();
     }

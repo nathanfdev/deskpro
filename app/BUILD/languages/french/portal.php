@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.change-password'                       => 'Modifier le mot de passe',
     'portal.account.change-password-btn'                   => 'Mise à jour du mot de passe',
     'portal.account.email-add'                             => 'Ajouter une adresse mail',
@@ -519,4 +519,4 @@ return array(
     'user.time.time_x_second'                              => '{0} secondes',
     'user.time.time_x_week'                                => '{0} semaines',
     'user.time.time_x_year'                                => '{0} ans',
-);
+];

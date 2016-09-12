@@ -46,7 +46,7 @@ use Orb\Util\Util;
  *
  * @method getId()
  *
- * @deprecated please see how DeskPRO\Bundle\AppBundle\Entity entities are declared using interfaces and traits for new entities.
+ * @deprecated please see how DeskPRO\Bundle\AppBundle\Entity entities are declared using interfaces and traits for new entities
  */
 abstract class DomainObject extends BasicDomainObject
 {

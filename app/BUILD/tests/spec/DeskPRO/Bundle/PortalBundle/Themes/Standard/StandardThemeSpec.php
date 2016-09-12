@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\Themes\Standard;
 
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
@@ -68,10 +69,10 @@ class StandardThemeSpec extends ObjectBehavior
 
         // standard holds tag 1
         $tag1->getName()->willReturn('first_tag');
-        $this->setTags(array($tag1));
-        $this->getTags()->shouldBe(array(
+        $this->setTags([$tag1]);
+        $this->getTags()->shouldBe([
             'first_tag' => $tag1,
-        ));
+        ]);
 
         // both can be resolved from standard, transparently
         $this->resolveTag('first_tag')->shouldReturn($tag1);

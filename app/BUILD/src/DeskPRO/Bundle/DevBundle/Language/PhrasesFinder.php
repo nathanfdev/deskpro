@@ -63,7 +63,7 @@ class PhrasesFinder
      * @param string   $app_root   The root path to DeskPRO files
      * @param string[] $phrase_ids Phrase IDs to find
      * @param int      $limit      How many uses to find per phrase (e.g., 1 will be faster if you just want to
-     *                             check if a phrase is used anywhere). Set 0 to have no limit.
+     *                             check if a phrase is used anywhere). Set 0 to have no limit
      * @param string[] $types      Which filetypes to scan for
      */
     public function __construct($app_root, array $phrase_ids, $limit = 1, array $types = null)

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category ClientMessage
  */
+
 namespace Application\DeskPRO\ClientMessage\Generator;
 
 use Application\DeskPRO\Entity\ClientMessage;
@@ -42,30 +43,30 @@ class PeopleClientMessages
     public static function createNewPersonMessages(Person $person)
     {
         $cm = new ClientMessage();
-        $cm->fromArray(array(
+        $cm->fromArray([
             'channel' => 'agent.person.added',
-            'data'    => array(
+            'data'    => [
                 'person_id'    => $person->id,
                 'person_name'  => $person->getDisplayName(),
                 'date_created' => $person->date_created->getTimestamp(),
-            ),
-        ));
+            ],
+        ]);
 
-        return array($cm);
+        return [$cm];
     }
 
     public static function createNewOrgMessages(Organization $org)
     {
         $cm = new ClientMessage();
-        $cm->fromArray(array(
+        $cm->fromArray([
             'channel' => 'agent.org.added',
-            'data'    => array(
+            'data'    => [
                 'organization_id'   => $org->id,
                 'organization_name' => $org->name,
                 'date_created'      => $org->date_created->getTimestamp(),
-            ),
-        ));
+            ],
+        ]);
 
-        return array($cm);
+        return [$cm];
     }
 }

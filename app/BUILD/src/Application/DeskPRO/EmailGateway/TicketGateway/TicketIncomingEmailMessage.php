@@ -178,7 +178,7 @@ class TicketIncomingEmailMessage
         $has_cut       = false;
 
         $cutters_require_from = Arrays::flatten(array_map(function ($e) {
-            return array($e->address, $e->other_addresses);
+            return [$e->address, $e->other_addresses];
         }, $this->email_accounts->getAllAccounts()));
 
         $precut_do_plaintext = false;
@@ -495,7 +495,7 @@ class TicketIncomingEmailMessage
         $pos_as_note  = false;
         $pos_as_reply = false;
 
-        foreach (array($ticket_email->email_body_html, $ticket_email->email_body_text, $body_raw) as $haystack) {
+        foreach ([$ticket_email->email_body_html, $ticket_email->email_body_text, $body_raw] as $haystack) {
             $pos_as_note  = strpos($haystack, 'DP_NEWMSG_AS_NOTE');
             $pos_as_reply = strpos($haystack, 'DP_NEWMSG_AS_REPLY');
 

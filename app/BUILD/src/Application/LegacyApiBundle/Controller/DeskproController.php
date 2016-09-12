@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,10 +47,10 @@ class DeskproController extends AbstractController
      */
     public function timeAction()
     {
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'timestamp' => time(),
             'fulldate'  => date('r'),
-        ));
+        ]);
     }
 
     /**
@@ -66,7 +66,7 @@ class DeskproController extends AbstractController
             return $this->createApiErrorResponse('setting_not_found', 'No setting was found with that name', 404);
         }
 
-        return $this->createApiResponse(array('setting_value' => $value));
+        return $this->createApiResponse(['setting_value' => $value]);
     }
 
     /**
@@ -84,6 +84,6 @@ class DeskproController extends AbstractController
 
         $this->settings->setSetting($setting_name, isset($_POST['value']) ? $_POST['value'] : '');
 
-        return $this->createApiResponse(array('success' => 1));
+        return $this->createApiResponse(['success' => 1]);
     }
 }

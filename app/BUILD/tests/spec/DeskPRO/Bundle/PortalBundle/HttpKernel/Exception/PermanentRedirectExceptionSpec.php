@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\HttpKernel\Exception;
 
 use PhpSpec\ObjectBehavior;
@@ -41,10 +42,10 @@ class PermanentRedirectExceptionSpec extends ObjectBehavior
 {
     public function it_knows_route_details()
     {
-        $this->beConstructedWith('list_articles', array('route' => 'params'));
+        $this->beConstructedWith('list_articles', ['route' => 'params']);
 
         $this->getRouteName()->shouldBe('list_articles');
-        $this->getRouteParams()->shouldBe(array('route' => 'params'));
+        $this->getRouteParams()->shouldBe(['route' => 'params']);
         $this->getUrlType()->shouldBe(UrlGeneratorInterface::ABSOLUTE_PATH);
     }
 }

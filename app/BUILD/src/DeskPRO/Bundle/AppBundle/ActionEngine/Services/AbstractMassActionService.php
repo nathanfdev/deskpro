@@ -39,10 +39,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class AbstractMassActionService implements MassActionServiceInterface
 {
-    /** @var  string */
+    /** @var string */
    protected $class;
 
-    /** @var  string */
+    /** @var string */
     protected $namespace;
 
     /** @var EntityManager */

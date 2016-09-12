@@ -102,7 +102,7 @@ class WidgetBrandChatPopupSettings
 
     /**
      * @param string $style
-     * 
+     *
      * @return $this
      */
     public function setStyle($style)

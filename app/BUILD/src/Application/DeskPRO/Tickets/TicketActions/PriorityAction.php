@@ -119,7 +119,7 @@ class PriorityAction extends AbstractAction implements PermissionableAction
                 $name = $as_html ? htmlspecialchars($names[$this->priority_id]) : $names[$this->priority_id];
             }
 
-            return $tr->phrase('agent.tickets.set_priority_action', array('priority' => $name));
+            return $tr->phrase('agent.tickets.set_priority_action', ['priority' => $name]);
         }
     }
 }

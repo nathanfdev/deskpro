@@ -38,7 +38,7 @@ use Orb\Util\Strings;
 class CustomRef implements RefGeneratorInterface
 {
     /** @var array */
-    public static $keywords = array(
+    public static $keywords = [
         'A'     => true,
         '#'     => true,
         '?'     => true,
@@ -48,7 +48,7 @@ class CustomRef implements RefGeneratorInterface
         'HOUR'  => true,
         'MIN'   => true,
         'SEC'   => true,
-    );
+    ];
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -63,12 +63,12 @@ class CustomRef implements RefGeneratorInterface
     /**
      * @var string
      */
-    protected $format_string = array();
+    protected $format_string = [];
 
     /**
      * @var array
      */
-    protected $format = array();
+    protected $format = [];
 
     /**
      * @var int
@@ -96,13 +96,13 @@ class CustomRef implements RefGeneratorInterface
         $this->append_count  = $append_count;
         $this->format_string = $format_string;
 
-        #------------------------------
-        # Parses format string into array(token, repeated)
-        #------------------------------
+        //------------------------------
+        // Parses format string into array(token, repeated)
+        //------------------------------
 
-        $format = array();
+        $format = [];
         $tok    = strtok($format_string, '<>');
-        $parts  = array();
+        $parts  = [];
         while ($tok !== false) {
             $parts[] = $tok;
             $tok     = strtok('<>');
@@ -118,14 +118,14 @@ class CustomRef implements RefGeneratorInterface
             if ($last == $p) {
                 ++$repeat;
             } else {
-                $format[] = array($last, $repeat);
+                $format[] = [$last, $repeat];
                 $last     = $p;
                 $repeat   = 1;
             }
         }
 
         if ($last !== null) {
-            $format[] = array($last, $repeat);
+            $format[] = [$last, $repeat];
         }
 
         $this->format = $format;
@@ -172,7 +172,7 @@ class CustomRef implements RefGeneratorInterface
                 WHERE `$field` LIKE ?
                 ORDER BY id DESC
                 LIMIT 1
-            ", array("$ref_check%"));
+            ", ["$ref_check%"]);
 
             $m = null;
             if ($this->isRefMatch($last, $m)) {
@@ -200,25 +200,25 @@ class CustomRef implements RefGeneratorInterface
                     $ref = $this->generateRefString($append_count);
                 }
 
-                $stmt->execute(array($ref));
+                $stmt->execute([$ref]);
                 $count = $stmt->fetchColumn();
 
-                $stmt2->execute(array($table, $ref));
+                $stmt2->execute([$table, $ref]);
                 $count2 = $stmt2->fetchColumn();
             } while ($count > 0 || $count2 > 0);
 
             try {
                 $this->db->beginTransaction();
-                $this->db->insert('ref_reserve', array(
+                $this->db->insert('ref_reserve', [
                     'obj_type' => $table,
                     'ref'      => $ref,
-                ));
+                ]);
                 $this->db->commit();
                 break;
             } catch (\Exception $e) {
                 // Try again..
             }
-        };
+        }
 
         return $ref;
     }
@@ -230,7 +230,7 @@ class CustomRef implements RefGeneratorInterface
      */
     public function generateRefString($count = 1)
     {
-        $ref = array();
+        $ref = [];
 
         foreach ($this->format as $seg) {
             list($type, $length) = $seg;
@@ -294,7 +294,7 @@ class CustomRef implements RefGeneratorInterface
 
     public function getRegexString()
     {
-        $regex = array('(');
+        $regex = ['('];
 
         foreach ($this->format as $seg) {
             list($type, $length) = $seg;
@@ -383,6 +383,6 @@ class CustomRef implements RefGeneratorInterface
             return $m[2];
         }
 
-        return array();
+        return [];
     }
 }

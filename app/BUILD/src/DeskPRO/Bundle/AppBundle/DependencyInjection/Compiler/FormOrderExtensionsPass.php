@@ -96,7 +96,9 @@ class FormOrderExtensionsPass implements CompilerPassInterface
         $orderedTypeExtensions = MapUtils::mapValues($orderedTypeExtensions, function ($k, $v) use ($sortFn) {
             usort($v[0], $sortFn);
 
-            return array_map(function ($v) { return $v[0]; }, $v[0]);
+            return array_map(function ($v) {
+                return $v[0];
+            }, $v[0]);
         });
 
         // replace the sorted array back into the DI def

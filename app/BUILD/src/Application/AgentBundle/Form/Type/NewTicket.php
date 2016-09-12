@@ -41,9 +41,9 @@ class NewTicket extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        #------------------------------
-        # User fields
-        #------------------------------
+        //------------------------------
+        // User fields
+        //------------------------------
 
         $user_builder = $builder->create('person', 'form', ['data_class' => NewTicketPersonModel::class]);
         $user_builder->add('id', 'hidden');
@@ -55,9 +55,9 @@ class NewTicket extends AbstractType
 
         $builder->add($user_builder);
 
-        #------------------------------
-        # Ticket fields
-        #------------------------------
+        //------------------------------
+        // Ticket fields
+        //------------------------------
 
         $builder->add('subject', 'text');
         $builder->add('notify_template', 'hidden');

@@ -44,9 +44,9 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
 {
     const INCLUDE_HEADERS_PARAM = 'include_headers';
 
-    public static $excluded_headers = array(
+    public static $excluded_headers = [
         'set-cookie',
-    );
+    ];
 
     /**
      * @var SerializerInterface
@@ -71,9 +71,9 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::RESPONSE => array('onResponse', 1025),
-        );
+        return [
+            KernelEvents::RESPONSE => ['onResponse', 1025],
+        ];
     }
 
     public function onResponse(FilterResponseEvent $event)
@@ -122,9 +122,9 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
 
         $header_bag = explode("\r\n", $headers);
 
-        $json_headers = array(
+        $json_headers = [
             'status-code' => $response->getStatusCode(),
-        );
+        ];
         foreach ($header_bag as $key => $val) {
             $header_split = explode(':', $val);
 

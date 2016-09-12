@@ -38,7 +38,7 @@ use Doctrine\DBAL\Connection;
 
 class TicketPurger
 {
-    /** @var \Doctrine\DBAL\Connection  */
+    /** @var \Doctrine\DBAL\Connection */
     private $db;
 
     public function __construct(Connection $db)
@@ -60,7 +60,7 @@ class TicketPurger
 
         $count = $this->db->delete(
             'tickets',
-            array('status' => 'hidden', 'hidden_status' => 'spam')
+            ['status' => 'hidden', 'hidden_status' => 'spam']
         );
 
         return $count;
@@ -80,7 +80,7 @@ class TicketPurger
 
         $count = $this->db->delete(
             'tickets',
-            array('status' => 'hidden', 'hidden_status' => 'deleted')
+            ['status' => 'hidden', 'hidden_status' => 'deleted']
         );
 
         return $count;

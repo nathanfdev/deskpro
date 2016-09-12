@@ -128,7 +128,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function standardErrorResponse($error_message = '', $error_title = '', $code = 200, array $vars = array())
+    public function standardErrorResponse($error_message = '', $error_title = '', $code = 200, array $vars = [])
     {
         $tpl_standard = 'UserBundle:Main:error-standard.html.twig';
         $tpl_specific = "UserBundle:Main:error-{$code}.html.twig";
@@ -139,10 +139,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
 
         $vars = array_merge(
-            $vars, array(
+            $vars, [
                 'error_message' => $error_message,
                 'error_title'   => $error_title,
-            )
+            ]
         );
 
         $res = $this->render($tpl, $vars);

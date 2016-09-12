@@ -395,7 +395,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 
     /**
      * Run the search and return an array of matching ID's.
-     * 
+     *
      * @return array
      */
     abstract public function getMatches();
@@ -1186,9 +1186,9 @@ abstract class SearcherAbstract implements PersonContextInterface
         ];
     }
 
-    ###################################################################
-    # test methods test terms statically against some value
-    ###################################################################
+    //##################################################################
+    // test methods test terms statically against some value
+    //##################################################################
 
     protected function _testDateMatch($value, $op, $choice)
     {

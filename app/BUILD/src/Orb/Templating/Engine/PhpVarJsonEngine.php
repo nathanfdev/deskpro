@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Templating\Engine;
 
 use Symfony\Component\Templating\Storage\Storage;
@@ -39,15 +40,15 @@ use Symfony\Component\Templating\Storage\Storage;
  */
 class PhpVarJsonEngine extends PhpVarEngine
 {
-    protected function _preProcess(Storage $template, array $parameters = array())
+    protected function _preProcess(Storage $template, array $parameters = [])
     {
-        return array();
+        return [];
     }
 
     protected function _postProcess($OUTPUT)
     {
         if (!is_array($OUTPUT)) {
-            $OUTPUT = array((string) $OUTPUT);
+            $OUTPUT = [(string) $OUTPUT];
         }
 
         return json_encode($OUTPUT);

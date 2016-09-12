@@ -56,11 +56,11 @@ class SystemLoader implements LoaderInterface
      *
      * @var array
      */
-    protected $loaded_files = array();
+    protected $loaded_files = [];
 
     public function load($groups, $language, array $loaded_phrases = null)
     {
-        $lang_packs = array();
+        $lang_packs = [];
 
         // Always read from the default because it has the core phrases
         $lang_packs[] = DP_ROOT.'/languages/default';
@@ -72,7 +72,7 @@ class SystemLoader implements LoaderInterface
         $lang_packs = array_unique($lang_packs);
         $lang_packs = Arrays::removeFalsey($lang_packs);
 
-        $phrases = array();
+        $phrases = [];
 
         foreach ($lang_packs as $path) {
             foreach ($groups as $group) {
@@ -110,7 +110,7 @@ class SystemLoader implements LoaderInterface
         }
 
         if (!isset($this->loaded_files[$file])) {
-            $this->loaded_files[$file] = array();
+            $this->loaded_files[$file] = [];
         }
 
         return $this->loaded_files[$file];

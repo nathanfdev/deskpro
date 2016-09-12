@@ -70,7 +70,7 @@ class Number extends AbstractPart
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
     ) {
-        if (!$stack && in_array($section, array('group', 'order'))) {
+        if (!$stack && in_array($section, ['group', 'order'])) {
             throw new Exception('Numbers may not be referenced directly at the root of the GROUP BY or ORDER BY sections.');
         }
 

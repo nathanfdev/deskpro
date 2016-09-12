@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Ldap;
 
 use Application\DeskPRO\App;
@@ -81,10 +82,9 @@ class LdapPagedSearcher implements \Iterator
             ldap_control_paged_result($this->resource, $this->page_size, false, $this->cookie);
         }
 
-        $this->result = ldap_search($this->resource, $this->basedn, $this->filter, array(), 0, $this->paged ? $this->page_size : 0, 0);
+        $this->result = ldap_search($this->resource, $this->basedn, $this->filter, [], 0, $this->paged ? $this->page_size : 0, 0);
 
         usleep(100000); // not sure why this hack works, but it avoids a hanging process, leaving it for now
-
 
         $time = ceil(time() - $start_time);
         $this->logIfPossible(Logger::INFO, 'finished executing actual LDAP paged search (took '.$time.'s)');
@@ -116,7 +116,7 @@ class LdapPagedSearcher implements \Iterator
             }
         }
 
-        $entry         = array('dn' => $this->key());
+        $entry         = ['dn' => $this->key()];
         $berIdentifier = null;
 
         $resource = $this->resource;
@@ -133,7 +133,7 @@ class LdapPagedSearcher implements \Iterator
             ErrorHandler::stop();
 
             if (!$data) {
-                $data = array();
+                $data = [];
             }
 
             if (isset($data['count'])) {
@@ -229,7 +229,7 @@ class LdapPagedSearcher implements \Iterator
         return $isClosed;
     }
 
-    protected function logIfPossible($orb_priority, $message, array $info = array())
+    protected function logIfPossible($orb_priority, $message, array $info = [])
     {
         if (!App::getConfig('debug.enable_usersource_log')) {
             return;

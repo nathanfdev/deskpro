@@ -101,7 +101,7 @@ class AppAsset extends DomainObject
      */
     public function getMetadata()
     {
-        return $this->metadata ? $this->metadata : array();
+        return $this->metadata ? $this->metadata : [];
     }
 
     /**

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
 
 use Application\DeskPRO\Entity\CustomDataTicket;

@@ -185,8 +185,6 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
         return $this->person_email['email'];
     }
 
-    /**
-     */
     public function _setAccessCode()
     {
         if (!$this->access_code) {
@@ -208,9 +206,9 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
         $this->access_code->ticket = $this->ticket;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1401186433 extends AbstractBuild
 {
-    /** @var  array */
+    /** @var array */
     private $address_map;
-    /** @var  array */
+    /** @var array */
     private $email_account_ids;
 
     public function run()
@@ -60,7 +61,7 @@ class Build1401186433 extends AbstractBuild
     private function _buildAddressMap()
     {
         $addresses = $this->getUpgradeData('201404', 'email_gateway_addresses');
-        $map       = array();
+        $map       = [];
         foreach ($addresses as $a) {
             $map[$a['id']] = $a['email_gateway_id'];
         }
@@ -82,7 +83,7 @@ class Build1401186433 extends AbstractBuild
             return;
         }
 
-        $new_terms = array();
+        $new_terms = [];
         $fail      = false;
 
         foreach ($terms as $t) {
@@ -90,11 +91,11 @@ class Build1401186433 extends AbstractBuild
                 case 'gateway_address':
                     $address_id = @$t['options']['gateway_address'];
                     if ($address_id && isset($this->address_map[$address_id])) {
-                        $new_t = array(
+                        $new_t = [
                             'type'    => 'email_account',
                             'op'      => $t['op'],
-                            'options' => array('email_account_ids' => array($this->address_map[$address_id])),
-                        );
+                            'options' => ['email_account_ids' => [$this->address_map[$address_id]]],
+                        ];
                         $new_terms[] = $new_t;
                     } else {
                         $fail = true;
@@ -104,11 +105,11 @@ class Build1401186433 extends AbstractBuild
                 case 'gateway_account':
                     $acc_id = @$t['options']['gateway_account'];
                     if ($acc_id && isset($this->email_account_ids[$acc_id])) {
-                        $new_t = array(
+                        $new_t = [
                             'type'    => 'email_account',
                             'op'      => $t['op'],
-                            'options' => array('email_account_ids' => array($acc_id)),
-                        );
+                            'options' => ['email_account_ids' => [$acc_id]],
+                        ];
                         $new_terms[] = $new_t;
                     } else {
                         $fail = true;
@@ -122,11 +123,11 @@ class Build1401186433 extends AbstractBuild
         }
 
         if (empty($new_terms) || $fail) {
-            $this->container->getDb()->delete('ticket_filters', array('id' => $filter['id']));
+            $this->container->getDb()->delete('ticket_filters', ['id' => $filter['id']]);
         } else {
-            $this->container->getDb()->update('ticket_filters', array(
+            $this->container->getDb()->update('ticket_filters', [
                 'terms' => json_encode($new_terms),
-            ), array('id' => $filter['id']));
+            ], ['id' => $filter['id']]);
         }
     }
 }

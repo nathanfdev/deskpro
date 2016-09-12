@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.change-password'                 => '비밀번호 바꾸기',
     'portal.account.email-btn-resend-validation'     => '승인 이메일 다시 보내기',
     'portal.account.login-register-btn'              => '가입',
@@ -497,4 +497,4 @@ return array(
     'user.time.time_x_second'                        => '{0} 초',
     'user.time.time_x_week'                          => '{0} 주',
     'user.time.time_x_year'                          => '{0} 년',
-);
+];

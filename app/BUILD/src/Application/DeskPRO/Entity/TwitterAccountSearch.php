@@ -250,9 +250,9 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
         ', [$this->id]);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

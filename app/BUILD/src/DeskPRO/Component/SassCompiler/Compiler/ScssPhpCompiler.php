@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Component\SassCompiler\Compiler;
 
 use DeskPRO\Component\SassCompiler\SassProject;
@@ -49,7 +50,7 @@ class ScssPhpCompiler implements CompilerInterface
      */
     public function __construct(array $options = null)
     {
-        $this->options = self::getOptionsResolver()->resolve($options ?: array());
+        $this->options = self::getOptionsResolver()->resolve($options ?: []);
     }
 
     /**
@@ -61,7 +62,7 @@ class ScssPhpCompiler implements CompilerInterface
 
         if (!$resolver) {
             $resolver = new OptionsResolver();
-            $resolver->setDefault('compiler_options', array());
+            $resolver->setDefault('compiler_options', []);
         }
 
         return $resolver;
@@ -80,13 +81,13 @@ class ScssPhpCompiler implements CompilerInterface
         $file_sources  = $project->getFileSources();
         $string_loader = new StringFileLoader($file_sources);
 
-        $compiler_options['file_loaders'] = array(
+        $compiler_options['file_loaders'] = [
             $string_loader,
             new DefaultFileLoader($project->getIncludePaths()),
-        );
-        $compiler_options['file_locators'] = array(
+        ];
+        $compiler_options['file_locators'] = [
             $string_loader,
-        );
+        ];
 
         $compiler = new Compiler($compiler_options);
         $compiler->addImportPath(function ($f) use ($file_sources) {

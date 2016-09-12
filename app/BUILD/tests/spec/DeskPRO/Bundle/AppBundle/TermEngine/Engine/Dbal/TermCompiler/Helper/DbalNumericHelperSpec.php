@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -53,245 +54,245 @@ class DbalNumericHelperSpec extends ObjectBehavior
 
     public function it_handles_the_simple_IS_case()
     {
-        $num        = array(1, 2, 3);
+        $num        = [1, 2, 3];
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_IS, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id IN (:num)');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num' => $num,
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_simple_NOT_case()
     {
-        $num        = array(1, 2, 3);
+        $num        = [1, 2, 3];
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_NOT, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id NOT IN (:num)');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num' => $num,
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_simple_GT_case()
     {
-        $num        = array(1);
+        $num        = [1];
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_GT, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id > :num');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num' => reset($num),
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_simple_GTE_case()
     {
-        $num        = array(1);
+        $num        = [1];
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_GTE, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id >= :num');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num' => reset($num),
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_simple_LT_case()
     {
-        $num        = array(1);
+        $num        = [1];
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_LT, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id < :num');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num' => reset($num),
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_simple_LTE_case()
     {
-        $num        = array(1);
+        $num        = [1];
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_LTE, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id <= :num');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num' => reset($num),
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_multiple_RANGE_case()
     {
-        $num        = array(1, 2, 3);
+        $num        = [1, 2, 3];
         $num2       = 3;
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_RANGE, $num, $num2);
 
         $query_part->getWhereString()->shouldBe('ticket.id BETWEEN :num AND :num2');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num'  => reset($num),
                 'num2' => $num2,
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_multiple_NOT_RANGE_case()
     {
-        $num        = array(1, 2, 3);
+        $num        = [1, 2, 3];
         $num2       = 3;
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_NOT_RANGE, $num, $num2);
 
         $query_part->getWhereString()->shouldBe('ticket.id NOT BETWEEN :num AND :num2');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num'  => reset($num),
                 'num2' => $num2,
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_multiple_GT_case()
     {
-        $num        = array(1, 2, 3);
+        $num        = [1, 2, 3];
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_GT, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id > :num');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num' => max($num),
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_multiple_GTE_case()
     {
-        $num        = array(1, 2, 3);
+        $num        = [1, 2, 3];
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_GTE, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id >= :num');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num' => max($num),
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_multiple_LT_case()
     {
-        $num        = array(2, 1, 3);
+        $num        = [2, 1, 3];
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_LT, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id < :num');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num' => min($num),
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_multiple_LTE_case()
     {
-        $num        = array(2, 1, 3);
+        $num        = [2, 1, 3];
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_LTE, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id <= :num');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num' => min($num),
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_one_num_RANGE_case()
     {
-        $num        = array(1);
+        $num        = [1];
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_RANGE, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id BETWEEN :num AND :num2');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num'  => reset($num),
                 'num2' => reset($num),
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_one_num_NOT_RANGE_case()
     {
-        $num        = array(1);
+        $num        = [1];
         $query_part = $this->buildQueryPart('ticket.id', TermInterface::OP_NOT_RANGE, $num);
 
         $query_part->getWhereString()->shouldBe('ticket.id NOT BETWEEN :num AND :num2');
 
         $query_part->getParameters()->shouldBe(
-            array(
+            [
                 'num'  => reset($num),
                 'num2' => reset($num),
-            )
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 }

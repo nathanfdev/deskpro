@@ -134,7 +134,7 @@ class Hierarchy implements \Countable, \IteratorAggregate
      * @return int The custom count as an integer.
      *             </p>
      *             <p>
-     *             The return value is cast to an integer.
+     *             The return value is cast to an integer
      */
     public function count()
     {

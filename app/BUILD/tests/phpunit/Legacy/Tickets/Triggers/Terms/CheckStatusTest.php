@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,10 +44,10 @@ class CheckStatusTest extends DeskProTestCase
 
         $ticket->status = 'awaiting_agent';
 
-        $check = new CheckStatus('is', array('status' => 'awaiting_agent'));
+        $check = new CheckStatus('is', ['status' => 'awaiting_agent']);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
-        $check = new CheckStatus('is', array('status' => 'resolved'));
+        $check = new CheckStatus('is', ['status' => 'resolved']);
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
     }
 
@@ -58,10 +58,10 @@ class CheckStatusTest extends DeskProTestCase
 
         $ticket->status = 'hidden.deleted';
 
-        $check = new CheckStatus('is', array('status' => 'hidden.deleted'));
+        $check = new CheckStatus('is', ['status' => 'hidden.deleted']);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
-        $check = new CheckStatus('is', array('status' => 'hidden.spam'));
+        $check = new CheckStatus('is', ['status' => 'hidden.spam']);
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
     }
 }

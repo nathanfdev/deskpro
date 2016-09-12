@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -41,7 +42,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     /**
      * @var array
      */
-    private static $trivial_fields = array(
+    private static $trivial_fields = [
         'access_codes'            => true,
         'ticket_hash'             => true,
         'date_feedback_rating'    => true,
@@ -62,7 +63,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         'has_attachments'         => true,
         'count_agent_replies'     => true,
         'count_user_replies'      => true,
-    );
+    ];
 
     /**
      * @var \Application\DeskPRO\Entity\Ticket
@@ -187,10 +188,10 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     private function getNewMessagesOfType($type = 'any')
     {
         if (!$this->hasChangedField('message')) {
-            return array();
+            return [];
         }
 
-        $messages = array();
+        $messages = [];
 
         foreach (array_reverse($this->getChangesForField('message')) as $change) {
             $message = $change->getNew();

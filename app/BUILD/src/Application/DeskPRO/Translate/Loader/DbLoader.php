@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Translate
  */
+
 namespace Application\DeskPRO\Translate\Loader;
 
 use Application\DeskPRO\App;
@@ -71,10 +72,10 @@ class DbLoader implements LoaderInterface
 
     private function returnPhrases($groups, $language, array $loaded_phrases = null)
     {
-        $phrases = array();
+        $phrases = [];
 
         // Langs to fetch in order of pri
-        $langs = array();
+        $langs = [];
         if ($language) {
             if (!$language->getId()) {
                 //todo default lang should be injected somehow,
@@ -133,13 +134,13 @@ class DbLoader implements LoaderInterface
             FROM phrases
         ");
 
-        $this->loaded = array();
+        $this->loaded = [];
         while ($r = $q->fetch()) {
             if (!isset($this->loaded[$r['language_id']])) {
-                $this->loaded[$r['language_id']] = array();
+                $this->loaded[$r['language_id']] = [];
             }
             if (!isset($this->loaded[$r['language_id']][$r['groupname']])) {
-                $this->loaded[$r['language_id']][$r['groupname']] = array();
+                $this->loaded[$r['language_id']][$r['groupname']] = [];
             }
 
             $this->loaded[$r['language_id']][$r['groupname']][$r['name']] = $r['phrase'];

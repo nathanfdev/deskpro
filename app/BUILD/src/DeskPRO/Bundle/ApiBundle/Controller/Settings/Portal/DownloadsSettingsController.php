@@ -43,7 +43,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class DownloadsSettingsController.
- * 
+ *
  * @ApiModes("all")
  * @Rest\Route("/settings/brands/{brand}/portal/downloads")
  */

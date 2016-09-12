@@ -443,12 +443,12 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     /**
      * Return a unique ID that we can use to look up translations for this object.
      *
-     * @param string    $property  If supplied, the property on the object we want to translate.
+     * @param string    $property  If supplied, the property on the object we want to translate
      * @param Translate $translate
      *
      * @return string
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -469,12 +469,12 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     /**
      * Get the default value phrase for the object.
      *
-     * @param string    $property  If supplied, the property on the object we want to translate.
+     * @param string    $property  If supplied, the property on the object we want to translate
      * @param Translate $translate
      *
      * @return string
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'full') {
             return $this->getRealTitle();
@@ -614,9 +614,9 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
         return $this;
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public function _validateParent(ExecutionContextInterface $context)
     {
@@ -684,9 +684,9 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
         return $this->avatar->getThumbnailUrl($size);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

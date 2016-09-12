@@ -36,8 +36,8 @@ use Orb\Util\Strings;
 
 class ContentTypes
 {
-    /** @var array  */
-    protected static $ext_to_contenttype = array(
+    /** @var array */
+    protected static $ext_to_contenttype = [
         'acx'      => 'application/internet-property-stream',
         'ai'       => 'application/postscript',
         'aif'      => 'audio/x-aiff',
@@ -239,7 +239,7 @@ class ContentTypes
         'z'        => 'application/x-compress',
         'zip'      => 'application/zip',
         '323'      => 'text/h323',
-    );
+    ];
 
     /**
      * Get an array of file extensions.
@@ -310,7 +310,7 @@ class ContentTypes
      * of all suitable extensions are returned.
      *
      * @param string $content_type The content-type to look up
-     * @param bool   $find_all     When true, an array of extensions will be returned.
+     * @param bool   $find_all     When true, an array of extensions will be returned
      *
      * @return string
      */
@@ -328,7 +328,7 @@ class ContentTypes
 
     protected static function _arraySearchAll($array, $search, $strict = false)
     {
-        $found_keys = array();
+        $found_keys = [];
 
         if ($strict) {
             foreach ($array as $k => $v) {
@@ -354,13 +354,13 @@ class ContentTypes
      */
     public static function getImageContentTypes()
     {
-        return array(
+        return [
             'image/png',
             'image/gif',
             'image/jpg',
             'image/jpeg',
             'image/bmp',
-        );
+        ];
     }
 
     /**
@@ -439,7 +439,7 @@ class ContentTypes
      */
     public static function showFileInline($filename)
     {
-        static $inline_ext = array('png', 'gif', 'jpeg', 'jpg', 'bmp', 'ico', 'txt');
+        static $inline_ext = ['png', 'gif', 'jpeg', 'jpg', 'bmp', 'ico', 'txt'];
 
         $dot_pos = strrpos($filename, '.');
         if (!$dot_pos) {

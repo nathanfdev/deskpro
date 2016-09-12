@@ -458,7 +458,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $content = trim($content);
 
         $lines_raw = explode("\n", $content);
-        $lines     = array();
+        $lines     = [];
         foreach ($lines_raw as $l) {
             $lines[] = trim($l);
         }

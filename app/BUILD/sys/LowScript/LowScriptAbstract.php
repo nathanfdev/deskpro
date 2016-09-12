@@ -205,7 +205,7 @@ abstract class LowScriptAbstract
             return $this->settings;
         }
 
-        $this->settings = array();
+        $this->settings = [];
 
         $q = $this->getPdo()->prepare('
             SELECT name, value
@@ -234,13 +234,13 @@ abstract class LowScriptAbstract
         return isset($this->settings[$name]) ? $this->settings[$name] : $default;
     }
 
-    ####################################################################################################################
-    # Request Helpers
-    ####################################################################################################################
+    //###################################################################################################################
+    // Request Helpers
+    //###################################################################################################################
 
     /**
      * @param bool $own Own pathinfo means we dont consider ourselfs as part of the path. In other
-     *                  words, we shift off the first segment of the URL.
+     *                  words, we shift off the first segment of the URL
      *
      * @return string
      */
@@ -327,7 +327,7 @@ abstract class LowScriptAbstract
             return sprintf('[object](%s)', get_class($var));
         }
         if (is_array($var)) {
-            $a = array();
+            $a = [];
             foreach ($var as $k => $v) {
                 $a[] = sprintf('%s => %s', $k, self::varToString($v));
             }

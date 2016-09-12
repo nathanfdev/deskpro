@@ -103,9 +103,9 @@ class GenTestEmailCommand extends ContainerAwareCommand
         } else {
             $id = $mailer->insertMessage($message);
 
-            $this->getContainer()->getDb()->update('sendmail_sources', array(
+            $this->getContainer()->getDb()->update('sendmail_sources', [
                 'status' => 'aborted',
-            ), array('id' => $id));
+            ], ['id' => $id]);
 
             $output->writeln("<info>Inserted email source: $id</info>\n");
             $output->writeln("The email was inserted with the 'aborted' state and will not be sent automatically.");

@@ -47,7 +47,7 @@ abstract class AbstractFunc
      *
      * @var array
      */
-    protected static $_functionMap = array(
+    protected static $_functionMap = [
         'ALIAS'                   => 'Alias',
         'COUNT'                   => 'Count',
         'COUNT_DISTINCT'          => 'CountDistinct',
@@ -79,7 +79,7 @@ abstract class AbstractFunc
         'X'                       => 'X',
         'Y'                       => 'Y',
         'YEAR'                    => 'Year',
-    );
+    ];
 
     /**
      * Name of the function (in user-provided case).
@@ -118,7 +118,7 @@ abstract class AbstractFunc
      * @param string $name
      * @param array  $arguments
      */
-    protected function __construct($name, array $arguments = array())
+    protected function __construct($name, array $arguments = [])
     {
         $this->_name      = $name;
         $this->_arguments = $arguments;
@@ -132,7 +132,7 @@ abstract class AbstractFunc
      *
      * @return \Application\DeskPRO\Dpql\Func\AbstractFunc
      */
-    public static function create($name, array $arguments = array())
+    public static function create($name, array $arguments = [])
     {
         $name = strtoupper($name);
         if (isset(self::$_functionMap[$name])) {

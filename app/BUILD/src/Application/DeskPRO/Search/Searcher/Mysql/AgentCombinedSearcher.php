@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search\Searcher\Mysql;
 
 use Application\DeskPRO\App;
@@ -86,7 +87,7 @@ class AgentCombinedSearcher
                 FROM content_search
                 WHERE $where
             ";
-            $total = App::getDbRead('search.searcher.combined')->fetchColumn($count_query, array($query_text));
+            $total = App::getDbRead('search.searcher.combined')->fetchColumn($count_query, [$query_text]);
         }
 
         $start        = ($page - 1) * $per_page;
@@ -98,14 +99,14 @@ class AgentCombinedSearcher
             LIMIT $start, $per_page
         ";
 
-        $results_raw = App::getDbRead('search.searcher.combined')->fetchAll($select_query, array($query_text, $query_text));
-        $results     = array();
+        $results_raw = App::getDbRead('search.searcher.combined')->fetchAll($select_query, [$query_text, $query_text]);
+        $results     = [];
 
         foreach ($results_raw as $result_raw) {
-            $result = Result::newFromArray(array(
+            $result = Result::newFromArray([
                 'id'           => $result_raw['object_id'],
                 'content_type' => $result_raw['object_type'],
-            ));
+            ]);
 
             $results[] = $result;
         }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\PhoneNumber;
@@ -51,31 +52,31 @@ class Build1424444388 extends AbstractBuild
         $ff       = $this->container->getFormFactory();
 
         while ($rows = $db->fetchAll($sq)) {
-            $remove         = array();
-            $values         = array();
-            $invalid_values = array();
+            $remove         = [];
+            $values         = [];
+            $invalid_values = [];
 
             foreach ($rows as $row) {
                 $remove[] = $row['id'];
                 $phone    = new PhoneNumber();
                 $form     = $ff->create(new PhoneNumberType(), $phone);
-                $form->submit(array('number' => '+'.preg_replace('/[^0-9]/', '', $row['field_10'])));
+                $form->submit(['number' => '+'.preg_replace('/[^0-9]/', '', $row['field_10'])]);
 
                 if ($form->isValid()) {
-                    $values[] = array(
+                    $values[] = [
                         'person_id'    => $row['person_id'],
                         'number'       => $phone->number,
                         'region'       => $phone->region,
                         'guessed_type' => $phone->guessed_type,
                         'date_created' => $date_now,
-                    );
+                    ];
                 } else {
-                    $invalid_values[] = array(
+                    $invalid_values[] = [
                         'person_id'    => $row['person_id'],
                         'agent_id'     => $row['person_id'],
                         'date_created' => $date_now,
                         'note'         => 'Invalid phone number could not be imported: '.$row['field_10'],
-                    );
+                    ];
                 }
             }
 

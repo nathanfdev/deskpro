@@ -53,7 +53,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Controller\Controller
 {
-    protected $_services = array();
+    protected $_services = [];
 
     public function __get($prop)
     {
@@ -62,13 +62,13 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         }
 
         switch ($prop) {
-            case 'em': $service       = $this->get('doctrine.orm.entity_manager');break;
-            case 'db': $service       = $this->get('database_connection');break;
-            case 'in': $service       = $this->get('deskpro.core.input_reader');break;
-            case 'cleaner': $service  = $this->get('deskpro.core.input_cleaner');break;
-            case 'settings': $service = $this->get('deskpro.core.settings');break;
-            case 'session': $service  = $this->get('session');break;
-            case 'tpl': $service      = $this->get('templating');break;
+            case 'em': $service       = $this->get('doctrine.orm.entity_manager'); break;
+            case 'db': $service       = $this->get('database_connection'); break;
+            case 'in': $service       = $this->get('deskpro.core.input_reader'); break;
+            case 'cleaner': $service  = $this->get('deskpro.core.input_cleaner'); break;
+            case 'settings': $service = $this->get('deskpro.core.settings'); break;
+            case 'session': $service  = $this->get('session'); break;
+            case 'tpl': $service      = $this->get('templating'); break;
             default:
                 throw new \InvalidArgumentException("Unknown property {$prop}");
         }
@@ -146,7 +146,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             $hash = md5($hash.serialize($_GET + $_POST));
         }
 
-        $used = $this->session->get('consumed_tokens', array());
+        $used = $this->session->get('consumed_tokens', []);
         if (in_array($hash, $used)) {
             return false;
         }
@@ -230,7 +230,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function render($view, array $parameters = array(), Response $response = null)
+    public function render($view, array $parameters = [], Response $response = null)
     {
         if ($view[0] == '@') {
             $m = null;

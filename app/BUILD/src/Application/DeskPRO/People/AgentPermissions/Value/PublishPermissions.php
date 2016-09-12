@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,36 +31,37 @@
  *
  * @category People
  */
+
 namespace Application\DeskPRO\People\AgentPermissions\Value;
 
 class PublishPermissions implements PermissionValueInterface
 {
-    /** @var bool  */
+    /** @var bool */
     public $create = false;
-    /** @var bool  */
+    /** @var bool */
     public $delete = false;
-    /** @var bool  */
+    /** @var bool */
     public $edit = false;
-    /** @var bool  */
+    /** @var bool */
     public $validate = false;
-    /** @var bool  */
+    /** @var bool */
     public $articles_create_labels = false;
-    /** @var bool  */
+    /** @var bool */
     public $downloads_create_labels = false;
-    /** @var bool  */
+    /** @var bool */
     public $news_create_labels = false;
-    /** @var bool  */
+    /** @var bool */
     public $feedback_create_labels = false;
     /** @var bool */
     public $can_insert_html = false;
 
     public function getNames()
     {
-        return array('create', 'delete', 'edit', 'validate', 'articles_create_labels', 'downloads_create_labels', 'news_create_labels', 'feedback_create_labels', 'can_insert_html');
+        return ['create', 'delete', 'edit', 'validate', 'articles_create_labels', 'downloads_create_labels', 'news_create_labels', 'feedback_create_labels', 'can_insert_html'];
     }
 
     public function getDestructiveNames()
     {
-        return array('delete', 'can_insert_html');
+        return ['delete', 'can_insert_html'];
     }
 }

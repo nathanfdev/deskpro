@@ -59,9 +59,8 @@ class ArticlesController extends AbstractController
         $page   = $request->get('page', 1);
         $person = $this->getCurrentPerson();
 
-        //
         // RSS
-        //
+
         if ('rss' === $_format) {
             $pager = $this->getArticlesDataService()->getArticlesPager(
                 null,
@@ -82,23 +81,20 @@ class ArticlesController extends AbstractController
             ['_format' => 'rss']
         );
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildKb();
 
-        //
         // SUBSCRIPTION
-        //
+
         $isSubscribed = false;
         if ($this->getUser() && $this->getBrandSetting('user.kb_subscriptions', false)) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('kb', $this->getUser());
         }
 
-        //
         // RENDER THEME
-        //
+
         return $this->renderThemeView(
             'Theme:Articles:index.html.twig',
             [
@@ -124,9 +120,8 @@ class ArticlesController extends AbstractController
         $page   = $request->get('page', 1);
         $person = $this->getCurrentPerson();
 
-        //
         // RSS
-        //
+
         if ('rss' === $_format) {
             $pager = $this->getArticlesDataService()->getArticlesPager(
                 $category,
@@ -144,18 +139,16 @@ class ArticlesController extends AbstractController
         }
         $rssLink = $this->generateUrl('portal_kb_browse', ['slug' => $category->getSlug(), '_format' => 'rss']);
 
-        //
         // BREADCRUMBS
-        //
+
         if ($category) {
             $breadcrumbs = $this->getBreadcrumbGenerator()->buildKbCategory($category);
         } else {
             $breadcrumbs = $this->getBreadcrumbGenerator()->buildKb();
         }
 
-        //
         // SUBSCRIPTION
-        //
+
         $isSubscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
@@ -165,15 +158,13 @@ class ArticlesController extends AbstractController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
 
-        //
         // PAGER
-        //
+
         $count = $this->getBrandSetting('portal.per_page_content');
         $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count, $person, false);
 
-        //
         // RENDER THEME
-        //
+
         return $this->renderThemeView(
             'Theme:Articles:browse.html.twig',
             [
@@ -198,9 +189,9 @@ class ArticlesController extends AbstractController
      */
     public function viewAction(Request $request, Article $article, $visitor_id)
     {
-        //
+
         // COMMENT FORM
-        //
+
         $newCommentForm = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $article)) {
             $formHandler = $this->get('form_handler.comment');
@@ -214,24 +205,20 @@ class ArticlesController extends AbstractController
             }
         }
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildKbArticle($article);
 
-        //
         // RATING
-        //
+
         $rating = $this->findContentRating($article, $visitor_id);
 
-        //
         // NUM RATINGS
-        //
+
         list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($article);
 
-        //
         // SUBSCRIPTION
-        //
+
         $isSubscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
@@ -247,9 +234,8 @@ class ArticlesController extends AbstractController
         $check->markAsCheckOnly();
         $this->get('anti_abuse')->check($check);
 
-        //
         // RENDER THEME
-        //
+
         return $this->renderThemeView(
             'Theme:Articles:view.html.twig',
             [
@@ -404,19 +390,16 @@ class ArticlesController extends AbstractController
         /** @var PdfRendererInterface $pdfRenderer */
         $pdfRenderer = $this->get('pdf_renderer');
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildKbArticle($article);
 
-        //
         // RATING
-        //
+
         $rating = $this->findContentRating($article, $visitor_id);
 
-        //
         // NUM RATINGS
-        //
+
         list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($article);
 
         $contentHtml = $this->renderThemeView(

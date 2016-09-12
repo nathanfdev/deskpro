@@ -1,16 +1,18 @@
 <?php
 
 /**
- * OPcache GUI
+ * OPcache GUI.
  *
  * A simple but effective single-file GUI for the OPcache PHP extension.
  *
  * @author  Andrew Collington, andy@amnuts.com
+ *
  * @version 2.2.2
+ *
  * @link    https://github.com/amnuts/opcache-gui
+ *
  * @license MIT, http://acollington.mit-license.org/
  */
-
 
 /*
  * User configuration
@@ -25,7 +27,7 @@ $options = [
     'size_precision'   => 2,     // Digits after decimal point
     'size_space'       => false, // have '1MB' or '1 MB' when showing sizes
     'charts'           => true,  // show gauge chart or just big numbers
-    'debounce_rate'    => 250    // milliseconds after key press to send keyup event when filtering
+    'debounce_rate'    => 250,    // milliseconds after key press to send keyup event when filtering
 ];
 
 /*
@@ -66,17 +68,17 @@ class OpCacheService
         ) {
             if (isset($_GET['reset']) && $self->getOption('allow_reset')) {
                 echo '{ "success": "'.($self->resetCache() ? 'yes' : 'no').'" }';
-            } else if (isset($_GET['invalidate']) && $self->getOption('allow_invalidate')) {
+            } elseif (isset($_GET['invalidate']) && $self->getOption('allow_invalidate')) {
                 echo '{ "success": "'.($self->resetCache($_GET['invalidate']) ? 'yes' : 'no').'" }';
             } else {
                 echo json_encode($self->getData((empty($_GET['section']) ? null : $_GET['section'])));
             }
             exit;
-        } else if (isset($_GET['reset']) && $self->getOption('allow_reset')) {
+        } elseif (isset($_GET['reset']) && $self->getOption('allow_reset')) {
             $self->resetCache();
             header('Location: ?auth='.$_GET['auth']);
             exit;
-        } else if (isset($_GET['invalidate']) && $self->getOption('allow_invalidate')) {
+        } elseif (isset($_GET['invalidate']) && $self->getOption('allow_invalidate')) {
             $self->resetCache($_GET['invalidate']);
             header('Location: ?auth='.$_GET['auth']);
             exit;
@@ -91,10 +93,10 @@ class OpCacheService
             return $this->options;
         }
 
-        return (isset($this->options[$name])
+        return isset($this->options[$name])
             ? $this->options[$name]
             : null
-        );
+        ;
     }
 
     public function getData($section = null, $property = null)
@@ -116,7 +118,7 @@ class OpCacheService
 
     public function canInvalidate()
     {
-        return ($this->getOption('allow_invalidate') && function_exists('opcache_invalidate'));
+        return $this->getOption('allow_invalidate') && function_exists('opcache_invalidate');
     }
 
     public function resetCache($file = null)
@@ -124,7 +126,7 @@ class OpCacheService
         $success = false;
         if ($file === null) {
             $success = opcache_reset();
-        } else if (function_exists('opcache_invalidate')) {
+        } elseif (function_exists('opcache_invalidate')) {
             $success = opcache_invalidate(urldecode($file), true);
         }
         if ($success) {
@@ -173,9 +175,9 @@ class OpCacheService
                 'used_memory_percentage' => round(100 * (
                         ($status['memory_usage']['used_memory'] + $status['memory_usage']['wasted_memory'])
                         / $config['directives']['opcache.memory_consumption'])),
-                'hit_rate_percentage'    => round($status['opcache_statistics']['opcache_hit_rate']),
-                'wasted_percentage'      => round($status['memory_usage']['current_wasted_percentage'], 2),
-                'readable'               => [
+                'hit_rate_percentage' => round($status['opcache_statistics']['opcache_hit_rate']),
+                'wasted_percentage'   => round($status['memory_usage']['current_wasted_percentage'], 2),
+                'readable'            => [
                     'total_memory'       => $this->size($config['directives']['opcache.memory_consumption']),
                     'used_memory'        => $this->size($status['memory_usage']['used_memory']),
                     'free_memory'        => $this->size($status['memory_usage']['free_memory']),

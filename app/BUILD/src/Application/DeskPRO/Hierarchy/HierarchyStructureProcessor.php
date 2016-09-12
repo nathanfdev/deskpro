@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Hierarchy;
 
 use Doctrine\ORM\EntityManager;
@@ -66,7 +67,7 @@ class HierarchyStructureProcessor
      * @param string        $entity_name The name of the entity to save to
      * @param string[]      $properties  Array of property names to assign from the array (id, display_order and title are always used/detected)
      */
-    public function __construct(EntityManager $em, $entity_name, array $properties = array())
+    public function __construct(EntityManager $em, $entity_name, array $properties = [])
     {
         $this->em          = $em;
         $this->entity_name = $entity_name;
@@ -90,17 +91,17 @@ class HierarchyStructureProcessor
      */
     public function getRecords(array $structure)
     {
-        $recs                = array();
-        $child_to_parent_map = array();
+        $recs                = [];
+        $child_to_parent_map = [];
 
-        #------------------------------
-        # First pass is to gather info:
-        # - Loads cats
-        # - Creates pristine entities for new ones
-        # - Maps children to their parents
-        #------------------------------
+        //------------------------------
+        // First pass is to gather info:
+        // - Loads cats
+        // - Creates pristine entities for new ones
+        // - Maps children to their parents
+        //------------------------------
 
-        $cat_ids   = array();
+        $cat_ids   = [];
         $classname = $this->em->getRepository($this->entity_name)->getClassName();
         foreach ($structure as $cat) {
             if (empty($cat['@is_new'])) {
@@ -121,9 +122,9 @@ class HierarchyStructureProcessor
             }
         }
 
-        #------------------------------
-        # Second pass applies the array to the object
-        #------------------------------
+        //------------------------------
+        // Second pass applies the array to the object
+        //------------------------------
 
         foreach ($structure as $cat) {
             $cat_id = $cat['id'];
@@ -157,7 +158,7 @@ class HierarchyStructureProcessor
     public function saveRecords(array $records, $remove_missing = false)
     {
         if ($remove_missing) {
-            $have_ids = array(0);
+            $have_ids = [0];
             foreach ($records as $r) {
                 if ($r->id) {
                     $have_ids[] = $r->id;
@@ -168,7 +169,7 @@ class HierarchyStructureProcessor
 				SELECT r
 				FROM {$this->entity_name} r
 				WHERE r NOT IN (?0)
-			")->execute(array($have_ids));
+			")->execute([$have_ids]);
 
             foreach ($missing_recs as $r) {
                 if ($this->is_hierarchy && $r->parent) {
@@ -226,7 +227,7 @@ class HierarchyStructureProcessor
         }
 
         // Built-in props
-        foreach (array('title', 'display_order') as $k) {
+        foreach (['title', 'display_order'] as $k) {
             if (array_key_exists($k, $values)) {
                 $object->$k = $values[$k];
             }

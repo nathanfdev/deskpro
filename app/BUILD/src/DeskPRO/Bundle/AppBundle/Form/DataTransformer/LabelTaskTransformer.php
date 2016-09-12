@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
@@ -94,7 +95,7 @@ class LabelTaskTransformer implements DataTransformerInterface
         }
 
         $labelObject = $this->entityManager->getRepository(LabelTask::class)
-            ->findOneBy(array('label' => $label, 'task' => $this->task));
+            ->findOneBy(['label' => $label, 'task' => $this->task]);
 
         if (empty($labelObject)) {
             $labelObject = new LabelTask();

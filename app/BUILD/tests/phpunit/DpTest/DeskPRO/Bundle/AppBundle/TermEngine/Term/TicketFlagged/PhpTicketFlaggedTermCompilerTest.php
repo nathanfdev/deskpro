@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
@@ -68,7 +69,7 @@ class PhpTicketFlaggedTermCompilerTest extends AbstractPhpTermCompilerTest
         $helper_pool_real = $this->get('term_engine.php.helper_pool');
         $helper_pool      = \Mockery::mock($helper_pool_real)
             ->shouldReceive('getHelper')->with('agent')->andReturn($agent_helper)
-            ->shouldReceive('getHelper')->andReturnUsing(array($helper_pool_real, 'getHelper'))
+            ->shouldReceive('getHelper')->andReturnUsing([$helper_pool_real, 'getHelper'])
             ->mock();
 
         return $helper_pool;
@@ -76,9 +77,9 @@ class PhpTicketFlaggedTermCompilerTest extends AbstractPhpTermCompilerTest
 
     public function testCompileIs()
     {
-        $term = new TicketFlaggedTerm(array(
+        $term = new TicketFlaggedTerm([
             'flag' => 'blue',
-        ));
+        ]);
 
         $php_check = $this->term_compiler->compile($term);
         $ticket    = $this->createTicketProphecy();
@@ -86,22 +87,22 @@ class PhpTicketFlaggedTermCompilerTest extends AbstractPhpTermCompilerTest
             $php_check,
             true,
             $ticket,
-            array('flag' => 'blue')
+            ['flag' => 'blue']
         );
 
         $this->assertTicketCheck(
             $php_check,
             false,
             $ticket,
-            array('flag' => 'red')
+            ['flag' => 'red']
         );
     }
 
     public function testCompileIsNot()
     {
-        $term = new TicketFlaggedTerm(array(
+        $term = new TicketFlaggedTerm([
             'flag' => 'blue',
-        ), TermInterface::OP_NOT);
+        ], TermInterface::OP_NOT);
 
         $php_check = $this->term_compiler->compile($term);
         $ticket    = $this->createTicketProphecy();
@@ -109,14 +110,14 @@ class PhpTicketFlaggedTermCompilerTest extends AbstractPhpTermCompilerTest
             $php_check,
             false,
             $ticket,
-            array('flag' => 'blue')
+            ['flag' => 'blue']
         );
 
         $this->assertTicketCheck(
             $php_check,
             true,
             $ticket,
-            array('flag' => 'red')
+            ['flag' => 'red']
         );
     }
 

@@ -94,6 +94,6 @@ class TicketsContext extends BasePortalContext
      */
     public function iTryToVisitThatTicket()
     {
-        $this->getPage('Ticket')->open(array('id' => $this->last_ticket->getId()));
+        $this->getPage('Ticket')->open(['id' => $this->last_ticket->getId()]);
     }
 }

@@ -64,11 +64,11 @@ class LoginHelper
         $this->route_prefix = $route_prefix;
     }
 
-    ############################################################################
-    # /login
-    ############################################################################
+    //###########################################################################
+    // /login
+    //###########################################################################
 
-    public function execIndexAction(array $vars = array())
+    public function execIndexAction(array $vars = [])
     {
         $usersources = $this->em->createQuery('
             SELECT us
@@ -84,35 +84,35 @@ class LoginHelper
             $return = '';
         }
 
-        $vars = $vars + array(
+        $vars = $vars + [
             'usersources'      => $usersources,
             'usersource_forms' => $this->_getUsersourceLoginForms($usersources),
             'return'           => $return,
-        );
+        ];
 
         return $this->controller->render($this->tpl_prefix.':index.html.twig', $vars);
     }
 
     protected function _getUsersourceLoginForms($usersources)
     {
-        $forms = array();
+        $forms = [];
 
         foreach ($usersources as $usersource) {
             $parts    = explode('\\', $usersource['handler_class']);
             $tpl_name = $this->tpl_prefix.'login-form-.html.twig'.strtolower(array_pop($parts));
 
-            $forms[] = array(
+            $forms[] = [
                 'usersource' => $usersource,
-                'html'       => $this->tpl->render($tpl_name, array('usersource' => $usersource)),
-            );
+                'html'       => $this->tpl->render($tpl_name, ['usersource' => $usersource]),
+            ];
         }
 
         return $forms;
     }
 
-    ############################################################################
-    # /logout
-    ############################################################################
+    //###########################################################################
+    // /logout
+    //###########################################################################
 
     public function execLogoutAction()
     {
@@ -122,18 +122,18 @@ class LoginHelper
             App::getDb()->executeUpdate('
                 DELETE FROM people_prefs
                 WHERE person_id = ? AND name = ?
-            ', array($person['id'], 'agent.ui.state'));
+            ', [$person['id'], 'agent.ui.state']);
         }
 
-        $this->controller->session->replace(array());
+        $this->controller->session->replace([]);
         $this->controller->session->save();
 
         return $this->controller->redirectRoute($this->route_prefix.'_login');
     }
 
-    ############################################################################
-    # /login/authenticate
-    ############################################################################
+    //###########################################################################
+    // /login/authenticate
+    //###########################################################################
 
     public function execAuthenticateAction($usersource_id)
     {
@@ -167,20 +167,20 @@ class LoginHelper
             // Set their status to available by default
             $this->controller->session->set('dp_active_status', 'available');
 
-            $data = array(
+            $data = [
                 'agent_id'         => $person['id'],
                 'agent_name'       => $person['display_name'],
                 'agent_short_name' => $person->getDisplayContactShort(4),
                 'picture_url'      => $person->getPictureUrl(10),
-            );
+            ];
 
             // Announce if its an agent
             $cm = new \Application\DeskPRO\Entity\ClientMessage();
-            $cm->fromArray(array(
+            $cm->fromArray([
                 'channel'           => 'agent.new-agent-online',
                 'data'              => $data,
                 'created_by_client' => $this->controller->session->getEntityId(),
-            ));
+            ]);
 
             $this->em->persist($cm);
             $this->em->flush();
@@ -197,9 +197,9 @@ class LoginHelper
 
         $adapter = $this->_initUserSourceAdapter($usersource);
 
-        #------------------------------
-        # Callback types require us to redirect
-        #------------------------------
+        //------------------------------
+        // Callback types require us to redirect
+        //------------------------------
 
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
             $result = $adapter->authenticate();
@@ -213,9 +213,9 @@ class LoginHelper
                 return $this->_redirectLoginFailed();
             }
 
-        #------------------------------
-        # Other types should return a result right away
-        #------------------------------
+        //------------------------------
+        // Other types should return a result right away
+        //------------------------------
         } else {
             $result = $adapter->authenticate();
 
@@ -250,12 +250,12 @@ class LoginHelper
     {
         $return = LegacyRequestUtils::readReturnParam($this->controller->request);
 
-        return $this->controller->redirectRoute($this->route_prefix.'_login', array('return' => $return));
+        return $this->controller->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
     }
 
-    ############################################################################
-    # /login/authenticate-callback/:usersource_id
-    ############################################################################
+    //###########################################################################
+    // /login/authenticate-callback/:usersource_id
+    //###########################################################################
 
     public function execAuthenticateCallbackAction($usersource_id)
     {
@@ -265,7 +265,7 @@ class LoginHelper
 
         // It must be a callback type to be here, so if not redirect back to login
         if (!($adapter instanceof \Orb\Auth\Adapter\CallbackInterface)) {
-            return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix + '_login', array()));
+            return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix + '_login', []));
         }
 
         $adapter->setCallbackContext($_REQUEST);
@@ -280,15 +280,15 @@ class LoginHelper
             $this->controller->session->set('auth_person_id', $person['id']);
             \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
 
-            return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix, array()));
+            return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix, []));
 
         // Error, go back to login
         } else {
-            return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix.'_login', array()));
+            return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix.'_login', []));
         }
     }
 
-    ############################################################################
+    //###########################################################################
 
     protected function _initUserSourceAdapter($usersource)
     {

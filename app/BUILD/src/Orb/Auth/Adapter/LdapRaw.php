@@ -71,7 +71,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
     /**
      * @var array
      */
-    protected $options = array(
+    protected $options = [
         self::OPT_HOST            => 'localhost',
         self::OPT_PORT            => null, // null means default of 389 or 636 if ssl enabled
         self::OPT_TLS             => false,
@@ -85,7 +85,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
         'accountCanonicalForm'    => 2,
         'bindRequiresDn'          => true,
         'ldapClass'               => null,
-    );
+    ];
 
     public function __construct(array $options)
     {
@@ -117,7 +117,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
      */
     public function getZendAuthAdapter()
     {
-        $options = array('tryUsernameSplit' => false);
+        $options = ['tryUsernameSplit' => false];
         foreach (
             [
                 'host',
@@ -136,7 +136,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
             }
         }
 
-        $auth = new \Zend\Authentication\Adapter\Ldap(array($options), $this->set_username, $this->set_password);
+        $auth = new \Zend\Authentication\Adapter\Ldap([$options], $this->set_username, $this->set_password);
 
         if ($this->options['ldapClass']) {
             $class = $this->options['ldapClass'];
@@ -158,10 +158,10 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
     public function doAuthenticate()
     {
         if (!$this->set_username) {
-            return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'missing_input_username', 'error_message' => 'No username provided']);
         }
         if (!$this->set_password) {
-            return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_password', 'error_message' => 'No password provided'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'missing_input_password', 'error_message' => 'No password provided']);
         }
 
         $time_start = microtime(true);
@@ -181,7 +181,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
                 $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
             }
 
-            return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
+            return new Result(Result::FAILURE_EXCEPTION, null, ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]);
         }
 
         if ($this->logger) {
@@ -193,10 +193,10 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
         }
 
         if (!$result->isValid()) {
-            return new Result(Result::FAILURE_INVALID_CREDS, null, array('error_code' => 'invalid_credentials', 'error_message' => 'Invalid username or password'));
+            return new Result(Result::FAILURE_INVALID_CREDS, null, ['error_code' => 'invalid_credentials', 'error_message' => 'Invalid username or password']);
         }
 
-        $raw_info                      = array();
+        $raw_info                      = [];
         $raw_info['identity_friendly'] = $result->getIdentity();
 
         try {
@@ -264,7 +264,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
                 $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
             }
 
-            return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
+            return new Result(Result::FAILURE_EXCEPTION, null, ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]);
         }
 
         $identity = new Identity($raw_info['identity'], $raw_info);
@@ -290,7 +290,7 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
                 $zend_auth->authenticate();
             } catch (\Exception $e) {
             }
-            $raw_info = array();
+            $raw_info = [];
 
             /** @var $ldap \Zend\Ldap\Ldap */
             $ldap = $zend_auth->getLdap();

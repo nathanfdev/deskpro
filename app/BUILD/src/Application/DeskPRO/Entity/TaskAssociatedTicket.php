@@ -48,9 +48,9 @@ class TaskAssociatedTicket extends TaskAssociation
    */
   protected $ticket;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

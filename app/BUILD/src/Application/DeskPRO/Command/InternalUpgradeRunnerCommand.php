@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 namespace Application\DeskPRO\Command;
@@ -51,7 +52,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
             $output->setVerbosity(2);
         }
 
-        $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', array('core.croncheck.dp-cron'));
+        $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', ['core.croncheck.dp-cron']);
         if ($check) {
             $date     = new \DateTime('@'.$check);
             $date_cut = new \DateTime('-15 minutes');
@@ -122,7 +123,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
         if (!dp_get_php_path(true)) {
             $write_status('error_php_path');
-            $write_status('error_unknown_binary', array('php'));
+            $write_status('error_unknown_binary', ['php']);
             $write_status('error_basic_checks_fail');
             $output->write('<error>Could not find path to PHP</error>');
             @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
@@ -131,9 +132,9 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
             return 1;
         }
 
-        #-------------------------
-        # Check PHP infos
-        #-------------------------
+        //-------------------------
+        // Check PHP infos
+        //-------------------------
 
         if (dp_is_php_path_guessed()) {
             $cmd = sprintf(
@@ -157,7 +158,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
             if ($fail) {
                 $write_status('error_php_path');
-                $write_status('error_unknown_binary', array('php'));
+                $write_status('error_unknown_binary', ['php']);
                 $write_status('error_basic_checks_fail');
                 $output->write('<error>Could not find path to PHP (Detected PHP appears different than running PHP)</error>');
                 @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
@@ -167,9 +168,9 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
             }
         }
 
-        #-------------------------
-        # Make sure PHP we have passes requirements
-        #-------------------------
+        //-------------------------
+        // Make sure PHP we have passes requirements
+        //-------------------------
 
         $cmd = sprintf(
             '%s %s',
@@ -182,7 +183,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
         exec($cmd, $out, $ret);
 
         if (!$out) {
-            $out = array();
+            $out = [];
         }
 
         $out = implode("\n", $out);
@@ -201,9 +202,9 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
             return 1;
         }
 
-        #-------------------------
-        # Exec upgrade command
-        #-------------------------
+        //-------------------------
+        // Exec upgrade command
+        //-------------------------
 
         $cmd = sprintf(
             '%s %s --auto --quiet --write-status-file %s',
@@ -220,7 +221,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
         exec($cmd, $out, $ret);
 
         if (!$out) {
-            $out = array();
+            $out = [];
         }
 
         $write_status('exec_result', $ret);

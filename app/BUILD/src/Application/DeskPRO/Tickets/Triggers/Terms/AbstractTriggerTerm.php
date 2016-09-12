@@ -85,7 +85,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
      * @param string $op
      * @param array  $options
      */
-    public function __construct($op, array $options = array())
+    public function __construct($op, array $options = [])
     {
         $this->op = $op;
         $this->_initOptions($options);
@@ -124,7 +124,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
      */
     protected function getDefaultOptions()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -204,7 +204,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                 }
 
                 if ($value === null) {
-                    $value = array();
+                    $value = [];
                 }
 
                 // Means we found an array collection syntax like emails[]
@@ -214,7 +214,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                 if ($is_coll && $parts) {
                     $parts_default = $parts;
                     $all_values    = $value;
-                    $use_value     = array();
+                    $use_value     = [];
                     foreach ($all_values as $value) {
                         $parts = $parts_default;
                         while (($p = array_shift($parts)) !== null) {
@@ -279,14 +279,14 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
             $value = $value->toArray();
         }
 
-        return array(
+        return [
             'op'            => $op,
             'value'         => $value,
             'is_changed_op' => $is_change_op,
             'is_touched_op' => $is_touched_op,
             'was_changed'   => $was_changed,
             'was_touched'   => $was_touched,
-        );
+        ];
     }
 
     /**
@@ -393,15 +393,15 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         }
 
         if (!is_array($all_values)) {
-            $all_values = array($all_values);
+            $all_values = [$all_values];
         }
 
         if ($check_ids === null || empty($check_ids)) {
-            $check_ids = array();
+            $check_ids = [];
         }
 
         if (!is_array($check_ids)) {
-            $check_ids = array($check_ids);
+            $check_ids = [$check_ids];
         }
 
         if ($check_ids) {
@@ -695,10 +695,10 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         }
 
         if (!is_array($all_values)) {
-            $all_values = array($all_values);
+            $all_values = [$all_values];
         }
 
-        $check_value = is_array($check_value) ? $check_value : array($check_value);
+        $check_value = is_array($check_value) ? $check_value : [$check_value];
 
         $check_value_i = array_map(
             function ($v) {
@@ -708,7 +708,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         );
 
         $check_fn = function ($value) use ($op, $check_value_i, $check_value) {
-
             if (!is_string($value)) {
                 if ($value === null || $value === false) {
                     $value = '';

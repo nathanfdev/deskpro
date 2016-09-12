@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketRef;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketRef\PhpTicketRefTermCompiler;
@@ -51,12 +52,12 @@ class PhpTicketRefTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testCompileIs()
     {
         $term = new TicketRefTerm(
-            array(
-                'ref' => array(
+            [
+                'ref' => [
                     'XXX-111-XXX',
                     'ZZZ-222-ZZZ',
-                ),
-            )
+                ],
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -76,12 +77,12 @@ class PhpTicketRefTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testCompileIsNot()
     {
         $term = new TicketRefTerm(
-            array(
-                'ref' => array(
+            [
+                'ref' => [
                     'XXX-111-XXX',
                     'ZZZ-222-ZZZ',
-                ),
-            ),
+                ],
+            ],
             TermInterface::OP_NOT
         );
 

@@ -168,9 +168,9 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
         $em->flush();
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public function validateParent(ExecutionContextInterface $context)
     {

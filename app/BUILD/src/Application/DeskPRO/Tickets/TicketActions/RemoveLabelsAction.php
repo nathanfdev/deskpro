@@ -133,6 +133,6 @@ class RemoveLabelsAction extends AbstractAction implements PermissionableAction
     {
         $tr = App::getTranslator();
 
-        return $tr->phrase('agent.tickets.remove_labels_action', array('labels' => implode(', ', $this->remove_labels)));
+        return $tr->phrase('agent.tickets.remove_labels_action', ['labels' => implode(', ', $this->remove_labels)]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\HttpFoundation;
 
 use Symfony\Component\HttpFoundation\Cookie as BaseCookie;
 
 /**
  * @deprecated Use the usual symfony cookies and the method to send them
- *             This still exists just for some legacy controller code.
+ *             This still exists just for some legacy controller code
  */
 class Cookie extends BaseCookie
 {

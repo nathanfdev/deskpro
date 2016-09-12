@@ -75,12 +75,12 @@ class TicketTerms
     /**
      * @var array
      */
-    protected $terms = array();
+    protected $terms = [];
 
     /**
      * @var array
      */
-    protected $term_ids_map = array();
+    protected $term_ids_map = [];
 
     /**
      * @var null
@@ -100,7 +100,7 @@ class TicketTerms
             }
             if (isset($info['type'])) {
                 if (!isset($this->term_ids[$info['type']])) {
-                    $this->term_ids_map[$info['type']] = array();
+                    $this->term_ids_map[$info['type']] = [];
                 }
                 $this->term_ids_map[$info['type']][] = $info;
             }
@@ -128,7 +128,7 @@ class TicketTerms
     public function getTicketTerm($type, $first = true)
     {
         if (!isset($this->term_ids_map[$type])) {
-            return array();
+            return [];
         }
 
         if (!$first) {
@@ -355,7 +355,7 @@ class TicketTerms
                 break;
 
             case 'is_via_interface':
-                if (!defined('DP_INTERFACE') || !in_array(DP_INTERFACE, array('user', 'agent'))) {
+                if (!defined('DP_INTERFACE') || !in_array(DP_INTERFACE, ['user', 'agent'])) {
                     return false;
                 }
                 break;
@@ -428,7 +428,7 @@ class TicketTerms
                     }
                 } else {
                     if ($is_agent) {
-                        if ($op    != 'not') {
+                        if ($op != 'not') {
                             return false;
                         }
                     } else {
@@ -720,7 +720,7 @@ class TicketTerms
 
             case 'day_created':
 
-                $days = isset($choice['days']) ? (array) $choice['days'] : array();
+                $days = isset($choice['days']) ? (array) $choice['days'] : [];
                 $day  = $ticket->person->getDateForTime('@'.$ticket->date_created->getTimestamp())->format('w');
 
                 if (!in_array($day, $days)) {
@@ -762,7 +762,7 @@ class TicketTerms
 
             case 'current_day':
 
-                $days = isset($choice['days']) ? (array) $choice['days'] : array();
+                $days = isset($choice['days']) ? (array) $choice['days'] : [];
                 $day  = $ticket->person->getDateForTime('@'.time())->format('w');
 
                 if (!in_array($day, $days)) {
@@ -929,7 +929,7 @@ class TicketTerms
                 break;
             case TicketSearch::TERM_URGENCY:
                 if (!is_array($choice)) {
-                    $choice = array('num' => $choice);
+                    $choice = ['num' => $choice];
                 }
 
                 switch ($op) {
@@ -1252,9 +1252,9 @@ class TicketTerms
                 }
                 break;
 
-            ############################################################################################################
-            # Organization Terms
-            ############################################################################################################
+            //###########################################################################################################
+            // Organization Terms
+            //###########################################################################################################
 
             case OrganizationSearch::TERM_NAME:
                 if (is_array($choice)) {
@@ -1491,12 +1491,12 @@ class TicketTerms
                 break;
 
             case 'id':
-                $choices_in = array();
+                $choices_in = [];
                 foreach ((array) $choice as $c) {
                     $choices_in[] = (int) $c;
                 }
 
-                $has_choices = array();
+                $has_choices = [];
                 foreach ($choices_in as $id) {
                     $c = $obj->getCustomDataForField($id);
                     if ($c) {
@@ -1566,7 +1566,7 @@ class TicketTerms
             $choice = Arrays::getFirstItem($choice);
         }
 
-        if ($op == self::OP_IS_REGEX || $op    == self::OP_NOT_REGEX) {
+        if ($op == self::OP_IS_REGEX || $op == self::OP_NOT_REGEX) {
             if (is_array($choice)) {
                 $choice = array_pop($choice);
             }
@@ -1739,7 +1739,7 @@ class TicketTerms
      */
     public function compileTermsToJavascript($mode = 'all')
     {
-        $js = array();
+        $js = [];
 
         if ($mode == 'all') {
             $test_pass   = '';
@@ -1770,7 +1770,7 @@ class TicketTerms
 
             switch ($term) {
                 case TicketSearch::TERM_DEPARTMENT:
-                    $ids = array();
+                    $ids = [];
                     foreach ((array) $choice as $cond) {
                         $ids = array_merge($ids, App::getDataService('Department')->getIdsInTree($cond, true));
                     }
@@ -1782,7 +1782,7 @@ class TicketTerms
                     $js[] = $this->_compileJsChoiceTermCondition('ticket.getDepartmentId()', $op, $ids)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_CATEGORY:
-                    $ids = array();
+                    $ids = [];
                     foreach ((array) $choice as $cond) {
                         $ids = array_merge($ids, App::getEntityRepository('DeskPRO:TicketCategory')->getIdsInTree($cond, true));
                     }
@@ -1832,7 +1832,9 @@ class TicketTerms
         }
 
         if (is_array($choice)) {
-            if (Arrays::checkAll($choice, function ($v) { return Numbers::isInteger($v); })) {
+            if (Arrays::checkAll($choice, function ($v) {
+                return Numbers::isInteger($v);
+            })) {
                 $choice = Arrays::castToType($choice, 'integer');
             }
 
@@ -1872,7 +1874,7 @@ class TicketTerms
      */
     public function getDescriptions($as_html = false)
     {
-        $descs = array();
+        $descs = [];
         foreach ($this->terms as $info) {
             if (empty($info['type']) || empty($info['op']) || empty($info['options'])) {
                 continue;
@@ -1932,8 +1934,8 @@ class TicketTerms
         if ($as_html) {
             $summary = htmlspecialchars($summary);
             $summary = str_replace(
-                array('&lt;error&gt;', '&lt;/error&gt;'),
-                array('<span class="term-error">', '</span>'),
+                ['&lt;error&gt;', '&lt;/error&gt;'],
+                ['<span class="term-error">', '</span>'],
                 $summary
             );
         }

@@ -95,7 +95,7 @@ class TermEngineContext
     /**
      * Adds group by from a string.
      *
-     * @param string $groupByString is a string of comma-separated columns to group the tickets by.
+     * @param string $groupByString is a string of comma-separated columns to group the tickets by
      *
      * @return $this
      */

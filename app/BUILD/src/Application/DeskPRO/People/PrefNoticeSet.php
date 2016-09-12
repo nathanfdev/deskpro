@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -79,32 +79,32 @@ class PrefNoticeSet implements \IteratorAggregate, \Countable
         $this->person  = $person;
         $this->pref_id = $pref_id;
 
-        #------------------------------
-        # Get pref
-        #------------------------------
+        //------------------------------
+        // Get pref
+        //------------------------------
 
         $this->db        = $db;
         $this->pref_data = $this->db->fetchColumn('
             SELECT value_array
             FROM people_prefs
             WHERE person_id = ? AND name = ?
-        ', array($person->getId(), $pref_id));
+        ', [$person->getId(), $pref_id]);
 
         if ($this->pref_data) {
             $this->pref_data = @unserialize($this->pref_data);
         }
 
         if (!$this->pref_data) {
-            $this->pref_data = array('dismissed' => array());
+            $this->pref_data = ['dismissed' => []];
         }
 
-        #------------------------------
-        # Load set data
-        #------------------------------
+        //------------------------------
+        // Load set data
+        //------------------------------
 
         $this->set_file     = $set_file;
         $this->set_data     = require $set_file;
-        $this->waiting_data = array();
+        $this->waiting_data = [];
 
         foreach ($this->set_data as $id => $item) {
             if (isset($this->pref_data['dismissed'][$id])) {
@@ -153,7 +153,7 @@ class PrefNoticeSet implements \IteratorAggregate, \Countable
      */
     public function dismiss($id)
     {
-        $this->pref_data['dismissed'][$id] = array('date' => date('Y-m-d H:i:s'));
+        $this->pref_data['dismissed'][$id] = ['date' => date('Y-m-d H:i:s')];
         unset($this->waiting_data[$id]);
 
         $this->next_waiting_id = Arrays::getFirstKey($this->waiting_data);
@@ -175,17 +175,15 @@ class PrefNoticeSet implements \IteratorAggregate, \Countable
         return array_keys($this->waiting_data);
     }
 
-    /**
-     */
     public function save()
     {
         $data = serialize($this->pref_data);
-        $this->db->replace('people_prefs', array(
+        $this->db->replace('people_prefs', [
             'name'        => $this->pref_id,
             'person_id'   => $this->person->getId(),
             'value_array' => $data,
             'value_str'   => null,
             'date_expire' => null,
-        ));
+        ]);
     }
 }

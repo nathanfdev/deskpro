@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
@@ -54,9 +55,9 @@ class AgentTeam implements \Orb\Helper\ShortCallableInterface
 
     public function getShortCallableNames()
     {
-        return array(
+        return [
             'getAgentTeamIds' => 'getAgentTeamIds',
-        );
+        ];
     }
 
     public function getAgentTeamIds()
@@ -69,7 +70,7 @@ class AgentTeam implements \Orb\Helper\ShortCallableInterface
             SELECT team_id
             FROM agent_team_members
             WHERE person_id = ?
-        ', array($this->person['id']));
+        ', [$this->person['id']]);
 
         return $this->_agent_team_ids;
     }
@@ -78,11 +79,11 @@ class AgentTeam implements \Orb\Helper\ShortCallableInterface
     {
         $ids = $this->getAgentTeamIds();
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $agent_data = App::getContainer()->getAgentData();
-        $teams      = array();
+        $teams      = [];
 
         foreach ($ids as $id) {
             $t = $agent_data->getTeam($id);

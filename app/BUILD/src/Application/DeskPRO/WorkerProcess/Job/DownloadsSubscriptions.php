@@ -95,9 +95,9 @@ class DownloadsSubscriptions extends AbstractJob
                 $brandStack->pop();
                 continue;
             }
-            #------------------------------
-            # Get subscriptions
-            #------------------------------
+            //------------------------------
+            // Get subscriptions
+            //------------------------------
 
             /** @var Structure $structure */
             $structure = $this->getContainer()->getSystemService('publish_structure');
@@ -155,9 +155,9 @@ class DownloadsSubscriptions extends AbstractJob
                 ', [$downloadsIds], 'person_id', null, 'download_id', [Connection::PARAM_INT_ARRAY]);
             }
 
-            #------------------------------
-            # Sort subscriptions into users
-            #------------------------------
+            //------------------------------
+            // Sort subscriptions into users
+            //------------------------------
 
             $userToDownloads = $this->sortSubscriptions($rootSubs, $catSubs, $downloadSubs, $helper);
 
@@ -166,9 +166,9 @@ class DownloadsSubscriptions extends AbstractJob
                 continue;
             }
 
-            #------------------------------
-            # Verify permissions
-            #------------------------------
+            //------------------------------
+            // Verify permissions
+            //------------------------------
 
             $userGroupMembers = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id, usergroup_id

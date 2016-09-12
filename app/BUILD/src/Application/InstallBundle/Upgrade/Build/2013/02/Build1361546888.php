@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1361546888 extends AbstractBuild
@@ -38,7 +39,7 @@ class Build1361546888 extends AbstractBuild
         $this->out('Unset visitor_ids');
 
         // Erase all existing visitor connections
-        $tables = array(
+        $tables = [
             'article_comments',
             'chat_blocks',
             'chat_conversations',
@@ -50,7 +51,7 @@ class Build1361546888 extends AbstractBuild
             'searchlog',
             'sessions',
             'tickets_messages',
-        );
+        ];
 
         foreach ($tables as $t) {
             $this->execMutateSql("UPDATE `$t` SET visitor_id = NULL");

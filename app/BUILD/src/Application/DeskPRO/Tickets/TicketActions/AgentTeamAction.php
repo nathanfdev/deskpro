@@ -184,7 +184,7 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
                 $name = "<error>Unknown #{$this->agent_team_id}</error>";
             }
 
-            return '<span class="with-agent-team" data-agent-team-id="'.$this->agent_team_id.'">'.$tr->phrase('agent.tickets.assign_team_action', array('name' => $name)).'</span>';
+            return '<span class="with-agent-team" data-agent-team-id="'.$this->agent_team_id.'">'.$tr->phrase('agent.tickets.assign_team_action', ['name' => $name]).'</span>';
         }
     }
 }

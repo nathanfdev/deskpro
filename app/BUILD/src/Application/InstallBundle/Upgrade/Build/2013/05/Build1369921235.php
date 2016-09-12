@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Orb\Util\Arrays;
@@ -47,11 +48,11 @@ class Build1369921235 extends AbstractBuild
             $lang_id = 1;
         }
 
-        #------------------------------
-        # Ticket snippet cats over to generic snippets
-        #------------------------------
+        //------------------------------
+        // Ticket snippet cats over to generic snippets
+        //------------------------------
 
-        $cat_map = array();
+        $cat_map = [];
 
         $this->out('Move ticket snippets categories to the generic table');
         $raw = $this->container->getDb()->fetchAll('
@@ -60,19 +61,19 @@ class Build1369921235 extends AbstractBuild
         ');
 
         foreach ($raw as $r) {
-            $this->container->getDb()->insert('text_snippet_categories', array(
+            $this->container->getDb()->insert('text_snippet_categories', [
                 'person_id' => $r['person_id'],
                 'typename'  => 'tickets',
                 'is_global' => $r['is_global'] ? 1 : 0,
                 'title'     => $r['title'],
-            ));
+            ]);
 
             $cat_map[$r['id']] = $this->container->getDb()->lastInsertId();
         }
 
-        #------------------------------
-        # Ticket snippets over to generic snippets
-        #------------------------------
+        //------------------------------
+        // Ticket snippets over to generic snippets
+        //------------------------------
 
         $this->out('Move ticket snippets to the generic table');
         $raw = $this->container->getDb()->fetchAll('
@@ -80,7 +81,7 @@ class Build1369921235 extends AbstractBuild
             FROM ticket_snippets
         ');
 
-        $find_replace = array(
+        $find_replace = [
             '{{ ticket.department }}'          => '{{ ticket.department.title }}',
             '{{ ticket.product }}'             => '{{ ticket.product.title }}',
             '{{ ticket.category }}'            => '{{ ticket.category.title }}',
@@ -93,24 +94,24 @@ class Build1369921235 extends AbstractBuild
             '{{ user.email }}'                 => '{{ ticket.person.primary_email }}',
             '{{ org.name }}'                   => '{{ ticket.person.organization.name }}',
             '{{ user.organization_position }}' => '{{ ticket.person.organization.name }}',
-        );
+        ];
 
         foreach ($raw as $r) {
             $snippet = $r['snippet_html'] ? $r['snippet_html'] : nl2br(htmlspecialchars($r['snippet']));
             $snippet = str_replace(array_keys($find_replace), array_values($find_replace), $snippet);
 
-            $this->container->getDb()->insert('text_snippets', array(
+            $this->container->getDb()->insert('text_snippets', [
                 'person_id'     => $r['person_id'],
                 'category_id'   => isset($cat_map[$r['category_id']]) ? $cat_map[$r['category_id']] : Arrays::getFirstItem($cat_map),
                 'title'         => $r['title'],
                 'snippet'       => $snippet,
                 'shortcut_code' => $r['shortcut_code'] ?: '',
-            ));
+            ]);
         }
 
-        #------------------------------
-        # Now copy all snippet texts to new object lang system
-        #------------------------------
+        //------------------------------
+        // Now copy all snippet texts to new object lang system
+        //------------------------------
 
         $this->out('Copy existing snippet values to object lang');
         $raw = $this->container->getDb()->fetchAll('
@@ -118,24 +119,24 @@ class Build1369921235 extends AbstractBuild
             FROM text_snippets
         ');
 
-        $batch = array();
+        $batch = [];
         foreach ($raw as $r) {
-            $batch[] = array(
+            $batch[] = [
                 'ref'         => "text_snippets.{$r['id']}",
                 'language_id' => $lang_id,
                 'prop_name'   => 'title',
                 'value'       => $r['title'],
-            );
-            $batch[] = array(
+            ];
+            $batch[] = [
                 'ref'         => "text_snippets.{$r['id']}",
                 'language_id' => $lang_id,
                 'prop_name'   => 'snippet',
                 'value'       => $r['snippet'],
-            );
+            ];
 
             if (count($batch) > 40) {
                 $this->container->getDb()->batchInsert('object_lang', $batch);
-                $batch = array();
+                $batch = [];
             }
         }
         if ($batch) {
@@ -148,34 +149,34 @@ class Build1369921235 extends AbstractBuild
             FROM text_snippet_categories
         ');
 
-        $batch = array();
+        $batch = [];
         foreach ($raw as $r) {
-            $batch[] = array(
+            $batch[] = [
                 'ref'         => "text_snippet_categories.{$r['id']}",
                 'language_id' => $lang_id,
                 'prop_name'   => 'title',
                 'value'       => $r['title'],
-            );
+            ];
 
             if (count($batch) > 40) {
                 $this->container->getDb()->batchInsert('object_lang', $batch);
-                $batch = array();
+                $batch = [];
             }
         }
         if ($batch) {
             $this->container->getDb()->batchInsert('object_lang', $batch);
         }
 
-        #------------------------------
-        # Now we can drop the old string cols
-        #------------------------------
+        //------------------------------
+        // Now we can drop the old string cols
+        //------------------------------
 
         $this->execMutateSql('ALTER TABLE text_snippets DROP title, DROP snippet');
         $this->execMutateSql('ALTER TABLE text_snippet_categories DROP title');
 
-        #------------------------------
-        # And remove the old ticket snippet tables
-        #------------------------------
+        //------------------------------
+        // And remove the old ticket snippet tables
+        //------------------------------
 
         $this->execMutateSql('DROP TABLE ticket_snippets');
         $this->execMutateSql('DROP TABLE ticket_snippet_categories');

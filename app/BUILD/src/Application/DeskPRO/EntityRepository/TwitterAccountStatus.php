@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -49,16 +50,16 @@ class TwitterAccountStatus extends AbstractEntityRepository
             INNER JOIN t.user u
             WHERE s.status = ?0
                 AND s.account = ?1
-        ')->setParameters(array($id, $account))->getOneOrNullResult();
+        ')->setParameters([$id, $account])->getOneOrNullResult();
     }
 
     public function getByTwitterIdsAndAccount(array $ids, $account)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
-        $output  = array();
+        $output  = [];
         $results = $this->getEntityManager()->createQuery('
             SELECT s, t, u
             FROM DeskPRO:TwitterAccountStatus s
@@ -66,7 +67,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
             INNER JOIN t.user u
             WHERE s.status IN (?0)
                 AND s.account = ?1
-        ')->setParameters(array($ids, $account))->execute();
+        ')->setParameters([$ids, $account])->execute();
 
         foreach ($results as $result) {
             $output[$result->status->id] = $result;
@@ -75,7 +76,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
         return $output;
     }
 
-    public function getTimelineForAccount(TwitterAccountEntity $account, array $conditions = array(), $sortByDate = 'DESC', $page = 1, $limit = self::DEFAULT_LIMIT)
+    public function getTimelineForAccount(TwitterAccountEntity $account, array $conditions = [], $sortByDate = 'DESC', $page = 1, $limit = self::DEFAULT_LIMIT)
     {
         $query = '
             SELECT s,
@@ -109,7 +110,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
         return $statuses;
     }
 
-    public function countTimelineForAccount(TwitterAccountEntity $account, array $conditions = array())
+    public function countTimelineForAccount(TwitterAccountEntity $account, array $conditions = [])
     {
         $query = '
             SELECT COUNT(s.id)
@@ -124,10 +125,10 @@ class TwitterAccountStatus extends AbstractEntityRepository
         return $this->getEntityManager()->createQuery($query)->setParameters($params)->getSingleScalarResult();
     }
 
-    protected function _getTimelineWhereClause(TwitterAccountEntity $account, array $conditions = array())
+    protected function _getTimelineWhereClause(TwitterAccountEntity $account, array $conditions = [])
     {
         $query  = 'WHERE s.account = ?0';
-        $params = array($account);
+        $params = [$account];
         $i      = 1;
 
         $type = isset($conditions['type']) ? $conditions['type'] : 'all';
@@ -137,7 +138,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
             $conditions['include_archived'] = true; // can't actually archive sent statuses
         }
 
-        $where = array();
+        $where = [];
 
         // note that sent should always be included - it will be filtered out above if needed
         switch ($type) {
@@ -224,7 +225,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
             }
         }
 
-        return array($query, $params);
+        return [$query, $params];
     }
 
     public function getSectionCounts($accounts)
@@ -234,18 +235,18 @@ class TwitterAccountStatus extends AbstractEntityRepository
             $accounts = $accounts->toArray();
         } elseif (!is_array($accounts)) {
             $single   = $accounts->id;
-            $accounts = array($accounts);
+            $accounts = [$accounts];
         }
         if (!$accounts) {
-            return array();
+            return [];
         }
 
         if (count($accounts) == 1) {
             $account      = reset($accounts);
-            $ids          = array($account->id);
+            $ids          = [$account->id];
             $dm_sent_case = ($account->user->id + 0);
         } else {
-            $ids          = array();
+            $ids          = [];
             $dm_sent_case = 'CASE a.account_id';
             foreach ($accounts as $account) {
                 $ids[] = $account->id;
@@ -272,7 +273,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
             WHERE a.account_id IN (".implode(',', $ids).')
                 AND a.is_archived = 0
             GROUP BY a.account_id
-        ', array(), 'account_id');
+        ', [], 'account_id');
 
         if ($single) {
             return isset($results[$single]) ? $results[$single] : false;
@@ -318,14 +319,14 @@ class TwitterAccountStatus extends AbstractEntityRepository
                 INNER JOIN twitter_statuses AS s ON (a.status_id = s.id)
                 WHERE a.account_id = ? AND a.is_archived = 0 AND a.is_favorited = 0 $sql_condition
                 GROUP BY IF(a.status_type IS NOT NULL, a.status_type, 'other')
-            ", array($account->id));
+            ", [$account->id]);
 
             $favorites = App::getDb()->fetchColumn("
                 SELECT COUNT(*) AS total
                 FROM twitter_accounts_statuses AS a
                 INNER JOIN twitter_statuses AS s ON (a.status_id = s.id)
                 WHERE a.account_id = ? AND a.is_archived = 0 AND a.is_favorited = 1 $sql_condition
-            ", array($account->id));
+            ", [$account->id]);
             if ($favorites) {
                 $data['favorite'] = $favorites;
             }
@@ -338,7 +339,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
                 INNER JOIN twitter_statuses AS s ON (a.status_id = s.id)
                 WHERE a.account_id = ? AND a.is_archived = 0 $sql_condition
                 GROUP BY a.agent_id
-            ", array($account->id));
+            ", [$account->id]);
         } elseif ($grouping == 'team') {
             return App::getDb()->fetchAllKeyValue("
                 SELECT a.agent_team_id AS id, COUNT(*) AS total
@@ -346,9 +347,9 @@ class TwitterAccountStatus extends AbstractEntityRepository
                 INNER JOIN twitter_statuses AS s ON (a.status_id = s.id)
                 WHERE a.account_id = ? AND a.is_archived = 0 $sql_condition
                 GROUP BY a.agent_team_id
-            ", array($account->id));
+            ", [$account->id]);
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -360,7 +361,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
     protected function normalizeSortByDate($sortByDate = 'asc')
     {
         // check that sort by date is asc or desc
-        if (!in_array(strtolower($sortByDate), array('asc', 'desc'))) {
+        if (!in_array(strtolower($sortByDate), ['asc', 'desc'])) {
             $sortByDate = 'asc';
         }
 

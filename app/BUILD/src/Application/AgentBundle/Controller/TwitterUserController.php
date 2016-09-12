@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -43,7 +44,7 @@ class TwitterUserController extends AbstractController
     /**
      * Check account security.
      *
-     * @param int $id The account id.
+     * @param int $id The account id
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
@@ -105,12 +106,12 @@ class TwitterUserController extends AbstractController
             return $this->viewAction($user ? $user->id : 0);
         } else {
             if ($user) {
-                return $this->createJsonResponse(array(
+                return $this->createJsonResponse([
                     'success' => true,
-                    'url'     => $this->generateUrl('agent_twitter_user', array('user_id' => $user->id)),
-                ));
+                    'url'     => $this->generateUrl('agent_twitter_user', ['user_id' => $user->id]),
+                ]);
             } else {
-                return $this->createJsonResponse(array('success' => false));
+                return $this->createJsonResponse(['success' => false]);
             }
         }
     }
@@ -136,10 +137,10 @@ class TwitterUserController extends AbstractController
             $status_ids       = array_values($status_ids);
             $account_statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getByTwitterIdsAndAccount($status_ids, $account);
         } else {
-            $account_statuses = array();
+            $account_statuses = [];
         }
 
-        return $this->render('AgentBundle:TwitterUser:view.html.twig', array(
+        return $this->render('AgentBundle:TwitterUser:view.html.twig', [
             'user'             => $user,
             'accounts'         => $accounts,
             'account'          => $account,
@@ -147,7 +148,7 @@ class TwitterUserController extends AbstractController
             'messages'         => $messages,
             'mentions'         => $mentions,
             'account_statuses' => $account_statuses,
-        ));
+        ]);
     }
 
     public function viewUserStatusesAction($user_id)
@@ -169,10 +170,10 @@ class TwitterUserController extends AbstractController
             $status_ids       = array_keys($statuses);
             $account_statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getByTwitterIdsAndAccount($status_ids, $account);
         } else {
-            $account_statuses = array();
+            $account_statuses = [];
         }
 
-        return $this->render('AgentBundle:TwitterUser:view-user-statuses.html.twig', array(
+        return $this->render('AgentBundle:TwitterUser:view-user-statuses.html.twig', [
             'user'             => $user,
             'accounts'         => $accounts,
             'account'          => $account,
@@ -180,7 +181,7 @@ class TwitterUserController extends AbstractController
             'account_statuses' => $account_statuses,
             'more'             => $more,
             'more_page'        => $page + 1,
-        ));
+        ]);
     }
 
     public function viewUserFollowingAction($user_id)
@@ -208,14 +209,14 @@ class TwitterUserController extends AbstractController
             $friend->friend_user->registerStub();
         }
 
-        return $this->render('AgentBundle:TwitterUser:view-user-following.html.twig', array(
+        return $this->render('AgentBundle:TwitterUser:view-user-following.html.twig', [
             'user'      => $user,
             'accounts'  => $accounts,
             'account'   => $account,
             'friends'   => $friends,
             'more'      => $more,
             'more_page' => $page + 1,
-        ));
+        ]);
     }
 
     public function viewUserFollowersAction($user_id)
@@ -243,14 +244,14 @@ class TwitterUserController extends AbstractController
             $follower->follower_user->registerStub();
         }
 
-        return $this->render('AgentBundle:TwitterUser:view-user-followers.html.twig', array(
+        return $this->render('AgentBundle:TwitterUser:view-user-followers.html.twig', [
             'user'      => $user,
             'accounts'  => $accounts,
             'account'   => $account,
             'followers' => $followers,
             'more'      => $more,
             'more_page' => $page + 1,
-        ));
+        ]);
     }
 
     protected function _getUser($user_id)
@@ -264,7 +265,7 @@ class TwitterUserController extends AbstractController
             $account = $this->em->getRepository('DeskPRO:TwitterAccount')->getFirst();
 
             try {
-                $response = $account->getTwitterApi()->get_usersShow(array('user_id' => $user_id));
+                $response = $account->getTwitterApi()->get_usersShow(['user_id' => $user_id]);
                 if ($response->id_str) {
                     $user = \Application\DeskPRO\Entity\TwitterUser::createFromJson($response);
                     $this->em->persist($user);
@@ -303,7 +304,7 @@ class TwitterUserController extends AbstractController
             $account = null;
         }
 
-        return array($account, $accounts);
+        return [$account, $accounts];
     }
 
     public function messageOverlayAction($user_id)
@@ -317,11 +318,11 @@ class TwitterUserController extends AbstractController
 
         $account = count($accounts) == 1 ? $accounts[0] : false;
 
-        return $this->render('AgentBundle:TwitterUser:message-overlay.html.twig', array(
+        return $this->render('AgentBundle:TwitterUser:message-overlay.html.twig', [
             'user'     => $user,
             'accounts' => $accounts,
             'account'  => $account,
-        ));
+        ]);
     }
 
     public function ajaxSaveFollowAction()
@@ -330,9 +331,9 @@ class TwitterUserController extends AbstractController
         $user    = $this->getUserOr404($this->in->getInt('user_id'));
 
         try {
-            $account->getTwitterApi()->post_friendshipsCreate(array(
+            $account->getTwitterApi()->post_friendshipsCreate([
                 'user_id' => $user->id,
-            ));
+            ]);
         } catch (\EpiTwitterException $e) {
             // likely already following
         }
@@ -348,12 +349,12 @@ class TwitterUserController extends AbstractController
             $this->em->persist($friend);
             $this->em->flush();
 
-            App::getDb()->insert('client_messages', array(
+            App::getDb()->insert('client_messages', [
                 'channel'      => 'agent.twitter-friend',
                 'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize(array('action' => 'new', 'account_id' => $account->id)),
-            ));
+                'data'         => serialize(['action' => 'new', 'account_id' => $account->id]),
+            ]);
 
             $follower = $this->em->getRepository('DeskPRO:TwitterAccountFollower')
                 ->findOneByAccountIdAndUserId($account['id'], $user['id']);
@@ -366,19 +367,19 @@ class TwitterUserController extends AbstractController
                 $this->em->flush();
 
                 if ($follower->is_archived != $old) {
-                    App::getDb()->insert('client_messages', array(
+                    App::getDb()->insert('client_messages', [
                         'channel'      => 'agent.twitter-follower',
                         'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                         'date_created' => date('Y-m-d H:i:s'),
-                        'data'         => serialize(array('action' => $follower->is_archived ? 'archived' : 'unarchived', 'account_id' => $account->id)),
-                    ));
+                        'data'         => serialize(['action' => $follower->is_archived ? 'archived' : 'unarchived', 'account_id' => $account->id]),
+                    ]);
                 }
             }
         }
 
         $success = true;
 
-        return $this->createJsonResponse(array('success' => $success));
+        return $this->createJsonResponse(['success' => $success]);
     }
 
     public function ajaxSaveUnfollowAction()
@@ -387,9 +388,9 @@ class TwitterUserController extends AbstractController
         $user    = $this->getUserOr404($this->in->getInt('user_id'));
 
         try {
-            $account->getTwitterApi()->post_friendshipsDestroy(array(
+            $account->getTwitterApi()->post_friendshipsDestroy([
                 'user_id' => $user->id,
-            ));
+            ]);
         } catch (\EpiTwitterException $e) {
             // likely not following already
         }
@@ -401,17 +402,17 @@ class TwitterUserController extends AbstractController
             $this->em->remove($friend);
             $this->em->flush();
 
-            App::getDb()->insert('client_messages', array(
+            App::getDb()->insert('client_messages', [
                 'channel'      => 'agent.twitter-friend',
                 'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize(array('action' => 'removed', 'account_id' => $account->id)),
-            ));
+                'data'         => serialize(['action' => 'removed', 'account_id' => $account->id]),
+            ]);
         }
 
         $success = true;
 
-        return $this->createJsonResponse(array('success' => $success));
+        return $this->createJsonResponse(['success' => $success]);
     }
 
     public function ajaxSaveArchiveAction()
@@ -431,16 +432,16 @@ class TwitterUserController extends AbstractController
             $this->em->flush();
 
             if ($follower->is_archived != $old) {
-                App::getDb()->insert('client_messages', array(
+                App::getDb()->insert('client_messages', [
                     'channel'      => 'agent.twitter-follower',
                     'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                     'date_created' => date('Y-m-d H:i:s'),
-                    'data'         => serialize(array('action' => $follower->is_archived ? 'archived' : 'unarchived', 'account_id' => $account->id)),
-                ));
+                    'data'         => serialize(['action' => $follower->is_archived ? 'archived' : 'unarchived', 'account_id' => $account->id]),
+                ]);
             }
         }
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     public function ajaxSavePersonAction()
@@ -451,16 +452,16 @@ class TwitterUserController extends AbstractController
         if ($person) {
             $details = $this->_addTwitterAssociation($person, $user->id, $user->screen_name);
             if ($details) {
-                return $this->createJsonResponse(array(
-                    'success'    => true,
-                    'html'       => $this->renderView('AgentBundle:TwitterUser:part-possible-person.html.twig', array(
+                return $this->createJsonResponse([
+                    'success' => true,
+                    'html'    => $this->renderView('AgentBundle:TwitterUser:part-possible-person.html.twig', [
                         'person' => $person,
-                    )),
-                ));
+                    ]),
+                ]);
             }
         }
 
-        return $this->createJsonResponse(array('success' => false));
+        return $this->createJsonResponse(['success' => false]);
     }
 
     public function ajaxSaveOrganizationAction()
@@ -471,16 +472,16 @@ class TwitterUserController extends AbstractController
         if ($org) {
             $details = $this->_addTwitterAssociation($org, $user->id, $user->screen_name);
             if ($details) {
-                return $this->createJsonResponse(array(
+                return $this->createJsonResponse([
                     'success' => true,
-                    'html'    => $this->renderView('AgentBundle:TwitterUser:part-possible-organization.html.twig', array(
+                    'html'    => $this->renderView('AgentBundle:TwitterUser:part-possible-organization.html.twig', [
                         'org' => $org,
-                    )),
-                ));
+                    ]),
+                ]);
             }
         }
 
-        return $this->createJsonResponse(array('success' => false));
+        return $this->createJsonResponse(['success' => false]);
     }
 
     protected function _addTwitterAssociation($entity, $user_id, $screen_name)
@@ -497,7 +498,7 @@ class TwitterUserController extends AbstractController
             INSERT IGNORE INTO $table
                 ($column, twitter_user_id, screen_name, is_verified)
             VALUES (?, ?, ?, 0)
-        ", array($entity->id, $user_id, $screen_name));
+        ", [$entity->id, $user_id, $screen_name]);
 
         $has_account = false;
         foreach ($entity->getContactData('twitter') as $twitter_details) {
@@ -557,10 +558,10 @@ class TwitterUserController extends AbstractController
             $error = 'No text specified.';
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => $success,
             'error'   => $error,
-        ));
+        ]);
     }
 
     /**
@@ -580,14 +581,14 @@ class TwitterUserController extends AbstractController
 
         $total_count = $account->countFollowers();
 
-        $params = array(
+        $params = [
             'account'     => $account,
             'followers'   => $account->getFollowers($page, $per_page),
             'page'        => $page,
             'per_page'    => $per_page,
             'total_count' => $total_count,
             'showing_to'  => min($total_count, $page * $per_page),
-        );
+        ];
 
         if ($this->in->getBool('partial')) {
             return $this->render('AgentBundle:TwitterUser:part-followers.html.twig', $params);
@@ -613,14 +614,14 @@ class TwitterUserController extends AbstractController
 
         $total_count = $account->countFollowing();
 
-        $params = array(
+        $params = [
             'account'     => $account,
             'followers'   => $account->getFollowing($page, $per_page),
             'page'        => $page,
             'per_page'    => $per_page,
             'total_count' => $total_count,
             'showing_to'  => min($total_count, $page * $per_page),
-        );
+        ];
 
         if ($this->in->getBool('partial')) {
             return $this->render('AgentBundle:TwitterUser:part-followers.html.twig', $params);
@@ -643,14 +644,14 @@ class TwitterUserController extends AbstractController
 
         $total_count = $account->countNewFollowers();
 
-        $params = array(
+        $params = [
             'account'     => $account,
             'followers'   => $account->getNewFollowers($page, $per_page),
             'page'        => $page,
             'per_page'    => $per_page,
             'total_count' => $total_count,
             'showing_to'  => min($total_count, $page * $per_page),
-        );
+        ];
 
         if ($this->in->getBool('last')) {
             $params['follower'] = end($params['followers']);

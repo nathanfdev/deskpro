@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Orb\Util\DpStrings;
@@ -108,10 +109,10 @@ class Build1400056701 extends AbstractBuild
         // pre-emptive because use of doctrine entity later in Build1400056729
         $this->execMutateSql("ALTER TABLE usersources ADD sync_enabled TINYINT(1) DEFAULT '0' NOT NULL", true);
 
-        #-------------------------
-        # Mark a couple default datas as done
-        # because we insert them manually
-        #-------------------------
+        //-------------------------
+        // Mark a couple default datas as done
+        // because we insert them manually
+        //-------------------------
 
         $row            = $this->container->getDb()->fetchAssoc("SELECT id, data FROM datastore WHERE name = 'sys.install.default_data' LIMIT 1");
         $data           = null;
@@ -121,26 +122,26 @@ class Build1400056701 extends AbstractBuild
             $loaded_data_id = $row['id'];
         }
         if (!$data) {
-            $data = array();
+            $data = [];
         }
 
         if (!isset($data['installed'])) {
-            $data['installed'] = array();
+            $data['installed'] = [];
         }
 
         $data['installed'][] = 'Application\\InstallBundle\\Data\\DefaultData\\TemplateData';
         $data['installed'][] = 'Application\\InstallBundle\\Data\\DefaultData\\TriggerData';
 
         if ($loaded_data_id) {
-            $this->container->getDb()->update('datastore', array(
+            $this->container->getDb()->update('datastore', [
                 'data' => serialize($data),
-            ), array('id' => $loaded_data_id));
+            ], ['id' => $loaded_data_id]);
         } else {
-            $this->container->getDb()->insert('datastore', array(
+            $this->container->getDb()->insert('datastore', [
                 'name' => 'sys.install.default_data',
                 'auth' => DpStrings::random(15),
                 'data' => serialize($data),
-            ));
+            ]);
         }
     }
 }

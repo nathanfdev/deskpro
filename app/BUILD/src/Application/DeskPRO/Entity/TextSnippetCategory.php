@@ -200,9 +200,9 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject imple
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     /**
      * @deprecated use $props_translations instead

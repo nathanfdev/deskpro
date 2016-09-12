@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCreationSystem;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCreationSystem\PhpTicketCreationSystemTermCompiler;
@@ -51,9 +52,9 @@ class PhpTicketCreationSystemTermCompilerTest extends AbstractPhpTermCompilerTes
     public function testCompileIs()
     {
         $term = new TicketCreationSystemTerm(
-            array(
+            [
                 'creation_system' => 'web.person',
-            )
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -73,9 +74,9 @@ class PhpTicketCreationSystemTermCompilerTest extends AbstractPhpTermCompilerTes
     public function testCompileIsNot()
     {
         $term = new TicketCreationSystemTerm(
-            array(
+            [
                 'creation_system' => 'web.person',
-            ),
+            ],
             TermInterface::OP_NOT
         );
 

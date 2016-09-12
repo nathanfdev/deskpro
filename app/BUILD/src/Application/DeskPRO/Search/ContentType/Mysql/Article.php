@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search\ContentType\Mysql;
 
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
@@ -44,7 +45,7 @@ class Article extends AbstractContentType
     public function objectToDocument($article)
     {
         if ($article->status != 'published') {
-            $data                 = array();
+            $data                 = [];
             $data['id']           = $article['id'];
             $data['content_type'] = 'article';
             $data['remove']       = true;
@@ -54,7 +55,7 @@ class Article extends AbstractContentType
             return $doc;
         }
 
-        $data                 = array();
+        $data                 = [];
         $data['id']           = $article['id'];
         $data['content_type'] = 'article';
         $data['content']      = $article['title']."\n".$article['content']."\n";

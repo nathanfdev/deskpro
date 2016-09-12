@@ -52,12 +52,8 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  */
 class FeedbackCategory extends CategoryAbstract implements HasValidationMetadataInterface
 {
-    /**
-     */
     protected $parent;
 
-    /**
-     */
     protected $children;
 
     /**
@@ -106,18 +102,18 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
         $this->usergroups->removeElement($usergroup);
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('title', new NotBlank());
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

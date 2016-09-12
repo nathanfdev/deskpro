@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,10 +45,10 @@ class CheckDayOfWeekTest extends DeskProTestCase
         // Monday
         $now = \DateTime::createFromFormat('Y-m-d H:i:s', '2014-03-10 15:00:00', new \DateTimeZone('UTC'));
 
-        $check = new CheckDayOfWeek('is', array('days' => array(1), 'test_date' => $now, 'tz' => 'UTC'));
+        $check = new CheckDayOfWeek('is', ['days' => [1], 'test_date' => $now, 'tz' => 'UTC']);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
-        $check = new CheckDayOfWeek('is', array('days' => array(5), 'test_date' => $now, 'tz' => 'UTC'));
+        $check = new CheckDayOfWeek('is', ['days' => [5], 'test_date' => $now, 'tz' => 'UTC']);
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
     }
 
@@ -60,10 +60,10 @@ class CheckDayOfWeekTest extends DeskProTestCase
         // Wednesday
         $now = \DateTime::createFromFormat('Y-m-d H:i:s', '2014-03-12 15:00:00', new \DateTimeZone('UTC'));
 
-        $check = new CheckDayOfWeek('is', array('days' => array(1, 3, 7), 'test_date' => $now, 'tz' => 'UTC'));
+        $check = new CheckDayOfWeek('is', ['days' => [1, 3, 7], 'test_date' => $now, 'tz' => 'UTC']);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
-        $check = new CheckDayOfWeek('is', array('days' => array(1, 7), 'test_date' => $now, 'tz' => 'UTC'));
+        $check = new CheckDayOfWeek('is', ['days' => [1, 7], 'test_date' => $now, 'tz' => 'UTC']);
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
     }
 }

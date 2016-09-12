@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,7 +40,7 @@ class SetSubjectTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $action = new SetSubject(array('subject' => 'New Subject'));
+        $action = new SetSubject(['subject' => 'New Subject']);
 
         $action->applyAction($ticket, $exec);
 
@@ -54,7 +54,7 @@ class SetSubjectTest extends DeskProTestCase
 
         $exec = new ExecutorContext();
 
-        $action = new SetSubject(array('subject' => 'Test Subject'));
+        $action = new SetSubject(['subject' => 'Test Subject']);
 
         $this->assertTrue($action->isNoop($ticket, $exec));
     }
@@ -66,7 +66,7 @@ class SetSubjectTest extends DeskProTestCase
 
         $exec = new ExecutorContext();
 
-        $action = new SetSubject(array('subject' => ''));
+        $action = new SetSubject(['subject' => '']);
 
         $this->assertTrue($action->isNoop($ticket, $exec));
     }
@@ -77,7 +77,7 @@ class SetSubjectTest extends DeskProTestCase
         $ticket->subject = 'Test Subject';
         $exec            = new ExecutorContext();
 
-        $action = new SetSubject(array('subject' => null));
+        $action = new SetSubject(['subject' => null]);
         $action->applyAction($ticket, $exec);
 
         $this->assertEquals('Test Subject', $ticket->subject);

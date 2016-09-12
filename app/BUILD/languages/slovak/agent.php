@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'agent.chat.added_as_participant'                         => 'Pridaný ako účastník konania',
     'agent.chat.agent_chats'                                  => 'Konverzácie Operátora',
     'agent.chat.between_members'                              => 'Konverzácia medzi:',
@@ -2073,4 +2073,4 @@ return array(
     'agent.usertrack.session_start_time'                      => 'Doba počiatočného času',
     'agent.usertrack.visited_pages'                           => 'Navštívené stránky',
     'agent.usertrack.visitor_id'                              => 'ID návštevníka',
-);
+];

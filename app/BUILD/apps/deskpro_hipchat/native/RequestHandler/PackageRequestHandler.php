@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_hipchat\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
@@ -60,7 +61,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      */
     public function checkRequirementsAction(ApiPackageRequestContext $context)
     {
-        return $context->createJsonResponse(array('curl_support' => function_exists('curl_init')));
+        return $context->createJsonResponse(['curl_support' => function_exists('curl_init')]);
     }
 
     /**
@@ -75,10 +76,10 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $error  = false;
         $client = null;
 
-        $log   = array();
+        $log   = [];
         $log[] = 'token: '.$token;
 
-        $tests   = array();
+        $tests   = [];
         $tests[] = function () use (&$log, $token) {
             $log[] = 'Verifying HipChat API is accessible...';
 
@@ -89,7 +90,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             } catch (\Exception $e) {
                 $log[] = $e->getMessage();
 
-                return array((string) $e->getCode(), 'API Exception');
+                return [(string) $e->getCode(), 'API Exception'];
             }
         };
 
@@ -100,11 +101,11 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             }
         }
 
-        $result_data = array(
+        $result_data = [
             'log'        => implode("\n", $log),
             'error'      => $error ? $error[1] : false,
             'error_code' => $error ? $error[0] : false,
-        );
+        ];
 
         return $context->createJsonResponse($result_data);
     }

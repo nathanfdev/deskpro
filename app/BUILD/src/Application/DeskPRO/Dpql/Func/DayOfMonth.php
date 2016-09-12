@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\Dpql;
@@ -76,7 +77,7 @@ class DayOfMonth extends AbstractFunc
                     return $value.'th';
 
                 default:
-                    $ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
+                    $ends = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
 
                     return $value.$ends[$value % 10];
             }
@@ -86,12 +87,12 @@ class DayOfMonth extends AbstractFunc
 
         $res->setGroupFill(function ($min, $max) {
             if ($min == $max) {
-                return array();
+                return [];
             }
 
-            $fills = array();
+            $fills = [];
             for ($i = $min; $i <= $max; ++$i) {
-                $fills[] = array($i, $i, $i);
+                $fills[] = [$i, $i, $i];
             }
 
             return $fills;

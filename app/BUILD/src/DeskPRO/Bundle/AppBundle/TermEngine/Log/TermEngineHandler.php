@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -100,11 +100,9 @@ class TermEngineHandler extends AbstractProcessingHandler
             $this->stream = fopen($filename, 'a');
         }
 
-        //
         // We could, instead of writing here, buffer into an array and later use the ->close() method to do the write
         // I left it the same as the default monolog stream handler because it lets us see what happened before an error
         // If performance is a more pressing issue, move to close();
-        //
 
         flock($this->stream, LOCK_EX);
         fwrite($this->stream, (string) $record['formatted']);

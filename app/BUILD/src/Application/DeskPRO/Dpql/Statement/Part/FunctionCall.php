@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql;
@@ -54,7 +55,7 @@ class FunctionCall extends AbstractPart
      * @param string                                                  $name
      * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $arguments
      */
-    public function __construct($name, array $arguments = array())
+    public function __construct($name, array $arguments = [])
     {
         $this->name      = $name;
         $this->arguments = $arguments;
@@ -94,7 +95,7 @@ class FunctionCall extends AbstractPart
      */
     public function toDpql(Display $statement, $section, array $stack)
     {
-        $arguments = array();
+        $arguments = [];
         foreach ($this->arguments as $argument) {
             $arguments[] = $argument->toDpql($statement, $section, $stack);
         }

@@ -77,7 +77,9 @@ class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
         $document->set('phone_numbers', $phones);
 
         if ($object->labels) {
-            $labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);
+            $labels = Arrays::map(function ($l) {
+                return $l->label;
+            }, $object->labels);
             $document->set('labels', $labels);
         }
 

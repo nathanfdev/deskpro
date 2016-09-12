@@ -1,4 +1,4 @@
-<?php include __DIR__.'/tpl-header.html.php' ?>
+<?php include __DIR__.'/tpl-header.html.php'?>
     <?php if ($message == 'paused'): ?>
         This account has been paused.
         <br/><br/>
@@ -18,4 +18,4 @@
         If you have any questions, you can email us directly at <a href="mailto:sales@deskpro.com">sales@deskpro.com</a>
         or submit a ticket on our helpdesk at <a href="https://support.deskpro.com/new-ticket">https://support.deskpro.com/</a>
     </div>
-<?php include __DIR__.'/tpl-footer.html.php' ?>
+<?php include __DIR__.'/tpl-footer.html.php'?>

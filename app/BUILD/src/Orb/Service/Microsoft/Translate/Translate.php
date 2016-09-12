@@ -144,7 +144,7 @@ class Translate
         $to   = $this->getNearestTranslateLocale($to);
 
         if (is_array($text)) {
-            $post_body   = array();
+            $post_body   = [];
             $post_body[] = '<TranslateArrayRequest>';
             $post_body[] = "\t<AppId/>";
             if ($from) {
@@ -174,7 +174,7 @@ class Translate
             ]);
 
             $raw_data = $this->xml($response->getBody());
-            $data     = array();
+            $data     = [];
             foreach ($raw_data as $l) {
                 $data[] = (string) $l->TranslatedText;
             }
@@ -218,7 +218,7 @@ class Translate
             ]);
 
             $raw_data = $this->xml($response->getBody());
-            $langs    = array();
+            $langs    = [];
 
             foreach ($raw_data->string as $l) {
                 $langs[] = (string) $l;
@@ -283,7 +283,7 @@ class Translate
         $response = $this->getServiceHttpClient()->get('GetLanguagesForTranslate');
         $raw_data = $this->xml($response->getBody());
 
-        $data = array();
+        $data = [];
         foreach ($raw_data->string as $r) {
             $data[] = (string) $r;
         }
@@ -312,7 +312,7 @@ class Translate
         $response = $this->getServiceHttpClient()->get('GetLanguagesForSpeak');
         $raw_data = $this->xml($response->getBody());
 
-        $data = array();
+        $data = [];
         foreach ($raw_data->string as $r) {
             $data[] = (string) $r;
         }
@@ -340,7 +340,7 @@ class Translate
             if (file_exists($file)) {
                 $all_names = require $file;
 
-                $names = array();
+                $names = [];
                 foreach ($lang_codes as $code) {
                     if (isset($all_names[$code])) {
                         $names[$code] = $all_names[$code];
@@ -360,7 +360,7 @@ class Translate
         ]);
         $raw_data = $this->xml($response->getBody());
 
-        $data = array();
+        $data = [];
         foreach ($raw_data as $k => $r) {
             $data[$lang_codes[$k]] = (string) $r;
         }
@@ -379,7 +379,7 @@ class Translate
      */
     public function getSingleLanguageName($lang_code, $locale = 'en', $use_local = true)
     {
-        $names = $this->getLanguageNames(array($lang_code), $locale, $use_local);
+        $names = $this->getLanguageNames([$lang_code], $locale, $use_local);
 
         return array_pop($names);
     }
@@ -447,8 +447,8 @@ class Translate
     protected function escapeXml($str)
     {
         return str_replace(
-            array('&',     '<',    '>',    '"',      "'"),
-            array('&amp;', '&lt;', '&gt;', '&quot;', '&apos;'),
+            ['&',     '<',    '>',    '"',      "'"],
+            ['&amp;', '&lt;', '&gt;', '&quot;', '&apos;'],
             $str
         );
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount;
@@ -54,11 +55,11 @@ class Build1400056713 extends AbstractBuild
         $this->out('Upgrading email accounts...');
 
         $gateways      = $db->fetchAllKeyed('SELECT * FROM email_gateways');
-        $gateway_addrs = $db->fetchAllGrouped('SELECT * FROM email_gateway_addresses ORDER BY run_order ASC, id ASC', array(), 'email_gateway_id');
+        $gateway_addrs = $db->fetchAllGrouped('SELECT * FROM email_gateway_addresses ORDER BY run_order ASC, id ASC', [], 'email_gateway_id');
         $transports    = $db->fetchAllKeyed('SELECT * FROM email_transports');
 
         // Save gateway address mapping needed when importing triggers
-        $map = array();
+        $map = [];
         foreach ($gateway_addrs as $gateway_id => $addrs) {
             foreach ($addrs as $a) {
                 $map[$a['id']] = $gateway_id;
@@ -66,7 +67,7 @@ class Build1400056713 extends AbstractBuild
         }
         $this->saveUpgradeData('201404', 'gateway_address_map', $map);
 
-        $new_accounts = array();
+        $new_accounts = [];
         foreach ($gateways as $gateway) {
             if ($gateway['gateway_type'] != 'tickets') {
                 $this->out("Skipping {$gateway['id']}: Must be ticket type");
@@ -122,20 +123,20 @@ class Build1400056713 extends AbstractBuild
             }
         }
 
-        $id_map = array();
+        $id_map = [];
         $tmp_id = time();
         foreach ($new_accounts as $want_id => $account) {
             $em->persist($account);
             $em->flush();
 
             // Update to a high ID that wont collide when we update again below
-            $db->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($tmp_id, $account->id));
+            $db->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', [$tmp_id, $account->id]);
             $id_map[$tmp_id] = $want_id;
             ++$tmp_id;
         }
 
         foreach ($id_map as $tmp_id => $want_id) {
-            $db->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($want_id, $tmp_id));
+            $db->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', [$want_id, $tmp_id]);
         }
 
         $max_id = $db->fetchColumn('SELECT id FROM email_accounts ORDER BY id DESC LIMIT 1');
@@ -170,7 +171,7 @@ class Build1400056713 extends AbstractBuild
             $gateway['connection_options'] = null;
         }
 
-        $conn_opts = new OptionsArray(!empty($gateway['connection_options']) ? $gateway['connection_options'] : array());
+        $conn_opts = new OptionsArray(!empty($gateway['connection_options']) ? $gateway['connection_options'] : []);
 
         switch ($gateway['connection_type']) {
             case 'pop3':
@@ -220,14 +221,16 @@ class Build1400056713 extends AbstractBuild
             $account->date_read_start = \DateTime::createFromFormat('Y-m-d H:i:s', $gateway['start_date_limit']);
         }
 
-        $dates                 = array($account->date_created, $account->date_last_incoming, $account->date_read_start);
+        $dates                 = [$account->date_created, $account->date_last_incoming, $account->date_read_start];
         $dates                 = Arrays::removeFalsey($dates);
         $account->date_created = min($dates);
 
         $account->address = $addrs[0]['match_pattern'];
         if (isset($addrs[1])) {
             array_shift($addrs);
-            $account->other_addresses = array_map(function ($a) { return $a['match_pattern']; }, $addrs);
+            $account->other_addresses = array_map(function ($a) {
+                return $a['match_pattern'];
+            }, $addrs);
         }
 
         if (defined('DPC_IS_CLOUD') && $account->other_addresses && !empty($account->other_addresses[0])) {
@@ -260,7 +263,7 @@ class Build1400056713 extends AbstractBuild
             $tr['transport_options'] = null;
         }
 
-        $conn_opts = new OptionsArray(!empty($tr['transport_options']) ? $tr['transport_options'] : array());
+        $conn_opts = new OptionsArray(!empty($tr['transport_options']) ? $tr['transport_options'] : []);
 
         switch ($tr['transport_type']) {
             case 'mail':

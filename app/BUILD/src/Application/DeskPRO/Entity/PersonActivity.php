@@ -60,7 +60,7 @@ class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
-    protected $details = array();
+    protected $details = [];
 
     /**
      * @var \DateTime
@@ -91,9 +91,9 @@ class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
         $this['person'] = $person;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

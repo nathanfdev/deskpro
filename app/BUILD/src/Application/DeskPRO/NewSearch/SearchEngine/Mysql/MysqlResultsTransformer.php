@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -52,26 +52,26 @@ class MysqlResultsTransformer
      */
     public function transform(array $results)
     {
-        #------------------------------
-        # Sort results by type so we can fetch
-        # results from db in one go
-        #------------------------------
+        //------------------------------
+        // Sort results by type so we can fetch
+        // results from db in one go
+        //------------------------------
 
-        $ent_ids = array();
+        $ent_ids = [];
         foreach ($results as $hit) {
             $ent = $this->getEntityFromType($hit['object_type']);
             if (!isset($ent_ids[$ent])) {
-                $ent_ids[$ent] = array();
+                $ent_ids[$ent] = [];
             }
 
             $ent_ids[$ent][] = $hit['object_id'];
         }
 
-        #------------------------------
-        # Fetch results from db
-        #------------------------------
+        //------------------------------
+        // Fetch results from db
+        //------------------------------
 
-        $objects = array();
+        $objects = [];
         foreach ($ent_ids as $ent => $ids) {
             $ent_objects = $this->em->getRepository($ent)->getByIds($ids, true);
             if ($ent_objects) {
@@ -82,11 +82,11 @@ class MysqlResultsTransformer
             }
         }
 
-        #------------------------------
-        # Finally sort into one main array
-        #------------------------------
+        //------------------------------
+        // Finally sort into one main array
+        //------------------------------
 
-        $sorted_objects = array();
+        $sorted_objects = [];
         foreach ($results as $hit) {
             $ent = $this->getEntityFromType($hit['object_type']);
             $key = $ent.':'.$hit['object_id'];

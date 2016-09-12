@@ -48,9 +48,9 @@ class TaskAssociatedPerson extends TaskAssociation
      */
     protected $person;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

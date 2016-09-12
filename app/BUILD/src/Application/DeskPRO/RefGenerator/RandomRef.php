@@ -63,7 +63,7 @@ class RandomRef implements RefGeneratorInterface
         do {
             $ref = DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.DpStrings::random(4, Strings::CHARS_NUM).'-'.DpStrings::random(4, Strings::CHARS_ALPHA_IU);
 
-            $stmt->execute(array($ref));
+            $stmt->execute([$ref]);
             $count = $stmt->fetchColumn();
         } while ($count > 0);
 
@@ -102,6 +102,6 @@ class RandomRef implements RefGeneratorInterface
             return $m[2];
         }
 
-        return array();
+        return [];
     }
 }

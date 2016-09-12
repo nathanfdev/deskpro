@@ -75,9 +75,9 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
         $this->created = new \DateTime();
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

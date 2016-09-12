@@ -385,9 +385,9 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
         return false;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

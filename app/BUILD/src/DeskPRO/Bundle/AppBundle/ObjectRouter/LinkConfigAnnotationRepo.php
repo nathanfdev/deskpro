@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter;
 
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkCustom;
@@ -157,7 +158,7 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
 
         $annotations = $this->annotation_reader->getClassAnnotations($ref_class);
 
-        $result = array();
+        $result = [];
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof PortalLinkRoute) {
@@ -186,7 +187,7 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
      * Return the full $config array (already parsed) from the cache file (done during warmup).
      *
      * @param $object_classname_or_filename
-     * 
+     *
      * @return array|null
      */
     protected function getAnnotationConfigFromCache($object_classname_or_filename)
@@ -242,11 +243,11 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
      */
     public function warmUp($cacheDir)
     {
-        $link_config_dirs = array(
+        $link_config_dirs = [
             DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Entity',
             DP_ROOT.'/src/Application/EmailBundle/Entity',
             DP_ROOT.'/src/Application/DeskPRO/Entity',
-        );
+        ];
 
         if (is_dir($portalbundle = DP_ROOT.'/src/DeskPRO/Bundle/PortalBundle/Entity')) {
             $link_config_dirs[] = $portalbundle;
@@ -259,7 +260,7 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
         $finder = new Finder();
         $finder->files()->in($link_config_dirs)->name('*.php');
 
-        $warmup_cache = array();
+        $warmup_cache = [];
         /** @var SplFileInfo $php_file */
         foreach ($finder as $php_file) {
             if ($class = $this->parseClassName($php_file->getRealPath())) {
@@ -300,7 +301,7 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
                 do {
                     $namespace .= $token[1];
                     $token = $tokens[++$i];
-                } while ($i < $count && is_array($token) && in_array($token[0], array(T_NS_SEPARATOR, T_STRING)));
+                } while ($i < $count && is_array($token) && in_array($token[0], [T_NS_SEPARATOR, T_STRING]));
             }
 
             if (T_CLASS === $token[0]) {

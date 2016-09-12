@@ -133,7 +133,7 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
         if (!$this->flag) {
             return $tr->phrase('agent.tickets.unset_flag_action');
         } else {
-            return $tr->phrase('agent.tickets.set_flag_to_action', array('flag' => $this->flag));
+            return $tr->phrase('agent.tickets.set_flag_to_action', ['flag' => $this->flag]);
         }
     }
 }

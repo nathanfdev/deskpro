@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Cloud\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TmpData;
@@ -37,13 +38,13 @@ use Orb\Util\OptionsArray;
 
 class SettingsController extends BaseSettingsController
 {
-    ####################################################################################################################
-    # get-url-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-url-settings
+    //###################################################################################################################
 
     public function getUrlSettingsAction()
     {
-        $settings = array(
+        $settings = [
             // The custom domain being used, if any
             'cloud_custom_domain' => $this->settings->get('core.cloud_custom_domain') ?: null,
 
@@ -52,24 +53,24 @@ class SettingsController extends BaseSettingsController
 
             // If the URL should be https or not
             'cloud_url_ssl' => $this->settings->get('core.cloud_url_ssl') ? true : false,
-        );
+        ];
 
         $settings['domain_choice'] = 'default';
         if ($settings['cloud_custom_domain']) {
             $settings['domain_choice'] = 'custom';
         }
 
-        return $this->createApiResponse(array('settings' => $settings));
+        return $this->createApiResponse(['settings' => $settings]);
     }
 
-    ####################################################################################################################
-    # save-url-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-url-settings
+    //###################################################################################################################
 
     public function saveUrlSettingsAction()
     {
         $in_settings  = new OptionsArray($this->in->getArrayValue('settings'));
-        $set_settings = array();
+        $set_settings = [];
 
         if ($in_settings->get('domain_choice') == 'custom') {
             $domain = preg_replace('#^https?://#', '', strtolower($in_settings->get('cloud_custom_domain')));
@@ -110,7 +111,7 @@ class SettingsController extends BaseSettingsController
                 $url = DP_MA_SERVER_SECURE.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
 
                 try {
-                    $client = new \Zend\Http\Client(null, array('timeout' => 15, 'sslverifypeer' => false));
+                    $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
                     $client->setMethod(\Zend\Http\Request::METHOD_GET);
                     $client->setUri($url);
                     $client->send();

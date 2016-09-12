@@ -82,7 +82,7 @@ class HtmlFormatter extends BaseHtmlFormatter
 
     protected function compressResponse($data, $firstTime, $parentName = null, $ignoreNestedReadOnly = false)
     {
-        $newParams = array();
+        $newParams = [];
         $root      = count($data) == 1 && $firstTime; //income is just 1 element, with $firstTime it means this is root
         foreach ($data as $name => $info) {
             $newName = $this->getNewName($name, $info, $parentName);
@@ -93,7 +93,7 @@ class HtmlFormatter extends BaseHtmlFormatter
                 $prefix = 'data.';
             }
 
-            $newParams[$prefix.$newName] = array(
+            $newParams[$prefix.$newName] = [
                 'dataType'     => $info['dataType'],
                 'readonly'     => array_key_exists('readonly', $info) ? $info['readonly'] : null,
                 'required'     => $info['required'],
@@ -104,7 +104,7 @@ class HtmlFormatter extends BaseHtmlFormatter
                 'untilVersion' => array_key_exists('untilVersion', $info) ? $info['untilVersion'] : null,
                 'actualType'   => array_key_exists('actualType', $info) ? $info['actualType'] : null,
                 'subType'      => array_key_exists('subType', $info) ? $info['subType'] : null,
-            );
+            ];
 
             if (isset($info['children']) && (!$info['readonly'] || !$ignoreNestedReadOnly)) {
                 foreach ($this->compressResponse($info['children'], false, $newName, $ignoreNestedReadOnly) as $nestedItemName => $nestedItemData) {

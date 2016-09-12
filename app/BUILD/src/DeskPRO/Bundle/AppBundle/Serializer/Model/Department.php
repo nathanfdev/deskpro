@@ -77,7 +77,7 @@ class Department
     /**
      * Are tickets enabled for this Department?
      *
-     * 
+     *
      * @JMS\Type("boolean")
      *
      * @var bool

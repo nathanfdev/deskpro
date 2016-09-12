@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
@@ -38,7 +39,7 @@ use Doctrine\ORM\EntityManager;
 /**
  * Class ObjectLangRepository.
  *
- * @deprecated use ObjectTranslatableInterface instead.
+ * @deprecated use ObjectTranslatableInterface instead
  */
 class ObjectLangRepository
 {
@@ -52,7 +53,7 @@ class ObjectLangRepository
      *
      * @var array
      */
-    protected $loaded = array();
+    protected $loaded = [];
 
     /**
      * @var array
@@ -62,7 +63,7 @@ class ObjectLangRepository
     /**
      * @var array
      */
-    protected $try_langs = array();
+    protected $try_langs = [];
 
     /**
      * @param EntityManager $em
@@ -88,7 +89,7 @@ class ObjectLangRepository
     public function getTryLangs()
     {
         if (!$this->try_langs) {
-            $try_langs = array();
+            $try_langs = [];
             if (App::getCurrentPerson()) {
                 $l = App::getCurrentPerson()->getRealLanguage();
                 if ($l) {
@@ -133,15 +134,15 @@ class ObjectLangRepository
         $obj_ref = is_object($object) ? $object->getObjectRef() : $object;
 
         if (!isset($this->loaded[$obj_ref])) {
-            return array();
+            return [];
         }
 
-        $recs = array();
+        $recs = [];
         foreach ($this->loaded[$obj_ref] as $lang_id => $lang_recs) {
             foreach ($lang_recs as $rec) {
                 $prop = $rec->prop_name;
                 if (!isset($recs[$prop])) {
-                    $recs[$prop] = array();
+                    $recs[$prop] = [];
                 }
                 $recs[$prop][$lang_id] = $rec;
             }
@@ -153,7 +154,7 @@ class ObjectLangRepository
     /**
      * Get the ObjectLang record for a given property. Returns null if no such record exists.
      *
-     * @param int|\Application\DeskPRO\Entity\Language $lang      A language or array of languages. If an array, the first existing will be returned.
+     * @param int|\Application\DeskPRO\Entity\Language $lang      A language or array of languages. If an array, the first existing will be returned
      * @param object|string                            $object    The object to get the property on
      * @param string                                   $prop_name The property to get
      * @param string                                   $fallback  True to the 'try langs' if $lang is not found
@@ -164,8 +165,8 @@ class ObjectLangRepository
     {
         $prop_name = strtolower($prop_name);
 
-        $try_langs = is_array($lang) ? $lang : array($lang);
-        $done      = array();
+        $try_langs = is_array($lang) ? $lang : [$lang];
+        $done      = [];
         if ($fallback) {
             $try_langs = array_merge($try_langs, $this->getTryLangs());
         }
@@ -218,7 +219,7 @@ class ObjectLangRepository
                 SELECT o
                 FROM DeskPRO:ObjectLang o
                 WHERE o.ref = ?0 AND o.prop_name = ?1 AND o.language = ?2
-            ')->setParameters(array($obj_ref, $prop_name, $lang_id))->getOneOrNullResult();
+            ')->setParameters([$obj_ref, $prop_name, $lang_id])->getOneOrNullResult();
         }
 
         if (!$rec) {
@@ -234,7 +235,7 @@ class ObjectLangRepository
     /**
      * Get the value of a given property. This is the actual translated text.
      *
-     * @param int|\Application\DeskPRO\Entity\Language $lang      A language or array of languages. If an array, the first existing will be returned.
+     * @param int|\Application\DeskPRO\Entity\Language $lang      A language or array of languages. If an array, the first existing will be returned
      * @param object|string                            $object    The object to get the property on
      * @param string                                   $prop_name The property to get
      * @param string                                   $fallback  True to the 'try langs' if $lang is not found
@@ -271,10 +272,10 @@ class ObjectLangRepository
         }
 
         if (!isset($this->loaded[$obj_ref])) {
-            $this->loaded[$obj_ref] = array();
+            $this->loaded[$obj_ref] = [];
         }
         if (!isset($this->loaded[$obj_ref][$lang_id])) {
-            $this->loaded[$obj_ref][$lang_id] = array();
+            $this->loaded[$obj_ref][$lang_id] = [];
         }
 
         $this->loaded[$obj_ref][$lang_id][$rec->prop_name] = $rec;
@@ -292,11 +293,11 @@ class ObjectLangRepository
             $lang = $this->getTryLangs();
         }
 
-        $langs = is_array($lang) ? $lang : array($lang);
+        $langs = is_array($lang) ? $lang : [$lang];
 
         // Automatically queue up try langs as well
         $langs = array_merge($langs, $this->getTryLangs());
-        $done  = array();
+        $done  = [];
 
         foreach ($langs as $lang) {
             $lang_id = is_object($lang) ? $lang->getId() : $lang;
@@ -313,7 +314,7 @@ class ObjectLangRepository
             }
 
             if (!isset($this->queued_objects[$lang_id])) {
-                $this->queued_objects[$lang_id] = array();
+                $this->queued_objects[$lang_id] = [];
             }
 
             $this->queued_objects[$lang_id][$obj_ref] = $obj_ref;
@@ -341,10 +342,10 @@ class ObjectLangRepository
         }
 
         $run                  = $this->queued_objects;
-        $this->queued_objects = array();
+        $this->queued_objects = [];
 
-        $run_refs  = array();
-        $run_langs = array();
+        $run_refs  = [];
+        $run_langs = [];
 
         foreach ($run as $lang_id => $refs) {
             $run_refs    = array_merge($run_refs, array_keys($refs));
@@ -364,14 +365,14 @@ class ObjectLangRepository
             SELECT o
             FROM DeskPRO:ObjectLang o
             WHERE o.ref IN (?0) AND o.language IN (?1)
-        ')->setParameters(array($run_refs, $run_langs))->execute();
+        ')->setParameters([$run_refs, $run_langs])->execute();
 
         // Mark the refs themselves as "laoded" so we dont attempt to
         // prelaod empty collections
         foreach ($run_langs as $lang_id) {
             foreach ($run_refs as $ref) {
                 if (!isset($this->loaded[$ref][$lang_id])) {
-                    $this->loaded[$ref][$lang_id] = array();
+                    $this->loaded[$ref][$lang_id] = [];
                 }
             }
         }
@@ -385,10 +386,10 @@ class ObjectLangRepository
             $lang_id = $rec->language->getId();
 
             if (!isset($this->loaded[$obj_ref])) {
-                $this->loaded[$obj_ref] = array();
+                $this->loaded[$obj_ref] = [];
             }
             if (!isset($this->loaded[$obj_ref][$lang_id])) {
-                $this->loaded[$obj_ref][$lang_id] = array();
+                $this->loaded[$obj_ref][$lang_id] = [];
             }
 
             $this->loaded[$obj_ref][$lang_id][$rec->getPropName()] = $rec;
@@ -406,7 +407,7 @@ class ObjectLangRepository
             $ref = $object->getObjectRef();
             unset($this->loaded[$ref]);
         } else {
-            $this->loaded = array();
+            $this->loaded = [];
         }
     }
 }

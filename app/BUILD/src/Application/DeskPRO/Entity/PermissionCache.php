@@ -44,7 +44,7 @@ use Orb\Util\Util;
  *
  * @deprecated we cache using a cache adapter now (\Application\DeskPRO\Cache\CacheAdapterInterface)
  *             on new-portal. this was used on the old way of using permissions.
- *             AGENT/ADMIN/etc still use this.
+ *             AGENT/ADMIN/etc still use this
  */
 class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -75,7 +75,7 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var bool
      */
-    protected $perms = array();
+    protected $perms = [];
 
     /**
      * @var null|array
@@ -135,9 +135,9 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
         return Usergroup::generateUsergroupSetKey($usergroup_ids);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -48,9 +48,9 @@ class TaskAssociatedOrganization extends TaskAssociation
      */
     protected $organization;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Languages;
 
 use Symfony\Component\Finder\Finder;
@@ -84,9 +85,9 @@ class AllPhrases
             return $this->phrases;
         }
 
-        $this->phrases = array();
+        $this->phrases = [];
 
-        $finder = Finder::create()->files()->name('*.php')->in(array($this->dir));
+        $finder = Finder::create()->files()->name('*.php')->in([$this->dir]);
 
         foreach ($finder as $file) {
             /* @var $file \SplFileInfo */

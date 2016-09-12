@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Validator;
 
 /**
@@ -53,7 +54,7 @@ class Callback extends AbstractValidator
      *
      * @var array
      */
-    protected $callback_args = array();
+    protected $callback_args = [];
 
     /**
      * The position where the value in args should be set.
@@ -76,7 +77,7 @@ class Callback extends AbstractValidator
     public function init()
     {
         $callback_fn   = $this->getOption('callback_function');
-        $callback_args = $this->getOption('callback_args', array());
+        $callback_args = $this->getOption('callback_args', []);
 
         $this->callback_fn = $callback_fn;
 
@@ -106,7 +107,7 @@ class Callback extends AbstractValidator
 
         if ($errors) {
             if (!is_array($errors)) {
-                $errors = array($errors);
+                $errors = [$errors];
             }
 
             foreach ($errors as $info) {

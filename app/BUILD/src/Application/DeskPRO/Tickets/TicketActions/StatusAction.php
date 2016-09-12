@@ -58,10 +58,10 @@ class StatusAction extends AbstractAction implements PermissionableAction
 
     public function setStatus($status)
     {
-        if (!in_array($status, array(
+        if (!in_array($status, [
             'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
             'hidden.spam', 'hidden.deleted',
-        ))) {
+        ])) {
             throw new \InvalidArgumentException("Invalid status `$status`");
         }
         $this->status = $status;
@@ -134,7 +134,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
                         new_ticket_id = VALUES(new_ticket_id),
                         reason = VALUES(reason),
                         old_ptac = VALUES(old_ptac)
-                ", array($ticket->getId(), $delete_person->getId(), gmdate('Y-m-d H:i:s'), $ticket->auth));
+                ", [$ticket->getId(), $delete_person->getId(), gmdate('Y-m-d H:i:s'), $ticket->auth]);
             }
 
             App::getOrm()->persist($ticket);
@@ -184,6 +184,6 @@ class StatusAction extends AbstractAction implements PermissionableAction
     {
         $tr = App::getTranslator();
 
-        return $tr->phrase('admin.tickets.set_status_to_x', array('status' => $tr->phrase('agent.tickets.status_'.str_replace('.', '_', $this->status))));
+        return $tr->phrase('admin.tickets.set_status_to_x', ['status' => $tr->phrase('agent.tickets.status_'.str_replace('.', '_', $this->status))]);
     }
 }

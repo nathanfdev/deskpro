@@ -68,7 +68,7 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * @var array
      */
-    protected $trans_ids = array();
+    protected $trans_ids = [];
 
     /**
      * @var int
@@ -78,7 +78,7 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * @var array
      */
-    protected $writes_in_tx = array();
+    protected $writes_in_tx = [];
 
     /**
      * @var bool
@@ -181,10 +181,10 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return array
      */
-    public function fetchAllKeyed($statement, array $params = array(), $index = 'id', $types = array())
+    public function fetchAllKeyed($statement, array $params = [], $index = 'id', $types = [])
     {
         $statement = $this->executeQuery($statement, $params, $types);
-        $array     = array();
+        $array     = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $array[$row[$index]] = $row;
@@ -206,14 +206,14 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return array
      */
-    public function fetchAllGrouped($statement, array $params = array(), $group_key, $index_key = null, $col_key = null, $types = array())
+    public function fetchAllGrouped($statement, array $params, $group_key, $index_key = null, $col_key = null, $types = [])
     {
         $statement = $this->executeQuery($statement, $params, $types);
-        $array     = array();
+        $array     = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             if (!isset($array[$row[$group_key]])) {
-                $array[$row[$group_key]] = array();
+                $array[$row[$group_key]] = [];
             }
 
             $val = $row;
@@ -244,10 +244,10 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return array
      */
-    public function fetchAllKeyValue($statement, array $params = array(), $types = array(), $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM, $nullkey = 0)
+    public function fetchAllKeyValue($statement, array $params = [], $types = [], $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM, $nullkey = 0)
     {
         $statement = $this->executeQuery($statement, $params, $types);
-        $array     = array();
+        $array     = [];
 
         while ($row = $statement->fetch($mode)) {
             if ($row[$key_index] === null) {
@@ -270,10 +270,10 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return array
      */
-    public function fetchAllCol($statement, array $params = array(), $types = array(), $index = 0, $mode = PDO::FETCH_NUM)
+    public function fetchAllCol($statement, array $params = [], $types = [], $index = 0, $mode = PDO::FETCH_NUM)
     {
         $statement = $this->executeQuery($statement, $params, $types);
-        $array     = array();
+        $array     = [];
 
         while ($row = $statement->fetch($mode)) {
             $array[] = $row[$index];
@@ -296,18 +296,18 @@ class Connection extends \Doctrine\DBAL\Connection
             throw new \InvalidArgumentException('No values');
         }
 
-        #------------------------------
-        # Validate values and build params
-        #------------------------------
+        //------------------------------
+        // Validate values and build params
+        //------------------------------
 
         $res                     = null;
         $multiple_values_batches = array_chunk($multiple_values, 1000, false);
         foreach ($multiple_values_batches as $multiple_values) {
             $cols       = null;
             $cols_count = 0;
-            $params     = array();
+            $params     = [];
 
-            $value_parts = array();
+            $value_parts = [];
             $value_tpl   = '';
 
             // TODO we need to create batches based on size of max_packet_size
@@ -336,9 +336,9 @@ class Connection extends \Doctrine\DBAL\Connection
                 $value_parts[] = $value_tpl;
             }
 
-            #------------------------------
-            # Build sql
-            #------------------------------
+            //------------------------------
+            // Build sql
+            //------------------------------
 
             $sql = 'INSERT '.($ignore ? 'IGNORE' : '')." INTO `$table` (`".implode('`,`', $cols).'`) VALUES '.implode(',', $value_parts);
 
@@ -362,7 +362,7 @@ class Connection extends \Doctrine\DBAL\Connection
      */
     public function quoteIn(array $values, $type = null)
     {
-        $quoted = array();
+        $quoted = [];
 
         foreach ($values as $val) {
             $quoted[] = $this->quote($val, $type);
@@ -382,14 +382,14 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return int
      */
-    public function insertIgnore($tableName, array $data, array $types = array())
+    public function insertIgnore($tableName, array $data, array $types = [])
     {
         $this->connect();
 
         try {
             // column names are specified as array keys
-            $cols         = array();
-            $placeholders = array();
+            $cols         = [];
+            $placeholders = [];
 
             foreach ($data as $columnName => $value) {
                 $cols[]         = $columnName;
@@ -415,13 +415,13 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return int
      */
-    public function replace($tableName, array $data, array $types = array())
+    public function replace($tableName, array $data, array $types = [])
     {
         $this->connect();
 
         // column names are specified as array keys
-        $cols         = array();
-        $placeholders = array();
+        $cols         = [];
+        $placeholders = [];
 
         foreach ($data as $columnName => $value) {
             $cols[]         = $columnName;
@@ -461,7 +461,7 @@ class Connection extends \Doctrine\DBAL\Connection
         return $qb->execute()->fetchColumn();
     }
 
-    public function countWithPlaceholders($tableName, $where = null, array $params = array())
+    public function countWithPlaceholders($tableName, $where = null, array $params = [])
     {
         $this->connect();
 
@@ -482,7 +482,7 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return \Doctrine\DBAL\Cache\ArrayStatement|\Doctrine\DBAL\Cache\ResultCacheStatement|\Doctrine\DBAL\Driver\Statement
      */
-    public function executeQuery($query, array $params = array(), $types = array(), \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null, $is_retry = 0)
+    public function executeQuery($query, array $params = [], $types = [], \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null, $is_retry = 0)
     {
         try {
             return parent::executeQuery($query, $params, $types, $qcp);
@@ -508,11 +508,11 @@ class Connection extends \Doctrine\DBAL\Connection
      * @param array  $params
      * @param array  $types
      */
-    public function executeUpdate($query, array $params = array(), array $types = array(), $is_retry = 0)
+    public function executeUpdate($query, array $params = [], array $types = [], $is_retry = 0)
     {
         $level = $this->getTransactionNestingLevel();
         if ($level && !$is_retry) {
-            $this->writes_in_tx[] = array($query, $params, $types);
+            $this->writes_in_tx[] = [$query, $params, $types];
         }
 
         try {
@@ -545,13 +545,13 @@ class Connection extends \Doctrine\DBAL\Connection
             return;
         }
 
-        $params = array();
+        $params = [];
         if ($query_params && is_array($query_params)) {
             foreach ($query_params as $v) {
                 if (is_numeric($v) || ctype_digit($v)) {
                     $params[] = $v;
                 } elseif (is_string($v)) {
-                    $v = str_replace(array("\r\n", "\n", "\t"), ' ', $v);
+                    $v = str_replace(["\r\n", "\n", "\t"], ' ', $v);
                     $v = preg_replace('# {2,}#', ' ', $v);
 
                     if (strlen($v) > 100) {
@@ -571,7 +571,7 @@ class Connection extends \Doctrine\DBAL\Connection
             }
         }
 
-        $write   = array();
+        $write   = [];
         $write[] = '['.date('Y-m-d H:i:s').']';
 
         if (defined('DP_REQUEST_URL')) {
@@ -645,13 +645,13 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return int
      */
-    public function updateIn($table, array $data, array $ids, $field = 'id', array $types = array())
+    public function updateIn($table, array $data, array $ids, $field = 'id', array $types = [])
     {
         if (!$ids) {
             return 0;
         }
 
-        $set = array();
+        $set = [];
         foreach ($data as $columnName => $value) {
             $set[] = $columnName.' = ?';
         }
@@ -675,7 +675,7 @@ class Connection extends \Doctrine\DBAL\Connection
         } catch (\Exception $e) {
             if ($e instanceof DBALException || $e instanceof \PDOException) {
                 $e->_dp_query        = is_string($statement) ? $statement : null;
-                $e->_dp_query_params = array();
+                $e->_dp_query_params = [];
                 throw $e;
             } else {
                 throw $e;
@@ -699,7 +699,7 @@ class Connection extends \Doctrine\DBAL\Connection
     {
         $level = $this->getTransactionNestingLevel();
         if ($level == 0) {
-            $this->writes_in_tx = array();
+            $this->writes_in_tx = [];
         }
 
         parent::beginTransaction();
@@ -723,7 +723,7 @@ class Connection extends \Doctrine\DBAL\Connection
                 usleep(500000);
 
                 $retry              = $this->writes_in_tx;
-                $this->writes_in_tx = array();
+                $this->writes_in_tx = [];
 
                 // Retry the trans
                 $this->_conn->beginTransaction();
@@ -732,14 +732,14 @@ class Connection extends \Doctrine\DBAL\Connection
                 }
                 $this->commit(true);
             } else {
-                $this->writes_in_tx = array();
+                $this->writes_in_tx = [];
                 throw $e;
             }
         }
 
         $level = $this->getTransactionNestingLevel();
         if ($level == 0) {
-            $this->writes_in_tx = array();
+            $this->writes_in_tx = [];
         }
 
         if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_COMMIT)) {
@@ -786,7 +786,7 @@ class Connection extends \Doctrine\DBAL\Connection
 
         $level = $this->getTransactionNestingLevel();
         if ($level == 0) {
-            $this->writes_in_tx = array();
+            $this->writes_in_tx = [];
         }
 
         if ($is_unexpected) {

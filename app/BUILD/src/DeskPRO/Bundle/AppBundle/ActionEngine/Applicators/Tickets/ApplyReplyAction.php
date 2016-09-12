@@ -37,13 +37,13 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class ApplyReplyAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
-    /** @var  TokenStorage */
+    /** @var TokenStorage */
     protected $tokenStorage;
 
-    /** @var  EnvironmentService */
+    /** @var EnvironmentService */
     protected $environmentService;
 
-    /** @var  array */
+    /** @var array */
     private $geoIp;
 
     public function __construct(EntityManager $em, TokenStorage $tokenStorage, EnvironmentService $environmentService)

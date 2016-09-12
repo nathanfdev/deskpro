@@ -96,9 +96,9 @@ class KbSubscriptions extends AbstractJob
                 $brandStack->pop();
                 continue;
             }
-            #------------------------------
-            # Get subscriptions
-            #------------------------------
+            //------------------------------
+            // Get subscriptions
+            //------------------------------
 
             /** @var Structure $structure */
             $structure = $this->getContainer()->getSystemService('publish_structure');
@@ -158,9 +158,9 @@ class KbSubscriptions extends AbstractJob
                 ', [$articleIds], 'person_id', null, 'article_id', [Connection::PARAM_INT_ARRAY]);
             }
 
-            #------------------------------
-            # Sort subscriptions into users
-            #------------------------------
+            //------------------------------
+            // Sort subscriptions into users
+            //------------------------------
 
             $userToArticles = $this->sortSubscriptions($rootSubs, $catSubs, $articleSubs, $helper);
 
@@ -169,9 +169,9 @@ class KbSubscriptions extends AbstractJob
                 continue;
             }
 
-            #------------------------------
-            # Verify permissions
-            #------------------------------
+            //------------------------------
+            // Verify permissions
+            //------------------------------
 
             $userGroupMembers = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id, usergroup_id
@@ -303,9 +303,9 @@ class KbSubscriptions extends AbstractJob
      */
     private function sendEmails($userToArticles, $lastDate, $brand)
     {
-        #------------------------------
-        # Now send the emails (they are queued)
-        #------------------------------
+        //------------------------------
+        // Now send the emails (they are queued)
+        //------------------------------
 
         foreach ($userToArticles as $personId => $articles) {
             /** @var Person $person */

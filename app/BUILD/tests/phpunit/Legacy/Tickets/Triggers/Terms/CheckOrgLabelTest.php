@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -72,16 +72,16 @@ class CheckOrgLabelTest extends AbstractEntityCheckTest
         $ticket     = new Ticket();
         $ticket->id = 10;
 
-        $checker = $this->createChecker('is', array('labels' => array('label')));
+        $checker = $this->createChecker('is', ['labels' => ['label']]);
         $this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-        $checker = $this->createChecker('is', array('labels' => array('label', 'label2')));
+        $checker = $this->createChecker('is', ['labels' => ['label', 'label2']]);
         $this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-        $checker = $this->createChecker('contains', array('labels' => array('label')));
+        $checker = $this->createChecker('contains', ['labels' => ['label']]);
         $this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-        $checker = $this->createChecker('contains', array('labels' => array('label', 'label2')));
+        $checker = $this->createChecker('contains', ['labels' => ['label', 'label2']]);
         $this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
     }
 
@@ -93,16 +93,16 @@ class CheckOrgLabelTest extends AbstractEntityCheckTest
         $ticket     = new Ticket();
         $ticket->id = 10;
 
-        $checker = $this->createChecker('not', array('labels' => array('label')));
+        $checker = $this->createChecker('not', ['labels' => ['label']]);
         $this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-        $checker = $this->createChecker('not', array('labels' => array('label', 'label2')));
+        $checker = $this->createChecker('not', ['labels' => ['label', 'label2']]);
         $this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-        $checker = $this->createChecker('notcontains', array('labels' => array('label')));
+        $checker = $this->createChecker('notcontains', ['labels' => ['label']]);
         $this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-        $checker = $this->createChecker('notcontains', array('labels' => array('label', 'label2')));
+        $checker = $this->createChecker('notcontains', ['labels' => ['label', 'label2']]);
         $this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
     }
 

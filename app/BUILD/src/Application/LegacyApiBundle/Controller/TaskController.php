@@ -170,61 +170,61 @@ class TaskController extends AbstractController
      */
     public function searchAction()
     {
-        $search_map = array(
+        $search_map = [
             'assigned_agent_id'      => TaskSearch::TERM_ASSIGNED_AGENT_ID,
             'assigned_agent_team_id' => TaskSearch::TERM_ASSIGNED_AGENT_TEAM_ID,
             'is_completed'           => TaskSearch::TERM_IS_COMPLETED,
             'person_id'              => TaskSearch::TERM_PERSON_ID,
             'title'                  => TaskSearch::TERM_TITLE,
             'visibility'             => TaskSearch::TERM_VISIBILITY,
-        );
+        ];
 
-        $terms = array();
+        $terms = [];
 
         foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ((is_string($value) && strlen($value) > 0) || (!is_string($value) && $value)) {
-                $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
+                $terms[] = ['type' => $search_key, 'op' => 'contains', 'options' => $value];
             }
         }
 
         $date_created_start = $this->in->getUint('date_created_start');
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
-            $terms[] = array('type' => TaskSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => TaskSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
                 'date1' => $date_created_start,
                 'date2' => $date_created_end,
-            ));
+            ]];
         } elseif ($date_created_start) {
-            $terms[] = array('type' => TaskSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => TaskSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
                 'date1' => $date_created_start,
-            ));
+            ]];
         }
 
         $date_completed_start = $this->in->getUint('date_completed_start');
         $date_completed_end   = $this->in->getUint('date_completed_end');
         if ($date_completed_end) {
-            $terms[] = array('type' => TaskSearch::TERM_DATE_COMPLETED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => TaskSearch::TERM_DATE_COMPLETED, 'op' => 'between', 'options' => [
                 'date1' => $date_completed_start,
                 'date2' => $date_completed_end,
-            ));
+            ]];
         } elseif ($date_completed_start) {
-            $terms[] = array('type' => TaskSearch::TERM_DATE_COMPLETED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => TaskSearch::TERM_DATE_COMPLETED, 'op' => 'between', 'options' => [
                 'date1' => $date_completed_start,
-            ));
+            ]];
         }
 
         $date_due_start = $this->in->getUint('date_due_start');
         $date_due_end   = $this->in->getUint('date_due_end');
         if ($date_due_end) {
-            $terms[] = array('type' => TaskSearch::TERM_DATE_DUE, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => TaskSearch::TERM_DATE_DUE, 'op' => 'between', 'options' => [
                 'date1' => $date_due_start,
                 'date2' => $date_due_end,
-            ));
+            ]];
         } elseif ($date_due_start) {
-            $terms[] = array('type' => TaskSearch::TERM_DATE_DUE, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => TaskSearch::TERM_DATE_DUE, 'op' => 'between', 'options' => [
                 'date1' => $date_due_start,
-            ));
+            ]];
         }
 
         if ($this->in->checkIsset('order')) {
@@ -233,7 +233,7 @@ class TaskController extends AbstractController
             $order_by = 'task.name:asc';
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -252,13 +252,13 @@ class TaskController extends AbstractController
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
         $tasks    = App::getEntityRepository('DeskPRO:Task')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => count($person_ids),
             'cache_id' => $result_cache->id,
             'tasks'    => $this->getApiData($tasks),
-        ));
+        ]);
     }
 
     /**
@@ -324,11 +324,11 @@ class TaskController extends AbstractController
     public function newTaskAction()
     {
         $task   = new Task();
-        $errors = array();
+        $errors = [];
 
         $title = $this->in->getString('title');
         if (!$title) {
-            $errors['title'] = array('required_field.title', 'title is empty or missing');
+            $errors['title'] = ['required_field.title', 'title is empty or missing'];
         }
 
         $task->title  = $title;
@@ -431,7 +431,7 @@ class TaskController extends AbstractController
     {
         $task = $this->_getTaskOr404($task_id);
 
-        return $this->createApiResponse(array('task' => $task->toApiData()));
+        return $this->createApiResponse(['task' => $task->toApiData()]);
     }
 
     /**
@@ -595,7 +595,7 @@ class TaskController extends AbstractController
     {
         $task = $this->_getTaskOr404($task_id);
 
-        return $this->createApiResponse(array('associations' => $this->getApiData($task->task_associations)));
+        return $this->createApiResponse(['associations' => $this->getApiData($task->task_associations)]);
     }
 
     /**
@@ -698,7 +698,7 @@ class TaskController extends AbstractController
             }
         }
 
-        return $this->createApiResponse(array('exists' => $exists));
+        return $this->createApiResponse(['exists' => $exists]);
     }
 
     /**
@@ -767,7 +767,7 @@ class TaskController extends AbstractController
     {
         $task = $this->_getTaskOr404($task_id);
 
-        return $this->createApiResponse(array('comments' => $this->getApiData($task->comments)));
+        return $this->createApiResponse(['comments' => $this->getApiData($task->comments)]);
     }
 
     /**
@@ -861,7 +861,7 @@ class TaskController extends AbstractController
             }
         }
 
-        return $this->createApiResponse(array('exists' => $exists));
+        return $this->createApiResponse(['exists' => $exists]);
     }
 
     /**
@@ -934,7 +934,7 @@ class TaskController extends AbstractController
     {
         $task = $this->_getTaskOr404($task_id);
 
-        return $this->createApiResponse(array('labels' => $this->getApiData($task->labels)));
+        return $this->createApiResponse(['labels' => $this->getApiData($task->labels)]);
     }
 
     /**
@@ -1017,9 +1017,9 @@ class TaskController extends AbstractController
         $task = $this->_getTaskOr404($task_id);
 
         if ($task->getLabelManager()->hasLabel($label)) {
-            return $this->createApiResponse(array('exists' => true));
+            return $this->createApiResponse(['exists' => true]);
         } else {
-            return $this->createApiResponse(array('exists' => false));
+            return $this->createApiResponse(['exists' => false]);
         }
     }
 

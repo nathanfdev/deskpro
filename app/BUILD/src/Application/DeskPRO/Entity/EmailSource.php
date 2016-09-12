@@ -165,7 +165,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var array
      */
-    protected $parsed_headers = array();
+    protected $parsed_headers = [];
 
     /**
      * The current status of the message:
@@ -340,7 +340,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getObjectInfo()
     {
-        return $this->object_info ? $this->object_info : array();
+        return $this->object_info ? $this->object_info : [];
     }
 
     /**
@@ -363,7 +363,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('date_status', new \DateTime());
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if (!$deep) {
@@ -405,9 +405,9 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         return $this->parsed_headers;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

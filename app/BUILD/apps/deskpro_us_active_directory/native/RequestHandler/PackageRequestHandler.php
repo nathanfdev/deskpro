@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_us_active_directory\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
@@ -70,11 +71,11 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $tester = UsersourceTester::createFromOptions('Application\\DeskPRO\\Usersource\\Adapter\\ActiveDirectory', $options);
         $tester->test($username, $password);
 
-        $result_data = array(
+        $result_data = [
             'log'      => $tester->getLog(),
             'raw_data' => $tester->getRawData(),
             'is_valid' => $tester->isValid(),
-        );
+        ];
 
         return $context->createJsonResponse($result_data);
     }
@@ -86,6 +87,6 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      */
     public function checkRequirementsAction(ApiPackageRequestContext $context)
     {
-        return $context->createJsonResponse(array('ldap_support' => function_exists('ldap_connect')));
+        return $context->createJsonResponse(['ldap_support' => function_exists('ldap_connect')]);
     }
 }

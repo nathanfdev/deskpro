@@ -48,7 +48,7 @@ class HierarchySpec extends ObjectBehavior
         $node2->getOrder()->willReturn(50);
         $node2->setHierarchy(Argument::any())->shouldBeCalled();
 
-        $root_nodes = array($node2, $node1);
+        $root_nodes = [$node2, $node1];
 
         $this->beConstructedWith($root_nodes, $formatter, 'data[id]');
     }

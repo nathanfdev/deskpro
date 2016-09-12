@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
@@ -67,12 +68,12 @@ class Twitter extends AbstractContactData
      */
     public function getTemplateVars(ContactDataAbstract $contact_record)
     {
-        return array(
+        return [
             'comment'      => $contact_record->comment,
             'username'     => $contact_record->field_1,
             'profile_url'  => 'http://twitter.com/'.$contact_record->field_1,
             'display_feed' => $contact_record->field_2,
-        );
+        ];
     }
 
     /**
@@ -82,8 +83,8 @@ class Twitter extends AbstractContactData
      */
     public function getApiVars(ContactDataAbstract $contact_record)
     {
-        return array(
+        return [
             'username' => $contact_record->field_1,
-        );
+        ];
     }
 }

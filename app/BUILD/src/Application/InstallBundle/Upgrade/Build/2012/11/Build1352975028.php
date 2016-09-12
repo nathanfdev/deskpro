@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\App;
@@ -49,63 +50,63 @@ class Build1352975028 extends AbstractBuild
             return;
         }
 
-        $db->insert('slas', array(
+        $db->insert('slas', [
             'title'              => 'First Response',
             'sla_type'           => 'first_response',
             'active_time'        => 'default',
             'work_start'         => 32400,
             'work_end'           => 61200,
-            'work_days'          => serialize(array(1 => true, 2 => true, 3 => true, 4 => true, 5 => true)),
+            'work_days'          => serialize([1 => true, 2 => true, 3 => true, 4 => true, 5 => true]),
             'work_timezone'      => App::getSetting('core.default_timezone'),
-            'work_holidays'      => serialize(array()),
+            'work_holidays'      => serialize([]),
             'apply_all'          => 1,
             'allow_agent_manual' => 0,
-        ));
+        ]);
         $sla_id = $db->lastInsertId();
 
-        $db->insert('ticket_triggers', array(
+        $db->insert('ticket_triggers', [
             'title'         => 'First Response - SLA Warning',
             'event_trigger' => 'sla.warning',
             'is_enabled'    => 1,
-            'terms'         => serialize(array(
-                array('type' => 'sla_status', 'op' => 'is', 'options' => array('sla_status' => 'warning', 'sla_id' => $sla_id)),
-            )),
-            'actions' => serialize(array(
-                array('type' => 'recalculate_sla_status', 'options' => array()),
-            )),
+            'terms'         => serialize([
+                ['type' => 'sla_status', 'op' => 'is', 'options' => ['sla_status' => 'warning', 'sla_id' => $sla_id]],
+            ]),
+            'actions' => serialize([
+                ['type' => 'recalculate_sla_status', 'options' => []],
+            ]),
             'sys_name'              => null,
             'run_order'             => 5400,
-            'event_trigger_options' => serialize(array(
+            'event_trigger_options' => serialize([
                 'time' => '90 minutes',
-            )),
-            'terms_any'    => serialize(array()),
+            ]),
+            'terms_any'    => serialize([]),
             'date_created' => gmdate('Y-m-d H:i:s'),
-        ));
+        ]);
         $warning_trigger_id = $db->lastInsertId();
 
-        $db->insert('ticket_triggers', array(
+        $db->insert('ticket_triggers', [
             'title'         => 'First Response - SLA Failure',
             'event_trigger' => 'sla.fail',
             'is_enabled'    => 1,
-            'terms'         => serialize(array(
-                array('type' => 'sla_status', 'op' => 'is', 'options' => array('sla_status' => 'fail', 'sla_id' => $sla_id)),
-            )),
-            'actions' => serialize(array(
-                array('type' => 'recalculate_sla_status', 'options' => array()),
-            )),
+            'terms'         => serialize([
+                ['type' => 'sla_status', 'op' => 'is', 'options' => ['sla_status' => 'fail', 'sla_id' => $sla_id]],
+            ]),
+            'actions' => serialize([
+                ['type' => 'recalculate_sla_status', 'options' => []],
+            ]),
             'sys_name'              => null,
             'run_order'             => 7200,
-            'event_trigger_options' => serialize(array(
+            'event_trigger_options' => serialize([
                 'time' => '120 minutes',
-            )),
-            'terms_any'    => serialize(array()),
+            ]),
+            'terms_any'    => serialize([]),
             'date_created' => gmdate('Y-m-d H:i:s'),
-        ));
+        ]);
         $fail_trigger_id = $db->lastInsertId();
 
-        $db->update('slas', array(
+        $db->update('slas', [
             'warning_trigger_id' => $warning_trigger_id,
             'fail_trigger_id'    => $fail_trigger_id,
-        ), array('id' => $sla_id));
+        ], ['id' => $sla_id]);
     }
 }

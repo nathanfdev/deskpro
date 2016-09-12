@@ -67,9 +67,8 @@ class DownloadsController extends AbstractController
         $page   = $request->get('page', 1);
         $person = $this->getCurrentPerson();
 
-        //
         // RSS
-        //
+
         if ('rss' === $_format) {
             $pager = $this->getDownloadsDataService()->getDownloadsPager(
                 null,
@@ -89,23 +88,20 @@ class DownloadsController extends AbstractController
             ['_format' => 'rss']
         );
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloads();
 
-        //
         // SUBSCRIPTION
-        //
+
         $isSubscribed = false;
         if ($this->getUser() && $this->getBrandSetting('user.downloads_subscriptions', false)) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('downloads', $this->getUser());
         }
 
-        //
         // RENDER THEME
-        //
+
         return $this->renderThemeView(
             'Theme:Downloads:index.html.twig',
             [
@@ -138,9 +134,8 @@ class DownloadsController extends AbstractController
         $page   = $request->query->getInt('page', 1);
         $person = $this->getCurrentPerson();
 
-        //
         // RSS
-        //
+
         if ('rss' === $_format) {
             $pager = $this->getDownloadsDataService()->getDownloadsPager(
                 $category,
@@ -157,18 +152,16 @@ class DownloadsController extends AbstractController
         }
         $rssLink = $this->generateUrl('portal_downloads_browse', ['slug' => $category->getSlug(), '_format' => 'rss']);
 
-        //
         // BREADCRUMBS
-        //
+
         if ($category) {
             $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloadsCategory($category);
         } else {
             $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloads();
         }
 
-        //
         // SUBSCRIBE
-        //
+
         $isSubscribed = false;
         if (
             $this->getBrandSetting('user.downloads_subscriptions', false)
@@ -177,15 +170,13 @@ class DownloadsController extends AbstractController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
 
-        //
         // PAGER
-        //
+
         $count = $this->getBrandSetting('portal.per_page_content');
         $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $page, $count, $person);
 
-        //
         // RENDER THEME
-        //
+
         return $this->renderThemeView(
             'Theme:Downloads:browse.html.twig',
             [
@@ -220,9 +211,8 @@ class DownloadsController extends AbstractController
             throw $this->createNotFoundException('could not find downloadable content for download id='.$file->getId());
         }
 
-        //
         // COMMENT FORM
-        //
+
         $newCommentForm = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_DOWNLOAD, $file)) {
             $formHandler = $this->get('form_handler.comment');
@@ -236,24 +226,20 @@ class DownloadsController extends AbstractController
             }
         }
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloadsFile($file);
 
-        //
         // RATING
-        //
+
         $rating = $this->findContentRating($file, $visitor_id);
 
-        //
         // NUM RATINGS
-        //
+
         list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($file);
 
-        //
         // SUBSCRIPTION
-        //
+
         $isSubscribed = false;
         if (
             $this->getBrandSetting('user.downloads_subscriptions', false)
@@ -266,9 +252,8 @@ class DownloadsController extends AbstractController
         $check->markAsCheckOnly();
         $this->get('anti_abuse')->check($check);
 
-        //
         // RENDER THEME
-        //
+
         return $this->renderThemeView(
             'Theme:Downloads:view.html.twig',
             [

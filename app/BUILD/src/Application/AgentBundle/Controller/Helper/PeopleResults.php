@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
@@ -51,7 +52,7 @@ class PeopleResults
     /**
      * @var array
      */
-    protected $people_ids = array();
+    protected $people_ids = [];
 
     /**
      * @var array
@@ -123,7 +124,7 @@ class PeopleResults
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.
         // - So we'll re-create the array here according to the order they're supposed to be in.
-        $people = array();
+        $people = [];
         foreach ($people_ids as $tid) {
             if (isset($people_raw[$tid])) {
                 $people[$tid] = $people_raw[$tid];

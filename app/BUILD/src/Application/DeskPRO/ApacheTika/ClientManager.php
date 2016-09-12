@@ -98,10 +98,10 @@ class ClientManager
             throw new MissingConfigurationException('Invalid port');
         }
 
-        $config = array(
+        $config = [
             'ip'   => $ip,
             'port' => $port ?: 9998,
-        );
+        ];
 
         return $config;
     }

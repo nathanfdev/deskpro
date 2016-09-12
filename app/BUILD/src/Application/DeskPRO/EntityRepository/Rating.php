@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,7 +44,7 @@ class Rating extends AbstractEntityRepository
             LEFT JOIN r.person p
             WHERE r.object_type = ?1 AND r.object_id = ?2
             ORDER BY r.id
-        ')->execute(array(1 => $object_type, 2 => $object_id));
+        ')->execute([1 => $object_type, 2 => $object_id]);
     }
 
     public function getRatingByPersonOnObject($object_type, $object_id, $person = null, $visitor_id = null)
@@ -55,14 +55,14 @@ class Rating extends AbstractEntityRepository
                 FROM DeskPRO:Rating r INDEX BY r.id
                 WHERE r.object_type = ?1 AND r.object_id = ?2 AND (r.person = ?3 OR r.visitor_id = ?4)
                 ORDER BY r.id
-            ')->setMaxResults(1)->setParameters(array(1 => $object_type, 2 => $object_id, 3 => $person, 4 => $visitor_id))->getOneOrNullResult();
+            ')->setMaxResults(1)->setParameters([1 => $object_type, 2 => $object_id, 3 => $person, 4 => $visitor_id])->getOneOrNullResult();
         } else {
             return $this->getEntityManager()->createQuery('
                 SELECT r
                 FROM DeskPRO:Rating r INDEX BY r.id
                 WHERE r.object_type = ?1 AND r.object_id = ?2 AND r.visitor_id = ?3
                 ORDER BY r.id
-            ')->setMaxResults(1)->setParameters(array(1 => $object_type, 2 => $object_id, 3 => $visitor_id))->getOneOrNullResult();
+            ')->setMaxResults(1)->setParameters([1 => $object_type, 2 => $object_id, 3 => $visitor_id])->getOneOrNullResult();
         }
     }
 }

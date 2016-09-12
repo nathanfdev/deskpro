@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,7 +41,7 @@ class SetStatusTest extends DeskProTestCase
         $ticket->status = 'awaiting_agent';
         $exec           = new ExecutorContext();
 
-        $action = new SetStatus(array('status' => 'awaiting_user'));
+        $action = new SetStatus(['status' => 'awaiting_user']);
 
         $action->applyAction($ticket, $exec);
 
@@ -54,7 +54,7 @@ class SetStatusTest extends DeskProTestCase
         $ticket->status = 'awaiting_agent';
         $exec           = new ExecutorContext();
 
-        $action = new SetStatus(array('status' => 'hidden.deleted'));
+        $action = new SetStatus(['status' => 'hidden.deleted']);
 
         $action->applyAction($ticket, $exec);
 
@@ -71,7 +71,7 @@ class SetStatusTest extends DeskProTestCase
 
         $exec = new ExecutorContext();
 
-        $action = new SetStatus(array('status' => 'asdadasdasdsad'));
+        $action = new SetStatus(['status' => 'asdadasdasdsad']);
 
         $this->assertTrue($action->isNoop($ticket, $exec));
     }
@@ -83,7 +83,7 @@ class SetStatusTest extends DeskProTestCase
 
         $exec = new ExecutorContext();
 
-        $action = new SetStatus(array('status' => 'awaiting_agent'));
+        $action = new SetStatus(['status' => 'awaiting_agent']);
 
         $this->assertTrue($action->isNoop($ticket, $exec));
     }

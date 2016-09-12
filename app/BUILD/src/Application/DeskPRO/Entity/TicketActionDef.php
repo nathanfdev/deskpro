@@ -111,7 +111,7 @@ class TicketActionDef extends DomainObject
      */
     public function getSettings()
     {
-        return $this->settings ? $this->settings : array();
+        return $this->settings ? $this->settings : [];
     }
 
     /**
@@ -143,14 +143,14 @@ class TicketActionDef extends DomainObject
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
-        $data                     = array();
+        $data                     = [];
         $data['id']               = $this->id;
         $data['action_name']      = $this->action_name;
         $data['def_class']        = $this->def_class;
         $data['app']              = $this->app ? $this->app->toApiData(false, false) : null;
-        $data['settings']         = $this->settings ?: array();
+        $data['settings']         = $this->settings ?: [];
         $data['action_title']     = $this->getDef()->getTitle();
         $data['action_class']     = $this->getDef()->getTriggerActionClass();
         $data['macro_class']      = $this->getDef()->getMacroActionClass();
@@ -159,9 +159,9 @@ class TicketActionDef extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

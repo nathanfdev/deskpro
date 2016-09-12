@@ -117,9 +117,9 @@ class CustomDataFeedback extends CustomDataAbstract
         return $this->feedback;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

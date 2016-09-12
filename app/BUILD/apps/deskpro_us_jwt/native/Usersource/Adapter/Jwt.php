@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace deskpro_us_jwt\Usersource\Adapter;
 
 use Application\DeskPRO\Usersource\Adapter\AbstractAdapter;
@@ -41,13 +42,13 @@ class Jwt extends AbstractAdapter
     {
         $info = $identity->getRawData();
 
-        return array(
+        return [
             'name'            => isset($info['name']) ? $info['name'] : '',
             'first_name'      => isset($info['first_name']) ? $info['first_name'] : '',
             'last_name'       => isset($info['last_name']) ? $info['last_name'] : '',
             'email'           => isset($info['email']) ? $info['email'] : '',
             'email_confirmed' => true,
-        );
+        ];
     }
 
     /**
@@ -75,10 +76,10 @@ class Jwt extends AbstractAdapter
      */
     public function getCapabilities()
     {
-        $capabilities = array(
+        $capabilities = [
             UsersourceInfo::CAPABILITY_SSO,
             UsersourceInfo::CAPABILITY_SSO_JS,
-        );
+        ];
 
         if ($custom_button_text = $this->usersource->options['login_custom_text']) {
             $capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN;

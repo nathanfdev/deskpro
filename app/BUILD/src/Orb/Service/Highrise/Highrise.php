@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Highrise
  */
+
 namespace Orb\Service\Highrise;
 
 /**
@@ -64,7 +65,7 @@ class Highrise
      *
      * @var array
      */
-    protected $resources = array();
+    protected $resources = [];
 
     /**
      * HTTP Client we'll use.
@@ -82,12 +83,12 @@ class Highrise
     /**
      * Send a GET request.
      *
-     * @param string $resource The resource to fetch with leading slash. Will be prepended with highrise url.
+     * @param string $resource The resource to fetch with leading slash. Will be prepended with highrise url
      * @param array  $params   Any GET params to specify
      *
      * @return \Zend\Http\Response
      */
-    public function sendReadRequest($resource, array $params = array())
+    public function sendReadRequest($resource, array $params = [])
     {
         $resource_url = $this->highrise_url.$resource;
 
@@ -104,13 +105,13 @@ class Highrise
     /**
      * Send a POST request.
      *
-     * @param string $resource   The resource to fetch with leading slash. Will be prepended with highrise url.
-     * @param string $postdata   The POST data to submit. Highrise expects an XML string.
+     * @param string $resource   The resource to fetch with leading slash. Will be prepended with highrise url
+     * @param string $postdata   The POST data to submit. Highrise expects an XML string
      * @param array  $get_params Any GET params to specify
      *
      * @return \Zend\Http\Response
      */
-    public function sendWriteRequest($resource, $postdata, array $get_params = array(), $use_put = false)
+    public function sendWriteRequest($resource, $postdata, array $get_params = [], $use_put = false)
     {
         $resource_url = $this->highrise_url.$resource;
 
@@ -136,13 +137,13 @@ class Highrise
     /**
      * Send a PUT request.
      *
-     * @param string $resource   The resource to fetch with leading slash. Will be prepended with highrise url.
-     * @param string $postdata   The POST data to submit. Highrise expects an XML string.
+     * @param string $resource   The resource to fetch with leading slash. Will be prepended with highrise url
+     * @param string $postdata   The POST data to submit. Highrise expects an XML string
      * @param array  $get_params Any GET params to specify
      *
      * @return \Zend\Http\Response
      */
-    public function sendPutRequest($resource, $postdata, array $get_params = array(), $put = false)
+    public function sendPutRequest($resource, $postdata, array $get_params = [], $put = false)
     {
         return $this->sendWriteRequest($resource, $postdata, $get_params, true);
     }
@@ -150,12 +151,12 @@ class Highrise
     /**
      * Send a DELETE request.
      *
-     * @param string $resource The resource to fetch with leading slash. Will be prepended with highrise url.
+     * @param string $resource The resource to fetch with leading slash. Will be prepended with highrise url
      * @param array  $params   Any GET params to specify
      *
      * @return \Zend\Http\Response
      */
-    public function sendDeleteRequest($resource, array $params = array())
+    public function sendDeleteRequest($resource, array $params = [])
     {
         $resource_url = $this->highrise_url.$resource;
 
@@ -179,7 +180,7 @@ class Highrise
         if ($http === null) {
             $http = new \Zend\Http\Client(
                 $this->highrise_url,
-                array('sslverifypeer' => false)
+                ['sslverifypeer' => false]
             );
         }
 
@@ -218,24 +219,24 @@ class Highrise
             throw new \InvalidArgumentException('$xml must be a XML string or SimpleXMLElement');
         }
 
-        $array = array();
+        $array = [];
 
-        $complex_types = array(
+        $complex_types = [
             'contact-data',
-        );
-        $collection_types = array(
+        ];
+        $collection_types = [
             'email-addresses',
             'phone-numbers',
             'addresses',
             'instant-messengers',
             'web-addresses',
-        );
+        ];
 
         foreach ($xml->children() as $nodename => $node) {
             if (in_array($nodename, $complex_types)) {
                 $array[$nodename] = $this->xmlToArray($node);
             } elseif (in_array($nodename, $collection_types)) {
-                $array[$nodename] = array();
+                $array[$nodename] = [];
                 foreach ($node->children() as $subnode) {
                     $array[$nodename][] = $this->xmlToArray($subnode);
                 }
@@ -257,7 +258,7 @@ class Highrise
      */
     public function arrayToXml(array $array, $base_nodename)
     {
-        $xml   = array();
+        $xml   = [];
         $xml[] = "<{$base_nodename}>";
 
         foreach ($array as $nodename => $node) {

@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.change-password'                 => 'Zmeniť heslo',
     'portal.account.email-btn-resend-validation'     => 'Znovu odoslať overovací e-mail',
     'portal.account.login-register-btn'              => 'Registrovať',
@@ -488,4 +488,4 @@ return array(
     'user.time.time_x_second'                        => '{0} sekúnd',
     'user.time.time_x_week'                          => '{0} týždňov',
     'user.time.time_x_year'                          => '{0} rokov',
-);
+];

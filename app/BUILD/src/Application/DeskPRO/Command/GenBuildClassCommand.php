@@ -52,7 +52,7 @@ class GenBuildClassCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
         $indent = '    ';
 
         if (!$input->getOption('no-schema')) {
-            $defaultcode = array();
+            $defaultcode = [];
 
             foreach ([
                 'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
@@ -77,7 +77,7 @@ class GenBuildClassCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
             $defaultcode = $indent.$indent.'//$this->execDbQuery(\'default\', "...");';
         }
 
-        $header = <<<HEADER
+        $header = <<<'HEADER'
 <?php
 
 /*
@@ -144,7 +144,7 @@ CODE;
             $manifest_path = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
             $builds_path   = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build';
 
-            $gen = new GenBuildManifest($builds_path, array($path));
+            $gen = new GenBuildManifest($builds_path, [$path]);
             file_put_contents($manifest_path, $gen->getContents());
 
             echo "Wrote file: $path\n";

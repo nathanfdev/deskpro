@@ -82,7 +82,7 @@ class Result
      *
      * @var array
      */
-    protected $_messages = array();
+    protected $_messages = [];
 
     /**
      * The identity returned if the auth was success.
@@ -106,7 +106,7 @@ class Result
      * @param \Orb\Auth\Identity $identity If successful, the user identity
      * @param array              $messages Messages of why the login failed, or any additional info
      */
-    public function __construct($code, \Orb\Auth\Identity $identity = null, array $messages = array())
+    public function __construct($code, \Orb\Auth\Identity $identity = null, array $messages = [])
     {
         $this->_code     = $code;
         $this->_identity = $identity;

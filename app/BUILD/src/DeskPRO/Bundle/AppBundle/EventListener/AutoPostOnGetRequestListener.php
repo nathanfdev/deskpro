@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
@@ -45,9 +46,9 @@ class AutoPostOnGetRequestListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::CONTROLLER => array('onController', -1),
-       );
+        return [
+            KernelEvents::CONTROLLER => ['onController', -1],
+       ];
     }
 
     public function onController(FilterControllerEvent $event)
@@ -64,7 +65,7 @@ class AutoPostOnGetRequestListener implements EventSubscriberInterface
 
             // resolve the request via a simple closure controller
             $controller = function (Request $request) {
-                $html = <<< HTML
+                $html = <<< 'HTML'
 <html>
 <head>
 <title>Redirecting</title>

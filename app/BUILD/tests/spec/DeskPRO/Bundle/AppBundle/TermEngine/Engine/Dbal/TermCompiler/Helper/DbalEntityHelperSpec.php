@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -53,103 +54,103 @@ class DbalEntityHelperSpec extends ObjectBehavior
 
     public function it_handles_the_simple_IS_case()
     {
-        $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array(1));
+        $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, [1]);
 
         $query_part->getWhereString()->shouldBe(
             'ticket.agent_id IN (:ids)'
         );
 
         $query_part->getParameters()->shouldBe(
-            array(
-                'ids' => array(1),
-            )
+            [
+                'ids' => [1],
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_simple_NOT_case()
     {
-        $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, array(1));
+        $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, [1]);
 
         $query_part->getWhereString()->shouldBe(
             'ticket.agent_id NOT IN (:ids)'
         );
 
         $query_part->getParameters()->shouldBe(
-            array(
-                'ids' => array(1),
-            )
+            [
+                'ids' => [1],
+            ]
         );
 
-        $query_part->getJoins()->shouldBe(array());
-        $query_part->getUniqueJoins()->shouldBe(array());
+        $query_part->getJoins()->shouldBe([]);
+        $query_part->getUniqueJoins()->shouldBe([]);
     }
 
     public function it_handles_the_IS_NULL_case()
     {
-        $first_query_part_result = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array(0));
+        $first_query_part_result = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, [0]);
 
         $first_query_part_result->getWhereString()->shouldBe(
             'ticket.agent_id IS NULL'
         );
-        $first_query_part_result->getParameters()->shouldBe(array());
-        $first_query_part_result->getJoins()->shouldBe(array());
-        $first_query_part_result->getUniqueJoins()->shouldBe(array());
+        $first_query_part_result->getParameters()->shouldBe([]);
+        $first_query_part_result->getJoins()->shouldBe([]);
+        $first_query_part_result->getUniqueJoins()->shouldBe([]);
 
-        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array())
+        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, [])
             ->shouldBeLike($first_query_part_result);
 
-        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array(null))
+        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, [null])
             ->shouldBeLike($first_query_part_result);
 
-        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array(null, null, null))
+        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, [null, null, null])
             ->shouldBeLike($first_query_part_result);
     }
 
     public function it_handles_the_NOT_NULL_case()
     {
-        $first_query_part_result = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, array(0));
+        $first_query_part_result = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, [0]);
 
         $first_query_part_result->getWhereString()->shouldBe(
             'ticket.agent_id IS NOT NULL'
         );
-        $first_query_part_result->getParameters()->shouldBe(array());
-        $first_query_part_result->getJoins()->shouldBe(array());
-        $first_query_part_result->getUniqueJoins()->shouldBe(array());
+        $first_query_part_result->getParameters()->shouldBe([]);
+        $first_query_part_result->getJoins()->shouldBe([]);
+        $first_query_part_result->getUniqueJoins()->shouldBe([]);
 
-        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, array())
+        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, [])
             ->shouldBeLike($first_query_part_result);
 
-        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, array(null))
+        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, [null])
             ->shouldBeLike($first_query_part_result);
 
-        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, array(null, null, null))
+        $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, [null, null, null])
             ->shouldBeLike($first_query_part_result);
     }
 
     public function it_handles_the_FULL_IS_case()
     {
-        $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, array(0, 3));
+        $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_IS, [0, 3]);
 
         $query_part->getWhereString()->shouldBe('ticket.agent_id IN (:ids) OR ticket.agent_id IS NULL');
         $query_part->getParameters()->shouldBe(
-            array(
-                'ids' => array(3),
-            )
+            [
+                'ids' => [3],
+            ]
         );
     }
 
     public function it_handles_the_FULL_NOT_case()
     {
-        $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, array(0, 3));
+        $query_part = $this->buildQueryPart('ticket.agent_id', TermInterface::OP_NOT, [0, 3]);
 
         $query_part->getWhereString()->shouldBe('ticket.agent_id NOT IN (:ids) AND ticket.agent_id IS NOT NULL');
         $query_part->getParameters()->shouldBe(
-            array(
-                'ids' => array(3),
-            )
+            [
+                'ids' => [3],
+            ]
         );
     }
 }

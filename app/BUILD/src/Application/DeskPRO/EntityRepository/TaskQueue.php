@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class TaskQueue extends AbstractEntityRepository
@@ -61,7 +62,7 @@ class TaskQueue extends AbstractEntityRepository
             FROM DeskPRO:TaskQueue tq
             WHERE tq.status = 'queued' AND tq.date_runnable < ?0
             ORDER BY tq.date_runnable
-        ")->setMaxResults(1)->setParameters(array(date('Y-m-d H:i:s')))->getOneOrNullResult();
+        ")->setMaxResults(1)->setParameters([date('Y-m-d H:i:s')])->getOneOrNullResult();
     }
 
     public function getRunnableTask()
@@ -86,7 +87,7 @@ class TaskQueue extends AbstractEntityRepository
             FROM task_queue
             WHERE status NOT IN ('completed', 'errored')
                 AND date_runnable <= ?
-        ", array($task->date_runnable->format('Y-m-d H:i:s')));
+        ", [$task->date_runnable->format('Y-m-d H:i:s')]);
 
         return $count - 1; // -1 takes out this one
     }
@@ -99,7 +100,7 @@ class TaskQueue extends AbstractEntityRepository
             WHERE tq.task_group = ?0
                 '.(!$include_ended ? "AND tq.status NOT IN ('completed', 'errored')" : '').'
             ORDER BY tq.date_runnable
-        ')->execute(array($group));
+        ')->execute([$group]);
     }
 
     public function getPendingTasks()
@@ -112,7 +113,7 @@ class TaskQueue extends AbstractEntityRepository
         ")->execute();
     }
 
-    public function enqueueTask($runner_class, array $data = array(), $task_group = null)
+    public function enqueueTask($runner_class, array $data = [], $task_group = null)
     {
         $task               = new \Application\DeskPRO\Entity\TaskQueue();
         $task->runner_class = $runner_class;

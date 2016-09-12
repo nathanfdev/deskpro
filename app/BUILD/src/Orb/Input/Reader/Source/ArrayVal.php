@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Input
  */
+
 namespace Orb\Input\Reader\Source;
 
 /**
@@ -65,7 +66,7 @@ class ArrayVal implements SourceInterface
      */
     public function getValue($name, $options = null)
     {
-        $parts = array();
+        $parts = [];
         if (is_array($name)) {
             $parts = $name;
             $name  = array_shift($parts);
@@ -101,7 +102,7 @@ class ArrayVal implements SourceInterface
      */
     public function checkIsset($name, $options = null)
     {
-        return ($this->getValue($name, $options) === null ? false : true);
+        return $this->getValue($name, $options) === null ? false : true;
     }
 
     /**

@@ -97,7 +97,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Creates a new comment with the provided content.
      *
-     * @param \Application\DeskPRO\Entity\Person $creator The comment's creator.
+     * @param \Application\DeskPRO\Entity\Person $creator The comment's creator
      * @param string                             $content The comment's content
      */
     public function __construct(Person $creator, $content)
@@ -129,10 +129,10 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Sets the task comment's creator id.
      *
-     * @param int id The person's id.
+     * @param int id The person's id
      *
      * @throws \InvalidArgumentException Thrown when there's no preson with the
-     *                                   id is not in the databse.
+     *                                   id is not in the databse
      */
     public function setPersonId($id)
     {
@@ -177,7 +177,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
         $content = trim($content);
 
         $lines_raw = explode("\n", $content);
-        $lines     = array();
+        $lines     = [];
         foreach ($lines_raw as $l) {
             $lines[] = trim($l);
         }
@@ -188,9 +188,9 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
         return $content;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

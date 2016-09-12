@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -56,7 +57,7 @@ class SlaClientMessageSender implements PersonContextInterface
     /**
      * @var array()
      */
-    private $queue = array();
+    private $queue = [];
 
     /**
      * @param Connection $db
@@ -82,11 +83,11 @@ class SlaClientMessageSender implements PersonContextInterface
      */
     public function sendMessage(Ticket $ticket, TicketSla $ticket_sla, $orig_status, $orig_completed)
     {
-        $this->queue[] = array(
+        $this->queue[] = [
             'channel'      => self::CHANNEL,
             'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
             'date_created' => date('Y-m-d H:i:s'),
-            'data'         => serialize(array(
+            'data'         => serialize([
                 'ticket_id'             => $ticket->id,
                 'ticket_agent_id'       => $ticket->agent ? $ticket->agent->id : null,
                 'ticket_Agent_team_id'  => $ticket->agent_team ? $ticket->agent_team->id : null,
@@ -99,8 +100,8 @@ class SlaClientMessageSender implements PersonContextInterface
                 'original_is_completed' => $orig_completed,
                 'removed'               => $ticket->hasSla($ticket_sla->sla) ? true : false,
                 'via_person'            => $this->person ? $this->person->id : null,
-            )),
-        );
+            ]),
+        ];
     }
 
     /**
@@ -115,7 +116,7 @@ class SlaClientMessageSender implements PersonContextInterface
         }
 
         $q           = $this->queue;
-        $this->queue = array();
+        $this->queue = [];
 
         $this->db->batchInsert('client_messages', $q);
 

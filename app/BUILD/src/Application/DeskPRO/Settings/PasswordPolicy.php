@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Settings;
 
 class PasswordPolicy
@@ -135,7 +136,7 @@ class PasswordPolicy
      */
     public function toArray()
     {
-        return array(
+        return [
             'min_length'            => $this->min_length,
             'max_age'               => $this->max_age,
             'forbid_reuse'          => $this->forbid_reuse,
@@ -143,7 +144,7 @@ class PasswordPolicy
             'require_num_lowercase' => $this->require_num_lowercase,
             'require_num_number'    => $this->require_num_number,
             'require_num_symbol'    => $this->require_num_symbol,
-        );
+        ];
     }
 
     /**
@@ -151,7 +152,7 @@ class PasswordPolicy
      */
     public function fromArray(array $values)
     {
-        foreach (array(
+        foreach ([
             'min_length',
             'max_age',
             'forbid_reuse',
@@ -159,7 +160,7 @@ class PasswordPolicy
             'require_num_lowercase',
             'require_num_number',
             'require_num_symbol',
-        ) as $name) {
+        ] as $name) {
             if (isset($values[$name])) {
                 $this->$name = $values[$name];
             }

@@ -273,9 +273,9 @@ class NewTicket
 
     protected function _save()
     {
-        #------------------------------
-        # The user owner
-        #------------------------------
+        //------------------------------
+        // The user owner
+        //------------------------------
 
         if ($this->person->id) {
             $person = $this->_em->find('DeskPRO:Person', $this->person->id);
@@ -318,9 +318,9 @@ class NewTicket
         $this->_em->persist($person);
         $this->_em->flush();
 
-        #------------------------------
-        # Participants
-        #------------------------------
+        //------------------------------
+        // Participants
+        //------------------------------
 
         $add_cc_peopleids = $this->add_cc_person;
         $add_cc_people    = $this->add_cc_newpeople;
@@ -356,9 +356,9 @@ class NewTicket
 
         $this->_em->flush();
 
-        #------------------------------
-        # Ticket
-        #------------------------------
+        //------------------------------
+        // Ticket
+        //------------------------------
 
         // Ticket props
         $ticket = $this->_ticket_manager->createTicket();
@@ -392,9 +392,9 @@ class NewTicket
 
         $ticket->person = $person;
 
-        #------------------------------
-        # Message
-        #------------------------------
+        //------------------------------
+        // Message
+        //------------------------------
 
         // Message
         $message         = new TicketMessage();
@@ -554,9 +554,9 @@ class NewTicket
         $this->_em->persist($ticket);
         $this->_em->persist($message);
 
-        #------------------------------
-        # per-person and per-org fields
-        #------------------------------
+        //------------------------------
+        // per-person and per-org fields
+        //------------------------------
         $new_field_manager = App::$container->getCustomFieldManager();
         $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $this->layout, ['allow_edit' => true]);
         if ($org = $ticket->person->organization) {

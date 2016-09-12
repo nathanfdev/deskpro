@@ -56,9 +56,9 @@ class TicketUrgenciesController extends AbstractController implements ProtectedC
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -77,6 +77,6 @@ class TicketUrgenciesController extends AbstractController implements ProtectedC
     {
         $counts = $this->em->getRepository('DeskPRO:Ticket')->countTicketsByUrgency();
 
-        return $this->createApiResponse(array('urgency_counts' => $counts));
+        return $this->createApiResponse(['urgency_counts' => $counts]);
     }
 }

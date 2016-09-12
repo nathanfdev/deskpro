@@ -121,7 +121,7 @@ class DebugUtils
             return sprintf('<%s>', get_class($var));
         }
         if (is_array($var)) {
-            $a        = array();
+            $a        = [];
             $len      = count($var);
             $is_array = true;
 

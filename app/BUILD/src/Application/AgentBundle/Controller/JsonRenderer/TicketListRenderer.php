@@ -97,9 +97,9 @@ class TicketListRenderer
             return [];
         }
 
-        #------------------------------
-        # Precache data
-        #------------------------------
+        //------------------------------
+        // Precache data
+        //------------------------------
 
         $org_ids    = [];
         $person_ids = [];
@@ -120,9 +120,9 @@ class TicketListRenderer
             $this->cache_orgs = Arrays::keyFromData($this->cache_orgs, 'id');
         }
 
-        #------------------------------
-        # Generate data array
-        #------------------------------
+        //------------------------------
+        // Generate data array
+        //------------------------------
 
         $json_array = [];
 

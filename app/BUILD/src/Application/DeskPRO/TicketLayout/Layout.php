@@ -89,7 +89,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
     /**
      * @param LayoutField $field
-     * @param string      $before_field Field ID of a field to insert the field before. If not specified, the field is added to the end.
+     * @param string      $before_field Field ID of a field to insert the field before. If not specified, the field is added to the end
      *
      * @return $this
      */

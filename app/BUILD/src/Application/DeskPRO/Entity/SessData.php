@@ -56,9 +56,9 @@ class SessData extends \Application\DeskPRO\Domain\DomainObject
 
     protected $person_id;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

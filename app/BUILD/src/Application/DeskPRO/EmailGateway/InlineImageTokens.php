@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
@@ -46,7 +47,7 @@ class InlineImageTokens
     /**
      * @var array
      */
-    protected $tokens = array();
+    protected $tokens = [];
 
     public function __construct(AbstractReader $reader)
     {
@@ -60,7 +61,7 @@ class InlineImageTokens
      */
     public function processTokens($body)
     {
-        $have_cids = array();
+        $have_cids = [];
         foreach ($this->reader->getAttachments() as $attach) {
             $cid = $attach->getContentId();
             if ($cid) {
@@ -72,9 +73,9 @@ class InlineImageTokens
             return $body;
         }
 
-        #------------------------------
-        # HTML
-        #------------------------------
+        //------------------------------
+        // HTML
+        //------------------------------
 
         $m = null;
         if (preg_match_all('#<img[^>]*/?>(</img>)?#iu', $body, $m, \PREG_SET_ORDER)) {
@@ -89,16 +90,16 @@ class InlineImageTokens
                 $body  = str_replace($match[0], $token, $body);
 
                 if (!isset($this->tokens[$cid])) {
-                    $this->tokens[$cid] = array();
+                    $this->tokens[$cid] = [];
                 }
 
                 $this->tokens[$cid][] = $token;
             }
         }
 
-        #------------------------------
-        # Text
-        #------------------------------
+        //------------------------------
+        // Text
+        //------------------------------
 
         // There isn't technically a syntax for inlining images in
         // text emails, but some clients use this syntax:
@@ -118,7 +119,7 @@ class InlineImageTokens
                 $body  = str_replace($match[0], $token, $body);
 
                 if (!isset($this->tokens[$cid])) {
-                    $this->tokens[$cid] = array();
+                    $this->tokens[$cid] = [];
                 }
 
                 $this->tokens[$cid][] = $token;

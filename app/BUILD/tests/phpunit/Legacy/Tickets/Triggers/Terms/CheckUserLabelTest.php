@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -72,10 +72,10 @@ class CheckUserLabelTest extends AbstractEntityCheckTest
         $ticket->id     = 5000;
         $ticket->person = $person;
 
-        $checker = $this->createChecker('is', array('labels' => array('test')));
+        $checker = $this->createChecker('is', ['labels' => ['test']]);
         $this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-        $checker = $this->createChecker('is', array('labels' => array('test', 'test2')));
+        $checker = $this->createChecker('is', ['labels' => ['test', 'test2']]);
         $this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
     }
 
@@ -87,10 +87,10 @@ class CheckUserLabelTest extends AbstractEntityCheckTest
         $ticket->id     = 5000;
         $ticket->person = $person;
 
-        $checker = $this->createChecker('not', array('labels' => array('test')));
+        $checker = $this->createChecker('not', ['labels' => ['test']]);
         $this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
 
-        $checker = $this->createChecker('not', array('labels' => array('test', 'test2')));
+        $checker = $this->createChecker('not', ['labels' => ['test', 'test2']]);
         $this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
     }
 

@@ -42,7 +42,7 @@ use DpTest\PortalTestCase;
 /**
  * Class PortalPermissionLoaderTest.
  */
-class PortalPermissionLoaderTest  extends PortalTestCase
+class PortalPermissionLoaderTest extends PortalTestCase
 {
     /**
      * @var PortalPermissionsLoader

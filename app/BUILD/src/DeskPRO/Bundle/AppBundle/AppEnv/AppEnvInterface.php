@@ -161,7 +161,7 @@ interface AppEnvInterface
     public function getUserFilesDir();
 
     /**
-     * @param string|array $params Either a string of params to provide the command, or an array of args that will be shell escaped and passed.
+     * @param string|array $params Either a string of params to provide the command, or an array of args that will be shell escaped and passed
      *
      * @return string
      */

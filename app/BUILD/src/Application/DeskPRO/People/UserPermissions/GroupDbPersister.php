@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\UserPermissions;
 
 use Application\DeskPRO\People\AbstractGroupDbPersister;

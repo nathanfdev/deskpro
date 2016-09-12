@@ -107,9 +107,9 @@ class BuildActivator implements LoggerAwareInterface
         $this->logger->debug('webPath: '.$build->getWebPath());
         $this->logger->debug('kernelCachePath: '.$build->getKernelCachePath());
 
-        #----------------------------------------
-        # Requirement check
-        #----------------------------------------
+        //----------------------------------------
+        // Requirement check
+        //----------------------------------------
 
         $t->tick();
         $this->logger->debug(
@@ -134,9 +134,9 @@ class BuildActivator implements LoggerAwareInterface
             $this->logger->debug('[reqCheck] took '.$t->formatTime());
         }
 
-        #----------------------------------------
-        # Turn helpdesk off
-        #----------------------------------------
+        //----------------------------------------
+        // Turn helpdesk off
+        //----------------------------------------
 
         $this->logger->debug(
             '[helpdeskState] type: '.get_class($this->helpdeskState),
@@ -157,9 +157,9 @@ class BuildActivator implements LoggerAwareInterface
             throw $e;
         }
 
-        #----------------------------------------
-        # Run upgrader
-        #----------------------------------------
+        //----------------------------------------
+        // Run upgrader
+        //----------------------------------------
 
         $this->logger->debug(
             '[upgradeRunner] type: '.get_class($this->upgradeRunner),
@@ -190,9 +190,9 @@ class BuildActivator implements LoggerAwareInterface
             $this->logger->debug('[upgradeRunner] took '.$t->formatTime());
         }
 
-        #----------------------------------------
-        # Activate run
-        #----------------------------------------
+        //----------------------------------------
+        // Activate run
+        //----------------------------------------
 
         $this->logger->debug(
             '[runActivator] type: '.get_class($this->runActivator),
@@ -217,9 +217,9 @@ class BuildActivator implements LoggerAwareInterface
             $this->logger->debug('[runActivator] took '.$t->formatTime());
         }
 
-        #----------------------------------------
-        # Turn helpdesk back on
-        #----------------------------------------
+        //----------------------------------------
+        // Turn helpdesk back on
+        //----------------------------------------
 
         $this->logger->debug(
             '[helpdeskState] enable the helpdesk on the new build',
@@ -241,9 +241,9 @@ class BuildActivator implements LoggerAwareInterface
             throw $e;
         }
 
-        #----------------------------------------
-        # Done all
-        #----------------------------------------
+        //----------------------------------------
+        // Done all
+        //----------------------------------------
 
         $this->logger->info('BuildActivator done all in '.$t->formatTotalTime());
         $this->logger->info(

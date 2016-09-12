@@ -38,12 +38,9 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class MetadataCacheTest extends ApiTestCase
 {
-    /** @var  MetadataCache */
+    /** @var MetadataCache */
     protected static $cache;
 
-    /**
-     *
-     */
     public static function setUpBeforeClass()
     {
         self::$cache = new MetadataCache(self::getEnvironmentCacheDir(), 'metadata_cache');

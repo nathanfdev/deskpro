@@ -42,8 +42,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class FeedbackRevision extends RevisionAbstract
 {
-    /**
-     */
     protected $feedback;
 
     /**
@@ -56,9 +54,9 @@ class FeedbackRevision extends RevisionAbstract
      */
     protected $content = '';
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

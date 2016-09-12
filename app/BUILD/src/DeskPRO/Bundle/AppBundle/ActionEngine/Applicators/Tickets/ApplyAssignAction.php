@@ -37,7 +37,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplyAssignAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
-    /** @var  array */
+    /** @var array */
     private $collection;
 
     public function init()

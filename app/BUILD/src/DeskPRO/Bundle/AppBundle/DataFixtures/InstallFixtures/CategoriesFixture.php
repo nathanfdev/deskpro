@@ -54,9 +54,9 @@ class CategoriesFixture extends DeskProAbstractFixture implements OrderedFixture
     {
         $translate = $this->container->get('deskpro.core.translate');
 
-        #------------------------------
-        # General KB cat : article_category_general
-        #------------------------------
+        //------------------------------
+        // General KB cat : article_category_general
+        //------------------------------
 
         $cat = new ArticleCategory();
         $cat->setTitle($translate->phrase('user.defaults.article_category_general'));
@@ -65,9 +65,9 @@ class CategoriesFixture extends DeskProAbstractFixture implements OrderedFixture
         $this->setReference('article_category_general', $cat);
         $manager->persist($cat);
 
-        #------------------------------
-        # General News cat : news_category_general
-        #------------------------------
+        //------------------------------
+        // General News cat : news_category_general
+        //------------------------------
 
         $cat = new NewsCategory();
         $cat->setTitle($translate->phrase('user.defaults.news_category_general'));
@@ -77,9 +77,9 @@ class CategoriesFixture extends DeskProAbstractFixture implements OrderedFixture
         $this->setReference('news_category_general', $cat);
         $manager->persist($cat);
 
-        #------------------------------
-        # General Downloads cat : downloads_category_general
-        #------------------------------
+        //------------------------------
+        // General Downloads cat : downloads_category_general
+        //------------------------------
 
         $cat = new DownloadCategory();
         $cat->setTitle($translate->phrase('user.defaults.downloads_category_general'));
@@ -88,10 +88,10 @@ class CategoriesFixture extends DeskProAbstractFixture implements OrderedFixture
         $this->setReference('downloads_category_general', $cat);
         $manager->persist($cat);
 
-        #------------------------------
-        # Initial feedback cats :
-        # feedback_category_suggestion, feedback_category_feature_request, feedback_category_bug_report
-        #------------------------------
+        //------------------------------
+        // Initial feedback cats :
+        // feedback_category_suggestion, feedback_category_feature_request, feedback_category_bug_report
+        //------------------------------
 
         foreach (['Suggestion', 'Feature Request', 'Bug Report'] as $title) {
             $cat = new FeedbackCategory();
@@ -104,9 +104,9 @@ class CategoriesFixture extends DeskProAbstractFixture implements OrderedFixture
 
         $manager->flush();
 
-        #------------------------------
-        # Enable publish perms on everyone/registered
-        #------------------------------
+        //------------------------------
+        // Enable publish perms on everyone/registered
+        //------------------------------
 
         if ($this->hasReference('usergroup.everyone')) {
             $this->enableCatPerms($this->getReference('usergroup.everyone'));

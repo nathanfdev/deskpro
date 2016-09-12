@@ -144,7 +144,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var string
      */
-    protected $data = array();
+    protected $data = [];
 
     public function __construct()
     {
@@ -159,9 +159,9 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

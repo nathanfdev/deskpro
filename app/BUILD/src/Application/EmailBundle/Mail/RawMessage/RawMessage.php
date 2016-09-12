@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Mail\RawMessage;
 
 /**
@@ -44,21 +45,21 @@ class RawMessage
      *
      * @var array
      */
-    private $from = array();
+    private $from = [];
 
     /**
      * array(array('email' => email, 'name' => 'name')).
      *
      * @var array
      */
-    private $tos = array();
+    private $tos = [];
 
     /**
      * array(array('email' => email, 'name' => 'name')).
      *
      * @var array
      */
-    private $ccs = array();
+    private $ccs = [];
 
     /**
      * @var string
@@ -72,7 +73,7 @@ class RawMessage
      *
      * @var array
      */
-    private $headers = array();
+    private $headers = [];
 
     /**
      * array('body' => body, 'charset' => charset).
@@ -93,7 +94,7 @@ class RawMessage
      *
      * @var array
      */
-    private $attachments = array();
+    private $attachments = [];
 
     /**
      * @param array $info
@@ -103,14 +104,14 @@ class RawMessage
     public static function newFromArray(array $info)
     {
         return new self(
-            !empty($info['from']) ? $info['from'] : array(),
-            !empty($info['tos']) ? $info['tos'] : array(),
-            !empty($info['ccs']) ? $info['ccs'] : array(),
+            !empty($info['from']) ? $info['from'] : [],
+            !empty($info['tos']) ? $info['tos'] : [],
+            !empty($info['ccs']) ? $info['ccs'] : [],
             !empty($info['subject']) ? $info['subject'] : '',
-            !empty($info['headers']) ? $info['headers'] : array(),
+            !empty($info['headers']) ? $info['headers'] : [],
             !empty($info['text_part']) ? $info['text_part'] : null,
             !empty($info['html_part']) ? $info['html_part'] : null,
-            !empty($info['attachments']) ? $info['attachments'] : array()
+            !empty($info['attachments']) ? $info['attachments'] : []
         );
     }
 
@@ -205,7 +206,7 @@ class RawMessage
      */
     public function toArray()
     {
-        return array(
+        return [
             'from'        => $this->from,
             'tos'         => $this->tos,
             'ccs'         => $this->ccs,
@@ -214,6 +215,6 @@ class RawMessage
             'text_part'   => $this->text_part,
             'html_part'   => $this->html_part,
             'attachments' => $this->attachments,
-        );
+        ];
     }
 }

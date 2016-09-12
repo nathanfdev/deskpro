@@ -86,7 +86,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             if ($index_reset) {
                 try {
                     $id = mt_rand(10000, 99999);
-                    \Application\DeskPRO\App::getDb()->insertIgnore('settings', array('name' => 'elastica.requires_reset_started', 'value' => $id));
+                    \Application\DeskPRO\App::getDb()->insertIgnore('settings', ['name' => 'elastica.requires_reset_started', 'value' => $id]);
 
                     $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:elastica:populate --auto-reset '.$id);
 
@@ -176,19 +176,19 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $cron_id .= '-g-'.$input->getOption('group');
         }
 
-        #------------------------------
-        # Clean up installer error detection
-        #------------------------------
+        //------------------------------
+        // Clean up installer error detection
+        //------------------------------
 
         if (file_exists(dp_get_log_dir().'/cron-boot-errors.log')) {
             @unlink(dp_get_log_dir().'/cron-boot-errors.log');
         }
 
-        App::getDb()->delete('install_data', array('build' => 1, 'name' => 'cron_run_errors'));
+        App::getDb()->delete('install_data', ['build' => 1, 'name' => 'cron_run_errors']);
 
-        #------------------------------
-        # Auto-upgrader
-        #------------------------------
+        //------------------------------
+        // Auto-upgrader
+        //------------------------------
 
         if (!$skipUpdater) {
             $updaterSettings = $this->getContainer()->get('updater_settings_resolver')->getUpdaterSettings();
@@ -291,9 +291,9 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             }
         }
 
-        #------------------------------
-        # CLI phpinfo
-        #------------------------------
+        //------------------------------
+        // CLI phpinfo
+        //------------------------------
 
         ob_start();
         phpinfo();
@@ -313,13 +313,13 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             ], \JSON_PRETTY_PRINT)
         );
 
-        #------------------------------
-        # Run
-        #------------------------------
+        //------------------------------
+        // Run
+        //------------------------------
 
         $time_start = microtime(true);
         if (!defined('DP_DISABLE_DBCRONLOG')) {
-            App::getDb()->insert('log_items', array(
+            App::getDb()->insert('log_items', [
                 'log_name'      => 'worker_job.cron_runner',
                 'session_name'  => 'cron_runner.'.$time_start,
                 'flag'          => 'cron_start',
@@ -327,14 +327,14 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 'priority_name' => 'INFO',
                 'message'       => 'Cron runner started',
                 'date_created'  => date('Y-m-d H:i:s'),
-            ));
+            ]);
         }
-        App::getDb()->replace('settings', array('name' => 'core.last_cron_start', 'value' => time()));
+        App::getDb()->replace('settings', ['name' => 'core.last_cron_start', 'value' => time()]);
 
         $GLOBALS['DP_CRON_ID'] = $cron_id;
 
         if (!$input->getOption('ignore-interval')) {
-            $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', array('core.croncheck.'.$cron_id));
+            $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', ['core.croncheck.'.$cron_id]);
             if ($check) {
                 $date     = (int) $check;
                 $date_cut = time() - 900;
@@ -344,7 +344,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                     if ($input->getOption('verbose')) {
                         $output->writeln("$cron_id is still active. Running for {$diff} (since ".date('Y-m-d H:i:s', $date).')');
                     }
-                    App::getDb()->insert('log_items', array(
+                    App::getDb()->insert('log_items', [
                         'log_name'      => 'worker_job.cron_runner',
                         'session_name'  => 'cron_runner.'.$time_start,
                         'flag'          => 'cron_abort',
@@ -352,11 +352,11 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                         'priority_name' => 'INFO',
                         'message'       => 'Cron runner aborted (still running)',
                         'date_created'  => date('Y-m-d H:i:s'),
-                    ));
+                    ]);
 
                     return 0;
                 } else {
-                    App::getDb()->insert('log_items', array(
+                    App::getDb()->insert('log_items', [
                         'log_name'      => 'worker_job.cron_runner',
                         'session_name'  => 'cron_runner.'.$time_start,
                         'flag'          => 'cron_resume',
@@ -364,7 +364,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                         'priority_name' => 'ERR',
                         'message'       => "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.",
                         'date_created'  => date('Y-m-d H:i:s'),
-                    ));
+                    ]);
 
                     $title = "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.";
 
@@ -389,10 +389,10 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             }
         }
 
-        App::getDb()->replace('settings', array(
+        App::getDb()->replace('settings', [
             'name'  => 'core.croncheck.'.$cron_id,
             'value' => time(),
-        ));
+        ]);
 
         \DpShutdown::add(function () {
             // Already done (clean shutdown)
@@ -414,7 +414,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                     \DpSys\LowError\SystemErrorHandler::logException($e, false);
                 }
 
-                App::getDb()->delete('settings', array('name' => 'core.croncheck.'.$GLOBALS['DP_CRON_ID']));
+                App::getDb()->delete('settings', ['name' => 'core.croncheck.'.$GLOBALS['DP_CRON_ID']]);
             } catch (\Exception $e) {
             }
         });
@@ -430,12 +430,12 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $ret = 0;
         }
 
-        App::getDb()->delete('settings', array('name' => 'core.croncheck.'.$cron_id));
-        App::getDb()->replace('settings', array('name' => 'core.last_cron_run', 'value' => time()));
+        App::getDb()->delete('settings', ['name' => 'core.croncheck.'.$cron_id]);
+        App::getDb()->replace('settings', ['name' => 'core.last_cron_run', 'value' => time()]);
 
         $done_time = microtime(true);
         if (!defined('DP_DISABLE_DBCRONLOG')) {
-            App::getDb()->insert('log_items', array(
+            App::getDb()->insert('log_items', [
                 'log_name'      => 'worker_job.cron_runner',
                 'session_name'  => 'cron_runner.'.$time_start,
                 'flag'          => 'cron_end',
@@ -443,7 +443,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 'priority_name' => 'INFO',
                 'message'       => sprintf('Cron runner done. Took %.4f seconds.', $done_time - $time_start),
                 'date_created'  => date('Y-m-d H:i:s'),
-            ));
+            ]);
         }
 
         unset($GLOBALS['DP_CRON_ID']);
@@ -467,7 +467,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             }
         }
         if (!$options) {
-            $options = array();
+            $options = [];
         }
 
         $verbose = $input->getOption('verbose');
@@ -494,15 +494,15 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $t = microtime(true) - DP_START_TIME;
             if ($t > 600) {
                 $runner->haltJobLoop();
-                $logger->log(sprintf("haltJobLoop after {$worker_job['id']} :: Time running: %.3fs", $t), Logger::WARN, array('flag' => 'halt_job_loop'));
+                $logger->log(sprintf("haltJobLoop after {$worker_job['id']} :: Time running: %.3fs", $t), Logger::WARN, ['flag' => 'halt_job_loop']);
             }
 
             // Reset the cron timer so we dont try and restart while we still run
             if (isset($GLOBALS['DP_CRON_ID']) && $GLOBALS['DP_CRON_ID']) {
-                App::getDb()->replace('settings', array(
+                App::getDb()->replace('settings', [
                     'name'  => 'core.croncheck.'.$GLOBALS['DP_CRON_ID'],
                     'value' => time(),
-                ));
+                ]);
             }
         });
 
@@ -528,7 +528,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 return 0;
             }
 
-            $runner->runJobs(array($job));
+            $runner->runJobs([$job]);
 
         // A group of jobs
         } elseif ($input->getOption('group')) {
@@ -545,7 +545,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             }
 
             if (!$ignore_interval) {
-                $jobs = array();
+                $jobs = [];
                 foreach ($group_jobs as $job) {
                     if ($job->isReady()) {
                         $jobs[] = $job;
@@ -570,7 +570,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $group_jobs = App::getEntityRepository('DeskPRO:WorkerJob')->findAll();
 
             if (!$ignore_interval) {
-                $jobs = array();
+                $jobs = [];
                 foreach ($group_jobs as $job) {
                     if ($job->isReady()) {
                         $jobs[] = $job;

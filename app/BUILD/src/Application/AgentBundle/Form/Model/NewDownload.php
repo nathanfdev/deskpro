@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -60,7 +60,7 @@ class NewDownload
     /** @var string */
     public $labels_json;
     /** @var array */
-    public $labels = array();
+    public $labels = [];
 
     /** @var int|null */
     public $attach = null;
@@ -89,7 +89,7 @@ class NewDownload
         $download->title  = $this->title;
 
         $download->content = $this->_person_context->hasPerm('agent_publish.can_insert_html')
-            ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', array('noclean' => true))
+            ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', ['noclean' => true])
             : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
 
         $download->setStatusCode($this->status);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 
 use PhpSpec\ObjectBehavior;
@@ -66,23 +67,23 @@ class PhpCheckSpec extends ObjectBehavior
 
     public function it_holds_variables()
     {
-        $this->getVariables()->shouldBe(array());
+        $this->getVariables()->shouldBe([]);
 
-        $this->setVariable('test', array(1, 2, 3));
+        $this->setVariable('test', [1, 2, 3]);
         $this->setVariable('other', 'bar');
 
         $this->getVariables()->shouldBe(
-            array(
-                'test'  => array(1, 2, 3),
+            [
+                'test'  => [1, 2, 3],
                 'other' => 'bar',
-            )
+            ]
         );
     }
 
     public function it_renames_params()
     {
         $this->beConstructedWith('testing == :other and other == :test');
-        $this->setVariable('test', array(1, 2, 3));
+        $this->setVariable('test', [1, 2, 3]);
         $this->setVariable('other', 'bar');
 
         $this->renameVariable('test', 'name');
@@ -96,7 +97,7 @@ class PhpCheckSpec extends ObjectBehavior
     public function it_lets_you_freeze_variable_names_meaning_it_removes_colon_from_expression_string()
     {
         $this->beConstructedWith('testing == :other and other1 == :test');
-        $this->setVariable('test', array(1, 2, 3));
+        $this->setVariable('test', [1, 2, 3]);
         $this->setVariable('other', 'bar');
 
         $this->getExpression()->shouldBe(

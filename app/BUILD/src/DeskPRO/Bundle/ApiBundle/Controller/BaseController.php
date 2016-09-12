@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -202,9 +203,6 @@ class BaseController extends FOSRestController
         return $this->getVersionService()->getVersion(TypeUtils::getBaseTypeName($this));
     }
 
-    /**
-     *
-     */
     protected function regenerateThisVersionId()
     {
         $this->getVersionService()->newVersion(TypeUtils::getBaseTypeName($this));

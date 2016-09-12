@@ -66,10 +66,10 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         $token    = $context->getAppSetting('api_security_token');
 
         if (!$user || !$password || !$token) {
-            return $context->createJsonResponse(array('error' => 'API user, password or token missing. Please configure the plugin.'));
+            return $context->createJsonResponse(['error' => 'API user, password or token missing. Please configure the plugin.']);
         }
 
-        $matches = array();
+        $matches = [];
 
         $email = $context->getIn()->getString('email');
         if ($email) {
@@ -85,17 +85,17 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 
                 error_reporting($error);
             } catch (\SoapFault $e) {
-                return $context->createJsonResponse(array('error' => 'Invalid Salesforce URL.'));
+                return $context->createJsonResponse(['error' => 'Invalid Salesforce URL.']);
             }
 
             try {
                 $sforce->login($user, $password.$token);
             } catch (\SoapFault $e) {
                 if ($e->getMessage()) {
-                    return $context->createJsonResponse(array('error' => 'Salesforce error: '.$e->getMessage()));
+                    return $context->createJsonResponse(['error' => 'Salesforce error: '.$e->getMessage()]);
                 }
 
-                return $context->createJsonResponse(array('error' => 'Invalid Salesforce API user, password, or token.'));
+                return $context->createJsonResponse(['error' => 'Invalid Salesforce API user, password, or token.']);
             }
 
             $fields = $this->getFields($context, $sforce);
@@ -114,9 +114,9 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
             }
         }
 
-        return $context->createJsonResponse(array(
+        return $context->createJsonResponse([
             'matches' => $matches,
-        ));
+        ]);
     }
 
     /**
@@ -129,7 +129,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
      */
     private function lookupUsers($email, $fields, AgentRequestContext $context, \SforcePartnerClient $sforce)
     {
-        $matches = array();
+        $matches = [];
 
         $fields_list = implode(', ', $fields);
 
@@ -152,7 +152,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                     $departmentTitle = @$record->fields->Department.@$record->fields->Title;
                 }
 
-                $matches[] = array(
+                $matches[] = [
                     'id'              => $record->Id,
                     'name'            => @$record->fields->FirstName.' '.@$record->fields->LastName,
                     'email'           => @$record->fields->Email,
@@ -160,7 +160,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                     'department'      => @$record->fields->Department,
                     'departmentTitle' => @$departmentTitle,
                     'profile'         => 'https://na8.salesforce.com/'.$record->Id,
-                );
+                ];
             }
         }
 
@@ -184,7 +184,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         }
 
         if (!$data) {
-            $fields = array();
+            $fields = [];
 
             $desc = $sforce->describeSObject('Contact');
 
@@ -211,7 +211,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                 }
             }
 
-            $context->getDb()->delete('datastore', array('name' => $data_id));
+            $context->getDb()->delete('datastore', ['name' => $data_id]);
 
             $data       = new DataStore();
             $data->name = $data_id;
@@ -221,6 +221,6 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
             $context->getEm()->flush($data);
         }
 
-        return $data->getData('fields', array());
+        return $data->getData('fields', []);
     }
 }

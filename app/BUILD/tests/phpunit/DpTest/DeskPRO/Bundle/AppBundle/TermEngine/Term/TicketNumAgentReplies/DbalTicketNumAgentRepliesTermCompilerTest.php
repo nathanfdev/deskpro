@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentReplies;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketNumAgentRepliesTermCompiler;
@@ -50,9 +51,9 @@ class DbalTicketNumAgentRepliesTermCompilerTest extends AbstractDbalTicketFilter
 
     public function testSimpleISCase()
     {
-        $params = array(
-            'num' => array(1, 2, 3),
-        );
+        $params = [
+            'num' => [1, 2, 3],
+        ];
 
         $term       = new TicketNumAgentRepliesTerm($params);
         $query_part = $this->term_compiler->compile($term);
@@ -65,9 +66,9 @@ class DbalTicketNumAgentRepliesTermCompilerTest extends AbstractDbalTicketFilter
 
     public function testSimpleNOTCase()
     {
-        $params = array(
-            'num' => array(1, 2, 3),
-        );
+        $params = [
+            'num' => [1, 2, 3],
+        ];
 
         $term       = new TicketNumAgentRepliesTerm($params, TermInterface::OP_NOT);
         $query_part = $this->term_compiler->compile($term);
@@ -80,9 +81,9 @@ class DbalTicketNumAgentRepliesTermCompilerTest extends AbstractDbalTicketFilter
 
     public function testSimpleGTCase()
     {
-        $params = array(
-            'num' => array(1, 2, 3),
-        );
+        $params = [
+            'num' => [1, 2, 3],
+        ];
 
         $term          = new TicketNumAgentRepliesTerm($params, TermInterface::OP_GT);
         $params['num'] = max($params['num']);
@@ -96,9 +97,9 @@ class DbalTicketNumAgentRepliesTermCompilerTest extends AbstractDbalTicketFilter
 
     public function testSimpleGTECase()
     {
-        $params = array(
-            'num' => array(1, 2, 3),
-        );
+        $params = [
+            'num' => [1, 2, 3],
+        ];
 
         $term          = new TicketNumAgentRepliesTerm($params, TermInterface::OP_GTE);
         $params['num'] = max($params['num']);
@@ -112,9 +113,9 @@ class DbalTicketNumAgentRepliesTermCompilerTest extends AbstractDbalTicketFilter
 
     public function testSimpleLTCase()
     {
-        $params = array(
-            'num' => array(1, 2, 3),
-        );
+        $params = [
+            'num' => [1, 2, 3],
+        ];
 
         $term          = new TicketNumAgentRepliesTerm($params, TermInterface::OP_LT);
         $params['num'] = min($params['num']);
@@ -128,9 +129,9 @@ class DbalTicketNumAgentRepliesTermCompilerTest extends AbstractDbalTicketFilter
 
     public function testSimpleLTECase()
     {
-        $params = array(
-            'num' => array(1, 2, 3),
-        );
+        $params = [
+            'num' => [1, 2, 3],
+        ];
 
         $term          = new TicketNumAgentRepliesTerm($params, TermInterface::OP_LTE);
         $params['num'] = min($params['num']);

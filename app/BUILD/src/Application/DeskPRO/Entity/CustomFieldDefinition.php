@@ -417,7 +417,7 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName, Hiera
      *
      * @return string
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -436,7 +436,7 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName, Hiera
      *
      * @return string
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'description') {
             return $this->description;
@@ -445,9 +445,9 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName, Hiera
         return $this->title;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -61,7 +61,7 @@ class PortalRatingsHelper
         $content_rating = $this->updatePersistedOrCreateNewRating($content, $visitor_id, $person, false);
 
         $this->em->persist($content_rating);
-        $this->em->flush(array($content_rating, $content));
+        $this->em->flush([$content_rating, $content]);
 
         return $content_rating;
     }
@@ -71,7 +71,7 @@ class PortalRatingsHelper
         $content_rating = $this->updatePersistedOrCreateNewRating($content, $visitor_id, $person, true);
 
         $this->em->persist($content_rating);
-        $this->em->flush(array($content_rating, $content));
+        $this->em->flush([$content_rating, $content]);
 
         return $content_rating;
     }

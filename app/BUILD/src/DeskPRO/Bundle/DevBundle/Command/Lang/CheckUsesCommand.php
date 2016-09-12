@@ -116,9 +116,9 @@ class CheckUsesCommand extends ContainerAwareCommand
             return 1;
         }
 
-        #------------------------------
-        # Decide which zones to work on
-        #------------------------------
+        //------------------------------
+        // Decide which zones to work on
+        //------------------------------
 
         $zones        = $input->getOption('zone');
         $ignore_zones = $input->getOption('ignore-zone');
@@ -144,9 +144,9 @@ class CheckUsesCommand extends ContainerAwareCommand
             $output->writeln('Finding phrases in zones: '.implode(', ', $zones));
         }
 
-        #------------------------------
-        # Load phrase IDs
-        #------------------------------
+        //------------------------------
+        // Load phrase IDs
+        //------------------------------
 
         $finder = [];
         foreach ($zones as $z) {
@@ -167,9 +167,9 @@ class CheckUsesCommand extends ContainerAwareCommand
             $output->writeln(sprintf('Finding uses for %d phrases', count($phrase_ids)));
         }
 
-        #------------------------------
-        # Find uses
-        #------------------------------
+        //------------------------------
+        // Find uses
+        //------------------------------
 
         if ($report === 'missing') {
             $limit = 1;
@@ -214,9 +214,9 @@ class CheckUsesCommand extends ContainerAwareCommand
 
         $use_info = $pfinder->getUseInfo();
 
-        #------------------------------
-        # Prepare output
-        #------------------------------
+        //------------------------------
+        // Prepare output
+        //------------------------------
 
         if ($report === 'missing') {
             $cols = ['unusedPhraseId'];
@@ -238,9 +238,9 @@ class CheckUsesCommand extends ContainerAwareCommand
             });
         }
 
-        #------------------------------
-        # Output
-        #------------------------------
+        //------------------------------
+        // Output
+        //------------------------------
 
         switch ($format) {
             case 'table':

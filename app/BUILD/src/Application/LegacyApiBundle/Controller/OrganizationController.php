@@ -138,21 +138,21 @@ class OrganizationController extends AbstractController
      */
     public function searchAction()
     {
-        $search_map = array(
+        $search_map = [
             'address'   => OrganizationSearch::TERM_CONTACT_ADDRESS,
             'im'        => OrganizationSearch::TERM_CONTACT_IM,
             'label'     => OrganizationSearch::TERM_LABEL,
             'name'      => OrganizationSearch::TERM_NAME,
             'phone'     => OrganizationSearch::TERM_CONTACT_PHONE,
             'parent_id' => OrganizationSearch::TERM_PARENT_ID,
-        );
+        ];
 
-        $terms = array();
+        $terms = [];
 
         foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
-                $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
+                $terms[] = ['type' => $search_key, 'op' => 'contains', 'options' => $value];
             }
         }
 
@@ -160,7 +160,7 @@ class OrganizationController extends AbstractController
             if ($this->in->checkIsset('field.'.$field->getId())) {
                 $in_val = $this->in->getString('field.'.$field->getId());
                 if ($in_val) {
-                    $terms[] = array('type' => 'org_field['.$field->getId().']', 'op' => 'is', 'options' => array('value' => $in_val));
+                    $terms[] = ['type' => 'org_field['.$field->getId().']', 'op' => 'is', 'options' => ['value' => $in_val]];
                 }
             }
         }
@@ -174,7 +174,7 @@ class OrganizationController extends AbstractController
             }
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -193,13 +193,13 @@ class OrganizationController extends AbstractController
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
         $orgs     = App::getEntityRepository('DeskPRO:Organization')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'          => $page,
             'per_page'      => $per_page,
             'total'         => count($person_ids),
             'cache_id'      => $result_cache->id,
             'organizations' => $this->getApiData($orgs),
-        ));
+        ]);
     }
 
     /**
@@ -262,18 +262,18 @@ class OrganizationController extends AbstractController
         }
 
         $org    = new Organization();
-        $errors = array();
+        $errors = [];
 
         $name = $this->in->getString('name');
         if (!$name) {
-            $errors['name'] = array('required_field.name', 'name is empty or missing');
+            $errors['name'] = ['required_field.name', 'name is empty or missing'];
         }
 
         $org->name = $name;
 
-        $bulk_set = array(
+        $bulk_set = [
             'summary' => 'String',
-        );
+        ];
         foreach ($bulk_set as $input => $type) {
             if ($this->in->checkIsset($input)) {
                 $org->$input = $this->in->{'get'.$type}($input);
@@ -387,7 +387,7 @@ class OrganizationController extends AbstractController
     {
         $org = $this->_getOrganizationOr404($organization_id);
 
-        return $this->createApiResponse(array('organization' => $org->toApiData()));
+        return $this->createApiResponse(['organization' => $org->toApiData()]);
     }
 
     /**
@@ -439,9 +439,9 @@ class OrganizationController extends AbstractController
             $org->name = $name;
         }
 
-        $bulk_set = array(
+        $bulk_set = [
             'summary' => 'String',
-        );
+        ];
         foreach ($bulk_set as $input => $type) {
             if ($this->in->checkIsset($input)) {
                 $org->$input = $this->in->{'get'.$type}($input);
@@ -547,11 +547,11 @@ class OrganizationController extends AbstractController
             $size = 80;
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'has_picture' => $org->hasPicture(),
             'picture_url' => $org->getPictureUrl($size),
             'size'        => $size,
-        ));
+        ]);
     }
 
     /**
@@ -598,7 +598,7 @@ class OrganizationController extends AbstractController
             $error = $accept->getError($file, 'agent');
             if (!$error) {
                 $set = new \Application\DeskPRO\Attachments\RestrictionSet();
-                $set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+                $set->setAllowedExts(['gif', 'png', 'jpg', 'jpeg']);
                 $accept->addRestrictionSet('only_images', $set);
                 $error = $accept->getError($file, 'only_images');
             }
@@ -695,12 +695,12 @@ class OrganizationController extends AbstractController
         $activity = $this->em->getRepository('DeskPRO:PersonActivity')->getForOrganization($org, $per_page, $offset);
         $total    = $this->em->getRepository('DeskPRO:PersonActivity')->countForOrganization($org);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => $total,
             'activity' => $this->getApiData($activity),
-        ));
+        ]);
     }
 
     /**
@@ -747,13 +747,13 @@ class OrganizationController extends AbstractController
     {
         $org = $this->_getOrganizationOr404($organization_id);
 
-        $terms = array(
-            array(
+        $terms = [
+            [
                 'type'    => \Application\DeskPRO\Searcher\PersonSearch::TERM_ORGANIZATION,
                 'op'      => 'contains',
-                'options' => array($org->id),
-            ),
-        );
+                'options' => [$org->id],
+            ],
+        ];
 
         if ($this->in->checkIsset('order')) {
             $order_by = $this->in->getString('order');
@@ -761,7 +761,7 @@ class OrganizationController extends AbstractController
             $order_by = 'person.name:asc';
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -780,13 +780,13 @@ class OrganizationController extends AbstractController
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
         $people   = App::getEntityRepository('DeskPRO:Person')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => count($person_ids),
             'cache_id' => $result_cache->id,
             'people'   => $this->getApiData($people),
-        ));
+        ]);
     }
 
     /**
@@ -833,13 +833,13 @@ class OrganizationController extends AbstractController
     {
         $org = $this->_getOrganizationOr404($organization_id);
 
-        $terms = array(
-            array(
+        $terms = [
+            [
                 'type'    => \Application\DeskPRO\Searcher\TicketSearch::TERM_ORGANIZATION,
                 'op'      => 'contains',
-                'options' => array($org->id),
-            ),
-        );
+                'options' => [$org->id],
+            ],
+        ];
 
         if ($this->in->checkIsset('order')) {
             $order_by = $this->in->getString('order');
@@ -847,7 +847,7 @@ class OrganizationController extends AbstractController
             $order_by = 'ticket.date_created:desc';
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -866,13 +866,13 @@ class OrganizationController extends AbstractController
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
         $tickets  = App::getEntityRepository('DeskPRO:Ticket')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => count($person_ids),
             'cache_id' => $result_cache->id,
             'tickets'  => $this->getApiData($tickets),
-        ));
+        ]);
     }
 
     /**
@@ -914,17 +914,17 @@ class OrganizationController extends AbstractController
 
         $member_ids = App::getEntityRepository('DeskPRO:Person')->getOrganizationMemberIds($org);
         if ($member_ids) {
-            $terms = array(
-                array(
+            $terms = [
+                [
                     'type'    => \Application\DeskPRO\Searcher\ChatConversationSearch::TERM_PERSON_ID,
                     'op'      => 'contains',
                     'options' => $member_ids,
-                ),
-            );
+                ],
+            ];
 
             $order_by = 'chat_conversations.id:desc';
 
-            $extra = array();
+            $extra = [];
             if ($order_by !== null) {
                 $extra['order_by'] = $order_by;
             }
@@ -934,7 +934,7 @@ class OrganizationController extends AbstractController
             $ids      = $result_cache->results;
             $cache_id = $result_cache->id;
         } else {
-            $ids      = array();
+            $ids      = [];
             $cache_id = 0;
         }
 
@@ -948,13 +948,13 @@ class OrganizationController extends AbstractController
         $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
         $chats    = App::getEntityRepository('DeskPRO:ChatConversation')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => count($ids),
             'cache_id' => $cache_id,
             'chats'    => $this->getApiData($chats),
-        ));
+        ]);
     }
 
     /**
@@ -982,7 +982,7 @@ class OrganizationController extends AbstractController
 
         $notes = $this->em->getRepository('DeskPRO:OrganizationNote')->getNotesForOrganization($org);
 
-        return $this->createApiResponse(array('notes' => $this->getApiData($notes)));
+        return $this->createApiResponse(['notes' => $this->getApiData($notes)]);
     }
 
     /**
@@ -1073,7 +1073,7 @@ class OrganizationController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        return $this->createApiResponse(array('note' => $note->toApiData()));
+        return $this->createApiResponse(['note' => $note->toApiData()]);
     }
 
     /**
@@ -1118,14 +1118,14 @@ class OrganizationController extends AbstractController
         $charges       = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForOrganization($organization, $per_page, $offset);
         $charge_totals = $this->em->getRepository('DeskPRO:TicketCharge')->getTotalChargesForOrganization($organization);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'total_charge_time'   => $charge_totals['charge_time'],
             'total_charge_amount' => $charge_totals['charge'],
             'total'               => $charge_totals['count'],
             'per_page'            => $per_page,
             'page'                => $page,
             'charges'             => $this->getApiData($charges),
-        ));
+        ]);
     }
 
     /**
@@ -1157,17 +1157,17 @@ class OrganizationController extends AbstractController
         $org_count_domain_takenmembers = $this->em->getRepository('DeskPRO:PersonEmail')->countDomainsWithOtherCompany($org_email_domains, $org);
         $org_count_domain_members      = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->countMembersAtDomains($org, $org_email_domains);
 
-        $domains = array();
+        $domains = [];
         foreach ($org_email_domains as $domain) {
-            $domains[] = array(
+            $domains[] = [
                 'domain'        => $domain,
                 'members'       => isset($org_count_domain_members[$domain]) ? $org_count_domain_members[$domain] : 0,
                 'nonmembers'    => isset($org_count_domain_nonmembers[$domain]) ? $org_count_domain_nonmembers[$domain] : 0,
                 'taken_members' => isset($org_count_domain_takenmembers[$domain]) ? $org_count_domain_takenmembers[$domain] : 0,
-            );
+            ];
         }
 
-        return $this->createApiResponse(array('domains' => $domains));
+        return $this->createApiResponse(['domains' => $domains]);
     }
 
     /**
@@ -1261,7 +1261,7 @@ class OrganizationController extends AbstractController
             }
         }
 
-        return $this->createApiResponse(array('exists' => $exists));
+        return $this->createApiResponse(['exists' => $exists]);
     }
 
     /**
@@ -1293,7 +1293,7 @@ class OrganizationController extends AbstractController
     public function postOrganizationEmailDomainMoveUsersAction($organization_id, $domain)
     {
         $org       = $this->_getOrganizationOr404($organization_id, 'edit');
-        $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+        $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(['organization' => $org, 'domain' => $domain]);
 
         if ($orgdomain) {
             $org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
@@ -1332,7 +1332,7 @@ class OrganizationController extends AbstractController
     public function postOrganizationEmailDomainMoveTakenUsersAction($organization_id, $domain)
     {
         $org       = $this->_getOrganizationOr404($organization_id, 'edit');
-        $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+        $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(['organization' => $org, 'domain' => $domain]);
 
         if ($orgdomain) {
             $org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
@@ -1371,7 +1371,7 @@ class OrganizationController extends AbstractController
     public function deleteOrganizationEmailDomainAction($organization_id, $domain)
     {
         $org       = $this->_getOrganizationOr404($organization_id, 'edit');
-        $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+        $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(['organization' => $org, 'domain' => $domain]);
 
         if ($orgdomain) {
             $org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
@@ -1404,7 +1404,7 @@ class OrganizationController extends AbstractController
     {
         $org = $this->_getOrganizationOr404($organization_id);
 
-        return $this->createApiResponse(array('details' => $this->getApiData($org->contact_data)));
+        return $this->createApiResponse(['details' => $this->getApiData($org->contact_data)]);
     }
 
     /**
@@ -1531,11 +1531,11 @@ class OrganizationController extends AbstractController
 
         foreach ($org->contact_data as $contact) {
             if ($contact->id == $contact_id) {
-                return $this->createApiResponse(array('exists' => true));
+                return $this->createApiResponse(['exists' => true]);
             }
         }
 
-        return $this->createApiResponse(array('exists' => false));
+        return $this->createApiResponse(['exists' => false]);
     }
 
     /**
@@ -1603,7 +1603,7 @@ class OrganizationController extends AbstractController
     {
         $org = $this->_getOrganizationOr404($organization_id);
 
-        return $this->createApiResponse(array('groups' => $this->getApiData($org->usergroups)));
+        return $this->createApiResponse(['groups' => $this->getApiData($org->usergroups)]);
     }
 
     /**
@@ -1644,7 +1644,7 @@ class OrganizationController extends AbstractController
             WHERE id = ?
                 AND sys_name IS NULL
                 AND is_agent_group = 0
-        ', array($group_id));
+        ', [$group_id]);
         if (!$match) {
             return $this->createApiErrorResponse('required_field', 'id must be specified as a non-system group');
         }
@@ -1657,10 +1657,10 @@ class OrganizationController extends AbstractController
         }
 
         if (!$exists) {
-            $this->db->insert('organization2usergroups', array(
+            $this->db->insert('organization2usergroups', [
                 'organization_id' => $org->id,
                 'usergroup_id'    => $group_id,
-            ));
+            ]);
         }
 
         return $this->createApiCreateResponse(
@@ -1705,11 +1705,11 @@ class OrganizationController extends AbstractController
 
         foreach ($org->usergroups as $group) {
             if ($group->id == $usergroup_id) {
-                return $this->createApiResponse(array('exists' => true));
+                return $this->createApiResponse(['exists' => true]);
             }
         }
 
-        return $this->createApiResponse(array('exists' => false));
+        return $this->createApiResponse(['exists' => false]);
     }
 
     /**
@@ -1780,7 +1780,7 @@ class OrganizationController extends AbstractController
     {
         $org = $this->_getOrganizationOr404($organization_id);
 
-        return $this->createApiResponse(array('labels' => $this->getApiData($org->labels)));
+        return $this->createApiResponse(['labels' => $this->getApiData($org->labels)]);
     }
 
     /**
@@ -1863,9 +1863,9 @@ class OrganizationController extends AbstractController
         $org = $this->_getOrganizationOr404($organization_id);
 
         if ($org->getLabelManager()->hasLabel($label)) {
-            return $this->createApiResponse(array('exists' => true));
+            return $this->createApiResponse(['exists' => true]);
         } else {
-            return $this->createApiResponse(array('exists' => false));
+            return $this->createApiResponse(['exists' => false]);
         }
     }
 
@@ -1920,7 +1920,7 @@ class OrganizationController extends AbstractController
         $field_manager = $this->container->getSystemService('org_fields_manager');
         $fields        = $field_manager->getFields();
 
-        return $this->createApiResponse(array('fields' => $this->getApiData($fields)));
+        return $this->createApiResponse(['fields' => $this->getApiData($fields)]);
     }
 
     /**
@@ -1941,7 +1941,7 @@ class OrganizationController extends AbstractController
             ORDER BY g.id
         ')->execute();
 
-        return $this->createApiResponse(array('groups' => $this->getApiData($groups)));
+        return $this->createApiResponse(['groups' => $this->getApiData($groups)]);
     }
 
     /**

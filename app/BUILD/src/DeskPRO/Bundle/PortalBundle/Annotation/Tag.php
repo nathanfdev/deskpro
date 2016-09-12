@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,7 @@ namespace DeskPRO\Bundle\PortalBundle\Annotation;
 class Tag
 {
     public $name;
-    public $default_options     = array();
+    public $default_options     = [];
     public $esi                 = false;
     public $allow_route_params  = false;
     public $always_guest_inline = true;

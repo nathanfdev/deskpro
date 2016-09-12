@@ -47,13 +47,13 @@ class AvailableTrigger
             $is_chat_available = false;
 
             if (!App::getSetting('core.apps_chat')) {
-                $agent_ids = array();
+                $agent_ids = [];
             } else {
                 $agent_ids = App::getDb()->fetchAllCol("
                     SELECT person_id
                     FROM sessions
                     WHERE date_last >= ? AND active_status = 'available' AND is_person = 1 AND is_chat_available = 1 AND interface = 'agent'
-                ", array(date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'))));
+                ", [date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'))]);
                 $agent_ids = array_unique($agent_ids);
             }
 
@@ -78,7 +78,7 @@ class AvailableTrigger
                     WHERE person_id IN ($agent_ids_cs)
                 ");
                 if (!$ug_ids) {
-                    $ug_ids = array(0);
+                    $ug_ids = [0];
                 }
 
                 $all1 = App::$container->getAgentGroups()->getSysGroup('agent_all_perms')->id;

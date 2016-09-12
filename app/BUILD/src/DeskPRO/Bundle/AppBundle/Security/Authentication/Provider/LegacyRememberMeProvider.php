@@ -80,7 +80,7 @@ class LegacyRememberMeProvider implements AuthenticationProviderInterface
             throw new AuthenticationException('could not handle old-style remember me: '.$credentials);
         }
 
-        return new AgentSessionSecurityToken($person, $person->getPassword(), array_merge(array('ROLE_USER'), $person->getRoles()));
+        return new AgentSessionSecurityToken($person, $person->getPassword(), array_merge(['ROLE_USER'], $person->getRoles()));
     }
 
     /**

@@ -86,7 +86,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * The client ID (usully sessionid) that created this message.
@@ -176,8 +176,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
-    /**
-     */
     public function getHandler()
     {
         $handler = new BasicArray($this);
@@ -185,8 +183,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         return $handler;
     }
 
-    /**
-     */
     public function notifyMessageServers()
     {
         if (!$this->event_dispatcher) {
@@ -198,9 +194,9 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         $this->event_dispatcher->dispatch('DeskPRO_onNewClientMessage', $event);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

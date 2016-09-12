@@ -57,7 +57,7 @@ abstract class AbstractAction implements ActionDefinitionInterface
     /**
      * @param array $options
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
         $this->meta = new OptionsArray();
         $this->_initOptions($options);
@@ -87,7 +87,7 @@ abstract class AbstractAction implements ActionDefinitionInterface
      */
     protected function getDefaultOptions()
     {
-        return array();
+        return [];
     }
 
     /**

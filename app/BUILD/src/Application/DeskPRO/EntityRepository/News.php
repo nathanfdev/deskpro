@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
@@ -57,13 +58,13 @@ class News extends AbstractEntityRepository
     public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         if ($person_context) {
             $cat_ids = $person_context->getPermissionsManager()->NewsCategories->getAllowedCategories();
             if (!$cat_ids) {
-                return array();
+                return [];
             }
 
             $posts = $this->getEntityManager()->createQuery("
@@ -71,14 +72,14 @@ class News extends AbstractEntityRepository
                 FROM DeskPRO:News p INDEX BY p.id
                 WHERE p.id IN (?0) AND p.category IN (?1) AND p.status = 'published'
                 ORDER BY p.id DESC
-            ")->execute(array($ids, $cat_ids));
+            ")->execute([$ids, $cat_ids]);
         } else {
             $posts = $this->getEntityManager()->createQuery("
                 SELECT p
                 FROM DeskPRO:News p INDEX BY p.id
                 WHERE p.id IN (?0) AND p.status = 'published'
                 ORDER BY p.id DESC
-            ")->execute(array($ids));
+            ")->execute([$ids]);
         }
 
         return $posts;
@@ -87,7 +88,7 @@ class News extends AbstractEntityRepository
     public function getByResultIds(array $ids)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $unsorted_news = $this->getEntityManager()->createQuery('
@@ -95,9 +96,9 @@ class News extends AbstractEntityRepository
             FROM DeskPRO:News n INDEX BY n.id
             WHERE n.id IN (?0)
             ORDER BY n.id DESC
-        ')->execute(array($ids));
+        ')->execute([$ids]);
 
-        $news = array();
+        $news = [];
 
         foreach ($ids as $id) {
             if (isset($unsorted_news[$id])) {
@@ -137,7 +138,7 @@ class News extends AbstractEntityRepository
                 FROM DeskPRO:News n INDEX BY n.id
                 WHERE n.status = 'published' AND n.category IN (?0)
                 ORDER BY n.id DESC
-            ")->setMaxResults($num)->execute(array($cat_ids));
+            ")->setMaxResults($num)->execute([$cat_ids]);
         } else {
             $articles = $this->getEntityManager()->createQuery("
                 SELECT n
@@ -161,11 +162,11 @@ class News extends AbstractEntityRepository
 
     public function getReportAssociations()
     {
-        return array(
-            'views' => array(
+        return [
+            'views' => [
                 'conditions'   => '%1$s.object_type = 3 AND %1$s.object_id = %2$s.id',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
-            ),
-        );
+            ],
+        ];
     }
 }

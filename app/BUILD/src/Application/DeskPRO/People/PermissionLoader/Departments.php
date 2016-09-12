@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;
@@ -50,7 +51,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
      *
      * @var array
      */
-    protected $allowed_cats = array('tickets' => array(), 'chat' => array());
+    protected $allowed_cats = ['tickets' => [], 'chat' => []];
 
     /**
      * @var bool
@@ -87,20 +88,20 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
             }
 
             if ($allow_all) {
-                $res = array();
-                foreach (array(App::$container->getTicketDepartments()->getAll(), App::$container->getChatDepartments()->getAll()) as $coll) {
+                $res = [];
+                foreach ([App::$container->getTicketDepartments()->getAll(), App::$container->getChatDepartments()->getAll()] as $coll) {
                     foreach ($coll as $d) {
-                        $res[] = array(
+                        $res[] = [
                             'department_id' => $d->id,
                             'app'           => $d->is_tickets_enabled ? 'tickets' : 'chat',
                             'name'          => 'full',
                             'value'         => 1,
-                        );
+                        ];
                     }
                 }
             } else {
                 $agent_ugs     = App::getDataService('Usergroup')->getAgentUsergroups();
-                $has_agent_ugs = array();
+                $has_agent_ugs = [];
 
                 foreach ($this->usergroup_ids as $ugid) {
                     if (isset($agent_ugs[$ugid])) {
@@ -124,10 +125,10 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
             ");
         }
 
-        $parent_with_allowed_child = array(
-            'tickets' => array(),
-            'chat'    => array(),
-        );
+        $parent_with_allowed_child = [
+            'tickets' => [],
+            'chat'    => [],
+        ];
 
         foreach ($res as $d) {
             if (!empty($d['person_id'])) {
@@ -174,7 +175,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
         if (!empty($this->allowed_cats[$app][$id]['full'])) {
             return true;
-        };
+        }
 
         return !empty($this->allowed_cats[$app][$id][$permission]);
     }
@@ -195,7 +196,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
     {
         $this->_init();
 
-        $ids = array();
+        $ids = [];
         foreach ($this->allowed_cats[$app] as $id => $perms) {
             if (!empty($perms[$permission]) || !empty($perms['full'])) {
                 $ids[$id] = $id;
@@ -216,10 +217,10 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         $this->_init();
 
         if (empty($this->allowed_cats[$app])) {
-            return array();
+            return [];
         }
 
-        $ids = array();
+        $ids = [];
 
         foreach ($this->allowed_cats[$app] as $id => $perms) {
             if (isset($perms[$permission]) && $perms[$permission]) {
@@ -239,9 +240,9 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
     {
         $this->_init();
 
-        return array(
+        return [
             'allowed_cats' => $this->allowed_cats,
-        );
+        ];
     }
 
     /**

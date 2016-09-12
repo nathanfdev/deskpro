@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
@@ -43,7 +44,7 @@ class FilterTermComposite implements FilterTermInterface
     /**
      * @var FilterTermInterface[]
      */
-    private $terms = array();
+    private $terms = [];
 
     /**
      * @var string
@@ -54,7 +55,7 @@ class FilterTermComposite implements FilterTermInterface
      * @param FilterTermInterface[] $terms
      * @param string                $op
      */
-    public function __construct(array $terms = array(), $op = self::OP_AND)
+    public function __construct(array $terms = [], $op = self::OP_AND)
     {
         $this->setAll($terms);
         $this->setOperator($op);
@@ -91,7 +92,7 @@ class FilterTermComposite implements FilterTermInterface
      */
     public function setAll(array $terms)
     {
-        $this->terms = array();
+        $this->terms = [];
         foreach ($terms as $t) {
             $this->add($t);
         }

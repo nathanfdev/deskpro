@@ -61,7 +61,5 @@ interface LabelsOwner
      */
     public function getLabels();
 
-    /**
-     */
     public function clearLabels();
 }

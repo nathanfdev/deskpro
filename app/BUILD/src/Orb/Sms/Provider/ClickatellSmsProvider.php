@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Sms\Provider;
 
 use Bdt\Clickatell\ClickatellClient;
@@ -65,8 +66,8 @@ class ClickatellSmsProvider implements SmsProviderInterface
      */
     public function __construct($user, $password, $apiId)
     {
-        $this->client = ClickatellClient::factory(array('api_id'    => $apiId, 'user' => $user,
-                                                         'password' => $password, ));
+        $this->client = ClickatellClient::factory(['api_id'         => $apiId, 'user' => $user,
+                                                         'password' => $password, ]);
         $this->user     = $user;
         $this->apiId    = $apiId;
         $this->password = $password;
@@ -81,14 +82,14 @@ class ClickatellSmsProvider implements SmsProviderInterface
 
         try {
             $result = $this->client->getCommand('SendMsg',
-                array('to' => $toPhoneNumber, 'text' => $textMessage))->execute();
+                ['to' => $toPhoneNumber, 'text' => $textMessage])->execute();
         } catch (\Exception $e) {
             $smsResult = new SmsResult(SmsResult::SMS_FAIL,
                 $fromPhoneNumber,
                 $toPhoneNumber,
                 $textMessage,
                 $this->getName(),
-                array('status' => $e->getCode(), 'message' => $e->getMessage()));
+                ['status' => $e->getCode(), 'message' => $e->getMessage()]);
 
             return $smsResult;
         }
@@ -125,10 +126,10 @@ class ClickatellSmsProvider implements SmsProviderInterface
      */
     public function getParams()
     {
-        return array(
+        return [
             'user'     => $this->user,
             'password' => $this->password,
             'api_id'   => $this->apiId,
-        );
+        ];
     }
 }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App\Package\PackageInstaller;
@@ -56,7 +57,7 @@ class AppsController extends AbstractController
     {
         $rep = $this->em->getRepository('DeskPRO:AppPackage');
         /** @var AppPackage $package */
-        if (!$package = $rep->findOneBy(array('name' => $name, 'native_name' => null))) {
+        if (!$package = $rep->findOneBy(['name' => $name, 'native_name' => null])) {
             throw new NotFoundHttpException();
         }
 

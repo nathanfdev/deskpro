@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1376039005 extends AbstractBuild
@@ -36,7 +37,7 @@ class Build1376039005 extends AbstractBuild
     public function run()
     {
         $this->out('Add index to tickets.status');
-        $create_table = $this->container->getDb()->fetchColumn('SHOW CREATE TABLE tickets', array(), 1);
+        $create_table = $this->container->getDb()->fetchColumn('SHOW CREATE TABLE tickets', [], 1);
         if (strpos($create_table, 'status_idx') === false) {
             $this->execMutateSql('CREATE INDEX status_idx ON tickets (status)', true);
         }

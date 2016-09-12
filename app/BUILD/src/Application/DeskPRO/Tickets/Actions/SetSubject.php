@@ -108,7 +108,7 @@ class SetSubject extends AbstractContainerAwareAction implements ActionInterface
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-            return array('fields');
+            return ['fields'];
         }
 
         return;

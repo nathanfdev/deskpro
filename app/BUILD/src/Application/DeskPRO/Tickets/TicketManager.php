@@ -323,9 +323,9 @@ class TicketManager
 
         $this->em->persist($ticket);
 
-        #----------------------------------------
-        # Set the creation system
-        #----------------------------------------
+        //----------------------------------------
+        // Set the creation system
+        //----------------------------------------
 
         foreach ($this->save_actions as $action) {
             $context->getLogger()->info(sprintf('[TicketManager:saveaction] %s', OrbUtil::getBaseClassname($action)));
@@ -426,9 +426,9 @@ class TicketManager
 
         $this->em->flush();
 
-        #----------------------------------------
-        # Done
-        #----------------------------------------
+        //----------------------------------------
+        // Done
+        //----------------------------------------
 
         $context->getLogger()->info(sprintf('########## END SAVE TICKET -- %s -- %.4fs ##########', $ticket->id ?: 0, microtime(true) - $time_start));
 

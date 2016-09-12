@@ -31,6 +31,7 @@
  *
  * @category Apps
  */
+
 namespace deskpro_us_saml;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
@@ -59,7 +60,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
     protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
     {
         $us->title   = $app->title;
-        $us->options = array(
+        $us->options = [
             'sso_url'                     => $app->getSetting('sso_url'),
             'slo_url'                     => $app->getSetting('slo_url'),
             'issuer_id'                   => $app->getSetting('issuer_id'),
@@ -73,7 +74,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
             'sp_public_x509'              => $app->getSetting('sp_public_x509') ?: null,
             'include_custom_metadata_xml' => $app->getSetting('include_custom_metadata_xml') ?: false,
             'custom_metadata_xml'         => $app->getSetting('custom_metadata_xml') ?: null,
-        );
+        ];
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->lost_password_url = '';
         $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Saml';

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,16 +34,16 @@ class Build1452775755 extends AbstractBuild
     {
         $this->out('Fix Satisfaction escalation');
 
-        $terms = array(
-            array('type' => 'date_last_agent_reply', 'op' => 'gte', 'options' => array('date2' => 1, 'value' => 'date')),
-            array('type' => 'feedback_rating', 'op' => 'not', 'options' => array('rating' => 'set')),
-        );
+        $terms = [
+            ['type' => 'date_last_agent_reply', 'op' => 'gte', 'options' => ['date2' => 1, 'value' => 'date']],
+            ['type' => 'feedback_rating', 'op' => 'not', 'options' => ['rating' => 'set']],
+        ];
 
         $db = $this->container->getDb();
-        $db->update('ticket_escalations', array(
+        $db->update('ticket_escalations', [
             'terms' => json_encode($terms),
             // need to update the date so this fix doesnt cause thousands of emails to get sent suddenly
             'date_created' => date('Y-m-d H:i:s'),
-        ), array('sys_name' => 'satisfaction'));
+        ], ['sys_name' => 'satisfaction']);
     }
 }

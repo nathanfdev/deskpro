@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Commands
  */
+
 namespace Application\DeskPRO\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
@@ -50,12 +51,12 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 {
     protected function configure()
     {
-        $this->setDefinition(array(
+        $this->setDefinition([
             new InputArgument('pack', InputArgument::REQUIRED, 'The packs to compile separated by comma. Example: agent_vendors. Or ALL for everything'),
             new InputOption('regex', 'p', InputOption::VALUE_NONE, 'Pack name is interpretted as a regex'),
             new InputOption('not', null, InputOption::VALUE_NONE, 'Pack name is excluded'),
             new InputOption('reload', 'r', InputOption::VALUE_NONE, 'Files are regenerated even if they arent stale'),
-        ))->setName('dp:assetic');
+        ])->setName('dp:assetic');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -63,7 +64,7 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $packs           = $input->getArgument('pack');
         $assetic_manager = $this->getContainer()->getSystemService('assetic_manager');
 
-        $bundles = array();
+        $bundles = [];
 
         if ($packs == 'ALL' || $input->getOption('regex')) {
             if ($input->getOption('regex')) {

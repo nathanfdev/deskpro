@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1419340526 extends AbstractBuild
@@ -37,7 +38,7 @@ class Build1419340526 extends AbstractBuild
     {
         $name = 'core_tickets.work_hours';
         $this->out("Fix old format of $name");
-        $v = $this->container->getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', array($name));
+        $v = $this->container->getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', [$name]);
 
         if ($v) {
             $v = @unserialize($v);
@@ -45,7 +46,7 @@ class Build1419340526 extends AbstractBuild
 
         if ($v && !empty($v['work_days']) && count($v['work_days']) === 7) {
             $days           = $v['work_days'];
-            $v['work_days'] = array();
+            $v['work_days'] = [];
 
             foreach ($days as $dow => $on) {
                 if ($on) {
@@ -53,7 +54,7 @@ class Build1419340526 extends AbstractBuild
                 }
             }
 
-            $this->container->getDb()->update('settings', array('value' => serialize($v)), array('name' => $name));
+            $this->container->getDb()->update('settings', ['value' => serialize($v)], ['name' => $name]);
         }
     }
 }

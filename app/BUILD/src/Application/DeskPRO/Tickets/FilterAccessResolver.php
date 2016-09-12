@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
@@ -69,15 +70,15 @@ class FilterAccessResolver
         $this->em = $em;
         $this->db = $em->getConnection();
 
-        #------------------------------
-        # Fetch agent team membership data
-        #------------------------------
+        //------------------------------
+        // Fetch agent team membership data
+        //------------------------------
 
         $this->team_members = $this->em->getRepository('DeskPRO:AgentTeam')->getSortedMemberIds();
 
-        #------------------------------
-        # Fetch data about who has hidden filters
-        #------------------------------
+        //------------------------------
+        // Fetch data about who has hidden filters
+        //------------------------------
 
         $hidden_filters_data = $this->db->fetchAll("
             SELECT person_id, name
@@ -85,12 +86,12 @@ class FilterAccessResolver
             WHERE name LIKE 'agent.ui.filter-visibility.%' AND (value_str = '0')
         ");
 
-        $hidden_prefs = array();
+        $hidden_prefs = [];
         foreach ($hidden_filters_data as $d) {
             $filter_id = str_replace('agent.ui.filter-visibility.', '', $d['name']);
 
             if (!isset($hidden_filters[$filter_id])) {
-                $hidden_filters[$filter_id] = array();
+                $hidden_filters[$filter_id] = [];
             }
 
             $hidden_prefs[$filter_id][$d['person_id']] = true;
@@ -154,7 +155,7 @@ class FilterAccessResolver
             $available_agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
         }
 
-        $agents = array();
+        $agents = [];
 
         foreach ($available_agents as $agent) {
             if (!$this->isIgnored($agent, $filter) and $this->canUse($agent, $filter)) {
@@ -178,7 +179,7 @@ class FilterAccessResolver
             $available_agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
         }
 
-        $agents = array();
+        $agents = [];
 
         foreach ($available_agents as $agent) {
             if ($this->isIgnored($agent, $filter) and $this->canUse($agent, $filter)) {

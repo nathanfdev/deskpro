@@ -215,12 +215,12 @@ abstract class AbstractBuild
     /**
      * Execute a DB query.
      *
-     * @param string $connName The connection to use.
+     * @param string $connName The connection to use
      * @param string $sql      The query to execute
      *
      * @throws \Exception
      */
-    public function execDbQuery($connName = 'default', $sql)
+    public function execDbQuery($connName, $sql)
     {
         $db = $this->container->get('doctrine')->getConnection($connName);
 
@@ -248,12 +248,12 @@ abstract class AbstractBuild
      * Execute a DB query but catch and return any exceptions.
      * Returns exception on error, null on success.
      *
-     * @param string $connName The connection to use.
+     * @param string $connName The connection to use
      * @param string $sql      The query to execute
      *
      * @return null|\Exception
      */
-    public function execDbQueryQuiet($connName = 'default', $sql)
+    public function execDbQueryQuiet($connName, $sql)
     {
         $db = $this->container->get('doctrine')->getConnection($connName);
 
@@ -292,10 +292,10 @@ abstract class AbstractBuild
      *
      * To enable pt-online-schema-change, add this line to /config/config.upgrader.php:
      *  $CONFIG['online_schema_upgrade'] = '/usr/bin/pt-online-schema-change';
-     * Change the path accordingly.
+     * Change the path accordingly
      *
      * @param string $table The table to alter
-     * @param string $alter The alter query, without the 'ALTER TABLE' part.
+     * @param string $alter The alter query, without the 'ALTER TABLE' part
      * @param string $smart Only do slow if the table has more than 20,000 records
      */
     public function execSlowAlterTable($table, $alter, $smart = true)
@@ -349,7 +349,7 @@ abstract class AbstractBuild
             $dbhost = $dbinfo['host'];
             $dbname = $dbinfo['dbname'];
 
-            $params = array(
+            $params = [
                 '{tool}'    => $tool,
                 '{query}'   => escapeshellarg($alter),
                 '{db_host}' => escapeshellarg($dbhost),
@@ -358,7 +358,7 @@ abstract class AbstractBuild
                 '{db_user}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_user') ?: $dbinfo['user']),
                 '{db_pass}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_password') ?: $dbinfo['password']),
                 '{dsn}'     => "t=$table",
-            );
+            ];
 
             $params_test                 = $params;
             $params_test['{mode_param}'] = '--dry-run --print';
@@ -421,10 +421,10 @@ abstract class AbstractBuild
      */
     public function saveStatus($key, $val)
     {
-        $this->container->getDb()->replace('import_datastore', array(
+        $this->container->getDb()->replace('import_datastore', [
             'typename' => 'up.'.$this->getBuildId().'.'.$key,
             'data'     => $val,
-        ));
+        ]);
     }
 
     /**
@@ -439,7 +439,7 @@ abstract class AbstractBuild
             SELECT data
             FROM import_datastore
             WHERE typename = ?
-        ', array('up.'.$this->getBuildId().'.'.$key));
+        ', ['up.'.$this->getBuildId().'.'.$key]);
 
         if (!$val) {
             return $default;

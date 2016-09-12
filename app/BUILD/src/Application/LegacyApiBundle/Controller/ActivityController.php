@@ -81,31 +81,31 @@ class ActivityController extends AbstractController
                 FROM DeskPRO:AgentAlert a
                 WHERE a.person = ?0 AND a.is_dismissed = 0
                 ORDER BY a.id DESC
-			')->setParameters(array($this->person))->setMaxResults(100)->execute();
+			')->setParameters([$this->person])->setMaxResults(100)->execute();
         } else {
             $alert_recs = $this->em->createQuery('
                 SELECT a
                 FROM DeskPRO:AgentAlert a
                 WHERE a.person = ?0 AND a.id >= ?1 AND a.is_dismissed = 0
                 ORDER BY a.id DESC
-			')->setParameters(array($this->person, $since))->setMaxResults(100)->execute();
+			')->setParameters([$this->person, $since])->setMaxResults(100)->execute();
         }
 
-        $alerts = array();
+        $alerts = [];
         foreach ($alert_recs as $alert) {
-            $alerts[] = array(
+            $alerts[] = [
                 'id'                 => $alert->getId(),
                 'type'               => $alert->typename,
                 'date_created'       => $alert->date_created->format('Y-m-d H:i:s'),
                 'date_created_ts'    => $alert->date_created->getTimestamp(),
                 'date_created_ts_ms' => $alert->date_created->getTimestamp() * 1000,
                 'data'               => $this->container->getAgentAlertSender()->getDataArray($alert),
-            );
+            ];
         }
 
         $last_id = $this->db->fetchColumn('SELECT id FROM agent_alerts ORDER BY id DESC LIMIT 1');
 
-        return $this->createApiResponse(array('last_id' => $last_id, 'alerts' => $alerts));
+        return $this->createApiResponse(['last_id' => $last_id, 'alerts' => $alerts]);
     }
 
     /**
@@ -157,17 +157,17 @@ class ActivityController extends AbstractController
                     UPDATE agent_alerts
                     SET is_dismissed = 1
                     WHERE person_id = ?
-                ', array($this->person->getId()));
+                ', [$this->person->getId()]);
             } else {
                 $ids_in = implode(',', $alert_ids);
                 $this->db->executeUpdate("
                     UPDATE agent_alerts
                     SET is_dismissed = 1
                     WHERE person_id = ? AND id IN ($ids_in)
-                ", array($this->person->getId()));
+                ", [$this->person->getId()]);
             }
         }
 
-        return $this->createApiResponse(array('success' => true));
+        return $this->createApiResponse(['success' => true]);
     }
 }

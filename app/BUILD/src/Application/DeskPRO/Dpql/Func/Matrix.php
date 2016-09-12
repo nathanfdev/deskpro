@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\Dpql;
@@ -72,7 +73,7 @@ class Matrix extends AbstractFunc
         $childStack = $stack;
         array_shift($childStack); // pop this off the stack - it doesn't exist to the children
 
-        $valid = array();
+        $valid = [];
 
         foreach ($this->_arguments as $arg) {
             if ($arg instanceof \Application\DeskPRO\Dpql\Statement\Part\NullValue) {

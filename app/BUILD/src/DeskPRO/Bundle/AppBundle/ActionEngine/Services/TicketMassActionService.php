@@ -39,7 +39,7 @@ class TicketMassActionService extends AbstractMassActionService
     protected $class     = Ticket::class;
     protected $namespace = 'Tickets';
 
-    /** @var  TicketManager */
+    /** @var TicketManager */
     protected $tm;
 
     /**

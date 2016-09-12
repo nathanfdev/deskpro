@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -52,18 +53,18 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
     public function testCompileIsAndNoHidden()
     {
         $term = new TicketStatusTerm(
-            array(
-                'status' => array(Ticket::STATUS_AWAITING_AGENT, Ticket::STATUS_RESOLVED),
-            )
+            [
+                'status' => [Ticket::STATUS_AWAITING_AGENT, Ticket::STATUS_RESOLVED],
+            ]
         );
 
         $query_part = $this->term_compiler->compile($term);
 
         $this->assertParameters(
             $query_part,
-            array(
-                'status' => array(Ticket::STATUS_AWAITING_AGENT, Ticket::STATUS_RESOLVED),
-            )
+            [
+                'status' => [Ticket::STATUS_AWAITING_AGENT, Ticket::STATUS_RESOLVED],
+            ]
         );
 
         $this->assertWhere($query_part, 'ticket.status IN (:status)');
@@ -74,9 +75,9 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
     public function testCompileIsNotAndNoHidden()
     {
         $term = new TicketStatusTerm(
-            array(
-                'status' => array(Ticket::STATUS_ARCHIVED, Ticket::STATUS_RESOLVED),
-            ),
+            [
+                'status' => [Ticket::STATUS_ARCHIVED, Ticket::STATUS_RESOLVED],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -84,9 +85,9 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
 
         $this->assertParameters(
             $query_part,
-            array(
-                'status' => array(Ticket::STATUS_ARCHIVED, Ticket::STATUS_RESOLVED),
-            )
+            [
+                'status' => [Ticket::STATUS_ARCHIVED, Ticket::STATUS_RESOLVED],
+            ]
         );
 
         $this->assertWhere($query_part, 'ticket.status NOT IN (:status)');
@@ -97,19 +98,19 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
     public function testCompileIsAHidden()
     {
         $term = new TicketStatusTerm(
-            array(
-                'status' => array(Ticket::HIDDEN_STATUS_SPAM, Ticket::HIDDEN_STATUS_DELETED),
-            )
+            [
+                'status' => [Ticket::HIDDEN_STATUS_SPAM, Ticket::HIDDEN_STATUS_DELETED],
+            ]
         );
 
         $query_part = $this->term_compiler->compile($term);
 
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'status_hidden' => Ticket::STATUS_HIDDEN,
-                'hidden_status' => array(Ticket::HIDDEN_STATUS_SPAM, Ticket::HIDDEN_STATUS_DELETED),
-            )
+                'hidden_status' => [Ticket::HIDDEN_STATUS_SPAM, Ticket::HIDDEN_STATUS_DELETED],
+            ]
         );
 
         $this->assertWhere($query_part, 'ticket.status = :status_hidden AND ticket.hidden_status IN (:hidden_status)');
@@ -120,12 +121,12 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
     public function testCompileIsNotAHidden()
     {
         $term = new TicketStatusTerm(
-            array(
-                'status' => array(
+            [
+                'status' => [
                     Ticket::HIDDEN_STATUS_SPAM,
                     Ticket::HIDDEN_STATUS_DELETED,
-                ),
-            ),
+                ],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -133,13 +134,13 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
 
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'status_hidden' => Ticket::STATUS_HIDDEN,
-                'hidden_status' => array(
+                'hidden_status' => [
                     Ticket::HIDDEN_STATUS_SPAM,
                     Ticket::HIDDEN_STATUS_DELETED,
-                ),
-            )
+                ],
+            ]
         );
 
         $this->assertWhere(
@@ -153,24 +154,24 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
     public function testCompileIsWithHidden()
     {
         $term = new TicketStatusTerm(
-            array(
-                'status' => array(
+            [
+                'status' => [
                     Ticket::STATUS_AWAITING_AGENT,
                     Ticket::STATUS_RESOLVED,
                     Ticket::HIDDEN_STATUS_SPAM,
-                ),
-            )
+                ],
+            ]
         );
 
         $query_part = $this->term_compiler->compile($term);
 
         $this->assertParameters(
             $query_part,
-            array(
-                'status'        => array(Ticket::STATUS_AWAITING_AGENT, Ticket::STATUS_RESOLVED),
+            [
+                'status'        => [Ticket::STATUS_AWAITING_AGENT, Ticket::STATUS_RESOLVED],
                 'status_hidden' => Ticket::STATUS_HIDDEN,
-                'hidden_status' => array(Ticket::HIDDEN_STATUS_SPAM),
-            )
+                'hidden_status' => [Ticket::HIDDEN_STATUS_SPAM],
+            ]
         );
 
         $this->assertWhere(
@@ -184,13 +185,13 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
     public function testCompileIsNOTWithHidden()
     {
         $term = new TicketStatusTerm(
-            array(
-                'status' => array(
+            [
+                'status' => [
                     Ticket::STATUS_AWAITING_AGENT,
                     Ticket::STATUS_RESOLVED,
                     Ticket::HIDDEN_STATUS_SPAM,
-                ),
-            ),
+                ],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -198,11 +199,11 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
 
         $this->assertParameters(
             $query_part,
-            array(
-                'status'        => array(Ticket::STATUS_AWAITING_AGENT, Ticket::STATUS_RESOLVED),
+            [
+                'status'        => [Ticket::STATUS_AWAITING_AGENT, Ticket::STATUS_RESOLVED],
                 'status_hidden' => Ticket::STATUS_HIDDEN,
-                'hidden_status' => array(Ticket::HIDDEN_STATUS_SPAM),
-            )
+                'hidden_status' => [Ticket::HIDDEN_STATUS_SPAM],
+            ]
         );
 
         $this->assertWhere(
@@ -216,22 +217,22 @@ class DbalTicketStatusTermCompilerTest extends AbstractDbalTicketFilterTermCompi
     public function testThatHiddensWorkWithVerboseNames()
     {
         $term = new TicketStatusTerm(
-            array(
-                'status' => array(
+            [
+                'status' => [
                     'hidden.'.Ticket::HIDDEN_STATUS_SPAM,
                     'hidden.'.Ticket::HIDDEN_STATUS_DELETED,
-                ),
-            )
+                ],
+            ]
         );
 
         $query_part = $this->term_compiler->compile($term);
 
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'status_hidden' => Ticket::STATUS_HIDDEN,
-                'hidden_status' => array(Ticket::HIDDEN_STATUS_SPAM, Ticket::HIDDEN_STATUS_DELETED),
-            )
+                'hidden_status' => [Ticket::HIDDEN_STATUS_SPAM, Ticket::HIDDEN_STATUS_DELETED],
+            ]
         );
 
         $this->assertWhere($query_part, 'ticket.status = :status_hidden AND ticket.hidden_status IN (:hidden_status)');

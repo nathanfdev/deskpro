@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\ORM\StateChange\Ticket;
 
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
@@ -58,7 +59,7 @@ class ChangeSplitTo implements ChangeInterface, NonStateTrackingInterface
      * @param $new_ticket_id
      * @param array $message_ids
      */
-    public function __construct($field_id, $new_ticket_id, array $message_ids = array())
+    public function __construct($field_id, $new_ticket_id, array $message_ids = [])
     {
         $this->field_id      = $field_id;
         $this->new_ticket_id = $new_ticket_id;
@@ -86,11 +87,11 @@ class ChangeSplitTo implements ChangeInterface, NonStateTrackingInterface
      */
     public function getNew()
     {
-        return array(
+        return [
             'field_id'      => $this->field_id,
             'new_ticket_id' => $this->new_ticket_id,
             'message_ids'   => $this->message_ids,
-        );
+        ];
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1356604502 extends AbstractBuild
@@ -38,7 +39,7 @@ class Build1356604502 extends AbstractBuild
         $this->out('Improve label count speed');
         $this->execMutateSql('ALTER TABLE label_defs ADD total INT NOT NULL');
 
-        $types = array(
+        $types = [
             'article'           => 'labels_articles',
             'chat_conversation' => 'labels_chat_conversations',
             'download'          => 'labels_downloads',
@@ -48,7 +49,7 @@ class Build1356604502 extends AbstractBuild
             'person'            => 'labels_people',
             'task'              => 'labels_tasks',
             'ticket'            => 'labels_tickets',
-        );
+        ];
 
         $db = $this->container->getDb();
         foreach ($types as $type => $table) {
@@ -63,7 +64,7 @@ class Build1356604502 extends AbstractBuild
                     INSERT INTO label_defs (label_type, label, total)
                     VALUES (?, ?, ?)
                     ON DUPLICATE KEY UPDATE total = total + VALUES(total)
-                ', array($type.'s', $label, $total));
+                ', [$type.'s', $label, $total]);
             }
             $db->commit();
         }

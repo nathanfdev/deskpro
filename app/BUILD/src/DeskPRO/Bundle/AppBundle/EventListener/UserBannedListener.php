@@ -68,9 +68,9 @@ final class UserBannedListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('onRequest'),
-        );
+        return [
+            KernelEvents::REQUEST => ['onRequest'],
+        ];
     }
 
     /**

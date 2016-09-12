@@ -38,18 +38,18 @@ class BuildNewAgent_0010_brand extends AbstractBuild
     {
         $db = $this->container->getDb();
 
-        #------------------------------
-        # Available themes
-        #------------------------------
+        //------------------------------
+        // Available themes
+        //------------------------------
 
         $this->execMutateSql("
             INSERT INTO `theme_sets` (`id`, `theme_id`, `options`)
             VALUES (1, 'standard', '{}'), (2, 'sidebar', '{}'), (3, 'standard', '{}')
         ");
 
-        #------------------------------
-        # Create our brand
-        #------------------------------
+        //------------------------------
+        // Create our brand
+        //------------------------------
 
         $site_name = $this->readSetting('core.deskpro_name');
 

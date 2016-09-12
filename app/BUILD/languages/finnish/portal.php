@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.change-password'                 => 'Vaihda salasana',
     'portal.account.email-btn-resend-validation'     => 'Lähetä vahvistussähköposti uudelleen',
     'portal.account.login-register-btn'              => 'Rekisteröidy',
@@ -501,4 +501,4 @@ return array(
     'user.time.time_x_second'                        => '{0} sekunttia',
     'user.time.time_x_week'                          => '{0} viikkoa',
     'user.time.time_x_year'                          => '{0} vuotta',
-);
+];

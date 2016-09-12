@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WebhookHandler
 {
-    /** @var DeskproContainer  */
+    /** @var DeskproContainer */
     protected $container;
 
     public function __construct(DeskproContainer $container)
@@ -85,7 +85,7 @@ class WebhookHandler
 
         $manager = $this->container->getTicketManager();
         $em      = $this->container->getEm();
-        $issues  = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
+        $issues  = $em->getRepository('DeskPRO:JiraIssue')->findBy(['issue_id' => $data['issue']['id']]);
         $meta    = $this->container->get(JIRA::NAME)->getMeta();
 
         foreach ($issues as $issue) {
@@ -135,7 +135,7 @@ class WebhookHandler
 
         $manager = $this->container->getTicketManager();
         $em      = $this->container->getEm();
-        $issues  = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
+        $issues  = $em->getRepository('DeskPRO:JiraIssue')->findBy(['issue_id' => $data['issue']['id']]);
 
         foreach ($issues as $issue) {
             $ticket = $issue->ticket;
