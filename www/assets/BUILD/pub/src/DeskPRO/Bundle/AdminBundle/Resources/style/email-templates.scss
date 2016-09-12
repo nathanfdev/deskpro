@@ -1,12 +1,20 @@
 .email-and-block {
-  width: 500px;
+  width: 600px;
   > div:first-child {
     width: 260px;
+    border: none;
   }
   > .right-panel.ui.vertical.menu {
     width: 340px;
+    border: none;
+    border-left: 1px solid $dp-greyscale-300;
     .ui.styled.accordion {
       width: auto;
+    }
+  }
+  .template {
+    i.icon {
+      color: $dp-sonic-primary !important;
     }
   }
 }

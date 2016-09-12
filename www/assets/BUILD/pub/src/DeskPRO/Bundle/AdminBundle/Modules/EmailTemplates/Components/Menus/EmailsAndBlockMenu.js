@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
-import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { Accordion, AccordionPanel } from 'DeskPRO/Component/Semantic/Accordion';
 import classNames from 'classnames';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
@@ -49,7 +48,7 @@ export class EmailsAndBlockMenu extends React.Component {
         key={`email${key}`}
         label={email.get('title')}
         icon="folder open"
-        subContent={email.get('templates')}
+        subContent={email.get('subGroups')}
         classes={classNames({ active: this.isActive(email) })}
         onClick={() => this.setActive(email)}
       />
@@ -65,6 +64,7 @@ export class EmailsAndBlockMenu extends React.Component {
         key={`emailBlock${key}`}
         label={template.get('title')}
         icon="code"
+        classes="template"
         onClick={() => this.props.selectTemplate(template)}
       />
     );
@@ -76,10 +76,11 @@ export class EmailsAndBlockMenu extends React.Component {
     }
     const subGroups = this.state.selectedLeft.get('subGroups');
     const primary = subGroups.get('primary').get('templates').valueSeq().map((template, key) =>
-      <ListElement
+      <MenuItem
         key={`primary${key}`}
         label={template.get('title')}
         icon="code"
+        classes="template"
         onClick={() => this.props.selectTemplate(template)}
       />
     );
@@ -88,26 +89,29 @@ export class EmailsAndBlockMenu extends React.Component {
         return null;
       }
       let content = subGroup.get('templates').valueSeq().map((template, key) =>
-        <ListElement
+        <MenuItem
           key={`${subGroup.get('subGroupId')}${key}`}
           label={template.get('title')}
           icon="code"
+          classes="template"
           onClick={() => this.props.selectTemplate(template)}
         />);
-      content = <List>{content}</List>;
+      content = <Menu>{content}</Menu>;
       return (<AccordionPanel
         key={`addEl${subGroup.get('subGroupId')}`}
         panel={{
           title:       subGroup.get('title'),
           subElements: subGroup.get('templates').size,
+          icon:        'folder open',
           content
         }}
       />);
     });
     return (
       <MenuWrapper classes={classNames('right-panel')}>
-        <h4>{subGroups.get('primary').get('title')}</h4>
-        <List>{primary}</List>
+        <Menu title={subGroups.get('primary').get('title')}>
+          {primary}
+        </Menu>
         <h4>Additional templates</h4>
         <Accordion>{additionalTemplates}</Accordion>
       </MenuWrapper>

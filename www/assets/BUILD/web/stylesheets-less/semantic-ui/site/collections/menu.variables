@@ -2,6 +2,7 @@
     User Variable Overrides
 *******************************/
 
+@fontFamily: 'Open Sans', Helvetica, Arial, sans-serif;
 @itemFontWeight: 600;
 
 @tabularBorderRadius: 0;
