@@ -587,6 +587,15 @@ $transition-close-delay: 0.1s;
         transition-delay: $transition-close-delay;
       };
     }
+    &.badge .menu-icon:after {
+      content: '';
+      background: $dp-knuckles-primary;
+      width: 5px;
+      height: 5px;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+    }
   }
   &:hover {
     .logo svg .text {

@@ -36,6 +36,28 @@ export class SideBarContainer extends SeparateComponent {
 
   constructor(props) {
     super(props);
+    this.state = {
+      sectionsBadges: []
+    };
+    window.document.addEventListener('dpUpdateSideBarBadge', (e) => {
+      const sectionsBadges = this.state.sectionsBadges;
+      if (e.detail.count > 0) {
+        if (sectionsBadges.indexOf(e.detail.sectionId) === -1) {
+          sectionsBadges.push(e.detail.sectionId);
+          this.setState({
+            sectionsBadges
+          });
+        }
+      } else if (e.detail.count === 0) {
+        const index = sectionsBadges.indexOf(e.detail.sectionId);
+        if (index > -1) {
+          sectionsBadges.splice(index, 1);
+          this.setState({
+            sectionsBadges
+          });
+        }
+      }
+    });
     window.document.addEventListener('dpOpenOverlayFrame', (e) => {
       if (e.detail.id === 'reports') {
         this.changeSection('menu_reports');
@@ -143,7 +165,8 @@ export class SideBarContainer extends SeparateComponent {
       openReports:      this.openReports,
       openBilling:      this.openBilling,
       changeSection:    this.changeSection,
-      resumeOnboarding: this.resumeOnboarding
+      resumeOnboarding: this.resumeOnboarding,
+      sectionsBadges: this.state.sectionsBadges
     };
     return <SideBar {...this.props} {...props} />;
   }
@@ -170,7 +193,8 @@ export class SideBar extends React.Component {
     currentSection:   PropTypes.string.isRequired,
     logoCallback:     PropTypes.func,
     logoActive:       PropTypes.bool,
-    resumeOnboarding: PropTypes.func
+    resumeOnboarding: PropTypes.func,
+    sectionsBadges: PropTypes.array
   };
 
   getMenus = () => {
@@ -284,14 +308,15 @@ export class SideBar extends React.Component {
 
   getMenuItems = () => {
     const menus = [];
-    const currentSection = this.props.currentSection;
+    const { currentSection, sectionsBadges } = this.props;
     this.getMenus().map((item) => {
       const menuItem = item;
       menuItem.key = `menu_${menuItem.className}`;
+      const badge = sectionsBadges.indexOf(`${menuItem.className}_section`) > -1;
       menus.push(
         <MenuItem
           key={menuItem.key}
-          classes={classNames(menuItem.className, { active: currentSection === menuItem.key })}
+          classes={classNames(menuItem.className, { active: currentSection === menuItem.key, badge })}
           onClick={() => this.clickMenu(menuItem)}
         >
           <span className="menu-icon">
