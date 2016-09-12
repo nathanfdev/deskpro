@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\ResourceScanner\TemplateFiles;
@@ -52,36 +53,44 @@ class TemplatesController extends AbstractController implements ProtectedControl
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # get-template-info
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-template-info
+    //###################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function getTemplateInfoAction()
     {
         $tplfiles = new TemplateFiles();
         $map      = $tplfiles->getUserTemplates();
 
-        $custom_templates = array();
+        $custom_templates = [];
 
         $list = $tplfiles->groupMap($map, $custom_templates);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'list'             => $list,
             'custom_templates' => $custom_templates,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # get-email-template-info
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-email-template-info
+    //###################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function getEmailTemplateInfoAction()
     {
         $tpl_desc = new EmailTemplatesDesc();
         $list     = $tpl_desc->getProcessedList($this->container->getTranslator());
 
-        $custom_templates = array();
-        $custom_templates = array_filter($custom_templates, function ($x) { return preg_match('#^DeskPRO:emails_#', $x['name']); });
+        $custom_templates = [];
+        $custom_templates = array_filter($custom_templates, function ($x) {
+            return preg_match('#^DeskPRO:emails_#', $x['name']);
+        });
 
         if ($custom_templates) {
             foreach ($list as &$type_coll) {
@@ -98,20 +107,20 @@ class TemplatesController extends AbstractController implements ProtectedControl
             unset($type_coll, $group_coll, $tpl);
         }
 
-        $list['custom']                     = array();
+        $list['custom']                     = [];
         $list['custom']['title']            = 'Custom Emails';
         $list['custom']['typeId']           = 'custom';
-        $list['custom']['groups']           = array();
-        $list['custom']['groups']['custom'] = array(
+        $list['custom']['groups']           = [];
+        $list['custom']['groups']['custom'] = [
             'groupId'   => 'custom',
             'title'     => 'Custom Emails',
-            'templates' => array(),
-        );
+            'templates' => [],
+        ];
 
         $custom_emails = $this->db->fetchAll("SELECT id, name FROM templates WHERE name LIKE 'DeskPRO:emails_custom:%'");
         foreach ($custom_emails as $tpl) {
             $name                                              = Strings::extractRegexMatch('#^DeskPRO:emails_custom:(.*?).html.twig$#', $tpl['name'], 1).'.html';
-            $list['custom']['groups']['custom']['templates'][] = array(
+            $list['custom']['groups']['custom']['templates'][] = [
                 'typeId'    => 'custom',
                 'groupId'   => 'custom',
                 'is_custom' => true,
@@ -119,19 +128,24 @@ class TemplatesController extends AbstractController implements ProtectedControl
                 'desc'      => '',
                 'name'      => $tpl['name'],
                 'showName'  => 'emails_custom/'.$name,
-            );
+            ];
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'list'             => $list,
             'custom_templates' => $custom_templates,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # get-template
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-template
+    //###################################################################################################################
 
+    /**
+     * @param $name
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function getTemplateAction($name)
     {
         if (strpos($name, 'EDIT_SIDEBAR_BLOCK:') === 0) {
@@ -161,10 +175,15 @@ class TemplatesController extends AbstractController implements ProtectedControl
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # set-template
-    ####################################################################################################################
+    //###################################################################################################################
+    // set-template
+    //###################################################################################################################
 
+    /**
+     * @param $name
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function setTemplateAction($name)
     {
         $set      = $this->getTemplateSet();
@@ -198,30 +217,35 @@ class TemplatesController extends AbstractController implements ProtectedControl
         try {
             $set->saveTemplate($template);
         } catch (\Twig_Error_Syntax $e) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'error'         => true,
                 'error_syntax'  => true,
                 'error_code'    => $e->getCode(),
                 'error_message' => $e->getMessage(),
                 'error_line'    => $e->getTemplateLine(),
-            ), 400);
+            ], 400);
         } catch (\Twig_Error $e) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'error'         => true,
                 'error_code'    => $e->getCode(),
                 'error_message' => $e->getMessage(),
-            ), 400);
+            ], 400);
         }
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'name' => $template->getName(),
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # delete-template
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete-template
+    //###################################################################################################################
 
+    /**
+     * @param $name
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function deleteTemplateAction($name)
     {
         $set = $this->getTemplateSet();
@@ -238,12 +262,12 @@ class TemplatesController extends AbstractController implements ProtectedControl
 
         $set->deleteTemplate($template);
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'old_name' => $name,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     /**
      * @return TemplateSet
