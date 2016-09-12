@@ -121,9 +121,9 @@ class NewsSlugHistory extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('slug', $slug);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

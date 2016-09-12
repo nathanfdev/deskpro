@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql;
 
 /**
@@ -43,7 +44,7 @@ class Results
      *
      * @var array
      */
-    protected $_results = array();
+    protected $_results = [];
 
     /**
      * Sets the results to a single result set.
@@ -52,7 +53,7 @@ class Results
      */
     public function setResults(array $results)
     {
-        $this->_results = array(0 => array($results, null));
+        $this->_results = [0 => [$results, null]];
     }
 
     /**
@@ -63,7 +64,7 @@ class Results
      */
     public function addSplitResults(array $results, array $split)
     {
-        $this->_results[] = array($results, $split);
+        $this->_results[] = [$results, $split];
     }
 
     /**
@@ -80,7 +81,7 @@ class Results
             return false;
         }
 
-        return ($this->_results[0][1] !== null);
+        return $this->_results[0][1] !== null;
     }
 
     /**
@@ -103,7 +104,7 @@ class Results
     public function getResults()
     {
         if (!$this->_results) {
-            return array();
+            return [];
         }
 
         if ($this->hasSplitResults()) {

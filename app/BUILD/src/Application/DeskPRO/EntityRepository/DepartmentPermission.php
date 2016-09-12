@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -58,12 +59,12 @@ class DepartmentPermission extends AbstractEntityRepository
     {
         $ug_ids = Arrays::removeFalsey($ug_ids);
         if (!$ug_ids) {
-            $ug_ids = array();
+            $ug_ids = [];
         }
 
         if ($this->cache_by_agent === null) {
-            $this->cache_by_agent = array();
-            $this->cache_by_group = array();
+            $this->cache_by_agent = [];
+            $this->cache_by_group = [];
 
             $q = App::getContainer()->getDbRead()->query('
                 SELECT dp.app, dp.department_id, dp.usergroup_id, dp.person_id, dp.name, dp.value
@@ -74,22 +75,22 @@ class DepartmentPermission extends AbstractEntityRepository
             while ($rec = $q->fetch()) {
                 if ($rec['usergroup_id']) {
                     if (!isset($this->cache_by_group[$rec['usergroup_id']])) {
-                        $this->cache_by_group[$rec['usergroup_id']]        = array();
-                        $this->cache_by_group[$rec['usergroup_id']]['ANY'] = array();
+                        $this->cache_by_group[$rec['usergroup_id']]        = [];
+                        $this->cache_by_group[$rec['usergroup_id']]['ANY'] = [];
                     }
                     if (!isset($this->cache_by_group[$rec['usergroup_id']][$rec['name']])) {
-                        $this->cache_by_group[$rec['usergroup_id']][$rec['name']] = array();
+                        $this->cache_by_group[$rec['usergroup_id']][$rec['name']] = [];
                     }
 
                     $this->cache_by_group[$rec['usergroup_id']]['ANY'][]        = $rec;
                     $this->cache_by_group[$rec['usergroup_id']][$rec['name']][] = $rec;
                 } elseif ($rec['person_id']) {
                     if (!isset($this->cache_by_agent[$rec['person_id']])) {
-                        $this->cache_by_agent[$rec['person_id']]        = array();
-                        $this->cache_by_agent[$rec['person_id']]['ANY'] = array();
+                        $this->cache_by_agent[$rec['person_id']]        = [];
+                        $this->cache_by_agent[$rec['person_id']]['ANY'] = [];
                     }
                     if (!isset($this->cache_by_agent[$rec['person_id']][$rec['name']])) {
-                        $this->cache_by_agent[$rec['person_id']][$rec['name']] = array();
+                        $this->cache_by_agent[$rec['person_id']][$rec['name']] = [];
                     }
 
                     $this->cache_by_agent[$rec['person_id']]['ANY'][]        = $rec;
@@ -98,22 +99,22 @@ class DepartmentPermission extends AbstractEntityRepository
             }
         }
 
-        $found = array();
+        $found = [];
 
         if ($person_id && !empty($this->cache_by_agent[$person_id])) {
             if ($name) {
-                $found = !empty($this->cache_by_agent[$person_id][$name]) ? $this->cache_by_agent[$person_id][$name] : array();
+                $found = !empty($this->cache_by_agent[$person_id][$name]) ? $this->cache_by_agent[$person_id][$name] : [];
             } else {
-                $found = !empty($this->cache_by_agent[$person_id]['ANY']) ? $this->cache_by_agent[$person_id]['ANY'] : array();
+                $found = !empty($this->cache_by_agent[$person_id]['ANY']) ? $this->cache_by_agent[$person_id]['ANY'] : [];
             }
         }
 
         if ($ug_ids) {
             foreach ($ug_ids as $ug_id) {
                 if ($name) {
-                    $ug_found = !empty($this->cache_by_group[$ug_id][$name]) ? $this->cache_by_group[$ug_id][$name] : array();
+                    $ug_found = !empty($this->cache_by_group[$ug_id][$name]) ? $this->cache_by_group[$ug_id][$name] : [];
                 } else {
-                    $ug_found = !empty($this->cache_by_group[$ug_id]['ANY']) ? $this->cache_by_group[$ug_id]['ANY'] : array();
+                    $ug_found = !empty($this->cache_by_group[$ug_id]['ANY']) ? $this->cache_by_group[$ug_id]['ANY'] : [];
                 }
 
                 if ($ug_found) {
@@ -138,8 +139,8 @@ class DepartmentPermission extends AbstractEntityRepository
      */
     public function getDepartmentIdsForPerson(PersonEntity $person)
     {
-        $wheres = array();
-        $params = array();
+        $wheres = [];
+        $params = [];
 
         $wheres[] = 'person_id = ?';
         $params[] = $person->id;
@@ -171,7 +172,7 @@ class DepartmentPermission extends AbstractEntityRepository
               AND department_permissions.is_active = 1
               AND department_permissions.name = ? 
               AND department_permissions.value = ?
-        ', array($app, $name, $value), 'department_id', null, 'person_id');
+        ', [$app, $name, $value], 'department_id', null, 'person_id');
     }
 
     /**
@@ -186,6 +187,6 @@ class DepartmentPermission extends AbstractEntityRepository
             SELECT p
             FROM DeskPRO:DepartmentPermission p
             WHERE p.department = ?0 AND p.app = ?1
-        ')->execute(array($dep, $app));
+        ')->execute([$dep, $app]);
     }
 }

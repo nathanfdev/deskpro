@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -199,7 +200,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data           = parent::toApiData($primary, $deep, $visited);
         $data['is_sso'] = $this->is_sso_background || $this->is_sso_auto;
@@ -264,7 +265,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 
     public function __call($name, $args)
     {
-        return call_user_func_array(array($this->getAdapter(), $name), $args);
+        return call_user_func_array([$this->getAdapter(), $name], $args);
     }
 
     public function hasOption($name)
@@ -411,9 +412,9 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         return $this->type;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

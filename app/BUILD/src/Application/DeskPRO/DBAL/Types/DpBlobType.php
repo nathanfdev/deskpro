@@ -55,8 +55,8 @@ class DpBlobType extends BlobType
         $type = $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
 
         $type = str_replace(
-            array('VARCHAR(', 'CHAR(', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'),
-            array('VARBINARY(', 'BINARY(', 'TINYBLOB', 'BLOB', 'MEDIUMBLOB', 'LONGBLOB'),
+            ['VARCHAR(', 'CHAR(', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
+            ['VARBINARY(', 'BINARY(', 'TINYBLOB', 'BLOB', 'MEDIUMBLOB', 'LONGBLOB'],
             $type
         );
 

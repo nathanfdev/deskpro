@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,12 +36,12 @@ use Monolog\Logger;
 
 abstract class DBHandler extends AbstractProcessingHandler
 {
-    /** @var \Doctrine\ORM\EntityManager  */
+    /** @var \Doctrine\ORM\EntityManager */
     protected $em;
     /** @var array */
-    protected $statements = array();
+    protected $statements = [];
     /** @var array */
-    protected $meta = array();
+    protected $meta = [];
 
     public function __construct(EntityManager $em, $level = Logger::DEBUG, $bubble = true)
     {
@@ -97,10 +97,10 @@ abstract class DBHandler extends AbstractProcessingHandler
         }
 
         $data               = $this->em->getUnitOfWork()->getEntityPersister($class)->getClassMetadata();
-        $this->meta[$class] = array(
+        $this->meta[$class] = [
             'table'  => $data->table['name'],
             'fields' => $data->fieldNames,
-        );
+        ];
 
         // todo use BasicEntityPersister methods to create and bind statement
         foreach ($data->associationMappings as $property => $mapping) {
@@ -122,7 +122,7 @@ abstract class DBHandler extends AbstractProcessingHandler
         $entity = $record['context']['_entity'];
         $meta   = $this->getMeta($entity);
         $stmt   = $this->getStatement($entity);
-        $data   = array();
+        $data   = [];
         foreach ($meta['fields'] as $fieldName) {
             $data[$fieldName] = $entity[$fieldName] instanceof DomainObject
                 ? $entity[$fieldName]['id'] // todo

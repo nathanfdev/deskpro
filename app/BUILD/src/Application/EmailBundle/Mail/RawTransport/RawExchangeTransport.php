@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -83,28 +83,23 @@ class RawExchangeTransport implements RawTransportInterface
 
         $msg = new \EWSType_MessageType();
 
-//
-//
 //		$msg->Subject = $raw->getSubject();
-//
-//
+
 //		$body = new \EWSType_BodyType();
 //		$body->BodyType = 'TEXT';
 //		$body->_ = $raw->getTextPart();
-//
+
 //		if ($html = $raw->getHtmlPart()) {
 //			$body->BodyType = 'HTML';
 //			$body->_ = $html;
 //		}
 //		$msg->Body = $body;
-//
-//
+
 //		$msg->From = new \EWSType_SingleRecipientType();
 //		$msg->From->Mailbox = new \EWSType_EmailAddressType();
 //		$msg->From->Mailbox->EmailAddress = $from['email'];
 //		$msg->From->Mailbox->Name = $from['name'];
-//
-//
+
 //		$included = array();
 //		$msg->ToRecipients = array();
 //		foreach ($raw->getTos() as $to) {
@@ -114,8 +109,7 @@ class RawExchangeTransport implements RawTransportInterface
 //			$msg->ToRecipients[] = $adds;
 //			$included[] = $to['email'];
 //		}
-//
-//
+
 //		$msg->CcRecipients = array();
 //		foreach ($raw->getCcs() as $cc) {
 //			$adds = new \EWSType_EmailAddressType();
@@ -124,8 +118,7 @@ class RawExchangeTransport implements RawTransportInterface
 //			$msg->CcRecipients[] = $adds;
 //			$included[] = $to['email'];
 //		}
-//
-//
+
 //		$bccs = array_diff($tos, $included);
 //		$msg->BccRecipients = array();
 //		foreach ($bccs as $bcc) {
@@ -134,8 +127,7 @@ class RawExchangeTransport implements RawTransportInterface
 //			$adds->EmailAddress = $bcc['email'];
 //			$msg->BccRecipients[] = $adds;
 //		}
-//
-//
+
 //		$_attachments = array();
 //		foreach ($raw->getAttachments() as $attach) {
 //			$at = new \EWSType_FileAttachmentType();
@@ -148,8 +140,7 @@ class RawExchangeTransport implements RawTransportInterface
 //		if ($_attachments) {
 //			$msg->Attachments = $_attachments;
 //		}
-//
-//
+
 //		$_headers = array();
 //		foreach ($raw->getHeaders() as $header_name => $header_values) {
 //			foreach ($header_values as $v) {
@@ -162,7 +153,6 @@ class RawExchangeTransport implements RawTransportInterface
 //		if ($_headers) {
 //			$msg->InternetMessageHeaders = $_headers;
 //		}
-//
 
         $msg->MimeContent    = new \EWSType_MimeContentType();
         $msg->MimeContent->_ = base64_encode(stream_get_contents($raw_fp, -1, 0));

@@ -59,9 +59,9 @@ final class WelcomeWizardListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('onRequest', -200),
-        );
+        return [
+            KernelEvents::REQUEST => ['onRequest', -200],
+        ];
     }
 
     /**

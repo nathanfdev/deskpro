@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO;
 
 use Orb\Util\Arrays;
@@ -56,7 +57,7 @@ class Util
     public static function simpleObjectFactory($classname_spec, array $options = null)
     {
         if ($options === null) {
-            $options = array();
+            $options = [];
         }
 
         // A static factory like SomeClass::getSomeObject(options)
@@ -90,7 +91,7 @@ class Util
         if (is_string($data)) {
             $data = $fn($data);
         } elseif (is_array($data)) {
-            $data = Arrays::func($data, $fn, array(), true);
+            $data = Arrays::func($data, $fn, [], true);
         }
 
         if (defined('JSON_PRETTY_PRINT')) {
@@ -110,13 +111,13 @@ class Util
      */
     public function getPersonData(array $misc_data)
     {
-        $person_data = array(
-            'standard_fields' => array(),
-            'emails'          => array(),
-            'fields'          => array(),
-        );
+        $person_data = [
+            'standard_fields' => [],
+            'emails'          => [],
+            'fields'          => [],
+        ];
 
-        $keymap = array(
+        $keymap = [
             'full_name'   => 'name',
             'name'        => 'name',
             'fullname'    => 'name',
@@ -130,7 +131,7 @@ class Util
             'firstname'   => 'first_name',
             'last_name'   => 'last_name',
             'lastname'    => 'last_name',
-        );
+        ];
 
         foreach ($keymap as $findkey => $personkey) {
             if (isset($misc_data[$findkey])) {
@@ -138,13 +139,13 @@ class Util
             }
         }
 
-        $emailkeymap = array(
+        $emailkeymap = [
             'email', 'emails', 'email_address', 'emailaddress',
             'email_addresses', 'emailaddresses',
             'mail',
-        );
+        ];
 
-        $scraper_emails = array();
+        $scraper_emails = [];
         foreach ($emailkeymap as $findkey) {
             if (isset($misc_data[$findkey])) {
                 $scraper_emails = array_merge($scraper_emails, $misc_data[$findkey]);
@@ -166,7 +167,7 @@ class Util
         App::getDb()->beginTransaction();
 
         foreach ($ordered_ids as $id) {
-            App::getDb()->update($table, array('display_order' => $o), array('id' => $id));
+            App::getDb()->update($table, ['display_order' => $o], ['id' => $id]);
 
             $o += 10;
         }
@@ -180,12 +181,12 @@ class Util
             return '0 seconds';
         }
 
-        $max_unit_list = array(
+        $max_unit_list = [
             'seconds' => 1,
             'minutes' => 2,
             'hours'   => 3,
             'days'    => 4,
-        );
+        ];
         $max_unit_val = $max_unit && isset($max_unit_list[$max_unit]) ? $max_unit_list[$max_unit] : end($max_unit_list);
 
         if ($length > 86400 && $max_unit_val >= $max_unit_list['days']) {
@@ -212,7 +213,7 @@ class Util
         $seconds = $length;
 
         // TODO: translation
-        $parts = array();
+        $parts = [];
         if ($days && count($parts) <= 1) {
             $parts['days'] = ($days > 1 ? "$days days" : '1 day');
         }
@@ -242,8 +243,8 @@ class Util
 
             return $html;
         } else {
-        return implode(', ', $parts);
-    }
+            return implode(', ', $parts);
+        }
     }
 
     /**
@@ -255,7 +256,7 @@ class Util
     {
         // See http://momentjs.com/docs/#/displaying/format/
         // and https://php.net/manual/en/function.date.php
-        static $php_sym = array(
+        static $php_sym = [
             'd' => 'DD', 'D' => 'ddd', 'j' => 'D', 'l' => 'dddd',
             'N' => 'E', 'S' => '', 'w' => 'd', 'z' => 'ddd',
             'W' => 'W',
@@ -269,14 +270,14 @@ class Util
             'c' => 'YYYY-MM-DDTHH:mm:ss.SSSZZ', 'r' => 'ddd, D MMM YYYY HH:mm:ss ZZ',
             'U' => 'X',
             '^' => 'DD', // custom for jS below
-        );
+        ];
 
         // There is no separate ordinal symbol with momentjs like with PHP
         // So we can only translate 'jS' to 'Do' which is the momentjs '1st' etc for day of month
         $format = str_replace('jS', '^', $format);
 
         $format_len = strlen($format);
-        $new_format = array();
+        $new_format = [];
         $escaping   = false;
 
         for ($i = 0; $i < $format_len; ++$i) {

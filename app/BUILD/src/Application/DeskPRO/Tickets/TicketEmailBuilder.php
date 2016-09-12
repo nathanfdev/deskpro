@@ -382,7 +382,7 @@ class TicketEmailBuilder
      *
      * @return TicketEmailBuilder
      */
-    public function setHeaders($headers = array())
+    public function setHeaders($headers = [])
     {
         $this->options->set('headers', $headers);
 

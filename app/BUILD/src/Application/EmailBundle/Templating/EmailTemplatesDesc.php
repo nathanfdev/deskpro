@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Templating
  */
+
 namespace Application\EmailBundle\Templating;
 
 use Application\DeskPRO\Translate\Translate;
@@ -69,7 +70,7 @@ class EmailTemplatesDesc
      */
     public function getManifestWithDescriptions(Translate $tr)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($this->manifest as $tpl) {
             $ret[] = $this->getTplDisplayInfo($tpl, $tr);
@@ -96,7 +97,7 @@ class EmailTemplatesDesc
         $tpl['showName'] = $show_name;
 
         $tpl['title'] = $tr->hasPhrase($title_id) ? $tr->phrase($title_id) : $title_id;
-        $tpl['desc']  = $tr->hasPhrase($desc_id) ?  $tr->phrase($desc_id)  : $desc_id;
+        $tpl['desc']  = $tr->hasPhrase($desc_id) ? $tr->phrase($desc_id) : $desc_id;
 
         return $tpl;
     }
@@ -112,25 +113,25 @@ class EmailTemplatesDesc
     {
         $manifest = $this->getManifestWithDescriptions($tr);
 
-        $ret = array();
+        $ret = [];
 
         foreach ($manifest as $tpl) {
             $type  = $tpl['typeId'];
             $group = $tpl['groupId'];
 
             if (!isset($ret[$type])) {
-                $ret[$type] = array(
+                $ret[$type] = [
                     'typeId' => $type,
                     'title'  => $tr->phrase("adm.email_templates.$type"),
-                    'groups' => array(),
-                );
+                    'groups' => [],
+                ];
             }
             if (!isset($ret[$type]['groups'][$group])) {
-                $ret[$type]['groups'][$group] = array(
+                $ret[$type]['groups'][$group] = [
                     'groupId'   => $group,
                     'title'     => $tr->phrase("adm.email_templates.{$type}_{$group}"),
-                    'templates' => array(),
-                );
+                    'templates' => [],
+                ];
             }
 
             $ret[$type]['groups'][$group]['templates'][] = $tpl;

@@ -55,7 +55,7 @@ class SavedFormController extends AbstractController
      * @Route("/saved-form/{auth_code}", name="saved_form_auto_submit", defaults={"auth_code":null})
      * @Security("is_granted('ROLE_USER')")
      */
-    public function autoSubmitAction($auth_code = null, Request $request)
+    public function autoSubmitAction($auth_code, Request $request)
     {
         if ($auth_code) {
             $saved_form = $this->getFormSaver()->getByExternalCode($auth_code);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search\SearcherResult;
 
 /**
@@ -56,7 +57,7 @@ class Result implements ResultInterface
     /**
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     public static function newFromArray(array $info)
     {
@@ -69,7 +70,7 @@ class Result implements ResultInterface
         return new self($id, $content_type, $info, $highlighted);
     }
 
-    public function __construct($id, $content_type, array $data = array(), $highlighted = null)
+    public function __construct($id, $content_type, array $data = [], $highlighted = null)
     {
         $this->id           = $id;
         $this->content_type = $content_type;

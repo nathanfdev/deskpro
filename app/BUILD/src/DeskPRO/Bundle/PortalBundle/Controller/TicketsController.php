@@ -144,7 +144,7 @@ class TicketsController extends AbstractController
      *
      * @return Response
      */
-    public function viewAction(Request $request, $ticket_ref = null, $auth = null, $visitor_id, $_route)
+    public function viewAction(Request $request, $ticket_ref, $auth, $visitor_id, $_route)
     {
         $ticket = $this->getTicketForViewPage($ticket_ref, $auth, $_route);
 
@@ -773,7 +773,7 @@ class TicketsController extends AbstractController
                     WHERE ticket_id = ?
                     ORDER BY message_id DESC
                     LIMIT 1
-                ', array($ticket->getId()));
+                ', [$ticket->getId()]);
 
         if (!$last_message_id || $message->getId() >= $last_message_id) {
             $ticket->feedback_rating = $feedback->getRating();
@@ -827,12 +827,12 @@ class TicketsController extends AbstractController
      */
     protected function getTicketForViewPage($ticket_ref, $auth, $_route)
     {
-        //
+
         // If a ticket is being viewed with "auth" then it uses different security. Anyone that is authenticated
         // can view a ticket with the /ticket-view/$auth route.
-        //
+
         // If it is not the auth route, the normal security applies via the /tickets/$ticket_ref route.
-        //
+
         if ($_route === 'portal_tickets_guest_view') {
             if (!$ticket = $this->getTicketByAuthIfGrantedAccess($auth)) {
                 throw new NotFoundHttpException(sprintf('no ticket with auth "%s" found', $auth));

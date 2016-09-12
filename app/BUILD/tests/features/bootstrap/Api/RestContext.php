@@ -39,7 +39,7 @@ use Symfony\Component\VarDumper\Cloner\Data;
 
 class RestContext extends BaseContext
 {
-    protected $server_params = array();
+    protected $server_params = [];
 
     /**
      * Add an header element in a request.
@@ -106,7 +106,7 @@ class RestContext extends BaseContext
         // intercept redirection
         $client->followRedirects(false);
 
-        $client->request($method, $this->locatePath($url), array(), array(), $this->server_params);
+        $client->request($method, $this->locatePath($url), [], [], $this->server_params);
         $client->followRedirects(true);
 
         $page = $this->getSession()->getPage();
@@ -132,7 +132,7 @@ class RestContext extends BaseContext
         // intercept redirection
         $client->followRedirects(false);
 
-        $parameters = array();
+        $parameters = [];
         foreach ($datas->getHash() as $row) {
             if (!isset($row['key']) || !isset($row['value'])) {
                 throw new \Exception("You must provide a 'key' and 'value' column in your table node.");
@@ -147,7 +147,7 @@ class RestContext extends BaseContext
 
         parse_str(implode('&', $parameters), $parameters);
 
-        $client->request($method, $this->locatePath($url), $parameters, array(), $this->server_params);
+        $client->request($method, $this->locatePath($url), $parameters, [], $this->server_params);
         $client->followRedirects(true);
 
         $page = $this->getSession()->getPage();

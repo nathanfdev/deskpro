@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1411571972 extends AbstractBuild
@@ -37,7 +38,7 @@ class Build1411571972 extends AbstractBuild
     {
         $this->out('Primary Team upgrade');
 
-        $queries   = array();
+        $queries   = [];
         $queries[] = 'ALTER TABLE people ADD primary_team_id INT DEFAULT NULL';
         $queries[] = 'CREATE INDEX IDX_28166A26E715BE01 ON people (primary_team_id)';
         $queries[] = 'ALTER TABLE people ADD CONSTRAINT FK_28166A26E715BE01 FOREIGN KEY (primary_team_id) REFERENCES agent_teams (id)';
@@ -55,8 +56,8 @@ class Build1411571972 extends AbstractBuild
         foreach ($member_map as $agent_id => $team_id) {
             $this->container->getDb()->update(
                 'people',
-                array('primary_team_id' => $team_id),
-                array('id'              => $agent_id)
+                ['primary_team_id' => $team_id],
+                ['id'              => $agent_id]
             );
         }
     }

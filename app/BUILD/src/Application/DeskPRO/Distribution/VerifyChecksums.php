@@ -143,7 +143,7 @@ class VerifyChecksums
             $fileContents = substr($fileContents, 3);
         }
 
-        $fileContents = trim(str_replace(array("\r", "\n"), '', $fileContents));
+        $fileContents = trim(str_replace(["\r", "\n"], '', $fileContents));
 
         return $fileContents;
     }
@@ -158,7 +158,7 @@ class VerifyChecksums
     public function getStandardChunk($chunk)
     {
         if (!isset($this->standardHashes[$chunk])) {
-            return array();
+            return [];
         }
 
         return $this->standardHashes[$chunk];

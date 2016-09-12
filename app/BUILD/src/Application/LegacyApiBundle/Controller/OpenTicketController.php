@@ -77,10 +77,10 @@ class OpenTicketController extends AbstractController
 
             $person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
             if (!$person) {
-                $person = Person::newContactPerson(array(
+                $person = Person::newContactPerson([
                     'email' => $this->in->getString('email'),
                     'name'  => $this->in->getString('name'),
-                ));
+                ]);
                 $this->em->persist($person);
             }
 
@@ -89,19 +89,19 @@ class OpenTicketController extends AbstractController
             // Not allowed to create new tickets using this service
             if (!$this->apikey && !$this->api_token) {
                 $response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key or token', 401);
-                $response->headers->add(array(
+                $response->headers->add([
                     'WWW-Authenticate' => 'Basic realm="API"',
-                ));
+                ]);
 
                 return $response;
             }
 
             $person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
             if (!$person) {
-                $person = Person::newContactPerson(array(
+                $person = Person::newContactPerson([
                     'email' => $this->in->getString('email'),
                     'name'  => $this->in->getString('name'),
-                ));
+                ]);
                 $this->em->persist($person);
             }
 
@@ -140,9 +140,9 @@ class OpenTicketController extends AbstractController
 
         $this->em->flush();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
             'tac'     => $ticket->getAccessCode(),
-        ));
+        ]);
     }
 }

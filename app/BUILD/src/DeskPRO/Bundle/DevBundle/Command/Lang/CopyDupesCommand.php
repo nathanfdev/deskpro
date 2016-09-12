@@ -48,7 +48,7 @@ class CopyDupesCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('dpdev:lang:copy-dupes')
-            ->setDescription(<<<STR
+            ->setDescription(<<<'STR'
 This tool expects JSON to be provided as input via stdin which describes groups of phrases
 considered to be equivalent. (For example, there might be two phrases "Contact Us" that exist
 as two separate phrase IDs.)
@@ -99,9 +99,9 @@ STR
             return 1;
         }
 
-        #------------------------------
-        # Decide which zones to work on
-        #------------------------------
+        //------------------------------
+        // Decide which zones to work on
+        //------------------------------
 
         $zones       = $input->getOption('zone');
         $ignoreZones = $input->getOption('ignore-zone');
@@ -127,9 +127,9 @@ STR
             $output->writeln('Operating on phrases in zones: '.implode(', ', $zones));
         }
 
-        #------------------------------
-        # Load phrase IDs
-        #------------------------------
+        //------------------------------
+        // Load phrase IDs
+        //------------------------------
 
         $engProject   = PhraseProject::createProject($engDir, $zones);
         $engPhraseIds = [];
@@ -138,9 +138,9 @@ STR
             $engPhraseIds[$fileId] = $this->readPhraseIds($projectFile);
         }
 
-        #------------------------------
-        # Read and process stdin
-        #------------------------------
+        //------------------------------
+        // Read and process stdin
+        //------------------------------
 
         $stdIn = trim(stream_get_contents(STDIN));
 
@@ -159,9 +159,9 @@ STR
             }
         }
 
-        #------------------------------
-        # Process each lang dir
-        #------------------------------
+        //------------------------------
+        // Process each lang dir
+        //------------------------------
 
         $langs = $input->getOption('langs') ?: null;
 

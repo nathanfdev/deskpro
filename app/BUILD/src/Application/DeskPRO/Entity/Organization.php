@@ -348,7 +348,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
             return $this->contact_data;
         }
 
-        $ret = array();
+        $ret = [];
 
         foreach ($this->contact_data as $cd) {
             if ($cd->contact_type == $type) {
@@ -471,7 +471,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     {
         $f_def = App::getEntityRepository('DeskPRO:CustomDefOrganization')->find($field_id);
 
-        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, array($f_def));
+        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, [$f_def]);
 
         $value    = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
         $rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
@@ -512,7 +512,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         }
 
         $org_field_defs      = App::getApi('custom_fields.organizations')->getEnabledFields();
-        $org_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array($data), $org_field_defs);
+        $org_data_structured = App::getApi('custom_fields.util')->createDataHierarchy([$data], $org_field_defs);
 
         $custom_fields = App::getApi('custom_fields.organizations')->getFieldsDisplayArray(
             $org_field_defs,
@@ -777,16 +777,16 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         return $this->name;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
-            $data['labels'] = array();
+            $data['labels'] = [];
             foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
 
-            $data['email_domains'] = array();
+            $data['email_domains'] = [];
             foreach ($this->email_domains as $domain) {
                 $data['email_domains'][] = $domain->domain;
             }

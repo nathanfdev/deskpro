@@ -63,9 +63,9 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         return $multi;
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction($type)
     {
@@ -87,9 +87,9 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         return $this->createApiResponse($data);
     }
 
-    ###################################################################################################################
-    # get
-    ####################################################################################################################
+    //##################################################################################################################
+    // get
+    //###################################################################################################################
 
     public function getAction($id)
     {
@@ -113,9 +113,9 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         return $this->createApiResponse(['group' => $data]);
     }
 
-    ###################################################################################################################
-    # delete
-    ####################################################################################################################
+    //##################################################################################################################
+    // delete
+    //###################################################################################################################
 
     public function deleteAction($id)
     {
@@ -138,17 +138,17 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         return $this->createApiDeleteResponse(['old_group_id' => (int) $id]);
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     public function saveAction($id)
     {
         $usergroups = $this->container->getUserGroups();
 
-        #------------------------------
-        # Get group
-        #------------------------------
+        //------------------------------
+        // Get group
+        //------------------------------
 
         if ($id) {
             if (Numbers::isInteger($id)) {
@@ -164,9 +164,9 @@ class UsergroupsController extends AbstractController implements ProtectedContro
             $usergroup = new Usergroup();
         }
 
-        #------------------------------
-        # Save form
-        #------------------------------
+        //------------------------------
+        // Save form
+        //------------------------------
 
         $usergroup_edit = new UsergroupEdit($usergroup);
 
@@ -182,9 +182,9 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 
         $usergroup_edit->save($this->em);
 
-        #------------------------------
-        # Save permissions
-        #------------------------------
+        //------------------------------
+        // Save permissions
+        //------------------------------
 
         // Save perms
         $perms = new UserPermissions();
@@ -193,15 +193,15 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         $db_persister = new GroupDbPersister($this->em);
         $db_persister->savePerms($usergroup, $perms);
 
-        #------------------------------
-        # Clear permission cache
-        #------------------------------
+        //------------------------------
+        // Clear permission cache
+        //------------------------------
 
         $this->db->executeUpdate('DELETE FROM permissions_cache');
 
-        #------------------------------
-        # Result
-        #------------------------------
+        //------------------------------
+        // Result
+        //------------------------------
 
         if (!$id) {
             return $this->createApiCreateResponse(

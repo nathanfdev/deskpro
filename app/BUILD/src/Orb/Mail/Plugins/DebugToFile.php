@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Mail\Plugins;
 
 /**
@@ -71,19 +72,19 @@ class DebugToFile implements \Swift_Events_SendListener
             if ($tos = $message->getTo()) {
                 $tos = $tos;
             } else {
-                $tos = array();
+                $tos = [];
             }
 
             if ($ccs = $message->getCc()) {
                 $ccs = $ccs;
             } else {
-                $ccs = array();
+                $ccs = [];
             }
 
             if ($from = $message->getFrom()) {
                 $from = $from;
             } else {
-                $from = array();
+                $from = [];
             }
 
             $domain = !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
@@ -91,7 +92,7 @@ class DebugToFile implements \Swift_Events_SendListener
                 $domain = DPC_SITE_DOMAIN;
             }
 
-            file_put_contents($this->info_file_path.DIRECTORY_SEPARATOR.$name.'.json', json_encode(array(
+            file_put_contents($this->info_file_path.DIRECTORY_SEPARATOR.$name.'.json', json_encode([
                 'date'       => date('Y-m-d H:i:s'),
                 'tos'        => $tos,
                 'ccs'        => $ccs,
@@ -99,7 +100,7 @@ class DebugToFile implements \Swift_Events_SendListener
                 'subject'    => $message->getSubject(),
                 'domain'     => $domain,
                 'store_path' => $path,
-            )));
+            ]));
         }
     }
 

@@ -45,7 +45,7 @@ class HttpVerifyRequirementsBootTask
             $request = $resources['request'];
             if ($request->isXmlHttpRequest()) {
                 return;
-            } else if (strpos($request->getPathInfo(), '/api/') === 0) {
+            } elseif (strpos($request->getPathInfo(), '/api/') === 0) {
                 return;
             }
         }

@@ -136,9 +136,9 @@ class NewsSearch extends SearcherAbstract
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-        #------------------------------
-        # Add joins
-        #------------------------------
+        //------------------------------
+        // Add joins
+        //------------------------------
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
@@ -154,9 +154,9 @@ class NewsSearch extends SearcherAbstract
             $sql .= " $order_join ";
         }
 
-        #------------------------------
-        # Add wheres
-        #------------------------------
+        //------------------------------
+        // Add wheres
+        //------------------------------
 
         $sql .= 'WHERE ';
         if (!$this->findTerm(self::TERM_AGENT_LIST)) {
@@ -188,9 +188,9 @@ class NewsSearch extends SearcherAbstract
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-        #------------------------------
-        # Add joins
-        #------------------------------
+        //------------------------------
+        // Add joins
+        //------------------------------
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
@@ -206,9 +206,9 @@ class NewsSearch extends SearcherAbstract
             $sql .= " $order_join ";
         }
 
-        #------------------------------
-        # Add wheres
-        #------------------------------
+        //------------------------------
+        // Add wheres
+        //------------------------------
 
         $sql .= 'WHERE ';
         if (!$this->findTerm(self::TERM_AGENT_LIST)) {
@@ -486,7 +486,7 @@ class NewsSearch extends SearcherAbstract
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
                     }
-                    break;// end labels
+                    break; // end labels
 
                 case self::TERM_BRAND:
                     $brand_id = $choice['brand'];

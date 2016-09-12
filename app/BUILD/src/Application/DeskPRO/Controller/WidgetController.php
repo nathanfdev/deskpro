@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\App;
@@ -81,7 +82,7 @@ class WidgetController extends AbstractController
         }
 
         if (!empty($_SERVER['CONTENT_TYPE'])) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: '.$_SERVER['CONTENT_TYPE']));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: '.$_SERVER['CONTENT_TYPE']]);
         }
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -132,7 +133,7 @@ class WidgetController extends AbstractController
         if ($person['id']) {
             foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $pref_name => $value) {
                 $pref_name = $pref_prefix.$pref_name;
-                $pref      = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => $pref_name));
+                $pref      = $this->em->getRepository('DeskPRO:PersonPref')->find(['person_id' => $this->person['id'], 'name' => $pref_name]);
                 if (!$pref) {
                     $pref         = new Entity\PersonPref();
                     $pref['name'] = $pref_name;
@@ -153,8 +154,8 @@ class WidgetController extends AbstractController
             }
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
-        ));
+        ]);
     }
 }

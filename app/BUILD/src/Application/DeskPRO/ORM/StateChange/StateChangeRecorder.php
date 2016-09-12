@@ -53,34 +53,34 @@ class StateChangeRecorder
     /**
      * @var array
      */
-    private $touched_fields = array();
+    private $touched_fields = [];
 
     /**
      * @var \Application\DeskPRO\ORM\StateChange\ChangeInterface[]
      */
-    private $changes = array();
+    private $changes = [];
 
     /**
      * @var array[]
      */
-    private $changes_by_field = array();
+    private $changes_by_field = [];
 
     /**
      * @var array
      */
-    private $change_metadata = array();
+    private $change_metadata = [];
 
     /**
      * Array of object IDs (changes[]) to the state they were at when the change was registered.
      *
      * @var array
      */
-    private $changes_to_state_version = array();
+    private $changes_to_state_version = [];
 
     /**
      * @var array
      */
-    private $current_change_metadata = array();
+    private $current_change_metadata = [];
 
     public function __construct()
     {
@@ -132,7 +132,7 @@ class StateChangeRecorder
         $field_id = $change->getField();
 
         if (!isset($this->changes_by_field[$field_id])) {
-            $this->changes_by_field[$field_id] = array();
+            $this->changes_by_field[$field_id] = [];
         }
 
         $this->changes[]                     = $change;
@@ -212,7 +212,7 @@ class StateChangeRecorder
      *
      * @return ChangeDate
      */
-    public function recordData($field_id, array $data = array())
+    public function recordData($field_id, array $data = [])
     {
         $change = new ChangeData($field_id, $data);
         $this->addChange($change);
@@ -229,11 +229,11 @@ class StateChangeRecorder
      */
     public function recordCollection($field_id, Collection $coll, $skip_same = true)
     {
-        $old = array();
+        $old = [];
         if (isset($this->changes_by_field[$field_id]) && ($_coll = end($this->changes_by_field[$field_id]))) {
             $old = $_coll->getNew();
             if (!is_array($old)) {
-                $old = array($old);
+                $old = [$old];
             }
         } elseif ($coll instanceof PersistentCollection) {
             $old = $coll->getSnapshot();
@@ -274,7 +274,7 @@ class StateChangeRecorder
      */
     public function getChangesForField($field_id)
     {
-        return isset($this->changes_by_field[$field_id]) ? $this->changes_by_field[$field_id] : array();
+        return isset($this->changes_by_field[$field_id]) ? $this->changes_by_field[$field_id] : [];
     }
 
     /**
@@ -412,7 +412,7 @@ class StateChangeRecorder
     }
 
     /**
-     * @param array $data An array of data. If metadata already exists it will be merged.
+     * @param array $data An array of data. If metadata already exists it will be merged
      */
     public function setCurrentChangeMetadata(array $data)
     {
@@ -423,8 +423,6 @@ class StateChangeRecorder
         }
     }
 
-    /**
-     */
     public function clearCurrentChangeMetaData()
     {
         $this->current_change_metadata = null;

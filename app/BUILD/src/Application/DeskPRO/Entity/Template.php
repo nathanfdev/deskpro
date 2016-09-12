@@ -161,9 +161,9 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
         return $this->theme_set;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

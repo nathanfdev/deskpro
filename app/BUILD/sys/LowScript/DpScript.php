@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -69,9 +69,9 @@ class DpScript extends LowScriptAbstract
         }
     }
 
-    ####################################################################################################################
-    # visitorPing
-    ####################################################################################################################
+    //###################################################################################################################
+    // visitorPing
+    //###################################################################################################################
 
     protected function visitorPingAction()
     {
@@ -98,9 +98,9 @@ class DpScript extends LowScriptAbstract
         echo '// This is a legacy URL';
     }
 
-    ####################################################################################################################
-    # sessionPing
-    ####################################################################################################################
+    //###################################################################################################################
+    // sessionPing
+    //###################################################################################################################
 
     protected function sessionPingAction()
     {
@@ -112,9 +112,9 @@ class DpScript extends LowScriptAbstract
         echo '// This is a legacy URL';
     }
 
-    ####################################################################################################################
-    # requestSession
-    ####################################################################################################################
+    //###################################################################################################################
+    // requestSession
+    //###################################################################################################################
 
     protected function requestSessionAction()
     {
@@ -126,9 +126,9 @@ class DpScript extends LowScriptAbstract
         echo '// This is a legacy URL';
     }
 
-    ####################################################################################################################
-    # agentLanguage
-    ####################################################################################################################
+    //###################################################################################################################
+    // agentLanguage
+    //###################################################################################################################
 
     public function agentLanguageAction($language_id)
     {
@@ -167,7 +167,7 @@ class DpScript extends LowScriptAbstract
                 $cache_file  = dp_get_tmp_dir().'/agent-lang-'.$language_id.'.cache';
             }
 
-            $js_phrases                              = array();
+            $js_phrases                              = [];
             $js_phrases['agent.general.add_a_label'] = $tr->getPhraseText('agent.general.add_a_label');
             $js_phrases['agent.general.on']          = $tr->getPhraseText('agent.general.on');
             $js_phrases['agent.general.off']         = $tr->getPhraseText('agent.general.off');
@@ -177,14 +177,14 @@ class DpScript extends LowScriptAbstract
             $js_phrases['agent.time.reltimeago_less_second'] = $tr->getPhraseText('agent.time.reltimeago_less_second');
             $js_phrases['agent.time.reltimeago_less_minute'] = $tr->getPhraseText('agent.time.reltimeago_less_minute');
 
-            foreach (array('reltime', 'reltimeago') as $pre) {
-                foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
+            foreach (['reltime', 'reltimeago'] as $pre) {
+                foreach (['second', 'minute', 'hour', 'day', 'week', 'month', 'year'] as $name) {
                     $js_phrases["agent.time.{$pre}_1_{$name}"] = $tr->getPhraseText("agent.time.{$pre}_1_{$name}");
                     $js_phrases["agent.time.{$pre}_x_{$name}"] = $tr->getPhraseText("agent.time.{$pre}_x_{$name}");
                 }
             }
 
-            $add_phrases = array(
+            $add_phrases = [
                 'agent.userchat.message_started',
                 'agent.userchat.transcript_sent',
                 'agent.userchat.message_user_joined',
@@ -210,7 +210,7 @@ class DpScript extends LowScriptAbstract
                 'agent.userchat.message_wait-timeout',
                 'agent.userchat.message_user-timeout',
                 'agent.userchat.message_ended',
-            );
+            ];
 
             foreach ($add_phrases as $k) {
                 $js_phrases[$k] = $tr->getPhraseText($k);
@@ -284,19 +284,19 @@ class DpScript extends LowScriptAbstract
                 $cache_file  = dp_get_tmp_dir().'/user-lang-'.$language_id.'.cache';
             }
 
-            $js_phrases = array();
+            $js_phrases = [];
 
             $js_phrases['user.time.time_less_second']     = $tr->phrase('user.time.time_less_second');
             $js_phrases['user.time.time-ago_less_second'] = $tr->phrase('user.time.time_less_second');
 
-            foreach (array('time', 'time-ago') as $pre) {
-                foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
+            foreach (['time', 'time-ago'] as $pre) {
+                foreach (['second', 'minute', 'hour', 'day', 'week', 'month', 'year'] as $name) {
                     $js_phrases["user.time.{$pre}_1_{$name}"] = $tr->phrase("user.time.{$pre}_1_{$name}");
                     $js_phrases["user.time.{$pre}_x_{$name}"] = $tr->phrase("user.time.{$pre}_x_{$name}");
                 }
             }
 
-            $add_phrases = array(
+            $add_phrases = [
                 'user.chat.email',
                 'user.chat.ended-no-agent',
                 'user.chat.error',
@@ -354,7 +354,7 @@ class DpScript extends LowScriptAbstract
                 'user.chat.window_resume-button',
                 'user.chat.window_start-button',
                 'user.chat.window_upload-drag',
-            );
+            ];
 
             foreach ($add_phrases as $k) {
                 $js_phrases[$k] = $tr->getPhraseText($k);

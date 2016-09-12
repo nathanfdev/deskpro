@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,55 +42,55 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TicketEscalation extends AbstractEntityRepository
 {
-    public static $definitions = array(
-        'satisfaction' => array(
-            array(
+    public static $definitions = [
+        'satisfaction' => [
+            [
                 'title'            => 'Satisfaction request',
                 'sys_name'         => 'satisfaction',
                 'event'            => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_RESOLVED,
                 'default_time'     => 259200, // 60 * 60 * 24 * 3
                 'default_template' => 'DeskPRO:emails_user:ticket-rate.html.twig',
-                'terms'            => array(
-                    array(
+                'terms'            => [
+                    [
                         'type'    => 'FilterDateLastAgentReply',
                         'op'      => 'gte',
-                        'options' => array(
+                        'options' => [
                             'date2' => 1,
                             'value' => 'date',
-                        ),
-                    ),
-                    array(
+                        ],
+                    ],
+                    [
                         'type'    => 'FilterFeedbackRating',
                         'op'      => 'not',
-                        'options' => array('rating' => 'set'),
-                    ),
-                ),
-            ),
-        ),
-        'statuses' => array(
-            1 => array(
+                        'options' => ['rating' => 'set'],
+                    ],
+                ],
+            ],
+        ],
+        'statuses' => [
+            1 => [
                 'title'            => 'Send warning when awaiting user',
                 'sys_name'         => 'statuses_awaiting_user_warning',
                 'event'            => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_AGENT_WAITING,
                 'default_time'     => 604800, // 60 * 60 * 24 * 7
                 'default_template' => 'DeskPRO:emails_user:ticket-awaiting-warn.html.twig',
-            ),
-            2 => array(
+            ],
+            2 => [
                 'title'            => 'Send final warning when awaiting user',
                 'sys_name'         => 'statuses_awaiting_user_final',
                 'event'            => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_AGENT_WAITING,
                 'default_time'     => 1209600, // 60 * 60 * 24 * 14
                 'default_template' => 'DeskPRO:emails_user:ticket-awaiting-warn-final.html.twig',
-            ),
-            3 => array(
+            ],
+            3 => [
                 'title'          => 'Set status to resolved when awaiting user',
                 'sys_name'       => 'statuses_awaiting_user_set_resolved',
                 'event'          => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_AGENT_WAITING,
                 'default_time'   => 1814400, // 60 * 60 * 24 * 21
                 'default_status' => 'resolved',
-            ),
-        ),
-    );
+            ],
+        ],
+    ];
 
     /**
      * @return array
@@ -121,7 +121,7 @@ class TicketEscalation extends AbstractEntityRepository
             throw new NotFoundHttpException();
         }
 
-        if ($esc = $this->findOneBy(array('sys_name' => $def['sys_name']))) {
+        if ($esc = $this->findOneBy(['sys_name' => $def['sys_name']])) {
             return $esc;
         }
 
@@ -133,19 +133,19 @@ class TicketEscalation extends AbstractEntityRepository
         $esc['is_enabled']         = false;
 
         if (@$def['default_template']) {
-            $esc->actions->addAction(new SendUserEmail(array(
+            $esc->actions->addAction(new SendUserEmail([
                 'template'     => $def['default_template'],
                 'do_cc_users'  => false,
                 'from_name'    => 'helpdesk_name',
                 'from_account' => 0,
-                'headers'      => array(),
-            )));
+                'headers'      => [],
+            ]));
         }
 
         if (@$def['default_status']) {
-            $esc->actions->addAction(new SetStatus(array(
+            $esc->actions->addAction(new SetStatus([
                 'status' => $def['default_status'],
-            )));
+            ]));
         }
 
         if (@$def['terms']) {

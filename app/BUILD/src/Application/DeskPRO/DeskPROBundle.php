@@ -66,7 +66,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
      */
     public function registerCommands(Application $application)
     {
-        $commands = array(
+        $commands = [
             'Application\\DeskPRO\\Command\\AgentsCommand',
             'Application\\DeskPRO\\Command\\AsseticCommand',
             'Application\\DeskPRO\\Command\\CheckBlobStorageCommand',
@@ -101,7 +101,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\UpgradeCommand',
             'Application\\DeskPRO\\Command\\VerifyBlobsCommand',
             'Application\\DeskPRO\\Command\\WorkerJobCommand',
-        );
+        ];
 
         foreach ($commands as $cmd) {
             $application->add(new $cmd());

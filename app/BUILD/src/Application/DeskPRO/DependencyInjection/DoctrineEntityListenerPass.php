@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * https://gist.github.com/vadim2404/9538227.
  */
+
 namespace Application\DeskPRO\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -49,7 +50,7 @@ class DoctrineEntityListenerPass implements CompilerPassInterface
         $ems = $container->getParameter('doctrine.entity_managers');
         foreach ($ems as $name => $em) {
             $container->getDefinition(sprintf('doctrine.orm.%s_configuration', $name))
-                ->addMethodCall('setEntityListenerResolver', array(new Reference('dp.doctrine.entity_listener_resolver')))
+                ->addMethodCall('setEntityListenerResolver', [new Reference('dp.doctrine.entity_listener_resolver')])
             ;
         }
 
@@ -59,7 +60,7 @@ class DoctrineEntityListenerPass implements CompilerPassInterface
         foreach ($services as $service => $attributes) {
             $definition->addMethodCall(
                 'addMapping',
-                array($container->getDefinition($service)->getClass(), $service)
+                [$container->getDefinition($service)->getClass(), $service]
             );
         }
     }

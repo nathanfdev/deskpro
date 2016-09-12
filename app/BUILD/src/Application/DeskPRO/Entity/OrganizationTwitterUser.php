@@ -65,9 +65,9 @@ class OrganizationTwitterUser extends \Application\DeskPRO\Domain\DomainObject
     /** @var string|null */
     protected $oauth_token_secret = null;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

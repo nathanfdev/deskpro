@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -60,7 +61,7 @@ class Filters
         $order = $person->getPref('agent.ui.ticket-filters-order');
         if ($order) {
             $filters_unordered = $all_filters;
-            $all_filters       = array();
+            $all_filters       = [];
 
             foreach ($order as $id) {
                 if (isset($filters_unordered[$id])) {
@@ -77,12 +78,12 @@ class Filters
         }
 
         // Order them into sys/other
-        $sys_filters      = array();
-        $sys_filters_hold = array();
-        $custom_filters   = array();
-        $archive_filters  = array();
+        $sys_filters      = [];
+        $sys_filters_hold = [];
+        $custom_filters   = [];
+        $archive_filters  = [];
 
-        $unset_ids = array();
+        $unset_ids = [];
 
         foreach ($all_filters as $id => $filter) {
             if ($filter['sys_name']) {
@@ -107,8 +108,8 @@ class Filters
 
         // Force order of sys
         $sys_filters_unordered = $sys_filters;
-        $sys_filters           = array();
-        foreach (array('agent', 'participant', 'agent_team', 'unassigned', 'all') as $id) {
+        $sys_filters           = [];
+        foreach (['agent', 'participant', 'agent_team', 'unassigned', 'all'] as $id) {
             if (isset($sys_filters_unordered[$id])) {
                 $sys_filters[$id] = $sys_filters_unordered[$id];
                 unset($sys_filters_unordered[$id]);
@@ -116,8 +117,8 @@ class Filters
         }
 
         $sys_filters_unordered = $sys_filters_hold;
-        $sys_filters_hold      = array();
-        foreach (array('agent', 'participant', 'agent_team', 'unassigned', 'all') as $id) {
+        $sys_filters_hold      = [];
+        foreach (['agent', 'participant', 'agent_team', 'unassigned', 'all'] as $id) {
             $id .= '_w_hold';
             if (isset($sys_filters_unordered[$id])) {
                 $sys_filters_hold[$id] = $sys_filters_unordered[$id];
@@ -148,13 +149,13 @@ class Filters
             return $o1 < $o2 ? -1 : 1;
         });
 
-        return array(
+        return [
             'all_filters'      => $all_filters,
             'sys_filters'      => $sys_filters,
             'sys_filters_hold' => $sys_filters_hold,
             'archive_filters'  => $archive_filters,
             'custom_filters'   => $custom_filters,
-        );
+        ];
     }
 
     /**
@@ -226,15 +227,15 @@ class Filters
      */
     public function getAllCountsForFiltersCollection($ticket_filters, Person $person_context = null)
     {
-        $counts = array();
+        $counts = [];
 
-        $prefs = array();
+        $prefs = [];
         if ($person_context) {
             $prefs = App::getDb()->fetchAllKeyValue("
                 SELECT name, value_str
                 FROM people_prefs
                 WHERE name LIKE 'ticket_counts.' AND person_id = ?
-            ", array($person_context->id));
+            ", [$person_context->id]);
         }
 
         foreach ($ticket_filters as $ticket_filter) {
@@ -279,7 +280,7 @@ class Filters
      */
     public function getAllIdsForFiltersCollection($ticket_filters, Person $person_context = null)
     {
-        $all_ids = array();
+        $all_ids = [];
 
         foreach ($ticket_filters as $ticket_filter) {
             if ($ticket_filter->isArchiveTableFilter()) {
@@ -301,10 +302,10 @@ class Filters
      */
     public function getAllHoldIdsForFiltersCollection($ticket_filters)
     {
-        $all_ids = array();
+        $all_ids = [];
 
         foreach ($ticket_filters as $ticket_filter) {
-            $searcher                      = $ticket_filter->getSearcher(array('type' => 'is_hold', 'op' => 'is', 'options' => array('is_hold' => 1)));
+            $searcher                      = $ticket_filter->getSearcher(['type' => 'is_hold', 'op' => 'is', 'options' => ['is_hold' => 1]]);
             $all_ids[$ticket_filter['id']] = $searcher->getResults();
         }
 
@@ -343,14 +344,14 @@ class Filters
         if ($per_page) {
             $result_ids = array_chunk($result_ids, $per_page);
         } else {
-            $result_ids = array($result_ids);
+            $result_ids = [$result_ids];
         }
 
         // index is 0-based
         --$page;
 
         if (!isset($result_ids[$page])) {
-            return array();
+            return [];
         }
 
         $page_ids = $result_ids[$page];
@@ -376,19 +377,19 @@ class Filters
             SELECT ticket_id
             FROM tickets_flagged
             WHERE person_id = ? AND color = ?
-        ', array($person['id'], $flag));
+        ', [$person['id'], $flag]);
 
         if ($per_page) {
             $result_ids = array_chunk($result_ids, $per_page);
         } else {
-            $result_ids = array($result_ids);
+            $result_ids = [$result_ids];
         }
 
         // index is 0-based
         $page = min(0, --$page);
 
         if (!isset($result_ids[$page])) {
-            return array();
+            return [];
         }
 
         $page_ids = $result_ids[$page];
@@ -412,7 +413,7 @@ class Filters
             FROM tickets_flagged
             WHERE person_id = ?
             GROUP BY color
-        ', array($person['id']));
+        ', [$person['id']]);
 
         return $counts;
     }

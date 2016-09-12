@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
@@ -47,7 +48,7 @@ class DownloadResults
     /**
      * @var array
      */
-    protected $download_ids = array();
+    protected $download_ids = [];
 
     /**
      * @var array
@@ -70,7 +71,7 @@ class DownloadResults
      *
      * @return \Application\AgentBundle\Controller\Helper\DownloadResults
      */
-    public static function newFromRequest($controller, array $options = array())
+    public static function newFromRequest($controller, array $options = [])
     {
         $resultCache = false;
 
@@ -106,22 +107,22 @@ class DownloadResults
             }
         }
 
-        #------------------------------
-        # If there's no result set, we're running it for the first time
-        #------------------------------
+        //------------------------------
+        // If there's no result set, we're running it for the first time
+        //------------------------------
 
         if (!$resultCache) {
             $term_rules = RuleBuilder::newTermsBuilder();
 
             if (isset($options['category'])) {
-                $terms = array(
-                    array('type' => 'category_specific', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
-                    array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
-                );
+                $terms = [
+                    ['type' => 'category_specific', 'op' => 'is', 'options' => ['category' => $options['category']['id']]],
+                    ['type' => 'agent_list', 'op' => 'is', 'options' => 1],
+                ];
             } elseif (isset($options['show_all'])) {
-                $terms = array(
-                    array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
-                );
+                $terms = [
+                    ['type' => 'agent_list', 'op' => 'is', 'options' => 1],
+                ];
             } else {
                 $form_terms = $controller->in->getCleanValueArray('terms', 'raw', 'string');
                 $form_terms = Arrays::removeFalsey($form_terms);
@@ -226,7 +227,7 @@ class DownloadResults
         $page_download_ids = Arrays::getPageChunk($download_ids, $page, $per_page);
         $downloads_raw     = App::getEntityRepository('DeskPRO:Download')->getByResultIds($page_download_ids);
 
-        $downloads = array();
+        $downloads = [];
         foreach ($download_ids as $tid) {
             if (isset($downloads_raw[$tid])) {
                 $downloads[$tid] = $downloads_raw[$tid];

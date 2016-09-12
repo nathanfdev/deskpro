@@ -107,9 +107,9 @@ class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
         return $this->domain;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

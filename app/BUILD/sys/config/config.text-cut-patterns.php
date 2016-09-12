@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,13 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # This file should not be edited directly. If you want
-    # to add custom patterns, create a new file named
-    # config.text-cut-patterns.php in the same directory
-    # as your config.php file.
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+return [
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // This file should not be edited directly. If you want
+    // to add custom patterns, create a new file named
+    // config.text-cut-patterns.php in the same directory
+    // as your config.php file.
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     'outlook_1' => 'lang:#^(\-\-\-\-\-\s*Original Message\s*\-\-\-\-\-)?\s%From%: (?P<from>.*?)\s+%Sent%: (.*?)\s+%To%: (.*?)\s+(%CC%: (.*?)\s+)?%Subject%: (.*?)\s+#im',
 
@@ -59,4 +59,4 @@ return array(
     'mutt' => '#^On \d{4}\-\d{2}\-\d{2} \d{2}:\d{2}, (?P<from>.*?) wrote:#im',
 
     'claws' => '#^On \w+, \d+ \w+, (?P<from>.*?) wrote:#im',
-);
+];

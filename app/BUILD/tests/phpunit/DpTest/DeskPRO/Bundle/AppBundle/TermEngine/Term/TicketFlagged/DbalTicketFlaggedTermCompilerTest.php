@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -53,7 +53,7 @@ class DbalTicketFlaggedTermCompilerTest extends AbstractDbalTicketFilterTermComp
     public function testCompileIs()
     {
         $term = new TicketFlaggedTerm(
-            array('flag' => 'blue')
+            ['flag' => 'blue']
         );
 
         $query_part = $this->term_compiler->compile($term);
@@ -61,27 +61,27 @@ class DbalTicketFlaggedTermCompilerTest extends AbstractDbalTicketFilterTermComp
         $this->assertWhere($query_part, 'tickets_flagged.color = :color');
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'color'    => 'blue',
                 'agent_id' => new TermEngineExpression('agent.getId()'),
-            )
+            ]
         );
         $this->assertJoins(
             $query_part,
-            array(
-                'tickets_flagged' => array(
+            [
+                'tickets_flagged' => [
                     'table' => 'tickets_flagged',
                     'on'    => 'ticket.id = tickets_flagged.ticket_id AND tickets_flagged.person_id = :agent_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 
     public function testCompileIsNOT()
     {
         $term = new TicketFlaggedTerm(
-            array('flag' => 'blue'),
+            ['flag' => 'blue'],
             TermInterface::OP_NOT
         );
 
@@ -90,20 +90,20 @@ class DbalTicketFlaggedTermCompilerTest extends AbstractDbalTicketFilterTermComp
         $this->assertWhere($query_part, 'tickets_flagged.color != :color');
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'color'    => 'blue',
                 'agent_id' => new TermEngineExpression('agent.getId()'),
-            )
+            ]
         );
         $this->assertJoins(
             $query_part,
-            array(
-                'tickets_flagged' => array(
+            [
+                'tickets_flagged' => [
                     'table' => 'tickets_flagged',
                     'on'    => 'ticket.id = tickets_flagged.ticket_id AND tickets_flagged.person_id = :agent_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 }

@@ -166,7 +166,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      *
      * @return Response
      */
-    public function redirectRoute($route, array $parameters = array(), $status = 302)
+    public function redirectRoute($route, array $parameters = [], $status = 302)
     {
         $url = $this->generateUrl($route, $parameters);
 
@@ -289,7 +289,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      *
      * @return Response
      */
-    public function renderJson($view, array $parameters = array(), Response $response = null)
+    public function renderJson($view, array $parameters = [], Response $response = null)
     {
         if ($response === null) {
             $response = $this->container->get('response');

@@ -67,7 +67,7 @@ class SetSlaStatusAction extends AbstractAction
                 return;
             }
 
-            $ticket_slas = array($ticket_sla);
+            $ticket_slas = [$ticket_sla];
         } else {
             $ticket_slas = $ticket->ticket_slas;
         }
@@ -139,14 +139,14 @@ class SetSlaStatusAction extends AbstractAction
         if ($this->sla_id) {
             $sla = App::getEntityRepository('DeskPRO:Sla')->find($this->sla_id);
 
-            return $tr->phrase('agent.tickets.set_sla_status_for_sla_action', array(
+            return $tr->phrase('agent.tickets.set_sla_status_for_sla_action', [
                 'sla_status' => $value,
                 'sla'        => $sla ? $sla->title : ('<error>Unknown #'.$this->sla_id.'</error>'),
-            ));
+            ]);
         } else {
-            return $tr->phrase('agent.tickets.set_sla_status_action', array(
+            return $tr->phrase('agent.tickets.set_sla_status_action', [
                 'sla_status' => $value,
-            ));
+            ]);
         }
     }
 }

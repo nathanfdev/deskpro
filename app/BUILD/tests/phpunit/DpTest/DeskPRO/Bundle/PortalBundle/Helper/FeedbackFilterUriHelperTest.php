@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\PortalBundle\Helper;
 
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
@@ -67,10 +68,10 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
         $expected = array_merge(
             FeedbackFilter::getDefaultValues(),
-            array(
+            [
                 'status'            => 'active',
-                'status_categories' => array(2, 3),
-            )
+                'status_categories' => [2, 3],
+            ]
         );
 
         $this->assertEquals($expected, $filter->toArray());
@@ -84,9 +85,9 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
         $expected = array_merge(
             FeedbackFilter::getDefaultValues(),
-            array(
-                'types' => array(5, 8, 10, 100),
-            )
+            [
+                'types' => [5, 8, 10, 100],
+            ]
         );
 
         $this->assertEquals($expected, $filter->toArray());
@@ -100,10 +101,10 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
         $expected = array_merge(
             FeedbackFilter::getDefaultValues(),
-            array(
+            [
                 'sort'           => 'most-discussed',
                 'sort_direction' => 'asc',
-            )
+            ]
         );
 
         $this->assertEquals($expected, $filter->toArray());
@@ -117,11 +118,11 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
         $expected = array_merge(
             FeedbackFilter::getDefaultValues(),
-            array(
+            [
                 'status'            => 'closed',
-                'status_categories' => array(7, 8),
+                'status_categories' => [7, 8],
                 'sort'              => 'highest-rating',
-            )
+            ]
         );
 
         $this->assertEquals($expected, $filter->toArray());
@@ -135,9 +136,9 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
         $expected = array_merge(
             FeedbackFilter::getDefaultValues(),
-            array(
-                'types' => array(8),
-            )
+            [
+                'types' => [8],
+            ]
         );
 
         $this->assertEquals($expected, $filter->toArray());
@@ -151,13 +152,13 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
         $expected = array_merge(
             FeedbackFilter::getDefaultValues(),
-            array(
-                'types'             => array(8),
+            [
+                'types'             => [8],
                 'status'            => 'closed',
-                'status_categories' => array(7, 8),
+                'status_categories' => [7, 8],
                 'sort'              => 'most-popular',
                 'sort_direction'    => 'asc',
-            )
+            ]
         );
 
         $this->assertEquals($expected, $filter->toArray());
@@ -171,13 +172,13 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
         $expected = array_merge(
             FeedbackFilter::getDefaultValues(),
-            array(
-                'types'             => array(8),
+            [
+                'types'             => [8],
                 'status'            => 'closed',
-                'status_categories' => array(7, 8),
+                'status_categories' => [7, 8],
                 'sort'              => 'most-popular',
                 'sort_direction'    => 'asc',
-            )
+            ]
         );
 
         $this->assertEquals($expected, $filter->toArray());
@@ -192,9 +193,7 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
         $filter = $helper->extractFeedbackFilter('/doesnt-make-sense');
     }
 
-    //
     // generating uri segments
-    //
 
     public function testGenerateUriSegment()
     {
@@ -305,7 +304,7 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
     {
         $filter = new FeedbackFilter();
         $filter->setStatus('active');
-        $filter->setStatusCategories(array(5, 6));
+        $filter->setStatusCategories([5, 6]);
 
         $helper = new FeedbackFilterUriHelper();
 
@@ -325,8 +324,8 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
     {
         $filter = new FeedbackFilter();
         $filter->setStatus('active');
-        $filter->setStatusCategories(array(5, 6));
-        $filter->setTypes(array(15));
+        $filter->setStatusCategories([5, 6]);
+        $filter->setTypes([15]);
         $filter->setSort('most-views');
         $filter->setSortDirection('asc');
 
@@ -339,7 +338,7 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
     {
         $filter = new FeedbackFilter();
         $filter->setStatus('closed');
-        $filter->setStatusCategories(array(1001));
+        $filter->setStatusCategories([1001]);
         $filter->setSort('date');
         $filter->setSortDirection('asc');
 

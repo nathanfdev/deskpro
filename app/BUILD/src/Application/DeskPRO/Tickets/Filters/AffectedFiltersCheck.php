@@ -109,14 +109,14 @@ class AffectedFiltersCheck
 
         $changed_fields = $state->getChangedFields();
 
-        $this->field_versions = array();
+        $this->field_versions = [];
         foreach ($changed_fields as $f) {
             $version                  = $state->getStateVersionForChange($state->getLastChangeForField($f));
             $this->field_versions[$f] = $version;
         }
 
         if ($this->prev_field_versions) {
-            $new_changed_fields = array();
+            $new_changed_fields = [];
             $with_new_check     = true;
 
             foreach ($this->field_versions as $f => $v) {
@@ -125,7 +125,7 @@ class AffectedFiltersCheck
                 }
             }
         } else {
-            $new_changed_fields = array();
+            $new_changed_fields = [];
             $with_new_check     = false;
         }
 
@@ -172,8 +172,8 @@ class AffectedFiltersCheck
             $is_new_messages = true;
         }
 
-        $affected_filters          = array();
-        $affected_filters_nochange = array();
+        $affected_filters          = [];
+        $affected_filters_nochange = [];
 
         foreach ($this->filters as $f) {
             if ($is_new_messages || $is_hidden_change || $f->getSearcher()->hasAnyAffectedFields($changed_fields)) {
@@ -264,7 +264,7 @@ class AffectedFiltersCheck
     {
         $this->_run();
         if (!$this->affected_filters) {
-            return array();
+            return [];
         } elseif (!$this->affected_filters_nochange) {
             return $this->affected_filters;
         }

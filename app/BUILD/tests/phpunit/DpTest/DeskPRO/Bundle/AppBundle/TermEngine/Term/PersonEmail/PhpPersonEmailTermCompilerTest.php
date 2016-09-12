@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PersonEmailTerm;
@@ -51,9 +52,9 @@ class PhpPersonEmailTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testCompileIs()
     {
         $term = new PersonEmailTerm(
-            array(
+            [
                 'email' => 'chris.tickner@deskpro.com',
-            )
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -67,9 +68,9 @@ class PhpPersonEmailTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testCompileIsNot()
     {
         $term = new PersonEmailTerm(
-            array(
+            [
                 'email' => 'chris.tickner@deskpro.com',
-            ),
+            ],
             TermInterface::OP_NOT
         );
 

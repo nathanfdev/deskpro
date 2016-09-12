@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\PHP\ErrorEvent;
@@ -160,11 +161,11 @@ class PhpCriticalErrorTriggerIntegrationTest extends BaseIntegrationTest
 //        $logger->clear();
 //        $this->assertEquals(0, $this->countRaisedIncidents());
 //        $this->assertEquals(0, $logger->countMessages());
-//
+
 //        $this->event_logger->log($this->dummyError());
 //        $this->event_logger->log($this->dummyError());
 //        $this->triggering_process->run();
-//
+
 //        $this->assertEquals(1, $this->countIncidents(PhpCriticalErrorIncident::class));
 //        $this->assertEquals(1, $logger->countMessages());
 //    }

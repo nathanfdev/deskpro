@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,7 +40,7 @@ class ModSetEmailValidationTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $action = new ModSetEmailValidation(array('enable_validation' => true));
+        $action = new ModSetEmailValidation(['enable_validation' => true]);
         $action->applyAction($ticket, $exec);
 
         $this->assertTrue($exec->getVars()->get('enable_email_validation'));
@@ -51,7 +51,7 @@ class ModSetEmailValidationTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $action = new ModSetEmailValidation(array('enable_validation' => false));
+        $action = new ModSetEmailValidation(['enable_validation' => false]);
         $action->applyAction($ticket, $exec);
 
         $this->assertFalse($exec->getVars()->get('enable_email_validation'));

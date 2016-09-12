@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Templating
  */
+
 namespace Application\EmailBundle\Twig\Extension;
 
 use Symfony\Bridge\Twig\Extension\RoutingExtension as BaseRoutingExtension;
@@ -51,7 +52,7 @@ class RoutingExtension extends BaseRoutingExtension
      *
      * @return string
      */
-    public function getPath($name, $parameters = array(), $relative = false)
+    public function getPath($name, $parameters = [], $relative = false)
     {
         try {
             return parent::getPath($name, $parameters, $relative);

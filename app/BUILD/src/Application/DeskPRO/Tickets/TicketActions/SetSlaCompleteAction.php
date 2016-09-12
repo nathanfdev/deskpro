@@ -41,11 +41,11 @@ use Application\DeskPRO\Entity\Ticket;
 class SetSlaCompleteAction extends AbstractAction
 {
     /** @var array */
-    protected $actions = array();
+    protected $actions = [];
 
     public function __construct($sla_complete, $sla_id)
     {
-        $this->actions = array($sla_complete => array($sla_id));
+        $this->actions = [$sla_complete => [$sla_id]];
     }
 
     /**
@@ -56,7 +56,7 @@ class SetSlaCompleteAction extends AbstractAction
         foreach ($this->actions as $complete => $sla_ids) {
             if (in_array('0', $sla_ids)) {
                 // take action for all
-                $sla_ids = array('0');
+                $sla_ids = ['0'];
             }
             foreach ($sla_ids as $sla_id) {
                 if ($sla_id) {
@@ -70,7 +70,7 @@ class SetSlaCompleteAction extends AbstractAction
                         continue;
                     }
 
-                    $ticket_slas = array($ticket_sla);
+                    $ticket_slas = [$ticket_sla];
                 } else {
                     $ticket_slas = $ticket->ticket_slas;
                 }
@@ -123,14 +123,14 @@ class SetSlaCompleteAction extends AbstractAction
      */
     public function getDescription($as_html = true)
     {
-        $parts = array();
+        $parts = [];
         foreach ($this->actions as $complete => $sla_ids) {
             if (in_array('0', $sla_ids)) {
                 // take action for all
                 $titles = null;
             } else {
                 $slas   = App::getEntityRepository('DeskPRO:Sla')->getByIds($sla_ids);
-                $titles = array();
+                $titles = [];
                 foreach ($slas as $s) {
                     $titles[$s->id] = $as_html ? htmlspecialchars($s->title) : $s->title;
                 }

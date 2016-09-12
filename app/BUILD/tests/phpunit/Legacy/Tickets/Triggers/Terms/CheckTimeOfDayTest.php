@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,10 +44,10 @@ class CheckTimeOfDayTest extends DeskProTestCase
 
         $now = \DateTime::createFromFormat('Y-m-d H:i:s', '2014-03-10 15:00:00', new \DateTimeZone('UTC'));
 
-        $check = new CheckTimeOfDay('lt', array('time1' => '18:00', 'test_date' => $now, 'tz' => 'UTC'));
+        $check = new CheckTimeOfDay('lt', ['time1' => '18:00', 'test_date' => $now, 'tz' => 'UTC']);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
-        $check = new CheckTimeOfDay('lt', array('time1' => '14:30', 'test_date' => $now, 'tz' => 'UTC'));
+        $check = new CheckTimeOfDay('lt', ['time1' => '14:30', 'test_date' => $now, 'tz' => 'UTC']);
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
     }
 
@@ -58,10 +58,10 @@ class CheckTimeOfDayTest extends DeskProTestCase
 
         $now = \DateTime::createFromFormat('Y-m-d H:i:s', '2014-03-10 15:00:00', new \DateTimeZone('UTC'));
 
-        $check = new CheckTimeOfDay('gt', array('time1' => '14:00', 'test_date' => $now, 'tz' => 'UTC'));
+        $check = new CheckTimeOfDay('gt', ['time1' => '14:00', 'test_date' => $now, 'tz' => 'UTC']);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
-        $check = new CheckTimeOfDay('gt', array('time1' => '18:00', 'test_date' => $now, 'tz' => 'UTC'));
+        $check = new CheckTimeOfDay('gt', ['time1' => '18:00', 'test_date' => $now, 'tz' => 'UTC']);
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
     }
 
@@ -74,25 +74,25 @@ class CheckTimeOfDayTest extends DeskProTestCase
 
         $check = new CheckTimeOfDay(
             'between',
-            array('time1' => '14:00', 'time2' => '18:00', 'test_date' => $now, 'tz' => 'UTC')
+            ['time1' => '14:00', 'time2' => '18:00', 'test_date' => $now, 'tz' => 'UTC']
         );
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
         $check = new CheckTimeOfDay(
             'between',
-            array('time1' => '14:00', 'time2' => '15:00', 'test_date' => $now, 'tz' => 'UTC')
+            ['time1' => '14:00', 'time2' => '15:00', 'test_date' => $now, 'tz' => 'UTC']
         );
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
         $check = new CheckTimeOfDay(
             'between',
-            array('time1' => '15:00', 'time2' => '16:00', 'test_date' => $now, 'tz' => 'UTC')
+            ['time1' => '15:00', 'time2' => '16:00', 'test_date' => $now, 'tz' => 'UTC']
         );
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
         $check = new CheckTimeOfDay(
             'between',
-            array('time1' => '04:00', 'time2' => '08:00', 'test_date' => $now, 'tz' => 'UTC')
+            ['time1' => '04:00', 'time2' => '08:00', 'test_date' => $now, 'tz' => 'UTC']
         );
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
     }

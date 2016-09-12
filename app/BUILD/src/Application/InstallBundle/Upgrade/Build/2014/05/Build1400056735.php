@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -62,49 +63,49 @@ class Build1400056735 extends AbstractBuild
 
         $this->out('Upgrading SLAs');
 
-        #------------------------------
-        # Init helpers
-        #------------------------------
+        //------------------------------
+        // Init helpers
+        //------------------------------
 
-        $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
+        $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: [];
 
-        $mappings = array(
+        $mappings = [
             'gateway_address_to_email_account' => $gateway_addr_map,
-        );
+        ];
 
         $this->action_converter = new TriggerActionConverter($mappings);
         $this->term_converter   = new TriggerTermConverter($mappings);
 
-        #------------------------------
-        # Load old data
-        #------------------------------
+        //------------------------------
+        // Load old data
+        //------------------------------
 
-        $slas = $this->getUpgradeData('201404', 'slas') ?: array();
+        $slas = $this->getUpgradeData('201404', 'slas') ?: [];
 
-        $old_triggers = array();
-        foreach (($this->getUpgradeData('201404', 'ticket_triggers') ?: array()) as $rec) {
+        $old_triggers = [];
+        foreach (($this->getUpgradeData('201404', 'ticket_triggers') ?: []) as $rec) {
             $old_triggers[$rec['id']] = $rec;
         }
 
-        $sla_people = array();
-        foreach (($this->getUpgradeData('201404', 'sla_people') ?: array()) as $rec) {
+        $sla_people = [];
+        foreach (($this->getUpgradeData('201404', 'sla_people') ?: []) as $rec) {
             if (!isset($sla_people[$rec['sla_id']])) {
-                $sla_people[$rec['sla_id']] = array();
+                $sla_people[$rec['sla_id']] = [];
             }
             $sla_people[$rec['sla_id']][] = $rec['person_id'];
         }
 
-        $sla_orgs = array();
-        foreach (($this->getUpgradeData('201404', 'sla_organizations') ?: array()) as $rec) {
+        $sla_orgs = [];
+        foreach (($this->getUpgradeData('201404', 'sla_organizations') ?: []) as $rec) {
             if (!isset($sla_orgs[$rec['sla_id']])) {
-                $sla_orgs[$rec['sla_id']] = array();
+                $sla_orgs[$rec['sla_id']] = [];
             }
             $sla_orgs[$rec['sla_id']][] = $rec['organization_id'];
         }
 
         foreach ($slas as $sla) {
-            $sla['@people']        = isset($sla_people[$sla['id']]) ? $sla_people[$sla['id']] : array();
-            $sla['@orgs']          = isset($sla_orgs[$sla['id']]) ? $sla_orgs[$sla['id']] : array();
+            $sla['@people']        = isset($sla_people[$sla['id']]) ? $sla_people[$sla['id']] : [];
+            $sla['@orgs']          = isset($sla_orgs[$sla['id']]) ? $sla_orgs[$sla['id']] : [];
             $sla['@apply_trigger'] = $sla['apply_trigger_id'] && isset($old_triggers[$sla['apply_trigger_id']]) ? $old_triggers[$sla['apply_trigger_id']] : null;
             $sla['@warn_trigger']  = $sla['warning_trigger_id'] && isset($old_triggers[$sla['warning_trigger_id']]) ? $old_triggers[$sla['warning_trigger_id']] : null;
             $sla['@fail_trigger']  = $sla['fail_trigger_id'] && isset($old_triggers[$sla['fail_trigger_id']]) ? $old_triggers[$sla['fail_trigger_id']] : null;
@@ -130,7 +131,7 @@ class Build1400056735 extends AbstractBuild
                 $this->container->getEm()->flush();
             } else {
                 $this->out('-- Skipped');
-                $this->container->getDb()->delete('slas', array('id' => $sla['id']));
+                $this->container->getDb()->delete('slas', ['id' => $sla['id']]);
             }
         }
 
@@ -152,9 +153,9 @@ class Build1400056735 extends AbstractBuild
 
         $is_incomplete = false;
 
-        #------------------------------
-        # Sort out apply type
-        #------------------------------
+        //------------------------------
+        // Sort out apply type
+        //------------------------------
 
         $sla->apply_terms = new TriggerTerms();
 
@@ -177,10 +178,10 @@ class Build1400056735 extends AbstractBuild
                         FROM people_emails
                         WHERE person_id IN (?)
                         GROUP BY person_id
-                    ', array($ids), array(Connection::PARAM_INT_ARRAY));
+                    ', [$ids], [Connection::PARAM_INT_ARRAY]);
                     if ($email_addresses) {
                         $set = new TriggerTermComposite();
-                        $set->add(new CheckUserEmail('is', array('email' => $email_addresses)));
+                        $set->add(new CheckUserEmail('is', ['email' => $email_addresses]));
                         $sla->apply_terms->addTerm($set);
                     }
                 } elseif ($old_sla['@orgs']) {
@@ -189,10 +190,10 @@ class Build1400056735 extends AbstractBuild
                         SELECT name
                         FROM organizations
                         WHERE id IN (?)
-                    ', array($ids), array(Connection::PARAM_INT_ARRAY));
+                    ', [$ids], [Connection::PARAM_INT_ARRAY]);
                     if ($names) {
                         $set = new TriggerTermComposite();
-                        $set->add(new CheckOrgName('is', array('name' => $names)));
+                        $set->add(new CheckOrgName('is', ['name' => $names]));
                         $sla->apply_terms->addTerm($set);
                     }
                 } else {
@@ -205,7 +206,7 @@ class Build1400056735 extends AbstractBuild
                 if ($old_sla['apply_priority_id']) {
                     $sla->apply_type = 'terms';
                     $set             = new TriggerTermComposite();
-                    $set->add(new CheckPriority('is', array('priority_ids' => $old_sla['apply_priority_id'])));
+                    $set->add(new CheckPriority('is', ['priority_ids' => $old_sla['apply_priority_id']]));
                     $sla->apply_terms->addTerm($set);
                 } else {
                     $sla->apply_type = 'manual';
@@ -232,19 +233,19 @@ class Build1400056735 extends AbstractBuild
                 break;
         }
 
-        #------------------------------
-        # Update active_time
-        #------------------------------
+        //------------------------------
+        // Update active_time
+        //------------------------------
 
         switch ($old_sla['active_time']) {
-            case 'work_hours': $sla->active_time = 'custom';  break;
-            case 'all':        $sla->active_time = 'all';     break;
+            case 'work_hours': $sla->active_time = 'custom'; break;
+            case 'all':        $sla->active_time = 'all'; break;
             default:           $sla->active_time = 'default'; break;
         }
 
-        #------------------------------
-        # Sort out warn and failure times
-        #------------------------------
+        //------------------------------
+        // Sort out warn and failure times
+        //------------------------------
 
         if (!empty($old_sla['@warn_trigger']['event_trigger_options'])) {
             list($time, $unit)   = explode(' ', $old_sla['@warn_trigger']['event_trigger_options']['time']);
@@ -264,9 +265,9 @@ class Build1400056735 extends AbstractBuild
             $sla->fail_time_unit = 'hours';
         }
 
-        #------------------------------
-        # Sort out warn and fail actions
-        #------------------------------
+        //------------------------------
+        // Sort out warn and fail actions
+        //------------------------------
 
         if (!empty($old_sla['@warn_trigger']['actions'])) {
             $actions = $this->convertTriggerActions($old_sla['@warn_trigger'], $is_incomplete);
@@ -290,9 +291,9 @@ class Build1400056735 extends AbstractBuild
             $sla->fail_actions = new TriggerActions();
         }
 
-        #------------------------------
-        # Finish
-        #------------------------------
+        //------------------------------
+        // Finish
+        //------------------------------
 
         if ($is_incomplete) {
             $sla->title .= ' (REQUIRES REVIEW)';

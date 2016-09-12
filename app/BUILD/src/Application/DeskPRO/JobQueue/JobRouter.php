@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\JobQueue;
 
 use Application\DeskPRO\App;
@@ -50,7 +51,7 @@ class JobRouter
      */
     private $processors;
 
-    public function __construct(Connection $connection, array $processors = array())
+    public function __construct(Connection $connection, array $processors = [])
     {
         $this->connection = $connection;
         $this->processors = $processors;
@@ -122,20 +123,20 @@ class JobRouter
                     has_warning = 1
                 WHERE id = :job_id
                 ',
-                array(
+                [
                     'error_status' => Job::STATUS_ERROR,
                     'date_now'     => new \DateTime(),
                     'job_id'       => $job['id'],
                     'error_log'    => $e->getMessage()."\n\n\n".$e->getTraceAsString(),
                     'log_summary'  => 'A system error occurred',
-                ),
-                array(
+                ],
+                [
                     'error_status' => 'string',
                     'date_now'     => 'datetime',
                     'job_id'       => 'integer',
                     'error_log'    => 'text',
                     'log_summary'  => 'string',
-                )
+                ]
             );
         }
     }

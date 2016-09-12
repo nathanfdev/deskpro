@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
@@ -51,17 +52,17 @@ class PhpNumericHelper extends AbstractPhpHelper
         $part = new DbalQueryPart();
 
         $num = array_unique(array_map('intval', $num));
-        $num = $num ?: array(0);
+        $num = $num ?: [0];
 
         $expression = '';
 
         if (TermInterface::OP_HAS === $op || TermInterface::OP_NOT_HAS) {
             return new PhpCheck(
                 sprintf('check_contains(%s, :op, :num)', $field_name),
-                array(
+                [
                     'op'  => $op,
                     'num' => $num,
-                )
+                ]
             );
         }
 
@@ -101,10 +102,10 @@ class PhpNumericHelper extends AbstractPhpHelper
 
         return new PhpCheck(
             $expression,
-            array(
+            [
                 'num'  => $num,
                 'num2' => $num2,
-            )
+            ]
         );
     }
 }

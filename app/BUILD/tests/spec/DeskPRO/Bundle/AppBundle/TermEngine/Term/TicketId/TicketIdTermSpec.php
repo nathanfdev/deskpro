@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -60,7 +61,7 @@ class TicketIdTermSpec extends ObjectBehavior
     public function it_defines_its_supported_options()
     {
         $this->getSupportedOps()->shouldBe(
-            array(
+            [
                 TermInterface::OP_IS,
                 TermInterface::OP_NOT,
                 TermInterface::OP_GT,
@@ -69,7 +70,7 @@ class TicketIdTermSpec extends ObjectBehavior
                 TermInterface::OP_LTE,
                 TermInterface::OP_NOT_RANGE,
                 TermInterface::OP_RANGE,
-            )
+            ]
         );
     }
 
@@ -79,20 +80,20 @@ class TicketIdTermSpec extends ObjectBehavior
         $resolver->isDefined('num')->shouldBe(true);
         $resolver->isDefined('num2')->shouldBe(true);
         $resolver->getConstraints()->shouldBeLike(
-            array(
-                'num' => array( // an array of numerics
+            [
+                'num' => [ // an array of numerics
                     new Assert\NotNull(),
                     new Assert\Type('array'),
                     new Assert\All(
-                        array(
+                        [
                             'constraints' => new Assert\Type('numeric'),
-                        )
+                        ]
                     ),
-                ),
-                'num2' => array( // a numeric or null
+                ],
+                'num2' => [ // a numeric or null
                     new Assert\Type('numeric'),
-                ),
-            )
+                ],
+            ]
         );
     }
 }

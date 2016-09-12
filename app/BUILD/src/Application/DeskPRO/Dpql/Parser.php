@@ -44,9 +44,9 @@ namespace Application\DeskPRO\Dpql;
 class ParseyyToken implements \ArrayAccess
 {
     public $string   = '';
-    public $metadata = array();
+    public $metadata = [];
 
-    public function __construct($s, $m = array())
+    public function __construct($s, $m = [])
     {
         if ($s instanceof self) {
             $this->string   = $s->string;
@@ -125,17 +125,17 @@ class ParseyyStackEntry
                      ** number for the token at this stack level */
     public $minor; /* The user-supplied minor token value.  This
                      ** is the value of the token  */
-};
+}
 
 // code external to the class is included here
 
 // declare_class is output here
-#line 1 "Parser.y"
-class Parser#line 102 "Parser.php"
+//line 1 "Parser.y"
+class Parser //line 102 "Parser.php"
 {
     /* First off, code is included which follows the "include_class" declaration
 ** in the input file. */
-#line 10 "Parser.y"
+//line 10 "Parser.y"
 
     /**
      * Line number currently being parsed. This comes from the lexer.
@@ -167,7 +167,7 @@ class Parser#line 102 "Parser.php"
      *
      * @param string $string Quoted string
      *
-     * @return string String with quotes/escaping removed.
+     * @return string String with quotes/escaping removed
      */
     public function processQuoted($string)
     {
@@ -195,14 +195,14 @@ class Parser#line 102 "Parser.php"
 
         return $string;
     }
-#line 167 "Parser.php"
+//line 167 "Parser.php"
 
 /* Next is all token values, as class constants
 */
-/* 
+/*
 ** These constants (all generated automatically by the parser generator)
 ** specify the various kinds of tokens (terminals) that the parser
-** understands. 
+** understands.
 **
 ** Each symbol here is a terminal symbol in the grammar.
 */
@@ -264,7 +264,7 @@ class Parser#line 102 "Parser.php"
 /* Next are that tables used to determine what action to take based on the
 ** current state and lookahead token.  These tables are used to implement
 ** functions that take a state number and lookahead value and return an
-** action integer.  
+** action integer.
 **
 ** Suppose the action integer is N.  Then the action is determined as
 ** follows
@@ -292,7 +292,7 @@ class Parser#line 102 "Parser.php"
 ** If the index value self::$yy_shift_ofst[S]+X is out of range or if the value
 ** self::$yy_lookahead[self::$yy_shift_ofst[S]+X] is not equal to X or if
 ** self::$yy_shift_ofst[S] is equal to self::YY_SHIFT_USE_DFLT, it means that
-** the action is not in the table and that self::$yy_default[S] should be used instead.  
+** the action is not in the table and that self::$yy_default[S] should be used instead.
 **
 ** The formula above is for computing the action when the lookahead is
 ** a terminal symbol.  If the lookahead is a non-terminal (as occurs after
@@ -311,8 +311,8 @@ class Parser#line 102 "Parser.php"
 **                          shifting non-terminals after a reduce.
 **  self::$yy_default       Default action for each state.
 */
-    const YY_SZ_ACTTAB   = 256;
-    public static $yy_action = array(
+    const YY_SZ_ACTTAB       = 256;
+    public static $yy_action = [
  /*     0 */    24,   24,   59,   30,   30,   30,   30,   30,   30,   74,
  /*    10 */    18,   19,    2,    2,   17,   17,   24,   24,   59,   30,
  /*    20 */    30,   30,   30,   30,   30,   74,   18,   19,    2,    2,
@@ -339,8 +339,8 @@ class Parser#line 102 "Parser.php"
  /*   230 */    35,  123,  105,   95,  104,   33,   76,  159,  159,  159,
  /*   240 */   159,   57,   55,   60,  159,   58,  159,   62,  159,  159,
  /*   250 */    89,  159,  159,  159,  159,  106,
-    );
-    public static $yy_lookahead = array(
+    ];
+    public static $yy_lookahead = [
  /*     0 */     1,    2,    3,    4,    5,    6,    7,    8,    9,   10,
  /*    10 */    11,   12,   13,   14,   15,   16,    1,    2,    3,    4,
  /*    20 */     5,    6,    7,    8,    9,   10,   11,   12,   13,   14,
@@ -367,10 +367,10 @@ class Parser#line 102 "Parser.php"
  /*   230 */    59,   70,   64,   69,   55,   57,   44,   82,   82,   82,
  /*   240 */    82,   69,   69,   80,   82,   69,   82,   80,   82,   82,
  /*   250 */    70,   82,   82,   82,   82,   78,
-);
+];
     const YY_SHIFT_USE_DFLT      = -2;
     const YY_SHIFT_MAX           = 81;
-    public static $yy_shift_ofst = array(
+    public static $yy_shift_ofst = [
  /*     0 */   169,  107,  121,  107,  165,  165,  165,  165,  165,  165,
  /*    10 */   165,   -1,   15,   15,   61,   61,   61,  165,  165,  165,
  /*    20 */   165,  165,  165,  165,  165,  165,  165,  165,  165,  165,
@@ -380,143 +380,143 @@ class Parser#line 102 "Parser.php"
  /*    60 */    96,    7,  101,   63,  155,  146,  152,  143,  141,  147,
  /*    70 */   156,  162,  126,  154,  127,  137,  119,  128,  148,  144,
  /*    80 */   151,  133,
-);
+];
     const YY_REDUCE_USE_DFLT      = -28;
     const YY_REDUCE_MAX           = 47;
-    public static $yy_reduce_ofst = array(
+    public static $yy_reduce_ofst = [
  /*     0 */    62,   50,   57,   54,   90,   85,   59,   73,   78,   72,
  /*    10 */    60,  117,  161,  180,  163,  125,  167,  164,  172,  176,
  /*    20 */   173,  134,  131,  129,  158,  149,  132,  150,  140,  157,
  /*    30 */   160,  159,  145,  139,  136,  142,  168,  177,  178,  166,
  /*    40 */   179,  171,  115,   71,   68,   65,  116,  -27,
-);
-    public static $yyExpectedTokens = array(
-        /* 0 */ array(20),
-        /* 1 */ array(3, 13, 18, 28, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 2 */ array(3, 13, 18, 30, 31, 43, 45, 46, 48, 49, 50, 51),
-        /* 3 */ array(3, 13, 18, 28, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 4 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 5 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 6 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 7 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 8 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 9 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 10 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 11 */ array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 40, 41),
-        /* 12 */ array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 29),
-        /* 13 */ array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 29),
-        /* 14 */ array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-        /* 15 */ array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-        /* 16 */ array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-        /* 17 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 18 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 19 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 20 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 21 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 22 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 23 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 24 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 25 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 26 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 27 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 28 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 29 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 30 */ array(3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51),
-        /* 31 */ array(21, 22, 23, 24, 25),
-        /* 32 */ array(21, 22, 23, 24, 25),
-        /* 33 */ array(32),
-        /* 34 */ array(39),
-        /* 35 */ array(34),
-        /* 36 */ array(42),
-        /* 37 */ array(44),
-        /* 38 */ array(27),
-        /* 39 */ array(37),
-        /* 40 */ array(19),
-        /* 41 */ array(33),
-        /* 42 */ array(26),
-        /* 43 */ array(36),
-        /* 44 */ array(),
-        /* 45 */ array(),
-        /* 46 */ array(),
-        /* 47 */ array(),
-        /* 48 */ array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 47),
-        /* 49 */ array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-        /* 50 */ array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-        /* 51 */ array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-        /* 52 */ array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-        /* 53 */ array(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-        /* 54 */ array(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-        /* 55 */ array(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-        /* 56 */ array(13, 14, 15, 16),
-        /* 57 */ array(13, 14, 15, 16),
-        /* 58 */ array(13, 14, 15, 16),
-        /* 59 */ array(10, 11, 12),
-        /* 60 */ array(26, 47),
-        /* 61 */ array(30, 31),
-        /* 62 */ array(26, 47),
-        /* 63 */ array(30, 31),
-        /* 64 */ array(30),
-        /* 65 */ array(38),
-        /* 66 */ array(30),
-        /* 67 */ array(43),
-        /* 68 */ array(46),
-        /* 69 */ array(46),
-        /* 70 */ array(35),
-        /* 71 */ array(26),
-        /* 72 */ array(35),
-        /* 73 */ array(26),
-        /* 74 */ array(46),
-        /* 75 */ array(26),
-        /* 76 */ array(43),
-        /* 77 */ array(47),
-        /* 78 */ array(26),
-        /* 79 */ array(35),
-        /* 80 */ array(26),
-        /* 81 */ array(43),
-        /* 82 */ array(),
-        /* 83 */ array(),
-        /* 84 */ array(),
-        /* 85 */ array(),
-        /* 86 */ array(),
-        /* 87 */ array(),
-        /* 88 */ array(),
-        /* 89 */ array(),
-        /* 90 */ array(),
-        /* 91 */ array(),
-        /* 92 */ array(),
-        /* 93 */ array(),
-        /* 94 */ array(),
-        /* 95 */ array(),
-        /* 96 */ array(),
-        /* 97 */ array(),
-        /* 98 */ array(),
-        /* 99 */ array(),
-        /* 100 */ array(),
-        /* 101 */ array(),
-        /* 102 */ array(),
-        /* 103 */ array(),
-        /* 104 */ array(),
-        /* 105 */ array(),
-        /* 106 */ array(),
-        /* 107 */ array(),
-        /* 108 */ array(),
-        /* 109 */ array(),
-        /* 110 */ array(),
-        /* 111 */ array(),
-        /* 112 */ array(),
-        /* 113 */ array(),
-        /* 114 */ array(),
-        /* 115 */ array(),
-        /* 116 */ array(),
-        /* 117 */ array(),
-        /* 118 */ array(),
-        /* 119 */ array(),
-        /* 120 */ array(),
-        /* 121 */ array(),
-        /* 122 */ array(),
-        /* 123 */ array(),
-);
-    public static $yy_default = array(
+];
+    public static $yyExpectedTokens = [
+        /* 0 */ [20],
+        /* 1 */ [3, 13, 18, 28, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 2 */ [3, 13, 18, 30, 31, 43, 45, 46, 48, 49, 50, 51],
+        /* 3 */ [3, 13, 18, 28, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 4 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 5 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 6 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 7 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 8 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 9 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 10 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 11 */ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 40, 41],
+        /* 12 */ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 29],
+        /* 13 */ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 29],
+        /* 14 */ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        /* 15 */ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        /* 16 */ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        /* 17 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 18 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 19 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 20 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 21 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 22 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 23 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 24 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 25 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 26 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 27 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 28 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 29 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 30 */ [3, 13, 18, 30, 31, 43, 46, 48, 49, 50, 51],
+        /* 31 */ [21, 22, 23, 24, 25],
+        /* 32 */ [21, 22, 23, 24, 25],
+        /* 33 */ [32],
+        /* 34 */ [39],
+        /* 35 */ [34],
+        /* 36 */ [42],
+        /* 37 */ [44],
+        /* 38 */ [27],
+        /* 39 */ [37],
+        /* 40 */ [19],
+        /* 41 */ [33],
+        /* 42 */ [26],
+        /* 43 */ [36],
+        /* 44 */ [],
+        /* 45 */ [],
+        /* 46 */ [],
+        /* 47 */ [],
+        /* 48 */ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 47],
+        /* 49 */ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        /* 50 */ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        /* 51 */ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        /* 52 */ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        /* 53 */ [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        /* 54 */ [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        /* 55 */ [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        /* 56 */ [13, 14, 15, 16],
+        /* 57 */ [13, 14, 15, 16],
+        /* 58 */ [13, 14, 15, 16],
+        /* 59 */ [10, 11, 12],
+        /* 60 */ [26, 47],
+        /* 61 */ [30, 31],
+        /* 62 */ [26, 47],
+        /* 63 */ [30, 31],
+        /* 64 */ [30],
+        /* 65 */ [38],
+        /* 66 */ [30],
+        /* 67 */ [43],
+        /* 68 */ [46],
+        /* 69 */ [46],
+        /* 70 */ [35],
+        /* 71 */ [26],
+        /* 72 */ [35],
+        /* 73 */ [26],
+        /* 74 */ [46],
+        /* 75 */ [26],
+        /* 76 */ [43],
+        /* 77 */ [47],
+        /* 78 */ [26],
+        /* 79 */ [35],
+        /* 80 */ [26],
+        /* 81 */ [43],
+        /* 82 */ [],
+        /* 83 */ [],
+        /* 84 */ [],
+        /* 85 */ [],
+        /* 86 */ [],
+        /* 87 */ [],
+        /* 88 */ [],
+        /* 89 */ [],
+        /* 90 */ [],
+        /* 91 */ [],
+        /* 92 */ [],
+        /* 93 */ [],
+        /* 94 */ [],
+        /* 95 */ [],
+        /* 96 */ [],
+        /* 97 */ [],
+        /* 98 */ [],
+        /* 99 */ [],
+        /* 100 */ [],
+        /* 101 */ [],
+        /* 102 */ [],
+        /* 103 */ [],
+        /* 104 */ [],
+        /* 105 */ [],
+        /* 106 */ [],
+        /* 107 */ [],
+        /* 108 */ [],
+        /* 109 */ [],
+        /* 110 */ [],
+        /* 111 */ [],
+        /* 112 */ [],
+        /* 113 */ [],
+        /* 114 */ [],
+        /* 115 */ [],
+        /* 116 */ [],
+        /* 117 */ [],
+        /* 118 */ [],
+        /* 119 */ [],
+        /* 120 */ [],
+        /* 121 */ [],
+        /* 122 */ [],
+        /* 123 */ [],
+];
+    public static $yy_default = [
  /*     0 */   199,  199,  199,  199,  199,  199,  196,  199,  199,  199,
  /*    10 */   199,  164,  143,  143,  198,  198,  198,  199,  199,  199,
  /*    20 */   199,  199,  199,  199,  199,  199,  199,  199,  199,  199,
@@ -530,12 +530,12 @@ class Parser#line 102 "Parser.php"
  /*   100 */   184,  162,  161,  125,  124,  127,  167,  169,  186,  189,
  /*   110 */   165,  174,  157,  154,  142,  141,  173,  182,  191,  190,
  /*   120 */   192,  193,  194,  156,
-);
+];
 /* The next thing included is series of defines which control
 ** various aspects of the generated parser.
 **    self::YYNOCODE      is a number which corresponds
 **                        to no legal terminal or nonterminal number.  This
-**                        number is used to fill in empty slots of the hash 
+**                        number is used to fill in empty slots of the hash
 **                        table.
 **    self::YYFALLBACK    If defined, this indicates that one or more tokens
 **                        have fall-back values which should be used if the
@@ -555,7 +555,7 @@ class Parser#line 102 "Parser.php"
     const YYFALLBACK    = 0;
     /** The next table maps tokens into fallback tokens.  If a construct
      * like the following:.
-     * 
+     *
      *      %fallback ID X Y Z.
      *
      * appears in the grammer, then ID becomes a fallback token for X, Y,
@@ -563,15 +563,15 @@ class Parser#line 102 "Parser.php"
      * but it does not parse, the type of the token is changed to ID and
      * the parse is retried before an error is thrown.
      */
-    public static $yyFallback = array(
-    );
+    public static $yyFallback = [
+    ];
     /**
      * Turn parser tracing on by giving a stream to which to write the trace
      * and a prompt to preface each trace message.  Tracing is turned off
      * by making either argument NULL.
      *
      * Inputs:
-     * 
+     *
      * - A stream resource to which trace output should be written.
      *   If NULL, then tracing is turned off.
      * - A prefix string written at the beginning of every
@@ -579,7 +579,7 @@ class Parser#line 102 "Parser.php"
      *   turned off.
      *
      * Outputs:
-     * 
+     *
      * - None.
      *
      * @param resource
@@ -626,7 +626,7 @@ class Parser#line 102 "Parser.php"
     /**
      * @var array
      */
-    public $yystack = array();  /* The parser's stack */
+    public $yystack = [];  /* The parser's stack */
 
     /**
      * For tracing shifts, the names of all terminals and nonterminals
@@ -634,7 +634,7 @@ class Parser#line 102 "Parser.php"
      *
      * @var array
      */
-    public static $yyTokenName = array(
+    public static $yyTokenName = [
   '$',             'OP_OR',         'OP_AND',        'OP_NOT',
   'OP_EQ',         'OP_NE',         'OP_GT',         'OP_GTEQ',
   'OP_LT',         'OP_LTEQ',       'OP_IN',         'OP_LIKE',
@@ -656,14 +656,14 @@ class Parser#line 102 "Parser.php"
   'split_expressions_extra',  'group_expression',  'group_expressions_extra',  'order_expression',
   'comma_order_expression_opt',  'direction_opt',  'limit_offset_opt',  'interval_expression',
   'comma_expressions_opt',  'func_args',
-    );
+    ];
 
     /**
      * For tracing reduce actions, the names of all rules are required.
      *
      * @var array
      */
-    public static $yyRuleName = array(
+    public static $yyRuleName = [
  /*   0 */ 'start ::= display_query trailing_semicolon',
  /*   1 */ 'trailing_semicolon ::= SEMICOLON',
  /*   2 */ 'trailing_semicolon ::=',
@@ -739,7 +739,7 @@ class Parser#line 102 "Parser.php"
  /*  72 */ 'func_args ::=',
  /*  73 */ 'comma_expressions_opt ::= comma_expressions_opt COMMA expression',
  /*  74 */ 'comma_expressions_opt ::=',
-    );
+    ];
 
     /**
      * This function returns the symbolic name associated with a token
@@ -774,7 +774,7 @@ class Parser#line 102 "Parser.php"
         /* Here is inserted the actions which take place when a
         ** terminal or non-terminal is destroyed.  This can happen
         ** when the symbol is popped from the stack during a
-        ** reduce or during error processing or when a parser is 
+        ** reduce or during error processing or when a parser is
         ** being destroyed before it is finished parsing.
         **
         ** Note: during a reduce, the only symbols destroyed are those
@@ -908,7 +908,7 @@ class Parser#line 102 "Parser.php"
     /**
      * Based on the parser state and current parser stack, determine whether
      * the lookahead token is possible.
-     * 
+     *
      * The parser will convert the token value to an error token if not.  This
      * catches some unusual edge cases where the parser would fail.
      *
@@ -1121,91 +1121,91 @@ class Parser#line 102 "Parser.php"
      * );
      * </pre>
      */
-    public static $yyRuleInfo = array(
-  array('lhs' => 53, 'rhs' => 2),
-  array('lhs' => 55, 'rhs' => 1),
-  array('lhs' => 55, 'rhs' => 0),
-  array('lhs' => 54, 'rhs' => 9),
-  array('lhs' => 56, 'rhs' => 3),
-  array('lhs' => 65, 'rhs' => 1),
-  array('lhs' => 65, 'rhs' => 1),
-  array('lhs' => 65, 'rhs' => 1),
-  array('lhs' => 65, 'rhs' => 1),
-  array('lhs' => 65, 'rhs' => 1),
-  array('lhs' => 66, 'rhs' => 2),
-  array('lhs' => 66, 'rhs' => 0),
-  array('lhs' => 57, 'rhs' => 3),
-  array('lhs' => 68, 'rhs' => 3),
-  array('lhs' => 68, 'rhs' => 0),
-  array('lhs' => 67, 'rhs' => 2),
-  array('lhs' => 67, 'rhs' => 1),
-  array('lhs' => 70, 'rhs' => 2),
-  array('lhs' => 70, 'rhs' => 2),
-  array('lhs' => 70, 'rhs' => 0),
-  array('lhs' => 58, 'rhs' => 2),
-  array('lhs' => 59, 'rhs' => 2),
-  array('lhs' => 59, 'rhs' => 0),
-  array('lhs' => 60, 'rhs' => 4),
-  array('lhs' => 60, 'rhs' => 0),
-  array('lhs' => 72, 'rhs' => 3),
-  array('lhs' => 72, 'rhs' => 0),
-  array('lhs' => 71, 'rhs' => 1),
-  array('lhs' => 61, 'rhs' => 4),
-  array('lhs' => 61, 'rhs' => 0),
-  array('lhs' => 74, 'rhs' => 3),
-  array('lhs' => 74, 'rhs' => 0),
-  array('lhs' => 73, 'rhs' => 2),
-  array('lhs' => 62, 'rhs' => 2),
-  array('lhs' => 62, 'rhs' => 0),
-  array('lhs' => 63, 'rhs' => 4),
-  array('lhs' => 63, 'rhs' => 0),
-  array('lhs' => 75, 'rhs' => 2),
-  array('lhs' => 77, 'rhs' => 1),
-  array('lhs' => 77, 'rhs' => 1),
-  array('lhs' => 77, 'rhs' => 0),
-  array('lhs' => 76, 'rhs' => 3),
-  array('lhs' => 76, 'rhs' => 0),
-  array('lhs' => 64, 'rhs' => 3),
-  array('lhs' => 64, 'rhs' => 0),
-  array('lhs' => 78, 'rhs' => 2),
-  array('lhs' => 78, 'rhs' => 0),
-  array('lhs' => 69, 'rhs' => 3),
-  array('lhs' => 69, 'rhs' => 3),
-  array('lhs' => 69, 'rhs' => 3),
-  array('lhs' => 79, 'rhs' => 3),
-  array('lhs' => 79, 'rhs' => 1),
-  array('lhs' => 69, 'rhs' => 3),
-  array('lhs' => 69, 'rhs' => 3),
-  array('lhs' => 69, 'rhs' => 4),
-  array('lhs' => 69, 'rhs' => 3),
-  array('lhs' => 69, 'rhs' => 4),
-  array('lhs' => 69, 'rhs' => 6),
-  array('lhs' => 69, 'rhs' => 7),
-  array('lhs' => 69, 'rhs' => 2),
-  array('lhs' => 69, 'rhs' => 2),
-  array('lhs' => 69, 'rhs' => 3),
-  array('lhs' => 69, 'rhs' => 4),
-  array('lhs' => 69, 'rhs' => 1),
-  array('lhs' => 69, 'rhs' => 1),
-  array('lhs' => 69, 'rhs' => 1),
-  array('lhs' => 69, 'rhs' => 1),
-  array('lhs' => 69, 'rhs' => 2),
-  array('lhs' => 69, 'rhs' => 2),
-  array('lhs' => 69, 'rhs' => 1),
-  array('lhs' => 69, 'rhs' => 1),
-  array('lhs' => 81, 'rhs' => 2),
-  array('lhs' => 81, 'rhs' => 0),
-  array('lhs' => 80, 'rhs' => 3),
-  array('lhs' => 80, 'rhs' => 0),
-    );
+    public static $yyRuleInfo = [
+  ['lhs' => 53, 'rhs' => 2],
+  ['lhs' => 55, 'rhs' => 1],
+  ['lhs' => 55, 'rhs' => 0],
+  ['lhs' => 54, 'rhs' => 9],
+  ['lhs' => 56, 'rhs' => 3],
+  ['lhs' => 65, 'rhs' => 1],
+  ['lhs' => 65, 'rhs' => 1],
+  ['lhs' => 65, 'rhs' => 1],
+  ['lhs' => 65, 'rhs' => 1],
+  ['lhs' => 65, 'rhs' => 1],
+  ['lhs' => 66, 'rhs' => 2],
+  ['lhs' => 66, 'rhs' => 0],
+  ['lhs' => 57, 'rhs' => 3],
+  ['lhs' => 68, 'rhs' => 3],
+  ['lhs' => 68, 'rhs' => 0],
+  ['lhs' => 67, 'rhs' => 2],
+  ['lhs' => 67, 'rhs' => 1],
+  ['lhs' => 70, 'rhs' => 2],
+  ['lhs' => 70, 'rhs' => 2],
+  ['lhs' => 70, 'rhs' => 0],
+  ['lhs' => 58, 'rhs' => 2],
+  ['lhs' => 59, 'rhs' => 2],
+  ['lhs' => 59, 'rhs' => 0],
+  ['lhs' => 60, 'rhs' => 4],
+  ['lhs' => 60, 'rhs' => 0],
+  ['lhs' => 72, 'rhs' => 3],
+  ['lhs' => 72, 'rhs' => 0],
+  ['lhs' => 71, 'rhs' => 1],
+  ['lhs' => 61, 'rhs' => 4],
+  ['lhs' => 61, 'rhs' => 0],
+  ['lhs' => 74, 'rhs' => 3],
+  ['lhs' => 74, 'rhs' => 0],
+  ['lhs' => 73, 'rhs' => 2],
+  ['lhs' => 62, 'rhs' => 2],
+  ['lhs' => 62, 'rhs' => 0],
+  ['lhs' => 63, 'rhs' => 4],
+  ['lhs' => 63, 'rhs' => 0],
+  ['lhs' => 75, 'rhs' => 2],
+  ['lhs' => 77, 'rhs' => 1],
+  ['lhs' => 77, 'rhs' => 1],
+  ['lhs' => 77, 'rhs' => 0],
+  ['lhs' => 76, 'rhs' => 3],
+  ['lhs' => 76, 'rhs' => 0],
+  ['lhs' => 64, 'rhs' => 3],
+  ['lhs' => 64, 'rhs' => 0],
+  ['lhs' => 78, 'rhs' => 2],
+  ['lhs' => 78, 'rhs' => 0],
+  ['lhs' => 69, 'rhs' => 3],
+  ['lhs' => 69, 'rhs' => 3],
+  ['lhs' => 69, 'rhs' => 3],
+  ['lhs' => 79, 'rhs' => 3],
+  ['lhs' => 79, 'rhs' => 1],
+  ['lhs' => 69, 'rhs' => 3],
+  ['lhs' => 69, 'rhs' => 3],
+  ['lhs' => 69, 'rhs' => 4],
+  ['lhs' => 69, 'rhs' => 3],
+  ['lhs' => 69, 'rhs' => 4],
+  ['lhs' => 69, 'rhs' => 6],
+  ['lhs' => 69, 'rhs' => 7],
+  ['lhs' => 69, 'rhs' => 2],
+  ['lhs' => 69, 'rhs' => 2],
+  ['lhs' => 69, 'rhs' => 3],
+  ['lhs' => 69, 'rhs' => 4],
+  ['lhs' => 69, 'rhs' => 1],
+  ['lhs' => 69, 'rhs' => 1],
+  ['lhs' => 69, 'rhs' => 1],
+  ['lhs' => 69, 'rhs' => 1],
+  ['lhs' => 69, 'rhs' => 2],
+  ['lhs' => 69, 'rhs' => 2],
+  ['lhs' => 69, 'rhs' => 1],
+  ['lhs' => 69, 'rhs' => 1],
+  ['lhs' => 81, 'rhs' => 2],
+  ['lhs' => 81, 'rhs' => 0],
+  ['lhs' => 80, 'rhs' => 3],
+  ['lhs' => 80, 'rhs' => 0],
+    ];
 
     /**
      * The following table contains a mapping of reduce action to method name
      * that handles the reduction.
-     * 
+     *
      * If a rule is not set, it has no handler.
      */
-    public static $yyReduceMap = array(
+    public static $yyReduceMap = [
         3  => 3,
         4  => 4,
         5  => 5,
@@ -1262,14 +1262,14 @@ class Parser#line 102 "Parser.php"
         68 => 68,
         69 => 69,
         70 => 70,
-    );
+    ];
     /* Beginning here are the reduction cases.  A typical example
     ** follows:
     **  #line <lineno> <grammarfile>
     **   function yy_r0($yymsp){ ... }           // User supplied code
     **  #line <lineno> <thisfile>
     */
-#line 90 "Parser.y"
+//line 90 "Parser.y"
     public function yy_r3()
     {
         $res = new Statement\Display($this->yystack[$this->yyidx + -8]->minor, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -6]->minor);
@@ -1298,73 +1298,73 @@ class Parser#line 102 "Parser.php"
 
         $this->_result = $res;
     }
-#line 1248 "Parser.php"
-#line 120 "Parser.y"
+//line 1248 "Parser.php"
+//line 120 "Parser.y"
     public function yy_r4()
     {
-        $this->_retvalue = array($this->yystack[$this->yyidx + -1]->minor);
+        $this->_retvalue = [$this->yystack[$this->yyidx + -1]->minor];
         if ($this->yystack[$this->yyidx + 0]->minor) {
             $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;
         }
     }
-#line 1256 "Parser.php"
-#line 128 "Parser.y"
+//line 1256 "Parser.php"
+//line 128 "Parser.y"
     public function yy_r5()
     {
         $this->_retvalue = 'table';
     }
-#line 1261 "Parser.php"
-#line 132 "Parser.y"
+//line 1261 "Parser.php"
+//line 132 "Parser.y"
     public function yy_r6()
     {
         $this->_retvalue = 'bar';
     }
-#line 1266 "Parser.php"
-#line 136 "Parser.y"
+//line 1266 "Parser.php"
+//line 136 "Parser.y"
     public function yy_r7()
     {
         $this->_retvalue = 'line';
     }
-#line 1271 "Parser.php"
-#line 140 "Parser.y"
+//line 1271 "Parser.php"
+//line 140 "Parser.y"
     public function yy_r8()
     {
         $this->_retvalue = 'pie';
     }
-#line 1276 "Parser.php"
-#line 144 "Parser.y"
+//line 1276 "Parser.php"
+//line 144 "Parser.y"
     public function yy_r9()
     {
         $this->_retvalue = 'area';
     }
-#line 1281 "Parser.php"
-#line 149 "Parser.y"
+//line 1281 "Parser.php"
+//line 149 "Parser.y"
     public function yy_r10()
     {
         $this->_retvalue = $this->yystack[$this->yyidx + 0]->minor;
     }
-#line 1286 "Parser.php"
-#line 156 "Parser.y"
+//line 1286 "Parser.php"
+//line 156 "Parser.y"
     public function yy_r12()
     {
-        $this->_retvalue = array($this->yystack[$this->yyidx + -1]->minor);
+        $this->_retvalue = [$this->yystack[$this->yyidx + -1]->minor];
         if ($this->yystack[$this->yyidx + 0]->minor) {
             $this->_retvalue = array_merge($this->_retvalue, $this->yystack[$this->yyidx + 0]->minor);
         }
     }
-#line 1294 "Parser.php"
-#line 165 "Parser.y"
+//line 1294 "Parser.php"
+//line 165 "Parser.y"
     public function yy_r13()
     {
         if (!$this->yystack[$this->yyidx + -2]->minor) {
-            $this->_retvalue = array();
+            $this->_retvalue = [];
         } else {
             $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor;
         }
         $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;
     }
-#line 1304 "Parser.php"
-#line 178 "Parser.y"
+//line 1304 "Parser.php"
+//line 178 "Parser.y"
     public function yy_r15()
     {
         if ($this->yystack[$this->yyidx + 0]->minor) {
@@ -1373,33 +1373,33 @@ class Parser#line 102 "Parser.php"
             $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;
         }
     }
-#line 1313 "Parser.php"
-#line 187 "Parser.y"
+//line 1313 "Parser.php"
+//line 187 "Parser.y"
     public function yy_r16()
     {
         $this->_retvalue = new Statement\Part\ColumnStar(explode('.', $this->yystack[$this->yyidx + 0]->minor));
     }
-#line 1318 "Parser.php"
-#line 198 "Parser.y"
+//line 1318 "Parser.php"
+//line 198 "Parser.y"
     public function yy_r18()
     {
         $this->_retvalue = $this->processQuoted($this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1323 "Parser.php"
-#line 221 "Parser.y"
+//line 1323 "Parser.php"
+//line 221 "Parser.y"
     public function yy_r23()
     {
-        $this->_retvalue = ($this->yystack[$this->yyidx + -1]->minor ? array($this->yystack[$this->yyidx + -1]->minor) : array());
+        $this->_retvalue = ($this->yystack[$this->yyidx + -1]->minor ? [$this->yystack[$this->yyidx + -1]->minor] : []);
         if ($this->yystack[$this->yyidx + 0]->minor) {
             $this->_retvalue = array_merge($this->_retvalue, $this->yystack[$this->yyidx + 0]->minor);
         }
     }
-#line 1331 "Parser.php"
-#line 232 "Parser.y"
+//line 1331 "Parser.php"
+//line 232 "Parser.y"
     public function yy_r25()
     {
         if (!$this->yystack[$this->yyidx + -2]->minor) {
-            $this->_retvalue = array();
+            $this->_retvalue = [];
         } else {
             $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor;
         }
@@ -1408,8 +1408,8 @@ class Parser#line 102 "Parser.php"
             $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;
         }
     }
-#line 1344 "Parser.php"
-#line 248 "Parser.y"
+//line 1344 "Parser.php"
+//line 248 "Parser.y"
     public function yy_r27()
     {
         if ($this->yystack[$this->yyidx + 0]->minor instanceof Statement\Part\NullValue) {
@@ -1418,8 +1418,8 @@ class Parser#line 102 "Parser.php"
             $this->_retvalue = $this->yystack[$this->yyidx + 0]->minor;
         }
     }
-#line 1353 "Parser.php"
-#line 285 "Parser.y"
+//line 1353 "Parser.php"
+//line 285 "Parser.y"
     public function yy_r32()
     {
         if ($this->yystack[$this->yyidx + -1]->minor instanceof Statement\Part\NullValue) {
@@ -1430,14 +1430,14 @@ class Parser#line 102 "Parser.php"
             $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;
         }
     }
-#line 1364 "Parser.php"
-#line 298 "Parser.y"
+//line 1364 "Parser.php"
+//line 298 "Parser.y"
     public function yy_r33()
     {
         $this->_retvalue = true;
     }
-#line 1369 "Parser.php"
-#line 317 "Parser.y"
+//line 1369 "Parser.php"
+//line 317 "Parser.y"
     public function yy_r37()
     {
         if ($this->yystack[$this->yyidx + 0]->minor) {
@@ -1446,35 +1446,35 @@ class Parser#line 102 "Parser.php"
             $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;
         }
     }
-#line 1378 "Parser.php"
-#line 328 "Parser.y"
+//line 1378 "Parser.php"
+//line 328 "Parser.y"
     public function yy_r38()
     {
         $this->_retvalue = 'ASC';
     }
-#line 1383 "Parser.php"
-#line 333 "Parser.y"
+//line 1383 "Parser.php"
+//line 333 "Parser.y"
     public function yy_r39()
     {
         $this->_retvalue = 'DESC';
     }
-#line 1388 "Parser.php"
-#line 355 "Parser.y"
+//line 1388 "Parser.php"
+//line 355 "Parser.y"
     public function yy_r43()
     {
-        $this->_retvalue = array('limit' => intval($this->yystack[$this->yyidx + -1]->minor));
+        $this->_retvalue = ['limit' => intval($this->yystack[$this->yyidx + -1]->minor)];
         if ($this->yystack[$this->yyidx + 0]->minor) {
             $this->_retvalue['offset'] = $this->yystack[$this->yyidx + 0]->minor;
         }
     }
-#line 1396 "Parser.php"
-#line 366 "Parser.y"
+//line 1396 "Parser.php"
+//line 366 "Parser.y"
     public function yy_r45()
     {
         $this->_retvalue = intval($this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1401 "Parser.php"
-#line 374 "Parser.y"
+//line 1401 "Parser.php"
+//line 374 "Parser.y"
     public function yy_r47()
     {
         // this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
@@ -1482,8 +1482,8 @@ class Parser#line 102 "Parser.php"
 
         $this->_retvalue = new Statement\Part\BinaryComparison($token, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1409 "Parser.php"
-#line 382 "Parser.y"
+//line 1409 "Parser.php"
+//line 382 "Parser.y"
     public function yy_r48()
     {
         // this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
@@ -1491,12 +1491,12 @@ class Parser#line 102 "Parser.php"
 
         $this->_retvalue = new Statement\Part\BinaryLogical($token, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1417 "Parser.php"
-#line 390 "Parser.y"
+//line 1417 "Parser.php"
+//line 390 "Parser.y"
     public function yy_r49()
     {
         // this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
-    $token      = $this->yystack[$this->yyidx + -1]->major;
+    $token          = $this->yystack[$this->yyidx + -1]->major;
         $expression = $this->yystack[$this->yyidx + 0]->minor;
 
         if ($expression[0] == 'interval') {
@@ -1505,20 +1505,20 @@ class Parser#line 102 "Parser.php"
             $this->_retvalue = new Statement\Part\BinaryMath($token, $this->yystack[$this->yyidx + -2]->minor, $expression[1]);
         }
     }
-#line 1430 "Parser.php"
-#line 403 "Parser.y"
+//line 1430 "Parser.php"
+//line 403 "Parser.y"
     public function yy_r50()
     {
-        $this->_retvalue = array('interval', $this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
+        $this->_retvalue = ['interval', $this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor];
     }
-#line 1435 "Parser.php"
-#line 408 "Parser.y"
+//line 1435 "Parser.php"
+//line 408 "Parser.y"
     public function yy_r51()
     {
-        $this->_retvalue = array('expression', $this->yystack[$this->yyidx + 0]->minor);
+        $this->_retvalue = ['expression', $this->yystack[$this->yyidx + 0]->minor];
     }
-#line 1440 "Parser.php"
-#line 413 "Parser.y"
+//line 1440 "Parser.php"
+//line 413 "Parser.y"
     public function yy_r52()
     {
         // this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
@@ -1526,52 +1526,52 @@ class Parser#line 102 "Parser.php"
 
         $this->_retvalue = new Statement\Part\BinaryMath($token, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1448 "Parser.php"
-#line 421 "Parser.y"
+//line 1448 "Parser.php"
+//line 421 "Parser.y"
     public function yy_r53()
     {
         $this->_retvalue = new Statement\Part\Like($this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1453 "Parser.php"
-#line 426 "Parser.y"
+//line 1453 "Parser.php"
+//line 426 "Parser.y"
     public function yy_r54()
     {
         $this->_retvalue = new Statement\Part\Like($this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, false);
     }
-#line 1458 "Parser.php"
-#line 431 "Parser.y"
+//line 1458 "Parser.php"
+//line 431 "Parser.y"
     public function yy_r55()
     {
         $this->_retvalue = new Statement\Part\RegExp($this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1463 "Parser.php"
-#line 436 "Parser.y"
+//line 1463 "Parser.php"
+//line 436 "Parser.y"
     public function yy_r56()
     {
         $this->_retvalue = new Statement\Part\RegExp($this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, false);
     }
-#line 1468 "Parser.php"
-#line 441 "Parser.y"
+//line 1468 "Parser.php"
+//line 441 "Parser.y"
     public function yy_r57()
     {
-        $values = array($this->yystack[$this->yyidx + -2]->minor);
+        $values = [$this->yystack[$this->yyidx + -2]->minor];
         if ($this->yystack[$this->yyidx + -1]->minor) {
             $values = array_merge($values, $this->yystack[$this->yyidx + -1]->minor);
         }
         $this->_retvalue = new Statement\Part\In($this->yystack[$this->yyidx + -5]->minor, $values);
     }
-#line 1477 "Parser.php"
-#line 450 "Parser.y"
+//line 1477 "Parser.php"
+//line 450 "Parser.y"
     public function yy_r58()
     {
-        $values = array($this->yystack[$this->yyidx + -2]->minor);
+        $values = [$this->yystack[$this->yyidx + -2]->minor];
         if ($this->yystack[$this->yyidx + -1]->minor) {
             $values = array_merge($values, $this->yystack[$this->yyidx + -1]->minor);
         }
         $this->_retvalue = new Statement\Part\In($this->yystack[$this->yyidx + -6]->minor, $values, false);
     }
-#line 1486 "Parser.php"
-#line 459 "Parser.y"
+//line 1486 "Parser.php"
+//line 459 "Parser.y"
     public function yy_r59()
     {
         // this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
@@ -1579,82 +1579,82 @@ class Parser#line 102 "Parser.php"
 
         $this->_retvalue = new Statement\Part\UnaryOperator($token, $this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1494 "Parser.php"
-#line 475 "Parser.y"
+//line 1494 "Parser.php"
+//line 475 "Parser.y"
     public function yy_r61()
     {
         $this->_retvalue = new Statement\Part\Parentheses($this->yystack[$this->yyidx + -1]->minor);
     }
-#line 1499 "Parser.php"
-#line 480 "Parser.y"
+//line 1499 "Parser.php"
+//line 480 "Parser.y"
     public function yy_r62()
     {
         if (!$this->yystack[$this->yyidx + -1]->minor) {
-            $this->yystack[$this->yyidx + -1]->minor = array();
+            $this->yystack[$this->yyidx + -1]->minor = [];
         }
         $this->_retvalue = new Statement\Part\FunctionCall($this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor);
     }
-#line 1507 "Parser.php"
-#line 488 "Parser.y"
+//line 1507 "Parser.php"
+//line 488 "Parser.y"
     public function yy_r63()
     {
         $this->_retvalue = new Statement\Part\Column(explode('.', $this->yystack[$this->yyidx + 0]->minor));
     }
-#line 1512 "Parser.php"
-#line 493 "Parser.y"
+//line 1512 "Parser.php"
+//line 493 "Parser.y"
     public function yy_r64()
     {
         $this->_retvalue = new Statement\Part\StringPart($this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1517 "Parser.php"
-#line 498 "Parser.y"
+//line 1517 "Parser.php"
+//line 498 "Parser.y"
     public function yy_r65()
     {
         $this->_retvalue = new Statement\Part\StringPart($this->processQuoted($this->yystack[$this->yyidx + 0]->minor));
     }
-#line 1522 "Parser.php"
-#line 503 "Parser.y"
+//line 1522 "Parser.php"
+//line 503 "Parser.y"
     public function yy_r66()
     {
         $value           = substr($this->yystack[$this->yyidx + 0]->minor, 1, -1);
         $this->_retvalue = new Statement\Part\Placeholder($value);
     }
-#line 1528 "Parser.php"
-#line 509 "Parser.y"
+//line 1528 "Parser.php"
+//line 509 "Parser.y"
     public function yy_r67()
     {
         $this->_retvalue = new Statement\Part\AliasRef($this->yystack[$this->yyidx + 0]->minor);
     }
-#line 1533 "Parser.php"
-#line 514 "Parser.y"
+//line 1533 "Parser.php"
+//line 514 "Parser.y"
     public function yy_r68()
     {
         $this->_retvalue = new Statement\Part\AliasRef($this->processQuoted($this->yystack[$this->yyidx + 0]->minor));
     }
-#line 1538 "Parser.php"
-#line 519 "Parser.y"
+//line 1538 "Parser.php"
+//line 519 "Parser.y"
     public function yy_r69()
     {
         $this->_retvalue = new Statement\Part\Number($this->yystack[$this->yyidx + 0]->minor + 0);
     }
-#line 1543 "Parser.php"
-#line 524 "Parser.y"
+//line 1543 "Parser.php"
+//line 524 "Parser.y"
     public function yy_r70()
     {
         $this->_retvalue = new Statement\Part\NullValue();
     }
-#line 1548 "Parser.php"
+//line 1548 "Parser.php"
 
     /**
      * placeholder for the left hand side in a reduce operation.
-     * 
+     *
      * For a parser with a rule like this:
      * <pre>
      * rule(A) ::= B. { A = 1; }
      * </pre>
-     * 
+     *
      * The parser will translate to something like:
-     * 
+     *
      * <code>
      * function yy_r0(){$this->_retvalue = 1;}
      * </code>
@@ -1664,13 +1664,13 @@ class Parser#line 102 "Parser.php"
     /**
      * Perform a reduce action and the shift that must immediately
      * follow the reduce.
-     * 
+     *
      * For a rule such as:
-     * 
+     *
      * <pre>
      * A ::= B blah C. { dosomething(); }
      * </pre>
-     * 
+     *
      * This function will first call the action, if any, ("dosomething();" in our
      * example), and then it will pop three states from the stack,
      * one for each entry on the right-hand side of the expression
@@ -1732,7 +1732,7 @@ class Parser#line 102 "Parser.php"
 
     /**
      * The following code executes when the parse fails.
-     * 
+     *
      * Code from %parse_fail is inserted here
      */
     public function yy_parse_failed()
@@ -1749,7 +1749,7 @@ class Parser#line 102 "Parser.php"
 
     /**
      * The following code executes when a syntax error first occurs.
-     * 
+     *
      * %syntax_error code is inserted here
      *
      * @param int The major type of the error token
@@ -1757,15 +1757,15 @@ class Parser#line 102 "Parser.php"
      */
     public function yy_syntax_error($yymajor, $TOKEN)
     {
-        #line 5 "Parser.y"
+        //line 5 "Parser.y"
 
     throw new Exception("Error parsing DPQL statement at line $this->line");
-#line 1664 "Parser.php"
+//line 1664 "Parser.php"
     }
 
     /**
      * The following is executed when the parser accepts.
-     * 
+     *
      * %parse_accept code is inserted here
      */
     public function yy_accept()
@@ -1782,7 +1782,7 @@ class Parser#line 102 "Parser.php"
 
     /**
      * The main parser program.
-     * 
+     *
      * The first argument is the major token number.  The second is
      * the token value string as scanned from the input.
      *
@@ -1804,7 +1804,7 @@ class Parser#line 102 "Parser.php"
             $x              = new ParseyyStackEntry();
             $x->stateno     = 0;
             $x->major       = 0;
-            $this->yystack  = array();
+            $this->yystack  = [];
             array_push($this->yystack, $x);
         }
         $yyendofinput = ($yymajor == 0);
@@ -1847,7 +1847,7 @@ class Parser#line 102 "Parser.php"
                 if (self::YYERRORSYMBOL) {
                     /* A syntax error has occurred.
                     ** The response to an error depends upon whether or not the
-                    ** grammar defines an error token "ERROR".  
+                    ** grammar defines an error token "ERROR".
                     **
                     ** This is what we do if the grammar does define ERROR:
                     **

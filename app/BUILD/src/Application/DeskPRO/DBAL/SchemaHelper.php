@@ -116,7 +116,7 @@ class SchemaHelper
     public function findIndex($table, $cols)
     {
         if (!is_array($cols)) {
-            $cols = array($cols);
+            $cols = [$cols];
         }
 
         foreach ($this->getSchemaManager()->listTableIndexes($table) as $idx) {

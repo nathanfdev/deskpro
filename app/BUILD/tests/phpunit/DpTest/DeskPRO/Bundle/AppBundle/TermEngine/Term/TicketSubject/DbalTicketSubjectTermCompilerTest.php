@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubject;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketSubjectTermCompiler;
@@ -50,8 +51,8 @@ class DbalTicketSubjectTermCompilerTest extends AbstractDbalTicketFilterTermComp
 
     public function testSimpleIsCase()
     {
-        $params = array('subject' => array('test subject'));
-        $check  = array('string0' => $params['subject'][0]);
+        $params = ['subject' => ['test subject']];
+        $check  = ['string0' => $params['subject'][0]];
         $term   = new TicketSubjectTerm($params);
 
         $query_part = $this->term_compiler->compile($term);
@@ -64,8 +65,8 @@ class DbalTicketSubjectTermCompilerTest extends AbstractDbalTicketFilterTermComp
 
     public function testSimpleNotCase()
     {
-        $params = array('subject' => array('test subject'));
-        $check  = array('string0' => $params['subject'][0]);
+        $params = ['subject' => ['test subject']];
+        $check  = ['string0' => $params['subject'][0]];
         $term   = new TicketSubjectTerm($params, TermInterface::OP_NOT);
 
         $query_part = $this->term_compiler->compile($term);
@@ -78,8 +79,8 @@ class DbalTicketSubjectTermCompilerTest extends AbstractDbalTicketFilterTermComp
 
     public function testSimpleHasCase()
     {
-        $params = array('subject' => array('test subject'));
-        $check  = array('string0' => '%'.$params['subject'][0].'%');
+        $params = ['subject' => ['test subject']];
+        $check  = ['string0' => '%'.$params['subject'][0].'%'];
         $term   = new TicketSubjectTerm($params, TermInterface::OP_HAS);
 
         $query_part = $this->term_compiler->compile($term);
@@ -92,8 +93,8 @@ class DbalTicketSubjectTermCompilerTest extends AbstractDbalTicketFilterTermComp
 
     public function testSimpleNotHasCase()
     {
-        $params = array('subject' => array('test subject'));
-        $check  = array('string0' => '%'.$params['subject'][0].'%');
+        $params = ['subject' => ['test subject']];
+        $check  = ['string0' => '%'.$params['subject'][0].'%'];
         $term   = new TicketSubjectTerm($params, TermInterface::OP_NOT_HAS);
 
         $query_part = $this->term_compiler->compile($term);
@@ -106,8 +107,8 @@ class DbalTicketSubjectTermCompilerTest extends AbstractDbalTicketFilterTermComp
 
     public function testWildcardPrefix()
     {
-        $params = array('subject' => array('test subject'), 'wildcard_prefix' => true);
-        $check  = array('string0' => '%'.$params['subject'][0]);
+        $params = ['subject' => ['test subject'], 'wildcard_prefix' => true];
+        $check  = ['string0' => '%'.$params['subject'][0]];
         $term   = new TicketSubjectTerm($params, TermInterface::OP_IS);
 
         $query_part = $this->term_compiler->compile($term);
@@ -120,8 +121,8 @@ class DbalTicketSubjectTermCompilerTest extends AbstractDbalTicketFilterTermComp
 
     public function testWildcardPostfix()
     {
-        $params = array('subject' => array('test subject'), 'wildcard_postfix' => true);
-        $check  = array('string0' => $params['subject'][0].'%');
+        $params = ['subject' => ['test subject'], 'wildcard_postfix' => true];
+        $check  = ['string0' => $params['subject'][0].'%'];
         $term   = new TicketSubjectTerm($params, TermInterface::OP_IS);
 
         $query_part = $this->term_compiler->compile($term);
@@ -134,8 +135,8 @@ class DbalTicketSubjectTermCompilerTest extends AbstractDbalTicketFilterTermComp
 
     public function testMultipleStringsWithIsOperator()
     {
-        $params = array('subject' => array('test subject', 'test subject2'));
-        $check  = array('string0' => $params['subject'][0], 'string1' => $params['subject'][1]);
+        $params = ['subject' => ['test subject', 'test subject2']];
+        $check  = ['string0' => $params['subject'][0], 'string1' => $params['subject'][1]];
         $term   = new TicketSubjectTerm($params, TermInterface::OP_IS);
 
         $query_part = $this->term_compiler->compile($term);
@@ -148,8 +149,8 @@ class DbalTicketSubjectTermCompilerTest extends AbstractDbalTicketFilterTermComp
 
     public function testMultipleStringsWithNotOperator()
     {
-        $params = array('subject' => array('test subject', 'test subject2'));
-        $check  = array('string0' => $params['subject'][0], 'string1' => $params['subject'][1]);
+        $params = ['subject' => ['test subject', 'test subject2']];
+        $check  = ['string0' => $params['subject'][0], 'string1' => $params['subject'][1]];
         $term   = new TicketSubjectTerm($params, TermInterface::OP_NOT);
 
         $query_part = $this->term_compiler->compile($term);

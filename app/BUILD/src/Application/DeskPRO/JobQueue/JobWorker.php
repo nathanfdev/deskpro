@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\JobQueue;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -80,12 +81,12 @@ class JobWorker
      */
     public function work($max_time_in_seconds = 25)
     {
-        #------------------------------
-        # loop for a max N seconds
-        #------------------------------
-        //
+        //------------------------------
+        // loop for a max N seconds
+        //------------------------------
+
         // TODO: look much deeper into this algorithm. suspect it might be slowing down the WorkerProcess (cron).
-        //
+
         $workerStartTime = time();
         $workerEndTime   = $workerStartTime + $max_time_in_seconds;
         // if it can't find a job to execute, the loop ends
@@ -148,18 +149,18 @@ class JobWorker
                      date_next_try ASC
             LIMIT 1
             ',
-            array(
+            [
                 'this_worker_id'  => $this->workerId,
                 'reserved_status' => Job::STATUS_RESERVED,
                 'waiting_status'  => Job::STATUS_WAITING,
                 'date_now'        => new \DateTime(),
-            ),
-            array(
+            ],
+            [
                 'this_worker_id'  => 'string',
                 'reserved_status' => 'string',
                 'waiting_status'  => 'string',
                 'date_now'        => 'datetime',
-            )
+            ]
         );
 
         /*
@@ -172,14 +173,14 @@ class JobWorker
             WHERE worker_id = :this_worker_id
             AND status = :reserved_status
             ',
-            array(
+            [
                 'reserved_status' => Job::STATUS_RESERVED,
                 'this_worker_id'  => $this->workerId,
-            ),
-            array(
+            ],
+            [
                 'reserved_status' => 'string',
                 'this_worker_id'  => 'string',
-            )
+            ]
         );
 
         return $job ?: null;
@@ -239,16 +240,16 @@ class JobWorker
                     num_tries = num_tries + 1
                 WHERE id = :job_id
                 ',
-                array(
+                [
                     'processing_status' => Job::STATUS_PROCESSING,
                     'date_now'          => new \DateTime(),
                     'job_id'            => $job['id'],
-                ),
-                array(
+                ],
+                [
                     'processing_status' => 'string',
                     'date_now'          => 'datetime',
                     'job_id'            => 'integer',
-                )
+                ]
             );
         }
     }
@@ -266,12 +267,12 @@ class JobWorker
             FROM jobs
             WHERE id = :job_id
             ',
-            array(
+            [
                 'job_id' => $id,
-            ),
-            array(
+            ],
+            [
                 'job_id' => 'integer',
-            )
+            ]
         );
     }
 

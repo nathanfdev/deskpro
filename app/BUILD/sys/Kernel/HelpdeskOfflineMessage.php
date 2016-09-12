@@ -51,7 +51,7 @@ class HelpdeskOfflineMessage
 
     public static function getLicenseErrorPage($type, $base_url)
     {
-        $vars = array(
+        $vars = [
             'type'        => $type,
             'base_url'    => $base_url,
             'asset_url'   => str_replace('/index.php', '', $base_url).'/web',
@@ -59,7 +59,7 @@ class HelpdeskOfflineMessage
             'license_id'  => License::getLicense()->getLicenseId(),
             'title'       => 'License Error',
             'message'     => '',
-        );
+        ];
 
         $title = $message = null;
 

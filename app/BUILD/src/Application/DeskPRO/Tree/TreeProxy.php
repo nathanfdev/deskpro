@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tree;
 
 /**
@@ -58,7 +59,7 @@ class TreeProxy implements \ArrayAccess
      */
     public static function makeTreeProxyArray($array, $filter)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($array as $k => $c) {
             if (!call_user_func($filter, $c, $k)) {
@@ -103,9 +104,9 @@ class TreeProxy implements \ArrayAccess
 
         $children = $this->__obj->getChildren();
         if (!$children || !count($children)) {
-            $this->__child_cache = array();
+            $this->__child_cache = [];
 
-            return array();
+            return [];
         }
         $children = $children->toArray();
 
@@ -126,9 +127,9 @@ class TreeProxy implements \ArrayAccess
         return $this->__child_cache;
     }
 
-    ####################################################################################################################
-    # Implementations of magic methods
-    ####################################################################################################################
+    //###################################################################################################################
+    // Implementations of magic methods
+    //###################################################################################################################
 
     public function offsetExists($offset)
     {
@@ -168,8 +169,8 @@ class TreeProxy implements \ArrayAccess
 
     public function __call($name, $arguments)
     {
-        if (is_callable(array($this->__obj, $name))) {
-            return call_user_func_array(array($this->__obj, $name), $arguments);
+        if (is_callable([$this->__obj, $name])) {
+            return call_user_func_array([$this->__obj, $name], $arguments);
         } else {
             return;
         }

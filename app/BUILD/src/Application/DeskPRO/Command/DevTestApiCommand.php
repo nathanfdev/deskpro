@@ -177,7 +177,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         // Make the request
         //------------------------------
 
-        $headers = array();
+        $headers = [];
 
         if ($isV2) {
             $headers['Authorization'] = $apiKey;

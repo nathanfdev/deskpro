@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -102,7 +103,7 @@ class AgentReplyCodes implements Loggable
         }
 
         $this->new_body = $this->orig_body;
-        $this->props    = array();
+        $this->props    = [];
 
         $this->getLogger()->logInfo(sprintf('[AgentReplyCodes] Getting properties from body of %d bytes (%s)', strlen($this->orig_body), $this->is_html ? 'html' : 'plaintext'));
 
@@ -211,7 +212,7 @@ class AgentReplyCodes implements Loggable
      * @param string $code
      * @param string $param
      *
-     * @return bool True if is a valid code SYNTAX.
+     * @return bool True if is a valid code SYNTAX
      */
     protected function handleCode($code, $param)
     {
@@ -319,7 +320,7 @@ class AgentReplyCodes implements Loggable
                 if ($agent) {
                     $this->getLogger()->logDebug('[AgentReplyCodes] Add follower: '.$agent->id);
                     if (empty($this->props['add_followers'])) {
-                        $this->props['add_followers'] = array();
+                        $this->props['add_followers'] = [];
                     }
                     $this->props['add_followers'][] = $agent;
                 } else {
@@ -334,7 +335,7 @@ class AgentReplyCodes implements Loggable
                 if ($agent) {
                     $this->getLogger()->logDebug('[AgentReplyCodes] Remove follower: '.$agent->id);
                     if (empty($this->props['remove_followers'])) {
-                        $this->props['remove_followers'] = array();
+                        $this->props['remove_followers'] = [];
                     }
                     $this->props['remove_followers'][] = $agent;
                 } else {
@@ -398,7 +399,7 @@ class AgentReplyCodes implements Loggable
 
                 if ($param) {
                     if (!isset($this->props['labels'])) {
-                        $this->props['labels'] = array();
+                        $this->props['labels'] = [];
                     }
 
                     $this->getLogger()->logDebug('[AgentReplyCodes] Add labels: '.implode(', ', $param));
@@ -410,7 +411,7 @@ class AgentReplyCodes implements Loggable
 
             case 'dep':
             case 'department':
-                $deps = array();
+                $deps = [];
                 foreach (App::getOrm()->getRepository('DeskPRO:Department')->findAll() as $dep) {
                     if ($dep->is_tickets_enabled) {
                         $deps[$dep->id] = $dep;
@@ -519,7 +520,7 @@ class AgentReplyCodes implements Loggable
                 }
 
                 if (!isset($this->props['ticket_fields'])) {
-                    $this->props['ticket_fields'] = array();
+                    $this->props['ticket_fields'] = [];
                 }
 
                 // Choice fields means we need to find the actual option...
@@ -531,7 +532,7 @@ class AgentReplyCodes implements Loggable
                     );
 
                     if ($child_opt) {
-                        $set   = isset($this->props['ticket_fields'][$field->id]) ? $this->props['ticket_fields'][$field->id] : array();
+                        $set   = isset($this->props['ticket_fields'][$field->id]) ? $this->props['ticket_fields'][$field->id] : [];
                         $set[] = $child_opt->id;
                         $set   = array_unique($set);
 

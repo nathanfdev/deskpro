@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Mail;
 
 use Orb\Mail\QueueProcessor\QueueProcessorInterface;
@@ -48,13 +49,13 @@ class QueueTransport extends \Orb\Mail\Transport\QueueTransport
             $done_reg = true;
             Swift_DependencyContainer::getInstance()->register('transport.queue')
                 ->asNewInstanceOf('Orb\\Mail\\Transport\\QueueTransport')
-                ->withDependencies(array('transport.eventdispatcher'));
+                ->withDependencies(['transport.eventdispatcher']);
         }
 
         $arguments = \Swift_DependencyContainer::getInstance()->createDependenciesFor('transport.queue');
         array_unshift($arguments, $queue_processor);
 
-        call_user_func_array(array($this, 'Orb\\Mail\\Transport\\QueueTransport::__construct'), $arguments);
+        call_user_func_array([$this, 'Orb\\Mail\\Transport\\QueueTransport::__construct'], $arguments);
     }
 
     /**

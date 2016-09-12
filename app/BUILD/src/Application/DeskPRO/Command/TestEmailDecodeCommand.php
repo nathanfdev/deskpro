@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -57,8 +57,8 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
     protected function configure()
     {
-        $this->setDefinition(array(
-        ))->setName('dp:test-email-decode');
+        $this->setDefinition([
+        ])->setName('dp:test-email-decode');
 
         $this->addArgument('file', InputArgument::REQUIRED, 'The email file to process');
         $this->addOption('source', null, InputOption::VALUE_NONE, 'The "file" is a source ID to process instead of a file on the filesystem');
@@ -120,7 +120,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
         }
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function outputStandard(InputInterface $input, OutputInterface $output)
     {
@@ -174,7 +174,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
         echo "\n";
 
         if ($input->getOption('forward')) {
-            $email_info            = array();
+            $email_info            = [];
             $email_info['subject'] = $r->getSubject()->subject;
             if ($email_info['body'] = $r->getBodyText()->getBodyUtf8()) {
                 $email_info['body_is_html'] = false;
@@ -331,7 +331,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
         return $text;
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function outputAttachment($idx, InputInterface $input, OutputInterface $output)
     {
@@ -347,7 +347,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
         return 0;
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function outputAttachmentEmail($idx, InputInterface $input, OutputInterface $output)
     {

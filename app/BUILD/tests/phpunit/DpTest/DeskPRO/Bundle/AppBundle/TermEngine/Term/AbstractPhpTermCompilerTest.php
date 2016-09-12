@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -74,16 +75,15 @@ abstract class AbstractPhpTermCompilerTest extends ApiTestCase
      */
     protected function makeChecker(PhpCheck $check, array $variables)
     {
-        //
+
         // this method simulates the evaluateExpression method on the result PhpTicketCheckerInterface
         // in the tests assertions below, eval() will use this method
-        //
 
         $lang = $this->get('term_engine.expression_language');
 
         $agent = $this->prophesize('Application\DeskPRO\Entity\Person');
         $agent->getId()->willReturn(2); // in these tests, ME is always agent id=2
-        $agent->getTeamIds()->willReturn(array(2)); // in these tests, ME is always agent id=2
+        $agent->getTeamIds()->willReturn([2]); // in these tests, ME is always agent id=2
         $context = new TermEngineContext($agent->reveal());
 
         // do some var replacing to emulate what the engine does...
@@ -109,7 +109,7 @@ abstract class AbstractPhpTermCompilerTest extends ApiTestCase
      * @param $expected
      * @param $ticket_prophecy
      */
-    protected function assertTicketCheck(PhpCheck $php_check, $expected, $ticket_prophecy, $extra = array())
+    protected function assertTicketCheck(PhpCheck $php_check, $expected, $ticket_prophecy, $extra = [])
     {
         $ticket = $ticket_prophecy->reveal();
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -70,7 +71,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
      */
     private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
     {
-        $agents = array();
+        $agents = [];
 
         foreach ($agent_ids as $aid) {
             // -1 = current user
@@ -146,7 +147,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         }
 
         if (!$agents) {
-            return array();
+            return [];
         }
 
         $agents = array_unique($agents);
@@ -170,7 +171,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             return;
         }
 
-        $vars = array(
+        $vars = [
             'is_new_ticket'      => $ticket->getStateChangeRecorder()->isNewTicket(),
             'is_new_agent_reply' => $ticket->getStateChangeRecorder()->hasNewAgentReply(),
             'is_new_agent_note'  => $ticket->getStateChangeRecorder()->hasNewAgentNote(),
@@ -178,13 +179,15 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             'ticket'             => $ticket,
             'performer'          => $context->getPersonContext(),
             'log_items'          => $this->getActionOption('ticket_logs'),
-        );
+        ];
 
-        $log_ids = array_map(function ($l) { return $l->id; }, $vars['log_items']);
+        $log_ids = array_map(function ($l) {
+            return $l->id;
+        }, $vars['log_items']);
         $alert_sender = $this->getContainer()->getAgentAlertSender();
 
-        $alert_data = array(
-            '@fetch_types'       => array('ticket' => 'DeskPRO:Ticket', 'performer' => 'DeskPRO:Person', 'log_items' => 'DeskPRO:TicketLog'),
+        $alert_data = [
+            '@fetch_types'       => ['ticket' => 'DeskPRO:Ticket', 'performer' => 'DeskPRO:Person', 'log_items' => 'DeskPRO:TicketLog'],
             'ticket'             => $ticket->getId(),
             'performer'          => $vars['performer'] ? $vars['performer']->id : 0,
             'is_new_ticket'      => $vars['is_new_ticket'],
@@ -192,14 +195,14 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             'is_new_agent_note'  => $vars['is_new_agent_note'],
             'is_new_user_reply'  => $vars['is_new_user_reply'],
             'log_items'          => $log_ids,
-        );
+        ];
 
         $sent_count = 0;
         $em         = $this->getContainer()->getEm();
         $tpl        = $this->getContainer()->getTemplating();
         $tr         = $this->getContainer()->getTranslator();
 
-        $alert_records = array();
+        $alert_records = [];
 
         foreach ($agents as $agent) {
             if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
@@ -223,7 +226,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
                 ++$sent_count;
                 $em->persist($alert);
 
-                $alert_records[] = array($agent, $alert_data, $alert);
+                $alert_records[] = [$agent, $alert_data, $alert];
             }
         }
 

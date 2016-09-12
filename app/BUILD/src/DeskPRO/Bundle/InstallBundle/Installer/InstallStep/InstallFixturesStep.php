@@ -118,9 +118,9 @@ class InstallFixturesStep extends AbstractStep
             'value' => $this->getContext()->getSession()->getSource() ?: 'default',
         ]);
 
-        #---------------------------------------------
-        # Filestorage method
-        #---------------------------------------------
+        //---------------------------------------------
+        // Filestorage method
+        //---------------------------------------------
 
         $fsMethod = $this->getContext()->getProfile()->getAnswer('filestorage_method');
 
@@ -159,9 +159,9 @@ class InstallFixturesStep extends AbstractStep
             }
         }
 
-        #---------------------------------------------
-        # Brand / URL
-        #---------------------------------------------
+        //---------------------------------------------
+        // Brand / URL
+        //---------------------------------------------
 
         $brandId = $db->fetchColumn("SELECT value FROM settings WHERE name = 'portal.default_brand'");
         $db->delete('settings', ['name' => 'core.deskpro_url']);

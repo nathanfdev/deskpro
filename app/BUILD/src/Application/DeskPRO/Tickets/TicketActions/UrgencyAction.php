@@ -111,9 +111,9 @@ class UrgencyAction extends AbstractAction implements PermissionableAction
         }
 
         if ($this->num < 0) {
-            return $tr->phrase('agent.tickets.decrease_urgency_action', array('amount' => abs($this->num)));
+            return $tr->phrase('agent.tickets.decrease_urgency_action', ['amount' => abs($this->num)]);
         } else {
-            return $tr->phrase('agent.tickets.increase_urgency_action', array('amount' => $this->num));
+            return $tr->phrase('agent.tickets.increase_urgency_action', ['amount' => $this->num]);
         }
     }
 }

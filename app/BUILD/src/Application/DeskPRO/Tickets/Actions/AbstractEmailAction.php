@@ -123,9 +123,9 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
      */
     protected function getStandardEmailVars(Ticket $ticket, ExecutorContextInterface $context, $mode)
     {
-        #------------------------------
-        # Build up some type flags
-        #------------------------------
+        //------------------------------
+        // Build up some type flags
+        //------------------------------
 
         $state = $ticket->getStateChangeRecorder();
         if ($state->isNewTicket()) {
@@ -139,9 +139,9 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         $context->getLogger()->info("[AbstractEmailAction] Type: $type");
         $context->getLogger()->info(sprintf('[AbstractEmailAction] Performer: %s', $context->getEventPerformer()));
 
-        #------------------------------
-        # Set reply flags
-        #------------------------------
+        //------------------------------
+        // Set reply flags
+        //------------------------------
 
         $new_replies        = $state->getNewReplies();
         $is_new_ticket      = $state->isNewTicket();
@@ -172,9 +172,9 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             $ticket_logs         = $ticketlog_generator->getLogEntries();
         }
 
-        #------------------------------
-        # Build map of mentions
-        #------------------------------
+        //------------------------------
+        // Build map of mentions
+        //------------------------------
 
         $vars = [
             'type'               => $type,

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,7 +32,7 @@ use Psr\Log\AbstractLogger;
 
 class ArrayLogger extends AbstractLogger
 {
-    private $messages = array();
+    private $messages = [];
 
     /**
      * Logs with an arbitrary level.
@@ -41,14 +41,14 @@ class ArrayLogger extends AbstractLogger
      * @param string $message
      * @param array  $context
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
         $context['_dp_time'] = time();
-        $this->messages[]    = array(
+        $this->messages[]    = [
             'level'   => $level,
             'message' => $message,
             'context' => $context,
-        );
+        ];
     }
 
     /**
@@ -68,7 +68,7 @@ class ArrayLogger extends AbstractLogger
      */
     public function toString()
     {
-        $str = array();
+        $str = [];
 
         foreach ($this->messages as $m) {
             $str[] = '['.date('Y-m-d H:i:s', $m['context']['_dp_time']).'] '.$m['level'].': '.$m['message'];

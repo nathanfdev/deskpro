@@ -109,7 +109,7 @@ class RemoveParticipants extends AbstractAction
             return '';
         }
 
-        $names = array();
+        $names = [];
         foreach ($people as $p) {
             $names[$p->id] = $as_html ? htmlspecialchars($p->getDisplayName()) : $p->getDisplayName();
         }
@@ -120,6 +120,6 @@ class RemoveParticipants extends AbstractAction
             }
         }
 
-        return $tr->phrase('agent.tickets.remove_participants_action', array('parts' => implode(', ', $names)));
+        return $tr->phrase('agent.tickets.remove_participants_action', ['parts' => implode(', ', $names)]);
     }
 }

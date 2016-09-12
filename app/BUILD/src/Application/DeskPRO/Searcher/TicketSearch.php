@@ -655,9 +655,9 @@ class TicketSearch extends SearcherAbstract
             $table = 'tickets_search_active';
         }
 
-        #------------------------------
-        # Standard for permissions
-        #------------------------------
+        //------------------------------
+        // Standard for permissions
+        //------------------------------
 
         $with_part_union = false;
 
@@ -704,9 +704,9 @@ class TicketSearch extends SearcherAbstract
             $where_perm .= ' AND ';
         }
 
-        #------------------------------
-        # Add joins
-        #------------------------------
+        //------------------------------
+        // Add joins
+        //------------------------------
 
         $sql_joins = '';
 
@@ -749,9 +749,9 @@ class TicketSearch extends SearcherAbstract
             $sql_joins .= implode(' ', $this->add_raw_joins);
         }
 
-        #------------------------------
-        # Add wheres
-        #------------------------------
+        //------------------------------
+        // Add wheres
+        //------------------------------
 
         $where = '1';
 
@@ -881,9 +881,9 @@ class TicketSearch extends SearcherAbstract
         $sql  = "SELECT tickets.id $select FROM $table AS tickets ";
         $sql2 = "SELECT part_perm.ticket_id AS id $select FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
 
-        #------------------------------
-        # Standard for permissions
-        #------------------------------
+        //------------------------------
+        // Standard for permissions
+        //------------------------------
 
         $with_part_union = false;
 
@@ -939,9 +939,9 @@ class TicketSearch extends SearcherAbstract
             $where_perm .= ' AND ';
         }
 
-        #------------------------------
-        # Add joins
-        #------------------------------
+        //------------------------------
+        // Add joins
+        //------------------------------
 
         $sql_joins = '';
 
@@ -991,9 +991,9 @@ class TicketSearch extends SearcherAbstract
             $sql_joins .= implode(' ', $this->add_raw_joins);
         }
 
-        #------------------------------
-        # Add wheres
-        #------------------------------
+        //------------------------------
+        // Add wheres
+        //------------------------------
 
         $where = '1';
 
@@ -2496,7 +2496,7 @@ class TicketSearch extends SearcherAbstract
         return true;
     }
 
-    private function doesTicketMatchTerm(Entity\Ticket $ticket, $context = null, $term, $op, $choice)
+    private function doesTicketMatchTerm(Entity\Ticket $ticket, $context, $term, $op, $choice)
     {
         $this->done_person_context_check = true;
 
@@ -2974,7 +2974,7 @@ class TicketSearch extends SearcherAbstract
      * In case of any doubt this should return true as it is better to show the options that are of no effect in cases
      * than to not show it when it is needed.
      *
-     * @return bool True if urgency options should be applied.
+     * @return bool True if urgency options should be applied
      */
     public function needsUrgency()
     {

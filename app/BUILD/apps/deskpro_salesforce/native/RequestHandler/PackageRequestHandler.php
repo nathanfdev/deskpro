@@ -61,7 +61,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      */
     public function checkRequirementsAction(ApiPackageRequestContext $context)
     {
-        return $context->createJsonResponse(array('soap_support' => class_exists('\SoapClient')));
+        return $context->createJsonResponse(['soap_support' => class_exists('\SoapClient')]);
     }
 
     /**
@@ -80,18 +80,18 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $error  = false;
         $client = null;
 
-        $log   = array();
+        $log   = [];
         $log[] = "user: $user";
         $log[] = "password: $password";
         $log[] = "token: $token";
 
-        $tests   = array();
+        $tests   = [];
         $tests[] = function () use (&$log) {
             $log[] = 'Verifying SoapClient is available...';
             if (!class_exists('\SoapClient')) {
                 $log[] = 'SOAP support is not enabled in PHP';
 
-                return array('missing_soap', 'SOAP support is not enabled in PHP');
+                return ['missing_soap', 'SOAP support is not enabled in PHP'];
             }
             $log[] = 'SoapClient is ok';
 
@@ -103,7 +103,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             if (!function_exists('curl_init')) {
                 $log[] = 'curl is not enabled in PHP';
 
-                return array('missing_soap', 'curl support is not enabled in PHP');
+                return ['missing_soap', 'curl support is not enabled in PHP'];
             }
             $log[] = 'curl is ok';
 
@@ -149,7 +149,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             } else {
                 $log[] = 'Failed';
 
-                return array('failed_connection', 'Invalid URL or the service refused the connection');
+                return ['failed_connection', 'Invalid URL or the service refused the connection'];
             }
         };
 
@@ -160,11 +160,11 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             }
         }
 
-        $result_data = array(
+        $result_data = [
             'log'        => implode("\n", $log),
             'error'      => $error ? $error[1] : false,
             'error_code' => $error ? $error[0] : false,
-        );
+        ];
 
         return $context->createJsonResponse($result_data);
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Escalations;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -95,20 +96,20 @@ class EscalationTerms implements \Serializable, FilterTermInterface
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
         $data['version'] = 1;
-        $data['terms']   = array();
+        $data['terms']   = [];
         foreach ($this->criteria->getAll() as $criteria) {
             if (!($criteria instanceof CriteriaTermInterface)) {
                 continue;
             }
 
-            $data['terms'][] = array(
+            $data['terms'][] = [
                 'type'    => $criteria->getTermType(),
                 'op'      => $criteria->getTermOperator(),
                 'options' => $criteria->getTermOptions(),
-            );
+            ];
         }
 
         return $data;

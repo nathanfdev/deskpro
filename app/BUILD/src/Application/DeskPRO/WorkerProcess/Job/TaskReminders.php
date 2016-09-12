@@ -45,9 +45,9 @@ class TaskReminders extends AbstractJob
 
     public function run()
     {
-        #------------------------------
-        # The time of day reminders are sent
-        #------------------------------
+        //------------------------------
+        // The time of day reminders are sent
+        //------------------------------
 
         $send_time = App::getSetting('core.task_reminder_time');
         if (!$send_time || strpos($send_time, ':') === false) {
@@ -58,9 +58,9 @@ class TaskReminders extends AbstractJob
         $hour             = (int) $hour;
         $min              = (int) $min;
 
-        #------------------------------
-        # Figure out which agents the current time is for
-        #------------------------------
+        //------------------------------
+        // Figure out which agents the current time is for
+        //------------------------------
 
         $for_agents = [];
         foreach (App::getDataService('Agent')->getAgents() as $agent) {

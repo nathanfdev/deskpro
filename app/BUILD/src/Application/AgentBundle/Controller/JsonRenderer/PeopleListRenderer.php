@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller\JsonRenderer;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -75,15 +76,15 @@ class PeopleListRenderer
     public function renderArray(PeopleResultsDisplay $display, $fn_visitor = null)
     {
         if (!$display->getCount()) {
-            return array();
+            return [];
         }
 
-        #------------------------------
-        # Precache data
-        #------------------------------
+        //------------------------------
+        // Precache data
+        //------------------------------
 
-        $org_ids    = array();
-        $person_ids = array();
+        $org_ids    = [];
+        $person_ids = [];
 
         foreach ($display->getPeople() as $person) {
             $person_ids[] = $person->id;
@@ -97,11 +98,11 @@ class PeopleListRenderer
             $this->cache_orgs = Arrays::keyFromData($this->cache_orgs, 'id');
         }
 
-        #------------------------------
-        # Generate data array
-        #------------------------------
+        //------------------------------
+        // Generate data array
+        //------------------------------
 
-        $json_array = array();
+        $json_array = [];
 
         foreach ($display->getPeople() as $person) {
             $data = $this->renderPerson($person, $display);
@@ -138,11 +139,11 @@ class PeopleListRenderer
      */
     private function renderPerson(Person $entity, PeopleResultsDisplay $display)
     {
-        $data = array();
+        $data = [];
 
         $data['id']                    = $entity->id;
         $data['name_with_title']       = $entity->getNameWithTitle();
-        $data['organization']          = $entity->organization ? array('id' => $entity->organization['id'], 'name' => $entity->organization['name']) : null;
+        $data['organization']          = $entity->organization ? ['id' => $entity->organization['id'], 'name' => $entity->organization['name']] : null;
         $data['is_contact']            = $entity->is_contact;
         $data['is_user']               = $entity->is_user;
         $data['is_agent']              = $entity->is_agent;
@@ -168,10 +169,10 @@ class PeopleListRenderer
 
         $data['display_name'] = $entity->getDisplayName();
         if ($entity->primary_email) {
-            $data['primary_email'] = array(
+            $data['primary_email'] = [
                 'id'    => $entity->primary_email->id,
                 'email' => $entity->primary_email->email,
-            );
+            ];
         }
 
         $email                 = $display->getEmail($entity);
@@ -196,10 +197,10 @@ class PeopleListRenderer
 
             $rendered_data = $field_manager->getRenderedToText($field_manager->createFieldDataFromArray($custom_data));
             foreach ($rendered_data as $fid => $v) {
-                $data['person_fields['.$fid.']'] = array(
+                $data['person_fields['.$fid.']'] = [
                     'title' => $v['title'],
                     'value' => $v['rendered'],
-                );
+                ];
             }
         }
 

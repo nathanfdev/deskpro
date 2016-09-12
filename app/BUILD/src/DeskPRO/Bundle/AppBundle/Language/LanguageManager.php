@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -109,7 +109,7 @@ class LanguageManager
      */
     public function getLanguageBySystemName($sys_name)
     {
-        return $this->language_repo->findOneBy(array('sys_name' => $sys_name));
+        return $this->language_repo->findOneBy(['sys_name' => $sys_name]);
     }
 
     /**
@@ -173,7 +173,7 @@ class LanguageManager
      *
      * @return string
      */
-    public function phrase($name, array $vars = array(), Language $lang = null)
+    public function phrase($name, array $vars = [], Language $lang = null)
     {
         return $this->getTranslator($lang)->phrase($name, $vars);
     }

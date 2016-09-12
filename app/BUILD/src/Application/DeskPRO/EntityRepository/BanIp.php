@@ -39,7 +39,7 @@ use Application\DeskPRO\App;
 class BanIp extends AbstractEntityRepository
 {
     /** @var array */
-    protected $counts = array();
+    protected $counts = [];
 
     /**
      * Get a list of IPs suitable for display.
@@ -83,7 +83,7 @@ class BanIp extends AbstractEntityRepository
         }
 
         $where  = '';
-        $params = array();
+        $params = [];
 
         if (!empty($search_phrase)) {
             $where            = 'banned_ip LIKE :search';

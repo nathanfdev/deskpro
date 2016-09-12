@@ -178,7 +178,9 @@ class QuickSearchContext
     public function getDeferredIds()
     {
         $all_ids    = $this->ids->toArray();
-        $loaded_ids = $this->entities->map(function ($entity) { return $entity->getId(); })->toArray();
+        $loaded_ids = $this->entities->map(function ($entity) {
+            return $entity->getId();
+        })->toArray();
 
         return array_diff($all_ids, $loaded_ids);
     }

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -41,9 +42,9 @@ use Orb\Util\Strings;
 
 class Feedback extends AbstractEntityRepository
 {
-    ############################################################################
-    # Counters
-    ############################################################################
+    //###########################################################################
+    // Counters
+    //###########################################################################
 
     /**
      * Count the number of feedback that are awaiting validation.
@@ -119,7 +120,7 @@ class Feedback extends AbstractEntityRepository
             FROM feedback
             WHERE status = ?
             GROUP BY hidden_status WITH ROLLUP
-        ", array('hidden'));
+        ", ['hidden']);
     }
 
     /**
@@ -187,7 +188,7 @@ class Feedback extends AbstractEntityRepository
             SELECT COUNT(*)
             FROM feedback
             WHERE category_id = ?
-        ', array($category->id));
+        ', [$category->id]);
     }
 
     /**
@@ -203,12 +204,12 @@ class Feedback extends AbstractEntityRepository
             SELECT COUNT(*)
             FROM feedback
             WHERE status_category_id = ?
-        ', array($category->id));
+        ', [$category->id]);
     }
 
-    ############################################################################
-    # Fetchers
-    ############################################################################
+    //###########################################################################
+    // Fetchers
+    //###########################################################################
 
     public function getBySlug($slug)
     {
@@ -229,7 +230,7 @@ class Feedback extends AbstractEntityRepository
     public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         if ($person_context) {
@@ -238,14 +239,14 @@ class Feedback extends AbstractEntityRepository
                 FROM DeskPRO:Feedback i INDEX BY i.id
                 WHERE i.id IN (?0) AND i.status != 'hidden'
                 ORDER BY i.id DESC
-            ")->execute(array($ids));
+            ")->execute([$ids]);
         } else {
             $feedback = $this->getEntityManager()->createQuery('
                 SELECT i
                 FROM DeskPRO:Feedback i INDEX BY i.id
                 WHERE i.id IN (?0)
                 ORDER BY i.id DESC
-            ')->execute(array($ids));
+            ')->execute([$ids]);
         }
 
         return $feedback;
@@ -254,7 +255,7 @@ class Feedback extends AbstractEntityRepository
     public function getByResultIds(array $ids)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $unsorted_feedback = $this->getEntityManager()->createQuery('
@@ -262,9 +263,9 @@ class Feedback extends AbstractEntityRepository
             FROM DeskPRO:Feedback i INDEX BY i.id
             WHERE i.id IN (?0)
             ORDER BY i.id DESC
-        ')->execute(array($ids));
+        ')->execute([$ids]);
 
-        $feedback = array();
+        $feedback = [];
 
         foreach ($ids as $id) {
             if (isset($unsorted_feedback[$id])) {
@@ -280,7 +281,7 @@ class Feedback extends AbstractEntityRepository
         if ($sort == 'date') {
             $sort = 'id';
         }
-        if (!in_array($sort, array('id', 'num_ratings'))) {
+        if (!in_array($sort, ['id', 'num_ratings'])) {
             $sort = 'id';
         }
 
@@ -292,14 +293,14 @@ class Feedback extends AbstractEntityRepository
                 FROM DeskPRO:Feedback i
                 WHERE i.category IN (?0) AND i.status = ?1
                 ORDER BY i.$sort DESC
-            ")->setMaxResults($num)->execute(array($node_ids, $status));
+            ")->setMaxResults($num)->execute([$node_ids, $status]);
         } else {
             $feedback = $this->getEntityManager()->createQuery("
                 SELECT i
                 FROM DeskPRO:Feedback i
                 WHERE i.status = ?0
                 ORDER BY i.$sort DESC
-            ")->setMaxResults($num)->execute(array($status));
+            ")->setMaxResults($num)->execute([$status]);
         }
 
         return $feedback;
@@ -337,14 +338,14 @@ class Feedback extends AbstractEntityRepository
                     FROM DeskPRO:Feedback i INDEX BY i.id
                     WHERE i.status_category = ?0 AND i.category IN (?1)
                     ORDER BY i.id DESC
-                ')->setMaxResults($num)->execute(array($status, $cat_ids));
+                ')->setMaxResults($num)->execute([$status, $cat_ids]);
             } else {
                 $feedback = $this->getEntityManager()->createQuery('
                     SELECT i
                     FROM DeskPRO:Feedback i INDEX BY i.id
                     WHERE i.status_category = ?0
                     ORDER BY i.id DESC
-                ')->setMaxResults($num)->execute(array($status));
+                ')->setMaxResults($num)->execute([$status]);
             }
         } else {
             if ($node) {
@@ -354,14 +355,14 @@ class Feedback extends AbstractEntityRepository
                     FROM DeskPRO:Feedback i INDEX BY i.id
                     WHERE i.status = ?0 AND i.category IN (?1)
                     ORDER BY i.id DESC
-                ')->setMaxResults($num)->execute(array($status, $cat_ids));
+                ')->setMaxResults($num)->execute([$status, $cat_ids]);
             } else {
                 $feedback = $this->getEntityManager()->createQuery('
                     SELECT i
                     FROM DeskPRO:Feedback i INDEX BY i.id
                     WHERE i.status = ?0
                     ORDER BY i.id DESC
-                ')->setMaxResults($num)->execute(array($status));
+                ')->setMaxResults($num)->execute([$status]);
             }
         }
 
@@ -370,15 +371,15 @@ class Feedback extends AbstractEntityRepository
 
     public function getReportAssociations()
     {
-        return array(
-            'views' => array(
+        return [
+            'views' => [
                 'conditions'   => '%1$s.object_type = 4 AND %1$s.object_id = %2$s.id',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
-            ),
-            'ratings' => array(
+            ],
+            'ratings' => [
                 'conditions'   => '%1$s.object_type = \'feedback\' AND %1$s.object_id = %2$s.id',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating',
-            ),
-        );
+            ],
+        ];
     }
 }

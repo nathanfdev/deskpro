@@ -34,9 +34,9 @@ use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 abstract class AbstractTicketApplicator extends AbstractActionApplicator
 {
-    /** @var  TicketManager */
+    /** @var TicketManager */
     protected $tm;
-    /** @var  RecursiveValidator */
+    /** @var RecursiveValidator */
     protected $validator;
 
     /**

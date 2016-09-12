@@ -115,9 +115,9 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
         return $this->blob;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

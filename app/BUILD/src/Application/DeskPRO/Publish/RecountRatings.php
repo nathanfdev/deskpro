@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Publish;
 
 use Doctrine\ORM\EntityManager;
@@ -92,16 +93,17 @@ class RecountRatings
     public function recountAll($status_fn = null)
     {
         if (!$status_fn) {
-            $status_fn = function ($status_type, array $info) { };
+            $status_fn = function ($status_type, array $info) {
+            };
         }
 
         $pages = $this->countBatches();
-        $status_fn('start', array('num_batches' => $pages, 'batch_size' => $this->batch_size));
+        $status_fn('start', ['num_batches' => $pages, 'batch_size' => $this->batch_size]);
 
         for ($i = 1; $i <= $pages; ++$i) {
-            $status_fn('batch_start', array('batch' => $i));
+            $status_fn('batch_start', ['batch' => $i]);
             $this->recountBatch($i);
-            $status_fn('batch_end', array('batch' => $i));
+            $status_fn('batch_end', ['batch' => $i]);
         }
 
         $status_fn('end', $i);
@@ -121,11 +123,11 @@ class RecountRatings
             WHERE id BETWEEN $start AND $end
         ");
 
-        $update_set = array();
+        $update_set = [];
         foreach ($ratings as $rating) {
             $key = $rating['object_type'].$rating['object_id'];
             if (!isset($update_set[$key])) {
-                $update_set[$key] = array('type' => $rating['object_type'], 'id' => $rating['object_id'], 'count' => 0, 'rating' => 0);
+                $update_set[$key] = ['type' => $rating['object_type'], 'id' => $rating['object_id'], 'count' => 0, 'rating' => 0];
             }
 
             ++$update_set[$key]['count'];
@@ -148,13 +150,13 @@ class RecountRatings
                         UPDATE $table
                         SET total_rating = ?, num_ratings ?
                         WHERE id = ?
-                    ", array($set['rating'], $set['count'], $set['id']));
+                    ", [$set['rating'], $set['count'], $set['id']]);
                 } else {
                     $this->em->getConnection()->executeUpdate("
                         UPDATE $table
                         SET total_rating = total_rating + ?, num_ratings = num_ratings + ?
                         WHERE id = ?
-                    ", array($set['rating'], $set['count'], $set['id']));
+                    ", [$set['rating'], $set['count'], $set['id']]);
                 }
             }
             $this->em->getConnection()->commit();

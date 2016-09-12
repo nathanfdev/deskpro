@@ -107,7 +107,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     public function getMetaAction(ApiPackageRequestContext $context)
     {
         if ($error = $this->checkErrors($context->getContainer())) {
-            return $context->createJsonResponse(array('error' => $error));
+            return $context->createJsonResponse(['error' => $error]);
         }
 
         /** @var JIRA $js */

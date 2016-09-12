@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Notifications;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
@@ -128,14 +129,14 @@ class AgentNotifyListBuilder implements PersonContextInterface
         if ($this->ticket->status == 'hidden') {
             $this->logMessage('ticket hidden, no notifications to send');
 
-            return array();
+            return [];
         }
 
-        #------------------------------
-        # Sort out which kind of notification we need to send
-        #------------------------------
+        //------------------------------
+        // Sort out which kind of notification we need to send
+        //------------------------------
 
-        $event_types = array(
+        $event_types = [
             'new'                  => false,
             'agent_reply'          => false,
             'agent_note'           => false,
@@ -144,7 +145,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
             'assign_team_change'   => $this->state->hasChangedField('agent_team'),
             'assign_follow_change' => $this->state->hasChangedField('participants'),
             'property_change'      => false,
-        );
+        ];
 
         if ($this->state->isNewTicket()) {
             $event_types['new'] = true;
@@ -175,22 +176,22 @@ class AgentNotifyListBuilder implements PersonContextInterface
             $event_types['property_change'] = true;
         }
 
-        #------------------------------
-        # Build list
-        #------------------------------
+        //------------------------------
+        // Build list
+        //------------------------------
 
         $agent_subs  = $this->getMatchingSubscriptions();
-        $notify_list = array();
+        $notify_list = [];
 
         foreach ($this->filter_changes->getChangedFilters() as $filter_change) {
             $filter = $filter_change->getFilter();
 
-            $agents_with_new_match = array();
+            $agents_with_new_match = [];
             foreach ($filter_change->getAgentsWithNewMatch() as $agent) {
                 $agents_with_new_match[$agent->id] = true;
             }
 
-            $agents_with_orig_match = array();
+            $agents_with_orig_match = [];
             foreach ($filter_change->getAgentsWithOriginalMatch() as $agent) {
                 $agents_with_orig_match[$agent->id] = true;
             }
@@ -240,19 +241,19 @@ class AgentNotifyListBuilder implements PersonContextInterface
     private function addTypesToList(array &$notify_list, Person $agent, LegacyTicketFilter $filter, $change_type, array $notify_types)
     {
         if (!isset($notify_list[$agent->id])) {
-            $notify_list[$agent->id] = array(
+            $notify_list[$agent->id] = [
                 'agent'       => $agent,
-                'filter_subs' => array(),
-                'types'       => array(),
-            );
+                'filter_subs' => [],
+                'types'       => [],
+            ];
         }
         if (!isset($notify_list[$agent->id]['filter_subs'][$filter->id])) {
-            $notify_list[$agent->id]['filter_subs'][$filter->id] = array(
+            $notify_list[$agent->id]['filter_subs'][$filter->id] = [
                 'filter'    => $filter,
                 'is_new'    => false,
                 'is_update' => false,
-                'types'     => array(),
-            );
+                'types'     => [],
+            ];
         }
 
         $notify_list[$agent->id]['filter_subs'][$filter->id]["is_$change_type"] = true;
@@ -273,7 +274,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
      */
     private function getSubTypesForFilterNewMatch(array $event_types, $with_origmatch, LegacyTicketFilter $filter, TicketFilterSubscription $sub)
     {
-        $types = array();
+        $types = [];
         if ($event_types['new']) {
             if ($sub->email_created) {
                 $types[] = 'email';
@@ -313,7 +314,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
      */
     private function getSubTypesForFilterOrigMatch(array $event_types, $with_newmatch, LegacyTicketFilter $filter, TicketFilterSubscription $sub)
     {
-        $types = array();
+        $types = [];
 
         if ($event_types['property_change'] && $sub->email_property_change) {
             $types[] = 'email';
@@ -366,8 +367,8 @@ class AgentNotifyListBuilder implements PersonContextInterface
      */
     public function getMatchingSubscriptions()
     {
-        $for_agent_ids  = array();
-        $for_filter_ids = array();
+        $for_agent_ids  = [];
+        $for_filter_ids = [];
 
         foreach ($this->filter_changes->getChangedFilters() as $filter_id => $changes) {
             $for_filter_ids[] = $filter_id;
@@ -392,7 +393,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
         if (!$for_agent_ids || !$for_filter_ids) {
             $this->logMessage('no agents or filters match, no notifications to send');
 
-            return array();
+            return [];
         }
 
         $this->logMessage(sprintf('There are %d changed filters for %d agents', count($for_filter_ids), count($for_agent_ids)));

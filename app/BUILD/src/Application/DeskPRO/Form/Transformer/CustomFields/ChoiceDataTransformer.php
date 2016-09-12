@@ -40,7 +40,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 /**
  * Class ChoiceDataTransformer.
  */
-class ChoiceDataTransformer  implements DataTransformerInterface
+class ChoiceDataTransformer implements DataTransformerInterface
 {
     /**
      * @var CustomDataPersister
@@ -80,17 +80,17 @@ class ChoiceDataTransformer  implements DataTransformerInterface
      */
     public function transform($value)
     {
-        $this->previous = array();
+        $this->previous = [];
 
         if (!$value) {
-            return array('value' => null);
+            return ['value' => null];
         }
 
         // single choice
         if ($value instanceof CustomFieldData) {
             $this->previous[$value->definition['id']] = $value;
 
-            return array('value' => $value->definition);
+            return ['value' => $value->definition];
         }
 
         // multiple choices
@@ -101,7 +101,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
                 $coll->add($data->definition);
             }
 
-            return array('value' => $coll);
+            return ['value' => $coll];
         }
 
         throw new TransformationFailedException();

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,7 +58,9 @@ class LogServiceFactory
         $this->settings_resolver = $this->container->get('settings_resolver');
         $this->settings_resolver->setVirtual(
             'api_log.finder.type',
-            function ($global) {return $global['api_log.writer.type'];});
+            function ($global) {
+                return $global['api_log.writer.type'];
+            });
         $this->settings_resolver->getGlobalSettings(true);
     }
 

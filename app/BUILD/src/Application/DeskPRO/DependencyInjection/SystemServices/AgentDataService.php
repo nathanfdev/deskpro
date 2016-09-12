@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -53,27 +54,27 @@ class AgentDataService
     /**
      * @var \Application\DeskPRO\Entity\Person[]
      */
-    public $agents = array();
+    public $agents = [];
 
     /**
      * @var array
      */
-    private $agent_teams = array();
+    private $agent_teams = [];
 
     /**
      * @var array
      */
-    private $agent_to_teams = array();
+    private $agent_to_teams = [];
 
     /**
      * @var array
      */
-    private $team_to_agents = array();
+    private $team_to_agents = [];
 
     /**
      * @var array
      */
-    private $agent_to_groups = array();
+    private $agent_to_groups = [];
 
     /**
      * @var array
@@ -83,7 +84,7 @@ class AgentDataService
     /**
      * @var int[]
      */
-    public $ids = array();
+    public $ids = [];
 
     /**
      * @var
@@ -149,7 +150,7 @@ class AgentDataService
         $this->team_to_agents = $this->db->fetchAllGrouped('
             SELECT team_id, person_id
             FROM agent_team_members
-        ', array(), 'team_id', null, 'person_id');
+        ', [], 'team_id', null, 'person_id');
 
         $this->agent_to_teams = Arrays::reverseLookupArray($this->team_to_agents, true, true);
 
@@ -158,9 +159,9 @@ class AgentDataService
                 SELECT person_id, usergroup_id
                 FROM person2usergroups
                 WHERE person_id IN (?)
-            ', array($this->ids), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
+            ', [$this->ids], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
         } else {
-            $this->agent_to_groups = array();
+            $this->agent_to_groups = [];
         }
     }
 
@@ -191,7 +192,7 @@ class AgentDataService
      */
     public function getNames(array $for_ids = null)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($this->getAgents() as $agent) {
             if ($for_ids === null || in_array($agent->getId(), $for_ids)) {
@@ -261,7 +262,7 @@ class AgentDataService
     {
         $this->preload();
 
-        $agents = array();
+        $agents = [];
 
         foreach ($ids as $id) {
             $id = (int) $id;
@@ -286,9 +287,9 @@ class AgentDataService
     {
         $this->preload();
 
-        $valid_ids = array();
+        $valid_ids = [];
         if (!isset($invalid_ids) || !$invalid_ids) {
-            $invalid_ids = array();
+            $invalid_ids = [];
         }
 
         foreach ($ids as $id) {
@@ -335,7 +336,7 @@ class AgentDataService
             FROM sessions s
             INNER JOIN people p ON (s.person_id = p.id)
             WHERE p.is_agent = 1 AND p.is_deleted = 0 AND s.date_last > ?
-        ', array($cutoff), array(), 0, 0);
+        ', [$cutoff], [], 0, 0);
 
         return $this->online_agent_ids;
     }
@@ -347,7 +348,7 @@ class AgentDataService
     {
         $this->getOnlineAgentIds();
 
-        $agents = array();
+        $agents = [];
         foreach ($this->online_agent_ids as $id) {
             $agents[$id] = $this->get($id);
         }
@@ -419,7 +420,7 @@ class AgentDataService
     {
         $this->preload();
 
-        $teams = array();
+        $teams = [];
 
         foreach ($ids as $id) {
             $id = (int) $id;
@@ -451,10 +452,10 @@ class AgentDataService
         }
 
         if (empty($this->agent_to_teams[$agent->id])) {
-            return array();
+            return [];
         }
 
-        $teams = array();
+        $teams = [];
         foreach ($this->agent_to_teams[$agent->id] as $tid) {
             $t = $this->getTeam($tid);
             if ($t) {
@@ -526,7 +527,7 @@ class AgentDataService
         }
 
         if (empty($this->agent_to_groups[$agent->id])) {
-            return array();
+            return [];
         }
 
         return $this->agent_to_groups[$agent->id];
@@ -552,10 +553,10 @@ class AgentDataService
         }
 
         if (empty($this->team_to_agents[$team->id])) {
-            return array();
+            return [];
         }
 
-        $agents = array();
+        $agents = [];
         foreach ($this->team_to_agents[$team->id] as $tid) {
             $t = $this->get($tid);
             if ($t) {
@@ -588,7 +589,7 @@ class AgentDataService
      */
     public function selectAgents($selector, Person $person_context = null, Ticket $ticket_context = null)
     {
-        $return = array();
+        $return = [];
 
         // Legacy terms
         switch ($selector) {

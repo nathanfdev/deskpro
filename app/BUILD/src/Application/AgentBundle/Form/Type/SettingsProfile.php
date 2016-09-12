@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Form\Type;
 
 use Application\DeskPRO\App;
@@ -40,42 +41,42 @@ class SettingsProfile extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('required' => false));
+        $builder->add('name', 'text', ['required' => false]);
         $builder->add('primary_phone', new PhoneNumberType());
-        $builder->add('override_display_name', 'text', array('required' => false));
-        $builder->add('email', 'text', array('required' => false));
-        $builder->add('timezone', 'choice', array(
+        $builder->add('override_display_name', 'text', ['required' => false]);
+        $builder->add('email', 'text', ['required' => false]);
+        $builder->add('timezone', 'choice', [
             'choices' => array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers()),
-        ));
+        ]);
 
-        $lang_names = array();
+        $lang_names = [];
         foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
             if ($lang->has_agent) {
                 $lang_names[$lang->id] = App::getTranslator()->getPhraseObject($lang, 'title');
             }
         }
 
-        $builder->add('language_id', 'choice', array(
+        $builder->add('language_id', 'choice', [
             'choices' => $lang_names,
-        ));
-        $builder->add('password', 'password', array('required' => false));
-        $builder->add('password2', 'password', array('required' => false));
+        ]);
+        $builder->add('password', 'password', ['required' => false]);
+        $builder->add('password2', 'password', ['required' => false]);
 
-        $builder->add('ticket_close_reply', 'checkbox', array('required' => false));
-        $builder->add('ticket_close_note', 'checkbox', array('required' => false));
-        $builder->add('hide_claimed_chat', 'checkbox', array('required' => false));
-        $builder->add('ticket_go_next_reply', 'checkbox', array('required' => false));
-        $builder->add('ticket_reverse_order', 'checkbox', array('required' => false));
-        $builder->add('enable_plaintext_email', 'checkbox', array('required' => false));
+        $builder->add('ticket_close_reply', 'checkbox', ['required' => false]);
+        $builder->add('ticket_close_note', 'checkbox', ['required' => false]);
+        $builder->add('hide_claimed_chat', 'checkbox', ['required' => false]);
+        $builder->add('ticket_go_next_reply', 'checkbox', ['required' => false]);
+        $builder->add('ticket_reverse_order', 'checkbox', ['required' => false]);
+        $builder->add('enable_plaintext_email', 'checkbox', ['required' => false]);
 
-        $builder->add('reset_api_token', 'hidden', array('required' => false));
+        $builder->add('reset_api_token', 'hidden', ['required' => false]);
 
-        $builder->add('default_team_id', 'hidden', array('required' => false));
+        $builder->add('default_team_id', 'hidden', ['required' => false]);
 
-        $builder->add('new_picture_blob_id', 'hidden', array('required' => false));
+        $builder->add('new_picture_blob_id', 'hidden', ['required' => false]);
 
-        $builder->add('auto_dismiss_notifications', 'choice', array(
-            'choices' => array(
+        $builder->add('auto_dismiss_notifications', 'choice', [
+            'choices' => [
                 5    => '5 seconds',
                 10   => '10 seconds',
                 15   => '15 seconds',
@@ -87,17 +88,17 @@ class SettingsProfile extends AbstractType
                 1800 => '30 minutes',
                 3600 => '1 hour',
                 0    => 'Never',
-            ),
+            ],
             'expanded' => false,
             'multiple' => false,
-        ));
+        ]);
     }
 
     public function getDefaultOptions(array $options)
     {
-        return array(
+        return [
             'data_class' => 'Application\\AgentBundle\\Form\\Model\\SettingsProfile',
-        );
+        ];
     }
 
     public function getName()

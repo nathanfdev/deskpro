@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Routing\Generator\Dumper;
 
 use Orb\Util\Strings;
@@ -39,7 +40,7 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
     /** @var string */
     private $className;
 
-    public function dump(array $options = array())
+    public function dump(array $options = [])
     {
         $this->className = $options['class'];
         $class           = trim(parent::dump($options));
@@ -61,10 +62,10 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
 
     protected function getClassCode()
     {
-        $route_patterns  = array();
-        $route_fragments = array();
-        $fragment_names  = array();
-        $fragment_types  = array();
+        $route_patterns  = [];
+        $route_fragments = [];
+        $fragment_names  = [];
+        $fragment_types  = [];
 
         foreach ($this->getRoutes()->all() as $name => $route) {
             $route_patterns[$name] = $route->getPath();
@@ -78,7 +79,7 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
             }
         }
 
-        $var_code                   = array();
+        $var_code                   = [];
         $var_code['routePatterns']  = 'static private $routePatterns = '.var_export($route_patterns, true).';';
         $var_code['routeFragments'] = 'static private $routeFragments = '.var_export($route_fragments, true).';';
         $var_code['fragmentNames']  = 'static private $fragmentNames = '.var_export($fragment_names, true).';';
@@ -174,6 +175,6 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
     }
 EOF;
 
-        return array($var_code, $method_code);
+        return [$var_code, $method_code];
     }
 }

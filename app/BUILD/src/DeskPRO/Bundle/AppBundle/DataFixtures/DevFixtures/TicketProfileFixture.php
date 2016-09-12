@@ -182,9 +182,9 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         }
     }
 
-    ####################################################################################################################
-    # Users, Orgs and Tickets
-    ####################################################################################################################
+    //###################################################################################################################
+    // Users, Orgs and Tickets
+    //###################################################################################################################
 
     protected function initContent()
     {
@@ -240,9 +240,9 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
     {
         $department = $this->getReference('department.'.$departmentRef);
 
-        #------------------------------
-        # Ticket
-        #------------------------------
+        //------------------------------
+        // Ticket
+        //------------------------------
 
         $subj = $this->faker->sentence(4);
         $date = $this->faker->dateTimeBetween('-2 months', '-2days');
@@ -265,9 +265,9 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $this->em->persist($ticket);
         $this->em->flush();
 
-        #------------------------------
-        # Field Data
-        #------------------------------
+        //------------------------------
+        // Field Data
+        //------------------------------
 
         /** @var CustomDefTicket[] $fields */
         $fields             = TicketFieldsFixture::$fields[$departmentRef];

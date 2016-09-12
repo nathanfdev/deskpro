@@ -54,7 +54,9 @@ class AcceptDatabaseStep extends AbstractStep
                     break;
                 }
             }
-            if (array_reduce($info, function ($carry, $db) {return $carry && $db;}, true)) {
+            if (array_reduce($info, function ($carry, $db) {
+                return $carry && $db;
+            }, true)) {
                 break;
             }
         }

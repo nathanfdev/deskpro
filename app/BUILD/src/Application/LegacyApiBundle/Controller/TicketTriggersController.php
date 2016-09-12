@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -61,9 +62,9 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     /**
      * @param string|null $type
@@ -100,7 +101,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         $triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers($type);
 
         $data            = $this->getApiData($triggers);
-        $res             = array();
+        $res             = [];
         $res['triggers'] = $data;
 
         if ($type == 'all' || $type == 'newticket' || $type == 'update') {
@@ -119,9 +120,9 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         return $this->createApiResponse($res);
     }
 
-    ####################################################################################################################
-    # get
-    ####################################################################################################################
+    //###################################################################################################################
+    // get
+    //###################################################################################################################
 
     /**
      * @param int         $id
@@ -168,7 +169,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                 }
 
                 $event   = $special_type == 'departments' ? TicketTrigger::EVENT_TYPE_NEWTICKET : TicketTrigger::EVENT_TYPE_UPDATE;
-                $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('department' => $dep, 'event_trigger' => $event));
+                $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(['department' => $dep, 'event_trigger' => $event]);
 
                 if (!$trigger) {
                     $trigger = new TicketTrigger();
@@ -186,7 +187,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
                 $acc = $this->container->getEmailAccountManager()->getAccount($id);
 
-                $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('email_account' => $acc));
+                $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(['email_account' => $acc]);
                 if (!$trigger) {
                     $trigger = new TicketTrigger();
                     $edit    = SpecialTriggerEdit::createWithEmailAccount($acc);
@@ -198,18 +199,18 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
             case 'satisfaction':
 
-                $satisfactions = array(
+                $satisfactions = [
                     0 => 'negative',
                     1 => 'neutral',
                     2 => 'positive',
-                );
+                ];
 
                 if (!isset($satisfactions[$id])) {
                     throw new NotFoundHttpException();
                 }
 
                 $name    = SpecialTriggerEdit::TYPE_SATISFACTION.'_'.$satisfactions[$id];
-                $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('sys_name' => $name));
+                $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(['sys_name' => $name]);
                 if (!$trigger) {
                     $trigger             = new TicketTrigger();
                     $trigger->is_enabled = false;
@@ -230,14 +231,14 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
         $data = $this->getApiData($trigger);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'trigger' => $data,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     /**
      * @param int         $id
@@ -389,7 +390,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
                     $event = $special_type == 'departments' ? TicketTrigger::EVENT_TYPE_NEWTICKET : TicketTrigger::EVENT_TYPE_UPDATE;
 
-                    $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('department' => $dep, 'event_trigger' => $event));
+                    $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(['department' => $dep, 'event_trigger' => $event]);
                     if (!$trigger) {
                         $trigger             = new TicketTrigger();
                         $trigger->is_enabled = false;
@@ -402,18 +403,18 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
                 case 'satisfaction':
 
-                    $satisfactions = array(
+                    $satisfactions = [
                         0 => 'negative',
                         1 => 'neutral',
                         2 => 'positive',
-                    );
+                    ];
 
                     if (!isset($satisfactions[$id])) {
                         throw new NotFoundHttpException();
                     }
 
                     $name    = SpecialTriggerEdit::TYPE_SATISFACTION.'_'.$satisfactions[$id];
-                    $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('sys_name' => $name));
+                    $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(['sys_name' => $name]);
                     if (!$trigger) {
                         $trigger             = new TicketTrigger();
                         $trigger->is_enabled = false;
@@ -431,7 +432,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
                     $acc = $this->container->getEmailAccountManager()->getAccount($id);
 
-                    $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('email_account' => $acc));
+                    $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(['email_account' => $acc]);
                     if (!$trigger) {
                         $trigger             = new TicketTrigger();
                         $trigger->is_enabled = false;
@@ -482,14 +483,14 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         $trigger->setByUserMode($this->in->getArrayOfStrings('by_user_mode'));
         $trigger->setByAppMode($this->in->getArrayOfStrings('by_app_mode'));
 
-        $error_criteria = array();
-        $error_actions  = array();
-        $error_messages = array();
+        $error_criteria = [];
+        $error_actions  = [];
+        $error_messages = [];
 
         $terms = new TriggerTerms();
         foreach ($this->in->getArrayValue('criteria_sets') as $set) {
             if ($set) {
-                $composite = new TriggerTermComposite(array(), TriggerTermComposite::OP_AND);
+                $composite = new TriggerTermComposite([], TriggerTermComposite::OP_AND);
                 foreach ($set as $ti) {
                     try {
                         $t = $terms->getTermFromArray($ti);
@@ -532,10 +533,10 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
             }
         }
 
-        $ret = array();
+        $ret = [];
 
         if ($error_criteria || $error_actions) {
-            $ret['errors'] = array();
+            $ret['errors'] = [];
             if ($error_criteria) {
                 $ret['errors']['criteria'] = $error_criteria;
             }
@@ -575,9 +576,9 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         }
 
         if ($trigger->department) {
-            $trigger->is_enabled = (bool) $this->db->fetchColumn('SELECT id FROM ticket_triggers WHERE department_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?', array($trigger->event_trigger));
+            $trigger->is_enabled = (bool) $this->db->fetchColumn('SELECT id FROM ticket_triggers WHERE department_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?', [$trigger->event_trigger]);
         } elseif ($trigger->email_account) {
-            $trigger->is_enabled = (bool) $this->db->fetchColumn('SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?', array($trigger->event_trigger));
+            $trigger->is_enabled = (bool) $this->db->fetchColumn('SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?', [$trigger->event_trigger]);
         }
 
         $this->em->persist($trigger);
@@ -588,14 +589,14 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
             $this->db->executeUpdate('
                 DELETE FROM ticket_triggers
                 WHERE department_id = ? AND event_trigger = ? AND id != ?
-            ', array($trigger->department->id, $trigger->event_trigger, $trigger->id));
+            ', [$trigger->department->id, $trigger->event_trigger, $trigger->id]);
         }
         if ($trigger->email_account) {
             $this->db->executeUpdate('
                 DELETE FROM ticket_triggers
                 WHERE email_account_id = ?
                 AND id != ?
-            ', array($trigger->email_account->id, $trigger->id));
+            ', [$trigger->email_account->id, $trigger->id]);
         }
 
         $ret['trigger_id'] = $trigger->id;
@@ -603,9 +604,9 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         return $this->createSuccessResponse($ret);
     }
 
-    ####################################################################################################################
-    # delete
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -629,12 +630,12 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         $this->em->remove($trigger);
         $this->em->flush();
 
-        return $this->createSuccessResponse(array('old_id' => $old_id));
+        return $this->createSuccessResponse(['old_id' => $old_id]);
     }
 
-    ####################################################################################################################
-    # toggle-trigger
-    ####################################################################################################################
+    //###################################################################################################################
+    // toggle-trigger
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -700,9 +701,9 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # toggle-trigger-group
-    ####################################################################################################################
+    //###################################################################################################################
+    // toggle-trigger-group
+    //###################################################################################################################
 
     /**
      * @param $special_type
@@ -764,21 +765,21 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                     UPDATE ticket_triggers
                     SET is_enabled = ?
                     WHERE department_id IS NOT NULL AND event_trigger = 'newticket'
-                ", array($is_enabled));
+                ", [$is_enabled]);
                 break;
             case 'departments_changed':
                 $this->db->executeUpdate("
                     UPDATE ticket_triggers
                     SET is_enabled = ?
                     WHERE department_id IS NOT NULL AND event_trigger = 'update'
-                ", array($is_enabled));
+                ", [$is_enabled]);
                 break;
             case 'email_accounts':
                 $this->db->executeUpdate("
                     UPDATE ticket_triggers
                     SET is_enabled = ?
                     WHERE email_account_id IS NOT NULL AND event_trigger = 'newticket'
-                ", array($is_enabled));
+                ", [$is_enabled]);
                 break;
             default:
                 throw $this->createNotFoundException();
@@ -787,9 +788,9 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # save-run-order
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-run-order
+    //###################################################################################################################
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -821,9 +822,9 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # get-custom-actions
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-custom-actions
+    //###################################################################################################################
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -842,17 +843,17 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
     {
         $manager = $this->container->getTicketActionDefManager();
 
-        $actions = array();
+        $actions = [];
         foreach ($manager->getAllDefs() as $d) {
             $actions[] = $d->toApiData();
         }
 
-        return $this->createJsonResponse(array('action_defs' => $actions));
+        return $this->createJsonResponse(['action_defs' => $actions]);
     }
 
-    ####################################################################################################################
-    # get-app-events
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-app-events
+    //###################################################################################################################
 
     public function getAppEventsAction($type = 'update')
     {
@@ -860,30 +861,30 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
             throw $this->createNotFoundException();
         }
 
-        $events = array();
+        $events = [];
 
         foreach ($this->container->getAppManager()->getAllApps() as $app) {
             $app_events = $app->getTriggerEvents($type);
 
             if ($app_events) {
-                $app_info = array(
+                $app_info = [
                     'id'      => $app->id,
                     'title'   => $app->title,
-                    'package' => array(
+                    'package' => [
                         'name'  => $app->package->name,
                         'title' => $app->package->title,
-                    ),
-                );
+                    ],
+                ];
 
                 foreach ($app_events as $ev) {
-                    $events[] = array(
+                    $events[] = [
                         'event' => $ev,
                         'app'   => $app_info,
-                    );
+                    ];
                 }
             }
         }
 
-        return $this->createJsonResponse(array('app_events' => $events, 'event_type' => $type));
+        return $this->createJsonResponse(['app_events' => $events, 'event_type' => $type]);
     }
 }

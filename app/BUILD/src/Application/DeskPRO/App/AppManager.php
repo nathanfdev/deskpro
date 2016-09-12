@@ -44,31 +44,31 @@ class AppManager implements AppManagerInterface
     /**
      * @var AppPackage[]
      */
-    private $packages = array();
+    private $packages = [];
 
     /**
      * Apps grouped by package name.
      *
      * @var array
      */
-    private $package_to_apps = array();
+    private $package_to_apps = [];
 
     /**
      * @var AppInstance[]
      */
-    private $apps = array();
+    private $apps = [];
 
     /**
      * Cache of native configs per package.
      *
      * @var array
      */
-    private $native_package_configs = array();
+    private $native_package_configs = [];
 
     /**
      * @var \Application\DeskPRO\App\Native\NativeApp[]
      */
-    private $native_apps = array();
+    private $native_apps = [];
 
     /**
      * @var AppServiceContainer
@@ -80,7 +80,7 @@ class AppManager implements AppManagerInterface
      *
      * @var array
      */
-    private $app_paths = array();
+    private $app_paths = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Usersource[]
@@ -93,7 +93,7 @@ class AppManager implements AppManagerInterface
      * @param AppInstance[]       $apps
      * @param AppServiceContainer $app_service_container
      */
-    public function __construct(array $packages, array $apps, array $app_paths, AppServiceContainer $app_service_container, array $usersources = array())
+    public function __construct(array $packages, array $apps, array $app_paths, AppServiceContainer $app_service_container, array $usersources = [])
     {
         $this->app_service_container = $app_service_container;
 
@@ -113,7 +113,7 @@ class AppManager implements AppManagerInterface
 
             $pname = $app->package->name;
             if (!isset($this->package_to_apps[$pname])) {
-                $this->package_to_apps[$pname] = array();
+                $this->package_to_apps[$pname] = [];
             }
             $this->package_to_apps[$pname][] = $app;
 
@@ -205,7 +205,7 @@ class AppManager implements AppManagerInterface
         }
 
         if (!isset($this->package_to_apps[$name])) {
-            return array();
+            return [];
         }
 
         return $this->package_to_apps[$name];
@@ -333,7 +333,7 @@ class AppManager implements AppManagerInterface
      */
     private function _initNativePackageAutoload(NativePackageConfig $native_config)
     {
-        static $has_reg = array();
+        static $has_reg = [];
 
         $namespace = $native_config->getClassNamespace();
         $directory = $native_config->getNativeDir();

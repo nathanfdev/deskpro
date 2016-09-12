@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
@@ -49,22 +50,22 @@ class FilterChange
     /**
      * @var \Application\DeskPRO\Entity\Person[]
      */
-    private $added_for_agents = array();
+    private $added_for_agents = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Person[]
      */
-    private $removed_for_agents = array();
+    private $removed_for_agents = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Person[]
      */
-    private $orig_match_for_agents = array();
+    private $orig_match_for_agents = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Person[]
      */
-    private $new_match_for_agents = array();
+    private $new_match_for_agents = [];
 
     /**
      * @param LegacyTicketFilter $filter

@@ -511,8 +511,6 @@ class DbalExecutableQuery
         $this->order_by[$order_by] = $dir;
     }
 
-    /**
-     */
     public function getCount()
     {
         return $this->count;

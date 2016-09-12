@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -75,10 +75,10 @@ class TagSpec extends ObjectBehavior
         $this->beConstructedWith(
             'knowledgebase',
             'Theme:Articles:list',
-            array('option1', 'option2')
+            ['option1', 'option2']
         );
 
-        $this->getDefinedOptions()->shouldBe(array('option1', 'option2'));
+        $this->getDefinedOptions()->shouldBe(['option1', 'option2']);
     }
 
     public function it_has_an_associated_array_of_its_default_options()
@@ -86,13 +86,13 @@ class TagSpec extends ObjectBehavior
         $this->beConstructedWith(
             'knowledgebase',
             'Theme:Articles:list',
-            array('option1', 'option2'),
-            array(
+            ['option1', 'option2'],
+            [
                 'option1' => 'default here',
-            )
+            ]
         );
 
-        $this->getDefaultOptions()->shouldBe(array('option1' => 'default here'));
+        $this->getDefaultOptions()->shouldBe(['option1' => 'default here']);
     }
 
     public function it_can_be_explicitely_marked_as_no_esi()
@@ -100,8 +100,8 @@ class TagSpec extends ObjectBehavior
         $this->beConstructedWith(
             'knowledgebase',
             'Theme:Articles:list',
-            array(),
-            array(),
+            [],
+            [],
             $esi = false,
             $always_inline_guests = false
         );
@@ -115,8 +115,8 @@ class TagSpec extends ObjectBehavior
         $this->beConstructedWith(
             'knowledgebase',
             'Theme:Articles:list',
-            array(),
-            array(),
+            [],
+            [],
             $esi = true,
             $always_inline_guests = false
         );
@@ -130,8 +130,8 @@ class TagSpec extends ObjectBehavior
         $this->beConstructedWith(
             'knowledgebase',
             'Theme:Articles:list',
-            array(),
-            array(),
+            [],
+            [],
             $esi = true,
             $always_inline_guests = true
         );
@@ -145,8 +145,8 @@ class TagSpec extends ObjectBehavior
         $this->beConstructedWith(
             'knowledgebase',
             'Theme:Articles:list',
-            array(),
-            array(),
+            [],
+            [],
             $esi = true
         );
 
@@ -161,8 +161,8 @@ class TagSpec extends ObjectBehavior
         $this->beConstructedWith(
             'knowledgebase',
             'Theme:Articles:list',
-            array(),
-            array(),
+            [],
+            [],
             $esi = true,
             $always_inline_guests = true,
             $allow_route_params = true

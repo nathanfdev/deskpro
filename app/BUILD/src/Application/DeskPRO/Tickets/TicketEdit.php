@@ -52,7 +52,7 @@ class TicketEdit implements PersonContextInterface
     /**
      * @var array
      */
-    protected $perm_errors = array();
+    protected $perm_errors = [];
 
     public function __construct(Entity\Ticket $ticket)
     {
@@ -74,8 +74,8 @@ class TicketEdit implements PersonContextInterface
      */
     public function applyActions(array $actions)
     {
-        $this->perm_errors = array();
-        $return            = array();
+        $this->perm_errors = [];
+        $return            = [];
 
         if ($this->person_context) {
             $tcheck = $this->person_context->PermissionsManager->TicketChecker;

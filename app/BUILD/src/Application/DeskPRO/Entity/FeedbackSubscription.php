@@ -83,9 +83,9 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('root_category', $root_category);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

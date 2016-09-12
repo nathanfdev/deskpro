@@ -34,7 +34,7 @@ class Build1465207103 extends AbstractBuild
     {
         $this->out('Upgrading feedback table and status categories table for it.');
         $connection = $this->getDbConnection('default');
-        $sql        = <<<SQL
+        $sql        = <<<'SQL'
         SELECT * FROM `feedback_status_categories` AS `fsc`
         WHERE `fsc`.`status_type` = 'active'
         ORDER BY `fsc`.`display_order` ASC

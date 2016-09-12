@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -50,24 +50,24 @@ class CsvImport extends AbstractJob
     protected $_custom_fields;
 
     /** @var array */
-    protected static $options = array(
-        'delimeter' => array(
+    protected static $options = [
+        'delimeter' => [
             'comma'     => ',',
             'semicolon' => ';',
-        ),
-        'enclosure' => array(
+        ],
+        'enclosure' => [
             'none'   => null,
             'quotes' => '"',
-        ),
-    );
+        ],
+    ];
 
     /** @var array */
-    protected static $defaults = array(
+    protected static $defaults = [
         'delimeter' => 'comma',
         'enclosure' => 'quotes',
-    );
+    ];
 
-    public static function getOptions(array $options = array())
+    public static function getOptions(array $options = [])
     {
         foreach ($options as $k => $v) {
             if (!isset(self::$options[$k]) || !isset(self::$options[$k][$v])) {
@@ -94,7 +94,7 @@ class CsvImport extends AbstractJob
 
     protected function _getDefaultData()
     {
-        return array(
+        return [
             'blob_id'            => false,
             'field_maps'         => false,
             'new_custom_map'     => false,
@@ -111,9 +111,9 @@ class CsvImport extends AbstractJob
             'fseek'              => 0,
             'user_filename'      => '',
             'log_blob_id'        => 0,
-            'log'                => array(),
+            'log'                => [],
             'ref'                => null,
-        );
+        ];
     }
 
     public function run($max_time)
@@ -206,7 +206,7 @@ class CsvImport extends AbstractJob
                 );
                 $task['task_data'] = array_merge(
                     $task['task_data'],
-                    array('log' => null, 'log_blob_id' => $logBlob['id'])
+                    ['log' => null, 'log_blob_id' => $logBlob['id']]
                 );
                 @unlink($tmpFile);
             }
@@ -231,13 +231,13 @@ class CsvImport extends AbstractJob
 
     protected function _createNewCustomFields()
     {
-        $this->_data['new_custom_map'] = array();
-        $handlers                      = array(
+        $this->_data['new_custom_map'] = [];
+        $handlers                      = [
             'text'     => 'Application\DeskPRO\CustomFields\Handler\Text',
             'textarea' => 'Application\DeskPRO\CustomFields\Handler\Textarea',
             'choice'   => 'Application\DeskPRO\CustomFields\Handler\Choice',
             'date'     => 'Application\DeskPRO\CustomFields\Handler\Date',
-        );
+        ];
 
         foreach ($this->_data['field_maps'] as $column_id => $info) {
             if (!isset($info['map'])) {
@@ -265,7 +265,7 @@ class CsvImport extends AbstractJob
         $field_maps = $this->_data['field_maps'];
 
         if (isset($row[0]) && $row[0] === null) {
-            $this->log(array('Empty row'));
+            $this->log(['Empty row']);
 
             return false;
         }
@@ -282,9 +282,9 @@ class CsvImport extends AbstractJob
 
         $primary_email    = false;
         $password         = false;
-        $secondary_emails = array();
-        $addresses        = array();
-        $errors           = array();
+        $secondary_emails = [];
+        $addresses        = [];
+        $errors           = [];
         $send_welcome     = true;
 
         foreach ($field_maps as $column_id => $info) {
@@ -408,26 +408,26 @@ class CsvImport extends AbstractJob
                     break;
 
                 case 'website':
-                    $this->_addContactData($person, 'website', array('url' => $column_value), $label);
+                    $this->_addContactData($person, 'website', ['url' => $column_value], $label);
                     break;
 
                 case 'twitter':
-                    $this->_addContactData($person, 'twitter', array('username' => $column_value), $label);
+                    $this->_addContactData($person, 'twitter', ['username' => $column_value], $label);
                     break;
 
                 case 'linkedin':
-                    $this->_addContactData($person, 'linkedin', array('profile_url' => $column_value), $label);
+                    $this->_addContactData($person, 'linkedin', ['profile_url' => $column_value], $label);
                     break;
 
                 case 'facebook':
-                    $this->_addContactData($person, 'facebook', array('profile_url' => $column_value), $label);
+                    $this->_addContactData($person, 'facebook', ['profile_url' => $column_value], $label);
                     break;
 
                 case 'phone':
                     $form = App::$container->getFormFactory()->create(new PersonPhoneNumbersType(), $person);
-                    $form->submit(array('phone_numbers' => array(array('number' => $column_value))));
+                    $form->submit(['phone_numbers' => [['number' => $column_value]]]);
                     if (!$form->isValid()) {
-                        $this->log(array(sprintf('Invalid phone number "%s"', $column_value)));
+                        $this->log([sprintf('Invalid phone number "%s"', $column_value)]);
                         // todo
                         foreach ($person->phone_numbers as $pn) {
                             if (!$pn['number']) {
@@ -447,7 +447,7 @@ class CsvImport extends AbstractJob
                     if (empty($info['type'])) {
                         $info['type'] = 'aim';
                     }
-                    $this->_addContactData($person, 'instant_message', array('service' => $info['type'], 'username' => $column_value), $label);
+                    $this->_addContactData($person, 'instant_message', ['service' => $info['type'], 'username' => $column_value], $label);
                     break;
 
                 case 'address':
@@ -458,7 +458,7 @@ class CsvImport extends AbstractJob
                 case 'post_code':
                 case 'country':
                     if (!isset($addresses[$info['label']])) {
-                        $addresses[$info['label']] = array('label' => $info['label']);
+                        $addresses[$info['label']] = ['label' => $info['label']];
                     }
                     $addresses[$info['label']][$map_field] = $column_value;
                     break;
@@ -491,7 +491,7 @@ class CsvImport extends AbstractJob
                     if ($custom_field_id && isset($this->_custom_fields[$custom_field_id])) {
                         $custom_field = $this->_custom_fields[$custom_field_id];
                         if ($custom_field->isChoiceType()) {
-                            $selected_childs = array();
+                            $selected_childs = [];
                             $test_value      = mb_strtolower($column_value);
                             $multiple        = !empty($custom_field['options']['multiple']);
 
@@ -597,7 +597,7 @@ class CsvImport extends AbstractJob
 
             $message = $mailer->createMessage();
             $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array('person' => $person));
+            $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', ['person' => $person]);
             App::$container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
                 $message->prepare();
             });
@@ -660,7 +660,7 @@ class CsvImport extends AbstractJob
         $store = null;
 
         if ($ref = @$task['task_data']['ref']) {
-            $store = $rep->findOneBy(array('name' => 'csv_import.'.$ref));
+            $store = $rep->findOneBy(['name' => 'csv_import.'.$ref]);
         }
 
         if (!$store) {

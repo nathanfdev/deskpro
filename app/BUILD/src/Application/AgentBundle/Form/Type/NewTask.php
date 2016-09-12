@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -38,30 +39,30 @@ class NewTask extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        #------------------------------
-        # Basic fields
-        #------------------------------
+        //------------------------------
+        // Basic fields
+        //------------------------------
 
         $builder->add('title', 'text');
-        $builder->add('date_due', 'datetime', array(
+        $builder->add('date_due', 'datetime', [
             'widget'      => 'single_text',
             'empty_value' => '',
             'date_format' => 'M/d/y',
             'required'    => false,
-        ));
+        ]);
 
-        $builder->add('visibility', 'choice', array(
-            'choices'  => array(0 => 'Public', 2 => 'Private'),
+        $builder->add('visibility', 'choice', [
+            'choices'  => [0 => 'Public', 2 => 'Private'],
             'required' => true,
-        ));
-        $builder->add('assigned_agent_team', 'entity', array(
+        ]);
+        $builder->add('assigned_agent_team', 'entity', [
             'class'       => 'Application\DeskPRO\Entity\AgentTeam',
             'property'    => 'name',
             'required'    => false,
             'empty_value' => '--Agent Team--',
-        ));
+        ]);
 
-        $builder->add('assigned_agent', 'entity', array(
+        $builder->add('assigned_agent', 'entity', [
             'class'         => 'Application\DeskPRO\Entity\Person',
             'query_builder' => function (\Doctrine\ORM\EntityRepository $er) {
                 return $er->createQueryBuilder('p')
@@ -71,14 +72,14 @@ class NewTask extends AbstractType
             'property'    => 'name',
             'required'    => false,
             'empty_value' => '--Agent--',
-        ));
+        ]);
     }
 
     public function getDefaultOptions(array $options)
     {
-        return array(
+        return [
             'data_class' => 'Application\DeskPRO\Entity\Task',
-        );
+        ];
     }
 
     public function getName()

@@ -60,7 +60,7 @@ class RuleBuilder
     /**
      * @var array
      */
-    protected $special_keys = array();
+    protected $special_keys = [];
 
     /**
      * The "Actions" builder has a 'type' item and then an options array.
@@ -77,7 +77,7 @@ class RuleBuilder
      */
     public static function newActionsBuilder()
     {
-        return new self(array('type'));
+        return new self(['type']);
     }
 
     /**
@@ -95,7 +95,7 @@ class RuleBuilder
      */
     public static function newTermsBuilder()
     {
-        return new self(array('type', 'op'));
+        return new self(['type', 'op']);
     }
 
     /**
@@ -117,18 +117,18 @@ class RuleBuilder
      */
     public function readForm(array $form)
     {
-        $data = array();
+        $data = [];
 
         foreach ($form as $item) {
             if (!is_array($item)) {
                 continue;
             }
 
-            $data_item = array();
+            $data_item = [];
             foreach ($this->special_keys as $k) {
                 $data_item[$k] = null;
             }
-            $data_item['options'] = array();
+            $data_item['options'] = [];
 
             $is_blank = true;
             foreach ($item as $k => $v) {

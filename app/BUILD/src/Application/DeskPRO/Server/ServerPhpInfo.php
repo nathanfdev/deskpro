@@ -76,26 +76,26 @@ class ServerPhpInfo
      */
     protected function _getInfo($noencode = false)
     {
-        #------------------------------
-        # Binary paths
-        #------------------------------
+        //------------------------------
+        // Binary paths
+        //------------------------------
 
-        $binary_paths = array(
+        $binary_paths = [
             'php'       => $this->appEnv->getConfig('paths.php_path'),
             'mysql'     => $this->appEnv->getConfig('paths.mysql_path'),
             'mysqldump' => $this->appEnv->getConfig('paths.mysqldump_path'),
-        );
+        ];
 
-        #------------------------------
-        # Web PHP
-        #------------------------------
+        //------------------------------
+        // Web PHP
+        //------------------------------
 
-        $web_php               = array();
-        $web_php['php_config'] = array(
+        $web_php               = [];
+        $web_php['php_config'] = [
             'version'      => phpversion(),
             'memory_limit' => Env::getMemoryLimit(),
             'error_log'    => ini_get('error_log'),
-        );
+        ];
 
         ob_start();
         phpinfo();
@@ -111,11 +111,11 @@ class ServerPhpInfo
         $web_php['ini_path']             = Env::getPhpIniPathFromInfo($web_php['phpinfo']);
         $web_php['effective_max_upload'] = Env::getEffectiveMaxUploadSize();
 
-        #------------------------------
-        # CLI PHP
-        #------------------------------
+        //------------------------------
+        // CLI PHP
+        //------------------------------
 
-        $cli_php = array('phpinfo' => null, 'php_config' => null);
+        $cli_php = ['phpinfo' => null, 'php_config' => null];
 
         if (file_exists($this->appEnv->getUserCacheDir().'/cli-phpinfo.html')) {
             $phpinfo             = file_get_contents($this->appEnv->getUserCacheDir().'/cli-phpinfo.html');
@@ -152,7 +152,7 @@ class ServerPhpInfo
             $has_wincache = true;
         }
 
-        $debug_settings = array();
+        $debug_settings = [];
 
         $auth      = $this->urlAuth;
         $baseUrl   = $this->baseUrl;
@@ -170,7 +170,7 @@ class ServerPhpInfo
             $opcache_link = $make_link('opcache');
         }
 
-        return array(
+        return [
             'binary_paths'   => $binary_paths,
             'web_php'        => $web_php,
             'cli_php'        => $cli_php,
@@ -180,6 +180,6 @@ class ServerPhpInfo
             'web_php_link'   => $web_php_link,
             'cli_php_link'   => $cli_php_link,
             'opcache_link'   => $opcache_link,
-        );
+        ];
     }
 }

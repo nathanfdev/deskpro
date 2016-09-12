@@ -87,7 +87,7 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         foreach ($this->agents as $agentRef) {
             $a = $agentRef->agent;
@@ -111,7 +111,7 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getNextAgent(AgentDataService $adata, RoundRobinLogEntry $entry = null)
     {
-        $agents = array();
+        $agents = [];
         foreach ($this->agents as $ref) {
             $agents[] = $ref->agent;
         }
@@ -144,9 +144,9 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\TwitterListener;
@@ -77,9 +78,9 @@ class PersonContactData extends ContactDataAbstract
         $this->setModelField('person', $person);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

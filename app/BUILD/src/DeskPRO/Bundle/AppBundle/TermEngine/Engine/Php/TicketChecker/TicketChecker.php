@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -89,8 +90,8 @@ class TicketChecker implements PhpTicketCheckerInterface
     {
         $this->php_check->freezeVariableNames();
 
-        $this->logger->debug('TicketChecker: evaluating php check', array('expression' => $this->php_check->getExpression(), 'vars' => $this->php_check->getVariables()));
-        $this->logger->debug('TicketChecker: using ticket', array('ticket_id' => $ticket->getId()));
+        $this->logger->debug('TicketChecker: evaluating php check', ['expression' => $this->php_check->getExpression(), 'vars' => $this->php_check->getVariables()]);
+        $this->logger->debug('TicketChecker: using ticket', ['ticket_id' => $ticket->getId()]);
 
         $timer = new SimpleTimer();
 
@@ -98,17 +99,17 @@ class TicketChecker implements PhpTicketCheckerInterface
             $this->php_check->getExpression(),
             array_merge(
                 $this->php_check->getVariables(),
-                array(
+                [
                     'agent'       => $this->context->getAgent(),
                     'ticket'      => $ticket,
                     'helper_pool' => $this->helper_pool,
-                )
+                ]
             )
         );
 
         $eval = (bool) $eval;
 
-        $this->logger->debug('TicketChecker: '.($eval ? 'PASS' : 'FAIL'), array('time' => $timer->getElapsedTime()));
+        $this->logger->debug('TicketChecker: '.($eval ? 'PASS' : 'FAIL'), ['time' => $timer->getElapsedTime()]);
 
         return $eval;
     }

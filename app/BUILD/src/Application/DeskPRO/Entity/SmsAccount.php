@@ -104,7 +104,7 @@ class SmsAccount extends DomainObject
         $this->is_tested    = false;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
@@ -117,9 +117,9 @@ class SmsAccount extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

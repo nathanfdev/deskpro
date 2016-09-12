@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;

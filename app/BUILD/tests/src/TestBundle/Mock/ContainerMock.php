@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -90,7 +90,7 @@ class ContainerMock
     public function withTicketCategories($obj = null)
     {
         if ($obj === null) {
-            $cats = array();
+            $cats = [];
             for ($i = 1; $i < 100; ++$i) {
                 $c        = new TicketCategory();
                 $c->id    = $i;
@@ -116,7 +116,7 @@ class ContainerMock
     public function withTicketDepartments($obj = null)
     {
         if ($obj === null) {
-            $cats = array();
+            $cats = [];
             for ($i = 1; $i < 100; ++$i) {
                 $c                     = new Department();
                 $c->id                 = $i;
@@ -143,7 +143,7 @@ class ContainerMock
     public function withTicketPriorities($obj = null)
     {
         if ($obj === null) {
-            $cats = array();
+            $cats = [];
             for ($i = 1; $i < 100; ++$i) {
                 $c        = new TicketPriority();
                 $c->id    = $i;
@@ -170,7 +170,7 @@ class ContainerMock
     public function withTicketWorkflows($obj = null)
     {
         if ($obj === null) {
-            $cats = array();
+            $cats = [];
             for ($i = 1; $i < 100; ++$i) {
                 $c        = new TicketWorkflow();
                 $c->id    = $i;
@@ -197,7 +197,7 @@ class ContainerMock
     public function withProducts($obj = null)
     {
         if ($obj === null) {
-            $cats = array();
+            $cats = [];
             for ($i = 1; $i < 100; ++$i) {
                 $c        = new Product();
                 $c->id    = $i;
@@ -238,7 +238,7 @@ class ContainerMock
             $obj = m::mock('FOS\\ElasticaBundle\\Doctrine\\RepositoryManager');
 
             $commonRepository = m::mock('FOS\\ElasticaBundle\\Repository');
-            $commonRepository->shouldReceive('find')->withAnyArgs()->andReturn(array());
+            $commonRepository->shouldReceive('find')->withAnyArgs()->andReturn([]);
 
             $obj->shouldReceive('getRepository')->with('DeskPRO:Article')->andReturn($commonRepository);
             $obj->shouldReceive('getRepository')->with('DeskPRO:Download')->andReturn($commonRepository);
@@ -249,7 +249,7 @@ class ContainerMock
             $obj->shouldReceive('getRepository')->with('DeskPRO:ChatConversation')->andReturn($commonRepository);
 
             $ticketRepository = m::mock('Application\\DeskPRO\\NewSearch\\Repository\\TicketRepository');
-            $ticketRepository->shouldReceive('find')->withAnyArgs()->andReturn(array());
+            $ticketRepository->shouldReceive('find')->withAnyArgs()->andReturn([]);
             $ticketRepository->shouldReceive('setPersonContext')->withAnyArgs();
 
             $obj->shouldReceive('getRepository')->with('DeskPRO:Ticket')->andReturn($ticketRepository);

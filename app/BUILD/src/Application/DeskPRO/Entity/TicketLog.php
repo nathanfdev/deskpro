@@ -135,7 +135,7 @@ class TicketLog extends DomainObject
     /**
      * @var string
      */
-    protected $details = array();
+    protected $details = [];
 
     /**
      * @var \DateTime
@@ -147,7 +147,7 @@ class TicketLog extends DomainObject
      *
      * @var array
      */
-    public $grouped = array();
+    public $grouped = [];
 
     public function __construct()
     {
@@ -239,9 +239,9 @@ class TicketLog extends DomainObject
         return $details;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

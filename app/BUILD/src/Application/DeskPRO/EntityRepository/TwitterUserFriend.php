@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class TwitterUserFriend extends AbstractEntityRepository
@@ -38,19 +39,19 @@ class TwitterUserFriend extends AbstractEntityRepository
     public function getByUserAndFriends($user_id, array $friend_ids)
     {
         if (!$friend_ids) {
-            return array();
+            return [];
         }
 
-        $output  = array();
+        $output  = [];
         $results = $this->getEntityManager()->createQuery('
             SELECT f, u
             FROM   DeskPRO:TwitterUserFriend f
             INNER JOIN f.friend_user u
             WHERE  f.user = :user AND f.friend_user IN (:friend)
-        ')->setParameters(array(
+        ')->setParameters([
             'user'   => $user_id,
             'friend' => $friend_ids,
-        ))->execute();
+        ])->execute();
         foreach ($results as $result) {
             $output[$result->friend_user->getId()] = $result;
         }
@@ -66,6 +67,6 @@ class TwitterUserFriend extends AbstractEntityRepository
             INNER JOIN f.friend_user u
             WHERE f.user = ?0
             ORDER BY f.display_order DESC
-        ')->setFirstResult((max(1, $page) - 1) * $per_page)->setMaxResults($per_page)->execute(array($user));
+        ')->setFirstResult((max(1, $page) - 1) * $per_page)->setMaxResults($per_page)->execute([$user]);
     }
 }

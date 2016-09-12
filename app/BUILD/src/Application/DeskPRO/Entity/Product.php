@@ -109,11 +109,11 @@ class Product extends CategoryAbstract implements HasPhraseName
     /**
      * Return a unique ID that we can use to look up translations for this object.
      *
-     * @param string $property If supplied, the property on the object we want to translate.
+     * @param string $property If supplied, the property on the object we want to translate
      *
      * @return string
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -126,11 +126,11 @@ class Product extends CategoryAbstract implements HasPhraseName
     /**
      * Get the default value phrase for the object.
      *
-     * @param string $property If supplied, the property on the object we want to translate.
+     * @param string $property If supplied, the property on the object we want to translate
      *
      * @return string
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'full') {
             return $this->getFullTitle();
@@ -310,7 +310,7 @@ class Product extends CategoryAbstract implements HasPhraseName
      *
      * @return array
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
@@ -339,9 +339,9 @@ class Product extends CategoryAbstract implements HasPhraseName
         return $this->getFullTitle();
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

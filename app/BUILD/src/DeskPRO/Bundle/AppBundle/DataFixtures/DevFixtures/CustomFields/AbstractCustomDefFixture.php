@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -127,7 +128,7 @@ abstract class AbstractCustomDefFixture extends DeskProAbstractFixture implement
             $others = $desc[1];
         } else {
             $title  = $desc;
-            $others = array();
+            $others = [];
         }
 
         $opt_f                  = $this->initiateEntity();

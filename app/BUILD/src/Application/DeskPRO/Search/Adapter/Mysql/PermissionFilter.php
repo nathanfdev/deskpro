@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search\Adapter\Mysql;
 
 use Application\DeskPRO\Entity\Person;
@@ -51,7 +52,7 @@ class PermissionFilter
      *
      * @var array
      */
-    protected $types = array('article', 'news', 'download', 'feedback');
+    protected $types = ['article', 'news', 'download', 'feedback'];
 
     /**
      * The 'where' clause.
@@ -99,8 +100,8 @@ class PermissionFilter
         }
         $this->has_gen = true;
 
-        $join  = array();
-        $where = array();
+        $join  = [];
+        $where = [];
         $x     = 0;
 
         if (in_array('article', $this->types)) {

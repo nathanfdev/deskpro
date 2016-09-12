@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -90,10 +90,10 @@ class NewsController extends AbstractController
 
         return $this->renderThemeView(
             sprintf('Theme:News:CategoryList/%s.html.twig', $options['style']),
-            array(
+            [
                 'category'          => $category,
                 'category_children' => $category_children,
-            )
+            ]
         );
     }
 
@@ -132,12 +132,12 @@ class NewsController extends AbstractController
 
         return $this->renderThemeView(
             sprintf('Theme:News:PostList/%s.html.twig', $options['style']),
-            array(
+            [
                 'pager'              => $pager,
                 'category'           => $category,
                 'show_category_link' => $options['show_category_link'],
                 'show_pager'         => $options['show_pager'],
-            )
+            ]
         );
     }
 
@@ -162,8 +162,8 @@ class NewsController extends AbstractController
     {
         $comments = $this->getNewsDataService()->getPostComments($post, $this->getUser());
 
-        return $this->renderThemeView('Theme:Common:comments.html.twig', array(
+        return $this->renderThemeView('Theme:Common:comments.html.twig', [
             'comments' => $comments,
-        ));
+        ]);
     }
 }

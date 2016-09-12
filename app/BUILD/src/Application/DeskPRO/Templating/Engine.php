@@ -48,7 +48,7 @@ class Engine extends BaseEngine
      *
      * @var array
      */
-    protected static $varied_templates = array(
+    protected static $varied_templates = [
         'DeskPRO:emails_agent:ticket-update.html.twig',
         'DeskPRO:emails_agent:new-ticket.html.twig',
         'DeskPRO:emails_agent:new-reply-user.html.twig',
@@ -61,7 +61,7 @@ class Engine extends BaseEngine
         'DeskPRO:emails_user:new-ticket.html.twig',
         'DeskPRO:emails_user:blank.html.twig',
         'DeskPRO:emails_user:ticket-autoclose-warn.html.twig',
-    );
+    ];
 
     protected function _initTemplateFilesMap()
     {
@@ -111,7 +111,7 @@ class Engine extends BaseEngine
             FROM templates
             WHERE name = ?
             LIMIT 1
-        ', array($name));
+        ', [$name]);
 
         return $id ? true : false;
     }
@@ -150,7 +150,7 @@ class Engine extends BaseEngine
             FROM templates
             WHERE name = ?
             LIMIT 1
-        ', array($name));
+        ', [$name]);
 
         if ($source === false) {
             $source = $this->getDefaultSource($name);
@@ -178,9 +178,9 @@ class Engine extends BaseEngine
      */
     public function splitSource($source)
     {
-        $parts = array(
+        $parts = [
             'source' => $source,
-        );
+        ];
 
         if (preg_match('#<dp:subject>(.*?)</dp:subject>#is', $source, $m)) {
             $parts['subject'] = trim($m[1]);

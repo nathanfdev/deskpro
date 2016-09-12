@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -38,19 +39,19 @@ class PermissionRowType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array(
+        $builder->add('name', 'text', [
             'required' => false,
-        ));
-        $builder->add('usergroup_id', 'integer', array(
+        ]);
+        $builder->add('usergroup_id', 'integer', [
             'required' => false,
-        ));
-        $builder->add('person_id', 'integer', array(
+        ]);
+        $builder->add('person_id', 'integer', [
             'required' => false,
-        ));
-        $builder->add('value', 'integer', array(
+        ]);
+        $builder->add('value', 'integer', [
             'required' => false,
             'data'     => '1',
-        ));
+        ]);
     }
 
     public function getName()

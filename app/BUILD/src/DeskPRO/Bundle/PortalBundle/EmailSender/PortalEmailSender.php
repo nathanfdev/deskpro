@@ -287,12 +287,12 @@ class PortalEmailSender
 //    protected function sendMessage()
 //    {
 //        $context = $this->getTwig()->mergeGlobals($context);
-//
+
 //        if (isset($context['person']) && !isset($context['to_name'])) {
 //            $person = $context['person'];
 //            $context['to_name'] = $person->name;
 //        }
-//
+
 //        $template = $this->getTwig()->loadTemplate($templateName);
 //        $subject  = trim($template->renderBlock('subject', $context));
 //        $textBody = trim($template->renderBlock('text', $context));
@@ -307,7 +307,7 @@ class PortalEmailSender
 //        } else {
 //            $message->setBody($textBody);
 //        }
-//
+
 //        $this->getSwiftMailer()->send($message);
 //    }
 

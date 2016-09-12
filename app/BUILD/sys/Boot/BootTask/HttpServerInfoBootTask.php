@@ -382,7 +382,9 @@ class HttpServerInfoBootTask implements BootTaskInterface
             $dirs = array_filter([
                 $this->env->getDpRoot().'/app/run',
                 $this->env->getAppBaseKernelCacheDir(),
-            ], function ($d) { return is_dir($d); });
+            ], function ($d) {
+                return is_dir($d);
+            });
 
             if ($dirs) {
                 $files = Finder::create()

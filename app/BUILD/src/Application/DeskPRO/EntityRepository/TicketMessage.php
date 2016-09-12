@@ -54,7 +54,7 @@ class TicketMessage extends AbstractEntityRepository
                 AND p.is_agent = 1
                 AND m.is_agent_note = 0
             ORDER BY m.id DESC
-        ')->setMaxResults(1)->setParameters(array(1 => $ticket))->getOneOrNullResult();
+        ')->setMaxResults(1)->setParameters([1 => $ticket])->getOneOrNullResult();
     }
 
     /**
@@ -129,16 +129,16 @@ class TicketMessage extends AbstractEntityRepository
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
-    public function getTicketMessages($ticket, array $set_options = array())
+    public function getTicketMessages($ticket, array $set_options = [])
     {
-        $options = array_merge(array(
+        $options = array_merge([
             'order'      => 'ASC',
             'order_dir'  => null,
             'limit'      => null,
             'with_notes' => false,
             'since_id'   => 0,
             'ids'        => null,
-        ), $set_options);
+        ], $set_options);
 
         // Compatibility with other repos format
         if ($options['order_dir']) {
@@ -146,7 +146,7 @@ class TicketMessage extends AbstractEntityRepository
         }
 
         $order = strtoupper($options['order']);
-        if (!in_array($order, array('ASC', 'DESC'))) {
+        if (!in_array($order, ['ASC', 'DESC'])) {
             $order = 'ASC';
         }
 
@@ -157,7 +157,7 @@ class TicketMessage extends AbstractEntityRepository
         $q->where('m.ticket = :ticket');
         $q->addOrderBy('m.date_created', $order);
 
-        $params           = array();
+        $params           = [];
         $params['ticket'] = $ticket;
 
         if (isset($options['since_id']) && $options['since_id']) {
@@ -167,7 +167,7 @@ class TicketMessage extends AbstractEntityRepository
 
         if ($options['ids'] !== null) {
             if (empty($options['ids'])) {
-                $ids = array(0);
+                $ids = [0];
             } else {
                 $ids = $options['ids'];
             }
@@ -240,7 +240,7 @@ class TicketMessage extends AbstractEntityRepository
             ])->getResult();
         }
 
-        $ids = array();
+        $ids = [];
         foreach ($check_matches as $t) {
             $ids[] = $t->getId();
         }
@@ -261,7 +261,7 @@ class TicketMessage extends AbstractEntityRepository
                 LEFT JOIN m.person p
                 WHERE m.ticket = ?0 AND m.id < ?1
                 ORDER BY m.id DESC
-            ')->setMaxResults(1)->setParameters(array($check->ticket->getId(), $check->getId()))->getOneOrNullResult();
+            ')->setMaxResults(1)->setParameters([$check->ticket->getId(), $check->getId()])->getOneOrNullResult();
 
             if ($logger) {
                 $logger->logDebug('[EntityRepository:TicketMessage] Prev message is: '.($prev_message ? $prev_message->id : 'none'));

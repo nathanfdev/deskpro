@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
 use Application\DeskPRO\Entity\TicketParticipant;

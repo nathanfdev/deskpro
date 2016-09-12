@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -65,7 +66,7 @@ class ThemeView
         if (is_array($explicit_options) && !empty($explicit_options[0])) {
             $explicit_options = $explicit_options[0];
         } else {
-            $explicit_options = array();
+            $explicit_options = [];
         }
 
         $options = array_merge($default_options, $explicit_options);
@@ -78,7 +79,7 @@ class ThemeView
 
     protected function calculateDefaultOptions($tag_name)
     {
-        $options = array();
+        $options = [];
 
         $brand_container = $this->brand_stack->getActive();
         $brand_theme     = $this->brand_theme_loader->getPortalBrandTheme($brand_container->getBrand());

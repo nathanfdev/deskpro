@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Chat;
 
 use Application\DeskPRO\App;
@@ -72,13 +73,13 @@ class AgentChat
             $this->person
         );
 
-        $client_messages = array();
+        $client_messages = [];
         $channel         = 'chat.message';
         if ($conversation['is_agent']) {
             $channel = 'agent_chat.new-message';
         }
 
-        $part_ids = array();
+        $part_ids = [];
         foreach ($conversation->participants as $part) {
             $part_ids[] = $part['id'];
         }
@@ -98,9 +99,9 @@ class AgentChat
             $time = App::getContainer()->getTranslator()->date('g:ia', $date, 'agent.time');
 
             $cm = new ClientMessage();
-            $cm->fromArray(array(
+            $cm->fromArray([
                 'channel' => $channel,
-                'data'    => array(
+                'data'    => [
                     'conversation_id' => $conversation['id'],
                     'participant_ids' => $part_ids,
                     'message_id'      => $chat_message['id'],
@@ -108,10 +109,10 @@ class AgentChat
                     'message'         => $chat_message['content'],
                     'date_created'    => $chat_message['date_created']->getTimestamp(),
                     'time'            => $time,
-                ),
+                ],
                 'created_by_client' => $this->session['id'],
                 'for_person'        => $part,
-            ));
+            ]);
 
             $client_messages[] = $cm;
         }
@@ -133,19 +134,19 @@ class AgentChat
 
                 if (!$session && $part->getPref('agent_notif.chat_message.email')) {
                     $email_message = App::getMailer()->createMessage();
-                    $email_message->setTemplate('DeskPRO:emails_agent:new-agent-chat-message.html.twig', array(
+                    $email_message->setTemplate('DeskPRO:emails_agent:new-agent-chat-message.html.twig', [
                         'message' => $chat_message,
-                    ));
+                    ]);
                     $email_message->setToPerson($part);
                     App::getMailer()->send($email_message);
                 }
             }
         }
 
-        return array(
+        return [
             'conversation' => $conversation,
             'new_message'  => $chat_message,
-        );
+        ];
     }
 
     public function sendAgentMessage($message, array $agent_ids, $convo_id = 0)

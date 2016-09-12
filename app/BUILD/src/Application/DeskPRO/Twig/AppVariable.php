@@ -42,7 +42,7 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     private $container;
 
     /**
-     * @deprecated since version 2.7, to be removed in 3.0.
+     * @deprecated since version 2.7, to be removed in 3.0
      */
     public function setContainer(ContainerInterface $container)
     {
@@ -52,17 +52,17 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
 
     public function __call($name, $arguments)
     {
-        return call_user_func_array(array($this->container->get('templating.globals'), $name), $arguments);
+        return call_user_func_array([$this->container->get('templating.globals'), $name], $arguments);
     }
 
     public function __get($name)
     {
-        return call_user_func_array(array($this->container->get('templating.globals'), '__get'), [$name]);
+        return call_user_func_array([$this->container->get('templating.globals'), '__get'], [$name]);
     }
 
     public function __isset($name)
     {
-        return call_user_func_array(array($this->container->get('templating.globals'), '__isset'), [$name]);
+        return call_user_func_array([$this->container->get('templating.globals'), '__isset'], [$name]);
     }
 
     public function getUser()

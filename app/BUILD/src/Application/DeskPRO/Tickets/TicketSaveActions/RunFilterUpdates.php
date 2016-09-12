@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -71,14 +72,14 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
         $change_set      = $detector->getFilterChangeSet($ticket, $context);
         $client_messages = $change_set->getListUpdateClientMessages();
 
-        $rows     = array();
-        $channels = array();
-        $agents   = array();
+        $rows     = [];
+        $channels = [];
+        $agents   = [];
 
         foreach ($client_messages as $cm) {
             $channels[$cm->channel]                            = true;
             $agents[$cm->for_person ? $cm->for_person->id : 0] = true;
-            $rows[]                                            = array(
+            $rows[]                                            = [
                 'channel'           => $cm->channel,
                 'auth'              => $cm->auth,
                 'data'              => serialize($cm->data),
@@ -86,7 +87,7 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
                 'for_client'        => $cm->for_client ?: null,
                 'date_created'      => $cm->date_created->format('Y-m-d H:i:s'),
                 'for_person_id'     => $cm->for_person ? $cm->for_person->id : null,
-            );
+            ];
         }
 
         if ($rows) {

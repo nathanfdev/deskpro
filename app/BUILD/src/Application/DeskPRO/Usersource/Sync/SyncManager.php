@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource\Sync;
 
 use Application\DeskPRO\Entity\Job;
@@ -78,11 +79,11 @@ class SyncManager implements SyncerInterface
 
     public function __construct(array $syncers, EntityManager $em, JobQueue $queue, UsersourceManager $um, SyncerHelper $sync_helper)
     {
-        $this->syncers  = $syncers;
-        $this->log_repo = $em->getRepository('DeskPRO:UsersourceSyncLog');
-        $this->em       = $em;
-        $this->queue    = $queue;
-        $this->um       = $um;
+        $this->syncers     = $syncers;
+        $this->log_repo    = $em->getRepository('DeskPRO:UsersourceSyncLog');
+        $this->em          = $em;
+        $this->queue       = $queue;
+        $this->um          = $um;
         $this->sync_helper = $sync_helper;
     }
 
@@ -201,7 +202,7 @@ class SyncManager implements SyncerInterface
      */
     public function isStopSignalPresent()
     {
-        $signal = $this->em->getRepository('DeskPRO:TmpData')->findBy(array('name' => UsersourceSyncProcessor::ABORT_JOB_TMP_DATA_NAME));
+        $signal = $this->em->getRepository('DeskPRO:TmpData')->findBy(['name' => UsersourceSyncProcessor::ABORT_JOB_TMP_DATA_NAME]);
 
         return (bool) $signal;
     }
@@ -275,10 +276,10 @@ class SyncManager implements SyncerInterface
             '
         )->setMaxResults(1)
             ->setParameter('sync', UsersourceSyncProcessor::JOB_TYPE)
-            ->setParameter('running', array(
+            ->setParameter('running', [
             Job::STATUS_PROCESSING,
             Job::STATUS_RESERVED,
-        ))->getOneOrNullResult();
+        ])->getOneOrNullResult();
 
         if ($running) {
             return true;
@@ -305,11 +306,11 @@ class SyncManager implements SyncerInterface
             '
         )->setMaxResults(1)
             ->setParameter('sync', UsersourceSyncProcessor::JOB_TYPE)
-            ->setParameter('running', array(
+            ->setParameter('running', [
                 Job::STATUS_WAITING,
                 Job::STATUS_PROCESSING,
                 Job::STATUS_RESERVED,
-            ))->getResult();
+            ])->getResult();
 
         foreach ($running_or_waiting_jobs as $job_to_abort) {
             $this->queue->abort($job_to_abort);
@@ -336,7 +337,7 @@ class SyncManager implements SyncerInterface
             $job->date_next_try = new \DateTime();
             $this->em->flush();
         } else {
-            $this->queue->add(UsersourceSyncProcessor::JOB_TYPE, array());
+            $this->queue->add(UsersourceSyncProcessor::JOB_TYPE, []);
         }
     }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -45,17 +46,17 @@ class CleanupQuarterHourly extends AbstractJob
 
     private function doRun()
     {
-        #------------------------------
-        # Old API logs
-        #------------------------------
+        //------------------------------
+        // Old API logs
+        //------------------------------
 
         App::$container->getEm()->getRepository('DeskPRO:ApiKeyLog')->cleanup();
 
-        #------------------------------
-        # Update table counts
-        #------------------------------
+        //------------------------------
+        // Update table counts
+        //------------------------------
 
-        $counts                               = array();
+        $counts                               = [];
         $counts['tickets']                    = App::getDb()->fetchColumn('SELECT COUNT(*) FROM `tickets`');
         $counts['tickets.resolved']           = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'resolved'");
         $counts['tickets.archive_validating'] = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'validating'");
@@ -65,10 +66,10 @@ class CleanupQuarterHourly extends AbstractJob
         $counts['people']                     = App::getDb()->fetchColumn('SELECT COUNT(*) FROM `people`');
 
         foreach ($counts as $k => $v) {
-            App::getDb()->replace('settings', array(
+            App::getDb()->replace('settings', [
                 'name'  => "core_tablecounts.$k",
                 'value' => (int) $v,
-            ));
+            ]);
         }
 
         $did_per_agent_filters = false;
@@ -93,7 +94,7 @@ class CleanupQuarterHourly extends AbstractJob
                     WHERE f.sys_name LIKE 'archive_%' AND f.sys_name != 'archive_resolved' AND f.sys_name != 'archive_awaiting_user'
                 ")->execute();
 
-                $inserts = array();
+                $inserts = [];
 
                 foreach ($all_agents as $agent) {
                     $agent->loadHelper('Agent');
@@ -110,13 +111,13 @@ class CleanupQuarterHourly extends AbstractJob
 
                         $count = $searcher->getCount();
 
-                        $inserts[] = array(
+                        $inserts[] = [
                             'person_id'   => $agent->id,
                             'name'        => "ticket_counts.{$filter->sys_name}",
                             'value_str'   => $count,
                             'value_array' => null,
                             'date_expire' => null,
-                        );
+                        ];
                     }
                 }
 

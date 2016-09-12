@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Storage;
 
 use EWSType_BodyTypeResponseType;
@@ -77,7 +78,7 @@ class Exchange
      */
     protected $folders;
 
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         if (!isset($options['host']) ||
             !isset($options['user']) ||
@@ -169,7 +170,7 @@ class Exchange
         if ($response->ResponseMessages->FindItemResponseMessage->ResponseCode == 'NoError' &&
             $response->ResponseMessages->FindItemResponseMessage->ResponseClass == 'Success'
         ) {
-            $ids = array();
+            $ids = [];
 
             if (!isset($response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->Message) ||
             empty($response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->Message)) {
@@ -188,7 +189,7 @@ class Exchange
             return $ids;
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -215,7 +216,7 @@ class Exchange
         $isRead->FieldURI    = 'message:IsRead';
 
         $request->ItemShape->AdditionalProperties           = new EWSType_NonEmptyArrayOfPathsToElementType();
-        $request->ItemShape->AdditionalProperties->FieldURI = array($subject, $date, $messageId, $isRead);
+        $request->ItemShape->AdditionalProperties->FieldURI = [$subject, $date, $messageId, $isRead];
 
         $request->ItemIds             = new EWSType_NonEmptyArrayOfBaseItemIdsType();
         $request->ItemIds->ItemId     = new EWSType_ItemIdType();
@@ -329,7 +330,7 @@ class Exchange
         ) {
             return $response->ResponseMessages->FindFolderResponseMessage->RootFolder->Folders->Folder;
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -396,7 +397,7 @@ class Exchange
         $request                     = new EWSType_UpdateItemType();
         $request->ConflictResolution = 'AlwaysOverwrite';
         $request->MessageDisposition = 'SaveOnly';
-        $request->ItemChanges        = array();
+        $request->ItemChanges        = [];
 
         $change                    = new EWSType_ItemChangeType();
         $change->ItemId            = new EWSType_ItemIdType();
@@ -410,7 +411,7 @@ class Exchange
         $field->Message->IsRead    = true;
 
         $change->Updates                 = new EWSType_NonEmptyArrayOfItemChangeDescriptionsType();
-        $change->Updates->SetItemField   = array();
+        $change->Updates->SetItemField   = [];
         $change->Updates->SetItemField[] = $field;
 
         $request->ItemChanges[] = $change;
@@ -446,10 +447,10 @@ class Exchange
         $body_property                                      = new EWSType_PathToUnindexedFieldType();
         $body_property->FieldURI                            = 'item:Body';
         $request->ItemShape->AdditionalProperties           = new EWSType_NonEmptyArrayOfPathsToElementType();
-        $request->ItemShape->AdditionalProperties->FieldURI = array($body_property);
+        $request->ItemShape->AdditionalProperties->FieldURI = [$body_property];
 
         $request->ItemIds         = new EWSType_NonEmptyArrayOfBaseItemIdsType();
-        $request->ItemIds->ItemId = array();
+        $request->ItemIds->ItemId = [];
 
         // Add the message to the request.
         $message_item               = new EWSType_ItemIdType();

@@ -165,11 +165,11 @@ class TicketSla extends DomainObject
         if ($this->ticket) {
             $this->ticket->getStateChangeRecorder()->recordData(
                 'ticket_slas_status',
-                array(
+                [
                     'sla'        => $this->sla,
                     'old_status' => $old,
                     'new_status' => $s,
-                )
+                ]
             );
         }
     }
@@ -202,10 +202,10 @@ class TicketSla extends DomainObject
         if ($this->ticket) {
             $this->ticket->getStateChangeRecorder()->recordData(
                 'ticket_slas_complete',
-                array(
+                [
                     'sla'         => $this->sla,
                     'is_complete' => $value,
-                )
+                ]
             );
         }
     }
@@ -232,7 +232,7 @@ class TicketSla extends DomainObject
      */
     public function getNextTriggerDate()
     {
-        $times = array();
+        $times = [];
 
         if ($this->sla_status == self::STATUS_OK && $this->warn_date && $this->warn_date->getTimestamp() > time()) {
             $times[] = $this->warn_date->getTimestamp();
@@ -240,7 +240,7 @@ class TicketSla extends DomainObject
 
         if (in_array(
                 $this->sla_status,
-                array(self::STATUS_OK, self::STATUS_WARNING)
+                [self::STATUS_OK, self::STATUS_WARNING]
             ) && $this->fail_date && $this->fail_date->getTimestamp() > time()
         ) {
             $times[] = $this->fail_date->getTimestamp();
@@ -256,16 +256,16 @@ class TicketSla extends DomainObject
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

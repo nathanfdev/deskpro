@@ -80,7 +80,9 @@ class HierarchyDescendsFrom extends AbstractFunc
         $hierarchyPlugin = $statement->getSqlSelectContext()->getHierarchyPlugin();
         $hierarchyPlugin->setHierarchyDescendsFrom($this->_arguments[1]->getValue(), $targetTableName);
         $ids = $hierarchyPlugin->collectChildrenIds();
-        $ids = array_map(function ($num) { return new Dpql\Statement\Part\Number($num); }, $ids);
+        $ids = array_map(function ($num) {
+            return new Dpql\Statement\Part\Number($num);
+        }, $ids);
 
         $condition = new Dpql\Statement\Part\In(
             new Dpql\Statement\Part\Raw("`$targetTableAlias`.`id`"),

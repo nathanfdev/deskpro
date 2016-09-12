@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Entity\ClientMessage;
@@ -51,17 +52,17 @@ class FilterChangeSet
     /**
      * @var \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
-    private $affected_filters = array();
+    private $affected_filters = [];
 
     /**
      * @var FilterChange[]
      */
-    private $changed_filters = array();
+    private $changed_filters = [];
 
     /**
      * @var array
      */
-    private $field_versions = array();
+    private $field_versions = [];
 
     public function __construct(Ticket $ticket, $state_id, array $affected_filters, array $changed_filters, array $field_versions)
     {
@@ -119,11 +120,11 @@ class FilterChangeSet
      */
     public function getListUpdateClientMessages()
     {
-        $messages = array();
+        $messages = [];
 
-        #------------------------------
-        # CMs for filters
-        #------------------------------
+        //------------------------------
+        // CMs for filters
+        //------------------------------
 
         foreach ($this->changed_filters as $filter_change) {
             $filter = $filter_change->getFilter();
@@ -131,11 +132,11 @@ class FilterChangeSet
             foreach ($filter_change->getAgentsAdded() as $agent) {
                 $cm          = new ClientMessage();
                 $cm->channel = 'agent.filter-update';
-                $cm->data    = array(
+                $cm->data    = [
                     'ticket_id' => $this->ticket->id,
                     'filter_id' => $filter->id,
                     'op'        => 'add',
-                );
+                ];
                 $cm->for_person        = $agent;
                 $cm->created_by_client = 'sys';
                 $messages[]            = $cm;
@@ -143,11 +144,11 @@ class FilterChangeSet
             foreach ($filter_change->getAgentsRemoved() as $agent) {
                 $cm          = new ClientMessage();
                 $cm->channel = 'agent.filter-update';
-                $cm->data    = array(
+                $cm->data    = [
                     'ticket_id' => $this->ticket->id,
                     'filter_id' => $filter->id,
                     'op'        => 'del',
-                );
+                ];
                 $cm->for_person        = $agent;
                 $cm->created_by_client = 'sys';
                 $messages[]            = $cm;

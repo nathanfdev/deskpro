@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,31 +32,31 @@ use Symfony\Component\Routing\Matcher\Dumper\PhpMatcherDumper as BasePhpMatcherD
 
 class PhpMatcherDumper extends BasePhpMatcherDumper
 {
-    public function dump(array $options = array())
+    public function dump(array $options = [])
     {
         $options['base_class'] = 'Symfony\\Bundle\\FrameworkBundle\\Routing\\RedirectableUrlMatcher';
 
         $dump = parent::dump($options);
         $dump = str_replace('public function match($pathinfo)', 'protected function doMatch($pathinfo)', $dump);
 
-        $add_match = <<<EOF
-public function match(\$pathinfo)
+        $add_match = <<<'EOF'
+public function match($pathinfo)
     {
         try {
-            return \$this->doMatch(\$pathinfo);
-        } catch (ResourceNotFoundException \$e) {
+            return $this->doMatch($pathinfo);
+        } catch (ResourceNotFoundException $e) {
             // Try without trailing
-            if (substr(\$pathinfo, -1) == '/') {
-                \$pathinfo = rtrim(\$pathinfo, '/');
-                \$match = \$this->doMatch(\$pathinfo);
+            if (substr($pathinfo, -1) == '/') {
+                $pathinfo = rtrim($pathinfo, '/');
+                $match = $this->doMatch($pathinfo);
 
-                return \$this->redirect(\$pathinfo, \$match['_route']);
+                return $this->redirect($pathinfo, $match['_route']);
             // Try with trailing slash
             } else {
-                \$pathinfo = \$pathinfo . '/';
-                \$match = \$this->doMatch(\$pathinfo);
+                $pathinfo = $pathinfo . '/';
+                $match = $this->doMatch($pathinfo);
 
-                return \$this->redirect(\$pathinfo, \$match['_route']);
+                return $this->redirect($pathinfo, $match['_route']);
             }
         }
     }

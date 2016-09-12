@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Monolog\Handler;
 
 use Monolog\Handler\AbstractHandler;
@@ -46,7 +47,7 @@ class OrbLoggerAdapterHandler extends AbstractHandler
     /**
      * @var array
      */
-    private static $pri_map = array(
+    private static $pri_map = [
         100 => 'DEBUG',
         200 => 'INFO',
         250 => 'NOTICE',
@@ -55,7 +56,7 @@ class OrbLoggerAdapterHandler extends AbstractHandler
         500 => 'CRIT',
         550 => 'ALERT',
         600 => 'EMERG',
-    );
+    ];
 
     public function __construct(OrbLogger $logger)
     {

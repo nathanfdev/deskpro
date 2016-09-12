@@ -123,9 +123,9 @@ class QueueRawEmailCommand extends ContainerAwareCommand
         } else {
             $id = $mailer->insertMessage($message);
 
-            $this->getContainer()->getDb()->update('sendmail_sources', array(
+            $this->getContainer()->getDb()->update('sendmail_sources', [
                 'status' => 'aborted',
-            ), array('id' => $id));
+            ], ['id' => $id]);
 
             $output->writeln("<info>Inserted email source: $id</info>\n");
             $output->writeln("The email was inserted with the 'aborted' state and will not be sent automatically.");
@@ -134,8 +134,8 @@ class QueueRawEmailCommand extends ContainerAwareCommand
         }
 
         if ($use_blob_id) {
-            $old_blob_id = $this->getContainer()->getDb()->fetchColumn('SELECT blob_id FROM sendmail_sources WHERE id = ?', array($id));
-            $this->getContainer()->getDb()->update('sendmail_sources', array('blob_id' => $use_blob_id), array('id' => $id));
+            $old_blob_id = $this->getContainer()->getDb()->fetchColumn('SELECT blob_id FROM sendmail_sources WHERE id = ?', [$id]);
+            $this->getContainer()->getDb()->update('sendmail_sources', ['blob_id' => $use_blob_id], ['id' => $id]);
             $this->getContainer()->getBlobStorage()->deleteBlobRowId($old_blob_id);
         }
 

@@ -707,9 +707,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
         return $this->status === static::STATUS_CLOSED;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

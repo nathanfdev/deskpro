@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\TicketMessage as TicketMessageEntity;
@@ -49,7 +50,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
     {
         if ($lang_code) {
             if (!is_array($lang_code)) {
-                $lang_code = array($lang_code);
+                $lang_code = [$lang_code];
             }
 
             // Also get generic ones. eg if we specified en_US but there might be ones as 'en'
@@ -66,7 +67,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
                 SELECT m
                 FROM DeskPRO:TicketMessageTranslated m INDEX BY m.lang_code
                 WHERE m.ticket_message = ?0 AND m.lang_code IN (?1)
-            ')->setParameters(array($ticket_message, array_values($lang_code)))->execute();
+            ')->setParameters([$ticket_message, array_values($lang_code)])->execute();
 
             if (!$got) {
                 return;
@@ -84,7 +85,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
                 SELECT m
                 FROM DeskPRO:TicketMessageTranslated m INDEX BY m.lang_code
                 WHERE m.ticket_message = ?0
-            ')->setParameters(array($ticket_message))->getOneOrNullResult();
+            ')->setParameters([$ticket_message])->getOneOrNullResult();
         }
     }
 
@@ -101,7 +102,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
     {
         if ($lang_code) {
             if (!is_array($lang_code)) {
-                $lang_code = array($lang_code);
+                $lang_code = [$lang_code];
             }
 
             // Also get generic ones. eg if we specified en_US but there might be ones as 'en'
@@ -115,23 +116,23 @@ class TicketMessageTranslated extends AbstractEntityRepository
             $lang_code = array_unique($lang_code);
 
             if (!$ticket_messages || !$lang_code) {
-                return array();
+                return [];
             }
 
             $trans_messages = $this->_em->createQuery('
                 SELECT m
                 FROM DeskPRO:TicketMessageTranslated m
                 WHERE m.ticket_message IN (?0) AND m.lang_code IN (?1)
-            ')->setParameters(array(array_values($ticket_messages), array_values($lang_code)))->execute();
+            ')->setParameters([array_values($ticket_messages), array_values($lang_code)])->execute();
 
-            $ret = array();
+            $ret = [];
 
             foreach ($trans_messages as $msg) {
                 $message_id = $msg->ticket_message->getId();
                 $lang       = $msg->lang_code;
 
                 if (!isset($ret[$message_id])) {
-                    $ret[$message_id] = array();
+                    $ret[$message_id] = [];
                 }
 
                 $ret[$message_id][$lang] = $msg;
@@ -139,7 +140,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
 
             if ($lang_code && $single) {
                 $ret_all = $ret;
-                $ret     = array();
+                $ret     = [];
 
                 foreach ($ret_all as $message_id => $langs) {
                     foreach ($lang_code as $c) {
@@ -156,8 +157,8 @@ class TicketMessageTranslated extends AbstractEntityRepository
                 SELECT m
                 FROM DeskPRO:TicketMessageTranslated m
                 WHERE m.ticket_message IN (?0)
-            ')->setParameters(array($ticket_messages))->getOneOrNullResult();
-            $trans_messages = array();
+            ')->setParameters([$ticket_messages])->getOneOrNullResult();
+            $trans_messages = [];
             foreach ($trans_messages_x as $tr) {
                 $trans_messages[$tr->ticket_message->getId()] = $tr;
             }

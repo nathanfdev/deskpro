@@ -55,10 +55,10 @@ interface DeskPRO_LowUtil_Requester
      *
      * @return string
      */
-    public function request($url, array $data = array(), $method = 'GET', $timeout = 15);
+    public function request($url, array $data = [], $method = 'GET', $timeout = 15);
 }
 
-########################################################################################################################
+//#######################################################################################################################
 
 /**
  * Fetcher that uses any supported fetcher to do actual work.
@@ -112,7 +112,7 @@ class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
     {
         if (function_exists('curl_init')) {
             return 'curl';
-        } elseif (in_array(ini_get('allow_url_fopen'), array('1', 'On'))) {
+        } elseif (in_array(ini_get('allow_url_fopen'), ['1', 'On'])) {
             return 'native';
         } else {
             return;
@@ -138,13 +138,13 @@ class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
     /**
      * {@inheritdoc}
      */
-    public function request($url, array $data = array(), $method = 'GET', $timeout = 15)
+    public function request($url, array $data = [], $method = 'GET', $timeout = 15)
     {
         return $this->requester->request($url, $data, $method, $timeout);
     }
 }
 
-########################################################################################################################
+//#######################################################################################################################
 
 class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
 {
@@ -212,7 +212,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
     /**
      * {@inheritdoc}
      */
-    public function request($url, array $data = array(), $method = 'GET', $timeout = 15)
+    public function request($url, array $data = [], $method = 'GET', $timeout = 15)
     {
         $ch = curl_init();
 
@@ -258,13 +258,13 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
     }
 }
 
-########################################################################################################################
+//#######################################################################################################################
 
 class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
 {
     public function __construct()
     {
-        if (!in_array(ini_get('allow_url_fopen'), array('1', 'On'))) {
+        if (!in_array(ini_get('allow_url_fopen'), ['1', 'On'])) {
             throw new DeskPRO_LowUtil_Fetch_Exception('allow_url_include is disabled in your php.ini, you cannot use native functions to download remote files', DeskPRO_LowUtil_Fetch_Exception::FETCHER_UNSUPPORTED);
         }
     }
@@ -274,9 +274,9 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
      */
     public function download($url, $save_path, $timeout = 15)
     {
-        $context = stream_context_create(array(
-            'http' => array('timeout' => $timeout),
-        ));
+        $context = stream_context_create([
+            'http' => ['timeout' => $timeout],
+        ]);
         $res = @copy($url, $save_path, $context);
 
         if (!$res) {
@@ -294,7 +294,7 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
     /**
      * {@inheritdoc}
      */
-    public function request($url, array $data = array(), $method = 'GET', $timeout = 15)
+    public function request($url, array $data = [], $method = 'GET', $timeout = 15)
     {
         $method = strtoupper($method);
         if ($method == 'GET') {
@@ -308,20 +308,20 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
                 $url .= http_build_query($data, '', '&');
             }
 
-            $context = stream_context_create(array(
-                'http' => array(
+            $context = stream_context_create([
+                'http' => [
                     'timeout' => $timeout,
-                ),
-            ));
+                ],
+            ]);
         } else {
-            $context = stream_context_create(array(
-                'http' => array(
+            $context = stream_context_create([
+                'http' => [
                     'timeout' => $timeout,
                     'method'  => 'POST',
                     'header'  => 'Content-type: application/x-www-form-urlencoded',
                     'content' => http_build_query($data, null, '&'),
-                ),
-            ));
+                ],
+            ]);
         }
 
         $res = @file_get_contents($url, null, $context);
@@ -348,7 +348,7 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
     }
 }
 
-########################################################################################################################
+//#######################################################################################################################
 
 class DeskPRO_LowUtil_Fetch_Exception extends Exception
 {

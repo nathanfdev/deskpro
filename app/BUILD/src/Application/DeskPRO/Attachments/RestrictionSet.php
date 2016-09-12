@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\Attachments;
 
 use Orb\Util\Strings;
@@ -81,10 +82,10 @@ class RestrictionSet
             $ext = Strings::getExtension($file->getClientOriginalName());
         }
 
-        return $this->getErrorForProperties(array(
+        return $this->getErrorForProperties([
             'size' => $size,
             'ext'  => $ext,
-        ));
+        ]);
     }
 
     /**
@@ -100,26 +101,26 @@ class RestrictionSet
     {
         if (isset($props['size'])) {
             if ($this->max_size && $props['size'] > $this->max_size) {
-                return array(
+                return [
                     'error_code'   => self::ERR_SIZE,
                     'error_detail' => $this->max_size,
-                );
+                ];
             }
         }
 
         if (isset($props['ext'])) {
             if ($this->allowed_exts && !in_array($props['ext'], $this->allowed_exts)) {
-                return array(
+                return [
                     'error_code'   => self::ERR_FAIL_MUST_EXT,
                     'error_detail' => implode(',', $this->allowed_exts),
-                );
+                ];
             }
 
             if ($this->disallowed_exts && in_array($props['ext'], $this->disallowed_exts)) {
-                return array(
+                return [
                     'error_code'   => self::ERR_FAIL_NOT_EXT,
                     'error_detail' => implode(',', $this->disallowed_exts),
-                );
+                ];
             }
         }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -76,14 +77,14 @@ class EnsureSearchTables extends AbstractJob
 
             // Broadcast a refresh event to all agents
             $cm = new \Application\DeskPRO\Entity\ClientMessage();
-            $cm->fromArray(array(
+            $cm->fromArray([
                 'channel' => 'agent.ui.reload',
-                'data'    => array(
+                'data'    => [
                     'type'        => 'admin',
                     'person_id'   => 0,
                     'person_name' => 'System',
-                ),
-            ));
+                ],
+            ]);
 
             App::getOrm()->persist($cm);
             App::getOrm()->flush();

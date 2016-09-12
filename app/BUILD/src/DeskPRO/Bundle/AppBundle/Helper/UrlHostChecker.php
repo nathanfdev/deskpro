@@ -40,7 +40,7 @@ class UrlHostChecker
      * @param string $verifiedHost
      * @param string $verifiedPort
      * @param bool   $allowSchemeSwitch If the ports are standard (80/443), this allows the reverse.
-     *                                  E.g. consider host:80 a match to host:443.
+     *                                  E.g. consider host:80 a match to host:443
      *
      * @return bool
      */

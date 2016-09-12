@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -87,10 +87,10 @@ class DownloadsController extends AbstractController
 
         return $this->renderThemeView(
             sprintf('Theme:Downloads:CategoryList/%s.html.twig', $options['style']),
-            array(
+            [
                 'category'          => $category,
                 'category_children' => $category_children,
-            )
+            ]
         );
     }
 
@@ -129,12 +129,12 @@ class DownloadsController extends AbstractController
 
         return $this->renderThemeView(
             sprintf('Theme:Downloads:DownloadList/%s.html.twig', $options['style']),
-            array(
+            [
                 'show_pager'         => $options['show_pager'],
                 'category'           => $category,
                 'pager'              => $pager,
                 'show_category_link' => $options['show_category_link'],
-            )
+            ]
         );
     }
 
@@ -159,8 +159,8 @@ class DownloadsController extends AbstractController
     {
         $comments = $this->getDownloadsDataService()->getDownloadComments($file, $this->getUser());
 
-        return $this->renderThemeView('Theme:Common:comments.html.twig', array(
+        return $this->renderThemeView('Theme:Common:comments.html.twig', [
             'comments' => $comments,
-        ));
+        ]);
     }
 }

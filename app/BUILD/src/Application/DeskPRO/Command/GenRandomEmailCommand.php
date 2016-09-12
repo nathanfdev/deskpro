@@ -65,9 +65,9 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        #------------------------------
-        # From
-        #------------------------------
+        //------------------------------
+        // From
+        //------------------------------
 
         $from_opt   = $input->getOption('from');
         $from_email = null;
@@ -96,9 +96,9 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
         $from_email = str_replace('%RAND%', RandUtils::randomStringFormat('%10A'), $from_email);
 
-        #------------------------------
-        # To
-        #------------------------------
+        //------------------------------
+        // To
+        //------------------------------
 
         $to_opt     = $input->getOption('to');
         $to_account = null;
@@ -131,9 +131,9 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             $to_email = $to_opt;
         }
 
-        #------------------------------
-        # As reply
-        #------------------------------
+        //------------------------------
+        // As reply
+        //------------------------------
 
         $ticket      = null;
         $access_code = null;
@@ -161,9 +161,9 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             }
         }
 
-        #------------------------------
-        # Subject and message
-        #------------------------------
+        //------------------------------
+        // Subject and message
+        //------------------------------
 
         $faker = \Faker\Factory::create();
 
@@ -203,9 +203,9 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             }
         }
 
-        #------------------------------
-        # Tpl
-        #------------------------------
+        //------------------------------
+        // Tpl
+        //------------------------------
 
         $tpl = 'DeskPRO:dev:gen_email/'.($input->getOption('tpl') ?: 'html').'.txt.twig';
 
@@ -258,9 +258,9 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             }
         }
 
-        #------------------------------
-        # Done
-        #------------------------------
+        //------------------------------
+        // Done
+        //------------------------------
 
         echo trim($this->getContainer()->get('templating.email')->render($tpl, $vars));
         echo "\n";

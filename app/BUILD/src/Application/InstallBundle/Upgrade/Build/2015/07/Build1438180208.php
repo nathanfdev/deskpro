@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1438180208 extends AbstractBuild
@@ -60,18 +61,18 @@ class Build1438180208 extends AbstractBuild
                     WHERE ticket_id = ? AND action_type = 'changed_status' AND id_after = 200
                     ORDER BY id DESC
                     LIMIT 1
-                ", array($tid));
+                ", [$tid]);
 
                 if (!$date_resolved) {
                     $db->executeUpdate('
                         UPDATE tickets SET date_resolved = COALESCE(date_status, date_created, NOW())
                         WHERE id = ?
-                    ', array($tid));
+                    ', [$tid]);
                 } else {
                     $db->executeUpdate('
                         UPDATE tickets SET date_resolved = ?
                         WHERE id = ?
-                    ', array($date_resolved, $tid));
+                    ', [$date_resolved, $tid]);
                 }
             }
 

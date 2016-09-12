@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352309486 extends AbstractBuild
@@ -36,8 +37,8 @@ class Build1352309486 extends AbstractBuild
     public function run()
     {
         $this->out('Ensure default triggers are set');
-        $triggers = array(
-            array(
+        $triggers = [
+            [
                 'title'                 => 'email_validation.email',
                 'event_trigger'         => 'new_ticket',
                 'event_trigger_options' => 'N;',
@@ -48,8 +49,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'email_validation.email',
                 'run_order'             => '0',
                 'date_created'          => '2012-11-07 12:47:52',
-            ),
-            array(
+            ],
+            [
                 'title'                 => 'email_validation.web',
                 'event_trigger'         => 'new_ticket',
                 'event_trigger_options' => 'N;',
@@ -60,8 +61,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'email_validation.web',
                 'run_order'             => '0',
                 'date_created'          => '2012-11-07 12:47:52',
-            ),
-            array(
+            ],
+            [
                 'title'                 => 'email_validation.widget',
                 'event_trigger'         => 'new_ticket',
                 'event_trigger_options' => 'N;',
@@ -72,8 +73,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'email_validation.widget',
                 'run_order'             => '0',
                 'date_created'          => '2012-11-07 12:47:52',
-            ),
-            array(
+            ],
+            [
                 'title'                 => 'response.reply_confirm',
                 'event_trigger'         => 'update.user',
                 'event_trigger_options' => 'N;',
@@ -84,8 +85,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'response.reply_confirm',
                 'run_order'             => '0',
                 'date_created'          => '2012-11-07 12:47:52',
-            ),
-            array(
+            ],
+            [
                 'title'                 => '',
                 'event_trigger'         => 'new.email.user',
                 'event_trigger_options' => 'a:0:{}',
@@ -96,8 +97,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'setdep.newemail_user',
                 'run_order'             => '0',
                 'date_created'          => '2012-10-22 19:56:52',
-            ),
-            array(
+            ],
+            [
                 'title'                 => '',
                 'event_trigger'         => 'new.web.user',
                 'event_trigger_options' => 'a:0:{}',
@@ -108,8 +109,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'setgateway.newweb_user',
                 'run_order'             => '0',
                 'date_created'          => '2012-10-22 19:57:20',
-            ),
-            array(
+            ],
+            [
                 'title'                 => '',
                 'event_trigger'         => 'new.email.agent',
                 'event_trigger_options' => 'a:0:{}',
@@ -120,8 +121,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'setdep.newemail_agent',
                 'run_order'             => '0',
                 'date_created'          => '2012-10-22 19:57:36',
-            ),
-            array(
+            ],
+            [
                 'title'                 => '',
                 'event_trigger'         => 'new.web.agent.portal',
                 'event_trigger_options' => 'a:0:{}',
@@ -132,8 +133,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'setgateway.newweb_agent',
                 'run_order'             => '0',
                 'date_created'          => '2012-10-22 19:59:50',
-            ),
-            array(
+            ],
+            [
                 'title'                 => '',
                 'event_trigger'         => 'update.agent',
                 'event_trigger_options' => 'a:0:{}',
@@ -144,8 +145,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'setgateway.update_agent',
                 'run_order'             => '0',
                 'date_created'          => '2012-10-22 20:00:25',
-            ),
-            array(
+            ],
+            [
                 'title'                 => '',
                 'event_trigger'         => 'update.user',
                 'event_trigger_options' => 'a:0:{}',
@@ -156,8 +157,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'setgateway.update_user',
                 'run_order'             => '0',
                 'date_created'          => '2012-10-22 20:03:33',
-            ),
-            array(
+            ],
+            [
                 'title'                 => '',
                 'event_trigger'         => 'update.agent',
                 'event_trigger_options' => 'a:0:{}',
@@ -168,8 +169,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'setfrom.reply_agent',
                 'run_order'             => '0',
                 'date_created'          => '2012-10-24 14:10:26',
-            ),
-            array(
+            ],
+            [
                 'title'                 => '',
                 'event_trigger'         => 'update.user',
                 'event_trigger_options' => 'a:0:{}',
@@ -180,8 +181,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'setfrom.reply_user',
                 'run_order'             => '0',
                 'date_created'          => '2012-10-24 14:12:46',
-            ),
-            array(
+            ],
+            [
                 'title'                 => '',
                 'event_trigger'         => 'new.email.user',
                 'event_trigger_options' => 'a:0:{}',
@@ -192,8 +193,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'setfrom.newemail_user',
                 'run_order'             => '0',
                 'date_created'          => '2012-10-24 14:14:05',
-            ),
-            array(
+            ],
+            [
                 'title'                 => '',
                 'event_trigger'         => 'new.web.user',
                 'event_trigger_options' => 'a:0:{}',
@@ -204,8 +205,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'setfrom.newweb_user',
                 'run_order'             => '0',
                 'date_created'          => '2012-10-24 14:14:05',
-            ),
-            array(
+            ],
+            [
                 'title'                 => '',
                 'event_trigger'         => 'new.email.agent',
                 'event_trigger_options' => 'a:0:{}',
@@ -216,8 +217,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'setfrom.newemail_agent',
                 'run_order'             => '0',
                 'date_created'          => '2012-10-24 14:14:05',
-            ),
-            array(
+            ],
+            [
                 'title'                 => '',
                 'event_trigger'         => 'new.web.agent.portal',
                 'event_trigger_options' => 'a:0:{}',
@@ -228,8 +229,8 @@ class Build1352309486 extends AbstractBuild
                 'sys_name'              => 'setfrom.newweb_agent',
                 'run_order'             => '0',
                 'date_created'          => '2012-10-24 14:14:05',
-            ),
-        );
+            ],
+        ];
 
         $have_sys_triggers = $this->container->getDb()->fetchAllCol('
             SELECT sys_name

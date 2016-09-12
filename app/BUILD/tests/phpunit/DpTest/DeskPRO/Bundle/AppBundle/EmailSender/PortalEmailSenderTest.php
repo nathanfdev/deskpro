@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\EmailSender;
 
 use Application\DeskPRO\Entity\Person;
@@ -40,17 +41,17 @@ class PortalEmailSenderTest extends PortalTestCase
     public function testSendWelcomeEmail()
     {
         //        $this->installDataSet('fresh', true);
-//
+
 //        $person = $this->getPersonFactory()->createNewInvalidUser('john@appleseed.com', 'John Appleseed');
 //        $this->getEmailSender()->sendWelcomeEmail($person);
-//
+
 //        $sources = $this->getSendmailSources($person->getPrimaryEmailAddress());
 //        $last_source = end($sources);
-//
+
 //        $this->assertNotFalse($last_source, 'an email was sent');
 //        $this->assertEquals('Thank you for registering', $last_source->getHeaderSubject(), 'subject is correct');
 //        $this->assertContains('john@appleseed.com', $last_source->getHeaderTo(), 'sent to the correct address');
-//
+
 //        $this->assertContains(
 //            '/validate/email/' . $person->getPrimaryEmail()->getId(),
 //            $this->getMessageFromEmailSource($last_source),
@@ -62,7 +63,7 @@ class PortalEmailSenderTest extends PortalTestCase
     {
         $this->installDataSet('fresh', true);
 
-        $custom_template = <<<CODE
+        $custom_template = <<<'CODE'
 <dp:subject>This is the custom subject</dp:subject>
 Hello there this is the message
 CODE;

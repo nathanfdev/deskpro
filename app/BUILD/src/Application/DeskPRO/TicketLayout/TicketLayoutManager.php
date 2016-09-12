@@ -160,17 +160,17 @@ class TicketLayoutManager
      */
     private function _collectLayoutItems(LayoutCollection $coll)
     {
-        $items = array();
+        $items = [];
 
         foreach ($coll as $layout) {
             foreach ($layout as $item) {
                 if (!isset($items[$item->getId()])) {
-                    $items[$item->getId()] = array(
+                    $items[$item->getId()] = [
                         'id'           => $item->getId(),
                         'field_type'   => $item->getFieldType(),
                         'field_id'     => $item->getFieldId(),
                         'has_criteria' => false,
-                    );
+                    ];
                 }
 
                 if ($item->hasCriteria()) {

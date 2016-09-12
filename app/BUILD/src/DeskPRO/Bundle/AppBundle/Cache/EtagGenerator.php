@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -143,7 +143,9 @@ class EtagGenerator
             throw new \InvalidArgumentException(sprintf('Passed argument should be and object but [ %s ] given', gettype($param)));
         }
         $name = TypeUtils::getSnakeCaseBaseTypeName($param);
-        $vars = $this->createSegments(array_filter(get_object_vars($param), function ($value) { return is_scalar($value) && !is_null($value);}));
+        $vars = $this->createSegments(array_filter(get_object_vars($param), function ($value) {
+            return is_scalar($value) && !is_null($value);
+        }));
 
         return $segment = sprintf('%s(%s)', $name, implode(';', $this->flatten($vars)));
     }

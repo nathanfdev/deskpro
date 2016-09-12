@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -72,7 +73,7 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $c = App::getDb()->executeUpdate('
                 UPDATE blobs
                 SET storage_loc_pref = ? WHERE storage_loc != ? AND storage_loc_specific IS NULL
-            ', array($set_aid, $set_aid));
+            ', [$set_aid, $set_aid]);
             $output->writeln(sprintf("<info>$c records updated in %.3fs</info>", microtime(true) - $t));
         }
 
@@ -80,7 +81,7 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             // Cancel any automatic one currently running
             App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
 
-            $t       = array('Adapter', 'Count', 'Waiting Count', 'Is Installed');
+            $t       = ['Adapter', 'Count', 'Waiting Count', 'Is Installed'];
             $counts  = App::getDb()->fetchAllKeyValue('SELECT storage_loc, COUNT(*) AS count FROM blobs GROUP BY storage_loc');
             $counts2 = App::getDb()->fetchAllKeyValue('SELECT storage_loc_pref, COUNT(*) AS count FROM blobs WHERE storage_loc_pref IS NOT NULL GROUP BY storage_loc_pref');
 
@@ -88,9 +89,9 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $aids = array_merge(array_keys($counts), array_keys($counts2), $aids);
             $aids = array_unique($aids);
 
-            $rows = array();
+            $rows = [];
             foreach ($aids as $aid) {
-                $r   = array();
+                $r   = [];
                 $r[] = $aid;
                 $r[] = isset($counts[$aid]) ? $counts[$aid] : 0;
                 $r[] = isset($counts2[$aid]) ? $counts2[$aid] : 0;

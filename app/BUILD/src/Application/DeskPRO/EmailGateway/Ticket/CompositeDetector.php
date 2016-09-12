@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
@@ -41,7 +42,7 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
     /**
      * @var \Application\DeskPRO\EmailGateway\Ticket\TicketDetectorInterface[]
      */
-    private $detectors = array();
+    private $detectors = [];
 
     /**
      * @var bool
@@ -51,12 +52,12 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
     /**
      * @var \Application\DeskPRO\EmailGateway\Ticket\TicketDetectorInterface[]
      */
-    private $matched_detectors = array();
+    private $matched_detectors = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Ticket[]
      */
-    private $matched_tickets = array();
+    private $matched_tickets = [];
 
     /**
      * @var \Orb\Log\Logger
@@ -109,8 +110,8 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
      */
     public function reset()
     {
-        $this->matched_detectors = array();
-        $this->matched_tickets   = array();
+        $this->matched_detectors = [];
+        $this->matched_tickets   = [];
         $this->is_bounce_mode    = false;
     }
 

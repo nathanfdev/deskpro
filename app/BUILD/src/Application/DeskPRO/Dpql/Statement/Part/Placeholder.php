@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql;
@@ -92,7 +93,7 @@ class Placeholder extends AbstractPart
      * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
      */
     public function prepareWithIntervals(
-        Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
+        Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = []
     ) {
         $prepared = AbstractPlaceholder::create($this->name)->prepareWithIntervals(
             $statement, $section, $stack, $select, $result, $intervals
@@ -143,7 +144,7 @@ class Placeholder extends AbstractPart
      */
     public function prepareComparison(
         AbstractPart $lhs, $comparison, Display $statement, $section, array $stack,
-        Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
+        Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = []
     ) {
         return AbstractPlaceholder::create($this->name)->prepareComparison(
             $lhs, $comparison, $statement, $section, $stack, $select, $result, $intervals

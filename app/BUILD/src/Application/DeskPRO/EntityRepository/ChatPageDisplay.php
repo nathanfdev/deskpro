@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -49,20 +50,20 @@ class ChatPageDisplay extends AbstractEntityRepository
                 SELECT d
                 FROM DeskPRO:ChatPageDisplay d
                 WHERE d.zone = :zone AND d.department = :department
-            ')->setParameters(array('zone' => $zone, 'department' => $department_context))->execute();
+            ')->setParameters(['zone' => $zone, 'department' => $department_context])->execute();
         } else {
             return $this->getEntityManager()->createQuery('
                 SELECT d
                 FROM DeskPRO:ChatPageDisplay d
                 WHERE d.zone = :zone
-            ')->setParameters(array('zone' => $zone))->execute();
+            ')->setParameters(['zone' => $zone])->execute();
         }
     }
 
     public function getSection($department, $zone, $section)
     {
         try {
-            $d = $this->findOneBy(array('department' => $department ? $department['id'] : null, 'zone' => $zone, 'section' => $section));
+            $d = $this->findOneBy(['department' => $department ? $department['id'] : null, 'zone' => $zone, 'section' => $section]);
 
             return $d;
         } catch (\Exception $e) {
@@ -111,32 +112,32 @@ class ChatPageDisplay extends AbstractEntityRepository
      */
     public function generateFullSectionData($zone = 'create')
     {
-        $page_data = array();
+        $page_data = [];
 
         if ($zone == 'create') {
-            $page_data[] = array(
+            $page_data[] = [
                 'id'         => 'person_name',
                 'field_type' => 'person_name',
-            );
-            $page_data[] = array(
+            ];
+            $page_data[] = [
                 'id'         => 'person_email',
                 'field_type' => 'person_email',
-            );
+            ];
         }
 
-        $page_data[] = array(
+        $page_data[] = [
             'id'         => 'chat_department',
             'field_type' => 'chat_department',
-        );
+        ];
 
         // Custom fields
         $fields = App::getSystemService('chat_fields_manager')->getFields();
         foreach ($fields as $f) {
-            $page_data[] = array(
+            $page_data[] = [
                 'id'         => 'chat_field['.$f->getId().']',
                 'field_type' => 'chat_field',
                 'field_id'   => $f->getId(),
-            );
+            ];
         }
 
         return $page_data;
@@ -149,7 +150,7 @@ class ChatPageDisplay extends AbstractEntityRepository
                 SELECT data
                 FROM chat_page_display
                 WHERE department_id IS NULL AND zone = ? AND section = ?
-            ', array($zone, $section));
+            ', [$zone, $section]);
         } else {
             if (is_array($department) || is_object($department)) {
                 $department = $department['id'];
@@ -158,7 +159,7 @@ class ChatPageDisplay extends AbstractEntityRepository
                 SELECT data
                 FROM chat_page_display
                 WHERE department_id = ? AND zone = ? AND section = ?
-            ', array($department, $zone, $section));
+            ', [$department, $zone, $section]);
         }
 
         if (!$data) {
@@ -170,7 +171,7 @@ class ChatPageDisplay extends AbstractEntityRepository
         }
 
         if (!$data) {
-            return array();
+            return [];
         }
 
         return $data;
@@ -180,7 +181,7 @@ class ChatPageDisplay extends AbstractEntityRepository
     {
         $d = null;
         try {
-            $d = $this->findOneBy(array('department' => $department ? $department['id'] : null, 'zone' => $zone, 'section' => $section));
+            $d = $this->findOneBy(['department' => $department ? $department['id'] : null, 'zone' => $zone, 'section' => $section]);
         } catch (\Exception $e) {
         }
 

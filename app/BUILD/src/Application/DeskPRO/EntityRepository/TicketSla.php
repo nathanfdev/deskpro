@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -41,7 +42,7 @@ class TicketSla extends AbstractEntityRepository
     public function getTicketSlaCountsForAgentInterface(array $slas, $filter = 'all', Entity\Person $person_context = null)
     {
         if (!$slas) {
-            return array();
+            return [];
         }
 
         if (!$person_context) {
@@ -52,9 +53,9 @@ class TicketSla extends AbstractEntityRepository
             throw new \InvalidArgumentException('Person must be an agent');
         }
 
-        $where_perm = array();
+        $where_perm = [];
 
-        if ($disallowed = $person_context->getHelperManager()->callName('getdisalloweddepartments', array())) {
+        if ($disallowed = $person_context->getHelperManager()->callName('getdisalloweddepartments', [])) {
             $where_perm[] = 'tickets.department_id NOT IN ('.implode(',', $disallowed).')';
         }
 
@@ -63,10 +64,10 @@ class TicketSla extends AbstractEntityRepository
         }
 
         if (!$person_context->hasPerm('agent_tickets.view_others')) {
-            $part   = array();
+            $part   = [];
             $part[] = "tickets.agent_id = {$person_context['id']}";
 
-            if ($teams = $person_context->getHelperManager()->callName('getagentteamids', array())) {
+            if ($teams = $person_context->getHelperManager()->callName('getagentteamids', [])) {
                 $part[] = 'tickets.agent_team_id IN ('.implode(',', $teams).')';
             }
 
@@ -80,7 +81,7 @@ class TicketSla extends AbstractEntityRepository
         $where = '(('.implode(' AND ', $where_perm).') OR (';
 
         $where .= "tickets.agent_id = {$person_context['id']} OR ";
-        if ($teams = $person_context->getHelperManager()->callName('getagentteamids', array())) {
+        if ($teams = $person_context->getHelperManager()->callName('getagentteamids', [])) {
             $where .= 'tickets.agent_team_id IN ('.implode(',', $teams).') OR ';
         }
 
@@ -92,7 +93,7 @@ class TicketSla extends AbstractEntityRepository
                 break;
 
             case 'team':
-                if ($teams = $person_context->getHelperManager()->callName('getagentteamids', array())) {
+                if ($teams = $person_context->getHelperManager()->callName('getagentteamids', [])) {
                     $where .= ' AND tickets.agent_team_id IN ('.implode(',', $teams).')';
                 } else {
                     $where .= ' AND 0';
@@ -103,7 +104,7 @@ class TicketSla extends AbstractEntityRepository
         $where .= ' AND ticket_slas.is_completed = 0';
         $where .= " AND ((slas.sla_type = 'waiting_time' AND tickets.status = 'awaiting_agent') OR (slas.sla_type = 'first_response' AND tickets.status = 'awaiting_agent') OR (slas.sla_type = 'resolution' AND tickets.status IN ('awaiting_agent', 'awaiting_user')))";
 
-        $ids = array();
+        $ids = [];
         foreach ($slas as $sla) {
             $ids[] = $sla->id;
         }
@@ -120,9 +121,9 @@ class TicketSla extends AbstractEntityRepository
             GROUP BY  ticket_slas.sla_id, ticket_slas.sla_status
         ");
 
-        $output = array();
+        $output = [];
         foreach ($ids as $id) {
-            $output[$id] = array('ok' => 0, 'warning' => 0, 'fail' => 0);
+            $output[$id] = ['ok' => 0, 'warning' => 0, 'fail' => 0];
         }
         foreach ($results as $result) {
             $output[$result['sla_id']][$result['sla_status']] = $result['count'];
@@ -145,7 +146,7 @@ class TicketSla extends AbstractEntityRepository
             WHERE ts.is_completed = 0
                 AND ts.sla_status IN ($statuses)
                 AND ts.$date_field < ?0
-        ")->setMaxResults($limit)->execute(array(new \DateTime('now', new \DateTimeZone('UTC'))));
+        ")->setMaxResults($limit)->execute([new \DateTime('now', new \DateTimeZone('UTC'))]);
     }
 
     public function getTicketSlaAdminGraphData()
@@ -175,15 +176,15 @@ class TicketSla extends AbstractEntityRepository
         $month = $dt->format('n');
         $year  = $dt->format('Y');
 
-        $graphs = array(
+        $graphs = [
             'today'      => $today,
-            'yesterday'  => array($yesterday, $today - 1),
+            'yesterday'  => [$yesterday, $today - 1],
             'this_week'  => $week_start,
             'this_month' => gmmktime(0, 0, 0, $month, 1, $year),
             'this_year'  => gmmktime(0, 0, 0, 1, 1, $year),
-        );
+        ];
 
-        $output = array();
+        $output = [];
         foreach ($graphs as $title => $start) {
             if (is_array($start)) {
                 list($start, $end) = $start;
@@ -192,11 +193,11 @@ class TicketSla extends AbstractEntityRepository
             }
             $data = $this->getTicketSlaStatusData($start, $end);
             if ($data) {
-                $output[$title] = array(
-                    'ok'      => array('title' => 'OK', 'count' => 0, 'id' => 'ok', 'color' => '#abf3ae'),
-                    'warning' => array('title' => 'Warning', 'count' => 0, 'id' => 'warning', 'color' => '#F7BC1F'),
-                    'fail'    => array('title' => 'Failed', 'count' => 0, 'id' => 'count', 'color' => '#de5949'),
-                );
+                $output[$title] = [
+                    'ok'      => ['title' => 'OK', 'count' => 0, 'id' => 'ok', 'color' => '#abf3ae'],
+                    'warning' => ['title' => 'Warning', 'count' => 0, 'id' => 'warning', 'color' => '#F7BC1F'],
+                    'fail'    => ['title' => 'Failed', 'count' => 0, 'id' => 'count', 'color' => '#de5949'],
+                ];
                 foreach ($data as $status => $count) {
                     $output[$title][$status]['count'] = $count;
                 }
@@ -220,6 +221,6 @@ class TicketSla extends AbstractEntityRepository
             INNER JOIN tickets ON (ticket_slas.ticket_id = tickets.id)
             WHERE tickets.date_created >= ? AND tickets.date_created <= ?
             GROUP BY ticket_slas.sla_status
-        ', array(gmdate('Y-m-d H:i:s', $start), gmdate('Y-m-d H:i:s', $end)));
+        ', [gmdate('Y-m-d H:i:s', $start), gmdate('Y-m-d H:i:s', $end)]);
     }
 }

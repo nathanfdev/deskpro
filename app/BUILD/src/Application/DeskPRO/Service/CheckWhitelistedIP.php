@@ -76,7 +76,7 @@ class CheckWhitelistedIP
         }
 
         $code_data = TmpData::create(
-            'whitelist-ip', array('person_id' => $person['id'], 'interface' => DP_INTERFACE), '+40 minutes'
+            'whitelist-ip', ['person_id' => $person['id'], 'interface' => DP_INTERFACE], '+40 minutes'
         );
         $code_data->setData('ip', $ip);
         $container->getEm()->persist($code_data);

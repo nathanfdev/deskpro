@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
 /**
@@ -80,7 +81,7 @@ class HierarchyStructure
     /**
      * @var array
      */
-    protected $flat_hierarchy = array();
+    protected $flat_hierarchy = [];
 
     public function __construct($cats)
     {
@@ -96,7 +97,7 @@ class HierarchyStructure
             return $this->flat_hierarchy;
         }
 
-        $this->flat_hierarchy = array();
+        $this->flat_hierarchy = [];
         $this->_getFlatHierarchyArray($this->flat_hierarchy, 0);
 
         return $this->flat_hierarchy;
@@ -106,12 +107,12 @@ class HierarchyStructure
     {
         foreach ($this->cats as $cat) {
             if (($cat->parent && $cat->parent->getId() == $parent_id) || (!$parent_id && !$cat->parent)) {
-                $array[$cat->getId()] = array(
+                $array[$cat->getId()] = [
                     'id'        => $cat->getId(),
                     'parent_id' => $cat->parent ? $cat->parent->getId() : 0,
                     'depth'     => $depth,
                     //'category' => $cat
-                );
+                ];
                 $this->_getFlatHierarchyArray($array, $cat->getId(), $depth + 1);
             }
         }
@@ -130,7 +131,7 @@ class HierarchyStructure
             return $this->parent_map;
         }
 
-        $this->parent_map = array();
+        $this->parent_map = [];
 
         foreach ($this->cats as $cat) {
             $this->parent_map[$cat[$this->id_key]] = $cat[$this->parent_key];
@@ -152,7 +153,7 @@ class HierarchyStructure
 
         $cat_id = $cat[$this->id_key];
 
-        $ids = array();
+        $ids = [];
         while (!empty($this->parent_map[$cat_id])) {
             $cat_id = $this->parent_map[$cat_id];
             $ids[]  = $cat_id;
@@ -180,7 +181,7 @@ class HierarchyStructure
     {
         $ids = $this->getPathIds($cat);
 
-        $cats = array();
+        $cats = [];
         foreach ($ids as $id) {
             if (isset($this->cats[$id])) {
                 $cats[$id] = $this->cats[$id];
@@ -201,7 +202,7 @@ class HierarchyStructure
     public function getChildrenIds($category = null, $direct = true)
     {
         if (!isset($this->child_map[$category[$this->id_key]])) {
-            return array();
+            return [];
         }
 
         $children_ids = $this->child_map[$category[$this->id_key]];
@@ -224,7 +225,7 @@ class HierarchyStructure
      */
     public function getChildren($category = null, $direct = true)
     {
-        $cats = array();
+        $cats = [];
         foreach ($this->getChildrenIds() as $cid) {
             $cats[$cid] = $this->cats[$cid];
         }

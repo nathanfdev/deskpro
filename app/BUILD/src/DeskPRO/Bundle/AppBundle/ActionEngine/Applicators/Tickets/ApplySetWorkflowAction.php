@@ -35,7 +35,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
-    /** @var  TicketWorkflow */
+    /** @var TicketWorkflow */
     private $workflow;
 
     public function init()

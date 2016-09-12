@@ -58,44 +58,44 @@ class RoundRobinLogEntry extends DomainObject
     public function __construct()
     {
         $this->created = new \DateTime();
-        $this->actions = array();
+        $this->actions = [];
     }
 
     public function addActionNoOnline()
     {
-        $this->actions[] = array(
+        $this->actions[] = [
             'phrase' => 'adm.round_robins.log_no_agents_online',
-            'params' => array(),
-        );
+            'params' => [],
+        ];
     }
 
     public function addActionAssigned(Person $person)
     {
-        $this->actions[] = array(
+        $this->actions[] = [
             'phrase' => 'adm.round_robins.log_assigned',
-            'params' => array('name' => $person->getDisplayName()),
-        );
+            'params' => ['name' => $person->getDisplayName()],
+        ];
     }
 
     public function addActionSkippedOffline(Person $person)
     {
-        $this->actions[] = array(
+        $this->actions[] = [
             'phrase' => 'adm.round_robins.log_skipped_offline',
-            'params' => array('name' => $person->getDisplayName()),
-        );
+            'params' => ['name' => $person->getDisplayName()],
+        ];
     }
 
     public function addActionSkippedDisabled(Person $person)
     {
-        $this->actions[] = array(
+        $this->actions[] = [
             'phrase' => 'adm.round_robins.log_skipped_disabled',
-            'params' => array('name' => $person->getDisplayName()),
-        );
+            'params' => ['name' => $person->getDisplayName()],
+        ];
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

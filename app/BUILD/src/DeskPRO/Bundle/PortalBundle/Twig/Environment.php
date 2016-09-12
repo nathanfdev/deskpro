@@ -49,7 +49,7 @@ class Environment extends \Twig_Environment
      * @param \Twig_LoaderInterface|null $loader
      * @param array                      $options
      */
-    public function __construct(\Twig_LoaderInterface $loader = null, $options = array())
+    public function __construct(\Twig_LoaderInterface $loader = null, $options = [])
     {
         parent::__construct($loader, $options);
     }

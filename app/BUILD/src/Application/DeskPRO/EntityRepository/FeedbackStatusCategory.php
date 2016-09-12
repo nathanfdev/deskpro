@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 /**
@@ -82,7 +83,7 @@ class FeedbackStatusCategory extends AbstractEntityRepository
     {
         $categories = $this->findAll();
 
-        $ret = array();
+        $ret = [];
         foreach ($categories as $category) {
             if ($for_ids === null || in_array($category->id, $for_ids)) {
                 $ret[$category->id] = $category->title;

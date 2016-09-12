@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
@@ -57,7 +58,7 @@ class AgentProfileValidator extends AbstractValidator
             }
         }
 
-        $validator = new \Orb\Validator\StringLength(array('min' => 3));
+        $validator = new \Orb\Validator\StringLength(['min' => 3]);
         if (!$validator->isValid($this->profile->name)) {
             $this->addError('name.short');
         }
@@ -69,7 +70,7 @@ class AgentProfileValidator extends AbstractValidator
                 SELECT person_id
                 FROM people_emails
                 WHERE email = ?
-            ', array($this->profile->email));
+            ', [$this->profile->email]);
             if ($check_exist && $check_exist != $this->profile->getPerson()->getId()) {
                 $this->addError('email.in_use');
             }
@@ -97,7 +98,7 @@ class AgentProfileValidator extends AbstractValidator
                         SELECT person_id
                         FROM people_emails
                         WHERE email = ?
-                    ', array($new_email));
+                    ', [$new_email]);
                     if ($check_exist && $check_exist != $this->profile->getPerson()->getId()) {
                         $this->addError('email.in_use');
                     }

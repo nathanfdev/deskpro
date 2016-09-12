@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
@@ -54,17 +55,17 @@ class RelatedContentUpdate
     public function addRelated($type, $id)
     {
         $this->removeRelated($type, $id);
-        $this->db->insert('related_content', array(
+        $this->db->insert('related_content', [
             'object_type'     => $this->type,
             'object_id'       => $this->entity->id,
             'rel_object_type' => $type,
             'rel_object_id'   => $id,
-        ));
+        ]);
     }
 
     public function removeRelated($type, $id)
     {
-        $params = array(
+        $params = [
             // For checking other object linked to this object
             $type,
             $id,
@@ -76,7 +77,7 @@ class RelatedContentUpdate
             $this->entity->id,
             $type,
             $id,
-        );
+        ];
 
         $this->db->executeUpdate('
             DELETE FROM related_content

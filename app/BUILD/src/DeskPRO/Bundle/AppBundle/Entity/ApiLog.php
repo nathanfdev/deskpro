@@ -204,7 +204,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * Flag indicates that request is dupe.
-     * 
+     *
      * @ORM\Column(type="boolean", nullable=false, name="is_dupe")
      *
      * @JMS\Expose()

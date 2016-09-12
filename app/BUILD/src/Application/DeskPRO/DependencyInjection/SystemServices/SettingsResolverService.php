@@ -52,11 +52,11 @@ class SettingsResolverService
         $simple_array_cache = $container->get('cache.simple_array');
 
         // loaders, in proper order. first loader is treated as the default settings.
-        $loaders = array(
+        $loaders = [
             $container->getSystemService('default_settings_loader'),
             new DbGlobalSettingsTableLoader($container->getEm()->getConnection(), $simple_array_cache),
             new GlobalsArrayLoader($container->get('deskpro.app_env'), $simple_array_cache),
-        );
+        ];
 
         // brand settings loader is a special loader, injected directly
         $resolver = new SettingsResolver(

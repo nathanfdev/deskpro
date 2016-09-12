@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,15 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1349107085 extends AbstractBuild
 {
     public function run()
     {
-        #----------------------------------------
-        # Time trigger options
-        #----------------------------------------
+        //----------------------------------------
+        // Time trigger options
+        //----------------------------------------
 
         $this->out('Update time trigger options');
 
@@ -52,22 +53,22 @@ class Build1349107085 extends AbstractBuild
 
         // Restore proper time trigger option
         foreach ($time_trigger_options as $info) {
-            $opt = array('time' => $info['event_trigger_option']);
+            $opt = ['time' => $info['event_trigger_option']];
             $opt = serialize($opt);
 
             $event = str_replace('time_', 'time.', $info['event_trigger']);
 
-            $update = array(
+            $update = [
                 'event_trigger'         => $event,
                 'event_trigger_options' => $opt,
-            );
+            ];
 
-            $this->container->getDb()->update('ticket_triggers', $update, array('id' => $info['id']));
+            $this->container->getDb()->update('ticket_triggers', $update, ['id' => $info['id']]);
         }
 
-        #----------------------------------------
-        # Rename for update event names
-        #----------------------------------------
+        //----------------------------------------
+        // Rename for update event names
+        //----------------------------------------
 
         // Rename trigger types
         $triggers = $this->container->getDb()->fetchAll("
@@ -86,8 +87,8 @@ class Build1349107085 extends AbstractBuild
             switch ($trigger['event_trigger']) {
                 case 'new_ticket':
                     $sig_term  = null;
-                    $hit_check = array();
-                    $terms     = $this->snipTerm($trigger['terms'], 'creation_system', $sig_term, array('gateway_account', 'gateway_address'), $hit_check);
+                    $hit_check = [];
+                    $terms     = $this->snipTerm($trigger['terms'], 'creation_system', $sig_term, ['gateway_account', 'gateway_address'], $hit_check);
 
                     if (!$sig_term) {
                         $event_trigger = 'new.web.user';
@@ -131,39 +132,39 @@ class Build1349107085 extends AbstractBuild
 
                     if (!$sig_term) {
                         $event_trigger = 'update';
-                        $terms[]       = array(
+                        $terms[]       = [
                             'type'    => 'new_reply_user',
                             'op'      => 'is',
-                            'options' => array('do' => 1),
-                        );
+                            'options' => ['do' => 1],
+                        ];
                     } else {
                         $creation_system = isset($sig_term['options']['creation_system']) ? $sig_term['options']['creation_system'] : '';
                         switch ($creation_system) {
                             case 'web.person':
                             case 'gateway.person':
                                 $event_trigger = 'update.user';
-                                $terms[]       = array(
+                                $terms[]       = [
                                     'type'    => 'new_reply_user',
                                     'op'      => 'is',
-                                    'options' => array('do' => 1),
-                                );
+                                    'options' => ['do' => 1],
+                                ];
                                 break;
                             case 'web.agent':
                             case 'gateway.agent':
                                 $event_trigger = 'update.agent';
-                                $terms[]       = array(
+                                $terms[]       = [
                                     'type'    => 'new_reply_agent',
                                     'op'      => 'is',
-                                    'options' => array('do' => 1),
-                                );
+                                    'options' => ['do' => 1],
+                                ];
                                 break;
                             default:
                                 $event_trigger = 'update';
-                                $terms[]       = array(
+                                $terms[]       = [
                                     'type'    => 'new_reply_user',
                                     'op'      => 'is',
-                                    'options' => array('do' => 1),
-                                );
+                                    'options' => ['do' => 1],
+                                ];
                         }
                     }
 
@@ -194,25 +195,25 @@ class Build1349107085 extends AbstractBuild
 
             if ($event_trigger) {
                 $this->out("-- Updated {$trigger['id']} to $event_trigger");
-                $this->container->getDb()->update('ticket_triggers', array(
+                $this->container->getDb()->update('ticket_triggers', [
                     'terms'         => serialize($terms),
                     'event_trigger' => $event_trigger,
-                ), array('id' => $trigger['id']));
+                ], ['id' => $trigger['id']]);
             }
         }
 
-        #----------------------------------------
-        # Set empty arrays for empty options
-        #----------------------------------------
+        //----------------------------------------
+        // Set empty arrays for empty options
+        //----------------------------------------
 
         $this->out('Set default empty option arrays');
         $this->execMutateSql("UPDATE ticket_triggers SET event_trigger_options = 'a:0:{}' WHERE event_trigger_options IS NULL OR event_trigger_options = ''");
         $this->execMutateSql("UPDATE ticket_triggers SET terms_any = 'a:0:{}' WHERE terms_any IS NULL OR terms_any = ''");
     }
 
-    protected function snipTerm(array $terms, $find_term, &$found_val, array $hit_terms = array(), array &$hit_check = array())
+    protected function snipTerm(array $terms, $find_term, &$found_val, array $hit_terms = [], array &$hit_check = [])
     {
-        $set_terms = array();
+        $set_terms = [];
 
         foreach ($terms as $term) {
             if ($term['type'] == $find_term) {

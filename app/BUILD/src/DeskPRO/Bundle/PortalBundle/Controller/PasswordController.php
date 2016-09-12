@@ -77,7 +77,7 @@ class PasswordController extends AbstractController
             if ($person = $this->getPersonDataService()->getPersonForEmail($email)) {
                 if ($person->isAgent() || $person->isAdmin()) {
                     // redirect to the /agent forgot password functionality
-                    return $this->redirectToRoute('agent_login', array('forgot' => $email));
+                    return $this->redirectToRoute('agent_login', ['forgot' => $email]);
                 }
 
                 // set the reset code
@@ -97,11 +97,11 @@ class PasswordController extends AbstractController
 
             return $this->renderThemeView(
                 $tpl,
-                array(
+                [
                     'email'       => $email,
                     'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset($isResetting),
                     'page_title'  => $this->createPageTitle()->passwordReset($isResetting),
-                )
+                ]
             );
         } elseif ($form->isSubmitted()) {
             $this->runAntiAbuseCheck($request);
@@ -118,7 +118,7 @@ class PasswordController extends AbstractController
 
         return $this->renderThemeView(
             $tpl,
-            array(
+            [
                 'auth_manager' => $this->get('dp_authentication_manager.user'),
                 'form'         => $form->createView(),
                 'render_error' => $render_error,
@@ -126,7 +126,7 @@ class PasswordController extends AbstractController
                 'page_title'   => $this->createPageTitle()->passwordReset($isResetting),
                 'lockout'      => $check->isLockoutRecommended(),
                 'lockout_time' => $check->getLockoutTime(true),
-            )
+            ]
         );
     }
 
@@ -155,10 +155,10 @@ class PasswordController extends AbstractController
 
             return $this->renderThemeView(
                 $tpl,
-                array(
+                [
                 'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset($isResetting),
                 'page_title'  => $this->createPageTitle()->passwordReset($isResetting),
-            ));
+            ]);
         }
 
         $person = $reset['person'];
@@ -220,14 +220,14 @@ class PasswordController extends AbstractController
 
         return $this->renderThemeView(
             $tpl,
-            array(
+            [
                 'auth_manager' => $this->get('dp_authentication_manager.user'),
                 'form'         => $form->createView(),
                 'breadcrumbs'  => $this->getBreadcrumbGenerator()->buildPasswordReset($isResetting),
                 'page_title'   => $this->createPageTitle()->passwordReset($isResetting),
                 'person'       => $person,
                 'from_saved'   => $request->get('from-saved', false),
-            )
+            ]
         );
     }
 

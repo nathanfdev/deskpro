@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Input
  */
+
 namespace Orb\Input\Reader\Source;
 
 use Orb\Util\OptionsArray;
@@ -59,7 +60,7 @@ class Superglobal implements SourceInterface, ResetSourceInterface
     /**
      * @var \Orb\Util\OptionsArray
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * @var RequestStack|null
@@ -69,19 +70,17 @@ class Superglobal implements SourceInterface, ResetSourceInterface
     /**
      * Create the source.
      *
-     * @param string       $sg_name       The name of the superglobal: _POST, _GET etc.
+     * @param string       $sg_name       The name of the superglobal: _POST, _GET etc
      * @param array        $options
      * @param RequestStack $request_stack The symfony request stack for this request, if it exists
      */
     public function __construct($sg_name, array $options = null, RequestStack $request_stack = null)
     {
         $this->superglobal   = $sg_name;
-        $this->options       = new OptionsArray($options ?: array());
+        $this->options       = new OptionsArray($options ?: []);
         $this->request_stack = $request_stack;
     }
 
-    /**
-     */
     public function resetSource()
     {
         $this->array = null;
@@ -111,7 +110,7 @@ class Superglobal implements SourceInterface, ResetSourceInterface
     {
         $this->_initArray();
 
-        $parts = array();
+        $parts = [];
         if (is_array($name)) {
             $parts = $name;
             $name  = array_shift($parts);
@@ -154,14 +153,14 @@ class Superglobal implements SourceInterface, ResetSourceInterface
             }
         }
         if (!$this->array) {
-            $this->array = array();
+            $this->array = [];
         }
     }
 
     private function _getPostArray()
     {
         $post = $_POST;
-        if ($this->options->get('accept_json_post') && in_array(Web::getRequestContentType(), array('application/json', 'text/x-json'))) {
+        if ($this->options->get('accept_json_post') && in_array(Web::getRequestContentType(), ['application/json', 'text/x-json'])) {
             if (!$this->request_stack) {
                 throw new \RuntimeException('the request_stack service should have been injected but was not, cannot read request data!');
             }
@@ -185,7 +184,7 @@ class Superglobal implements SourceInterface, ResetSourceInterface
      */
     public function checkIsset($name, $options = null)
     {
-        return ($this->getValue($name, $options) === null ? false : true);
+        return $this->getValue($name, $options) === null ? false : true;
     }
 
     /**

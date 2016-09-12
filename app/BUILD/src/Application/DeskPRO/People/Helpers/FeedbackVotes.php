@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -63,7 +63,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
      *
      * @var array
      */
-    protected $feedback_votes = array();
+    protected $feedback_votes = [];
 
     /**
      * @param \Application\DeskPRO\Entity\Person $person
@@ -102,7 +102,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
                 SELECT SUM(rating)
                 FROM ratings
                 WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' #AND is_returned = 0
-            ", array($this->person['id'], null));
+            ", [$this->person['id'], null]);
         } else {
             $num_votes = 0;
         }
@@ -137,13 +137,13 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
                 SELECT rating
                 FROM ratings
                 WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' AND object_id = ?
-            ", array($this->person['id'], null, $feedback_id));
+            ", [$this->person['id'], null, $feedback_id]);
         } elseif ($this->visitor) {
             $num_votes_this = App::getDb()->fetchColumn("
                 SELECT rating
                 FROM ratings
                 WHERE visitor_id = ? AND object_type = 'feedback' AND object_id = ?
-            ", array($this->visitor['id'], $feedback_id));
+            ", [$this->visitor['id'], $feedback_id]);
         } else {
             $num_votes_this = 0;
         }
@@ -162,7 +162,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
      */
     public function getVotesOnFeedbackCollection(array $feedback)
     {
-        $ids = array();
+        $ids = [];
 
         foreach ($feedback as $i) {
             if ($i instanceof \Application\DeskPRO\Entity\Feedback) {
@@ -182,16 +182,16 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
                 FROM ratings
                 WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' AND object_id IN (?)
             ",
-            array($this->person['id'], null, $ids),
-            array(\PDO::PARAM_INT, \PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            [$this->person['id'], null, $ids],
+            [\PDO::PARAM_INT, \PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
         } elseif ($this->visitor) {
             $vote_info = App::getDb()->fetchAllKeyValue("
                 SELECT object_id, rating
                 FROM ratings
                 WHERE visitor_id = ? AND object_type = 'feedback' AND object_id IN (?)
             ",
-            array(null, $ids),
-            array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            [null, $ids],
+            [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
         } else {
             $vote_info = array_combine($ids, array_fill(0, count($ids), 0));
         }
@@ -205,11 +205,11 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
 
     public function getShortCallableNames()
     {
-        return array(
+        return [
             'getFeedbackVotesRemaining' => 'getVotesRemaining',
             'getFeedbackVotesUsed'      => 'getVotesUsed',
             'FeedbackVotes'             => '_getthis',
-        );
+        ];
     }
 
     public function _getthis()

@@ -66,9 +66,9 @@ class BanningController extends AbstractController implements ProtectedControlle
         return new UserTypePermission(UserTypePermission::AGENT);
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -93,30 +93,30 @@ class BanningController extends AbstractController implements ProtectedControlle
             ->setWildcard($emailBanWildcard);
 
         return $this->createApiResponse(
-            array(
-                 'bans' => array(
-                     'pagination' => array(
-                         'ip_bans' => array(
+            [
+                 'bans' => [
+                     'pagination' => [
+                         'ip_bans' => [
                              'num_pages' => $ipBans->getPageCount(),
                              'page'      => $ipBanPage,
                              'total'     => $ipBans->getCount(),
-                         ),
-                         'email_bans' => array(
+                         ],
+                         'email_bans' => [
                              'num_pages' => $emailBans->getPageCount(),
                              'page'      => $emailBanPage,
                              'total'     => $emailBans->getCount(),
-                         ),
-                     ),
+                         ],
+                     ],
                      'ip_bans'    => $ipBans->getAllAsNestedArray(),
                      'email_bans' => $emailBans->getAllAsNestedArray(),
-                 ),
-            )
+                 ],
+            ]
         );
     }
 
-    ###################################################################################################################
-    # get IP
-    ####################################################################################################################
+    //##################################################################################################################
+    // get IP
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -133,15 +133,15 @@ class BanningController extends AbstractController implements ProtectedControlle
         }
 
         return $this->createApiResponse(
-            array(
+            [
                  'ip_ban' => $this->getApiData($ipBan),
-            )
+            ]
         );
     }
 
-    ###################################################################################################################
-    # get Email
-    ####################################################################################################################
+    //##################################################################################################################
+    // get Email
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -158,15 +158,15 @@ class BanningController extends AbstractController implements ProtectedControlle
         }
 
         return $this->createApiResponse(
-            array(
+            [
                  'email_ban' => $this->getApiData($emailBan),
-            )
+            ]
         );
     }
 
-    ####################################################################################################################
-    # save IP
-    ####################################################################################################################
+    //###################################################################################################################
+    // save IP
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -194,7 +194,7 @@ class BanningController extends AbstractController implements ProtectedControlle
 
         $ipBanEdit = new IpBanEdit($ipBan);
 
-        $form = $this->createForm(new IpBanType(), $ipBanEdit, array('cascade_validation' => true));
+        $form = $this->createForm(new IpBanType(), $ipBanEdit, ['cascade_validation' => true]);
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'ip_ban'), true);
 
         if ($form->isValid()) {
@@ -204,16 +204,16 @@ class BanningController extends AbstractController implements ProtectedControlle
         }
 
         return $this->createApiResponse(
-            array(
+            [
                  'success'   => true,
                  'banned_ip' => $ipBan->banned_ip,
-            )
+            ]
         );
     }
 
-    ####################################################################################################################
-    # save Email
-    ####################################################################################################################
+    //###################################################################################################################
+    // save Email
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -241,16 +241,16 @@ class BanningController extends AbstractController implements ProtectedControlle
         $this->createOrUpdateEmailBan($emailBan, $postData);
 
         return $this->createApiResponse(
-            array(
+            [
                  'success'      => true,
                  'banned_email' => $emailBan->banned_email,
-            )
+            ]
         );
     }
 
-    ####################################################################################################################
-    # remove IP
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove IP
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -290,12 +290,12 @@ class BanningController extends AbstractController implements ProtectedControlle
             throw $e;
         }
 
-        return $this->createSuccessResponse(array('old_id' => $oldId));
+        return $this->createSuccessResponse(['old_id' => $oldId]);
     }
 
-    ####################################################################################################################
-    # remove Email
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove Email
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -336,7 +336,7 @@ class BanningController extends AbstractController implements ProtectedControlle
             throw $e;
         }
 
-        return $this->createSuccessResponse(array('old_id' => $oldId));
+        return $this->createSuccessResponse(['old_id' => $oldId]);
     }
 
     /**
@@ -378,7 +378,7 @@ class BanningController extends AbstractController implements ProtectedControlle
     {
         $emailBanEdit = new EmailBanEdit($model);
 
-        $form = $this->createForm(new EmailBanType(), $emailBanEdit, array('cascade_validation' => true));
+        $form = $this->createForm(new EmailBanType(), $emailBanEdit, ['cascade_validation' => true]);
         $form->submit($this->deleteExtraDataFromRequest($form, $data, 'email_ban'), true);
 
         if ($form->isValid()) {
@@ -409,14 +409,14 @@ class BanningController extends AbstractController implements ProtectedControlle
             try {
                 $this->createOrUpdateEmailBan(
                     $emailBans->createNew(),
-                    array('email_ban' => array('banned_email' => trim($email)))
+                    ['email_ban' => ['banned_email' => trim($email)]]
                 );
             } catch (\Exception $e) {
                 // silent
             }
         }
 
-        return $this->createApiResponse(array('filename' => true));
+        return $this->createApiResponse(['filename' => true]);
     }
 
     /**

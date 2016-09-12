@@ -301,9 +301,9 @@ class TicketMacro extends DomainObject
         return Arrays::removeEmptyString(array_map('trim', explode('->', $this->title)));
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

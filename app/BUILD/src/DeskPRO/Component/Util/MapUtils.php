@@ -365,7 +365,7 @@ class MapUtils
      *
      * @param \Traversable|array $array1
      * @param \ArrayAccess|array $array2
-     * @param string|callback    $cmp    The comparison technique. Can be '==', '===' or a custom callback.
+     * @param string|callback    $cmp    The comparison technique. Can be '==', '===' or a custom callback
      *
      * @return array
      */

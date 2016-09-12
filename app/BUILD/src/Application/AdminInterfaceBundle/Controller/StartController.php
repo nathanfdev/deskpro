@@ -49,9 +49,9 @@ class StartController extends AbstractController
         return parent::preActionHandler($request, $action, $arguments);
     }
 
-    ####################################################################################################################
-    # index
-    ####################################################################################################################
+    //###################################################################################################################
+    // index
+    //###################################################################################################################
 
     public function indexAction()
     {
@@ -65,11 +65,11 @@ class StartController extends AbstractController
 
         $not_user = $this->person->getLabelManager()->hasLabel('not_user');
 
-        return $this->render('AdminInterfaceBundle:Start:layout.html.twig', array(
+        return $this->render('AdminInterfaceBundle:Start:layout.html.twig', [
             'api_token'             => $token,
             'session'               => $this->session->getEntity(),
             'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
             'not_user'              => $not_user,
-        ));
+        ]);
     }
 }

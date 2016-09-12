@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -39,7 +40,7 @@ use Doctrine\ORM\Query;
 class BanEmail extends AbstractEntityRepository
 {
     /** @var array */
-    protected $counts = array();
+    protected $counts = [];
 
     /**
      * Get a list of emails suitable for display.
@@ -47,7 +48,7 @@ class BanEmail extends AbstractEntityRepository
     public function getList($from = 0, $limit = 20, $search_phrase = '', $wildcard = false)
     {
         $where  = '1';
-        $params = array();
+        $params = [];
 
         if (!empty($search_phrase)) {
             $where .= ' AND banned_email LIKE :search';
@@ -113,7 +114,7 @@ class BanEmail extends AbstractEntityRepository
             SELECT banned_email
             FROM ban_emails
             WHERE banned_email = ?
-        ', array($email));
+        ', [$email]);
 
         if ($banned_email) {
             $match = $banned_email;
@@ -146,7 +147,7 @@ class BanEmail extends AbstractEntityRepository
         }
 
         $where  = '1';
-        $params = array();
+        $params = [];
 
         if (!empty($search_phrase)) {
             $where .= ' AND banned_email LIKE :search';
@@ -176,6 +177,6 @@ class BanEmail extends AbstractEntityRepository
     {
         return $this->_em->createQuery(
             'SELECT e.banned_email FROM DeskPRO:BanEmail e'
-        )->execute(array(), Query::HYDRATE_SCALAR);
+        )->execute([], Query::HYDRATE_SCALAR);
     }
 }

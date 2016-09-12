@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
@@ -39,7 +40,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 /**
  * Class ObjectTranslatable.
  *
- * @deprecated Use ObjectTranslatableInterface instead.
+ * @deprecated Use ObjectTranslatableInterface instead
  */
 class ObjectTranslatable
 {
@@ -56,7 +57,7 @@ class ObjectTranslatable
     /**
      * @var array
      */
-    protected $unsaved = array();
+    protected $unsaved = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Language
@@ -244,7 +245,7 @@ class ObjectTranslatable
             $rec->text = $value;
 
             if (!isset($this->unsaved[$lang_id])) {
-                $this->unsaved[$lang_id] = array();
+                $this->unsaved[$lang_id] = [];
             }
             $this->unsaved[$lang_id][$prop] = $rec;
 
@@ -256,7 +257,7 @@ class ObjectTranslatable
         return;
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     public function _dynGetObjectProp($flags, $call_args)
     {
@@ -316,7 +317,7 @@ class ObjectTranslatable
         }
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     /**
      * @param DomainObject $object

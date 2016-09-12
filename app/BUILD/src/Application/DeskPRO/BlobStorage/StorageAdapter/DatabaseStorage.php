@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
@@ -102,9 +103,9 @@ class DatabaseStorage extends AbstractStorageAdapter
         $this->logger->logInfo("[DatabaseStorage] (deleteBlob) Delete $id");
 
         try {
-            $num = $this->db->delete($this->table, array(
+            $num = $this->db->delete($this->table, [
                 $path_field => $id,
-            ));
+            ]);
         } catch (\Exception $e) {
             $this->logger->logError("[DatabaseStorage] (deleteBlob) Failed: {$e->getCode()} {$e->getMessage()}");
             throw new BlobStorageException('Failed to delete blob', BlobStorageException::FAILED_RESOURCE_DELETE, $e);
@@ -142,7 +143,7 @@ class DatabaseStorage extends AbstractStorageAdapter
             FROM `{$this->table}`
             WHERE `{$this->path_field}` = ?
             LIMIT 1
-        ", array($this->getDbPathId($blob)));
+        ", [$this->getDbPathId($blob)]);
 
         $this->logger->logInfo("[DatabaseStorage] (checkBlobExists) Blob $id ".($x ? 'exists' : 'no exist'));
 
@@ -168,16 +169,16 @@ class DatabaseStorage extends AbstractStorageAdapter
         $data = str_split($data, $this->seg_size);
         foreach ($data as $k => $d) {
             if ($this->manual_order) {
-                $this->db->insert($this->table, array(
+                $this->db->insert($this->table, [
                     $path_field  => $path,
                     $data_field  => $d,
                     $order_field => $k,
-                ));
+                ]);
             } else {
-                $this->db->insert($this->table, array(
+                $this->db->insert($this->table, [
                     $path_field => $path,
                     $data_field => $d,
-                ));
+                ]);
             }
         }
 
@@ -225,7 +226,7 @@ class DatabaseStorage extends AbstractStorageAdapter
             WHERE `{$this->path_field}` = ?
             ORDER BY `{$this->order_field}` ASC
         ");
-        $q->execute(array($id));
+        $q->execute([$id]);
 
         $data  = '';
         $count = 0;

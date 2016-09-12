@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Command;
 
 use Monolog;
@@ -68,12 +69,12 @@ class ProcessQueueCommand extends ContainerAwareCommand
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
         // Force console output
-        foreach (array(
+        foreach ([
              'dp.email.out.queue',
              'dp.email.out.transport',
              'dp.email.out.mailer',
              'dp.email.out.raw_transport',
-         ) as $n) {
+         ] as $n) {
             $console_handler = new ConsoleHandler($output);
             $console_handler->setFormatter(new ConsoleFormatter("%start_tag%[%datetime%] %channel%.%level_name%: %message%%end_tag%\n"));
             $this->getContainer()->get('monolog.logger.'.$n)->pushHandler($console_handler);

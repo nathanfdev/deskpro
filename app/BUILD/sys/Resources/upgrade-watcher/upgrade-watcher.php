@@ -31,7 +31,7 @@
     <tr>
         <td width="100%" height="100%" align="center" valign="center">
             <div class="main_content" ng-controller="AdminUpdateWatcher_Ctrl_Main">
-                <?php require(__DIR__.'/upgrade-watcher-content.php') ?>
+                <?php require __DIR__.'/upgrade-watcher-content.php'?>
             </div>
         </td>
     </tr>

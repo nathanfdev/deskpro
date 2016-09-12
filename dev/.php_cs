@@ -97,7 +97,8 @@ return Symfony\CS\Config\Config::create()
         'unused_use',
         'visibility',
         'whitespacy_lines',
-        'unused_use'
+        'unused_use',
+        'short_array_syntax',
     ))
     ->finder($finder)
 ;

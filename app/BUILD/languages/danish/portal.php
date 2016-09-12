@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.automatically_join_org_tickets'         => 'Tilslut automatisk {{org_name}}\'s sager?',
     'portal.account.change-password'                        => 'Skift adgangskode',
     'portal.account.change-password-btn'                    => 'Opdater adgangskode',
@@ -723,4 +723,4 @@ return array(
     'user.time.time_x_second'                               => '{0} sekunder',
     'user.time.time_x_week'                                 => '{0} uger',
     'user.time.time_x_year'                                 => '{0} år',
-);
+];

@@ -81,7 +81,7 @@ class MiscController extends AbstractController
 
     public function helpdeskInfoAction()
     {
-        $data = array();
+        $data = [];
 
         // The home page for the helpdesk (used in links and such)
         $data['helpdesk_url'] = trim(str_replace(
@@ -127,7 +127,7 @@ class MiscController extends AbstractController
             $person = $this->em->getRepository('DeskPRO:Person')->find($result->getIdentity()->getIdentity());
 
             if ($person) {
-                $identity = new \Orb\Auth\Identity($person->id, array('person' => $person));
+                $identity = new \Orb\Auth\Identity($person->id, ['person' => $person]);
                 $result   = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
 
                 return $result;
@@ -143,10 +143,10 @@ class MiscController extends AbstractController
 
             /* @var $us \Application\DeskPRO\Entity\Usersource */
             $adapter = $us->getAdapter()->getAuthAdapter();
-            $adapter->setFormData(array(
+            $adapter->setFormData([
                 'username' => $email,
                 'password' => $password,
-            ));
+            ]);
 
             try {
                 $result = $adapter->authenticate();
@@ -158,7 +158,7 @@ class MiscController extends AbstractController
                 $login_processor = new LoginProcessor($us, $result->getIdentity());
                 $person          = $login_processor->getPerson();
 
-                $identity = new \Orb\Auth\Identity($person->id, array('person' => $person));
+                $identity = new \Orb\Auth\Identity($person->id, ['person' => $person]);
                 $result   = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
 
                 return $result;
@@ -273,10 +273,10 @@ class MiscController extends AbstractController
         $this->em->persist($token);
         $this->em->flush();
 
-        $data = array(
+        $data = [
             'success'   => true,
             'api_token' => $token->getKeyString(),
-        );
+        ];
 
         if ($this->in->getBool('return_info')) {
             $api_url = $this->container->getBrandSetting('core.deskpro_url');
@@ -314,19 +314,19 @@ class MiscController extends AbstractController
         $this->em->persist($token);
         $this->em->flush();
 
-        $data = array(
+        $data = [
             'success'   => true,
             'api_token' => $token->getKeyString(),
-        );
+        ];
 
         if ($this->in->getBool('return_info')) {
             $api_url = $this->container->getBrandSetting('core.deskpro_url');
 
             $data['api_url']       = $api_url;
-            $data['helpdesk_info'] = array(
+            $data['helpdesk_info'] = [
                 'url'  => $this->container->getBrandSetting('core.deskpro_url'),
                 'name' => $this->container->getBrandSetting('core.helpdesk_name'),
-            );
+            ];
             $data['person_id']   = $person->getId();
             $data['person_info'] = $person->toApiData(true);
         }
@@ -356,7 +356,7 @@ class MiscController extends AbstractController
 
             if (!$error && $this->in->getBool('is_image')) {
                 $set = new \Application\DeskPRO\Attachments\RestrictionSet();
-                $set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+                $set->setAllowedExts(['gif', 'png', 'jpg', 'jpeg']);
                 $accept->addRestrictionSet('only_images', $set);
                 $error = $accept->getError($file, 'only_images', true);
             }
@@ -369,7 +369,7 @@ class MiscController extends AbstractController
             $blob = $accept->accept($file);
         }
 
-        return $this->createApiResponse(array('blob' => $blob->toApiData()));
+        return $this->createApiResponse(['blob' => $blob->toApiData()]);
     }
 
     public function getSessionPersonAction($session_code)
@@ -380,18 +380,18 @@ class MiscController extends AbstractController
         }
 
         if ($session->person && $session->person->id) {
-            return $this->createApiResponse(array('person' => $session->person->toApiData()));
+            return $this->createApiResponse(['person' => $session->person->toApiData()]);
         } else {
-            return $this->createApiResponse(array('person' => false));
+            return $this->createApiResponse(['person' => false]);
         }
     }
 
     public function getRateLimitAction()
     {
         if (!$this->container->getSetting('core.api_rate_limit')) {
-            return $this->createApiResponse(array(
+            return $this->createApiResponse([
                 'limit' => 0,
-            ));
+            ]);
         }
 
         if ($this->apikey) {
@@ -400,12 +400,12 @@ class MiscController extends AbstractController
             $this->rate_info = $this->em->getRepository('DeskPRO:ApiToken')->getRateLimitInfo($this->api_token);
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'limit'       => $this->container->getSetting('core.api_rate_limit'),
             'remaining'   => max(0, $this->container->getSetting('core.api_rate_limit') - $this->rate_info['hits']),
             'reset_stamp' => $this->rate_info['reset_stamp'],
             'reset_date'  => gmdate('r', $this->rate_info['reset_stamp']),
-        ));
+        ]);
     }
 
     public function getLastLoginAction()
@@ -423,7 +423,7 @@ class MiscController extends AbstractController
         array_shift($records); // will be the current login
         $log = array_shift($records); // will be the last login
 
-        return $this->createJsonResponse(array('last_login' => $log));
+        return $this->createJsonResponse(['last_login' => $log]);
     }
 
     /**
@@ -463,27 +463,27 @@ class MiscController extends AbstractController
                 $secret = sha1($agent->secret_string.$agent->salt);
                 $token  = Util::generateStaticSecurityToken($secret, 300);
 
-                $data = array(
+                $data = [
                     'agent_id'    => $agent->id,
                     'agent_name'  => $agent->getDisplayName(),
                     'agent_email' => $agent->getPrimaryEmailAddress(),
                     'valid_until' => date('Y-m-d H:i:s', time() + 300),
                     'login_token' => $token,
                     'login_url'   => $this->get('router')->generate('user', [], RouterInterface::ABSOLUTE_URL).'agent/login?tok='.$agent->getId().'-'.$token,
-                );
+                ];
 
                 return $this->createApiResponse($data);
 
             case 'list_agents':
 
-                $data = array('agents' => array());
+                $data = ['agents' => []];
 
                 foreach ($this->container->getAgentData()->getAgents() as $agent) {
-                    $data['agents'][$agent->id] = array(
+                    $data['agents'][$agent->id] = [
                         'agent_id'    => $agent->id,
                         'agent_name'  => $agent->getDisplayName(),
                         'agent_email' => $agent->getPrimaryEmailAddress(),
-                    );
+                    ];
                 }
 
                 return $this->createApiResponse($data);

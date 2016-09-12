@@ -137,15 +137,15 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 
         $access_code_id = Util::baseDecode($access_code_id, 'letters');
 
-        return array(
+        return [
             'access_code_id' => $access_code_id,
             'auth'           => $auth,
-        );
+        ];
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

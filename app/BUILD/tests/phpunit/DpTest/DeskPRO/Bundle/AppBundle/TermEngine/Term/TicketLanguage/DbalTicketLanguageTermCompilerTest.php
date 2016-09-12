@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
@@ -52,9 +53,9 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
     public function testCompileIs()
     {
         $term = new TicketLanguageTerm(
-            array(
+            [
                 'language' => '1',
-            )
+            ]
         );
 
         $query_part = $this->term_compiler->compile($term);
@@ -62,28 +63,28 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
         $this->assertWhere($query_part, '{languages}.id = :language OR {languages}.lang_code = :language');
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'language' => '1',
-            )
+            ]
         );
         $this->assertUniqueJoins(
             $query_part,
-            array(
-                'languages' => array(
+            [
+                'languages' => [
                     'table' => 'languages',
                     'on'    => '{languages}.id = ticket.language_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 
     public function testCompileIsNOT()
     {
         $term = new TicketLanguageTerm(
-            array(
+            [
                 'language' => '1',
-            ),
+            ],
             TermInterface::OP_NOT
         );
 
@@ -95,55 +96,55 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
         );
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'language' => '1',
-            )
+            ]
         );
         $this->assertUniqueJoins(
             $query_part,
-            array(
-                'languages' => array(
+            [
+                'languages' => [
                     'table' => 'languages',
                     'on'    => '{languages}.id = ticket.language_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 
     public function testLangCodeCompileIs()
     {
         $term = new TicketLanguageTerm(
-            array(
+            [
                 'language' => 'eng',
-            )
+            ]
         );
         $query_part = $this->term_compiler->compile($term);
         $this->assertWhere($query_part, '{languages}.id = :language OR {languages}.lang_code = :language');
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'language' => 'eng',
-            )
+            ]
         );
         $this->assertUniqueJoins(
             $query_part,
-            array(
-                'languages' => array(
+            [
+                'languages' => [
                     'table' => 'languages',
                     'on'    => '{languages}.id = ticket.language_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 
     public function testLangCodeCompileIsNOT()
     {
         $term = new TicketLanguageTerm(
-            array(
+            [
                 'language' => 'ger',
-            ),
+            ],
             TermInterface::OP_NOT
         );
         $query_part = $this->term_compiler->compile($term);
@@ -153,19 +154,19 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
         );
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'language' => 'ger',
-            )
+            ]
         );
         $this->assertUniqueJoins(
             $query_part,
-            array(
-                'languages' => array(
+            [
+                'languages' => [
                     'table' => 'languages',
                     'on'    => '{languages}.id = ticket.language_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 }

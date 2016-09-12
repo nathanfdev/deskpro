@@ -80,9 +80,9 @@ class OrganizationContactData extends ContactDataAbstract
         $this->setModelField('organization', $organization);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

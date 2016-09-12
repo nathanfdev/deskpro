@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
@@ -51,9 +52,9 @@ class PhpAgentTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testSimpleIS()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 2, 15),
-            )
+            [
+                'agent_ids' => [1, 2, 15],
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -66,9 +67,9 @@ class PhpAgentTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testSimpleNOT()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 2, 15),
-            ),
+            [
+                'agent_ids' => [1, 2, 15],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -82,9 +83,9 @@ class PhpAgentTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testISCompileWithMe()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 15, AgentTerm::ID_ME),
-            )
+            [
+                'agent_ids' => [1, 15, AgentTerm::ID_ME],
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -98,9 +99,9 @@ class PhpAgentTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testIsNOTWithMe()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME),
-            ),
+            [
+                'agent_ids' => [1, 2, 15, AgentTerm::ID_ME],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -115,9 +116,9 @@ class PhpAgentTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testISWithUnassigned()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 2, 15, 0),
-            ),
+            [
+                'agent_ids' => [1, 2, 15, 0],
+            ],
             TermInterface::OP_IS
         );
 
@@ -131,9 +132,9 @@ class PhpAgentTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testWithNOTUnassigned()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(0),
-            ),
+            [
+                'agent_ids' => [0],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -146,9 +147,9 @@ class PhpAgentTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testISWithOnlyUnassigned()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(0),
-            ),
+            [
+                'agent_ids' => [0],
+            ],
             TermInterface::OP_IS
         );
 
@@ -161,9 +162,9 @@ class PhpAgentTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testISAllIdTypes()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 21, 15, AgentTerm::ID_ME, 0),
-            ),
+            [
+                'agent_ids' => [1, 21, 15, AgentTerm::ID_ME, 0],
+            ],
             TermInterface::OP_IS
         );
 
@@ -180,9 +181,9 @@ class PhpAgentTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testNOTAllIdTypes()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 21, 15, AgentTerm::ID_ME, 0),
-            ),
+            [
+                'agent_ids' => [1, 21, 15, AgentTerm::ID_ME, 0],
+            ],
             TermInterface::OP_NOT
         );
 

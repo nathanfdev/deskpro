@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -91,7 +92,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      */
     protected function getDefaultOptions()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -176,7 +177,9 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
                 throw new \InvalidArgumentException("Invalid operator: $op");
         }
 
-        $check_ids = array_filter($check_ids, function ($x) { return (int) $x; });
+        $check_ids = array_filter($check_ids, function ($x) {
+            return (int) $x;
+        });
         $check_ids = array_unique($check_ids);
 
         $has_null  = in_array(0, $check_ids, true);
@@ -381,7 +384,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
         $query = new FilterQuery();
 
         if (!is_array($check_value)) {
-            $check_value = array($check_value);
+            $check_value = [$check_value];
         }
 
         foreach ($check_value as $k => $str) {

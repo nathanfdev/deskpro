@@ -35,14 +35,14 @@ class Build1465209612 extends AbstractBuild
         $connection = $this->getDbConnection('default');
 
         $this->out('Removing old feedbacks with invalid hidden status (e.g. spam)');
-        $updateSQL = <<<SQL
+        $updateSQL = <<<'SQL'
         DELETE FROM feedback
         WHERE status = 'hidden' AND hidden_status != 'validating'
 SQL;
         $connection->exec($updateSQL);
 
         $this->out('Fixing feedback statuses based on status_category');
-        $updateSQL = <<<SQL
+        $updateSQL = <<<'SQL'
         UPDATE  `feedback` AS `f` 
         INNER JOIN `feedback_status_categories` AS `fsc` 
         ON `f`.`status_category_id` = `fsc`.`id` 

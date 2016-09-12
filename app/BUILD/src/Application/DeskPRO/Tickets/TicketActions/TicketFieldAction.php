@@ -132,7 +132,7 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
         $value = isset($value['custom_fields']['field_'.$this->field_def->getId()]) ? $value['custom_fields']['field_'.$this->field_def->getId()] : '';
         if ($this->field_def->getTypeName() == 'choice') {
             $value_ids = (array) $value;
-            $value     = array();
+            $value     = [];
             $titles    = $this->field_def->getAllChildTitles();
             foreach ($value_ids as $id) {
                 if (isset($titles[$id])) {
@@ -142,7 +142,7 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
             $value = implode(', ', $value);
         }
 
-        return $tr->phrase('agent.tickets.set_x_to_y_action', array('title' => $title, 'value' => $value));
+        return $tr->phrase('agent.tickets.set_x_to_y_action', ['title' => $title, 'value' => $value]);
     }
 
     /**

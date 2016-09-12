@@ -45,7 +45,7 @@ class GeneralSettings
 
     /** @var string */
     public $deskpro_name;
-    /** @var  bool */
+    /** @var bool */
     public $deskpro_url_autocorrect;
     /** @var string */
     public $deskpro_url;

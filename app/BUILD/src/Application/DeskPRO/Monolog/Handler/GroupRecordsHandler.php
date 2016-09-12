@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Monolog\Processor;
 
 use Monolog\Handler\AbstractProcessingHandler;
@@ -45,12 +46,12 @@ class GroupRecordsHandler extends AbstractProcessingHandler
     /**
      * @var string[]
      */
-    private $record_ids = array();
+    private $record_ids = [];
 
     /**
      * @var array
      */
-    private $records = array();
+    private $records = [];
 
     /**
      * @var string
@@ -66,7 +67,7 @@ class GroupRecordsHandler extends AbstractProcessingHandler
      * The thing in each record that indicates the group.
      *
      * @param string $group_key   The key in each record which indicates the group to put the messages in
-     * @param int    $max_history How many groups of records to keep. This helps prevent massive logs filling memory.
+     * @param int    $max_history How many groups of records to keep. This helps prevent massive logs filling memory
      */
     public function __construct($group_key, $max_history = 50)
     {
@@ -104,7 +105,7 @@ class GroupRecordsHandler extends AbstractProcessingHandler
 
         if (!isset($this->records[$id])) {
             $this->record_ids[] = $id;
-            $this->records[$id] = array();
+            $this->records[$id] = [];
 
             if (count($this->record_ids) > $this->max_history) {
                 $old_id = array_shift($this->record_ids);

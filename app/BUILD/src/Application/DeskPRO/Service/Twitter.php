@@ -45,9 +45,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class Twitter
 {
     /** @var array */
-    protected $_user_cache = array();
+    protected $_user_cache = [];
     /** @var array */
-    protected $_tweet_cache = array();
+    protected $_tweet_cache = [];
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -209,10 +209,10 @@ class Twitter
             $reply = $this->findStatus($data->in_reply_to_status_id_str);
             if (!$reply) {
                 try {
-                    $reply_result = $api->get_statusesShow(array(
+                    $reply_result = $api->get_statusesShow([
                         'id'               => $data->in_reply_to_status_id_str,
                         'include_entities' => true,
-                    ));
+                    ]);
 
                     if (!empty($reply_result->id_str)) {
                         $reply = $this->processStatus($api, $reply_result, $do_persist, $depth + 1);
@@ -390,7 +390,7 @@ class Twitter
 
         $http_length  = 22;
         $https_length = 23;
-        $replacements = array();
+        $replacements = [];
 
         $text = preg_replace_callback('/(https?):\/\/(?>[^ \t\r\n[\]#]+)(?!#)/i', function ($match) use (&$replacements, $http_length, $https_length) {
             $id = count($replacements);
@@ -406,10 +406,10 @@ class Twitter
             return $placeholder;
         }, $text);
 
-        return array(
+        return [
             'text'         => $text,
             'replacements' => $replacements,
-        );
+        ];
     }
 
     public function countStatusLength($text)
@@ -433,7 +433,7 @@ class Twitter
         }
 
         $part_max_length = 140 - \Orb\Util\Strings::utf8_strlen($prefix);
-        $text_parts      = array();
+        $text_parts      = [];
         $first_added     = false;
 
         do {
@@ -485,7 +485,7 @@ class Twitter
     public function sendAccountMessage($type, $text, $split, TwitterAccount $account, TwitterAccountStatus $reply = null, TwitterUser $user = null)
     {
         $error                = null;
-        $new_account_statuses = array();
+        $new_account_statuses = [];
 
         $api  = $account->getTwitterApi();
         $text = trim(str_replace("\r", '', $text));
@@ -551,7 +551,7 @@ class Twitter
                         $text_parts = [$long_text];
                     }
                 } else {
-                    $text_parts = array($text);
+                    $text_parts = [$text];
                 }
 
                 $new_account_statuses = $this->_sendDm(
@@ -615,10 +615,10 @@ class Twitter
                 $this->em->flush();
 
                 $this->insertNewTweetClientMessage($new_account_status,
-                    array('retweeted' => $account_status->id)
+                    ['retweeted' => $account_status->id]
                 );
                 $this->insertUpdatedTweetClientMessage($account_status,
-                    array('retweeted' => true)
+                    ['retweeted' => true]
                 );
             }
         } catch (\EpiTwitterException $e) {
@@ -627,10 +627,10 @@ class Twitter
             $error = $this->getTwitterError($e);
         }
 
-        return array(
+        return [
             'success' => !$error,
             'error'   => $error,
-        );
+        ];
     }
 
     public function unsendRetweet(TwitterAccount $account, TwitterAccountStatus $account_status)
@@ -659,10 +659,10 @@ class Twitter
                     $this->em->flush();
 
                     $this->insertUpdatedTweetClientMessage($account_retweet,
-                        array('deleted' => true, 'account_status_id' => $id)
+                        ['deleted' => true, 'account_status_id' => $id]
                     );
                     $this->insertUpdatedTweetClientMessage($account_status,
-                        array('unretweeted' => true)
+                        ['unretweeted' => true]
                     );
                 }
             } catch (\EpiTwitterException $e) {
@@ -672,10 +672,10 @@ class Twitter
             }
         }
 
-        return array(
+        return [
             'success' => !$error,
             'error'   => $error,
-        );
+        ];
     }
 
     public function deleteStatus(TwitterAccount $account, TwitterAccountStatus $account_status)
@@ -686,10 +686,10 @@ class Twitter
 
         if ($account_status->status->recipient) {
             if ($account_status->status->getRecipientId() != $account->getUserId()) {
-                return array(
+                return [
                     'success' => false,
                     'error'   => 'Direct messages may not be deleted after they have been sent.',
-                );
+                ];
             }
         } else {
             if ($account_status->status->getUserId() != $account->getUserId()) {
@@ -717,7 +717,7 @@ class Twitter
                 $this->em->flush();
 
                 $this->insertUpdatedTweetClientMessage($account_status,
-                    array('deleted' => true, 'account_status_id' => $id)
+                    ['deleted' => true, 'account_status_id' => $id]
                 );
             }
         } catch (\EpiTwitterException $e) {
@@ -726,10 +726,10 @@ class Twitter
             $error = $this->getTwitterError($e);
         }
 
-        return array(
+        return [
             'success' => !$error,
             'error'   => $error,
-        );
+        ];
     }
 
     public function setFavorite(TwitterAccount $account, TwitterAccountStatus $account_status, $is_favorite)
@@ -740,9 +740,9 @@ class Twitter
         if (!$account_status->status->isMessage()) {
             try {
                 if ($is_favorite) {
-                    $response = $api->post_favoritesCreate(array('id' => $account_status->status->id));
+                    $response = $api->post_favoritesCreate(['id' => $account_status->status->id]);
                 } else {
-                    $response = $api->post_favoritesDestroy(array('id' => $account_status->status->id));
+                    $response = $api->post_favoritesDestroy(['id' => $account_status->status->id]);
                 }
                 if (!empty($response->error)) {
                     $error = $response->error;
@@ -761,14 +761,14 @@ class Twitter
             $this->em->flush();
 
             $this->insertUpdatedTweetClientMessage($account_status,
-                $is_favorite ? array('favorited' => true) : array('unfavorited' => true)
+                $is_favorite ? ['favorited' => true] : ['unfavorited' => true]
             );
         }
 
-        return array(
+        return [
             'success' => !$error,
             'error'   => $error,
-        );
+        ];
     }
 
     protected function _addLongStatus($text, $public, $to_user = null)
@@ -791,12 +791,12 @@ class Twitter
     {
         $em = App::getOrm();
 
-        $new_account_statuses = array();
+        $new_account_statuses = [];
 
         foreach ($text_parts as $part) {
-            $params = array(
+            $params = [
                 'status' => $part,
-            );
+            ];
             if ($reply && !$reply->status->recipient) {
                 // only if not a DM
                 $params['in_reply_to_status_id'] = $reply->status->id;
@@ -839,14 +839,14 @@ class Twitter
     {
         $em = App::getOrm();
 
-        $new_account_statuses = array();
+        $new_account_statuses = [];
 
         foreach ($text_parts as $part) {
             try {
-                $response = $api->post_direct_messagesNew(array(
+                $response = $api->post_direct_messagesNew([
                     'user_id' => $user_id,
                     'text'    => $part,
-                ));
+                ]);
                 if (!empty($response->error)) {
                     $error = $response->error;
                 } else {
@@ -886,31 +886,31 @@ class Twitter
 
     public function insertNewTweetClientMessage(TwitterAccountStatus $account_status)
     {
-        App::getDb()->insert('client_messages', array(
+        App::getDb()->insert('client_messages', [
             'channel'      => 'agent.tweet-added',
             'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
             'date_created' => date('Y-m-d H:i:s'),
             'data'         => serialize($this->_getCmBaseData($account_status)),
-        ));
+        ]);
     }
 
     public function insertUpdatedTweetClientMessage(TwitterAccountStatus $account_status, array $changes)
     {
         $data = array_merge($this->_getCmBaseData($account_status), $changes);
 
-        App::getDb()->insert('client_messages', array(
+        App::getDb()->insert('client_messages', [
             'channel'      => 'agent.tweet-updated',
             'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
             'date_created' => date('Y-m-d H:i:s'),
             'data'         => serialize($data),
-        ));
+        ]);
     }
 
     protected function _getCmBaseData(TwitterAccountStatus $account_status)
     {
-        $tweet_html = App::getTemplating()->render('AgentBundle:TwitterStatus:list-row.html.twig', array(
+        $tweet_html = App::getTemplating()->render('AgentBundle:TwitterStatus:list-row.html.twig', [
             'account_status' => $account_status,
-        ));
+        ]);
 
         if ($account_status->agent) {
             $assignment = 'agent:'.$account_status->agent->id;
@@ -920,7 +920,7 @@ class Twitter
             $assignment = '';
         }
 
-        return array(
+        return [
             'account_status_id' => $account_status->id,
             'account_id'        => $account_status->account->id,
             'status_type'       => $account_status->status_type,
@@ -933,7 +933,7 @@ class Twitter
             'agent_team_id'     => $account_status->agent_team ? $account_status->agent_team->id : 0,
             'tweet_html'        => $tweet_html,
             'trigger_user_id'   => App::getCurrentPerson() ? App::getCurrentPerson()->getId() : 0,
-        );
+        ];
     }
 
     public function getTwitterError(\Exception $e)

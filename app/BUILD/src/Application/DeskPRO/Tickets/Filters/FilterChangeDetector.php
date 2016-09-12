@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
@@ -63,7 +64,7 @@ class FilterChangeDetector
     /**
      * @var array
      */
-    private $explicit_filter_scopes = array();
+    private $explicit_filter_scopes = [];
 
     /**
      * @var bool
@@ -77,8 +78,8 @@ class FilterChangeDetector
     public function __construct(array $filters, array $agents)
     {
         $this->filters        = $filters;
-        $this->agents         = array();
-        $this->team_to_agents = array();
+        $this->agents         = [];
+        $this->team_to_agents = [];
 
         foreach ($agents as $agent) {
             if (!($agent->is_agent && !$agent->is_deleted && !$agent->is_disabled)) {
@@ -91,7 +92,7 @@ class FilterChangeDetector
             $teams = $agent->getHelper('Agent')->getTeams();
             foreach ($teams as $t) {
                 if (!isset($this->team_to_agents[$t->id])) {
-                    $this->team_to_agents[$t->id] = array();
+                    $this->team_to_agents[$t->id] = [];
                 }
 
                 $this->team_to_agents[$t->id][] = $agent;
@@ -114,7 +115,7 @@ class FilterChangeDetector
     public function addExplicitFilterScope(LegacyTicketFilter $filter, Person $agent)
     {
         if (!isset($this->explicit_filter_scopes[$filter->id])) {
-            $this->explicit_filter_scopes[$filter->id] = array('filter' => $filter, 'scopes' => array());
+            $this->explicit_filter_scopes[$filter->id] = ['filter' => $filter, 'scopes' => []];
         }
 
         $this->explicit_filter_scopes[$filter->id]['scopes'][] = $agent;
@@ -127,14 +128,14 @@ class FilterChangeDetector
      */
     private function buildFilterCheckList(array $affected_filters)
     {
-        $check_list = array();
+        $check_list = [];
 
         foreach ($affected_filters as $filter) {
             if ($filter->sys_name == 'archive_deleted') {
                 continue;
             }
 
-            $agent_scopes = array();
+            $agent_scopes = [];
             if ($filter->is_global) {
                 $agent_scopes = $this->agents;
             } elseif ($filter->agent_team) {
@@ -152,10 +153,10 @@ class FilterChangeDetector
                 continue;
             }
 
-            $check_list[$filter->id] = array(
+            $check_list[$filter->id] = [
                 'filter' => $filter,
                 'scopes' => $agent_scopes,
-            );
+            ];
         }
 
         foreach ($this->explicit_filter_scopes as $sub) {
@@ -216,7 +217,7 @@ class FilterChangeDetector
         $scope_cached_counts = 0;
 
         /** @var FilterChange[] $changed */
-        $changed = array();
+        $changed = [];
 
         $start   = microtime(true);
         $checker = new AffectedFiltersCheck($ticket, $this->filters, $logger);
@@ -236,16 +237,16 @@ class FilterChangeDetector
         $filter_checks = $this->buildFilterCheckList($affected_filters);
         $logger->info(sprintf('[FilterChangeDetector] Build check list took %.3fs', microtime(true) - $start));
 
-        $generic_match_cache  = array();
-        $not_cachable_filters = array();
+        $generic_match_cache  = [];
+        $not_cachable_filters = [];
 
         $logger->info(sprintf('[FilterChangeDetector] Checking %d filters', count($filter_checks)));
 
         // Calculate who could actually see it
-        $agent_perm_cache = array();
+        $agent_perm_cache = [];
         $start            = microtime(true);
 
-        $distinct_agents = array();
+        $distinct_agents = [];
         foreach ($filter_checks as $filter_check) {
             foreach ($filter_check['scopes'] as $agent) {
                 $distinct_agents[$agent->id] = $agent;
@@ -255,7 +256,7 @@ class FilterChangeDetector
         foreach ($distinct_agents as $agent) {
             /** @var Person $agent */
             if (!$agent->is_agent) {
-                $agent_perm_cache[$agent->id] = array('old' => false, 'new' => false);
+                $agent_perm_cache[$agent->id] = ['old' => false, 'new' => false];
                 continue;
             }
 
@@ -278,7 +279,7 @@ class FilterChangeDetector
                 }
             }
 
-            $agent_perm_cache[$agent->id] = array('old' => $see_old, 'new' => $see_new);
+            $agent_perm_cache[$agent->id] = ['old' => $see_old, 'new' => $see_new];
         }
         $logger->debug(sprintf('[FilterChangeDetector] Permissions of %d agents calculated in %.3fs', count($agent_perm_cache), microtime(true) - $start));
 
@@ -286,7 +287,7 @@ class FilterChangeDetector
         foreach ($filter_checks as $filter_check) {
             $filter       = $filter_check['filter'];
             $filter_id    = $filter->id;
-            $agent_scopes = array();
+            $agent_scopes = [];
 
             foreach ($filter_check['scopes'] as $a) {
                 $a_id = $a->id;
@@ -307,8 +308,8 @@ class FilterChangeDetector
             if ($this->extended_log_info) {
                 $logger->debug(sprintf('[FilterChangeDetector] ----- BEGIN #%d %s -- %d scopes -----', $filter->id, $filter->title, count($agent_scopes)));
             }
-            $cached_terms_orig = array();
-            $cached_terms_new  = array();
+            $cached_terms_orig = [];
+            $cached_terms_new  = [];
 
             foreach ($agent_scopes as $agent_id => $agent) {
 
@@ -352,11 +353,11 @@ class FilterChangeDetector
                     if ($filter->sys_name) {
                         // System filters are special in that we ignore status/hold
                         // for notifications
-                        $searcher = $filter->getSearcher(array(
-                            array('type' => 'status', 'op' => 'ignore'),
-                            array('type' => 'hidden_status', 'op' => 'ignore'),
-                            array('type' => 'is_hold', 'op' => 'ignore'),
-                        ));
+                        $searcher = $filter->getSearcher([
+                            ['type' => 'status', 'op' => 'ignore'],
+                            ['type' => 'hidden_status', 'op' => 'ignore'],
+                            ['type' => 'is_hold', 'op' => 'ignore'],
+                        ]);
 
                         // Reset because we have to re-run to get proper result for add/del lists
                         $reset_status = true;
@@ -454,12 +455,12 @@ class FilterChangeDetector
                             // Non-pre matches are "real" matches. This is how we determine
                             // where the ticket is *right now*.
 
-                            $generic_match_cache[$filter_id] = array(
+                            $generic_match_cache[$filter_id] = [
                                 'pre_orig_match' => $pre_orig_match,
                                 'pre_new_match'  => $pre_new_match,
                                 'orig_match'     => $orig_match,
                                 'new_match'      => $new_match,
-                            );
+                            ];
                         } else {
                             $not_cachable_filters[$filter_id] = $filter_id;
                         }
@@ -494,7 +495,7 @@ class FilterChangeDetector
             }
         }
 
-        $changed_filters = array();
+        $changed_filters = [];
         foreach ($changed as $fid => $filter_change) {
             if ($filter_change->hasOriginalMatches() || $filter_change->hasNewMatches()) {
                 $changed_filters[$fid] = $filter_change;
@@ -508,7 +509,7 @@ class FilterChangeDetector
         // Add changed filters from previous set
         if ($exist_set) {
             $old_changed_filters = $exist_set->getChangedFilters();
-            $copied_ids          = array();
+            $copied_ids          = [];
             foreach ($checker->getAffectedFiltersWithNoChanges() as $f) {
                 if (isset($old_changed_filters[$f->id])) {
                     if (isset($changed_filters[$f->id])) {
@@ -531,11 +532,11 @@ class FilterChangeDetector
         }
 
         foreach ($set->getChangedFilters() as $change) {
-            $added_aids = array();
+            $added_aids = [];
             foreach ($change->getAgentsAdded() as $a) {
                 $added_aids[] = $a->getId();
             }
-            $removed_aids = array();
+            $removed_aids = [];
             foreach ($change->getAgentsRemoved() as $a) {
                 $removed_aids[] = $a->getId();
             }
@@ -544,8 +545,8 @@ class FilterChangeDetector
                 $logger->info(sprintf(
                     '[FilterChangeDetector] Summary: Filter %d -- AddedAgents(%s) -- RemovedAgents(%s)',
                     $change->getFilter()->id,
-                    implode(', ', $added_aids ?: array('none')),
-                    implode(', ', $removed_aids ?: array('none'))
+                    implode(', ', $added_aids ?: ['none']),
+                    implode(', ', $removed_aids ?: ['none'])
                 ));
             }
         }

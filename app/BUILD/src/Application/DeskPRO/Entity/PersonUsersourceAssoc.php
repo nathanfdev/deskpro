@@ -92,7 +92,7 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * When the associated person was last "synced" from the remote usersource.
@@ -209,9 +209,9 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
         return $this->date_created;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -33,7 +33,7 @@ use Application\ImportBundle\Model;
 
 /**
  * Article category importer.
- * 
+ *
  * Class ArticleCategory
  */
 class ArticleCategoryHandler extends AbstractEntityHandler

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql;
@@ -70,12 +71,12 @@ class BinaryInterval extends AbstractPart
      *
      * @var array
      */
-    protected static $_operatorMap = array(
+    protected static $_operatorMap = [
         Parser::T_OP_PLUS  => '+',
         Parser::T_OP_MINUS => '-',
-    );
+    ];
 
-    protected static $_typeMap = array(
+    protected static $_typeMap = [
         'seconds' => 'SECOND',
         'second'  => 'SECOND',
         'minutes' => 'MINUTE',
@@ -90,7 +91,7 @@ class BinaryInterval extends AbstractPart
         'month'   => 'MONTH',
         'years'   => 'YEAR',
         'year'    => 'YEAR',
-    );
+    ];
 
     /**
      * @param int                                                   $operator
@@ -196,11 +197,11 @@ class BinaryInterval extends AbstractPart
     protected function _findPlaceholder()
     {
         $stack     = $this->lhs;
-        $intervals = array($this);
+        $intervals = [$this];
 
         do {
             if ($stack instanceof Placeholder) {
-                return array($stack, $intervals);
+                return [$stack, $intervals];
             } elseif ($stack instanceof self) {
                 $intervals[] = $stack;
                 $stack       = $stack->lhs;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -71,7 +72,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
      */
     private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
     {
-        $agents = array();
+        $agents = [];
 
         $person_context    = $context->getPersonContext();
         $is_notif_disabled = $this->getContainer()->getSetting('agent.disable_notifications');
@@ -120,7 +121,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                     }
                 }
 
-                $force_list = $context->getVars()->get('agent_force_subscription_list', array());
+                $force_list = $context->getVars()->get('agent_force_subscription_list', []);
                 if ($force_list) {
                     $context->getLogger()->debug('[SendAgentEmail] Appending force list');
                     $agents = array_merge($agents, $force_list);
@@ -136,10 +137,10 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         }
 
         if (!$agents) {
-            return array();
+            return [];
         }
 
-        $set_agents = array();
+        $set_agents = [];
         foreach ($agents as $a) {
             if (!isset($set_agents[$a->getId()]) && $a->is_agent && !$a->is_deleted && !$a->is_disabled) {
                 $a->loadHelper('Agent');
@@ -182,15 +183,15 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             return;
         }
 
-        #-------------------------
-        # Vars
-        #-------------------------
+        //-------------------------
+        // Vars
+        //-------------------------
 
         $default_vars = $this->getStandardEmailVars($ticket, $context, 'agent');
 
-        #-------------------------
-        # Send emails
-        #-------------------------
+        //-------------------------
+        // Send emails
+        //-------------------------
 
         $sent_count = 0;
 
@@ -223,7 +224,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         if ($context->getVars()->has('mention_agents')) {
             $mentioned_agents_map = array_fill_keys(array_keys($context->getVars()->get('mention_agents')), true);
         } else {
-            $mentioned_agents_map = array();
+            $mentioned_agents_map = [];
         }
 
         foreach ($agents as $agent) {
@@ -266,7 +267,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                 ->setTemplateName($template)
                 ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
                 ->setLogger($context->getLogger())
-                ->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
+                ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
                 ->buildTicketEmail();
 
             try {
@@ -275,7 +276,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             } catch (\Exception $e) {
                 $context->getLogger()->error(
                     sprintf('[SendAgentEmail] Exception: [%s] %s', $e->getCode(), $e->getMessage()),
-                    array('exception' => $e)
+                    ['exception' => $e]
                 );
 
                 throw $e;

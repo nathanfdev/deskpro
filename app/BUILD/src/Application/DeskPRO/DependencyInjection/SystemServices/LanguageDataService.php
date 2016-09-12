@@ -63,7 +63,7 @@ class LanguageDataService extends BaseRepositoryService
     public static function create(DeskproContainer $container, array $options = null)
     {
         if (!$options) {
-            $options = array();
+            $options = [];
         }
         $options['entity']          = 'Application\\DeskPRO\\Entity\\Language';
         $options['default_lang_id'] = $container->getSetting('core.default_language_id');
@@ -241,7 +241,7 @@ class LanguageDataService extends BaseRepositoryService
     public function getByIds(array $ids, $keep_order = false)
     {
         $this->preload();
-        $ret = array();
+        $ret = [];
 
         foreach ($ids as $id) {
             if (isset($this->languages[$id])) {
@@ -276,7 +276,7 @@ class LanguageDataService extends BaseRepositoryService
     public function getTitles(array $for_ids = null)
     {
         $this->preload();
-        $ret = array();
+        $ret = [];
 
         if (!$for_ids) {
             $for_ids = array_keys($this->languages);

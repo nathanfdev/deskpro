@@ -58,7 +58,7 @@ class DiscoveryController extends BaseController
      *     }
      * )
      * @ApiUserContext("open")
-     * 
+     *
      * @Rest\Get("/discover")
      */
     public function discoverAction()

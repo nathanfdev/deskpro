@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -82,7 +83,7 @@ class ApiKey extends DomainObject
     /**
      * @var array
      */
-    protected $flags = array();
+    protected $flags = [];
 
     /**
      * @var ArrayCollection
@@ -99,9 +100,6 @@ class ApiKey extends DomainObject
      */
     protected $actions;
 
-    /**
-     *
-     */
     public function __construct()
     {
         $this->regenerateApiKey();
@@ -146,7 +144,7 @@ class ApiKey extends DomainObject
      *
      * @return array
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data              = parent::toApiData($primary, false, $visited);
         $data['keyString'] = $this->getKeyString();
@@ -188,9 +186,9 @@ class ApiKey extends DomainObject
         return $this;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

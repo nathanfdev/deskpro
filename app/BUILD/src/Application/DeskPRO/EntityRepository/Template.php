@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Template as TemplateEntity;
@@ -50,7 +51,7 @@ class Template extends AbstractEntityRepository
      */
     public function getTemplateByName($name)
     {
-        return $this->findOneBy(array('name' => $name));
+        return $this->findOneBy(['name' => $name]);
     }
 
     /**
@@ -68,13 +69,13 @@ class Template extends AbstractEntityRepository
                     SELECT t
                     FROM DeskPRO:Template t
                     WHERE t.style IS NULL AND t.name = ?1
-                ')->setParameters(array(1 => $template_name));
+                ')->setParameters([1 => $template_name]);
             } else {
                 $q = $this->getEntityManager()->createQuery('
                     SELECT t
                     FROM DeskPRO:Template t
                     WHERE t.style = ?1 AND t.name = ?2
-                ')->setParameters(array(1 => $style, 2 => $template_name));
+                ')->setParameters([1 => $style, 2 => $template_name]);
             }
 
             $r = $q->getSingleResult();
@@ -94,7 +95,7 @@ class Template extends AbstractEntityRepository
      */
     public function getCustomTemplateNamesInStyle($style)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,7 +107,7 @@ class Template extends AbstractEntityRepository
      */
     public function getCustomTemplateInfoInStyle($style)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -139,14 +140,14 @@ class Template extends AbstractEntityRepository
     protected function loadTemplates(ThemeSet $theme_set)
     {
         $found_brand_templates = $this->findBy(
-            array(
+            [
                 'theme_set' => $theme_set,
-            )
+            ]
         );
 
         $theme_set_id         = $theme_set->getId();
-        $saved                = array();
-        $saved[$theme_set_id] = array();
+        $saved                = [];
+        $saved[$theme_set_id] = [];
 
         /** @var \Application\DeskPRO\Entity\Template $template */
         foreach ($found_brand_templates as $template) {

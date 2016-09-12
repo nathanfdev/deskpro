@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -54,12 +55,12 @@ class ElasticaClientPass implements CompilerPassInterface
         $definition->setFactory([new Reference('deskpro.elastica.client_factory'), 'createSystemClientByConfig']);
 
         $indexFactoryDef = new Definition('Application\\DeskPRO\\Elastica\\IndexFactory');
-        $indexFactoryDef->setArguments(array(new Reference('fos_elastica.client.default')));
+        $indexFactoryDef->setArguments([new Reference('fos_elastica.client.default')]);
         $container->setDefinition('deskpro.elastica.default_index_factory', $indexFactoryDef);
 
         $indexDef = new Definition('Elastica\\Index');
         $indexDef->setFactory([new Reference('deskpro.elastica.default_index_factory'), 'getIndex']);
-        $indexDef->setArguments(array('deskpro'));
+        $indexDef->setArguments(['deskpro']);
         $container->setDefinition('fos_elastica.index.deskpro', $indexDef);
     }
 }

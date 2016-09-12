@@ -95,9 +95,9 @@ class CustomDefFeedback extends CustomDefAbstract
         return $category;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

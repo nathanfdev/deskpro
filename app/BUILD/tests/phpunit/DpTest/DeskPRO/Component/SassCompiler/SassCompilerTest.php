@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Component\SassCompiler;
 
 use DeskPRO\Component\SassCompiler\Compiler\ScssPhpCompiler;
@@ -62,11 +63,11 @@ class SassCompilerTest extends DeskProTestCase
      */
     public function testUnsafeImportCompiler()
     {
-        $compiler = new ScssPhpCompiler(array(
-            'compiler_options' => array(
+        $compiler = new ScssPhpCompiler([
+            'compiler_options' => [
                 'error_load_file' => 'throw',
-            ),
-        ));
+            ],
+        ]);
         $project = new SassProject();
         $project->setSource('@import "/etc/passwd"');
         $project->addIncludePath(__DIR__);

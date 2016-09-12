@@ -124,10 +124,10 @@ class PortalController extends AbstractController
         }
 
         return $this->renderThemeView('Theme:Portal:home.html.twig',
-            array(
+            [
                 'page_title'    => $this->createPageTitle()->homepage(),
                 'feedbackTypes' => $allowedFeedbackTypes,
-            )
+            ]
         );
     }
 
@@ -190,7 +190,7 @@ class PortalController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Portal:User/login.html.twig',
-            array(
+            [
                 'auth_manager'         => $this->get('dp_authentication_manager.user'),
                 'login_captcha_failed' => $request->get('retry') == 'captcha',
                 'login_error'          => $request->get('retry') == 'auth',
@@ -206,7 +206,7 @@ class PortalController extends AbstractController
                 'page_title'           => $this->createPageTitle()->loginPage(),
                 'usersources_view'     => $usersources_view,
                 'destination'          => $destination,
-            )
+            ]
         );
     }
 

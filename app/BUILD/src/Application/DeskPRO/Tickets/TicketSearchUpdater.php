@@ -75,7 +75,7 @@ class TicketSearchUpdater
      */
     public function remove()
     {
-        $this->db->delete('tickets_search_active', array('id' => $this->ticket->getOriginalId()));
+        $this->db->delete('tickets_search_active', ['id' => $this->ticket->getOriginalId()]);
     }
 
     /**
@@ -85,14 +85,14 @@ class TicketSearchUpdater
     {
         if (!$this->ticket->isArchived()) {
             $cols = self::$cols;
-            $data = $this->db->fetchAssoc("SELECT {$cols} FROM tickets WHERE id = ?", array($this->ticket->id));
+            $data = $this->db->fetchAssoc("SELECT {$cols} FROM tickets WHERE id = ?", [$this->ticket->id]);
             if ($data && $data['status'] != 'archived') {
                 $this->db->replace('tickets_search_active', $data);
             } else {
-                $this->db->delete('tickets_search_active', array('id' => $this->ticket->id));
+                $this->db->delete('tickets_search_active', ['id' => $this->ticket->id]);
             }
         } else {
-            $this->db->delete('tickets_search_active', array('id' => $this->ticket->id));
+            $this->db->delete('tickets_search_active', ['id' => $this->ticket->id]);
         }
     }
 }

@@ -68,7 +68,7 @@ abstract class CrudController extends BaseController
     /**
      * @var array|null Map of sortable entity fields: [request_param_name => entity_filed_spec]. You can configure
      *                 sorting by a relational field if provide ['join' => 'agent', 'as' => 'a', 'sort' => 'a.id']
-     *                 as a sorting option spec.
+     *                 as a sorting option spec
      */
     public static $sortOptions = ['id' => 'id'];
 
@@ -217,7 +217,9 @@ abstract class CrudController extends BaseController
                 $ids = explode(',', $ids);
             }
 
-            $ids = array_map(function ($id) { return (int) $id; }, $ids);
+            $ids = array_map(function ($id) {
+                return (int) $id;
+            }, $ids);
             if (count($ids) > static::$listMaxResults) {
                 throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
             }

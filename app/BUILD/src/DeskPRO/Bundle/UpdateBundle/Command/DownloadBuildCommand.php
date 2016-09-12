@@ -83,9 +83,9 @@ class DownloadBuildCommand extends ContainerAwareCommand
             $existMode = DistroInstaller::FAIL_EXIST;
         }
 
-        #----------------------------------------
-        # Get the ZIP option
-        #----------------------------------------
+        //----------------------------------------
+        // Get the ZIP option
+        //----------------------------------------
 
         if (preg_match('/^https?:/i', $zipOption)) {
             $zipUrl = $zipOption;
@@ -159,9 +159,9 @@ class DownloadBuildCommand extends ContainerAwareCommand
 
         $asBuild = $input->getOption('as') ?: null;
 
-        #----------------------------------------
-        # Get the zip file
-        #----------------------------------------
+        //----------------------------------------
+        // Get the zip file
+        //----------------------------------------
 
         $output->write("Downloading to $targetZip ...");
 
@@ -186,9 +186,9 @@ class DownloadBuildCommand extends ContainerAwareCommand
 
         $output->writeln('OK');
 
-        #----------------------------------------
-        # Install it
-        #----------------------------------------
+        //----------------------------------------
+        // Install it
+        //----------------------------------------
 
         $distroInstall = $this->getContainer()->get('dp.updater.distro.installer');
         $output->write('Checking filesystem permissions ... ');

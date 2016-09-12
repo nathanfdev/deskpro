@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Model;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -56,7 +57,7 @@ class TicketView
     /**
      * @var TicketViewProperty[]
      */
-    protected $properties = array();
+    protected $properties = [];
 
     public function __construct(Ticket $ticket)
     {

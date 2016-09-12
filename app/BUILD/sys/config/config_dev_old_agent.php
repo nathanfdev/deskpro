@@ -34,6 +34,6 @@ if (!defined('DP_ROOT')) {
 $loader->import(DP_ROOT.'/sys/config/config.php');
 
 $container->setParameter('kernel.debug', true);
-$container->loadFromExtension('twig', array(
+$container->loadFromExtension('twig', [
     'debug' => true,
-));
+]);

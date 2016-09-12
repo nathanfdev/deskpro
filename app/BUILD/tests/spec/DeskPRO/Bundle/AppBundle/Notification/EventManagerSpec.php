@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,12 +55,12 @@ class EventManagerSpec extends ObjectBehavior
     public function it_listens_to_several_basic_events()
     {
         $this->getSubscribedEvents()->shouldBe(
-            array(
+            [
                 NewMessageEvent::EVENT_NAME    => 'handleEvent',
                 MarkMessageEvent::EVENT_NAME   => 'handleEvent',
                 TicketUpdatedEvent::EVENT_NAME => 'handleEvent',
                 UpdateOnlineEvent::EVENT_NAME  => 'handleEvent',
-            )
+            ]
         );
     }
 }

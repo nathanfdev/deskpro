@@ -360,7 +360,7 @@ class CommentFormHandler
         return $user;
     }
 
-    private function informAntiAbuse($person = null, Request $request, ContentAbstract $content)
+    private function informAntiAbuse($person, Request $request, ContentAbstract $content)
     {
         $check = new SubmitCommentAbuseCheck($person, $request->getClientIp());
         $check->setResponse(new RedirectResponse($this->object_router->getPortalPath($content)));

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumUserReplies;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -41,36 +42,36 @@ class TicketNumUserRepliesTerm extends AbstractTerm
     public static function configureOptions(TermOptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'num' => null,
-            )
+            ]
         );
 
         $resolver->setConstraints(
-            array(
-                'num' => array( // an array of numerics
+            [
+                'num' => [ // an array of numerics
                     new Assert\Type('array'),
                     new Assert\All(
-                        array(
-                            'constraints' => array(
+                        [
+                            'constraints' => [
                                 new Assert\Type('numeric'),
                                 new Assert\Range(
-                                    array(
+                                    [
                                         'min' => 1,
                                         'max' => 10,
-                                    )
+                                    ]
                                 ),
-                            ),
-                        )
+                            ],
+                        ]
                     ),
-                ),
-            )
+                ],
+            ]
         );
     }
 
     public function getSupportedOps()
     {
-        return array(
+        return [
             TermInterface::OP_IS,
             TermInterface::OP_NOT,
             TermInterface::OP_GT,
@@ -79,7 +80,7 @@ class TicketNumUserRepliesTerm extends AbstractTerm
             TermInterface::OP_LTE,
             TermInterface::OP_NOT_RANGE,
             TermInterface::OP_RANGE,
-        );
+        ];
     }
 
     public function getDefaultOp()

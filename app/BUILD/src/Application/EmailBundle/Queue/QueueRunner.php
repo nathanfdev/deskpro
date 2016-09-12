@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Queue;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -81,7 +82,7 @@ class QueueRunner
     /**
      * @var array
      */
-    private $done_ids = array();
+    private $done_ids = [];
 
     /**
      * @param Connection            $db
@@ -123,16 +124,16 @@ class QueueRunner
         do {
             $did = false;
 
-            #----
-            # Retry state
-            #----
+            //----
+            // Retry state
+            //----
 
             // Finds emails that have been 'processing' too long and mark for retry
             $batch = $this->db->fetchAllKeyed("
                 SELECT * FROM sendmail_sources
                 WHERE status = 'processing' AND date_status < ? AND exec_count <= 3
                 LIMIT 250
-            ", array(date('Y-m-d H:i:s', time() -  1200)));
+            ", [date('Y-m-d H:i:s', time() - 1200)]);
 
             $count += count($batch);
 
@@ -151,16 +152,16 @@ class QueueRunner
                 $did = true;
             }
 
-            #----
-            # Error state
-            #----
+            //----
+            // Error state
+            //----
 
             // Remining ones are ones we should mark for failure
             $batch = $this->db->fetchAllKeyed("
                 SELECT * FROM sendmail_sources
                 WHERE status IN ('inserted', 'processing') AND date_status < ?
                 LIMIT 250
-            ", array(date('Y-m-d H:i:s', time() -  1200)));
+            ", [date('Y-m-d H:i:s', time() - 1200)]);
 
             $count += count($batch);
 
@@ -168,7 +169,7 @@ class QueueRunner
                 UPDATE sendmail_sources
                 SET status = 'error', error_code = 'timeout'
                 WHERE id IN (?)
-            ", array(array_keys($batch)), array(Connection::PARAM_INT_ARRAY));
+            ", [array_keys($batch)], [Connection::PARAM_INT_ARRAY]);
 
             // Appends to log file about the timeout
             foreach ($batch as $r) {
@@ -185,9 +186,9 @@ class QueueRunner
                 $did = true;
             }
 
-            #----
-            # Detect messages that did not queue in an external service properly
-            #----
+            //----
+            // Detect messages that did not queue in an external service properly
+            //----
 
             if (!($this->source_mapper instanceof DatabaseSourceMapper)) {
                 $batch = $this->db->fetchAllKeyed("
@@ -202,9 +203,9 @@ class QueueRunner
                 }
             }
 
-            #----
-            # Detect messages that are pending too long
-            #----
+            //----
+            // Detect messages that are pending too long
+            //----
 
             // - If not using the standard database source mapper,
             // means we are using some other source mapper which might
@@ -218,7 +219,7 @@ class QueueRunner
                     SELECT * FROM sendmail_sources
                     WHERE status IN ('pending') AND date_status < ?
                     LIMIT 250
-                ", array(date('Y-m-d H:i:s', time() - 1800))); // 30m
+                ", [date('Y-m-d H:i:s', time() - 1800)]); // 30m
 
                 foreach ($batch as $r) {
                     $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
@@ -230,7 +231,7 @@ class QueueRunner
                     SELECT * FROM sendmail_sources
                     WHERE status IN ('retry') AND date_next_attempt < ?
                     LIMIT 250
-                ", array(date('Y-m-d H:i:s', time())));
+                ", [date('Y-m-d H:i:s', time())]);
 
                 foreach ($batch as $r) {
                     $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
@@ -344,7 +345,7 @@ class QueueRunner
         $this->db->beginTransaction();
 
         if (!$this->done_ids) {
-            $this->done_ids = array(0);
+            $this->done_ids = [0];
         }
 
         $batch = $this->db->fetchAll("
@@ -357,16 +358,18 @@ class QueueRunner
             ORDER BY status ASC, id ASC
             LIMIT {$this->per_batch}
             FOR UPDATE
-        ", array(date('Y-m-d H:i:s', time() + 5 /* +4 sec to account for time drift */), $this->done_ids), array(\PDO::PARAM_STR, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY));
+        ", [date('Y-m-d H:i:s', time() + 5 /* +4 sec to account for time drift */), $this->done_ids], [\PDO::PARAM_STR, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY]);
 
         if ($batch) {
-            $batch_ids = array_map(function ($r) { return $r['id']; }, $batch);
+            $batch_ids = array_map(function ($r) {
+                return $r['id'];
+            }, $batch);
             $this->done_ids = array_merge($this->done_ids, $batch_ids);
             $this->db->executeUpdate("
                 UPDATE sendmail_sources
                 SET status = 'processing', date_status = ?
                 WHERE id IN (?)
-            ", array(date('Y-m-d H:i:s'), $batch_ids), array(\PDO::PARAM_STR, Connection::PARAM_INT_ARRAY));
+            ", [date('Y-m-d H:i:s'), $batch_ids], [\PDO::PARAM_STR, Connection::PARAM_INT_ARRAY]);
         }
 
         $this->db->commit();
@@ -392,8 +395,8 @@ class QueueRunner
 
         $this->db->beginTransaction();
 
-        $as_pending = array();
-        $as_retry   = array();
+        $as_pending = [];
+        $as_retry   = [];
 
         foreach ($batch as $info) {
             switch ($info['status']) {
@@ -407,14 +410,14 @@ class QueueRunner
                 UPDATE sendmail_sources
                 SET status = 'pending'
                 WHERE id IN (?)
-            ", array($as_pending), array(Connection::PARAM_INT_ARRAY));
+            ", [$as_pending], [Connection::PARAM_INT_ARRAY]);
         }
         if ($as_retry) {
             $this->db->executeUpdate("
                 UPDATE sendmail_sources
                 SET status = 'retry'
                 WHERE id IN (?)
-            ", array($as_retry), array(Connection::PARAM_INT_ARRAY));
+            ", [$as_retry], [Connection::PARAM_INT_ARRAY]);
         }
 
         $this->db->commit();

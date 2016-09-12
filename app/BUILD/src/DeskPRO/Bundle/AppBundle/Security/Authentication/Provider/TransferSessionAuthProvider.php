@@ -98,9 +98,9 @@ class TransferSessionAuthProvider implements AuthenticationProviderInterface
                     FROM sessions
                     WHERE id = ?
                 ',
-                array(
+                [
                     $sid,
-                )
+                ]
             );
 
             list(, $auth) = explode('-', $session_id);

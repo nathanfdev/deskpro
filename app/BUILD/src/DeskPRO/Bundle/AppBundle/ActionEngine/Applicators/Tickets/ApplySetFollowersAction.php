@@ -34,7 +34,7 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterf
 
 class ApplySetFollowersAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
-    /** @var  Person[] */
+    /** @var Person[] */
     private $followers;
 
     public function init()

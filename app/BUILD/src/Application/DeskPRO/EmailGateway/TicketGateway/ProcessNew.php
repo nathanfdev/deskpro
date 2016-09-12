@@ -90,9 +90,9 @@ class ProcessNew extends ProcessAbstract
     {
         $this->person = $this->person;
 
-        #------------------------------
-        # Read email body/subject
-        #------------------------------
+        //------------------------------
+        // Read email body/subject
+        //------------------------------
 
         $this->processBlobs();
         $inline_images = new InlineImageTokens($this->reader);
@@ -177,9 +177,9 @@ class ProcessNew extends ProcessAbstract
         $email_info->body = $this->cleaner->clean($email_info->body, 'html_email_postclean');
         $email_info->body = $this->replaceInlineAttachTokens($email_info->body, $inline_images);
 
-        #------------------------------
-        # Try to guess lang based off the email
-        #------------------------------
+        //------------------------------
+        // Try to guess lang based off the email
+        //------------------------------
 
         $use_lang = null;
 
@@ -212,9 +212,9 @@ class ProcessNew extends ProcessAbstract
             }
         }
 
-        #------------------------------
-        # Create user account
-        #------------------------------
+        //------------------------------
+        // Create user account
+        //------------------------------
 
         if (!$this->person) {
             $this->person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->getEmail());
@@ -239,9 +239,9 @@ class ProcessNew extends ProcessAbstract
             }
         }
 
-        #------------------------------
-        # Create the ticket
-        #------------------------------
+        //------------------------------
+        // Create the ticket
+        //------------------------------
 
         if ($email_info->is_no_subject) {
             $subject = App::$container->getTranslator()->phrase('user.tickets.no_subject', [], $use_lang);
@@ -305,9 +305,9 @@ class ProcessNew extends ProcessAbstract
             App::getOrm()->persist($blob);
         }
 
-        #------------------------------
-        # Check for dupe first
-        #------------------------------
+        //------------------------------
+        // Check for dupe first
+        //------------------------------
 
         $ticket_message->resetHashCode();
 
@@ -320,9 +320,9 @@ class ProcessNew extends ProcessAbstract
             }
         }
 
-        #------------------------------
-        # Reply actions
-        #------------------------------
+        //------------------------------
+        // Reply actions
+        //------------------------------
 
         if ($this->ticket_email->reply_actions) {
             $reply_actions_apply            = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
@@ -332,9 +332,9 @@ class ProcessNew extends ProcessAbstract
             $reply_actions_apply->apply($reply_actions_context);
         }
 
-        #------------------------------
-        # Process new ticket
-        #------------------------------
+        //------------------------------
+        // Process new ticket
+        //------------------------------
 
         // User is an agent and the ticket owner isn't the person who submitted
         // the email. Means the agent used the #user action code and is

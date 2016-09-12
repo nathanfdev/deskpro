@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class TicketTrigger extends AbstractEntityRepository
@@ -47,7 +48,7 @@ class TicketTrigger extends AbstractEntityRepository
             FROM DeskPRO:TicketTrigger t
             WHERE t.event_trigger = :event_type AND t.is_enabled = true
             ORDER BY t.run_order
-        ')->execute(array('event_type' => $event_type));
+        ')->execute(['event_type' => $event_type]);
 
         return $triggers;
     }
@@ -65,7 +66,7 @@ class TicketTrigger extends AbstractEntityRepository
                 FROM DeskPRO:TicketTrigger t
                 WHERE t.event_trigger = ?0
                 ORDER BY t.run_order, t.title ASC
-            ')->execute(array($type));
+            ')->execute([$type]);
         } else {
             return $this->getEntityManager()->createQuery('
                 SELECT t
@@ -93,22 +94,22 @@ class TicketTrigger extends AbstractEntityRepository
                     UPDATE ticket_triggers
                     SET run_order = ?
                     WHERE department_id IS NOT NULL AND event_trigger = 'newticket'
-                ", array($x));
+                ", [$x]);
             } elseif ($tr_id == 'departments_changed') {
                 $db->executeUpdate("
                     UPDATE ticket_triggers
                     SET run_order = ?
                     WHERE department_id IS NOT NULL AND event_trigger = 'update'
-                ", array($x));
+                ", [$x]);
             } elseif ($tr_id == 'emailaccounts') {
                 $db->executeUpdate("
                     UPDATE ticket_triggers
                     SET run_order = ?
                     WHERE email_account_id IS NOT NULL AND event_trigger = 'newticket'
-                ", array($x));
+                ", [$x]);
             } else {
                 $tr_id = (int) $tr_id;
-                $db->update('ticket_triggers', array('run_order' => $x), array('id' => $tr_id));
+                $db->update('ticket_triggers', ['run_order' => $x], ['id' => $tr_id]);
             }
         }
 

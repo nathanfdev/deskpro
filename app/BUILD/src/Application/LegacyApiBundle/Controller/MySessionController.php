@@ -71,9 +71,9 @@ class MySessionController extends AbstractController implements ProtectedControl
             }
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'request_token' => $this->api_user->session->generateSecurityToken('request_token', self::TOKEN_LIFETIME),
             'session_id'    => $session_id,
-        ));
+        ]);
     }
 }

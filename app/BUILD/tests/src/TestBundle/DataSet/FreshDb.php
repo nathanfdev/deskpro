@@ -65,9 +65,9 @@ class FreshDb extends AbstractDbSet
 
         $em = $this->getEm();
 
-        #------------------------------
-        # Init data
-        #------------------------------
+        //------------------------------
+        // Init data
+        //------------------------------
 
         $admin = $this->addUser(
             UserDetailsRepo::ADMIN_FIRST_NAME,

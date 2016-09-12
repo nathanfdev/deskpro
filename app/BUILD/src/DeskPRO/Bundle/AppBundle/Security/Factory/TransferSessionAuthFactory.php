@@ -39,20 +39,20 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class TransferSessionAuthFactory extends AbstractFactory
 {
-    protected $defaultFailureHandlerOptions = array(
+    protected $defaultFailureHandlerOptions = [
         'failure_path'           => '/login?retry=auth',
         'failure_forward'        => false,
         'login_path'             => '/login',
         'failure_path_parameter' => '_failure_path',
-    );
+    ];
 
-    protected $defaultSuccessHandlerOptions = array(
+    protected $defaultSuccessHandlerOptions = [
         'always_use_default_target_path' => false,
         'default_target_path'            => '/',
         'login_path'                     => '/login',
         'target_path_parameter'          => '_target_path',
         'use_referer'                    => false,
-    );
+    ];
 
     public function getPosition()
     {

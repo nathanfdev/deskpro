@@ -48,7 +48,7 @@ class RegexUtils
      *
      * @param string $regex  Regex to run
      * @param string $string The string to run it on
-     * @param int    $index  The index to return, same rules. Or if -1 or null, all matches.
+     * @param int    $index  The index to return, same rules. Or if -1 or null, all matches
      * @param int    $flags  Flags to pass to preg_match
      * @param int    $offset Offset to pass to preg_match
      *

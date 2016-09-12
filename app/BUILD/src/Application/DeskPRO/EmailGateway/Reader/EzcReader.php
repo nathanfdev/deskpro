@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -108,7 +108,7 @@ class EzcReader extends AbstractReader
 
     protected function _getCcAddresses()
     {
-        $emails = array();
+        $emails = [];
 
         foreach ($this->mail->cc as $cc) {
             $charset = $cc->charset;
@@ -130,7 +130,7 @@ class EzcReader extends AbstractReader
 
     protected function _getToAddresses()
     {
-        $emails = array();
+        $emails = [];
 
         foreach ($this->mail->to as $to) {
             $charset = $to->charset;
@@ -258,7 +258,7 @@ class EzcReader extends AbstractReader
 
     protected function _getAttachments()
     {
-        $attachments = array();
+        $attachments = [];
 
         foreach ($this->mail->fetchParts() as $part) {
             if (
@@ -340,7 +340,7 @@ class EzcReader extends AbstractReader
                     $attach->tmp_file = $part->fileName;
 
                     if (isset($part->contentDisposition)) {
-                        foreach (array('displayFileName', 'fileName') as $field) {
+                        foreach (['displayFileName', 'fileName'] as $field) {
                             if (!empty($part->contentDisposition->$field)) {
                                 try {
                                     $attach->file_name = basename($part->contentDisposition->$field);
@@ -399,9 +399,9 @@ class EzcReader extends AbstractReader
 
     protected function _getBodyHtml()
     {
-        $raw_parts = array();
+        $raw_parts = [];
 
-        foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
+        foreach ($this->mail->fetchParts(['ezcMailText']) as $part) {
             if (
                 $part->subType == 'html'
                 && !($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')
@@ -469,7 +469,7 @@ class EzcReader extends AbstractReader
             $body->body             = '';
             $body->body_utf8        = '';
             $body->original_charset = 'UTF-8';
-            $body->raw_parts        = array(clone $body);
+            $body->raw_parts        = [clone $body];
 
             return $body;
         }
@@ -477,9 +477,9 @@ class EzcReader extends AbstractReader
 
     protected function _getBodyText()
     {
-        $raw_parts = array();
+        $raw_parts = [];
 
-        foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
+        foreach ($this->mail->fetchParts(['ezcMailText']) as $part) {
             if ($part->subType == 'plain') {
                 $originalCharset = $part->originalCharset;
                 if (!$originalCharset) {
@@ -544,7 +544,7 @@ class EzcReader extends AbstractReader
             $body->body             = '';
             $body->body_utf8        = '';
             $body->original_charset = 'UTF-8';
-            $body->raw_parts        = array(clone $body);
+            $body->raw_parts        = [clone $body];
 
             return $body;
         }
@@ -559,13 +559,13 @@ class EzcReader extends AbstractReader
      */
     public function decodeTnef($part)
     {
-        $attachments = array();
+        $attachments = [];
 
         $tnef = new \tnef();
 
         $tnef_arr = $tnef->decompress(file_get_contents($part->fileName));
         if (!$tnef_arr || !is_array($tnef_arr)) {
-            return array();
+            return [];
         }
 
         foreach ($tnef_arr as $pid => $winatt) {

@@ -116,13 +116,13 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         $out->port = '1025';
         $out       = JsonObjectSerializer::serialize($out);
 
-        $db->executeUpdate('UPDATE email_accounts SET incoming_account = ?, outgoing_account = ?', array($incoming, $out));
+        $db->executeUpdate('UPDATE email_accounts SET incoming_account = ?, outgoing_account = ?', [$incoming, $out]);
 
         $output->writeln('-> OK');
 
         $output->writeln('Clearing out some tables');
 
-        $tables = array(
+        $tables = [
             'twitter_accounts',
             'twitter_accounts_followers',
             'twitter_accounts_friends',
@@ -145,7 +145,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
             'client_messages',
             'agent_activity',
             'sessions',
-        );
+        ];
 
         $db->exec('SET FOREIGN_KEY_CHECKS = 0');
         foreach ($tables as $t) {
@@ -377,14 +377,14 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         $output->writeln('-> OK');
 
         $output->writeln('Generating resource-list.json...');
-        file_put_contents($save_path.'/deskpro-api.json', $swagger->getResourceList(array('output' => 'json')));
+        file_put_contents($save_path.'/deskpro-api.json', $swagger->getResourceList(['output' => 'json']));
         $fs->chmod($save_path.'/deskpro-api.json', 0644);
 
         $output->writeln('-> OK');
 
         foreach ($swagger->getResourceNames() as $res) {
             $output->writeln("Generating $res.json...");
-            file_put_contents($save_path."/$res.json", $swagger->getResource($res, array('output' => 'json')));
+            file_put_contents($save_path."/$res.json", $swagger->getResource($res, ['output' => 'json']));
             $fs->chmod($save_path."/$res.json", 0644);
             $output->writeln('-> OK');
         }
@@ -404,7 +404,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
     {
         $builds_root   = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build';
         $build_ids_raw = explode(',', trim($input->getOption('move-build-scripts', ''), ','));
-        $build_ids     = array();
+        $build_ids     = [];
 
         $get_file_path = function ($v) use ($builds_root) {
             $y = @date('Y', $v);

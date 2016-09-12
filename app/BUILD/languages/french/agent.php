@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'agent.chat.added_as_participant'                         => 'Ajouté comme participant',
     'agent.chat.agent_chats'                                  => 'Chats de l\'agent',
     'agent.chat.between_members'                              => 'Chats entre :',
@@ -2018,4 +2018,4 @@ return array(
     'agent.usertrack.session_start_time'                      => 'Début de la session',
     'agent.usertrack.visited_pages'                           => 'Pages visitées',
     'agent.usertrack.visitor_id'                              => 'ID visiteur',
-);
+];

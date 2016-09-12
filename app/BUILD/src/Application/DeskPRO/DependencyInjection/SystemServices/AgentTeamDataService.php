@@ -43,12 +43,12 @@ class AgentTeamDataService
     /**
      * @var \Application\DeskPRO\Entity\AgentTeam[]
      */
-    public $agent_teams = array();
+    public $agent_teams = [];
 
     /**
      * @var int[]
      */
-    public $ids = array();
+    public $ids = [];
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -102,7 +102,7 @@ class AgentTeamDataService
      */
     public function getNames(array $for_ids = null)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($this->getTeams() as $a) {
             if ($for_ids === null || in_array($a->getId(), $for_ids)) {
@@ -143,6 +143,6 @@ class AgentTeamDataService
     {
         $repos = $this->em->getRepository('DeskPRO:AgentTeam');
 
-        return call_user_func_array(array($repos, $name), $args);
+        return call_user_func_array([$repos, $name], $args);
     }
 }

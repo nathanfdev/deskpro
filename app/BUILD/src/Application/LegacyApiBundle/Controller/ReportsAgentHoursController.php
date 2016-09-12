@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,9 +39,9 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  */
 class ReportsAgentHoursController extends AbstractController
 {
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction($date1, $date2)
     {
@@ -51,8 +51,8 @@ class ReportsAgentHoursController extends AbstractController
         $reports_agent_hours = $this->container->getSystemService('reports_agent_hours');
         $html_vars           = $reports_agent_hours->getVarsForHtmlView($date1, $date2);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'html' => $this->renderView('ReportsInterfaceBundle:AgentHours:results.html.twig', $html_vars),
-        ));
+        ]);
     }
 }

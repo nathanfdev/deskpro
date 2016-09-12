@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -63,11 +64,11 @@ class AgentTeam extends AbstractEntityRepository
      */
     public function getAgentNames($for_ids = null)
     {
-        $names = array();
+        $names = [];
 
         // No names to return
         if (is_array($for_ids) && !$for_ids) {
-            return array();
+            return [];
         }
 
         foreach ($this->getAgents() as $agent) {
@@ -102,7 +103,7 @@ class AgentTeam extends AbstractEntityRepository
 
     public function getTeamName($id)
     {
-        $all = $this->getTeamNames(array($id));
+        $all = $this->getTeamNames([$id]);
         if (!isset($all[$id])) {
             return;
         }
@@ -112,7 +113,7 @@ class AgentTeam extends AbstractEntityRepository
 
     public function getTeamNames($for_ids = null)
     {
-        $ret = array();
+        $ret = [];
         if ($for_ids) {
             $for_ids = (array) $for_ids;
         }
@@ -151,13 +152,13 @@ class AgentTeam extends AbstractEntityRepository
                 SELECT person_id
                 FROM agent_team_members
                 WHERE team_id = ?
-            ', array($team_id));
+            ', [$team_id]);
         } else {
             $agent_ids = App::getDb()->fetchAllCol('
                 SELECT person_id
                 FROM agent_team_members
                 WHERE team_id IN (?)
-            ', array($team_id), array(Connection::PARAM_INT_ARRAY));
+            ', [$team_id], [Connection::PARAM_INT_ARRAY]);
         }
 
         return $agent_ids;
@@ -174,14 +175,14 @@ class AgentTeam extends AbstractEntityRepository
         return App::getDb()->fetchAllGrouped('
             SELECT team_id, person_id
             FROM agent_team_members
-        ', array(), 'team_id', null, 'person_id');
+        ', [], 'team_id', null, 'person_id');
     }
 
     public function getMembers($team)
     {
         $agent_ids = $this->getMemberIds($team);
         if (!$agent_ids) {
-            return array();
+            return [];
         }
 
         $agent_ids = implode(',', $agent_ids);
@@ -205,7 +206,7 @@ class AgentTeam extends AbstractEntityRepository
      */
     public function getAllTeamIdsForAgents($agents)
     {
-        $agent_ids = array();
+        $agent_ids = [];
         foreach ($agents as $a) {
             if (is_object($a)) {
                 $agent_ids[] = $a['id'];
@@ -215,7 +216,7 @@ class AgentTeam extends AbstractEntityRepository
         }
 
         if (!$agent_ids) {
-            return array();
+            return [];
         }
 
         $team_ids = App::getDb()->fetchAllCol('
@@ -223,7 +224,7 @@ class AgentTeam extends AbstractEntityRepository
             FROM agent_team_members
             WHERE person_id IN (?)
             GROUP BY team_id
-        ', array($agent_ids), array(Connection::PARAM_INT_ARRAY));
+        ', [$agent_ids], [Connection::PARAM_INT_ARRAY]);
 
         return $team_ids;
     }
@@ -239,7 +240,7 @@ class AgentTeam extends AbstractEntityRepository
      */
     public function getTeamIdsForAgents($agents)
     {
-        $agent_ids = array();
+        $agent_ids = [];
         foreach ($agents as $a) {
             if (is_object($a)) {
                 $agent_ids[] = $a['id'];
@@ -249,7 +250,7 @@ class AgentTeam extends AbstractEntityRepository
         }
 
         if (!$agent_ids) {
-            return array();
+            return [];
         }
         $agent_ids = implode(',', $agent_ids);
 
@@ -257,7 +258,7 @@ class AgentTeam extends AbstractEntityRepository
             SELECT person_id, team_id
             FROM agent_team_members
             WHERE person_id IN ($agent_ids)
-        ", array(), 'person_id', null, 'team_id');
+        ", [], 'person_id', null, 'team_id');
 
         return $agent_teams;
     }
@@ -267,7 +268,7 @@ class AgentTeam extends AbstractEntityRepository
         return App::getDb()->fetchAllGrouped('
             SELECT team_id, person_id
             FROM agent_team_members
-        ', array(), 'team_id', null, 'person_id');
+        ', [], 'team_id', null, 'person_id');
     }
 
     /**
@@ -292,17 +293,17 @@ class AgentTeam extends AbstractEntityRepository
      */
     public function getTeamsRaw()
     {
-        $ret = array();
+        $ret = [];
 
         // todo we don't need to hydrate entities here (by getAgents()), but before we should move all helpers outside of Person entity
 
         foreach ($this->getTeams() as $team) {
             /* @var $team \Application\DeskPRO\Entity\AgentTeam */
-            $ret[] = array(
+            $ret[] = [
                 'id'          => $team['id'],
                 'name'        => $team['name'],
                 'picture_url' => $team->getAvatarUrl(16),
-            );
+            ];
         }
 
         return $ret;

@@ -86,11 +86,11 @@ class FacebookApi
 
         if (!$this->app_token) {
             $output = $this->sendGetRequest(
-                '/oauth/access_token', array(
+                '/oauth/access_token', [
                     'client_id'     => $this->app_id,
                     'client_secret' => $this->app_secret,
                     'grant_type'    => 'client_credentials',
-                )
+                ]
             );
 
             $this->app_token = $output['access_token'];
@@ -111,12 +111,12 @@ class FacebookApi
     public function extendUserToken(FacebookPage $page, $extend_page_token = true)
     {
         $output = $this->sendGetRequest(
-            '/oauth/access_token', array(
+            '/oauth/access_token', [
                 'grant_type'        => 'fb_exchange_token',
                 'client_id'         => $this->app_id,
                 'client_secret'     => $this->app_secret,
                 'fb_exchange_token' => $page->user_token,
-            )
+            ]
         );
 
         if ($output) {
@@ -145,9 +145,9 @@ class FacebookApi
         }
 
         $output = $this->sendGetRequest(
-            '/me/accounts', array(
+            '/me/accounts', [
                 'access_token' => $page->user_token,
-            )
+            ]
         );
 
         if ($output) {
@@ -166,11 +166,11 @@ class FacebookApi
     {
         $output = $this->sendPostRequest(
             sprintf('/%s/comments', $graph_id),
-            array(
+            [
                 'app_id'       => $this->app_id,
                 'access_token' => $token,
                 'message'      => $message,
-            )
+            ]
         );
 
         return true;
@@ -180,10 +180,10 @@ class FacebookApi
     {
         $output = $this->sendPostRequest(
             sprintf('/%s/tabs', $page->graph_id),
-            array(
+            [
                 'app_id'       => $page->app->app_id,
                 'access_token' => $page->page_token,
-            )
+            ]
         );
 
         if ($output['success']) {
@@ -217,7 +217,7 @@ class FacebookApi
 
         $res = $request->send();
 
-        $output = array();
+        $output = [];
         if ('text/javascript; charset=UTF-8' == $res->getContentType()) {
             $output = $res->json();
         } else {
@@ -232,11 +232,11 @@ class FacebookApi
     {
         // TODO: wrap in try/catch ?
         $fb      = $this->getClient();
-        $request = $fb->post($uri, array(), $params);
+        $request = $fb->post($uri, [], $params);
 
         $res = $request->send();
 
-        $output = array();
+        $output = [];
         if ('text/javascript; charset=UTF-8' == $res->getContentType()) {
             $output = $res->json();
         } else {

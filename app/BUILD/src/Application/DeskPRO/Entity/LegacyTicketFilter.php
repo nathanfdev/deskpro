@@ -485,18 +485,18 @@ class LegacyTicketFilter extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('title', new NotBlank());
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

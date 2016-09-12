@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -91,45 +91,45 @@ class SettingsBagTest extends DeskProTestCase
 
     public function testGroups()
     {
-        $inputArray = array(
+        $inputArray = [
             'no_group'               => 'value',
             'group_1.key'            => 'val',
             'group_1.extra_num'      => 2,
             'group_2.key'            => 7.8,
             'group_2.extra_num'      => 99,
             'group_2.deep.extra_num' => 301,
-        );
+        ];
 
         $bag = new SettingsBag($inputArray);
 
         $this->assertEquals(
-            array(
+            [
                 'key'       => 'val',
                 'extra_num' => 2,
-            ),
+            ],
             $bag->getGroup('group_1')
         );
 
         $this->assertEquals(
-            array(
+            [
                 'key'            => 7.8,
                 'extra_num'      => 99,
                 'deep.extra_num' => 301,
-            ),
+            ],
             $bag->getGroup('group_2')
         );
 
         $this->assertEquals(
-            array(
+            [
                 'extra_num' => 301,
-            ),
+            ],
             $bag->getGroup('group_2.deep')
         );
 
         $this->assertEquals(
-            array(
+            [
                 'group_2.deep.extra_num' => 301,
-            ),
+            ],
             $bag->getGroup('group_2.deep', false)
         );
     }

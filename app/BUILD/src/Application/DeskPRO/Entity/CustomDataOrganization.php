@@ -101,9 +101,9 @@ class CustomDataOrganization extends CustomDataAbstract
         return $this->organization;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

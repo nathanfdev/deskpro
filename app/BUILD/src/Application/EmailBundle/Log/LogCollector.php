@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Log;
 
 use Application\EmailBundle\Queue\QueueProc;
@@ -57,7 +58,7 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
     /**
      * @var array
      */
-    private $processors = array();
+    private $processors = [];
 
     /**
      * Log lines that happen while sending a message.
@@ -65,7 +66,7 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
      *
      * @var array
      */
-    private $msg_lines = array();
+    private $msg_lines = [];
 
     /**
      * {@inheritdoc}
@@ -105,7 +106,7 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
         $id = $record['extra']['sendmail_source_id'];
 
         if (!isset($this->msg_lines[$id])) {
-            $this->msg_lines[$id] = array();
+            $this->msg_lines[$id] = [];
             while (count($this->msg_lines) > $this->max_msg_keep) {
                 array_shift($this->msg_lines);
             }

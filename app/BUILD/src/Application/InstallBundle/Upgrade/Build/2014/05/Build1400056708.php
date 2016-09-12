@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056708 extends AbstractBuild
@@ -47,6 +48,6 @@ class Build1400056708 extends AbstractBuild
         $this->execMutateSql('ALTER TABLE ticket_actions_def ADD CONSTRAINT FK_5FEF87EF7987212D FOREIGN KEY (app_id) REFERENCES app_instances (id) ON DELETE CASCADE');
 
         // Marks that app triggers tables are done by time 1416914310 is invoked
-        $this->container->getDb()->insertIgnore('install_data', array('build' => '1416914310', 'name' => 'did_app_triggers', 'data' => '1'));
+        $this->container->getDb()->insertIgnore('install_data', ['build' => '1416914310', 'name' => 'did_app_triggers', 'data' => '1']);
     }
 }

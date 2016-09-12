@@ -95,7 +95,9 @@ class IncidentManagerIntegrationTest extends BaseIntegrationTest
     {
         $incident     = new IncomingEmailFailureIncident();
         $called_times = 0;
-        $this->trigger->setDismissedCallback(function () use (&$called_times) { ++$called_times; });
+        $this->trigger->setDismissedCallback(function () use (&$called_times) {
+            ++$called_times;
+        });
 
         $this->incident_manager->dismiss($incident);
 
@@ -109,7 +111,9 @@ class IncidentManagerIntegrationTest extends BaseIntegrationTest
     {
         $incident     = new IncomingEmailFailureIncident();
         $called_times = 0;
-        $this->trigger->setClosedCallback(function () use (&$called_times) { ++$called_times; });
+        $this->trigger->setClosedCallback(function () use (&$called_times) {
+            ++$called_times;
+        });
 
         $this->incident_manager->dismiss($incident);
 

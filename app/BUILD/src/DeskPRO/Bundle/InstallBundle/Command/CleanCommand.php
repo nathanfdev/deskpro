@@ -63,9 +63,9 @@ class CleanCommand extends ContainerAwareCommand
 
         $keepConfig = $input->getOption('keep-config');
 
-        #--------------------------------------------------
-        # Info
-        #--------------------------------------------------
+        //--------------------------------------------------
+        // Info
+        //--------------------------------------------------
 
         $dbName = $dpEnv->getConfig('database.dbname');
         $dirs   = [
@@ -140,9 +140,9 @@ class CleanCommand extends ContainerAwareCommand
 
         $table->render();
 
-        #--------------------------------------------------
-        # Summary
-        #--------------------------------------------------
+        //--------------------------------------------------
+        // Summary
+        //--------------------------------------------------
 
         $output->writeln('Are you ready to see a summary of actions? (You will still have a chance to abort).');
         $question = new ConfirmationQuestion('[y/n]> ');
@@ -169,9 +169,9 @@ class CleanCommand extends ContainerAwareCommand
             return 1;
         }
 
-        #--------------------------------------------------
-        # Perform
-        #--------------------------------------------------
+        //--------------------------------------------------
+        // Perform
+        //--------------------------------------------------
 
         $pdo = \DpRun\LowUtil::getPdoFromMysqlInfo($dpEnv->getConfig('database'));
 

@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.automatically_join_org_tickets' => 'تلقائيا انظم الى التذاكر الخاصة بـ  {{org_name}}\'',
     'portal.account.change-password'                => 'غير كلمة المرور',
     'portal.account.change-password-btn'            => 'حدث كلمة المرور',
@@ -1043,4 +1043,4 @@ return array(
     'user.time.time_x_second'                               => '{0} ثانية',
     'user.time.time_x_week'                                 => '{0} أسبوع',
     'user.time.time_x_year'                                 => '{0} سنة',
-);
+];

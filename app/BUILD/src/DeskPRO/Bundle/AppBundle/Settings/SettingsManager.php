@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\Person;

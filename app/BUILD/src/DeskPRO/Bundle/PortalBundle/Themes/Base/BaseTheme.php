@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base;
 
 use DeskPRO\Bundle\PortalBundle\Theme\AbstractTheme;
@@ -39,7 +40,7 @@ class BaseTheme extends AbstractTheme
 
     public static function getHardCodedTags()
     {
-        return array();
+        return [];
     }
 
     /**

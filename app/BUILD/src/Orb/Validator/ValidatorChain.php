@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Validator;
 
 /**
@@ -41,7 +42,7 @@ class ValidatorChain extends AbstractValidator
      *
      * @var array
      */
-    protected $validators = array();
+    protected $validators = [];
 
     /**
      * Add a validator to the chain.
@@ -51,10 +52,10 @@ class ValidatorChain extends AbstractValidator
      */
     public function addValidator(\Orb\Validator\AbstractValidator $validator, $break_on_invalid = false)
     {
-        $this->validators[] = array(
+        $this->validators[] = [
             $validator,
             (bool) $break_on_invalid,
-        );
+        ];
     }
 
     /**

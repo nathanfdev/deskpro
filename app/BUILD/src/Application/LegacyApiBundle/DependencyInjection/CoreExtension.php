@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\LegacyApiBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -47,10 +48,10 @@ class CoreExtension extends Extension
     {
         $definition = new Definition('Application\\LegacyApiBundle\\Request\\RequestAuth');
         $definition->setScope('request');
-        $definition->setArguments(array(
+        $definition->setArguments([
             new Reference('doctrine.orm.entity_manager'),
             new Reference('request'),
-        ));
+        ]);
         $container->setDefinition('deskpro.api.request_auth', $definition);
 
         $container

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Language;

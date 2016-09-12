@@ -95,9 +95,9 @@ class PublishController extends AbstractController
     {
         $data = [];
 
-        #------------------------------
-        # Resolve app activation
-        #------------------------------
+        //------------------------------
+        // Resolve app activation
+        //------------------------------
 
         $appSettings = [
             PortalSettingsResolver::APPS_KB        => false,
@@ -130,9 +130,9 @@ class PublishController extends AbstractController
             }
         }
 
-        #------------------------------
-        # KB
-        #------------------------------
+        //------------------------------
+        // KB
+        //------------------------------
 
         $kb_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::ARTICLES, $selectedBrandId);
         $kb_repo        = $this->em->getRepository(ArticleCategory::class);
@@ -158,32 +158,32 @@ class PublishController extends AbstractController
             $kb_translate_queue[0] += $c;
         }
 
-        #------------------------------
-        # News
-        #------------------------------
+        //------------------------------
+        // News
+        //------------------------------
 
         $news_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::NEWS, $selectedBrandId);
         $news_repo        = $this->em->getRepository(NewsCategory::class);
         $news_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::NEWS);
 
-        #------------------------------
-        # Downloads
-        #------------------------------
+        //------------------------------
+        // Downloads
+        //------------------------------
 
         $download_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::DOWNLOADS, $selectedBrandId);
         $download_repo        = $this->em->getRepository(DownloadCategory::class);
         $download_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::DOWNLOADS);
 
-        #------------------------------
-        # Glossary
-        #------------------------------
+        //------------------------------
+        // Glossary
+        //------------------------------
 
         $glossary_words = $this->publish_helper->getGlossaryWordsIndex($selectedBrandId);
         $glossary_count = Arrays::countMulti($glossary_words);
 
-        #------------------------------
-        # Comments and counts
-        #------------------------------
+        //------------------------------
+        // Comments and counts
+        //------------------------------
 
         $counts                        = [];
         $counts['validating_comments'] = $this->publish_helper->getValidatingCommentsCount();
@@ -223,9 +223,9 @@ class PublishController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    ############################################################################
-    # comments
-    ############################################################################
+    //###########################################################################
+    // comments
+    //###########################################################################
 
     public function listValidatingCommentsAction()
     {
@@ -482,9 +482,9 @@ class PublishController extends AbstractController
         }
     }
 
-    ############################################################################
-    # list comments
-    ############################################################################
+    //###########################################################################
+    // list comments
+    //###########################################################################
 
     public function listCommentsAction($type, $brandId = 0)
     {
@@ -546,9 +546,9 @@ class PublishController extends AbstractController
         return $this->listValidatingCommentsAction();
     }
 
-    ############################################################################
-    # content validating
-    ############################################################################
+    //###########################################################################
+    // content validating
+    //###########################################################################
 
     public function listDraftsAction($type)
     {
@@ -639,9 +639,9 @@ class PublishController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # saving sticky words
-    ############################################################################
+    //###########################################################################
+    // saving sticky words
+    //###########################################################################
 
     public function saveStickySearchWordsAction($type, $content_id)
     {
@@ -697,9 +697,9 @@ class PublishController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # ratings
-    ############################################################################
+    //###########################################################################
+    // ratings
+    //###########################################################################
 
     public function ratingWhoVotedAction($object_type, $object_id)
     {
@@ -717,15 +717,15 @@ class PublishController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # saving categories
-    ############################################################################
+    //###########################################################################
+    // saving categories
+    //###########################################################################
 
     public function saveCategoriesAction($type)
     {
-        #------------------------------
-        # Figure out which table
-        #------------------------------
+        //------------------------------
+        // Figure out which table
+        //------------------------------
 
         $entity_name = null;
         switch ($type) {
@@ -748,9 +748,9 @@ class PublishController extends AbstractController
         $table      = $repos->getTableName();
         $perm_table = $repos->getPermissionTableName();
 
-        #------------------------------
-        # Read input
-        #------------------------------
+        //------------------------------
+        // Read input
+        //------------------------------
 
         $save_category = [
             'id'         => $this->in->getUInt('category.id'),
@@ -766,9 +766,9 @@ class PublishController extends AbstractController
             $save_structure = [];
         }
 
-        #------------------------------
-        # Save category
-        #------------------------------
+        //------------------------------
+        // Save category
+        //------------------------------
 
         if ($save_category['id'] && $cat = $this->em->getRepository($entity_name)->find($save_category['id'])) {
             if ($save_category['title']) {
@@ -795,9 +795,9 @@ class PublishController extends AbstractController
             }
         }
 
-        #------------------------------
-        # Save structure
-        #------------------------------
+        //------------------------------
+        // Save structure
+        //------------------------------
 
         if ($save_structure) {
             $parent_map         = [];
@@ -942,9 +942,9 @@ class PublishController extends AbstractController
         $repos      = $this->em->getRepository($class);
         $perm_table = $repos->getPermissionTableName();
 
-        #------------------------------
-        # Save
-        #------------------------------
+        //------------------------------
+        // Save
+        //------------------------------
 
         $save_category = [
             'id'         => 0,
@@ -1048,9 +1048,9 @@ class PublishController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # search
-    ############################################################################
+    //###########################################################################
+    // search
+    //###########################################################################
 
     public function searchAction()
     {
@@ -1159,9 +1159,9 @@ class PublishController extends AbstractController
         return $this->render('AgentBundle:Publish:search-results-'.$type.'.html.twig', $vars);
     }
 
-    ############################################################################
-    # who-viewed
-    ############################################################################
+    //###########################################################################
+    // who-viewed
+    //###########################################################################
 
     public function whoViewedAction($object_type, $object_id, $view_action = 1)
     {

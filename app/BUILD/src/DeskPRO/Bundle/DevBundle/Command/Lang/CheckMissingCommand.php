@@ -96,9 +96,9 @@ class CheckMissingCommand extends ContainerAwareCommand
             return 1;
         }
 
-        #------------------------------
-        # Decide which zones to work on
-        #------------------------------
+        //------------------------------
+        // Decide which zones to work on
+        //------------------------------
 
         $zones        = $input->getOption('zone');
         $ignore_zones = $input->getOption('ignore-zone');
@@ -124,9 +124,9 @@ class CheckMissingCommand extends ContainerAwareCommand
             $output->writeln('Finding phrases in zones: '.implode(', ', $zones));
         }
 
-        #------------------------------
-        # Load phrase IDs
-        #------------------------------
+        //------------------------------
+        // Load phrase IDs
+        //------------------------------
 
         $finder = Finder::create()->files()->name('*.php');
         foreach ($zones as $z) {
@@ -144,15 +144,15 @@ class CheckMissingCommand extends ContainerAwareCommand
         foreach ($phrase_ids as $phrase_id) {
             $prefix            = preg_replace('/\.[^\.]+$/', '.', $phrase_id);
             $prefixes[$prefix] = $prefix;
-        };
+        }
 
         if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $output->writeln(sprintf('Found %d prefixes', count($prefixes)));
         }
 
-        #------------------------------
-        # Find uses
-        #------------------------------
+        //------------------------------
+        // Find uses
+        //------------------------------
 
         $types = [];
         switch ($input->getOption('filetype')) {
@@ -195,16 +195,16 @@ class CheckMissingCommand extends ContainerAwareCommand
             $output->writeln(sprintf('Found %d phrases matching prefixes', count($phrases_found)));
         }
 
-        #------------------------------
-        # Prepare output
-        #------------------------------
+        //------------------------------
+        // Prepare output
+        //------------------------------
 
         $cols = ['MissingPhrases'];
         $data = array_diff($phrases_found, $phrase_ids);
 
-        #------------------------------
-        # Output
-        #------------------------------
+        //------------------------------
+        // Output
+        //------------------------------
 
         switch ($format) {
             case 'table':

@@ -61,7 +61,7 @@ class Me
     /**
      * Current person ID.
      *
-     * @todo remove, just person property is enough.
+     * @todo remove, just person property is enough
      *
      * @JMS\Type("integer")
      *

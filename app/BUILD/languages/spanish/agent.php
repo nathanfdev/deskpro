@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'agent.chat.added_as_participant'                   => 'Agregado como participante',
     'agent.chat.agent_chats'                            => 'Chats de Agentes',
     'agent.chat.between_members'                        => 'Chat entre:',
@@ -489,4 +489,4 @@ return array(
     'agent.userchat.user_is_blocked'                    => 'El usuario está bloqueado',
     'agent.userchat.visitor_info'                       => 'Información del visitante',
     'agent.userchat.you_have_been_invited'              => 'Has sido invitado a unirte al chat',
-);
+];

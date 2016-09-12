@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth\Adapter;
 
 use LightOpenID;
@@ -83,7 +84,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
     public function setDisplayContext($context)
     {
         $context = strtolower($context);
-        if (!in_array($context, array('page', 'popup'))) {
+        if (!in_array($context, ['page', 'popup'])) {
             throw new \InvalidArgumentException("Invalid display context `$context`");
         }
 
@@ -107,7 +108,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
         $openid->realm     = $realm;
         $openid->returnUrl = $return_url;
         $openid->identity  = 'https://www.google.com/accounts/o8/id';
-        $openid->required  = array('contact/email', 'namePerson/first', 'namePerson/last');
+        $openid->required  = ['contact/email', 'namePerson/first', 'namePerson/last'];
 
         return $openid;
     }
@@ -123,7 +124,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
         $openid       = $this->getLightOpenId();
         $redirect_url = $openid->authUrl();
 
-        $params = array();
+        $params = [];
         if ($this->display == 'popup') {
             $params['openid.ui.mode'] = 'popup';
         }
@@ -134,7 +135,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
             $redirect_url .= '&'.http_build_query($params);
         }
 
-        $result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
+        $result = new Result(Result::REQUIRES_REDIRECT, null, [Result::MSG_REDIRECT => $redirect_url]);
 
         return $result;
     }
@@ -150,11 +151,11 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
         $openid = $this->getLightOpenId();
 
         if (!$openid->mode || $openid->mode == 'cancel') {
-            return new Result(Result::FAILURE, null, array('error_code' => 'cancelled', 'error_message' => 'OpenID session cancelled'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'cancelled', 'error_message' => 'OpenID session cancelled']);
         }
 
         if (!$openid->validate()) {
-            return new Result(Result::FAILURE, null, array('error_code' => 'not_valid', 'error_message' => 'OpenID session not valid'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'not_valid', 'error_message' => 'OpenID session not valid']);
         }
 
         $user_id    = $openid->identity;
@@ -166,7 +167,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
         }
 
         if ($user_id && $user_email && StringEmail::isValueValid($user_email)) {
-            $raw = array('user_id' => $user_id, 'user_email' => $user_email);
+            $raw = ['user_id' => $user_id, 'user_email' => $user_email];
             if (!empty($attrs['namePerson/first'])) {
                 $raw['first_name'] = $attrs['namePerson/first'];
             }
@@ -185,6 +186,6 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
             return $result;
         }
 
-        return new Result(Result::FAILURE, null, array('error_code' => 'missing_data', 'error_message' => 'OpenID session did not return email address'));
+        return new Result(Result::FAILURE, null, ['error_code' => 'missing_data', 'error_message' => 'OpenID session did not return email address']);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\Entity;
@@ -48,9 +49,9 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     /** @var DomainObject */
     protected $entity;
     /** @var array */
-    protected $changes = array();
+    protected $changes = [];
     /** @var array */
-    public $extra = array();
+    public $extra = [];
 
     public function __construct($entity)
     {
@@ -114,7 +115,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     public function recordMultiPropertyChanged($prop, $old_val, $new_val)
     {
         if (!isset($this->changes[$prop])) {
-            $this->changes[$prop] = array();
+            $this->changes[$prop] = [];
         }
 
         $this->changes[$prop][] = $this->getChangeData($prop, $old_val, $new_val);
@@ -129,7 +130,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
      */
     public function getChangeData($prop, $old_val, $new_val)
     {
-        return array('old' => $old_val, 'new' => $new_val);
+        return ['old' => $old_val, 'new' => $new_val];
     }
 
     /**
@@ -194,7 +195,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     public function recordExtraMulti($key, $value)
     {
         if (!isset($this->extra[$key])) {
-            $this->extra[$key] = array();
+            $this->extra[$key] = [];
         }
 
         $this->extra[$key][] = $value;

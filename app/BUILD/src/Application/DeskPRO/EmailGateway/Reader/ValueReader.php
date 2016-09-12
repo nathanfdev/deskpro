@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Reader;
 
 class ValueReader extends AbstractReader
 {
-    /** @var array  */
-    private $values = array();
+    /** @var array */
+    private $values = [];
 
     /**
      * Sets values:.
@@ -84,7 +85,7 @@ class ValueReader extends AbstractReader
         $header       = new Item\Header();
         $header->name = $name;
 
-        $parts = isset($this->values['headers'][$name]) ? $this->values['headers'][$name] : array();
+        $parts = isset($this->values['headers'][$name]) ? $this->values['headers'][$name] : [];
         if ($parts) {
             foreach ($parts as $p) {
                 $header->header_parts[] = $p;
@@ -96,9 +97,9 @@ class ValueReader extends AbstractReader
 
     protected function _getCcAddresses()
     {
-        $emails = array();
+        $emails = [];
 
-        $val_emails = isset($this->values['ccs']) ? $this->values['ccs'] : array();
+        $val_emails = isset($this->values['ccs']) ? $this->values['ccs'] : [];
 
         foreach ($val_emails as $name => $eml) {
             $email                   = new Item\EmailAddress();
@@ -115,9 +116,9 @@ class ValueReader extends AbstractReader
 
     protected function _getToAddresses()
     {
-        $emails = array();
+        $emails = [];
 
-        $val_emails = isset($this->values['tos']) ? $this->values['tos'] : array();
+        $val_emails = isset($this->values['tos']) ? $this->values['tos'] : [];
 
         foreach ($val_emails as $name => $eml) {
             $email                   = new Item\EmailAddress();
@@ -211,7 +212,7 @@ class ValueReader extends AbstractReader
     protected function _getAttachments()
     {
         //todo
-        return array();
+        return [];
     }
 
     protected function _getBodyHtml()

@@ -152,9 +152,9 @@ class InstallCommand extends ContainerAwareCommand
             return $step_id;
         }, $input->getOption('skip'));
 
-        #------------------------------
-        # Make sure we can save the session ifo
-        #------------------------------
+        //------------------------------
+        // Make sure we can save the session ifo
+        //------------------------------
 
         try {
             if ($profile->hasAnswer('install-source')) {
@@ -206,9 +206,9 @@ class InstallCommand extends ContainerAwareCommand
 
         $DP_ENV->getDatManager()->writeTxtFile('install_uuid', $session->getSessionUuid());
 
-        #------------------------------
-        # Create the steps
-        #------------------------------
+        //------------------------------
+        // Create the steps
+        //------------------------------
 
         $context = new InstallerContext(
             $DP_ENV,

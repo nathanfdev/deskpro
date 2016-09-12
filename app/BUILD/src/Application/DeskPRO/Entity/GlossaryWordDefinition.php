@@ -231,9 +231,9 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         }, $this->getWords()->toArray());
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

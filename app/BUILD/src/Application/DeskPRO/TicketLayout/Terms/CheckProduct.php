@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\TicketLayout\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -75,7 +76,7 @@ class CheckProduct extends AbstractTicketLayoutTerm
      */
     public function compileJsCheck()
     {
-        $js_ids = array();
+        $js_ids = [];
         foreach ((array) $this->options['product_ids'] as $id) {
             $js_ids[] = (int) $id;
         }

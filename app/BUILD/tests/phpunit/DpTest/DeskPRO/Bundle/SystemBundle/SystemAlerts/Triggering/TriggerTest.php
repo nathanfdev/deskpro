@@ -56,7 +56,9 @@ class TriggerTest extends DeskProTestCase
     {
         $called_times = 0;
         $trigger      = new MockTrigger();
-        $trigger->setRaisedCallback(function () use (&$called_times) { ++$called_times; });
+        $trigger->setRaisedCallback(function () use (&$called_times) {
+            ++$called_times;
+        });
 
         for ($i = 0; $i < 5; ++$i) {
             $trigger->consume(new MockEvent(false, 'test'));
@@ -72,7 +74,9 @@ class TriggerTest extends DeskProTestCase
     {
         $called_times = 0;
         $trigger      = new MockTrigger();
-        $trigger->setRaisedCallback(function () use (&$called_times) { ++$called_times; });
+        $trigger->setRaisedCallback(function () use (&$called_times) {
+            ++$called_times;
+        });
 
         for ($i = 0; $i < 17; ++$i) {
             $trigger->consume(new MockEvent(false, 'test'));

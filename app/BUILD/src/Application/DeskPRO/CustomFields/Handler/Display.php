@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Orb\Util\Strings;
@@ -44,19 +45,19 @@ class Display extends HandlerAbstract
         return 'hidden';
     }
 
-    public function renderHtml($data = null, array $template_vars = array())
+    public function renderHtml($data = null, array $template_vars = [])
     {
         return $this->field_def->getOption('html');
     }
 
-    public function renderText($data = null, array $template_vars = array())
+    public function renderText($data = null, array $template_vars = [])
     {
         return Strings::stripTags($this->field_def->getOption('html'));
     }
 
     public function getDataFromForm(array $form_data)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -68,7 +69,7 @@ class Display extends HandlerAbstract
     public function getSearchCapabilities()
     {
         // Not searchable by default
-        return array();
+        return [];
     }
 
     /**

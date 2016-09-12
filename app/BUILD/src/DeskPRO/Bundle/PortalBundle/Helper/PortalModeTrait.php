@@ -35,7 +35,7 @@ trait PortalModeTrait
 {
     /**
      * @param ContainerInterface $container
-     * 
+     *
      * @return bool
      */
     private function isPreviewMode(ContainerInterface $container)

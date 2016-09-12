@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Orb\Auth\Adapter;
 
 class EzPublish extends DbTable
@@ -55,7 +56,7 @@ class EzPublish extends DbTable
 
             // EZ_USER_PASSWORD_HASH_MYSQL
             case 4:
-                $password_check = $this->getDb()->executeQuery('SELECT PASSWORD(?)', array($password_input))->fetchColumn();
+                $password_check = $this->getDb()->executeQuery('SELECT PASSWORD(?)', [$password_input])->fetchColumn();
                 break;
 
             // EZ_USER_PASSWORD_HASH_PLAINTEXT

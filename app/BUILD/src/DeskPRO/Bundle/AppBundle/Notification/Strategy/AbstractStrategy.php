@@ -39,7 +39,7 @@ abstract class AbstractStrategy implements NotificationStrategyInterface
     /** @var DeliveryService */
     protected $delivery_service;
 
-    /** @var  NotifyHandlerCollection */
+    /** @var NotifyHandlerCollection */
     protected $event_handlers;
 
     /** @var PersistanceAdapterInterface */

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
@@ -73,11 +74,11 @@ class TicketSlaStatus extends AbstractTableOverviewStat
      */
     public function getTitles()
     {
-        return array(
+        return [
             'ok'      => 'Passed',
             'warning' => 'Warning',
             'fail'    => 'Failed',
-        );
+        ];
     }
 
     /**
@@ -89,7 +90,7 @@ class TicketSlaStatus extends AbstractTableOverviewStat
             return $this->values;
         }
 
-        $where = array();
+        $where = [];
 
         if ($this->sla_id) {
             $where[] = "ticket_slas.sla_id = {$this->sla_id}";

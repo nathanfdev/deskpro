@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -51,9 +52,9 @@ class ChatConversationSearch extends SearcherAbstract
     /** @var string|null */
     protected $groupBy = null;
     /** @var array */
-    protected $limit = array('start' => null, 'limit' => null);
+    protected $limit = ['start' => null, 'limit' => null];
     /** @var array */
-    protected $joins = array();
+    protected $joins = [];
 
     /**
      * Run the search and return an array of matching ID's.
@@ -103,9 +104,9 @@ class ChatConversationSearch extends SearcherAbstract
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-        #------------------------------
-        # Add joins
-        #------------------------------
+        //------------------------------
+        // Add joins
+        //------------------------------
 
         foreach ($parts['joins'] as $j) {
             $sql .= "LEFT JOIN $j ";
@@ -117,9 +118,9 @@ class ChatConversationSearch extends SearcherAbstract
             $sql .= " $order_join ";
         }
 
-        #------------------------------
-        # Add wheres
-        #------------------------------
+        //------------------------------
+        // Add wheres
+        //------------------------------
 
         if (!$this->person->hasPerm('agent_chat.view_unassigned')) {
             $parts['wheres'][] = 'chat_conversations.agent_id IS NOT NULL';
@@ -173,7 +174,7 @@ class ChatConversationSearch extends SearcherAbstract
     {
         // Set a default if none
         if (!$this->order_by) {
-            $this->order_by = array('chat_conversations.id', 'DESC');
+            $this->order_by = ['chat_conversations.id', 'DESC'];
         }
 
         list($type, $dir) = $this->order_by;
@@ -202,7 +203,7 @@ class ChatConversationSearch extends SearcherAbstract
         $db = App::getDbRead('search.filter.chat');
         $tr = App::getTranslator();
 
-        $wheres = array();
+        $wheres = [];
         $joins  = $this->joins;
 
         foreach ($this->terms as $info) {
@@ -243,7 +244,7 @@ class ChatConversationSearch extends SearcherAbstract
                     }
                     break;
                 case self::TERM_DEPARTMENT_ID:
-                    $children = array();
+                    $children = [];
                     foreach ((array) $choice as $did) {
                         $children[] = $did;
                         $children   = array_merge($children, App::getDataService('Department')->getIdsInTree($did, true));
@@ -270,8 +271,8 @@ class ChatConversationSearch extends SearcherAbstract
                     $choice = (array) $choice;
                     $people = App::getEntityRepository('DeskPRO:Person')->getByIds($choice);
 
-                    $person_ids = array();
-                    $emails     = array();
+                    $person_ids = [];
+                    $emails     = [];
                     $db         = App::getDbRead('search.filter.chat');
                     foreach ($people as $person) {
                         if ($person instanceof \Application\DeskPRO\Entity\Person) {
@@ -305,9 +306,9 @@ class ChatConversationSearch extends SearcherAbstract
                     $k = array_search($choice, $times);
 
                     if (!$k) {
-                        $choice = array(0, 300);
+                        $choice = [0, 300];
                     } else {
-                        $choice = array($times[$k - 1] + 1, $choice);
+                        $choice = [$times[$k - 1] + 1, $choice];
                     }
 
                     $wheres[] = $this->_rangeMatch('chat_conversations.total_to_ended', self::OP_BETWEEN, $choice);
@@ -316,7 +317,7 @@ class ChatConversationSearch extends SearcherAbstract
                 case self::TERM_LABEL:
                     $this->_normalizeOpAndChoice($op, $choice);
 
-                    $choices_in = array();
+                    $choices_in = [];
                     if (is_array($choice)) {
                         foreach ((array) $choice as $c) {
                             $choices_in[] = $db->quote($c);
@@ -348,9 +349,9 @@ class ChatConversationSearch extends SearcherAbstract
             }
         }
 
-        return array(
+        return [
             'joins'  => $joins,
             'wheres' => $wheres,
-        );
+        ];
     }
 }

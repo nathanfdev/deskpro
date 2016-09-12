@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -52,7 +52,7 @@ class DbalTicketLabelTermCompilerTest extends AbstractDbalTicketFilterTermCompil
     public function testCompileIs()
     {
         $term = new TicketLabelTerm(
-            array('label' => 'blue')
+            ['label' => 'blue']
         );
 
         $query_part = $this->term_compiler->compile($term);
@@ -60,26 +60,26 @@ class DbalTicketLabelTermCompilerTest extends AbstractDbalTicketFilterTermCompil
         $this->assertWhere($query_part, 'labels_tickets.label = :input0');
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'input0' => 'blue',
-            )
+            ]
         );
         $this->assertJoins(
             $query_part,
-            array(
-                'labels_tickets' => array(
+            [
+                'labels_tickets' => [
                     'table' => 'labels_tickets',
                     'on'    => 'ticket.id = labels_tickets.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 
     public function testCompileIsNOT()
     {
         $term = new TicketLabelTerm(
-            array('label' => 'blue'),
+            ['label' => 'blue'],
             TermInterface::OP_NOT_HAS
         );
 
@@ -88,19 +88,19 @@ class DbalTicketLabelTermCompilerTest extends AbstractDbalTicketFilterTermCompil
         $this->assertWhere($query_part, 'labels_tickets.label != :input0');
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'input0' => 'blue',
-            )
+            ]
         );
         $this->assertJoins(
             $query_part,
-            array(
-                'labels_tickets' => array(
+            [
+                'labels_tickets' => [
                     'table' => 'labels_tickets',
                     'on'    => 'ticket.id = labels_tickets.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 }

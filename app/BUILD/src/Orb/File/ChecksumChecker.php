@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category File
  */
+
 namespace Orb\File;
 
 use Symfony\Component\Finder\Finder;
@@ -105,7 +106,7 @@ class ChecksumChecker
      */
     public function load($progress_callback = null)
     {
-        $this->checksums = array();
+        $this->checksums = [];
 
         $count = 0;
         foreach ($this->getIterator() as $file) {
@@ -140,7 +141,7 @@ class ChecksumChecker
             $file_contents = substr($file_contents, 3);
         }
 
-        $file_contents = trim(str_replace(array("\r", "\n"), '', $file_contents));
+        $file_contents = trim(str_replace(["\r", "\n"], '', $file_contents));
 
         return $file_contents;
     }
@@ -186,11 +187,11 @@ class ChecksumChecker
     {
         $this->getChecksums();
 
-        $results = array(
-            'added'   => array(),
-            'removed' => array(),
-            'changed' => array(),
-        );
+        $results = [
+            'added'   => [],
+            'removed' => [],
+            'changed' => [],
+        ];
 
         foreach ($this->checksums as $path => $checksum) {
             if (!isset($with_checksums[$path])) {
@@ -242,7 +243,7 @@ class ChecksumChecker
     public function getIterator()
     {
         if ($this->file_list) {
-            $array = array();
+            $array = [];
             foreach ($this->file_list as $f) {
                 $array[] = new \SplFileInfo($this->base_dir.$f);
             }

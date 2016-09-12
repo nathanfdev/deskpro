@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Triggers;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -151,7 +152,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
         $data['version'] = $this->getVersion();
         $data['actions'] = $this->getActionsArray();
@@ -189,16 +190,16 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
             }
 
             if (strpos(get_class($actions), 'Application\\DeskPRO\\Tickets\\Actions\\') === 0) {
-                $actions_data[] = array(
+                $actions_data[] = [
                     'type'    => $actions->getActionType(),
                     'options' => $actions->getActionOptions()->all(),
-                );
+                ];
             } else {
-                $actions_data[] = array(
+                $actions_data[] = [
                     'type'       => $actions->getActionType(),
                     'type_class' => get_class($actions),
                     'options'    => $actions->getActionOptions()->all(),
-                );
+                ];
             }
         }
 

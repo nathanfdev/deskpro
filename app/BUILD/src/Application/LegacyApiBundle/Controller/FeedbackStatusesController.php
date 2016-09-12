@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,9 +58,9 @@ class FeedbackStatusesController extends AbstractController implements Protected
         return $multi;
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
@@ -73,18 +73,18 @@ class FeedbackStatusesController extends AbstractController implements Protected
         $closed_statuses = $this->getApiData(Arrays::flatten($feedback_statuses->getClosedStatuses()));
 
         return $this->createApiResponse(
-            array(
-                 'statuses' => array(
+            [
+                 'statuses' => [
                      'active_statuses' => $active_statuses,
                      'closed_statuses' => $closed_statuses,
-                 ),
-            )
+                 ],
+            ]
         );
     }
 
-    ###################################################################################################################
-    # get
-    ####################################################################################################################
+    //##################################################################################################################
+    // get
+    //###################################################################################################################
 
     public function getAction($id)
     {
@@ -98,12 +98,12 @@ class FeedbackStatusesController extends AbstractController implements Protected
             throw $this->createNotFoundException();
         }
 
-        return $this->createApiResponse(array('feedback_status' => $this->getApiData($feedback_status)));
+        return $this->createApiResponse(['feedback_status' => $this->getApiData($feedback_status)]);
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     public function saveAction($id)
     {
@@ -126,7 +126,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
         $postData = $this->in->getAll('post');
 
-        $form = $this->createForm(new FeedbackStatusType(), $feedback_status_edit, array('cascade_validation' => true));
+        $form = $this->createForm(new FeedbackStatusType(), $feedback_status_edit, ['cascade_validation' => true]);
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_status'), true);
 
         if ($form->isValid()) {
@@ -138,16 +138,16 @@ class FeedbackStatusesController extends AbstractController implements Protected
         }
 
         return $this->createApiResponse(
-            array(
+            [
                  'success' => true,
                  'id'      => $feedback_status->getId(),
-            )
+            ]
         );
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove
+    //###################################################################################################################
 
     public function removeAction($id)
     {
@@ -185,7 +185,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
         try {
             $this->db->executeUpdate(
                 'UPDATE feedback SET status_category_id = ? WHERE status_category_id = ?',
-                array($move_to, $old_id)
+                [$move_to, $old_id]
             );
 
             $this->em->remove($feedback_status);
@@ -197,12 +197,12 @@ class FeedbackStatusesController extends AbstractController implements Protected
             throw $e;
         }
 
-        return $this->createSuccessResponse(array('old_id' => $old_id));
+        return $this->createSuccessResponse(['old_id' => $old_id]);
     }
 
-    ####################################################################################################################
-    # save-display-order
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-display-order
+    //###################################################################################################################
 
     public function saveDisplayOrderAction()
     {

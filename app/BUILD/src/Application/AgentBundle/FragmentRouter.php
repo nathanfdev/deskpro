@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -39,9 +40,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class FragmentRouter
 {
     /** @var array */
-    protected $paths = array();
+    protected $paths = [];
     /** @var array */
-    protected $non_unique = array();
+    protected $non_unique = [];
 
     /** @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface */
     protected $generator;
@@ -57,7 +58,7 @@ class FragmentRouter
             $js_classname = 'window.DeskPRO_FragmentRouter';
         }
 
-        $js   = array();
+        $js   = [];
         $js[] = "$js_classname = {\n\n";
 
         $js[] = "\tbaseUrl: '',\n\n";

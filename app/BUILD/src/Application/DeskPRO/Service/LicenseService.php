@@ -46,7 +46,7 @@ class LicenseService
         static $latest = null;
 
         if ($latest === null) {
-            $latest = self::fetchServiceResult('check-latest-version.json', array('my_build' => DP_BUILD_TIME));
+            $latest = self::fetchServiceResult('check-latest-version.json', ['my_build' => DP_BUILD_TIME]);
         }
 
         return $latest;
@@ -69,9 +69,9 @@ class LicenseService
 
         if ($data === null) {
             try {
-                $data = self::fetchServiceResult('build/compare-version.json', array('my_build' => DP_BUILD_TIME));
+                $data = self::fetchServiceResult('build/compare-version.json', ['my_build' => DP_BUILD_TIME]);
             } catch (\Exception $e) {
-                $data = array();
+                $data = [];
             }
         }
 
@@ -94,9 +94,9 @@ class LicenseService
 
         if ($data === null) {
             try {
-                $data = self::fetchServiceResult('build/version-notices.json', array('my_build' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0));
+                $data = self::fetchServiceResult('build/version-notices.json', ['my_build' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0]);
             } catch (\Exception $e) {
-                $data = array();
+                $data = [];
             }
         }
 
@@ -110,7 +110,7 @@ class LicenseService
      */
     public static function getNews()
     {
-        $news = array();
+        $news = [];
 
         try {
             $client = new Client([
@@ -133,10 +133,10 @@ class LicenseService
 
             $x = 0;
             foreach ($rss->channel->item as $item) {
-                $news[] = array(
+                $news[] = [
                     'title' => (string) $item->title,
                     'link'  => (string) $item->link,
-                );
+                ];
                 if ($x++ > 5) {
                     break;
                 }
@@ -154,7 +154,7 @@ class LicenseService
      *
      * @return array
      */
-    public static function fetchServiceResult($endpoint, array $post_data = array())
+    public static function fetchServiceResult($endpoint, array $post_data = [])
     {
         try {
             $client = new Client([

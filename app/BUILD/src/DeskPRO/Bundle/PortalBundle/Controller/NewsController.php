@@ -57,9 +57,8 @@ class NewsController extends AbstractController
         $page   = $request->query->getInt('page', 1);
         $person = $this->getCurrentPerson();
 
-        //
         // RSS
-        //
+
         if ('rss' === $_format) {
             $pager = $this->getNewsDataService()->getNewsPager(
                 null,
@@ -79,23 +78,20 @@ class NewsController extends AbstractController
             ['_format' => 'rss']
         );
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildNews();
 
-        //
         // SUBSCRIPTION
-        //
+
         $isSubscribed = false;
         if ($this->getUser() && $this->getBrandSetting('user.news_subscriptions', false)) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('news', $this->getUser());
         }
 
-        //
         // RENDER THEME
-        //
+
         return $this->renderThemeView(
             'Theme:News:index.html.twig',
             [
@@ -121,9 +117,8 @@ class NewsController extends AbstractController
         $page   = $request->query->getInt('page', 1);
         $person = $this->getCurrentPerson();
 
-        //
         // RSS
-        //
+
         if ('rss' === $_format) {
             $pager = $this->getNewsDataService()->getNewsPager(
                 $category,
@@ -143,18 +138,16 @@ class NewsController extends AbstractController
             ['slug' => $category->getSlug(), '_format' => 'rss']
         );
 
-        //
         // BREADCRUMBS
-        //
+
         if ($category) {
             $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewsCategory($category);
         } else {
             $breadcrumbs = $this->getBreadcrumbGenerator()->buildNews();
         }
 
-        //
         // SUBSCRIPTIONS
-        //
+
         $isSubscribed = false;
         if (
             $this->getBrandSetting('user.news_subscriptions', false)
@@ -163,15 +156,13 @@ class NewsController extends AbstractController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
 
-        //
         // PAGER
-        //
+
         $count = $this->getBrandSetting('portal.per_page_content');
         $pager = $this->getNewsDataService()->getNewsPager($category, $page, $count, $person);
 
-        //
         // RENDER THEME
-        //
+
         return $this->renderThemeView(
             'Theme:News:browse.html.twig',
             [
@@ -193,7 +184,7 @@ class NewsController extends AbstractController
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS', post)")
      * @PageHttpCache(content="post")
-     
+
      * @param Request $request
      * @param News    $post
      * @param int     $visitor_id
@@ -202,9 +193,9 @@ class NewsController extends AbstractController
      */
     public function viewAction(Request $request, News $post, $visitor_id)
     {
-        //
+
         // COMMENT FORM
-        //
+
         $newCommentForm = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_NEWS, $post)) {
             /** @var CommentFormHandler $form_handler */
@@ -219,24 +210,20 @@ class NewsController extends AbstractController
             }
         }
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewsPost($post);
 
-        //
         // RATINGS
-        //
+
         $rating = $this->findContentRating($post, $visitor_id);
 
-        //
         // NUM RATINGS
-        //
+
         list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($post);
 
-        //
         // SUBSCRIPTIONS
-        //
+
         $isSubscribed = false;
         if (
             $this->getBrandSetting('user.news_subscriptions', false)
@@ -249,9 +236,8 @@ class NewsController extends AbstractController
         $check->markAsCheckOnly();
         $this->get('anti_abuse')->check($check);
 
-        //
         // RENDER THEME
-        //
+
         return $this->renderThemeView(
             'Theme:News:view.html.twig',
             [
@@ -290,9 +276,8 @@ class NewsController extends AbstractController
             throw $this->createNotFoundException('could not find new post for slug "'.$slug.'"');
         }
 
-        //
         // RENDER THEME
-        //
+
         return $this->redirect(
             $this->generateUrl('portal_news_view', [
                 'slug' => $post->getSlug(),
@@ -434,19 +419,16 @@ class NewsController extends AbstractController
         /** @var PdfRendererInterface $pdfRenderer */
         $pdfRenderer = $this->get('pdf_renderer');
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewsPost($post);
 
-        //
         // RATING
-        //
+
         $rating = $this->findContentRating($post, $visitor_id);
 
-        //
         // NUM RATINGS
-        //
+
         list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($post);
 
         $contentHtml = $this->renderThemeView(

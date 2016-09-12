@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
@@ -47,7 +48,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
     /** @var array|null */
     protected $_allowed_ids = null;
     /** @var array */
-    protected $_disallowed_ids = array();
+    protected $_disallowed_ids = [];
 
     public function __construct(Entity\Person $person)
     {
@@ -56,11 +57,11 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 
     public function getShortCallableNames()
     {
-        return array(
+        return [
             'getAgentPermissions'      => '_getthis',
             'getDisallowedDepartments' => 'getDisallowedDepartments',
             'getAllowedDepartments'    => 'getAllowedDepartments',
-        );
+        ];
     }
 
     // we use this because we implement arrayaccess
@@ -119,7 +120,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
     {
         if ($this->_allowed_ids !== null) {
             if (!isset($this->_allowed_ids[$context])) {
-                return array();
+                return [];
             }
 
             return $this->_allowed_ids[$context];
@@ -131,11 +132,11 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
         try {
             $uids = $agent_data->getGroupIdsForAgent($this->person);
         } catch (\InvalidArgumentException $e) {
-            $uids = array();
+            $uids = [];
         }
 
         if (!$uids) {
-            $uids = array(0);
+            $uids = [0];
         }
 
         // Only agent groups!
@@ -155,12 +156,12 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
         }
 
         if ($allow_all) {
-            $this->_allowed_ids = array();
-            foreach (array(App::$container->getTicketDepartments()->getAll(), App::$container->getChatDepartments()->getAll()) as $coll) {
+            $this->_allowed_ids = [];
+            foreach ([App::$container->getTicketDepartments()->getAll(), App::$container->getChatDepartments()->getAll()] as $coll) {
                 foreach ($coll as $d) {
                     $app = $d->is_tickets_enabled ? 'tickets' : 'chat';
                     if (!isset($this->_allowed_ids[$app])) {
-                        $this->_allowed_ids[$app] = array();
+                        $this->_allowed_ids[$app] = [];
                     }
 
                     $this->_allowed_ids[$app][] = $d->id;
@@ -172,10 +173,10 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
         } else {
             $raw = App::$container->getEm()->getRepository('DeskPRO:DepartmentPermission')->getPermsForAgent($this->person->id, $uids, 'full');
 
-            $this->_allowed_ids = array();
+            $this->_allowed_ids = [];
             foreach ($raw as $r) {
                 if (!isset($this->_allowed_ids[$r['app']])) {
-                    $this->_allowed_ids[$r['app']] = array();
+                    $this->_allowed_ids[$r['app']] = [];
                 }
                 $this->_allowed_ids[$r['app']][] = $r['department_id'];
 
@@ -187,7 +188,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
         }
 
         if (!isset($this->_allowed_ids[$context])) {
-            return array();
+            return [];
         }
 
         return $this->_allowed_ids[$context];
@@ -195,7 +196,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 
     public function offsetExists($offset)
     {
-        $o = array('allowed_dep_ids', 'disallowed_dep_ids');
+        $o = ['allowed_dep_ids', 'disallowed_dep_ids'];
 
         return in_array($offset, $o);
     }

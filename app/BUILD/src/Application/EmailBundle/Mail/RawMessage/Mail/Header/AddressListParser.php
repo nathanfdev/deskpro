@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -82,11 +82,11 @@ class AddressListParser
         // This replaces quoted names with unique tokens.
         // We need this because the name might contain a ',' character, which
         // we explode on as an address separator
-        $tokens = array();
-        foreach (array(
+        $tokens = [];
+        foreach ([
             '#"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"#s',
             "#'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'#s",
-        ) as $re) {
+        ] as $re) {
             $string = preg_replace_callback($re, function ($m) use (&$tokens) {
                 $id = uniqid('t', true);
 

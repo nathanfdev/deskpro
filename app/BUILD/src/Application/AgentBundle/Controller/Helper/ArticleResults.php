@@ -81,9 +81,9 @@ class ArticleResults
             }
         }
 
-        #------------------------------
-        # If there's no result set, we're running it for the first time
-        #------------------------------
+        //------------------------------
+        // If there's no result set, we're running it for the first time
+        //------------------------------
 
         if (!$result_cache) {
             $term_rules = RuleBuilder::newTermsBuilder();

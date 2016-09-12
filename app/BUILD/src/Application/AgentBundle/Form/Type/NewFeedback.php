@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -38,36 +39,36 @@ class NewFeedback extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        #------------------------------
-        # Basic fields
-        #------------------------------
+        //------------------------------
+        // Basic fields
+        //------------------------------
 
         $builder->add('title', 'text');
-        $builder->add('content', 'textarea', array('filter_clean' => false));
+        $builder->add('content', 'textarea', ['filter_clean' => false]);
 
         $builder->add('category_id', 'text');
         $builder->add('status_code', 'text');
 
-        $builder->add('labels', 'collection', array(
+        $builder->add('labels', 'collection', [
             'type'         => 'hidden',
             'required'     => false,
             'allow_add'    => true,
             'allow_delete' => true,
-        ));
+        ]);
 
-        $builder->add('attach_ids', 'collection', array(
+        $builder->add('attach_ids', 'collection', [
             'type'         => 'hidden',
             'required'     => false,
             'allow_add'    => true,
             'allow_delete' => true,
-        ));
+        ]);
     }
 
     public function getDefaultOptions(array $options)
     {
-        return array(
+        return [
             'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewFeedback',
-        );
+        ];
     }
 
     public function getName()

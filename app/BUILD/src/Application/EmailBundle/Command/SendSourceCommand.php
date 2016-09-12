@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Command;
 
 use Application\EmailBundle\Entity\SendmailSource;
@@ -84,21 +85,21 @@ class SendSourceCommand extends ContainerAwareCommand
             return self::RETURN_NOT_FOUND;
         }
 
-        ################################################################################################################
-        # Info
-        ################################################################################################################
+        //###############################################################################################################
+        // Info
+        //###############################################################################################################
 
         if ($input->getOption('info') || $input->getOption('source')) {
             if ($input->getOption('info')) {
-                echo Strings::asciiTable(array(
-                    array('ID', $source->getId()),
-                    array('Ref', $source->getRef()),
-                    array('Date', $source->getDateCreated()->format('Y-m-d H:i:s')),
-                    array('Status', $source->getStatus()),
-                    array('Is Sent?', $source->getDateSent() ? 'Yes :: '.$source->getDateSent()->format('Y-m-d H:i:s') : 'No'),
-                    array('Next Attempt', $source->getDateNextAttempt() ? $source->getDateNextAttempt()->format('Y-m-d H:i:s') : 'never'),
-                    array('Send Attempts', $source->getExecCount()),
-                ));
+                echo Strings::asciiTable([
+                    ['ID', $source->getId()],
+                    ['Ref', $source->getRef()],
+                    ['Date', $source->getDateCreated()->format('Y-m-d H:i:s')],
+                    ['Status', $source->getStatus()],
+                    ['Is Sent?', $source->getDateSent() ? 'Yes :: '.$source->getDateSent()->format('Y-m-d H:i:s') : 'No'],
+                    ['Next Attempt', $source->getDateNextAttempt() ? $source->getDateNextAttempt()->format('Y-m-d H:i:s') : 'never'],
+                    ['Send Attempts', $source->getExecCount()],
+                ]);
                 echo "\n";
 
                 if ($input->getOption('source')) {
@@ -128,9 +129,9 @@ class SendSourceCommand extends ContainerAwareCommand
             return 0;
         }
 
-        ################################################################################################################
-        # Send
-        ################################################################################################################
+        //###############################################################################################################
+        // Send
+        //###############################################################################################################
 
         if ($input->getOption('expect-pending') && $source->getStatus() != SendmailSource::STATUS_PENDING) {
             $output->writeln(sprintf('<info>Source is marked as %s</info>', $source->getStatus()));
@@ -152,12 +153,12 @@ class SendSourceCommand extends ContainerAwareCommand
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
         // Force console output on emails
-        foreach (array(
+        foreach ([
             'dp.email.out.queue',
             'dp.email.out.transport',
             'dp.email.out.mailer',
             'dp.email.out.raw_transport',
-        ) as $n) {
+        ] as $n) {
             $console_handler = new ConsoleHandler($output);
             $console_handler->setFormatter(new ConsoleFormatter("%start_tag%[%datetime%] %channel%.%level_name%: %message%%end_tag%\n"));
             $this->getContainer()->get('monolog.logger.'.$n)->pushHandler($console_handler);

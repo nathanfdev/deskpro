@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Notifications;
 
 use Application\DeskPRO\App;
@@ -84,8 +85,8 @@ abstract class AbstractAgentNotification
 
         $online_ids = $this->em->getRepository('DeskPRO:Session')->getAvailableAgentIds();
 
-        $send_browser = array();
-        $send_email   = array();
+        $send_browser = [];
+        $send_email   = [];
 
         foreach ($online_ids as $aid) {
             if (!isset($agents[$aid])) {
@@ -103,10 +104,10 @@ abstract class AbstractAgentNotification
             }
         }
 
-        $this->notify_list = array(
+        $this->notify_list = [
             'email'   => $send_email,
             'browser' => $send_browser,
-        );
+        ];
 
         return $this->notify_list;
     }
@@ -157,12 +158,12 @@ abstract class AbstractAgentNotification
             $data['row'] = $tpl_line;
 
             $cm = new ClientMessage();
-            $cm->fromArray(array(
+            $cm->fromArray([
                 'channel'           => 'agent-notify.'.$data['notify_type'],
                 'data'              => $data,
                 'for_person'        => $agent,
                 'created_by_client' => $this->client,
-            ));
+            ]);
             $this->em->persist($cm);
         }
 

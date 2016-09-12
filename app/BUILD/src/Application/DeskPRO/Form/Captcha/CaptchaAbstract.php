@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Form\Captcha;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -47,13 +48,13 @@ abstract class CaptchaAbstract
      *
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
      * @param array                                                     $options
      */
-    final public function __construct(ContainerInterface $container, array $options = array())
+    final public function __construct(ContainerInterface $container, array $options = [])
     {
         $this->container = $container;
         $this->options   = $options;

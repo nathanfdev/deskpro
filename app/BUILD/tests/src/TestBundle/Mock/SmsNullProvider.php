@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,7 +36,7 @@ class SmsNullProvider implements SmsProviderInterface
 {
     public function sendMessage($toPhoneNumber, SmsMessageChunk $textMessage, $fromPhoneNumber)
     {
-        return new SmsResult(SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this, array());
+        return new SmsResult(SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this, []);
     }
 
     public function getName()
@@ -46,6 +46,6 @@ class SmsNullProvider implements SmsProviderInterface
 
     public function getParams()
     {
-        return array();
+        return [];
     }
 }

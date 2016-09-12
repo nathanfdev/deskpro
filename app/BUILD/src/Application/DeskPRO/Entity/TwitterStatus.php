@@ -325,7 +325,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
      */
     public function isTruncated()
     {
-        return (Boolean) $this->is_truncated;
+        return (bool) $this->is_truncated;
     }
 
     /**
@@ -339,7 +339,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
             return $this->_parsed_text;
         }
 
-        $replacements = array();
+        $replacements = [];
         foreach ($this['mentions'] as $mention) {
             $replacements[$mention['starts']] = $mention;
         }
@@ -386,7 +386,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
         }
 
         if (\Orb\Util\Strings::utf8_strlen($this['text']) != $cursor) {
-            $this->_parsed_text .=  \Orb\Util\Strings::utf8_substr($this['text'], $cursor);
+            $this->_parsed_text .= \Orb\Util\Strings::utf8_substr($this['text'], $cursor);
         }
 
         return $this->_parsed_text;
@@ -436,9 +436,9 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
         return $entity;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -82,9 +82,9 @@ class DeskproSlugConverter implements ParamConverterInterface
                         $request->attributes->get('_route'),
                         array_merge(
                             $request->attributes->get('_route_params'),
-                            array(
+                            [
                                 $slug_attribute_name => $obj->getSlug(),
-                            )
+                            ]
                         )
                     );
                 }
@@ -97,7 +97,7 @@ class DeskproSlugConverter implements ParamConverterInterface
 
         // is it in the repo?
         $repo = $this->em->getRepository($param_class);
-        if ($obj = $repo->findOneBy(array($slug_col => $slug_input))) {
+        if ($obj = $repo->findOneBy([$slug_col => $slug_input])) {
             $request->attributes->set($param_name, $obj);
 
             return;
@@ -106,9 +106,9 @@ class DeskproSlugConverter implements ParamConverterInterface
         $id = substr($slug_input, 0, strpos($slug_input, '-'));
         if ($obj = $repo->find($id)) {
             // it exists and we are on the old url at the moment, lets flag a 301 response
-            $new_slug_attribute = array(
+            $new_slug_attribute = [
                 $slug_attribute_name => $obj->slug,
-            );
+            ];
 
             throw new PermanentRedirectException(
                 $request->attributes->get('_route'),
@@ -122,9 +122,9 @@ class DeskproSlugConverter implements ParamConverterInterface
         $id = $slug_input;
         if ($obj = $repo->find($id)) {
             // it exists and we are on the old url at the moment, lets flag a 301 response
-            $new_slug_attribute = array(
+            $new_slug_attribute = [
                 $slug_attribute_name => $obj->slug,
-            );
+            ];
 
             throw new PermanentRedirectException(
                 $request->attributes->get('_route'),
@@ -146,10 +146,10 @@ class DeskproSlugConverter implements ParamConverterInterface
     protected function getOptions(ParamConverter $configuration)
     {
         return array_replace(
-            array(
+            [
                 'slug_col'         => 'slug',
                 'slug_route_param' => 'slug',
-            ), $configuration->getOptions()
+            ], $configuration->getOptions()
         );
     }
 

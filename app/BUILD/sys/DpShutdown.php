@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,7 +44,7 @@ class DpShutdown
     /**
      * @var array
      */
-    private static $params = array();
+    private static $params = [];
 
     /**
      * @var array
@@ -63,11 +63,11 @@ class DpShutdown
         static $has_init_shutdown = false;
         if (!$has_init_shutdown) {
             $has_init_shutdown = true;
-            register_shutdown_function(array('DpShutdown', 'run'));
+            register_shutdown_function(['DpShutdown', 'run']);
         }
 
-        self::$stack     = array();
-        self::$callbacks = array();
+        self::$stack     = [];
+        self::$callbacks = [];
     }
 
     /**
@@ -92,7 +92,7 @@ class DpShutdown
         }
 
         self::$stack[$tag]->insert('cb'.$gen_id, $priority);
-        self::$callbacks['cb'.$gen_id] = array($callback, $params, $priority, $tag);
+        self::$callbacks['cb'.$gen_id] = [$callback, $params, $priority, $tag];
     }
 
     /**

@@ -47,7 +47,7 @@ class ResizeFormListener extends BaseListener
      */
     protected $newEntriesMap;
 
-    public function __construct($type, array $options = array(), $allowAdd = false, $allowDelete = false, $deleteEmpty = false, EntityManager $em)
+    public function __construct($type, array $options, $allowAdd, $allowDelete, $deleteEmpty, EntityManager $em)
     {
         parent::__construct($type, $options, $allowAdd, $allowDelete, $deleteEmpty);
         $this->em = $em;
@@ -58,9 +58,9 @@ class ResizeFormListener extends BaseListener
      */
     public static function getSubscribedEvents()
     {
-        return array_merge(parent::getSubscribedEvents(), array(
+        return array_merge(parent::getSubscribedEvents(), [
             FormEvents::POST_SUBMIT => 'postSubmit',
-        ));
+        ]);
     }
 
     /**
@@ -72,22 +72,22 @@ class ResizeFormListener extends BaseListener
     {
         $form                = $event->getForm();
         $data                = $event->getData();
-        $this->newEntriesMap = array();
+        $this->newEntriesMap = [];
 
         if (null === $data || '' === $data) {
-            $data = array();
+            $data = [];
         }
 
         if (!is_array($data) && !($data instanceof \Traversable && $data instanceof \ArrayAccess)) {
             throw new UnexpectedTypeException($data, 'array or (\Traversable and \ArrayAccess)');
         }
 
-        $map = array();
+        $map = [];
         foreach ($form as $name => $child) {
             $map[$child->get('id')->getData()] = $name;
         }
 
-        $newData = array();
+        $newData = [];
         foreach ($data as $value) {
             if (isset($map[$value['id']])) {
                 $newData[$map[$value['id']]] = $value;
@@ -122,9 +122,9 @@ class ResizeFormListener extends BaseListener
 
                 // todo $value['title'] is very rare! only for DpCategoryBuilderType
                 if (!$form->has($name) && !empty($value['title'])) {
-                    $form->add($name, $this->type, array_replace(array(
+                    $form->add($name, $this->type, array_replace([
                         'property_path' => '['.$name.']',
-                    ), $this->options));
+                    ], $this->options));
 
                     // we add only item index here
                     $this->newEntriesMap[] = $name;
@@ -148,6 +148,6 @@ class ResizeFormListener extends BaseListener
             }
         }
 
-        $this->newEntriesMap = array();
+        $this->newEntriesMap = [];
     }
 }

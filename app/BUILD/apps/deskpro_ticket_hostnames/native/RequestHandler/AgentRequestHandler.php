@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_ticket_hostnames\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestContext;
@@ -64,24 +65,24 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         $db = $context->getContainer()->getDb();
 
         // Delete cache for this ip
-        $db->delete('cache', array('id' => 'ip2host--'.$ip));
+        $db->delete('cache', ['id' => 'ip2host--'.$ip]);
 
         $rdns = $context->getContainer()->getSystemService('TicketMessageHostnameLookup')->getRdns();
 
         try {
             $hostname = $rdns->lookup($ip);
         } catch (\Exception $e) {
-            return $context->createJsonResponse(array('nochange' => true));
+            return $context->createJsonResponse(['nochange' => true]);
         }
 
-        $db->update('tickets_messages', array(
+        $db->update('tickets_messages', [
             'hostname' => $hostname,
-        ), array(
+        ], [
             'ticket_id'  => $ticket->id,
             'ip_address' => $ip,
-        ));
+        ]);
 
-        return $context->createJsonResponse(array('hostname' => $hostname));
+        return $context->createJsonResponse(['hostname' => $hostname]);
     }
 
     /**
@@ -113,7 +114,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                   tickets_messages.ticket_id = ?
                   AND tickets_messages.ip_address != ''
                 ORDER BY tickets_messages.id ASC
-            ", array($ticket->id));
+            ", [$ticket->id]);
         } else {
             $message_info = $db->fetchAll("
                 SELECT
@@ -129,10 +130,10 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                   AND tickets_messages.ip_address != ''
                   AND (tickets_messages.person_id = tickets.person_id OR people.is_agent = 0)
                 ORDER BY tickets_messages.id ASC
-            ", array($ticket->id));
+            ", [$ticket->id]);
         }
 
-        $user_list = array();
+        $user_list = [];
 
         foreach ($message_info as $info) {
             if (!isset($user_list[$info['person_id']])) {
@@ -141,23 +142,23 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                 } else {
                     $name = trim($info['person_fname'].' '.$info['person_lname']);
                 }
-                $user_list[$info['person_id']] = array(
+                $user_list[$info['person_id']] = [
                     'id'    => $info['person_id'],
                     'name'  => $name ?: $info['person_email'],
                     'email' => $info['person_email'],
-                    'recs'  => array(),
-                );
+                    'recs'  => [],
+                ];
             }
 
-            $user_list[$info['person_id']]['recs'][] = array(
+            $user_list[$info['person_id']]['recs'][] = [
                 'ip'         => $info['ip_address'],
                 'hostname'   => $info['hostname'] ?: null,
                 'message_id' => $info['message_id'],
-            );
+            ];
         }
 
         foreach ($user_list as &$user) {
-            $ips = array();
+            $ips = [];
 
             foreach ($user['recs'] as $info) {
                 if (!isset($ips[$info['ip']]) || $ips[$info['ip']]['hostname'] === null || $ips[$info['ip']]['message_id'] < $info['message_id']) {
@@ -168,10 +169,10 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
             $user['recs'] = array_values($ips);
         }
 
-        $data = array(
+        $data = [
             'ticket_id' => $ticket->id,
             'user_list' => array_values($user_list),
-        );
+        ];
 
         return $context->createJsonResponse($data);
     }

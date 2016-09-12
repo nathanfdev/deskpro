@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Translate
  */
+
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
@@ -92,7 +93,7 @@ class TermSummary
                 if (is_array($choice)) {
                     $choice = array_pop($choice);
                 }
-                $summary = $tr->phrase('agent.general.content_matches_summary', array('pattern' => $choice));
+                $summary = $tr->phrase('agent.general.content_matches_summary', ['pattern' => $choice]);
                 break;
 
             case 'agent_performer':
@@ -202,10 +203,10 @@ class TermSummary
                 $not_id     = $info['not_id'];
 
                 if (!is_array($agent_ids)) {
-                    $agent_ids = array($agent_ids);
+                    $agent_ids = [$agent_ids];
                 }
 
-                $names = array();
+                $names = [];
                 if ($unassigned) {
                     $names[] = $tr->phrase('agent.general.unassigned');
                 }
@@ -238,7 +239,7 @@ class TermSummary
                     if ($team_ids) {
                         $summary = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $team_ids, function ($choice) {
                             if (!is_array($choice)) {
-                                $choice = array($choice);
+                                $choice = [$choice];
                             }
                             $titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($choice);
                             if (in_array(-1, $choice)) {
@@ -252,7 +253,7 @@ class TermSummary
                     if ($not_ids) {
                         $summary = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), 'not', $not_ids, function ($choice) {
                             if (!is_array($choice)) {
-                                $choice = array($choice);
+                                $choice = [$choice];
                             }
                             $titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($choice);
                             if (in_array(-1, $choice)) {
@@ -282,7 +283,7 @@ class TermSummary
                 break;
 
             case 'ticket_status_hidden':
-                $choice_str = array();
+                $choice_str = [];
 
                 foreach ((array) $choice as $c) {
                     $choice_str[] = $tr->phrase('agent.tickets.hidden_status_'.$c);
@@ -378,16 +379,16 @@ class TermSummary
             case 'ticket_subject':
                 switch ($op) {
                     case self::OP_IS:
-                        $summary = $tr->phrase('agent.general.x_is_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']));
+                        $summary = $tr->phrase('agent.general.x_is_y', ['field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']]);
                         break;
                     case self::OP_CONTAINS:
-                        $summary = $tr->phrase('agent.general.x_include_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']));
+                        $summary = $tr->phrase('agent.general.x_include_y', ['field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']]);
                         break;
                     case self::OP_NOTCONTAINS:
-                        $summary = $tr->phrase('agent.general.x_not_include_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']));
+                        $summary = $tr->phrase('agent.general.x_not_include_y', ['field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']]);
                         break;
                     default:
-                        $summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']));
+                        $summary = $tr->phrase('agent.general.x_is_not_y', ['field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']]);
                         break;
                 }
                 break;
@@ -395,16 +396,16 @@ class TermSummary
             case 'ticket_sent_to_address':
                 switch ($op) {
                     case self::OP_IS:
-                        $summary = $tr->phrase('agent.general.x_is_y', array('field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']));
+                        $summary = $tr->phrase('agent.general.x_is_y', ['field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']]);
                         break;
                     case self::OP_CONTAINS:
-                        $summary = $tr->phrase('agent.general.x_include_y', array('field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']));
+                        $summary = $tr->phrase('agent.general.x_include_y', ['field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']]);
                         break;
                     case self::OP_NOTCONTAINS:
-                        $summary = $tr->phrase('agent.general.x_not_include_y', array('field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']));
+                        $summary = $tr->phrase('agent.general.x_not_include_y', ['field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']]);
                         break;
                     default:
-                        $summary = $tr->phrase('agent.general.x_is_not_y', array('field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']));
+                        $summary = $tr->phrase('agent.general.x_is_not_y', ['field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']]);
                         break;
                 }
                 break;
@@ -414,7 +415,7 @@ class TermSummary
                 if ($color == 'any') {
                     $summary = $tr->phrase('agent.general.flagged');
                 } else {
-                    $summary = $tr->phrase('agent.general.flagged_with_color_summary', array('color' => $color));
+                    $summary = $tr->phrase('agent.general.flagged_with_color_summary', ['color' => $color]);
                 }
                 break;
 
@@ -445,16 +446,16 @@ class TermSummary
                         }
 
                         if ($op == self::OP_IS) {
-                            $summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $text));
+                            $summary = $tr->phrase('agent.general.x_is_y', ['field' => $field['title'], 'value' => $text]);
                         } else {
-                            $summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $text));
+                            $summary = $tr->phrase('agent.general.x_is_not_y', ['field' => $field['title'], 'value' => $text]);
                         }
 
                         break;
 
                     case 'id':
                         if (is_array($text)) {
-                            $real = array();
+                            $real = [];
                             foreach ($text as $c_id) {
                                 $c = $field->getChildById($c_id);
                                 if ($c) {
@@ -465,9 +466,9 @@ class TermSummary
                         }
 
                         if ($op == self::OP_IS or $op == self::OP_CONTAINS) {
-                            $summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $text));
+                            $summary = $tr->phrase('agent.general.x_is_y', ['field' => $field['title'], 'value' => $text]);
                         } else {
-                            $summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $text));
+                            $summary = $tr->phrase('agent.general.x_is_not_y', ['field' => $field['title'], 'value' => $text]);
                         }
                         break;
                 }
@@ -492,16 +493,16 @@ class TermSummary
                         }
 
                         if ($op == self::OP_IS) {
-                            $summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $text));
+                            $summary = $tr->phrase('agent.general.x_is_y', ['field' => $field['title'], 'value' => $text]);
                         } else {
-                            $summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $text));
+                            $summary = $tr->phrase('agent.general.x_is_not_y', ['field' => $field['title'], 'value' => $text]);
                         }
 
                         break;
 
                     case 'id':
                         if (is_array($text)) {
-                            $real = array();
+                            $real = [];
                             foreach ($text as $c_id) {
                                 $c = $field->getChildById($c_id);
                                 if ($c) {
@@ -512,28 +513,28 @@ class TermSummary
                         }
 
                         if ($op == self::OP_IS or $op == self::OP_CONTAINS) {
-                            $summary = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $text));
+                            $summary = $tr->phrase('agent.general.x_is_y', ['field' => $field['title'], 'value' => $text]);
                         } else {
-                            $summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $text));
+                            $summary = $tr->phrase('agent.general.x_is_not_y', ['field' => $field['title'], 'value' => $text]);
                         }
                         break;
                 }
                 break; // end break TERM_TICKET_FIELD
 
             case 'user_waiting':
-                $summary = $tr->phrase('agent.general.user_waiting_x', array('time' => \Orb\Util\Dates::secsToReadable($choice)));
+                $summary = $tr->phrase('agent.general.user_waiting_x', ['time' => \Orb\Util\Dates::secsToReadable($choice)]);
                 break;
 
             case 'agent_waiting':
-                $summary = $tr->phrase('agent.general.agent_waiting_x', array('time' => \Orb\Util\Dates::secsToReadable($choice)));
+                $summary = $tr->phrase('agent.general.agent_waiting_x', ['time' => \Orb\Util\Dates::secsToReadable($choice)]);
                 break;
 
             case 'total_user_waiting':
-                $summary = $tr->phrase('agent.general.total_user_waiting_x', array('time' => \Orb\Util\Dates::secsToReadable($choice)));
+                $summary = $tr->phrase('agent.general.total_user_waiting_x', ['time' => \Orb\Util\Dates::secsToReadable($choice)]);
                 break;
 
             case 'ticket_creation_system':
-                $vals = array();
+                $vals = [];
 
                 foreach ((array) $choice as $c) {
                     $vals[] = $tr->phrase('agent.tickets.creation_system_'.str_replace('.', '_', $c));
@@ -557,7 +558,7 @@ class TermSummary
                 break;
 
             case 'time_created':
-                $summary = $tr->phrase('agent.general.time_created_summary', array('op' => $op, 'hour' => $choice['hour1'], 'minute' => $choice['minute1']));
+                $summary = $tr->phrase('agent.general.time_created_summary', ['op' => $op, 'hour' => $choice['hour1'], 'minute' => $choice['minute1']]);
 
                 if (!empty($choice['timezone'])) {
                     $summary .= ' ('.\Orb\Util\Dates::getTimezoneOffsetString($choice['timezone']).')';
@@ -575,7 +576,7 @@ class TermSummary
                 break;
 
             case 'time_last_user_reply':
-                $summary = $tr->phrase('agent.general.time_user_reply_summary', array('op' => $op, 'hour' => $choice['hour1'], 'minute' => $choice['minute1']));
+                $summary = $tr->phrase('agent.general.time_user_reply_summary', ['op' => $op, 'hour' => $choice['hour1'], 'minute' => $choice['minute1']]);
                 break;
 
             case 'day_created':
@@ -590,7 +591,7 @@ class TermSummary
                         case 6: $d = 'Saturday'; break;
                     }
                 }
-                $summary = $tr->phrase('agent.general.day_created_summary', array('op' => $op, 'days' => implode(', ', $choice['days'])));
+                $summary = $tr->phrase('agent.general.day_created_summary', ['op' => $op, 'days' => implode(', ', $choice['days'])]);
                 break;
 
             case 'current_day':
@@ -609,7 +610,7 @@ class TermSummary
                 break;
 
             case 'day_last_user_reply':
-                $summary = $tr->phrase('agent.general.day_user_replay_summary', array('op' => $op, 'days' => implode(', ', $choice['days'])));
+                $summary = $tr->phrase('agent.general.day_user_replay_summary', ['op' => $op, 'days' => implode(', ', $choice['days'])]);
                 break;
 
             case 'is_new_user':
@@ -693,7 +694,7 @@ class TermSummary
                 break;
 
             case 'day_created':
-                $days = isset($choice['days']) ? (array) $choice['days'] : array();
+                $days = isset($choice['days']) ? (array) $choice['days'] : [];
 
                 foreach ($days as &$_) {
                     switch ($_) {
@@ -719,9 +720,9 @@ class TermSummary
                 });
                 break;
 
-            ############################################################################################################
-            # Organization Terms
-            ############################################################################################################
+            //###########################################################################################################
+            // Organization Terms
+            //###########################################################################################################
 
             case OrganizationSearch::TERM_NAME:
                 $name    = array_pop($choice);
@@ -759,16 +760,16 @@ class TermSummary
                 if ($field) {
                     switch ($op) {
                         case self::OP_IS:
-                            $summary = $tr->phrase('agent.general.x_is_y', array('field' => $field->title, 'value' => $choice['subject']));
+                            $summary = $tr->phrase('agent.general.x_is_y', ['field' => $field->title, 'value' => $choice['subject']]);
                             break;
                         case self::OP_CONTAINS:
-                            $summary = $tr->phrase('agent.general.x_include_y', array('field' => $field->title, 'value' => $choice['subject']));
+                            $summary = $tr->phrase('agent.general.x_include_y', ['field' => $field->title, 'value' => $choice['subject']]);
                             break;
                         case self::OP_NOTCONTAINS:
-                            $summary = $tr->phrase('agent.general.x_not_include_y', array('field' => $field->title, 'value' => $choice['subject']));
+                            $summary = $tr->phrase('agent.general.x_not_include_y', ['field' => $field->title, 'value' => $choice['subject']]);
                             break;
                         default:
-                            $summary = $tr->phrase('agent.general.x_is_not_y', array('field' => $field->title, 'value' => $choice['subject']));
+                            $summary = $tr->phrase('agent.general.x_is_not_y', ['field' => $field->title, 'value' => $choice['subject']]);
                             break;
                     }
                 }
@@ -794,7 +795,7 @@ class TermSummary
             $choice = Arrays::getFirstItem($choice);
         }
 
-        if ($op == self::OP_IS_REGEX || $op    == self::OP_NOT_REGEX) {
+        if ($op == self::OP_IS_REGEX || $op == self::OP_NOT_REGEX) {
             if (is_array($choice)) {
                 $choice = array_pop($choice);
             }
@@ -870,31 +871,31 @@ class TermSummary
         }
 
         if ($op == self::OP_BETWEEN) {
-            $summary = App::getTranslator()->phrase('agent.general.x_is_between_y_and_z', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_is_between_y_and_z', [
                 'field'  => $field,
                 'value1' => $range1,
                 'value2' => $range2,
-            ));
+            ]);
         } elseif ($op == self::OP_GTE) {
-            $summary = App::getTranslator()->phrase('agent.general.x_is_greater_than_y', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_is_greater_than_y', [
                 'field' => $field,
                 'value' => $range1,
-            ));
+            ]);
         } elseif ($op == self::OP_NOT) {
-            $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', [
                 'field' => $field,
                 'value' => $range1,
-            ));
+            ]);
         } elseif ($op == self::OP_IS) {
-            $summary = App::getTranslator()->phrase('agent.general.x_is_y', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_is_y', [
                 'field' => $field,
                 'value' => $range1,
-            ));
+            ]);
         } else {
-            $summary = App::getTranslator()->phrase('agent.general.x_is_less_than_y', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_is_less_than_y', [
                 'field' => $field,
                 'value' => $range1,
-            ));
+            ]);
         }
 
         return $summary;
@@ -917,10 +918,10 @@ class TermSummary
         if (!empty($choice['date1'])) {
             $date1 = $choice['date1'];
         } elseif (!empty($choice['date1_relative']) and !empty($choice['date1_relative_type'])) {
-            return App::getTranslator()->phrase('agent.general.x_is_y', array(
+            return App::getTranslator()->phrase('agent.general.x_is_y', [
                 'field' => $field,
                 'value' => (int) $choice['date1_relative']." {$choice['date1_relative_type']} ago",
-            ));
+            ]);
         } elseif (!empty($choice[0])) {
             $date1 = $choice[0];
         }
@@ -929,10 +930,10 @@ class TermSummary
         if (!empty($choice['date2'])) {
             $date2 = $choice['date2'];
         } elseif (!empty($choice['date2_relative']) and !empty($choice['date2_relative_type'])) {
-            return App::getTranslator()->phrase('agent.general.x_is_y', array(
+            return App::getTranslator()->phrase('agent.general.x_is_y', [
                 'field' => $field,
                 'value' => (int) $choice['date2_relative']." {$choice['date2_relative_type']} ago",
-            ));
+            ]);
         } elseif (!empty($choice[1])) {
             $date2 = $choice[1];
         }
@@ -974,21 +975,21 @@ class TermSummary
         }
 
         if ($op == self::OP_BETWEEN) {
-            $summary = App::getTranslator()->phrase('agent.general.x_is_between_y_and_z', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_is_between_y_and_z', [
                 'field'  => $field,
                 'value1' => $date1->format('M j, Y'),
                 'value2' => $date2->format('M j, Y'),
-            ));
+            ]);
         } elseif ($op == self::OP_GTE) {
-            $summary = App::getTranslator()->phrase('agent.general.x_after_y', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_after_y', [
                 'field' => $field,
                 'value' => $date1->format('M j, Y'),
-            ));
+            ]);
         } else {
-            $summary = App::getTranslator()->phrase('agent.general.x_before_y', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_before_y', [
                 'field' => $field,
                 'value' => $date1->format('M j, Y'),
-            ));
+            ]);
         }
 
         return $summary;
@@ -1067,16 +1068,16 @@ class TermSummary
 
         switch ($op) {
             case self::OP_IS:
-                $summary = App::getTranslator()->phrase('agent.general.x_is_y', array('field' => $field, 'value' => $title));
+                $summary = App::getTranslator()->phrase('agent.general.x_is_y', ['field' => $field, 'value' => $title]);
                 break;
             case self::OP_NOT:
-                $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', array('field' => $field, 'value' => $title));
+                $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', ['field' => $field, 'value' => $title]);
                 break;
             case self::OP_CONTAINS:
-                $summary = App::getTranslator()->phrase('agent.general.x_is_y', array('field' => $field, 'value' => $title));
+                $summary = App::getTranslator()->phrase('agent.general.x_is_y', ['field' => $field, 'value' => $title]);
                 break;
             case self::OP_NOTCONTAINS:
-                $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', array('field' => $field, 'value' => $title));
+                $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', ['field' => $field, 'value' => $title]);
                 break;
             case self::OP_CHANGED:
                 $summary = "$field changed";
@@ -1123,7 +1124,7 @@ class TermSummary
         }
         $choice = (array) $choice;
 
-        $agent_ids  = array();
+        $agent_ids  = [];
         $not_id     = null;
         $unassigned = false;
 
@@ -1141,18 +1142,18 @@ class TermSummary
             }
         }
 
-        return array(
+        return [
             'agent_ids'  => $agent_ids,
             'not_id'     => $not_id,
             'unassigned' => $unassigned,
-        );
+        ];
     }
 
     protected function _normalizeAgentTeamChoice($choice)
     {
         $choice = (array) $choice;
 
-        $team_ids = array();
+        $team_ids = [];
         $not_ids  = null;
         $no_team  = false;
 
@@ -1167,14 +1168,14 @@ class TermSummary
                 if ($agent) {
                     $team_ids = Arrays::removeFalsey($agent->getAgentTeamIds());
                 } else {
-                    $team_ids = array();
+                    $team_ids = [];
                 }
                 $team_ids[] = -1;
             } elseif ($c == -2) {
                 if ($agent) {
                     $not_ids = Arrays::removeFalsey($agent->getAgentTeamIds());
                 } else {
-                    $not_ids = array();
+                    $not_ids = [];
                 }
                 $not_ids[] = -1;
             } else {
@@ -1182,10 +1183,10 @@ class TermSummary
             }
         }
 
-        return array(
+        return [
             'team_ids' => $team_ids,
             'not_ids'  => $not_ids,
             'no_team'  => $no_team,
-        );
+        ];
     }
 }

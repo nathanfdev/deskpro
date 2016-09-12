@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\AgentNotifPrefs;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
@@ -43,16 +44,16 @@ class Prefs
     const SMART_SEND  = 'smart_send';
 
     /** @var array */
-    private $filter_subs = array();
+    private $filter_subs = [];
     /** @var array */
-    private $filter_notify_prefs = array();
+    private $filter_notify_prefs = [];
     /** @var array */
-    private $app_subs = array();
+    private $app_subs = [];
     /** @var string */
     private $email_mention_mode = self::ALWAYS_SEND;
 
     /** @var array */
-    public static $apps = array(
+    public static $apps = [
         'chat'     => 1,
         'task'     => 1,
         'twitter'  => 1,
@@ -60,7 +61,7 @@ class Prefs
         'publish'  => 1,
         'crm'      => 1,
         'account'  => 1,
-    );
+    ];
 
     public function __construct()
     {
@@ -68,18 +69,18 @@ class Prefs
         // (We dont do this for all filter subs because
         // this class does not know which filters exist)
 
-        $this->filter_notify_prefs = array(
+        $this->filter_notify_prefs = [
             self::TYPE_EMAIL => array_fill_keys($this->getFilterNotifyPrefNames(self::TYPE_EMAIL), false),
             self::TYPE_ALERT => array_fill_keys($this->getFilterNotifyPrefNames(self::TYPE_ALERT), false),
-        );
+        ];
 
         foreach (self::$apps as $app_name => $bool) {
             $method = 'get'.ucfirst($app_name).'NotifyTypes';
 
-            $this->app_subs[$app_name] = array(
+            $this->app_subs[$app_name] = [
                 self::TYPE_EMAIL => array_fill_keys($this->$method(self::TYPE_EMAIL), false),
                 self::TYPE_ALERT => array_fill_keys($this->$method(self::TYPE_ALERT), false),
-            );
+            ];
         }
     }
 
@@ -95,10 +96,10 @@ class Prefs
         $valid_sub_types = $this->getFilterNotifyTypes($filter, $type);
 
         if (!isset($this->filter_subs[$type])) {
-            $this->filter_subs[$type] = array();
+            $this->filter_subs[$type] = [];
         }
 
-        $this->filter_subs[$type][$filter->id] = array();
+        $this->filter_subs[$type][$filter->id] = [];
         foreach ($valid_sub_types as $sub_type) {
             $this->filter_subs[$type][$filter->id][$sub_type] = false;
         }
@@ -139,11 +140,11 @@ class Prefs
     public function getFilterSubs($type = null)
     {
         if ($type === null) {
-            $ret = array();
-            foreach (array('email', 'alert') as $type) {
+            $ret = [];
+            foreach (['email', 'alert'] as $type) {
                 foreach ($this->getFilterSubs($type) as $filter_id => $subs) {
                     if (!isset($ret[$filter_id])) {
-                        $ret[$filter_id] = array();
+                        $ret[$filter_id] = [];
                     }
 
                     foreach ($subs as $s => $v) {
@@ -158,7 +159,7 @@ class Prefs
         }
 
         if (!isset($this->filter_subs[$type])) {
-            return array();
+            return [];
         }
 
         return $this->filter_subs[$type];
@@ -239,9 +240,9 @@ class Prefs
         }
     }
 
-    ####################################################################################################################
-    # These methods return valid types for each category of notifications
-    ####################################################################################################################
+    //###################################################################################################################
+    // These methods return valid types for each category of notifications
+    //###################################################################################################################
 
     /**
      * @param LegacyTicketFilter $filter
@@ -261,15 +262,15 @@ class Prefs
         if ($filter->sys_name) {
             if ($filter->sys_name == 'all') {
                 // All filter has no concept 'new/leave'
-                $notify_types = array(
+                $notify_types = [
                     'created',
                     'user_activity',
                     'agent_activity',
                     'agent_note',
                     'property_change',
-                );
+                ];
             } else {
-                $notify_types = array(
+                $notify_types = [
                     'created',
                     'new',
                     'leave',
@@ -277,19 +278,19 @@ class Prefs
                     'agent_activity',
                     'agent_note',
                     'property_change',
-                );
+                ];
             }
 
         // Custom filters
         } else {
-            $notify_types = array(
+            $notify_types = [
                 'created',
                 'new',
                 'user_activity',
                 'agent_activity',
                 'agent_note',
                 'property_change',
-            );
+            ];
         }
 
         return $notify_types;
@@ -304,10 +305,10 @@ class Prefs
      */
     public function getFilterNotifyPrefNames($type)
     {
-        return array(
+        return [
             'override_all',
             'override_forward',
-        );
+        ];
     }
 
     /**
@@ -318,11 +319,11 @@ class Prefs
     public function getChatNotifyTypes($type)
     {
         if ($type == self::TYPE_EMAIL) {
-            return array(
+            return [
                 'chat_message',
-            );
+            ];
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -333,12 +334,12 @@ class Prefs
      */
     public function getTaskNotifyTypes($type)
     {
-        return array(
+        return [
             'task_assign_self',
             'task_assign_team',
             'task_complete',
             'task_due',
-        );
+        ];
     }
 
     /**
@@ -348,7 +349,7 @@ class Prefs
      */
     public function getTwitterNotifyTypes($type)
     {
-        return array(
+        return [
             'tweet_assign_self',
             'tweet_assign_team',
             'tweet_reply',
@@ -356,7 +357,7 @@ class Prefs
             'tweet_new_reply',
             'tweet_new_mention',
             'tweet_new_retweet',
-        );
+        ];
     }
 
     /**
@@ -366,10 +367,10 @@ class Prefs
      */
     public function getFeedbackNotifyTypes($type)
     {
-        return array(
+        return [
             'new_feedback',
             'new_feedback_validate',
-        );
+        ];
     }
 
     /**
@@ -379,10 +380,10 @@ class Prefs
      */
     public function getPublishNotifyTypes($type)
     {
-        return array(
+        return [
             'new_comment',
             'new_comment_validate',
-        );
+        ];
     }
 
     /**
@@ -392,9 +393,9 @@ class Prefs
      */
     public function getCrmNotifyTypes($type)
     {
-        return array(
+        return [
             'new_user',
-        );
+        ];
     }
 
     /**
@@ -405,12 +406,12 @@ class Prefs
     public function getAccountNotifyTypes($type)
     {
         if ($type == self::TYPE_EMAIL) {
-            return array(
+            return [
                 'login_attempt',
                 'login_attempt_fail',
-            );
+            ];
         } else {
-            return array();
+            return [];
         }
     }
 }

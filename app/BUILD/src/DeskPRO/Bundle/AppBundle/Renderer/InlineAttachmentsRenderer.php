@@ -111,7 +111,7 @@ class InlineAttachmentsRenderer
 
         $download_url = $this->router->generate(
             'serve_blob',
-            array('blob_auth_id' => $blob_auth_id, 'filename' => $filename),
+            ['blob_auth_id' => $blob_auth_id, 'filename' => $filename],
             RouterInterface::ABSOLUTE_URL
         );
 
@@ -125,7 +125,7 @@ class InlineAttachmentsRenderer
                 break;
 
             case 'image':
-                $thumb_url = $this->router->generate('serve_blob', array('blob_auth_id' => $blob_auth_id, 'filename' => $filename, 's' => 350), RouterInterface::ABSOLUTE_URL);
+                $thumb_url = $this->router->generate('serve_blob', ['blob_auth_id' => $blob_auth_id, 'filename' => $filename, 's' => 350], RouterInterface::ABSOLUTE_URL);
 
                 $do_link = true;
 
@@ -150,7 +150,7 @@ class InlineAttachmentsRenderer
             default:
                 $url = $this->router->generate(
                     'serve_blob',
-                    array('blob_auth_id' => $blob_auth_id, 'filename' => $filename),
+                    ['blob_auth_id' => $blob_auth_id, 'filename' => $filename],
                     RouterInterface::ABSOLUTE_URL
                 );
 

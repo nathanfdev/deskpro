@@ -198,9 +198,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $logger
         );
 
-        #------------------------------
-        # Info
-        #------------------------------
+        //------------------------------
+        // Info
+        //------------------------------
 
         if ($input->getOption('info')) {
             $next_id = $manager->getNextBuildId();
@@ -227,9 +227,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             return 0;
         }
 
-        #------------------------------
-        # Set build
-        #------------------------------
+        //------------------------------
+        // Set build
+        //------------------------------
 
         if ($input->getOption('setbuild')) {
             $num = time();
@@ -240,9 +240,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             return 0;
         }
 
-        #------------------------------
-        # Want to run post scripts only
-        #------------------------------
+        //------------------------------
+        // Want to run post scripts only
+        //------------------------------
 
         if ($input->getOption('runsync')) {
             $output->writeln('<info>Running post scripts</info>');
@@ -253,9 +253,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             return 0;
         }
 
-        #------------------------------
-        # Runs a build script
-        #------------------------------
+        //------------------------------
+        // Runs a build script
+        //------------------------------
 
         if (!$manager->getNextBuildId()) {
             $logger->info('All up to date');
@@ -267,9 +267,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             return 0;
         }
 
-        #------------------------------
-        # The main executor loop
-        #------------------------------
+        //------------------------------
+        // The main executor loop
+        //------------------------------
 
         chdir(DP_APP_DIR);
 
@@ -294,9 +294,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $manager->reset();
         }
 
-        #------------------------------
-        # Post Run
-        #------------------------------
+        //------------------------------
+        // Post Run
+        //------------------------------
 
         $logger->info('Running post scripts');
         $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:upgrade --runsync');

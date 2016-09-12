@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
@@ -97,9 +98,9 @@ class DbalQueryBuilderSpec extends ObjectBehavior
         DbalQuery $query,
         DbalQueryPart $query_part
     ) {
-        $query_part->getUniqueJoins()->willReturn(array());
-        $query_part->getJoins()->willReturn(array());
-        $query_part->getParameters()->willReturn(array());
+        $query_part->getUniqueJoins()->willReturn([]);
+        $query_part->getJoins()->willReturn([]);
+        $query_part->getParameters()->willReturn([]);
         $query_part->getWhereString()->willReturn('where.id = 5');
 
         $query->setWherePart('where.id = 5')->shouldBeCalled();
@@ -111,14 +112,14 @@ class DbalQueryBuilderSpec extends ObjectBehavior
         DbalQuery $query,
         DbalQueryPart $query_part
     ) {
-        $query_part->getJoins()->willReturn(array());
-        $query_part->getUniqueJoins()->willReturn(array());
+        $query_part->getJoins()->willReturn([]);
+        $query_part->getUniqueJoins()->willReturn([]);
         $query_part->getWhereString()->willReturn(null);
         $query_part->getParameters()->willReturn(
-            array(
+            [
                 'custom' => 5,
                 'me'     => $me = new TermEngineExpression('agent.getId()'),
-            )
+            ]
         );
 
         $query->addParameter('custom', 5)->willReturn($custom_new_name = 'new_custom');
@@ -134,17 +135,17 @@ class DbalQueryBuilderSpec extends ObjectBehavior
         DbalQuery $query,
         DbalQueryPart $query_part
     ) {
-        $query_part->getUniqueJoins()->willReturn(array());
+        $query_part->getUniqueJoins()->willReturn([]);
         $query_part->getWhereString()->willReturn(null);
-        $query_part->getParameters()->willReturn(array());
+        $query_part->getParameters()->willReturn([]);
         $query_part->getJoins()->willReturn(
-            array(
-                'ticket_participants' => array(
+            [
+                'ticket_participants' => [
                     'table' => 'ticket_participants',
                     'on'    => 'ticket_participants.id = ticket.participant',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
 
         $query->addJoin('ticket_participants', 'ticket_participants.id = ticket.participant')->shouldBeCalled();
@@ -156,17 +157,17 @@ class DbalQueryBuilderSpec extends ObjectBehavior
         DbalQuery $query,
         DbalQueryPart $query_part
     ) {
-        $query_part->getJoins()->willReturn(array());
+        $query_part->getJoins()->willReturn([]);
         $query_part->getWhereString()->willReturn(null);
-        $query_part->getParameters()->willReturn(array());
+        $query_part->getParameters()->willReturn([]);
         $query_part->getUniqueJoins()->willReturn(
-            array(
-                'participants' => array(
+            [
+                'participants' => [
                     'table' => 'ticket_participants',
                     'on'    => '{participants}.id = ticket.participant',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
 
         $query->addUniqueJoin(
@@ -184,27 +185,27 @@ class DbalQueryBuilderSpec extends ObjectBehavior
         DbalQuery $query,
         DbalQueryPart $query_part
     ) {
-        $query_part->getJoins()->willReturn(array());
+        $query_part->getJoins()->willReturn([]);
         $query_part->getWhereString()->willReturn(null);
-        $query_part->getParameters()->willReturn(array());
+        $query_part->getParameters()->willReturn([]);
         $query_part->getUniqueJoins()->willReturn(
-            array(
-                'participants' => array(
+            [
+                'participants' => [
                     'table' => 'ticket_participants',
                     'on'    => '{participants}.id = ticket.participant',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-                'custom_data' => array(
+                ],
+                'custom_data' => [
                     'table' => 'custom_ticket_data',
                     'on'    => '{participants}.id = {custom_data}.id AND {random}.col = {participants}.something',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-                'random' => array(
+                ],
+                'random' => [
                     'table' => 'random_table',
                     'on'    => '{random}.id = {participants}.participant',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
 
         $query->addUniqueJoin(

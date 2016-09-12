@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -42,7 +43,7 @@ class TwitterController extends AbstractController
 {
     public function getSectionDataAction()
     {
-        $data = array();
+        $data = [];
 
         $group_updates = $this->in->getCleanValueArray('group_updates');
         foreach ($group_updates as $account_id => $groups) {
@@ -62,23 +63,23 @@ class TwitterController extends AbstractController
         $counts   = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getSectionCounts($accounts);
 
         $grouping_prefs = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent.ui.twitter-group.', $this->person->getId());
-        $groupings      = array();
+        $groupings      = [];
         foreach ($accounts as $account) {
-            $groupings[$account->id] = array();
-            foreach (array('mine', 'team', 'unassigned', 'all') as $group) {
+            $groupings[$account->id] = [];
+            foreach (['mine', 'team', 'unassigned', 'all'] as $group) {
                 $value                           = isset($grouping_prefs[$account->id.'.'.$group]) ? $grouping_prefs[$account->id.'.'.$group] : '';
                 $data                            = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getGroupedSectionCount($account, $group, $value);
-                $groupings[$account->id][$group] = array('group' => $value, 'data' => $data);
+                $groupings[$account->id][$group] = ['group' => $value, 'data' => $data];
             }
         }
 
-        $data['section_html'] = $this->renderView('AgentBundle:Twitter:window-section.html.twig', array(
+        $data['section_html'] = $this->renderView('AgentBundle:Twitter:window-section.html.twig', [
             'counts'    => $counts,
             'groupings' => $groupings,
             'accounts'  => $accounts,
             'agents'    => $this->em->getRepository('DeskPRO:Person')->getAgents(),
             'teams'     => $this->em->getRepository('DeskPRO:AgentTeam')->getTeams(),
-        ));
+        ]);
 
         return $this->createJsonResponse($data);
     }
@@ -104,11 +105,11 @@ class TwitterController extends AbstractController
 
         $data = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getGroupedSectionCount($account, $type, $group);
 
-        return $this->createJsonResponse(array(
-            'account_id'       => $account->id,
-            'type'             => $type,
-            'group'            => $group,
-            'html'             => $this->renderView('AgentBundle:Twitter:window-sub-grouping.html.twig', array(
+        return $this->createJsonResponse([
+            'account_id' => $account->id,
+            'type'       => $type,
+            'group'      => $group,
+            'html'       => $this->renderView('AgentBundle:Twitter:window-sub-grouping.html.twig', [
                 'account'      => $account,
                 'section_type' => $type,
                 'group_by'     => $group,
@@ -116,8 +117,8 @@ class TwitterController extends AbstractController
                 'route'        => $route,
                 'agents'       => $this->em->getRepository('DeskPRO:Person')->getAgents(),
                 'teams'        => $this->em->getRepository('DeskPRO:AgentTeam')->getTeams(),
-            )),
-        ));
+            ]),
+        ]);
     }
 
     public function newTweetAction()
@@ -129,10 +130,10 @@ class TwitterController extends AbstractController
 
         $account = count($accounts) == 1 ? $accounts[0] : false;
 
-        return $this->render('AgentBundle:Twitter:new.html.twig', array(
+        return $this->render('AgentBundle:Twitter:new.html.twig', [
             'accounts' => $accounts,
             'account'  => $account,
-        ));
+        ]);
     }
 
     public function newTweetSaveAction()
@@ -153,7 +154,7 @@ class TwitterController extends AbstractController
             }
         }
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     public function runSearchAction($account_id, $search_id)
@@ -198,7 +199,7 @@ class TwitterController extends AbstractController
             }
         }
 
-        return $this->render($tpl, array(
+        return $this->render($tpl, [
             'account'     => $account,
             'search'      => $search,
             'statuses'    => $statuses,
@@ -208,7 +209,7 @@ class TwitterController extends AbstractController
             'showing_to'  => min($total_count, $page * $per_page),
             'max_id'      => $max_id,
             'added'       => $added,
-        ));
+        ]);
     }
 
     public function deleteSearchAction($account_id, $security_token)
@@ -232,7 +233,7 @@ class TwitterController extends AbstractController
         $this->em->remove($search);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     public function newSearchAction($account_id)
@@ -257,7 +258,7 @@ class TwitterController extends AbstractController
     /**
      * Check account security.
      *
-     * @param int $id The account id.
+     * @param int $id The account id
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
@@ -327,7 +328,7 @@ class TwitterController extends AbstractController
 
         $per_page = TwitterAccount::DEFAULT_LIMIT;
 
-        $parameters = array(
+        $parameters = [
             'statuses'     => $statuses,
             'person'       => $this->getPerson(),
             'sort_by_date' => $sort_by_date,
@@ -336,7 +337,7 @@ class TwitterController extends AbstractController
             'page'         => $page,
             'showing_to'   => min($total_count, $page * $per_page),
             'agents'       => $this->em->getRepository('DeskPRO:Person')->getAgents(),
-        );
+        ];
 
         // check if is partial
         if ($this->in->getBool('partial')) {

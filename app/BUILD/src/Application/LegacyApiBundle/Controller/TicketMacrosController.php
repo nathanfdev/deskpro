@@ -58,9 +58,9 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     /**
      * @return JsonResponse;
@@ -79,29 +79,29 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     {
         $macros = $this->em->getRepository('DeskPRO:TicketMacro')->getMacros();
 
-        $data = array();
+        $data = [];
 
         foreach ($macros as $macro) {
-            $row = array(
+            $row = [
                 'id'         => $macro->id,
                 'title'      => $macro->title,
                 'is_enabled' => $macro->is_enabled,
                 'is_global'  => $macro->is_global,
                 'person_id'  => $macro->person ? $macro->person->id : null,
                 'person'     => $macro->person ? $macro->person->toApiData(true) : null,
-            );
+            ];
 
             $data[] = $row;
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'macros' => $data,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # get
-    ####################################################################################################################
+    //###################################################################################################################
+    // get
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -121,14 +121,14 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
 
         $data = $this->getApiData($macro);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'macro' => $data,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -205,14 +205,14 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
         $this->em->persist($macro);
         $this->em->flush();
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'macro_id' => $macro->id,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -235,6 +235,6 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
         $this->em->remove($macro);
         $this->em->flush();
 
-        return $this->createSuccessResponse(array('old_id' => $old_id));
+        return $this->createSuccessResponse(['old_id' => $old_id]);
     }
 }

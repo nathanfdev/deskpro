@@ -61,9 +61,9 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -82,10 +82,10 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     {
         $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getDefinedFilters();
 
-        $data = array();
+        $data = [];
 
         foreach ($filters as $filter) {
-            $row = array(
+            $row = [
                 'id'            => $filter->id,
                 'title'         => $filter->title,
                 'is_enabled'    => $filter->is_enabled,
@@ -94,19 +94,19 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
                 'is_global'     => $filter->is_global,
                 'person'        => $filter->person ? $filter->person->toApiData(true) : null,
                 'agent_team'    => $filter->agent_team ? $filter->agent_team->toApiData(true) : null,
-            );
+            ];
 
             $data[] = $row;
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'filters' => $data,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # get
-    ####################################################################################################################
+    //###################################################################################################################
+    // get
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -146,63 +146,63 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         $filter          = $this->getApiData($filter);
         $filter['terms'] = $crit->exportToArray();
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'filter' => $filter,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     /**
      * @param $id
      *
      * @return \Symfony\Component\HttpFoundation\Response
-     * SWG\Api(
+     *                                                    SWG\Api(
      *                                                    path="/ticket_filters/{id}",
-     * SWG\Operation(
+     *                                                    SWG\Operation(
      *                                                    method="POST",
      *                                                    summary="Save ticket filter details",
      *                                                    notes="",
      *                                                    type="array",
-     * SWG\Parameters (
-     * SWG\Parameter(
+     *                                                    SWG\Parameters (
+     *                                                    SWG\Parameter(
      *                                                    name="id",
      *                                                    description="ticket id",
      *                                                    paramType="path",
      *                                                    required=true,
      *                                                    type="integer",
      *                                                    ),
-     * SWG\Parameter(
+     *                                                    SWG\Parameter(
      *                                                    name="filter.title",
      *                                                    description="Title for this filter",
      *                                                    paramType="query",
      *                                                    required=false,
      *                                                    type="string",
      *                                                    ),
-     * SWG\Parameter(
+     *                                                    SWG\Parameter(
      *                                                    name="filter.is_global",
      *                                                    description="ticket global flag",
      *                                                    paramType="query",
      *                                                    required=false,
      *                                                    type="boolean",
      *                                                    ),
-     * SWG\Parameter(
+     *                                                    SWG\Parameter(
      *                                                    name="filter.person_id",
      *                                                    description="Added person identificator",
      *                                                    paramType="query",
      *                                                    required=false,
      *                                                    type="integer",
      *                                                    ),
-     * SWG\Parameter(
+     *                                                    SWG\Parameter(
      *                                                    name="filter.agent_team_id",
      *                                                    description="Agent team identificator",
      *                                                    paramType="query",
      *                                                    required=false,
      *                                                    type="integer",
      *                                                    ),
-     * SWG\Parameter(
+     *                                                    SWG\Parameter(
      *                                                    name="filter.terms",
      *                                                    description="",
      *                                                    paramType="query",
@@ -260,15 +260,15 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
             return $this->createSuccessResponse();
         } else {
             return $this->createApiCreateResponse(
-                array('filter_id' => $filter->id),
-                $this->generateUrl('api_ticket_filters_get', array('id' => $filter->id))
+                ['filter_id' => $filter->id],
+                $this->generateUrl('api_ticket_filters_get', ['id' => $filter->id])
             );
         }
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -305,14 +305,14 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         $this->em->remove($filter);
         $this->em->flush();
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'old_id' => $id,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-display-order
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-display-order
+    //###################################################################################################################
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response

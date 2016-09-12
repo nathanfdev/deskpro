@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSla;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
@@ -51,7 +52,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
     public function testCompileHasSla()
     {
         $term = new TicketSlaTerm(
-            array('sla' => array(1, 2))
+            ['sla' => [1, 2]]
         );
 
         $query_part = $this->term_compiler->compile($term);
@@ -59,26 +60,26 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertWhere($query_part, 'ticket_slas.sla_id IN :input0');
         $this->assertParameters(
             $query_part,
-            array(
-                'input0' => array(1, 2),
-            )
+            [
+                'input0' => [1, 2],
+            ]
         );
         $this->assertUniqueJoins(
             $query_part,
-            array(
-                'ticket_slas' => array(
+            [
+                'ticket_slas' => [
                     'table' => 'ticket_slas',
                     'on'    => 'tickets.id = ticket_slas.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 
     public function testCompileHasStatus()
     {
         $term = new TicketSlaTerm(
-            array('status' => array('ok', 'warning'))
+            ['status' => ['ok', 'warning']]
         );
 
         $query_part = $this->term_compiler->compile($term);
@@ -86,29 +87,29 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertWhere($query_part, 'ticket_slas.sla_status IN :input0');
         $this->assertParameters(
             $query_part,
-            array(
-                'input0' => array('ok', 'warning'),
-            )
+            [
+                'input0' => ['ok', 'warning'],
+            ]
         );
         $this->assertUniqueJoins(
             $query_part,
-            array(
-                'ticket_slas' => array(
+            [
+                'ticket_slas' => [
                     'table' => 'ticket_slas',
                     'on'    => 'tickets.id = ticket_slas.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 
     public function testCompileHasSlaAndStatus()
     {
         $term = new TicketSlaTerm(
-            array(
-                'sla'    => array(1, 2),
-                'status' => array('ok', 'warning'),
-            )
+            [
+                'sla'    => [1, 2],
+                'status' => ['ok', 'warning'],
+            ]
         );
 
         $query_part = $this->term_compiler->compile($term);
@@ -116,27 +117,27 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertWhere($query_part, 'ticket_slas.sla_id IN :input0 AND ticket_slas.sla_status IN :input1');
         $this->assertParameters(
             $query_part,
-            array(
-                'input0' => array(1, 2),
-                'input1' => array('ok', 'warning'),
-            )
+            [
+                'input0' => [1, 2],
+                'input1' => ['ok', 'warning'],
+            ]
         );
         $this->assertUniqueJoins(
             $query_part,
-            array(
-                'ticket_slas' => array(
+            [
+                'ticket_slas' => [
                     'table' => 'ticket_slas',
                     'on'    => 'tickets.id = ticket_slas.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 
     public function testCompileHasNotSla()
     {
         $term = new TicketSlaTerm(
-            array('sla' => 1),
+            ['sla' => 1],
             TermInterface::OP_NOT_HAS
         );
 
@@ -145,26 +146,26 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertWhere($query_part, 'ticket_slas.sla_id != :input0');
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'input0' => 1,
-            )
+            ]
         );
         $this->assertUniqueJoins(
             $query_part,
-            array(
-                'ticket_slas' => array(
+            [
+                'ticket_slas' => [
                     'table' => 'ticket_slas',
                     'on'    => 'tickets.id = ticket_slas.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 
     public function testCompileHasNotStatus()
     {
         $term = new TicketSlaTerm(
-            array('status' => array('ok', 'warning')),
+            ['status' => ['ok', 'warning']],
             TermInterface::OP_NOT_HAS
         );
 
@@ -173,29 +174,29 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertWhere($query_part, 'ticket_slas.sla_status NOT IN :input0');
         $this->assertParameters(
             $query_part,
-            array(
-                'input0' => array('ok', 'warning'),
-            )
+            [
+                'input0' => ['ok', 'warning'],
+            ]
         );
         $this->assertUniqueJoins(
             $query_part,
-            array(
-                'ticket_slas' => array(
+            [
+                'ticket_slas' => [
                     'table' => 'ticket_slas',
                     'on'    => 'tickets.id = ticket_slas.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 
     public function testCompileNotHasSlaAndStatus()
     {
         $term = new TicketSlaTerm(
-            array(
-                'sla'    => array(1, 2),
-                'status' => array('ok', 'warning'),
-            ),
+            [
+                'sla'    => [1, 2],
+                'status' => ['ok', 'warning'],
+            ],
             TermInterface::OP_NOT_HAS
         );
 
@@ -204,20 +205,20 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
         $this->assertWhere($query_part, 'ticket_slas.sla_id NOT IN :input0 AND ticket_slas.sla_status NOT IN :input1');
         $this->assertParameters(
             $query_part,
-            array(
-                'input0' => array(1, 2),
-                'input1' => array('ok', 'warning'),
-            )
+            [
+                'input0' => [1, 2],
+                'input1' => ['ok', 'warning'],
+            ]
         );
         $this->assertUniqueJoins(
             $query_part,
-            array(
-                'ticket_slas' => array(
+            [
+                'ticket_slas' => [
                     'table' => 'ticket_slas',
                     'on'    => 'tickets.id = ticket_slas.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 }

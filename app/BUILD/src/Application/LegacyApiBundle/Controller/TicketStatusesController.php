@@ -59,9 +59,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # get-status
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-status
+    //###################################################################################################################
 
     /**
      * SWG\Api(
@@ -97,12 +97,12 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
 
         $stats = Arrays::castToType($stats, 'int', 'string');
 
-        return $this->createApiResponse(array('status_stats' => $stats));
+        return $this->createApiResponse(['status_stats' => $stats]);
     }
 
-    ####################################################################################################################
-    # get-archived-info
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-archived-info
+    //###################################################################################################################
 
     /**
      * SWG\Api(
@@ -118,19 +118,19 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      */
     public function getArchivedInfoAction()
     {
-        $info = array(
+        $info = [
             'enabled'           => (bool) $this->settings->get('core_tickets.use_archive'),
             'auto_archive_time' => (int) $this->settings->get('core_tickets.auto_archive_time'),
-        );
+        ];
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'archived_info' => $info,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-archived-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-archived-settings
+    //###################################################################################################################
 
     /**
      * @return response
@@ -172,7 +172,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
                 UPDATE tickets
                 SET status = ?
                 WHERE status = ?
-            ', array(Ticket::STATUS_RESOLVED, Ticket::STATUS_ARCHIVED));
+            ', [Ticket::STATUS_RESOLVED, Ticket::STATUS_ARCHIVED]);
             $this->em->getRepository('DeskPRO:Ticket')->fillSearchTable();
         }
 
@@ -198,9 +198,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # get-deleted-info
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-deleted-info
+    //###################################################################################################################
 
     /**
      * SWG\Api(
@@ -216,13 +216,13 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      */
     public function getDeletedInfoAction()
     {
-        $info = array(
+        $info = [
             'auto_purge_time' => (int) $this->settings->get('core_tickets.hard_delete_time'),
-        );
+        ];
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'deleted_info' => $info,
-        ));
+        ]);
     }
 
     /**
@@ -244,14 +244,14 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         $purger = new TicketPurger($this->db);
         $count  = $purger->purgeDeletedAction();
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'count' => $count,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-deleted-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-deleted-settings
+    //###################################################################################################################
 
     /**
      * @return response
@@ -281,9 +281,9 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # get-spam-info
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-spam-info
+    //###################################################################################################################
 
     /**
      * SWG\Api(
@@ -299,13 +299,13 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      */
     public function getSpamInfoAction()
     {
-        $info = array(
+        $info = [
             'auto_purge_time' => (int) $this->settings->get('core_tickets.spam_delete_time'),
-        );
+        ];
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'spam_info' => $info,
-        ));
+        ]);
     }
 
     /**
@@ -327,14 +327,14 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         $purger = new TicketPurger($this->db);
         $count  = $purger->purgeSpamAction();
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'count' => $count,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-spam-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-spam-settings
+    //###################################################################################################################
 
     /**
      * @return response

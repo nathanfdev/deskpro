@@ -37,74 +37,74 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$collection->create('admin', array(
+$collection->create('admin', [
     'path'       => '/',
     'controller' => 'AdminInterfaceBundle:Index:interface',
-));
+]);
 
-$collection->create('admin_tpl_loadmulti', array(
+$collection->create('admin_tpl_loadmulti', [
     'path'       => '/load-view/multi',
     'controller' => 'AdminInterfaceBundle:Interface:multiLoadView',
-));
+]);
 
-$collection->create('admin_tpl_load', array(
+$collection->create('admin_tpl_load', [
     'path'         => '/load-view/{view_name}',
     'controller'   => 'AdminInterfaceBundle:Interface:loadView',
-    'requirements' => array('view_name' => '.+'),
-));
+    'requirements' => ['view_name' => '.+'],
+]);
 
-$collection->create('admin_lang_load', array(
+$collection->create('admin_lang_load', [
     'path'       => '/load-lang.{_format}',
     'controller' => 'AdminInterfaceBundle:Interface:loadLang',
-));
+]);
 
-$collection->create('admin_apps_download_package', array(
+$collection->create('admin_apps_download_package', [
     'path'       => '/apps/download-package/{name}',
     'controller' => 'AdminInterfaceBundle:Apps:downloadPackage',
-    'methods'    => array('GET'),
-));
+    'methods'    => ['GET'],
+]);
 
-########################################################################################################################
-# Start
-########################################################################################################################
+//#######################################################################################################################
+// Start
+//#######################################################################################################################
 
-$collection->create('admin_start_index', array(
+$collection->create('admin_start_index', [
     'path'       => '/start',
     'controller' => 'AdminInterfaceBundle:Start:index',
-));
+]);
 
-########################################################################################################################
-# Upgrade
-########################################################################################################################
+//#######################################################################################################################
+// Upgrade
+//#######################################################################################################################
 
-$collection->create('admin_upgrade_index', array(
+$collection->create('admin_upgrade_index', [
     'path'       => '/update',
     'controller' => 'AdminInterfaceBundle:Upgrade:index',
-));
+]);
 
-$collection->create('admin_upgrade_view', array(
+$collection->create('admin_upgrade_view', [
     'path' => '/updater-status/{auth}',
     // BOGUS - will be caught by the booter and served the static update-watcher.php file
     'controller' => 'AdminInterfaceBundle:Upgrade:index',
-));
+]);
 
-########################################################################################################################
-# JIRA
-########################################################################################################################
+//#######################################################################################################################
+// JIRA
+//#######################################################################################################################
 
-$collection->create('jira_token', array(
+$collection->create('jira_token', [
     'path'       => '/jira/request_token',
     'controller' => 'AdminInterfaceBundle:Jira:token',
-));
+]);
 
-########################################################################################################################
-# Download authcoded files
-########################################################################################################################
+//#######################################################################################################################
+// Download authcoded files
+//#######################################################################################################################
 
-$collection->create('admin_download_export_file', array(
+$collection->create('admin_download_export_file', [
     'path'       => '/export/download/{code}',
     'controller' => 'AdminInterfaceBundle:Interface:downloadExportFile',
-    'methods'    => array('GET'),
-));
+    'methods'    => ['GET'],
+]);
 
 return $collection;

@@ -118,21 +118,21 @@ class ArticlePendingCreate extends DomainObject
     public function _sendUpdates()
     {
         $cm = new ClientMessage();
-        $cm->fromArray(array(
+        $cm->fromArray([
             'channel' => 'agent.ui.new-pending',
-            'data'    => array(
+            'data'    => [
                 'id'        => $this->id,
                 'ticket_id' => $this->ticket ? $this->ticket->getId() : 0,
-            ),
-        ));
+            ],
+        ]);
 
         App::getOrm()->persist($cm);
         App::getOrm()->flush();
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

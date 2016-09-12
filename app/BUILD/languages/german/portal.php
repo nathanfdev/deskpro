@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.change-password'                 => 'Kennwort ändern',
     'portal.account.email-btn-resend-validation'     => 'Validierungsmail erneut zusenden',
     'portal.account.login-register-btn'              => 'Registrieren',
@@ -474,4 +474,4 @@ return array(
     'user.time.time_x_second'                        => '{0} Sekunden',
     'user.time.time_x_week'                          => '{0} Wochen',
     'user.time.time_x_year'                          => '{0} Jahre',
-);
+];

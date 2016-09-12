@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class TwitterUser extends AbstractEntityRepository
@@ -43,12 +44,12 @@ class TwitterUser extends AbstractEntityRepository
             SELECT u
             FROM DeskPRO:TwitterUser u
             WHERE u.screen_name = ?0
-        ')->setParameters(array($name))->getOneOrNullResult();
+        ')->setParameters([$name])->getOneOrNullResult();
         if (!$user && $pull_from_api) {
             $account = $em->getRepository('DeskPRO:TwitterAccount')->getFirst();
             if ($account) {
                 try {
-                    $response = $account->getTwitterApi()->get_usersShow(array('screen_name' => $name));
+                    $response = $account->getTwitterApi()->get_usersShow(['screen_name' => $name]);
                     if ($response->id_str) {
                         $user = \Application\DeskPRO\Entity\TwitterUser::createFromJson($response);
                     }

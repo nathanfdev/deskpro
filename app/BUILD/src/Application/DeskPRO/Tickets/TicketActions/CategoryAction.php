@@ -119,7 +119,7 @@ class CategoryAction extends AbstractAction implements PermissionableAction
                 $name = $names[$this->category_id];
             }
 
-            return $tr->phrase('agent.tickets.set_category_action', array('category' => $name));
+            return $tr->phrase('agent.tickets.set_category_action', ['category' => $name]);
         }
     }
 }

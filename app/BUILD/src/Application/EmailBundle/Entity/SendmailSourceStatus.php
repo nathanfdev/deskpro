@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\EmailBundle\Entity;
 
 use Doctrine\Common\NotifyPropertyChanged;
@@ -59,9 +60,9 @@ class SendmailSourceStatus implements NotifyPropertyChanged
         $this->setModelField('date_created', new \DateTime());
     }
 
-    ############################################################################
-    # Doctrine
-    ############################################################################
+    //###########################################################################
+    // Doctrine
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -69,58 +70,58 @@ class SendmailSourceStatus implements NotifyPropertyChanged
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\EmailBundle\EntityRepository\SendmailSourceStatusRepository';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'sendmail_source_statuses',
-            'indexes' => array(
-            ),
-            'uniqueConstraints' => array(
-            ),
-        ));
+            'indexes' => [
+            ],
+            'uniqueConstraints' => [
+            ],
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'user_email',
             'fieldName'  => 'user_email',
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'event_type',
             'fieldName'  => 'event_type',
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'event_info',
             'fieldName'  => 'event_info',
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'details',
             'fieldName'  => 'details',
             'type'       => 'text',
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_created',
             'columnName' => 'date_created',
             'type'       => 'datetime',
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'source',
             'targetEntity' => 'Application\EmailBundle\Entity\SendmailSource',
             'dpApi'        => true,
-            'joinColumns'  => array(array(
+            'joinColumns'  => [[
                 'name'                 => 'sendmail_source_id',
                 'referencedColumnName' => 'id',
                 'onDelete'             => 'cascade',
-            )),
-        ));
+            ]],
+        ]);
     }
 
     public function toArray()
     {
-        $data = array();
+        $data = [];
 
         $data['id']           = $this->id;
         $data['event']        = $this->event_type;
@@ -146,7 +147,7 @@ class SendmailSourceStatus implements NotifyPropertyChanged
     }
 
     /** @var PropertyChangedListener[] */
-    private $_listeners = array();
+    private $_listeners = [];
     public function addPropertyChangedListener(PropertyChangedListener $listener)
     {
         $this->setModelField('_listeners[]', $listener);

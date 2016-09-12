@@ -36,7 +36,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplySetStatusCategoryAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
-    /** @var  FeedbackStatusCategory */
+    /** @var FeedbackStatusCategory */
     private $statusCategory;
 
     public function init()

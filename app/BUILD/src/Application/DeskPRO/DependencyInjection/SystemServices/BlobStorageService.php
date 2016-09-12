@@ -46,9 +46,9 @@ class BlobStorageService
 {
     public static function create(DeskproContainer $container)
     {
-        #------------------------------
-        # Create a logger
-        #------------------------------
+        //------------------------------
+        // Create a logger
+        //------------------------------
 
         $env = $container->get('deskpro.app_env');
 
@@ -61,11 +61,11 @@ class BlobStorageService
         $wr = new \Orb\Log\Writer\Stream($env->getUserLogsDir().DIRECTORY_SEPARATOR.'blob_storage.log');
         $logger->addWriter($wr);
 
-        #------------------------------
-        # Filesystem adapter
-        #------------------------------
+        //------------------------------
+        // Filesystem adapter
+        //------------------------------
 
-        $opts = array('base_path' => $container->getBlobDir());
+        $opts = ['base_path' => $container->getBlobDir()];
         if ($container->getSetting('core.filestorage_file_mode')) {
             $opts['file_mode'] = $container->getSetting('core.filestorage_file_mode');
         }
@@ -76,9 +76,9 @@ class BlobStorageService
         $fs_adapter = new FilesystemStorage($opts);
         $fs_adapter->setLogger($logger);
 
-        #------------------------------
-        # S3 Adapter
-        #------------------------------
+        //------------------------------
+        // S3 Adapter
+        //------------------------------
 
         $s3_adapter = null;
         if ($container->getSetting('core.filestorage_s3_key') && $container->getSetting('core.filestorage_s3_secret') && $container->getSetting('core.filestorage_s3_bucket')) {
@@ -89,44 +89,44 @@ class BlobStorageService
                 define(CURLOPT_TIMEOUT, 13);
             }
 
-            $client = S3Client::factory(array(
+            $client = S3Client::factory([
                 'key'             => $container->getSetting('core.filestorage_s3_key'),
                 'secret'          => $container->getSetting('core.filestorage_s3_secret'),
-                'request.options' => array(
+                'request.options' => [
                     'connect_timeout' => 15,
                     'timeout'         => 120,
-                ),
-                'curl.options' => array(
+                ],
+                'curl.options' => [
                     CURLOPT_CONNECTTIMEOUT => 15,
                     CURLOPT_TIMEOUT        => 120,
-                ),
-            ));
-            $s3_adapter = new AmazonS3Storage(array(
+                ],
+            ]);
+            $s3_adapter = new AmazonS3Storage([
                 's3_client'       => $client,
                 'bucket'          => $container->getSetting('core.filestorage_s3_bucket'),
                 'file_url_domain' => $container->getSetting('core.filestorage_s3_file_url_domain'),
                 'base_path'       => $container->getSetting('core.filestorage_s3_basepath'),
-            ));
+            ]);
             $s3_adapter->setLogger($logger);
         }
 
-        #------------------------------
-        # Database adapter
-        #------------------------------
+        //------------------------------
+        // Database adapter
+        //------------------------------
 
-        $db_adapter = new DatabaseStorage(array(
+        $db_adapter = new DatabaseStorage([
             'db'                   => $container->getDb(),
             'table'                => 'blobs_storage',
             'field_name.data'      => 'data',
             'field_name.path'      => 'blob_id',
             'field_name.order'     => 'id',
             'metadata_id_property' => 'blob_id',
-        ));
+        ]);
         $db_adapter->setLogger($logger);
 
-        #------------------------------
-        # Create the storage
-        #------------------------------
+        //------------------------------
+        // Create the storage
+        //------------------------------
 
         $bs = new DeskproBlobStorage($container->getEm());
         $bs->setLogger($logger);

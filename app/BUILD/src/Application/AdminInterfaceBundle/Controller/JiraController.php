@@ -50,7 +50,7 @@ class JiraController extends AbstractController
     {
         $oauth = new OAuthWrapper(
             $this->get(JIRA::NAME),
-            $this->generateUrl('jira_token', array(), UrlGeneratorInterface::ABSOLUTE_URL)
+            $this->generateUrl('jira_token', [], UrlGeneratorInterface::ABSOLUTE_URL)
         );
 
         $verifier    = $request->get('oauth_verifier');

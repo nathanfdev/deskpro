@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Routing;
 
 use Symfony\Component\Routing\RouteCollection as BaseRouteCollection;
@@ -40,7 +41,7 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
      *
      * @var array
      */
-    private $ops = array();
+    private $ops = [];
 
     /**
      * @param string $name
@@ -68,7 +69,7 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
      */
     public function rewriteController($find_controller, $replace_controller)
     {
-        $this->ops[] = array('rewriteController', array($find_controller, $replace_controller));
+        $this->ops[] = ['rewriteController', [$find_controller, $replace_controller]];
 
         $find_controller    = trim($find_controller, ':').':';
         $replace_controller = trim($replace_controller, ':').':';
@@ -89,7 +90,7 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
      */
     public function removeController($find_controller)
     {
-        $this->ops[] = array('removeController', array($find_controller));
+        $this->ops[] = ['removeController', [$find_controller]];
 
         $find_controller = trim($find_controller, ':').':';
         foreach ($this as $name => $route) {
@@ -120,7 +121,7 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
             }
         } else {
             $this->remove($name);
-            $this->ops[] = array('removeRoutes', array($name));
+            $this->ops[] = ['removeRoutes', [$name]];
         }
     }
 
@@ -141,7 +142,7 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
         // remove* and rewriteController ops on the existing collection
         if ($collection instanceof self) {
             foreach ($collection->getMutateOps() as $info) {
-                call_user_func_array(array($this, $info[0]), $info[1]);
+                call_user_func_array([$this, $info[0]], $info[1]);
             }
         }
 

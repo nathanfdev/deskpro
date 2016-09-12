@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Logger
  */
+
 namespace Orb\Logger;
 
 use Psr\Log\LoggerInterface;
@@ -80,7 +81,7 @@ class ContextDecorator implements LoggerInterface
         if ($this->context_fn) {
             $context = call_user_func($this->context_fn, $context);
             if (!$context) {
-                $context = array();
+                $context = [];
             }
         }
 
@@ -90,7 +91,7 @@ class ContextDecorator implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
         return $this->logger->log($level, $message, $this->getContext($context));
     }
@@ -98,7 +99,7 @@ class ContextDecorator implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function debug($message, array $context = array())
+    public function debug($message, array $context = [])
     {
         return $this->logger->debug($message, $this->getContext($context));
     }
@@ -106,7 +107,7 @@ class ContextDecorator implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function info($message, array $context = array())
+    public function info($message, array $context = [])
     {
         return $this->logger->info($message, $this->getContext($context));
     }
@@ -114,7 +115,7 @@ class ContextDecorator implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function notice($message, array $context = array())
+    public function notice($message, array $context = [])
     {
         return $this->logger->notice($message, $this->getContext($context));
     }
@@ -122,7 +123,7 @@ class ContextDecorator implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function warning($message, array $context = array())
+    public function warning($message, array $context = [])
     {
         return $this->logger->warning($message, $this->getContext($context));
     }
@@ -130,7 +131,7 @@ class ContextDecorator implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function error($message, array $context = array())
+    public function error($message, array $context = [])
     {
         return $this->logger->error($message, $this->getContext($context));
     }
@@ -138,7 +139,7 @@ class ContextDecorator implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function critical($message, array $context = array())
+    public function critical($message, array $context = [])
     {
         return $this->logger->critical($message, $this->getContext($context));
     }
@@ -146,7 +147,7 @@ class ContextDecorator implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function alert($message, array $context = array())
+    public function alert($message, array $context = [])
     {
         return $this->logger->alert($message, $this->getContext($context));
     }
@@ -154,7 +155,7 @@ class ContextDecorator implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function emergency($message, array $context = array())
+    public function emergency($message, array $context = [])
     {
         return $this->logger->emergency($message, $this->getContext($context));
     }

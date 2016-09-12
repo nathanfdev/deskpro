@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Log\Filter;
 
 use Orb\Log\LogItem;
@@ -78,15 +79,15 @@ class SimpleLineFormatter extends \Orb\Filter\AbstractFilter
             $datetime     = $log_item['datetime']->format($this->_time_format);
             $message_line = "[{$datetime} {$log_item['priority_name']}] {$log_item['message']}";
         } else {
-        foreach ($log_item as $k => $v) {
+            foreach ($log_item as $k => $v) {
                 if ($this->_has_time && $v instanceof \DateTime) {
-                $v = $v->format($this->_time_format);
-            }
+                    $v = $v->format($this->_time_format);
+                }
 
-            if (is_scalar($v)) {
-                $message_line = str_replace("%$k%", $v, $message_line);
+                if (is_scalar($v)) {
+                    $message_line = str_replace("%$k%", $v, $message_line);
+                }
             }
-        }
         }
 
         $log_item[LogItem::MESSAGE_LINE] = $message_line;

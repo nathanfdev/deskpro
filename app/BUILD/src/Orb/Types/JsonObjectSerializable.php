@@ -31,6 +31,7 @@
  *
  * @category Types
  */
+
 namespace Orb\Types;
 
 interface JsonObjectSerializable

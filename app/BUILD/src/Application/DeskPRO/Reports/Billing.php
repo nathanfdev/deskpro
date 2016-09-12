@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -103,7 +103,7 @@ class Billing
      *
      * @return bool|string
      */
-    public function renderQuery($query, $renderer, &$error = false, array $params = array())
+    public function renderQuery($query, $renderer, &$error = false, array $params = [])
     {
         $error = false;
         try {
@@ -134,13 +134,13 @@ class Billing
         if (is_array($params)) {
             ksort($params);
         } elseif ($params) {
-            $newParams = array();
+            $newParams = [];
             foreach (explode(',', $params) as $k => $v) {
                 $newParams[$k + 1] = $v;
             }
             $params = $newParams;
         } else {
-            $params = array();
+            $params = [];
         }
 
         return $params;
@@ -154,7 +154,7 @@ class Billing
         $currency = addslashes(App::getSetting('core_tickets.billing_currency'));
 
         $fields      = App::getContainer()->getBillingFieldManager()->getFields();
-        $select_bits = array();
+        $select_bits = [];
         foreach ($fields as $f) {
             $select_bits[] = 'ticket_charges.custom_data['.$f->getId().'] AS \''.addslashes($f->getTitle()).'\'';
         }
@@ -164,8 +164,8 @@ class Billing
             $select_bits = $select_bits.', ';
         }
 
-        $output = array(
-            'list-charges-date' => array(
+        $output = [
+            'list-charges-date' => [
                 'title' => 'List of charges <1:date group, default: today>',
                 'query' => "
                         DISPLAY TABLE
@@ -174,8 +174,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         ORDER BY ticket_charges.date_created
                     ",
-            ),
-            'total-charges-per-day-date' => array(
+            ],
+            'total-charges-per-day-date' => [
                 'title' => 'Total [charges] per day <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -184,8 +184,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         GROUP BY DATE(ticket_charges.date_created) AS 'Date'
                     ",
-            ),
-            'total-amount-charges-per-day-date' => array(
+            ],
+            'total-amount-charges-per-day-date' => [
                 'title' => 'Total [amount charges] per day <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -194,8 +194,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.amount > 0
                         GROUP BY DATE(ticket_charges.date_created) AS 'Date'
                     ",
-            ),
-            'total-time-charges-per-day-date' => array(
+            ],
+            'total-time-charges-per-day-date' => [
                 'title' => 'Total [time charges] per day <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -204,8 +204,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.charge_time > 0
                         GROUP BY DATE(ticket_charges.date_created) AS 'Date'
                     ",
-            ),
-            'total-charges-person-date' => array(
+            ],
+            'total-charges-person-date' => [
                 'title' => 'Total [charges] per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -214,8 +214,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         GROUP BY ticket_charges.person
                     ",
-            ),
-            'total-amount-charges-person-date' => array(
+            ],
+            'total-amount-charges-person-date' => [
                 'title' => 'Total [amount charges] per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -224,8 +224,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.amount > 0
                         GROUP BY ticket_charges.person
                     ",
-            ),
-            'total-time-charges-person-date' => array(
+            ],
+            'total-time-charges-person-date' => [
                 'title' => 'Total [time charges] per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -234,8 +234,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.charge_time > 0
                         GROUP BY ticket_charges.person
                     ",
-            ),
-            'list-charges-person-date' => array(
+            ],
+            'list-charges-person-date' => [
                 'title' => 'List of charges per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -245,8 +245,8 @@ class Billing
                         SPLIT BY ticket_charges.person
                         ORDER BY ticket_charges.date_created
                     ",
-            ),
-            'total-charges-organization-date' => array(
+            ],
+            'total-charges-organization-date' => [
                 'title' => 'Total [charges] per organization <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -255,8 +255,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.organization_id <> NULL
                         GROUP BY ticket_charges.organization
                     ",
-            ),
-            'total-amount-charges-organization-date' => array(
+            ],
+            'total-amount-charges-organization-date' => [
                 'title' => 'Total [amount charges] per organization <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -265,8 +265,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.organization_id <> NULL AND ticket_charges.amount > 0
                         GROUP BY ticket_charges.organization
                     ",
-            ),
-            'total-time-charges-organization-date' => array(
+            ],
+            'total-time-charges-organization-date' => [
                 'title' => 'Total [time charges] per organization <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -275,8 +275,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.organization_id <> NULL AND ticket_charges.charge_time > 0
                         GROUP BY ticket_charges.organization
                     ",
-            ),
-            'list-charges-organization-date' => array(
+            ],
+            'list-charges-organization-date' => [
                 'title' => 'List of charges per organization <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -286,8 +286,8 @@ class Billing
                         SPLIT BY ticket_charges.organization
                         ORDER BY ticket_charges.date_created
                     ",
-            ),
-            'total-charges-agent-date' => array(
+            ],
+            'total-charges-agent-date' => [
                 'title' => 'Total [charges] per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -296,8 +296,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         GROUP BY ticket_charges.agent
                     ",
-            ),
-            'total-amount-charges-agent-date' => array(
+            ],
+            'total-amount-charges-agent-date' => [
                 'title' => 'Total [amount charges] per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -306,8 +306,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.amount > 0
                         GROUP BY ticket_charges.agent
                     ",
-            ),
-            'total-time-charges-agent-date' => array(
+            ],
+            'total-time-charges-agent-date' => [
                 'title' => 'Total [time charges] per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -316,8 +316,8 @@ class Billing
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.charge_time > 0
                         GROUP BY ticket_charges.agent
                     ",
-            ),
-            'list-charges-agent-date' => array(
+            ],
+            'list-charges-agent-date' => [
                 'title' => 'List of charges per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -327,8 +327,8 @@ class Billing
                         SPLIT BY ticket_charges.agent
                         ORDER BY ticket_charges.date_created
                     ",
-            ),
-        );
+            ],
+        ];
 
         $tempReport = new ReportBuilder();
 

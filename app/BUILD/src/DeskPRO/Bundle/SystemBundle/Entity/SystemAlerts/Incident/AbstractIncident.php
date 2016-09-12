@@ -106,7 +106,7 @@ abstract class AbstractIncident implements Incident
     protected $events;
 
     /**
-     * @var Event[] Not persisted field. Stores events passed to the addEvent() method.
+     * @var Event[] Not persisted field. Stores events passed to the addEvent() method
      */
     protected $newEvents = [];
 

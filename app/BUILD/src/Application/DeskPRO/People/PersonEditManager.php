@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Mail
  */
+
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
@@ -91,7 +92,7 @@ class PersonEditManager implements PersonContextInterface
      */
     public function saveNotificationPreferences(Person $person, array $prefs)
     {
-        $valid_names = array(
+        $valid_names = [
             'chat_message.email',
             'task_assign_self.email', 'task_assign_self.alert',
             'task_assign_team.email', 'task_assign_team.alert',
@@ -110,18 +111,18 @@ class PersonEditManager implements PersonContextInterface
             'new_comment_validate.email', 'new_comment_validate.alert',
             'new_user.email', 'new_user.alert',
             'login_attempt.email', 'login_attempt_fail.email',
-        );
+        ];
 
         $this->em->beginTransaction();
 
-        $new_prefs = array();
+        $new_prefs = [];
 
         try {
             // Clear out old preferences
             $this->db->executeUpdate("
                 DELETE FROM people_prefs
                 WHERE person_id = ? AND `name` LIKE 'agent_notif.%' AND `name` NOT IN ('agent_notif.no_allow_set_email', 'agent_notif.no_allow_set_browser')
-            ", array($person->id));
+            ", [$person->id]);
 
             // Rebuild new ones
             foreach ($prefs as $name => $checked) {
@@ -164,30 +165,30 @@ class PersonEditManager implements PersonContextInterface
     {
         if (DP_INTERFACE != 'admin') {
             if ($person->getPref('agent_notif.no_allow_set_email') && $person->getPref('agent_notif.no_allow_set_browser')) {
-                return array();
+                return [];
             }
         }
 
-        $valid_names = array(
+        $valid_names = [
             'email_created', 'email_new', 'email_leave', 'email_user_activity', 'email_agent_activity', 'email_agent_note', 'email_property_change',
             'alert_created', 'alert_new', 'alert_leave', 'alert_user_activity', 'alert_agent_activity', 'alert_agent_note', 'alert_property_change',
-        );
+        ];
 
         $filter_info = App::getApi('tickets.filters')->getGroupedFiltersForPerson($person);
 
-        $new_subs = array();
+        $new_subs = [];
 
         // First delete all the ones the user has now, we're just gonna rebuild
-        $this->db->delete('ticket_filter_subscriptions', array('person_id' => $person->id));
+        $this->db->delete('ticket_filter_subscriptions', ['person_id' => $person->id]);
 
-        $current = $this->db->fetchAllKeyed('SELECT * FROM ticket_filter_subscriptions WHERE person_id = ?', array($person->id), 'filter_id');
+        $current = $this->db->fetchAllKeyed('SELECT * FROM ticket_filter_subscriptions WHERE person_id = ?', [$person->id], 'filter_id');
 
         foreach ($filter_info['all_filters'] as $filter) {
             if (!isset($subs[$filter->id])) {
-                $subs[$filter->id] = array();
+                $subs[$filter->id] = [];
             }
 
-            $props = array();
+            $props = [];
             foreach ($valid_names as $k) {
                 if (isset($subs[$filter->id][$k]) && $subs[$filter->id][$k]) {
                     $props[$k] = true;

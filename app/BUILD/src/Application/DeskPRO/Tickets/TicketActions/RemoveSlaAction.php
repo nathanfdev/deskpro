@@ -41,7 +41,7 @@ use Application\DeskPRO\Entity\Ticket;
 class RemoveSlaAction extends AbstractAction
 {
     /** @var array */
-    protected $sla_ids = array();
+    protected $sla_ids = [];
     /** @var bool */
     protected $remove_all = false;
 
@@ -126,7 +126,7 @@ class RemoveSlaAction extends AbstractAction
             return $tr->phrase('agent.tickets.remove_all_slas_action');
         } else {
             $slas   = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
-            $titles = array();
+            $titles = [];
             foreach ($slas as $sla) {
                 $titles[$sla->id] = $as_html ? htmlspecialchars($sla->title) : $sla->title;
             }
@@ -137,7 +137,7 @@ class RemoveSlaAction extends AbstractAction
                 }
             }
 
-            return $tr->phrase('agent.tickets.remove_sla_action', array('sla' => $titles ? implode(', ', $titles) : '[unknown]'));
+            return $tr->phrase('agent.tickets.remove_sla_action', ['sla' => $titles ? implode(', ', $titles) : '[unknown]']);
         }
     }
 

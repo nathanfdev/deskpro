@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search\Searcher\Mysql;
 
 use Application\DeskPRO\App;
@@ -96,13 +97,13 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
     {
         $limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
         if (!$limit_types) {
-            $limit_types = array('article', 'download', 'feedback', 'news');
+            $limit_types = ['article', 'download', 'feedback', 'news'];
         }
 
         $limit_types = $this->permFilterTypes($limit_types);
 
         if (!$limit_types) {
-            return new ResultSet(0, array());
+            return new ResultSet(0, []);
         }
 
         $limit_types = "'".implode('\',\'', $limit_types)."'";
@@ -163,17 +164,17 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         if ($top) {
             $total = null;
         } else {
-            $total = App::getDbRead('search.searcher.content')->fetchColumn($count_query, array($query_text));
+            $total = App::getDbRead('search.searcher.content')->fetchColumn($count_query, [$query_text]);
         }
 
-        $results_raw = App::getDbRead('search.searcher.content')->fetchAll($select_query, array($query_text, $query_text));
-        $results     = array();
+        $results_raw = App::getDbRead('search.searcher.content')->fetchAll($select_query, [$query_text, $query_text]);
+        $results     = [];
 
         foreach ($results_raw as $result_raw) {
-            $result = Result::newFromArray(array(
+            $result = Result::newFromArray([
                 'id'           => $result_raw['object_id'],
                 'content_type' => $result_raw['object_type'],
-            ));
+            ]);
 
             $results[] = $result;
         }
@@ -191,18 +192,18 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
     {
         $limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
         if (!$limit_types) {
-            $limit_types = array('article', 'download', 'feedback', 'news');
+            $limit_types = ['article', 'download', 'feedback', 'news'];
         }
 
         $limit_types = $this->permFilterTypes($limit_types);
 
         if (!$limit_types) {
-            return new ResultSet(0, array());
+            return new ResultSet(0, []);
         }
 
         $limit_types = "'".implode('\',\'', $limit_types)."'";
 
-        $label_where = array();
+        $label_where = [];
 
         foreach ($labels as $label) {
             $label_where[] = '+'.MysqlAdapter::encodeLabel($label);
@@ -230,15 +231,15 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
             LIMIT $start, $per_page
         ";
 
-        $total       = App::getDbRead('search.searcher.content')->fetchColumn($count_query, array($label_where));
-        $results_raw = App::getDbRead('search.searcher.content')->fetchAll($select_query, array($label_where, $label_where));
-        $results     = array();
+        $total       = App::getDbRead('search.searcher.content')->fetchColumn($count_query, [$label_where]);
+        $results_raw = App::getDbRead('search.searcher.content')->fetchAll($select_query, [$label_where, $label_where]);
+        $results     = [];
 
         foreach ($results_raw as $result_raw) {
-            $result = Result::newFromArray(array(
+            $result = Result::newFromArray([
                 'id'           => $result_raw['object_id'],
                 'content_type' => $result_raw['object_type'],
-            ));
+            ]);
 
             $results[] = $result;
         }
@@ -256,7 +257,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
      *
      * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
      */
-    public function similarContent($content, array $in_types = array())
+    public function similarContent($content, array $in_types = [])
     {
         throw new \Application\DeskPRO\Search\Searcher\UnsupportedOperation();
     }
@@ -275,13 +276,13 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         // Otherwise fallback to like
         $limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
         if (!$limit_types) {
-            $limit_types = array('article', 'download', 'feedback', 'news');
+            $limit_types = ['article', 'download', 'feedback', 'news'];
         }
 
         $limit_types = $this->permFilterTypes($limit_types);
 
         if (!$limit_types) {
-            return new ResultSet(0, array());
+            return new ResultSet(0, []);
         }
 
         $limit_type_names = $limit_types;
@@ -296,15 +297,15 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
             return $r;
         }
 
-        $params = array();
-        $likes  = array();
+        $params = [];
+        $likes  = [];
         foreach ($query_words as $w) {
             if (strlen($w) <= 2) {
                 continue;
             }
 
             $likes[]  = 'content_search.content LIKE ?';
-            $params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
+            $params[] = '%'.str_replace(['%', '_', '\\'], ['\\%', '\\_', '\\\\'], $w).'%';
         }
         if ($likes) {
             $where = "
@@ -351,19 +352,19 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
             $total = App::getDbRead('search.searcher.content')->fetchColumn($count_query, $params);
 
             $results_raw = App::getDbRead('search.searcher.content')->fetchAll($select_query, $params);
-            $results     = array();
+            $results     = [];
 
             foreach ($results_raw as $result_raw) {
-                $result = Result::newFromArray(array(
+                $result = Result::newFromArray([
                     'id'           => $result_raw['object_id'],
                     'content_type' => $result_raw['object_type'],
-                ));
+                ]);
 
                 $results[] = $result;
             }
         } else {
             $total   = 0;
-            $results = array();
+            $results = [];
         }
 
         if ($total === null) {
