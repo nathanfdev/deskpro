@@ -176,6 +176,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     }
 
     /**
+     * @return string
+     */
+    public function getEndAction()
+    {
+        return $this->end_action;
+    }
+
+    /**
      * Set entity status.
      *
      * @param string $status
@@ -531,9 +539,9 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         return $this->getObjectPropTranslations('content');
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     /**
      * @return ObjectTranslatable
