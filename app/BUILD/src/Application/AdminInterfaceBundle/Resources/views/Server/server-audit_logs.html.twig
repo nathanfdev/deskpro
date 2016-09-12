@@ -76,14 +76,27 @@
 					&lt; Prev
 				</button>
 				<select
+						ng-show="!ServerAuditLogs.pagination.plain"
 						ng-model="ServerAuditLogs.pagination.current_page"
 						ui-select2
 						style="width: 130px;"
 				>
-					<option ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}">
+					<option
+							ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}"
+							ng-click="ServerAuditLogs.updateFilter()"
+					>
 						Page {{ ng_var('page') }}
 					</option>
 				</select>
+				<span ng-show="ServerAuditLogs.pagination.plain">
+					Page
+				<input ng-model="ServerAuditLogs.pagination.virtual_current_page" />
+					of
+					{{ ng_var('ServerAuditLogs.pagination.total_pages') }}
+					<button class="btn" ng-click="ServerAuditLogs.goCurrentPage($event)">
+						Go
+					</button>
+				</span>
 				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page < ServerAuditLogs.pagination.total_pages"
 						ng-click="ServerAuditLogs.goNextPage()">
 					Next &gt;
@@ -151,14 +164,27 @@
 					&lt; Prev
 				</button>
 				<select
+						ng-show="!ServerAuditLogs.pagination.plain"
 						ng-model="ServerAuditLogs.pagination.current_page"
 						ui-select2
 						style="width: 130px;"
 				>
-					<option ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}">
+					<option
+							ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}"
+							ng-click="ServerAuditLogs.updateFilter()"
+					>
 						Page {{ ng_var('page') }}
 					</option>
 				</select>
+				<span ng-show="ServerAuditLogs.pagination.plain">
+					Page
+				<input ng-model="ServerAuditLogs.pagination.virtual_current_page" />
+					of
+					{{ ng_var('ServerAuditLogs.pagination.total_pages') }}
+					<button class="btn" ng-click="ServerAuditLogs.goCurrentPage($event)">
+						Go
+					</button>
+				</span>
 				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page < ServerAuditLogs.pagination.total_pages"
 						ng-click="ServerAuditLogs.goNextPage()">
 					Next &gt;
