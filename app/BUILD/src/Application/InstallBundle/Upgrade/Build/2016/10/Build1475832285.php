@@ -45,7 +45,11 @@ class Build1475832285 extends AbstractBuild
                     ['id'      => $row['id']]
                 );
 
-                $settings = str_replace('"agent_permission_group_id":', '"actions":[{"type":"AddToPermissionGroup","data":"'.$row['pgid'].'"}]', $row['settings']);
+                $settings = str_replace(
+                    '"auto_agent_permission_group":"'.$row['pgid'].'"',
+                    '"actions":[{"type":"AddToPermissionGroup","data":"'.$row['pgid'].'"}]',
+                    $row['settings']
+                );
 
                 $con->update(
                     'app_instances',
