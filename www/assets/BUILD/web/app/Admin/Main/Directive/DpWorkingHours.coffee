@@ -169,8 +169,8 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 
         updateViewValue = ->
           startHour = 9;
-          if(viewValue.start_hour || viewValue.start_hour == 0)
-            startHour = viewValue.start_hour
+          if(scope.start_hour || scope.start_hour == 0)
+            startHour = scope.start_hour
             
           ngModel.$setViewValue({
             timezone       : scope.timezone || 'UTC',
