@@ -43,7 +43,15 @@
 
                 <div class="ticket-view">
                     <div class="full-column">
+                        <div class="ticket-view-content-container">
+                            <!-- Ticket title -->
+                            <div class="header">
+                                <h1>{{ ticket.subject }}</h1>
+                            </div>
 
+                            {% block page_specific_content %}
+                            {% endblock page_specific_content %}
+                        </div>
 
                 {% block page_sidebar %}
                     <div class="ticket-view-sidebar-wrapper">
@@ -188,14 +196,6 @@
                     </div>
                     </div>
                 {% endblock page_sidebar %}
-
-                    <!-- Ticket title -->
-                    <div class="header">
-                        <h1>{{ ticket.subject }}</h1>
-                    </div>
-
-                    {% block page_specific_content %}
-                    {% endblock page_specific_content %}
                 </div>
 
                 </div>
