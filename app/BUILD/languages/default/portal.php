@@ -167,6 +167,7 @@ return [
     'portal.chat.log_title'                                 => 'Your chat with {{ person }}',
     'portal.chat.log_view_linked_ticket'                    => 'View Ticket',
     'portal.chat.looking_for_another_agent'                 => 'We\'re looking for a new agent.',
+    'portal.chat.lost_connection'                           => 'Lost connection. Trying to reconnect.',
     'portal.chat.message_agent-timeout'                     => '{{name}} is not responding. Please wait while we try to find another agent.',
     'portal.chat.message_assigned'                          => 'Chat assigned to {{name}}',
     'portal.chat.message_ended'                             => 'Chat ended',
