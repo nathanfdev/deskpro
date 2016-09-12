@@ -29,10 +29,12 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AuditBundle\Log\AuditLogService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -81,6 +83,45 @@ class AuditLogController extends BaseController
         }
 
         return View::create($this->wrap($entity));
+    }
+
+    /**
+     * @Rest\Post("/audit_logs/purge")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function purgeAction(Request $request)
+    {
+        switch ($request->request->get('period')) {
+            case 'day':
+                $period = AuditLogService::PERIOD_1_DAY;
+                break;
+            case 'week':
+                $period = AuditLogService::PERIOD_1_WEEK;
+                break;
+            case 'month':
+                $period = AuditLogService::PERIOD_1_MONTH;
+                break;
+            case '3_months':
+                $period = AuditLogService::PERIOD_3_MONTHS;
+                break;
+            case '6_months':
+                $period = AuditLogService::PERIOD_6_MONTHS;
+                break;
+            case 'year':
+                $period = AuditLogService::PERIOD_1_YEAR;
+                break;
+            case 'all':
+                $period = null;
+                break;
+            default:
+                throw new BadRequestHttpException('Invalid period');
+        }
+
+        $service = $this->get('audit_log.service');
+        $service->delete($period);
     }
 
     private function applyFilters(Request $request, $qb)

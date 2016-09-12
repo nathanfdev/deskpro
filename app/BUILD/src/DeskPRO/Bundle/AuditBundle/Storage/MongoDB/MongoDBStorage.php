@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AuditBundle\Storage\MongoDB;
 
 use DeskPRO\Bundle\AuditBundle\Document\AuditLog as AuditLogDocument;
+use DeskPRO\Bundle\AuditBundle\Log\AuditLogService;
 use DeskPRO\Bundle\AuditBundle\Storage\AbstractStorage;
 use DeskPRO\Component\Util\StringUtils;
 use Doctrine\Common\Persistence\ObjectRepository;
@@ -36,6 +37,9 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
 
+/**
+ * Class MongoDBStorage.
+ */
 class MongoDBStorage extends AbstractStorage
 {
     /**
@@ -46,11 +50,19 @@ class MongoDBStorage extends AbstractStorage
         return $this->manager->getRepository(AuditLogDocument::class);
     }
 
+    /**
+     * @param $qb
+     *
+     * @return DoctrineODMMongoDBAdapter
+     */
     public function getPaginationAdapter($qb)
     {
         return new DoctrineODMMongoDBAdapter($qb);
     }
 
+    /**
+     * @return Builder
+     */
     public function createQueryBuilder()
     {
         /** @var DocumentManager $manager */
@@ -59,6 +71,12 @@ class MongoDBStorage extends AbstractStorage
         return $manager->createQueryBuilder(AuditLogDocument::class);
     }
 
+    /**
+     * @param $filters
+     * @param $qb
+     *
+     * @return Builder
+     */
     public function applyFilters($filters, $qb)
     {
         /* @var Builder $qb */
@@ -103,5 +121,49 @@ class MongoDBStorage extends AbstractStorage
             'performerId' => 'integer',
             'apiKey'      => 'integer',
         ];
+    }
+
+    public function deleteByPeriod($period)
+    {
+        /** @var DocumentManager $manager */
+        $manager = $this->manager;
+        $qb      = $manager->createQueryBuilder(AuditLogDocument::class);
+
+        $qb->field('dateCreated');
+
+        switch ($period) {
+            case AuditLogService::PERIOD_1_DAY:
+                $date = new \DateTime('-1 day');
+                break;
+            case AuditLogService::PERIOD_1_WEEK:
+                $date = new \DateTime('-7 days');
+                break;
+            case AuditLogService::PERIOD_1_MONTH:
+                $date = new \DateTime('-30 days');
+                break;
+            case AuditLogService::PERIOD_3_MONTHS:
+                $date = new \DateTime('-3 months');
+                break;
+            case AuditLogService::PERIOD_6_MONTHS:
+                $date = new \DateTime('-6 months');
+                break;
+            case AuditLogService::PERIOD_1_YEAR:
+                $date = new \DateTime('-1 year');
+                break;
+            default:
+                $date = null;
+        }
+        if ($date) {
+            $qb->lte($date);
+        }
+        $qb->remove()->getQuery()->execute();
+    }
+
+    public function deleteAll()
+    {
+        /** @var DocumentManager $manager */
+        $manager = $this->manager;
+        $qb      = $manager->createQueryBuilder(AuditLogDocument::class);
+        $qb->remove()->getQuery()->execute();
     }
 }

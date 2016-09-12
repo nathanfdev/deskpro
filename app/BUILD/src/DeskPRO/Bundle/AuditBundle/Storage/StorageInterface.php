@@ -62,4 +62,8 @@ interface StorageInterface
     public function createQueryBuilder();
 
     public function applyFilters($filters, $qb);
+
+    public function deleteByPeriod($period);
+
+    public function deleteAll();
 }
