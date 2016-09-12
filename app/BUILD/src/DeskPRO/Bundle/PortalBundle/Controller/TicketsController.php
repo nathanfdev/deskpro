@@ -144,7 +144,7 @@ class TicketsController extends AbstractController
      *
      * @return Response
      */
-    public function viewAction(Request $request, $ticket_ref, $auth, $visitor_id, $_route)
+    public function viewAction(Request $request, $ticket_ref = null, $auth = null, $visitor_id = null, $_route = null)
     {
         $ticket = $this->getTicketForViewPage($ticket_ref, $auth, $_route);
 
