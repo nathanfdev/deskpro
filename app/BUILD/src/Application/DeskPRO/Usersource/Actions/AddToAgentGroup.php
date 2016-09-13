@@ -28,7 +28,7 @@
 
 namespace Application\DeskPRO\Usersource\Actions;
 
-class AddToPermissionGroup extends AbstractAction
+class AddToAgentGroup extends AbstractAction
 {
     protected $groupId;
 
@@ -40,7 +40,7 @@ class AddToPermissionGroup extends AbstractAction
     public function setData($value)
     {
         if (!is_numeric($value)) {
-            throw new \Exception('Invalid data type for AddToPermissionGroup usersource action');
+            throw new \Exception('Invalid data type for AddToAgentGroup usersource action');
         }
 
         $this->groupId = (int) $value;

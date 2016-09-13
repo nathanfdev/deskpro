@@ -33,15 +33,23 @@
 namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DependencyInjection\SystemServices\AgentCheckerService;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\EntityRepository\AgentTeam;
+use Application\DeskPRO\Usersource\Actions\AbstractAction;
+use Application\DeskPRO\Usersource\Actions\AddToAgentGroup;
+use Application\DeskPRO\Usersource\Actions\AddToTeam;
+use Application\DeskPRO\Usersource\Actions\AddToUserGroup;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use Symfony\Component\ExpressionLanguage\ParserCache\ArrayParserCache;
 
 class LoginProcessor
 {
@@ -227,7 +235,7 @@ class LoginProcessor
         }
 
         // Update custom field data
-        App::getSystemService('person_fields_manager')->copyUsersourceData(
+        App::$container->getPersonFieldManager()->copyUsersourceData(
             $this->person,
             $this->identity,
             $this->usersource
@@ -236,7 +244,7 @@ class LoginProcessor
         $this->person['is_user'] = true;
         $this->person->setLastLoginAt();
 
-        self::tryUsergroupPromotion($this->usersource, $this->person);
+        self::tryUsergroupPromotion($this->usersource, $this->person, $this->identity->getRawData());
         if (self::tryAutoAgent($this->usersource, $this->person)) {
             $this->sendAgentWelcomeEmail();
         }
@@ -438,6 +446,7 @@ class LoginProcessor
     {
         if (Usersource::TYPE_AGENT == $usersource->type && $usersource->auto_agent) {
             $agentChecker = App::getSystemService('agent_checker');
+            /** @var $agentChecker AgentCheckerService */
             if ($agentChecker->addAgentSeat($person)) {
                 $person['is_agent']  = true;
                 $person['can_agent'] = true;
@@ -449,15 +458,46 @@ class LoginProcessor
         return false;
     }
 
-    public static function tryUsergroupPromotion(Usersource $usersource, Person $person)
+    public static function tryUsergroupPromotion(Usersource $usersource, Person $person, $raw_info)
     {
-        if ($usersource->type == Usersource::TYPE_AGENT) {
-            if ($usersource->agent_permission_group) {
-                $person->addUsergroup($usersource->agent_permission_group);
-            }
-        } elseif ($usersource->type == Usersource::TYPE_USER) {
+        if ($usersource->type == Usersource::TYPE_USER) {
             if ($usersource->user_permission_group) {
                 $person->addUsergroup($usersource->user_permission_group);
+            }
+
+            return;
+        }
+
+        if (!$usersource->type == Usersource::TYPE_AGENT || !$usersource->auto_agent) {
+            return;
+        }
+
+        // it won't get any worse
+        $agentGroupsHelper = App::$container->getAgentGroups();
+        $userGroupsHelper  = App::$container->getUserGroups();
+        $teamsHelper       = App::getEntityRepository('DeskPRO:AgentTeam');
+        /* @var $teamsHelper AgentTeam */
+
+        foreach ($usersource->actions as $action) {
+            /** @var $action AbstractAction */
+            if ($action->getFilter()) {
+                $lang = new ExpressionLanguage(new ArrayParserCache());
+                if (!@$lang->evaluate($action->getFilter(), ['user' => $raw_info])) {
+                    continue;
+                }
+            }
+
+            // todo how to handle exceptions here?
+
+            if ($action instanceof AddToAgentGroup) {
+                $group = $agentGroupsHelper->getGroup($action->getData());
+                $person->addUsergroup($group);
+            } elseif ($action instanceof AddToUserGroup) {
+                $group = $userGroupsHelper->getGroup($action->getData());
+                $person->addUsergroup($group);
+            } elseif ($action instanceof AddToTeam) {
+                $teams = $teamsHelper->getTeamsFromIds([$action->getData()]);
+                $person->addTeam(reset($teams));
             }
         }
     }

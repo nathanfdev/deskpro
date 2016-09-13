@@ -28,7 +28,7 @@
 
 namespace Application\DeskPRO\Usersource\Actions;
 
-class AddToUsergroup extends AbstractAction
+class AddToUserGroup extends AbstractAction
 {
     protected $groupId;
 
@@ -40,7 +40,7 @@ class AddToUsergroup extends AbstractAction
     public function setData($value)
     {
         if (!is_numeric($value)) {
-            throw new \Exception('Invalid data type for AddToUsergroup usersource action');
+            throw new \Exception('Invalid data type for AddToUserGroup usersource action');
         }
 
         $this->groupId = (int) $value;

@@ -39,7 +39,7 @@ class Build1475832285 extends AbstractBuild
         $q = 'select u.id, u.app_id, u.agent_permission_group_id pgid, ai.settings from usersources u left join app_instances ai on ai.id = u.app_id';
         foreach ($con->fetchAll($q) as $row) {
             $actions = $row['pgid']
-                ? [['type' => 'AddToPermissionGroup', 'data' => $row['pgid']]]
+                ? [['type' => 'AddToAgentGroup', 'data' => $row['pgid']]]
                 : [];
 
             $con->update(

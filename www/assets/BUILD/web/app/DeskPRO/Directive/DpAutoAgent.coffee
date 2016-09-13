@@ -32,13 +32,13 @@ define ['angular'], (angular) ->
             </a>
             <div ng-repeat="action in ngModel.actions" style="">
               <select ng-model="action.type">
-                <option value="AddToPermissionGroup">Add to agent permission group</option>
+                <option value="AddToAgentGroup">Add to agent permission group</option>
                 <option value="AddToTeam">Add to agent team</option>
-                <option value="AddToUsergroup">Add to usergroup</option>
+                <option value="AddToUserGroup">Add to usergroup</option>
               </select>
 
               <select
-                ng-if="action.type === 'AddToPermissionGroup'"
+                ng-if="action.type === 'AddToAgentGroup'"
                 ng-model="action.data"
                 ng-options="obj.value as obj.label for obj in groups"
                 ng-required="true"
@@ -54,7 +54,7 @@ define ['angular'], (angular) ->
               </select>
 
               <select
-                ng-if="action.type === 'AddToUsergroup'"
+                ng-if="action.type === 'AddToUserGroup'"
                 ng-model="action.data"
                 ng-options="obj.value as obj.label for obj in usergroups"
                 ng-required="true"
@@ -80,7 +80,7 @@ define ['angular'], (angular) ->
       $scope.addAction = ->
         $scope.ngModel.actions = $scope.ngModel.actions || []
         data = if groups[0]? then groups[0].value else null
-        $scope.ngModel.actions.push {type: 'AddToPermissionGroup', data: data}
+        $scope.ngModel.actions.push {type: 'AddToAgentGroup', data: data}
       $scope.removeAction = (action) ->
         $scope.ngModel.actions = $scope.ngModel.actions || []
         index = $scope.ngModel.actions.indexOf action
