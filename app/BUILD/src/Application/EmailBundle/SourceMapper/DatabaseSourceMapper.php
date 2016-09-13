@@ -230,6 +230,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
             $message->setId($ref.'@deskpro-message');
         }
 
+        $message->setBcc([]);
         $blob = $this->bs->createBlobRowFromString($message->toString(), 'out_email.eml', 'message/rfc822');
 
         $record = [
