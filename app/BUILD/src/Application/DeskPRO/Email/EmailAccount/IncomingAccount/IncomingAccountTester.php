@@ -148,13 +148,14 @@ class IncomingAccountTester
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3([
-                'host'      => $account_config->host,
-                'user'      => $account_config->user,
-                'password'  => $account_config->password,
-                'port'      => $account_config->port,
-                'ssl'       => $account_config->secure_mode,
-                'logger'    => $this->logger,
-                'test_mode' => true,
+                'host'                    => $account_config->host,
+                'user'                    => $account_config->user,
+                'password'                => $account_config->password,
+                'port'                    => $account_config->port,
+                'ssl'                     => $account_config->secure_mode,
+                'disable_cert_validation' => $account_config->disable_cert_validation,
+                'logger'                  => $this->logger,
+                'test_mode'               => true,
             ]);
 
             $this->message_count = $storage->countMessages();

@@ -70,6 +70,8 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
         $logger    = isset($params->logger) ? $params->logger : null;
         $test_mode = isset($params->test_mode) && $params->test_mode;
 
+        $verifyCertificate = isset($params->disable_cert_validation) ? !$params->disable_cert_validation : true;
+
         $this->protocol = new Pop3Protocol();
         if ($logger) {
             $this->protocol->setLogger($logger);
@@ -84,7 +86,7 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
         }
 
         try {
-            $this->protocol->connect($host, $port, $ssl, $logger);
+            $this->protocol->connect($host, $port, $ssl, $logger, $verifyCertificate);
             if ($logger) {
                 $logger->logDebug('[protocol] connect okay');
             }
