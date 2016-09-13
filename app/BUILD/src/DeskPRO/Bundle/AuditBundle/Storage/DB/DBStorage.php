@@ -36,6 +36,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 
+/**
+ * Class DBStorage.
+ */
 class DBStorage extends AbstractStorage
 {
     /**
@@ -46,11 +49,19 @@ class DBStorage extends AbstractStorage
         return $this->manager->getRepository(AuditLogEntity::class);
     }
 
+    /**
+     * @param $qb
+     *
+     * @return DoctrineORMAdapter
+     */
     public function getPaginationAdapter($qb)
     {
         return new DoctrineORMAdapter($qb);
     }
 
+    /**
+     * @return QueryBuilder
+     */
     public function createQueryBuilder()
     {
         /** @var EntityManager $manager */
@@ -61,6 +72,12 @@ class DBStorage extends AbstractStorage
         return $qb;
     }
 
+    /**
+     * @param $filters
+     * @param $qb
+     *
+     * @return QueryBuilder
+     */
     public function applyFilters($filters, $qb)
     {
 
@@ -82,5 +99,27 @@ class DBStorage extends AbstractStorage
         }
 
         return $qb;
+    }
+
+    public function deleteByPeriod($period)
+    {
+        /** @var EntityManager $manager */
+        $manager = $this->manager;
+        $qb      = $manager->createQueryBuilder();
+        $qb
+            ->delete(AuditLogEntity::class, 'al')
+            ->where('al.dateCreated < :date_created')
+            ->setParameter('date_created', $this->getDate($period))
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
+    public function deleteAll()
+    {
+        /** @var EntityManager $manager */
+        $manager = $this->manager;
+        $qb      = $manager->createQueryBuilder();
+        $qb->delete(AuditLogEntity::class)->getQuery()->execute();
     }
 }

@@ -36,6 +36,9 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
 
+/**
+ * Class MongoDBStorage.
+ */
 class MongoDBStorage extends AbstractStorage
 {
     /**
@@ -46,11 +49,19 @@ class MongoDBStorage extends AbstractStorage
         return $this->manager->getRepository(AuditLogDocument::class);
     }
 
+    /**
+     * @param $qb
+     *
+     * @return DoctrineODMMongoDBAdapter
+     */
     public function getPaginationAdapter($qb)
     {
         return new DoctrineODMMongoDBAdapter($qb);
     }
 
+    /**
+     * @return Builder
+     */
     public function createQueryBuilder()
     {
         /** @var DocumentManager $manager */
@@ -59,6 +70,12 @@ class MongoDBStorage extends AbstractStorage
         return $manager->createQueryBuilder(AuditLogDocument::class);
     }
 
+    /**
+     * @param $filters
+     * @param $qb
+     *
+     * @return Builder
+     */
     public function applyFilters($filters, $qb)
     {
         /* @var Builder $qb */
@@ -103,5 +120,28 @@ class MongoDBStorage extends AbstractStorage
             'performerId' => 'integer',
             'apiKey'      => 'integer',
         ];
+    }
+
+    public function deleteByPeriod($period)
+    {
+        /** @var DocumentManager $manager */
+        $manager = $this->manager;
+        $qb      = $manager->createQueryBuilder(AuditLogDocument::class);
+
+        $qb->field('dateCreated');
+
+        $date = $this->getDate($period);
+        if ($date) {
+            $qb->lt($date);
+        }
+        $qb->remove()->getQuery()->execute();
+    }
+
+    public function deleteAll()
+    {
+        /** @var DocumentManager $manager */
+        $manager = $this->manager;
+        $qb      = $manager->createQueryBuilder(AuditLogDocument::class);
+        $qb->remove()->getQuery()->execute();
     }
 }

@@ -54,6 +54,13 @@ class AuditLogService
      */
     private $helper;
 
+    const PERIOD_1_DAY    = '1 DAY';
+    const PERIOD_1_WEEK   = '7 DAYS';
+    const PERIOD_1_MONTH  = '30 DAYS';
+    const PERIOD_3_MONTHS = '3 MONTHS';
+    const PERIOD_6_MONTHS = '6 MONTHS';
+    const PERIOD_1_YEAR   = '1 YEAR';
+
     /**
      * AuditLogService constructor.
      *
@@ -146,5 +153,16 @@ class AuditLogService
         $concreteLogs = $this->storage->read($offset, $limit);
 
         return $this->transformer->reverseTransformCollection($concreteLogs);
+    }
+
+    public function delete($period = null)
+    {
+        if ($period) {
+            $this->storage->deleteByPeriod($period);
+        } else {
+            $this->storage->deleteAll();
+        }
+
+        return;
     }
 }
