@@ -177,11 +177,6 @@ define [
       })
 
       options.push({
-        title: 'Require User Email Validation',
-        value: 'SetRequireValidation'
-      })
-
-      options.push({
         title: 'Set Hold',
         value: 'SetHold'
       })
@@ -873,11 +868,6 @@ define [
 
     getSetDeleted: (options = {}) ->
       options.icon = 'fa-chain-broken'
-      def = @getStandardIs(options)
-      return def
-
-    getSetRequireValidation: (options = {}) ->
-      options.propName = 'require_validation'
       def = @getStandardIs(options)
       return def
 
