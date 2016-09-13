@@ -2,8 +2,14 @@ define ['angular'], (angular) ->
   (DataService) ->
 
     groups = []
+    teams  = []
+    usergroups = []
     DataService.get('AgentGroups').all().then (_groups) ->
       _groups.map (group) -> groups.push {value: group.id.toString(), label: group.title}
+    DataService.get('AgentTeams').all().then (_teams) ->
+      _teams.map (team) -> teams.push {value: team.id.toString(), label: team.name}
+    DataService.get('UserGroups').all().then (_groups) ->
+      _groups.map (group) -> usergroups.push {value: group.id.toString(), label: group.title} if group.sys_name != 'everyone' && group.sys_name != 'registered'
 
     restrict: 'E'
     replace: true
@@ -39,6 +45,22 @@ define ['angular'], (angular) ->
                 >
               </select>
 
+              <select
+                ng-if="action.type === 'AddToTeam'"
+                ng-model="action.data"
+                ng-options="obj.value as obj.label for obj in teams"
+                ng-required="true"
+                >
+              </select>
+
+              <select
+                ng-if="action.type === 'AddToUsergroup'"
+                ng-model="action.data"
+                ng-options="obj.value as obj.label for obj in usergroups"
+                ng-required="true"
+                >
+              </select>
+
               <label>
                 <input type="checkbox" ng-model="action.filter_enabled" />
                 only if
@@ -55,9 +77,6 @@ define ['angular'], (angular) ->
     """
 
     controller: ($scope) ->
-
-      console.info $scope.ngModel.actions
-
       $scope.addAction = ->
         $scope.ngModel.actions = $scope.ngModel.actions || []
         data = if groups[0]? then groups[0].value else null
@@ -69,3 +88,5 @@ define ['angular'], (angular) ->
 
     link: ($scope) ->
       $scope.groups = groups
+      $scope.teams  = teams
+      $scope.usergroups = usergroups

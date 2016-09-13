@@ -48,8 +48,7 @@ class Build1475832285 extends AbstractBuild
                 ['id'      => $row['id']]
             );
 
-            if ($row['settings']) {
-                $settings = json_decode($row['settings'], 1);
+            if ($settings = json_decode($row['settings'], 1)) {
                 unset($settings['auto_agent_permission_group']);
                 $settings['actions'] = $actions;
 
