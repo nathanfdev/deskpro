@@ -99,6 +99,7 @@ class OneSkyUploadCommand extends ContainerAwareCommand
         $output->writeln(sprintf("Path: %s\n", $langDir, $locale));
 
         $compiler = new LangPhpFileCompiler();
+        $compiler->enableOldStyleArray();
 
         foreach ($projectNames as $projectName) {
             $projectId = $onesky->getProjectId($projectName);
@@ -120,6 +121,9 @@ class OneSkyUploadCommand extends ContainerAwareCommand
                 $groupedPhrases = $project->groupPhrasesFromFile($f);
 
                 foreach ($groupedPhrases as $group => $phrases) {
+                    if (empty($phrases)) {
+                        continue;
+                    }
                     $output->write(sprintf('           %-40s ... ', "{$fileId}_{$group}.php"));
                     $filePath = $tmpDir.DIRECTORY_SEPARATOR."{$fileId}_{$group}.php";
                     file_put_contents($filePath, $compiler->compilePhpCode($phrases));
