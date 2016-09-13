@@ -284,6 +284,12 @@ class AcceptWebUrlStep extends AbstractStep
             ]
         );
 
+        if ($method === 'POST' || $method === 'PUT') {
+            curl_setopt($resource, CURLOPT_HTTPHEADER, [
+                'Content-Length: 0',
+            ]);
+        }
+
         curl_setopt($resource, CURLOPT_CUSTOMREQUEST, strtoupper($method));
 
         $result = curl_exec(($resource));
@@ -352,7 +358,7 @@ class AcceptWebUrlStep extends AbstractStep
         $this->writeln('');
 
         $this->writeBoundary('Request', 'info');
-        $this->writeln(sprintf('<info>%s %s</info>', $res['method'], $res['url']));
+        $this->writeln(sprintf('<info>%s</info>', ($res['info']['request_header']) ?: ($res['method'].' '.$res['url'])));
         $this->writeln('');
 
         $this->writeBoundary('Response Headers', 'info');

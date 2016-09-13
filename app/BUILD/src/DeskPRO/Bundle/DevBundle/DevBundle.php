@@ -48,7 +48,6 @@ class DevBundle extends Bundle
 
         $application->add(new Command\Lang\CheckMissingCommand());
         $application->add(new Command\Lang\CheckUsesCommand());
-        $application->add(new Command\Lang\CopyDupesCommand());
         $application->add(new Command\Lang\FindDupesCommand());
         $application->add(new Command\Lang\OneSkyDownloadCommand());
         $application->add(new Command\Lang\OneSkyUploadCommand());

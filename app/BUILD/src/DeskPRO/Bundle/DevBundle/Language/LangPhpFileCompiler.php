@@ -32,6 +32,11 @@ use DeskPRO\Component\Util\MapUtils;
 
 class LangPhpFileCompiler
 {
+    /**
+     * @var bool
+     */
+    private $oldStyleArray = false;
+
     private static $groupFileMap = [
         'adm'     => 'admin.php',
         'admin'   => 'admin.php',
@@ -59,6 +64,14 @@ class LangPhpFileCompiler
     }
 
     /**
+     * Enable old style PHP arrays. This is needed by OneSky.
+     */
+    public function enableOldStyleArray()
+    {
+        $this->oldStyleArray = true;
+    }
+
+    /**
      * @param array $phrases
      *
      * @return string
@@ -78,7 +91,11 @@ class LangPhpFileCompiler
         $php   = ["<?php\n\n"];
         $php[] = $this->getFileHeader();
         $php[] = "\n\n";
-        $php[] = "return array(\n";
+        if ($this->oldStyleArray) {
+            $php[] = "return array(\n";
+        } else {
+            $php[] = "return [\n";
+        }
 
         ksort($phrases, \SORT_STRING);
 
@@ -86,7 +103,11 @@ class LangPhpFileCompiler
             $php[] = sprintf("    %-{$maxLen}s => %s,\n", "'$phraseId'", var_export($string, true));
         }
 
-        $php[] = ");\n";
+        if ($this->oldStyleArray) {
+            $php[] = ");\n";
+        } else {
+            $php[] = "];\n";
+        }
 
         $php = implode('', $php);
 
