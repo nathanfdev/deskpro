@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Labels
  */
+
 namespace Application\DeskPRO\Labels;
 
 use Doctrine\ORM\EntityManager;
@@ -50,7 +51,7 @@ class LabelSearch
     /**
      * @var array
      */
-    protected $search_types = array('article', 'download', 'feedback', 'news', 'organization', 'person', 'ticket');
+    protected $search_types = ['article', 'download', 'feedback', 'news', 'organization', 'person', 'ticket'];
 
     /**
      * @var int
@@ -93,15 +94,15 @@ class LabelSearch
      */
     public function search($label, $combined = false)
     {
-        $results = array(
-            'article'      => array(),
-            'download'     => array(),
-            'feedback'     => array(),
-            'news'         => array(),
-            'ticket'       => array(),
-            'person'       => array(),
-            'organization' => array(),
-        );
+        $results = [
+            'article'      => [],
+            'download'     => [],
+            'feedback'     => [],
+            'news'         => [],
+            'ticket'       => [],
+            'person'       => [],
+            'organization' => [],
+        ];
 
         if (in_array('ticket', $this->search_types)) {
             $ids = $this->db->fetchAllCol('
@@ -110,14 +111,14 @@ class LabelSearch
                 WHERE label = ?
                 ORDER BY ticket_id DESC
                 LIMIT ?
-            ', array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
+            ', [$label, $this->limit], [\PDO::PARAM_STR, \PDO::PARAM_INT]);
 
             if ($ids) {
                 /** @var \Application\DeskPRO\EntityRepository\Ticket $rep */
                 $rep               = $this->em->getRepository('DeskPRO:Ticket');
                 $results['ticket'] = $rep->findBy(
-                    array('id' => $ids, 'status' => array('awaiting_agent', 'awaiting_user', 'archived', 'resolved')),
-                    array('id' => 'DESC')
+                    ['id' => $ids, 'status' => ['awaiting_agent', 'awaiting_user', 'archived', 'resolved']],
+                    ['id' => 'DESC']
                 );
             }
         }
@@ -129,14 +130,14 @@ class LabelSearch
                 WHERE label = ?
                 ORDER BY person_id DESC
                 LIMIT ?
-            ', array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
+            ', [$label, $this->limit], [\PDO::PARAM_STR, \PDO::PARAM_INT]);
 
             if ($ids) {
                 /** @var \Application\DeskPRO\EntityRepository\Person $rep */
                 $rep               = $this->em->getRepository('DeskPRO:Person');
                 $results['person'] = $rep->findBy(
-                    array('id' => $ids),
-                    array('id' => 'DESC')
+                    ['id' => $ids],
+                    ['id' => 'DESC']
                 );
             }
         }
@@ -148,14 +149,14 @@ class LabelSearch
                 WHERE label = ?
                 ORDER BY organization_id DESC
                 LIMIT ?
-            ', array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
+            ', [$label, $this->limit], [\PDO::PARAM_STR, \PDO::PARAM_INT]);
 
             if ($ids) {
                 /** @var \Application\DeskPRO\EntityRepository\Organization $rep */
                 $rep                     = $this->em->getRepository('DeskPRO:Organization');
                 $results['organization'] = $rep->findBy(
-                    array('id' => $ids),
-                    array('id' => 'DESC')
+                    ['id' => $ids],
+                    ['id' => 'DESC']
                 );
             }
         }
@@ -168,7 +169,7 @@ class LabelSearch
                 WHERE labels_feedback.label = ? AND (feedback.hidden_status NOT IN('spam', 'deleted') OR feedback.hidden_status IS NULL)
                 ORDER BY labels_feedback.feedback_id DESC
                 LIMIT ?
-            ", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
+            ", [$label, $this->limit], [\PDO::PARAM_STR, \PDO::PARAM_INT]);
 
             if ($ids) {
                 $results['feedback'] = $this->em->getRepository('DeskPRO:Feedback')->getByIds($ids, true);
@@ -183,7 +184,7 @@ class LabelSearch
                 WHERE labels_articles.label = ? AND (articles.hidden_status NOT IN('spam', 'deleted') OR articles.hidden_status IS NULL)
                 ORDER BY labels_articles.article_id DESC
                 LIMIT ?
-            ", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
+            ", [$label, $this->limit], [\PDO::PARAM_STR, \PDO::PARAM_INT]);
 
             if ($ids) {
                 $results['article'] = $this->em->getRepository('DeskPRO:Article')->getByIds($ids, true);
@@ -198,7 +199,7 @@ class LabelSearch
                 WHERE labels_news.label = ? AND (news.hidden_status NOT IN('spam', 'deleted') OR news.hidden_status IS NULL)
                 ORDER BY labels_news.news_id DESC
                 LIMIT ?
-            ", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
+            ", [$label, $this->limit], [\PDO::PARAM_STR, \PDO::PARAM_INT]);
 
             if ($ids) {
                 $results['news'] = $this->em->getRepository('DeskPRO:News')->getByIds($ids, true);
@@ -213,7 +214,7 @@ class LabelSearch
                 WHERE labels_downloads.label = ? AND (downloads.hidden_status NOT IN('spam', 'deleted') OR downloads.hidden_status IS NULL)
                 ORDER BY labels_downloads.download_id DESC
                 LIMIT ?
-            ", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
+            ", [$label, $this->limit], [\PDO::PARAM_STR, \PDO::PARAM_INT]);
 
             if ($ids) {
                 $results['download'] = $this->em->getRepository('DeskPRO:Download')->getByIds($ids, true);

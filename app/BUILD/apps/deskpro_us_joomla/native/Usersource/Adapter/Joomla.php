@@ -41,12 +41,12 @@ class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
     {
         $info = $identity->getRawData();
 
-        return array(
+        return [
             'name'            => isset($info['name']) ? $info['name'] : '',
             'email'           => isset($info['email']) ? $info['email'] : '',
             'username'        => isset($info['username']) ? $info['username'] : '',
             'email_confirmed' => true,
-        );
+        ];
     }
 
     /**
@@ -83,11 +83,11 @@ class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
      */
     public function getCapabilities()
     {
-        return array(
+        return [
             UsersourceInfo::CAPABILITY_FORM_LOGIN,
             UsersourceInfo::CAPABILITY_GET_USER_INFO,
             UsersourceInfo::CAPABILITY_FIND_IDENTITY,
             UsersourceInfo::CAPABILITY_SHARE_SESSION,
-        );
+        ];
     }
 }

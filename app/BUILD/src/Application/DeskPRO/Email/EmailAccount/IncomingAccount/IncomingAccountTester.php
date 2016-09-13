@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
@@ -146,7 +147,7 @@ class IncomingAccountTester
         $this->logger->logInfo('Testing Pop3Account');
 
         try {
-            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3([
                 'host'      => $account_config->host,
                 'user'      => $account_config->user,
                 'password'  => $account_config->password,
@@ -154,7 +155,7 @@ class IncomingAccountTester
                 'ssl'       => $account_config->secure_mode,
                 'logger'    => $this->logger,
                 'test_mode' => true,
-            ));
+            ]);
 
             $this->message_count = $storage->countMessages();
 
@@ -175,7 +176,7 @@ class IncomingAccountTester
         $this->logger->logInfo('Testing ImapAccount');
 
         try {
-            $storage = new \Application\DeskPRO\EmailGateway\Storage\Imap(array(
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Imap([
                 'host'          => $account_config->host,
                 'user'          => $account_config->user,
                 'password'      => $account_config->password,
@@ -184,7 +185,7 @@ class IncomingAccountTester
                 'no_validation' => $account_config->no_validation,
                 'logger'        => $this->logger,
                 'test_mode'     => true,
-            ));
+            ]);
             if ($account_config->read_mailbox) {
                 $storage->ensureMailboxExists($account_config->read_mailbox);
                 $storage->setMailBox($account_config->read_mailbox);
@@ -216,14 +217,14 @@ class IncomingAccountTester
         $this->logger->logInfo('Testing ExchangeAccount');
 
         try {
-            $storage = new \Application\DeskPRO\EmailGateway\Storage\Exchange(array(
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Exchange([
                 'host'      => $account_config->host,
                 'user'      => $account_config->user,
                 'password'  => $account_config->password,
                 'port'      => $account_config->port,
                 'logger'    => $this->logger,
                 'test_mode' => true,
-            ));
+            ]);
             if ($account_config->read_mailbox) {
                 $storage->ensureFolderExists($account_config->read_mailbox);
             }
@@ -299,7 +300,7 @@ class IncomingAccountTester
         $this->logger->logInfo('Testing GmailAccount');
 
         try {
-            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3([
                 'host'      => 'pop.gmail.com',
                 'user'      => $account_config->user,
                 'password'  => $account_config->password,
@@ -307,7 +308,7 @@ class IncomingAccountTester
                 'ssl'       => 'ssl',
                 'logger'    => $this->logger,
                 'test_mode' => true,
-            ));
+            ]);
 
             $this->message_count = $storage->countMessages();
 
@@ -332,7 +333,7 @@ class IncomingAccountTester
         $this->logger->logInfo('Testing Office365Account');
 
         try {
-            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3([
                 'host'      => 'outlook.office365.com',
                 'user'      => $config->user,
                 'password'  => $config->password,
@@ -340,7 +341,7 @@ class IncomingAccountTester
                 'ssl'       => 'ssl',
                 'logger'    => $this->logger,
                 'test_mode' => true,
-            ));
+            ]);
 
             $this->message_count = $storage->countMessages();
 

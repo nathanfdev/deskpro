@@ -76,9 +76,9 @@ class PersonTwitterUser extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $oauth_token_secret = null;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

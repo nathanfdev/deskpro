@@ -51,15 +51,15 @@ class TicketTimelineDataService extends AbstractDataService
      */
     public function getUserTimeline(Ticket $ticket, $page = 1, $per_page = 50)
     {
-        $raw_logs = $this->getTicketLogRepo()->getLogsForTicket($ticket, array(
+        $raw_logs = $this->getTicketLogRepo()->getLogsForTicket($ticket, [
             'order_dir' => 'ASC',
-            'types'     => array('ticket_created', 'message_created', 'changed_status'),
-        ));
+            'types'     => ['ticket_created', 'message_created', 'changed_status'],
+        ]);
 
-        $messages = $this->getTicketMessageRepo()->getTicketMessages($ticket, array(
+        $messages = $this->getTicketMessageRepo()->getTicketMessages($ticket, [
             'order'      => 'ASC',
             'with_notes' => false,
-        ));
+        ]);
 
         $messages = MapUtils::rekeyByProperty($messages, 'id');
 

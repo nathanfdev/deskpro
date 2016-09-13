@@ -70,7 +70,7 @@ class TextSnippet extends AbstractEntityRepository
             ->execute();
 
         if (!$coll) {
-            return array();
+            return [];
         }
 
         return $this->groupSnippetCollection($coll);
@@ -207,7 +207,9 @@ class TextSnippet extends AbstractEntityRepository
             return [];
         }
 
-        $snippetIds = ListUtils::map($snippets, function ($s) { return $s['id']; });
+        $snippetIds = ListUtils::map($snippets, function ($s) {
+            return $s['id'];
+        });
 
         $langData = $conn->fetchAll("
             SELECT language_id, ref_id, prop_name, value
@@ -226,12 +228,12 @@ class TextSnippet extends AbstractEntityRepository
             $langDataMap[$l['ref_id']][$l['language_id']][$l['prop_name']] = $l['value'];
         }
 
-        $langLocales = array();
+        $langLocales = [];
         foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
             $langLocales[$lang->getId()] = $lang->getLocale();
         }
 
-        $res = array();
+        $res = [];
         foreach ($snippets as $snippet) {
             if (!isset($langDataMap[$snippet['id']])) {
                 continue;
@@ -239,30 +241,30 @@ class TextSnippet extends AbstractEntityRepository
 
             $translation = $langDataMap[$snippet['id']];
 
-            $data = array(
+            $data = [
                 'id'            => $snippet['id'],
                 'shortcut_code' => $snippet['shortcut_code'],
                 'is_draft'      => (bool) $snippet['is_draft'],
                 'category_id'   => $snippet['category_id'],
-                'title'         => array(),
-                'snippet'       => array(),
-            );
+                'title'         => [],
+                'snippet'       => [],
+            ];
 
             foreach ($translation as $langId => $values) {
                 if (empty($langLocales[$langId])) {
                     // old records from a deleted lang
                     continue;
                 }
-                $data['title'][] = array(
+                $data['title'][] = [
                     'language_id' => $langId,
                     'locale'      => $langLocales[$langId],
                     'value'       => $values['title'],
-                );
-                $data['snippet'][] = array(
+                ];
+                $data['snippet'][] = [
                     'language_id' => $langId,
                     'locale'      => $langLocales[$langId],
                     'value'       => $values['snippet'],
-                );
+                ];
             }
 
             $res[] = $data;
@@ -288,7 +290,7 @@ class TextSnippet extends AbstractEntityRepository
             WHERE
                 text_snippet_categories.typename = ?
                 AND (text_snippets.person_id = ? OR text_snippet_categories.is_global = 1)
-        ', array($typename, $agent->getId()));
+        ', [$typename, $agent->getId()]);
     }
 
     /**
@@ -300,11 +302,11 @@ class TextSnippet extends AbstractEntityRepository
      */
     public function groupSnippetCollection($collection)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($collection as $snippet) {
             if (!isset($ret[$snippet->category['id']])) {
-                $ret[$snippet->category['id']] = array('category' => $snippet->category, 'snippets' => array());
+                $ret[$snippet->category['id']] = ['category' => $snippet->category, 'snippets' => []];
             }
 
             $ret[$snippet->category['id']]['snippets'][] = $snippet;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\Usersource\UsersourceInfo;
@@ -40,15 +41,15 @@ class Twitter extends AbstractAdapter
     {
         $info = $identity->getRawData();
 
-        return array(
+        return [
             'name'    => $info['fullname'] ?: $info['identity_friendly'],
-            'twitter' => array(
+            'twitter' => [
                 'screen_name'        => $info['identity_friendly'],
                 'user_id'            => $info['identity'],
                 'oauth_token'        => $info['access_token'],
                 'oauth_token_secret' => $info['access_token_secret'],
-            ),
-        );
+            ],
+        ];
     }
 
     public function getDisplayName(array $info)
@@ -77,11 +78,11 @@ class Twitter extends AbstractAdapter
      */
     public function getCapabilities()
     {
-        return array(
+        return [
             UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
             UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
             UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB,
-        );
+        ];
     }
 
     /**

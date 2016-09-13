@@ -84,9 +84,9 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $input->setOption('account', $input->getOption('to'));
         }
 
-        #----------------------------------------
-        # Read/save source object
-        #----------------------------------------
+        //----------------------------------------
+        // Read/save source object
+        //----------------------------------------
 
         if ($input->getOption('source')) {
             $source = $this->getContainer()->getEm()->find('DeskPRO:EmailSource', $input->getOption('source'));
@@ -161,11 +161,11 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $account = $this->findEmailAccountFrom($reader);
 
             $source = new EmailSource();
-            $source->fromArray(array(
+            $source->fromArray([
                 'email_account' => $account,
                 'headers'       => $raw_headers,
                 'status'        => 'inserted',
-            ));
+            ]);
 
             // Rough matching, just for info purposes when browsing a list
             $source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_headers) ?: '';
@@ -195,9 +195,9 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $output->writeln(sprintf('<info>Saved email source #'.$source->getId().' (took %.5s)</info>', microtime(true) - $t));
         }
 
-        #----------------------------------------
-        # Get gateway account
-        #----------------------------------------
+        //----------------------------------------
+        // Get gateway account
+        //----------------------------------------
 
         $account_id = $input->getOption('account');
 
@@ -254,9 +254,9 @@ class ProcessEmailCommand extends ContainerAwareCommand
             App::getOrm()->flush();
         }
 
-        #----------------------------------------
-        # Run the gateway
-        #----------------------------------------
+        //----------------------------------------
+        // Run the gateway
+        //----------------------------------------
 
         if (!$insert_only) {
             $logger = new Logger();

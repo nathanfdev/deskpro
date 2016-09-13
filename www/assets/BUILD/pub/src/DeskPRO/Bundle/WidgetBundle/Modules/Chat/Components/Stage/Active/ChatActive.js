@@ -4,8 +4,7 @@ import { ChatContentContainer } from './ChatContentContainer';
 import { MessageListContainer } from './List/MessageListContainer';
 import { ReplyFormContainer } from './Reply/ReplyFormContainer';
 import { RateAgentContainer } from './Feedback/RateAgentContainer';
-import { AgentDisconnectedContainer } from './Disconnect/AgentDisconnectedContainer';
-import { TypingEventContainer } from './List/Event/TypingEventContainer';
+import { LostConnectionContainer } from './Disconnect/LostConnectionContainer';
 
 export class ChatActive extends React.Component {
 
@@ -15,12 +14,14 @@ export class ChatActive extends React.Component {
         <HeaderContainer />
         <ChatContentContainer>
           <MessageListContainer />
-          <TypingEventContainer />
-          <AgentDisconnectedContainer />
-          <RateAgentContainer />
-          <ReplyFormContainer />
         </ChatContentContainer>
+        <div className="dpdesignportal-chat-footer">
+          <RateAgentContainer />
+          <LostConnectionContainer />
+          <ReplyFormContainer />
+        </div>
       </div>
     );
   }
 }
+export default ChatActive;

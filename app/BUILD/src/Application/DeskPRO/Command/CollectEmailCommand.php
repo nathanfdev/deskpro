@@ -124,9 +124,9 @@ class CollectEmailCommand extends ContainerAwareCommand
                 $time = 60;
             }
 
-            #----------------------------------------
-            # Run the gateway collection
-            #----------------------------------------
+            //----------------------------------------
+            // Run the gateway collection
+            //----------------------------------------
 
             $output->setVerbosity(3);
 
@@ -139,7 +139,7 @@ class CollectEmailCommand extends ContainerAwareCommand
             $runner->setPhpTimeLimit(900);
             $runner->executeAccount($account, $time, $only_collect);
 
-            App::getDb()->update('email_accounts', array('is_read_active' => 0), array('id' => $account->getId()));
+            App::getDb()->update('email_accounts', ['is_read_active' => 0], ['id' => $account->getId()]);
         }
 
         return 0;

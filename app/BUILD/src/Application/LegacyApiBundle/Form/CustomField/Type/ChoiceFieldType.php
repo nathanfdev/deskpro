@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Form\CustomField\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
@@ -62,8 +63,8 @@ class ChoiceFieldType extends CustomFieldTypeAbstract
 
     public function getDefaultOptions(array $options)
     {
-        return array(
+        return [
             'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\ChoiceField',
-        );
+        ];
     }
 }

@@ -69,9 +69,9 @@ class TicketSearchController extends AbstractController
     {
         $data = [];
 
-        #------------------------------
-        # Filters
-        #------------------------------
+        //------------------------------
+        // Filters
+        //------------------------------
 
         $filter_info      = App::getApi('tickets.filters')->getGroupedFiltersForPerson($this->person);
         $all_filters      = $filter_info['all_filters'];
@@ -119,17 +119,17 @@ class TicketSearchController extends AbstractController
             }
         }
 
-        #------------------------------
-        # SLAs
-        #------------------------------
+        //------------------------------
+        // SLAs
+        //------------------------------
 
         $sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
         $slas       = $this->em->getRepository(Sla::class)->getAllSlas();
         $sla_counts = $this->em->getRepository(TicketSla::class)->getTicketSlaCountsForAgentInterface($slas, $sla_filter);
 
-        #------------------------------
-        # Misc
-        #------------------------------
+        //------------------------------
+        // Misc
+        //------------------------------
 
         $flags       = ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'];
         $flag_counts = $this->em->getRepository(TicketFlagged::class)->getCountsForPerson($this->person);
@@ -721,9 +721,9 @@ class TicketSearchController extends AbstractController
         $group_by = $this->in->getString('group_by');
         $searcher = null;
 
-        #------------------------------
-        # If there's no result set, we're running it for the first time
-        #------------------------------
+        //------------------------------
+        // If there's no result set, we're running it for the first time
+        //------------------------------
 
         if (!$result_cache) {
             $term_rules = RuleBuilder::newTermsBuilder();
@@ -886,18 +886,18 @@ class TicketSearchController extends AbstractController
             $do_run = true;
         }
 
-        #------------------------------
-        # Re-do search if we changed order
-        #------------------------------
+        //------------------------------
+        // Re-do search if we changed order
+        //------------------------------
 
         if ($result_cache && $order_by && $result_cache->getExtraData('order_by') != $order_by) {
             $terms  = $result_cache['criteria'];
             $do_run = true;
         }
 
-        #------------------------------
-        # Run a filter if we need to
-        #------------------------------
+        //------------------------------
+        // Run a filter if we need to
+        //------------------------------
 
         if ($do_run) {
             $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
@@ -1274,9 +1274,9 @@ class TicketSearchController extends AbstractController
 
         $vars['viewtpl'] = $type;
 
-        #------------------------------
-        # Get the tickets to show
-        #------------------------------
+        //------------------------------
+        // Get the tickets to show
+        //------------------------------
 
         $grouped_info = null;
         if (!$is_partial and $results_helper->isGroupable()) {
@@ -1325,9 +1325,9 @@ class TicketSearchController extends AbstractController
             }
         }
 
-        #------------------------------
-        # Send results
-        #------------------------------
+        //------------------------------
+        // Send results
+        //------------------------------
 
         if (!count($tickets) && $is_partial && $view_type != 'csv') {
             return $this->createJsonResponse(['no_more_results' => true]);
@@ -1733,8 +1733,6 @@ class TicketSearchController extends AbstractController
 
             foreach ($tickets as $t) {
                 $ticket_changes = $collection->getApplyActions($t, $this->person);
-                $collection->apply(null, $t, $this->person);
-
                 if ($ticket_changes) {
                     $ticket_changed_fields = [];
                     foreach ($ticket_changes as $change) {
@@ -1846,9 +1844,9 @@ class TicketSearchController extends AbstractController
         return $display_fields;
     }
 
-    ############################################################################
-    # ajax-release-locks
-    ############################################################################
+    //###########################################################################
+    // ajax-release-locks
+    //###########################################################################
 
     public function ajaxReleaseLocksAction()
     {
@@ -1868,9 +1866,9 @@ class TicketSearchController extends AbstractController
         return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # ajax-delete-ticket
-    ############################################################################
+    //###########################################################################
+    // ajax-delete-ticket
+    //###########################################################################
 
     public function ajaxDeleteTicketsAction()
     {
@@ -1890,9 +1888,9 @@ class TicketSearchController extends AbstractController
         return $this->createJsonResponse(['success' => true, 'deleted_tickets' => $deleted_tickets]);
     }
 
-    ############################################################################
-    # ajax-get-macro-actions
-    ############################################################################
+    //###########################################################################
+    // ajax-get-macro-actions
+    //###########################################################################
 
     public function ajaxGetMacroAction()
     {
@@ -1992,7 +1990,7 @@ class TicketSearchController extends AbstractController
                 foreach ($actions as $name => $opt) {
                     // Cleanup RTE markup
                     if ($name == 'reply') {
-                        $new_message       = $this->cleaner->clean(@$opt['reply_text'] ?: '', 'html');
+                        $new_message       = isset($opt['reply_text']) ? $this->cleaner->clean($opt['reply_text'], 'html') : '';
                         $new_message       = Strings::trimHtml($new_message);
                         $new_message       = Strings::prepareWysiwygHtml($new_message);
                         $opt['reply_text'] = $new_message;

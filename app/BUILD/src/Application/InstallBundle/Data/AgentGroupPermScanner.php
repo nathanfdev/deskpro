@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
@@ -57,9 +58,9 @@ class AgentGroupPermScanner
 
         $perms = new AgentPermissions();
 
-        $unsafe = array();
+        $unsafe = [];
 
-        $set_perms = array();
+        $set_perms = [];
         foreach (AgentPermissions::$prefix_map as $real_name => $coll_name) {
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {

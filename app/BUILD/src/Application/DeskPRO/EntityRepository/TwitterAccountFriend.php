@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class TwitterAccountFriend extends AbstractEntityRepository
@@ -47,27 +48,27 @@ class TwitterAccountFriend extends AbstractEntityRepository
             SELECT f
             FROM DeskPRO:TwitterAccountFriend f
             WHERE f.account = :account AND f.user = :user
-        ')->setParameters(array(
+        ')->setParameters([
             'account' => $accountId,
             'user'    => $userId,
-        ))->getOneOrNullResult();
+        ])->getOneOrNullResult();
     }
 
     public function getByAccountAndUsers($account_id, array $user_ids)
     {
         if (!$user_ids) {
-            return array();
+            return [];
         }
 
-        $output  = array();
+        $output  = [];
         $results = $this->getEntityManager()->createQuery('
             SELECT f
             FROM   DeskPRO:TwitterAccountFriend f
             WHERE  f.account = :account AND f.user IN (:user)
-        ')->setParameters(array(
+        ')->setParameters([
             'account' => $account_id,
             'user'    => $user_ids,
-        ))->execute();
+        ])->execute();
         foreach ($results as $result) {
             $output[$result->user->getId()] = $result;
         }

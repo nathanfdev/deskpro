@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Cutter\PatternCutter;
 
 class HtmlMatcher
@@ -115,7 +116,7 @@ class HtmlMatcher
                 // Get rid of new lines that may affect the cutter.
                 // (Doesnt matter with HTML emails anyway)
                 // But only if we arent anchoring the pattern, where newlines matter
-                $try = str_replace(array("\r\n", "\n"), ' ', $this->body);
+                $try = str_replace(["\r\n", "\n"], ' ', $this->body);
             }
 
             if (preg_match($first_token[1], $this->body, $m)) {
@@ -130,7 +131,7 @@ class HtmlMatcher
             }
         }
 
-        $roots = array();
+        $roots = [];
 
         try {
             $this->getQpBranch()->find($first_token[1])->each(function ($i, $m) use (&$roots) {
@@ -151,11 +152,11 @@ class HtmlMatcher
             $use_tokens = $tokens;
 
             $branch                = $root->branch()->first();
-            $this->root_state[$id] = array(
+            $this->root_state[$id] = [
                 'closed'       => false,
                 'mark_spot'    => null,
                 'mark_pattern' => null,
-            );
+            ];
 
             while ($use_tokens) {
                 $branch = $this->consumeNavigates($id, $branch, $use_tokens);
@@ -345,7 +346,7 @@ class HtmlMatcher
             if (!preg_match($token[0], $text, $m)) {
                 // Check entire contents
                 $html = $branch->innerHTML();
-                $text = str_replace(array('<br />', '<br/>', '<br>'), "\n", $html);
+                $text = str_replace(['<br />', '<br/>', '<br>'], "\n", $html);
                 $text = str_replace("\n", ' ', $text);
                 $text = strip_tags($text);
                 $text = trim($text);
@@ -388,7 +389,7 @@ class HtmlMatcher
             return $this->qp;
         }
 
-        $this->qp = \QueryPath::withHTML($this->body, 'body', array('convert_to_encoding' => null));
+        $this->qp = \QueryPath::withHTML($this->body, 'body', ['convert_to_encoding' => null]);
 
         return $this->qp;
     }

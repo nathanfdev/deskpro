@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Orb\Auth\Adapter;
 
 use Orb\Auth\Result;
@@ -58,11 +59,10 @@ abstract class PluginAdapter implements AdapterInterface
     {
         $result = $this->doAuthenticate();
 
-        //
         // Any usersource that returns a valid RESULT from their authenticate() method
         // will be checked againt the "filter" set by an admin. It uses the result's
         // Identity->getRawData() as the array the filter checks against.
-        //
+
         if ($result->isValid()) {
             $raw_info = $result->getIdentity()->getRawData();
             if (!$this->doesRawInfoPassFilter($raw_info)) {
@@ -70,9 +70,9 @@ abstract class PluginAdapter implements AdapterInterface
                 return new Result(
                     Result::FAILURE,
                     $result->getIdentity(),
-                    array('error_code'    => 'failed_filter',
+                    ['error_code'         => 'failed_filter',
                           'error_message' => 'Did not pass the filter requirement "'.$this->filter_expression_text.'"',
-                    )
+                    ]
                 );
             }
         }
@@ -97,9 +97,9 @@ abstract class PluginAdapter implements AdapterInterface
             $expression_language = $this->_getExpressionLang();
             // we supress this call because it can produce E_NOTICE's even though
             // we catch the exception.
-            if (@$expression_language->evaluate($this->filter_expression_text, array(
+            if (@$expression_language->evaluate($this->filter_expression_text, [
                 'user' => $raw_info,
-            ))) {
+            ])) {
                 return true; // successfully passed
             }
         } catch (\Exception $e) {
@@ -120,9 +120,9 @@ abstract class PluginAdapter implements AdapterInterface
                 $logger->log(
                     sprintf('failed verification check for filter "%s"', $this->filter_expression_text),
                     Logger::INFO,
-                    array(
+                    [
                         $raw_info,
-                    )
+                    ]
                 )
                 ;
             }
@@ -132,9 +132,9 @@ abstract class PluginAdapter implements AdapterInterface
                     $this->getLogger()->log(
                         sprintf('filter error: "%s"', $e->getMessage()),
                         Logger::INFO,
-                        array(
+                        [
                             $this->filter_expression_text,
-                        )
+                        ]
                     )
                     ;
                 }

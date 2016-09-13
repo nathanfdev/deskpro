@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-declare (ticks = 100);
+declare(ticks=100);
 
 namespace DeskPRO\Bundle\UpdateBundle\Command;
 
@@ -222,7 +222,7 @@ class UpdateCommand extends ContainerAwareCommand
             }
         }
 
-        #------------------------------
+        //------------------------------
 
         $logger->info(
             '[Auto-Upgrade] dp:distro:download-build - start',
@@ -251,7 +251,7 @@ class UpdateCommand extends ContainerAwareCommand
             ['keyEvent' => LogKeyEvent::create('AutoUpgrade.download.success')]
         );
 
-        #------------------------------
+        //------------------------------
 
         if (!$skipBackup) {
             $logger->info(
@@ -285,7 +285,7 @@ class UpdateCommand extends ContainerAwareCommand
             );
         }
 
-        #------------------------------
+        //------------------------------
 
         $logger->info(
             '[Auto-Upgrade] dp:update:activate-build - start',

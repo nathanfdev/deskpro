@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class TwitterStatus extends AbstractEntityRepository
@@ -41,13 +42,13 @@ class TwitterStatus extends AbstractEntityRepository
             SELECT s
             FROM DeskPRO:TwitterStatus s
             WHERE s.id = ?0
-        ')->setParameters(array($id))->getOneOrNullResult();
+        ')->setParameters([$id])->getOneOrNullResult();
     }
 
     /**
      * @param int        $id
      * @param array|null $from_user_ids   If not null, only from these users
-     * @param Boolean    $includeArchived (optional)
+     * @param bool       $includeArchived (optional)
      * @param string     $sortByDate      (optional)
      * @param int        $limit           (optional)
      * @param int        $page            (optional)
@@ -57,7 +58,7 @@ class TwitterStatus extends AbstractEntityRepository
     public function findMessagesForUserId($id, array $from_user_ids = null, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
     {
         if ($from_user_ids !== null && !$from_user_ids) {
-            return array();
+            return [];
         }
 
         $query = '
@@ -74,10 +75,10 @@ class TwitterStatus extends AbstractEntityRepository
                 $from_user_ids[] = $id;
                 $query .= ' AND ((s.user = :user_id AND s.recipient IN (:from_user_ids)) OR (s.user IN (:from_user_ids) AND s.recipient = :user_id)) ';
             }
-            $params = array('user_id' => $id, 'from_user_ids' => $from_user_ids);
+            $params = ['user_id' => $id, 'from_user_ids' => $from_user_ids];
         } else {
             $query .= ' AND (s.user = :user_id OR s.recipient = :user_id) ';
-            $params = array('user_id' => $id);
+            $params = ['user_id' => $id];
         }
 
         if (!$includeArchived) {
@@ -99,7 +100,7 @@ class TwitterStatus extends AbstractEntityRepository
     /**
      * @param int        $id
      * @param array|null $from_user_ids   If not null, only from these users
-     * @param Boolean    $includeArchived (optional)
+     * @param bool       $includeArchived (optional)
      *
      * @return int
      */
@@ -123,10 +124,10 @@ class TwitterStatus extends AbstractEntityRepository
                 $from_user_ids[] = $id;
                 $query .= ' AND ((s.user = :user_id AND s.recipient IN (:from_user_ids)) OR (s.user IN (:from_user_ids) AND s.recipient = :user_id)) ';
             }
-            $params = array('user_id' => $id, 'from_user_ids' => $from_user_ids);
+            $params = ['user_id' => $id, 'from_user_ids' => $from_user_ids];
         } else {
             $query .= ' AND (s.user = :user_id OR s.recipient = :user_id) ';
-            $params = array('user_id' => $id);
+            $params = ['user_id' => $id];
         }
 
         if (!$includeArchived) {
@@ -141,11 +142,11 @@ class TwitterStatus extends AbstractEntityRepository
     }
 
     /**
-     * @param int     $id
-     * @param Boolean $includeArchived (optional)
-     * @param string  $sortByDate      (optional)
-     * @param int     $limit           (optional)
-     * @param int     $page            (optional)
+     * @param int    $id
+     * @param bool   $includeArchived (optional)
+     * @param string $sortByDate      (optional)
+     * @param int    $limit           (optional)
+     * @param int    $page            (optional)
      *
      * @return array
      */
@@ -171,17 +172,17 @@ class TwitterStatus extends AbstractEntityRepository
             ->createQuery($query)
             ->setMaxResults($limit)
             ->setFirstResult($this->calculateOffset($limit, $page))
-            ->execute(array(
+            ->execute([
                 'user_id' => $id,
-            ));
+            ]);
     }
 
     /**
-     * @param int     $id
-     * @param Boolean $includeArchived (optional)
-     * @param string  $sortByDate      (optional)
-     * @param int     $limit           (optional)
-     * @param int     $page            (optional)
+     * @param int    $id
+     * @param bool   $includeArchived (optional)
+     * @param string $sortByDate      (optional)
+     * @param int    $limit           (optional)
+     * @param int    $page            (optional)
      *
      * @return array
      */
@@ -210,9 +211,9 @@ class TwitterStatus extends AbstractEntityRepository
             ->createQuery($query)
             ->setMaxResults($limit)
             ->setFirstResult($this->calculateOffset($limit, $page))
-            ->execute(array(
+            ->execute([
                 'user_id' => $id,
-            ));
+            ]);
     }
 
     /**
@@ -228,7 +229,7 @@ class TwitterStatus extends AbstractEntityRepository
     public function findMentionsForUserId($id, array $from_user_ids = null, $includeArchived = false, $sortByDate = 'asc', $limit = 25, $page = 1)
     {
         if ($from_user_ids !== null && !$from_user_ids) {
-            return array();
+            return [];
         }
 
         $query = '
@@ -237,9 +238,9 @@ class TwitterStatus extends AbstractEntityRepository
             INNER JOIN s.mentions m
         ';
 
-        $params = array(
+        $params = [
             'user_id' => $id,
-        );
+        ];
 
         if ($from_user_ids) {
             $query .= 'WHERE ((m.user = :user_id AND s.user IN (:from_user_ids)) OR (s.user = :user_id AND m.user IN (:from_user_ids))) ';
@@ -283,9 +284,9 @@ class TwitterStatus extends AbstractEntityRepository
             LEFT JOIN s.mentions m
         ';
 
-        $params = array(
+        $params = [
             'user_id' => $id,
-        );
+        ];
 
         if ($from_user_ids) {
             $query .= 'WHERE ((m.user = :user_id AND s.user IN (:from_user_ids)) OR (s.user = :user_id AND m.user IN (:from_user_ids))) ';
@@ -313,7 +314,7 @@ class TwitterStatus extends AbstractEntityRepository
     protected function normalizeSortByDate($sortByDate = 'asc')
     {
         // check that sort by date is asc or desc
-        if (!in_array(strtolower($sortByDate), array('asc', 'desc'))) {
+        if (!in_array(strtolower($sortByDate), ['asc', 'desc'])) {
             $sortByDate = 'asc';
         }
 

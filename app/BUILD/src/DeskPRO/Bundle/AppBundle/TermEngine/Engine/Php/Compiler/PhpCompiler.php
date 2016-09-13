@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\Compiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
@@ -88,11 +89,11 @@ abstract class PhpCompiler
         $ref             = new \ReflectionClass($term);
         $term_class_name = $ref->getShortName();
 
-        $this->logger->info('PHP TERM COMPILER START', array('term' => $term_class_name));
+        $this->logger->info('PHP TERM COMPILER START', ['term' => $term_class_name]);
 
         // let visitors alter the term
         foreach ($this->visitors as $visitor) {
-            $this->logger->debug('Passing term to visitor', array('visitor' => get_class($visitor)));
+            $this->logger->debug('Passing term to visitor', ['visitor' => get_class($visitor)]);
             $visitor->visit($term);
         }
 
@@ -108,12 +109,12 @@ abstract class PhpCompiler
 
         $this->logger->info(
             'PHP TERM COMPILER END',
-            array(
+            [
                 'time' => $timer->getElapsedTime(),
-            )
+            ]
         );
 
-        $this->logger->debug('PhpCompiler result', array('php_check' => $php_check));
+        $this->logger->debug('PhpCompiler result', ['php_check' => $php_check]);
 
         return $php_check;
     }
@@ -130,13 +131,13 @@ abstract class PhpCompiler
 
             $this->logger->debug(
                 'START CompositeTerm',
-                array(
+                [
                     'op' => $term->getOp(),
-                )
+                ]
             );
 
             $parent_check          = new PhpCheck();
-            $php_check_expressions = array();
+            $php_check_expressions = [];
 
             /** @var TermInterface $child_term */
             foreach ($term->getTerms() as $child_term) {
@@ -155,9 +156,9 @@ abstract class PhpCompiler
 
             $this->logger->debug(
                 'END CompositeTerm',
-                array(
+                [
                     'time' => $timer->getElapsedTime(),
-                )
+                ]
             );
 
             return $parent_check;

@@ -54,12 +54,12 @@ class Compiler extends BaseCompiler
     /**
      * @var FileLoaderInterface[]
      */
-    private $file_loaders = array();
+    private $file_loaders = [];
 
     /**
      * @var FileLocatorInterface[]
      */
-    private $file_locators = array();
+    private $file_locators = [];
 
     /**
      * @var array
@@ -72,7 +72,7 @@ class Compiler extends BaseCompiler
     public function __construct(array $options = null)
     {
         parent::__construct();
-        $this->options = self::getOptionsResolver()->resolve($options ?: array());
+        $this->options = self::getOptionsResolver()->resolve($options ?: []);
 
         $this->setEncoding(self::FILE_ENCODING);
 

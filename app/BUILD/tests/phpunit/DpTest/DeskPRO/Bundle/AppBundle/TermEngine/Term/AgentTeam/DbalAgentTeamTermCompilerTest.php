@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
@@ -52,9 +53,9 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
     public function testSimpleIsCompile()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(1, 3, 199),
-            )
+            [
+                'agent_team_ids' => [1, 3, 199],
+            ]
         );
 
         $query_part = $this->term_compiler->compile($term);
@@ -63,9 +64,9 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(1, 3, 199),
-            )
+            [
+                'ids' => [1, 3, 199],
+            ]
         );
 
         $this->assertNoJoins($query_part);
@@ -75,9 +76,9 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
     public function testSimpleIsNOTCompile()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(1, 3, 199),
-            ),
+            [
+                'agent_team_ids' => [1, 3, 199],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -87,9 +88,9 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(1, 3, 199),
-            )
+            [
+                'ids' => [1, 3, 199],
+            ]
         );
 
         $this->assertNoJoins($query_part);
@@ -99,9 +100,9 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
     public function testSimpleIsWithMeCompile()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(1, 3, 199, AgentTeamTerm::TEAM_ID_ME),
-            )
+            [
+                'agent_team_ids' => [1, 3, 199, AgentTeamTerm::TEAM_ID_ME],
+            ]
         );
 
         $query_part = $this->term_compiler->compile($term);
@@ -113,14 +114,14 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(
+            [
+                'ids' => [
                     1,
                     3,
                     199,
                     new TermEngineExpression('agent.getTeamIds()'),
-                ),
-            )
+                ],
+            ]
         );
 
         $this->assertNoJoins($query_part);
@@ -130,9 +131,9 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
     public function testNotWithMeCompile()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(1, 3, 199, AgentTeamTerm::TEAM_ID_ME),
-            ),
+            [
+                'agent_team_ids' => [1, 3, 199, AgentTeamTerm::TEAM_ID_ME],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -145,14 +146,14 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(
+            [
+                'ids' => [
                     1,
                     3,
                     199,
                     new TermEngineExpression('agent.getTeamIds()'),
-                ),
-            )
+                ],
+            ]
         );
 
         $this->assertNoJoins($query_part);
@@ -162,9 +163,9 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
     public function testNotUnassignedCompile()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(1, 3, 199, 0),
-            ),
+            [
+                'agent_team_ids' => [1, 3, 199, 0],
+            ],
             TermInterface::OP_IS
         );
 
@@ -177,9 +178,9 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(1, 3, 199),
-            )
+            [
+                'ids' => [1, 3, 199],
+            ]
         );
 
         $this->assertNoJoins($query_part);
@@ -189,9 +190,9 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
     public function testOnlyUnassigned()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(0),
-            ),
+            [
+                'agent_team_ids' => [0],
+            ],
             TermInterface::OP_IS
         );
 
@@ -210,9 +211,9 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
     public function testOnlyNotUnassigned()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(0),
-            ),
+            [
+                'agent_team_ids' => [0],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -231,9 +232,9 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
     public function testCompileSeveral()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(1, 3, 199, 0, AgentTeamTerm::TEAM_ID_ME),
-            ),
+            [
+                'agent_team_ids' => [1, 3, 199, 0, AgentTeamTerm::TEAM_ID_ME],
+            ],
             TermInterface::OP_IS
         );
 
@@ -246,14 +247,14 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(
+            [
+                'ids' => [
                     1,
                     3,
                     199,
                     new TermEngineExpression('agent.getTeamIds()'),
-                ),
-            )
+                ],
+            ]
         );
 
         $this->assertNoJoins($query_part);
@@ -263,9 +264,9 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
     public function testCompileSeveralNOT()
     {
         $term = new AgentTeamTerm(
-            array(
-                'agent_team_ids' => array(1, 3, 199, 0, AgentTeamTerm::TEAM_ID_ME),
-            ),
+            [
+                'agent_team_ids' => [1, 3, 199, 0, AgentTeamTerm::TEAM_ID_ME],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -278,14 +279,14 @@ class DbalAgentTeamTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(
+            [
+                'ids' => [
                     1,
                     3,
                     199,
                     new TermEngineExpression('agent.getTeamIds()'),
-                ),
-            )
+                ],
+            ]
         );
 
         $this->assertNoJoins($query_part);

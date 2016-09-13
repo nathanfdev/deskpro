@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Settings;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
@@ -90,15 +91,15 @@ class TicketFwdSettings
      */
     public function toArray()
     {
-        $export_settings = array();
+        $export_settings = [];
 
-        foreach (array(
+        foreach ([
             'use_account',
             'use_agent_address',
             'process_agent_fwd',
             'agent_fwd_subject_regex',
             'email_fwd_reply_as_note',
-        ) as $s) {
+        ] as $s) {
             $export_settings[$s] = $this->$s;
         }
 

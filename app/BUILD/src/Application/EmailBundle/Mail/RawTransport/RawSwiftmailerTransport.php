@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Mail\RawTransport;
 
 use Application\EmailBundle\Mail\RawMessage\RawMessageDecoderInterface;
@@ -91,7 +92,7 @@ class RawSwiftmailerTransport implements RawTransportInterface
         $raw_message = $this->decoder->createRawMessage($raw_fp);
         $message     = \Swift_Message::newInstance();
         RawMessageUtil::applyRawToSwift($raw_message, $message, $send_tos);
-        $included_tos = array();
+        $included_tos = [];
         foreach ($raw_message->getCcs() as $to) {
             $message->addCc($to['email'], $to['name']);
             $included_tos[] = strtolower($to['email']);
@@ -104,9 +105,9 @@ class RawSwiftmailerTransport implements RawTransportInterface
             }
         }
 
-        #------------------------------
-        # Message
-        #------------------------------
+        //------------------------------
+        // Message
+        //------------------------------
 
         $text_body = $raw_message->getTextPart();
         $html_body = $raw_message->getHtmlPart();
@@ -127,9 +128,9 @@ class RawSwiftmailerTransport implements RawTransportInterface
             }
         }
 
-        #------------------------------
-        # Attachments
-        #------------------------------
+        //------------------------------
+        // Attachments
+        //------------------------------
 
         foreach ($raw_message->getAttachments() as $attach) {
             $a = \Swift_Attachment::newInstance();
@@ -151,9 +152,9 @@ class RawSwiftmailerTransport implements RawTransportInterface
             $message->attach($a);
         }
 
-        #------------------------------
-        # Headers
-        #------------------------------
+        //------------------------------
+        // Headers
+        //------------------------------
 
         $headers = $message->getHeaders();
         foreach ($raw_message->getHeaders() as $header_name => $header_values) {
@@ -173,7 +174,7 @@ class RawSwiftmailerTransport implements RawTransportInterface
 
                     case 'DKIM-Signature':
                     case 'DomainKey-Signature':
-                    case (strpos($header_name, 'X-') === 0):
+                    case strpos($header_name, 'X-') === 0:
                         $headers->removeAll($header_name);
                         foreach ($header_values as $v) {
                             $headers->addTextHeader($header_name, $v);
@@ -184,9 +185,9 @@ class RawSwiftmailerTransport implements RawTransportInterface
             }
         }
 
-        #------------------------------
-        # Done
-        #------------------------------
+        //------------------------------
+        // Done
+        //------------------------------
 
         return $message;
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\Themes\Base;
 
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
@@ -82,7 +83,7 @@ class BaseThemeSpec extends ObjectBehavior
 
     public function it_can_contain_hard_coded_tags_but_we_dont_use_them()
     {
-        $this->getHardCodedTags()->shouldBe(array());
+        $this->getHardCodedTags()->shouldBe([]);
     }
 
     public function it_does_of_course_allow_adding_tags_after_construction(
@@ -94,12 +95,12 @@ class BaseThemeSpec extends ObjectBehavior
         $tag2->getName()->willReturn('second_tag');
         $tag3->getName()->willReturn('third_tag');
 
-        $this->setTags($tags = array($tag1, $tag2, $tag3));
-        $this->getTags()->shouldBe(array(
+        $this->setTags($tags = [$tag1, $tag2, $tag3]);
+        $this->getTags()->shouldBe([
             'first_tag'  => $tag1,
             'second_tag' => $tag2,
             'third_tag'  => $tag3,
-        ));
+        ]);
 
         $this->getTag('first_tag')->shouldReturn($tag1);
         $this->getTag('second_tag')->shouldReturn($tag2);
@@ -116,11 +117,11 @@ class BaseThemeSpec extends ObjectBehavior
         $tag1->getName()->willReturn('first_tag');
         $tag2->getName()->willReturn('second_tag');
 
-        $this->setTags($tags = array($tag1, $tag2));
-        $this->getTags()->shouldBe(array(
+        $this->setTags($tags = [$tag1, $tag2]);
+        $this->getTags()->shouldBe([
             'first_tag'  => $tag1,
             'second_tag' => $tag2,
-        ));
+        ]);
 
         $this->resolveTag('first_tag')->shouldReturn($tag1);
         $this->resolveTag('second_tag')->shouldReturn($tag2);

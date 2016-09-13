@@ -94,9 +94,9 @@ class CustomFieldUtil
                 if (!$data->getValue()) {
                     $ids = explode(',', $data->getInput());
                 } else {
-                    $ids = array($data->getFieldId());
+                    $ids = [$data->getFieldId()];
                 }
-                $selected = array();
+                $selected = [];
                 foreach ($ids as $id) {
                     if ($selected_field = $field_def->getChildById($id)) {
                         $selected[] = $selected_field->getTitle();

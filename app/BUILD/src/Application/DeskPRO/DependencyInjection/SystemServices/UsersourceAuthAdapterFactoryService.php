@@ -45,7 +45,7 @@ class UsersourceAuthAdapterFactoryService
      *
      * @return \Application\DeskPRO\Sms\DeskPROSmsSender
      */
-    public static function create(DeskproContainer $container, $options = array())
+    public static function create(DeskproContainer $container, $options = [])
     {
         return new UsersourceAuthAdapterFactory(
             $container, $container->getRouter(), $container->getSession(), isset($options['interface']) ? $options['interface'] : DP_INTERFACE

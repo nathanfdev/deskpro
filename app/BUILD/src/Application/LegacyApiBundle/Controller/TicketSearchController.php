@@ -305,7 +305,7 @@ class TicketSearchController extends AbstractController
      */
     public function searchAction()
     {
-        $search_map = array(
+        $search_map = [
             'agent_id'        => TicketSearch::TERM_AGENT,
             'agent_team_id'   => TicketSearch::TERM_AGENT_TEAM,
             'category_id'     => TicketSearch::TERM_CATEGORY,
@@ -325,9 +325,9 @@ class TicketSearchController extends AbstractController
             'sla_status'      => TicketSearch::TERM_SLA_STATUS,
             'sla_completed'   => TicketSearch::TERM_SLA_COMPLETED,
             'is_hold'         => TicketSearch::TERM_HOLD,
-        );
+        ];
 
-        $date_search_map = array(
+        $date_search_map = [
             'date_created'          => TicketSearch::TERM_DATE_CREATED,
             'date_resolved'         => TicketSearch::TERM_DATE_RESOLVED,
             'date_archived'         => TicketSearch::TERM_DATE_ARCHIVED,
@@ -335,29 +335,29 @@ class TicketSearchController extends AbstractController
             'date_last_agent_reply' => TicketSearch::TERM_DATE_LAST_AGENT_REPLY,
             'date_last_user_reply'  => TicketSearch::TERM_DATE_LAST_USER_REPLY,
             'date_last_reply'       => TicketSearch::TERM_DATE_LAST_REPLY,
-        );
+        ];
 
-        $terms = array();
+        $terms = [];
 
         foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ((is_string($value) && strlen($value) > 0) || (!is_string($value) && $value)) {
                 $op      = $this->in->getString($search_key.'_op') ?: 'contains';
-                $terms[] = array('type' => $search_key, 'op' => $op, 'options' => $value);
+                $terms[] = ['type' => $search_key, 'op' => $op, 'options' => $value];
             }
         }
 
         $id_min = $this->in->getUint('id_min');
         $id_max = $this->in->getUint('id_max');
         if ($id_min || $id_max) {
-            $terms[] = array('type' => 'id', 'op' => 'between', 'options' => array($id_min, $id_max));
+            $terms[] = ['type' => 'id', 'op' => 'between', 'options' => [$id_min, $id_max]];
         } elseif ($id = $this->in->getUint('id')) {
-            $terms[] = array('type' => 'id', 'op' => 'is', 'options' => array($id));
+            $terms[] = ['type' => 'id', 'op' => 'is', 'options' => [$id]];
         }
 
         if ($ref = $this->in->getString('ref')) {
             $op      = $this->in->getString('ref_op') ?: 'contains';
-            $terms[] = array('type' => 'ref', 'op' => $op, 'options' => array('ref' => $ref));
+            $terms[] = ['type' => 'ref', 'op' => $op, 'options' => ['ref' => $ref]];
         }
 
         $proc_date_input = function ($date_input) {
@@ -420,7 +420,7 @@ class TicketSearchController extends AbstractController
                     return $this->createApiErrorResponse('invalid_term', "$input includes a bad date range: $raw. Expected format: date1/date2 where the dates are unix timestamps or ISO 8601");
                 }
 
-                $options = array('date1' => $date1, 'date2' => $date2);
+                $options = ['date1' => $date1, 'date2' => $date2];
             } else {
                 $op_sym = $raw[0];
                 $raw    = substr($raw, 1);
@@ -438,10 +438,10 @@ class TicketSearchController extends AbstractController
                     return $this->createApiErrorResponse('invalid_term', "$input includes a bad date: $raw. Expected format is a unix timestamp or ISO 8601");
                 }
 
-                $options = array('date1' => $date1);
+                $options = ['date1' => $date1];
             }
 
-            $terms[] = array('type' => $search_key, 'op' => $op, 'options' => $options);
+            $terms[] = ['type' => $search_key, 'op' => $op, 'options' => $options];
         }
 
         foreach ($this->container->getSystemService('ticket_fields_manager')->getFields() as $field) {
@@ -449,15 +449,15 @@ class TicketSearchController extends AbstractController
                 $in_val     = $this->in->getString('field.'.$field->getId());
                 $in_val_arr = $this->in->getArrayOfStrings('field.'.$field->getId());
                 if ($in_val_arr) {
-                    $terms[] = array('type' => 'ticket_field['.$field->getId().']', 'op' => 'is', 'options' => array('value' => $in_val_arr));
+                    $terms[] = ['type' => 'ticket_field['.$field->getId().']', 'op' => 'is', 'options' => ['value' => $in_val_arr]];
                 } elseif ($in_val) {
-                    $terms[] = array('type' => 'ticket_field['.$field->getId().']', 'op' => 'is', 'options' => array('value' => $in_val));
+                    $terms[] = ['type' => 'ticket_field['.$field->getId().']', 'op' => 'is', 'options' => ['value' => $in_val]];
                 }
             }
         }
 
         if ($this->in->getString('query')) {
-            $terms[] = array('type' => 'ticket_message', 'op' => 'is', 'options' => array('ticket_message' => $this->in->getString('query')));
+            $terms[] = ['type' => 'ticket_message', 'op' => 'is', 'options' => ['ticket_message' => $this->in->getString('query')]];
         }
 
         if ($this->in->checkIsset('order')) {
@@ -469,7 +469,7 @@ class TicketSearchController extends AbstractController
             }
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -485,13 +485,13 @@ class TicketSearchController extends AbstractController
 
         $helper = \Application\AgentBundle\Controller\Helper\TicketResults::newFromResultCache($this, $result_cache);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => $helper->getCount(),
             'cache_id' => $result_cache->id,
             'tickets'  => $this->getApiData($helper->getTicketsForPage($page, $per_page)),
-        ));
+        ]);
     }
 
     /**
@@ -510,7 +510,7 @@ class TicketSearchController extends AbstractController
     public function getFiltersAction()
     {
         $filters = $this->_getFiltersApi()->getFiltersForPerson($this->person);
-        $data    = array('filters' => $this->getApiData($filters));
+        $data    = ['filters' => $this->getApiData($filters)];
 
         if ($this->in->getBool('with_counts')) {
             $all_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($filters);
@@ -566,13 +566,13 @@ class TicketSearchController extends AbstractController
 
         $tickets = $this->_getFiltersApi()->getTicketsFromFilter($filter_id, $page, $per_page);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => $total,
             'tickets'  => $this->getApiData($tickets),
             'filter'   => $filter->toApiData(true),
-        ));
+        ]);
     }
 
     /**
@@ -593,9 +593,9 @@ class TicketSearchController extends AbstractController
         $all_counts = App::getApi('tickets.filters')->getAllCountsCustomFilters($this->person);
         $all_counts = Arrays::castToType($all_counts, 'int', 'int');
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'filter_counts' => $all_counts,
-        ));
+        ]);
     }
 
     /**
@@ -621,14 +621,14 @@ class TicketSearchController extends AbstractController
      */
     public function getQuickStatsAction()
     {
-        $stats = array();
+        $stats = [];
         $today = $this->person->getDateTime();
         $today->setTime(0, 0, 0);
         $today->setTimezone(\Orb\Util\Dates::tzUtc());
         $today = $today->format('Y-m-d H:i:s');
 
-        $stats['created_today']  = $this->db->fetchColumn('SELECT COUNT(*) FROM tickets WHERE date_created > ?', array($today));
-        $stats['resolved_today'] = $this->db->fetchColumn('SELECT COUNT(*) FROM tickets WHERE date_resolved > ?', array($today));
+        $stats['created_today']  = $this->db->fetchColumn('SELECT COUNT(*) FROM tickets WHERE date_created > ?', [$today]);
+        $stats['resolved_today'] = $this->db->fetchColumn('SELECT COUNT(*) FROM tickets WHERE date_resolved > ?', [$today]);
         $stats['awaiting_agent'] = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets WHERE status = 'awaiting_agent'");
 
         return $this->createApiResponse($stats);
@@ -637,7 +637,7 @@ class TicketSearchController extends AbstractController
     public function getApiData($input, $deep = true)
     {
         if (is_array($input) || $input instanceof \Traversable) {
-            $output = array();
+            $output = [];
             $i      = 0;
             foreach ($input as $key => $value) {
                 if ($value instanceof \Application\DeskPRO\Domain\DomainObject) {

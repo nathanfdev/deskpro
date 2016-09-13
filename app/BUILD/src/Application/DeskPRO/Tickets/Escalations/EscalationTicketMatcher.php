@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -92,7 +92,7 @@ class EscalationTicketMatcher
 
         $this->logger->debug(sprintf('[EscalationTicketMatcher] --> SQL: %s', $searcher->getSql()));
         $ticket_ids = $searcher->getMatches();
-        $tickets    = array();
+        $tickets    = [];
         if ($ticket_ids) {
             $tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
         }
@@ -112,7 +112,7 @@ class EscalationTicketMatcher
     private function _getSearcherForEscalation(TicketEscalation $esc)
     {
         $searcher = new TicketSearch();
-        $searcher->addTerm('escalation_eliminator', 'is', array('escalation' => $esc));
+        $searcher->addTerm('escalation_eliminator', 'is', ['escalation' => $esc]);
 
         // set this efficient order to make sure th default (status/urgency) isnt used
         $searcher->setOrderBy('ticket.date_created');
@@ -168,40 +168,40 @@ class EscalationTicketMatcher
             case TicketEscalation::EVENT_TYPE_TIME_OPEN:
                 $searcher->addRawWhere('tickets.status IN (\'awaiting_user\', \'awaiting_agent\')');
                 $date_cut = new \DateTime('-'.$time_secs.' seconds');
-                $searcher->addTerm('date_created', 'lte', array('date1' => $date_cut));
+                $searcher->addTerm('date_created', 'lte', ['date1' => $date_cut]);
 
                 break;
 
             case TicketEscalation::EVENT_TYPE_TIME_USER_WAITING:
-                $searcher->addTerm('status', 'is', array('awaiting_agent'));
+                $searcher->addTerm('status', 'is', ['awaiting_agent']);
                 $searcher->addRawWhere('tickets.date_user_waiting IS NOT NULL');
 
                 $date_cut = new \DateTime('-'.$time_secs.' seconds');
-                $searcher->addTerm('user_waiting', 'lte', array('date1' => $date_cut));
+                $searcher->addTerm('user_waiting', 'lte', ['date1' => $date_cut]);
 
                 break;
 
             case TicketEscalation::EVENT_TYPE_TIME_TOTAL_USER_WAITING:
-                $searcher->addTerm('status', 'is', array('awaiting_agent'));
+                $searcher->addTerm('status', 'is', ['awaiting_agent']);
                 $searcher->addRawWhere('tickets.date_user_waiting IS NOT NULL');
-                $searcher->addTerm('total_user_waiting', 'between', array($time_secs, $time_secs));
+                $searcher->addTerm('total_user_waiting', 'between', [$time_secs, $time_secs]);
                 break;
 
             case TicketEscalation::EVENT_TYPE_TIME_AGENT_WAITING:
-                $searcher->addTerm('status', 'is', array('awaiting_user'));
+                $searcher->addTerm('status', 'is', ['awaiting_user']);
                 $searcher->addRawWhere('tickets.date_agent_waiting IS NOT NULL');
 
                 $date_cut = new \DateTime('-'.$time_secs.' seconds');
-                $searcher->addTerm('agent_waiting', 'lte', array('date1' => $date_cut));
+                $searcher->addTerm('agent_waiting', 'lte', ['date1' => $date_cut]);
 
                 break;
 
             case TicketEscalation::EVENT_TYPE_TIME_RESOLVED:
-                $searcher->addTerm('status', 'is', array('resolved'));
+                $searcher->addTerm('status', 'is', ['resolved']);
                 $searcher->addRawWhere('tickets.date_resolved IS NOT NULL');
 
                 $date_cut = new \DateTime('-'.$time_secs.' seconds');
-                $searcher->addTerm('date_resolved', 'lte', array('date1' => $date_cut));
+                $searcher->addTerm('date_resolved', 'lte', ['date1' => $date_cut]);
 
                 break;
 

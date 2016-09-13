@@ -31,6 +31,7 @@
  *
  * @category Input
  */
+
 namespace Orb\Images;
 
 use Orb\Util\Numbers;

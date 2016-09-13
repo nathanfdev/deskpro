@@ -55,7 +55,7 @@ class ResultHandler
      *
      * @var array[int]
      */
-    protected $_columns = array();
+    protected $_columns = [];
 
     /**
      * List of columns that will be grouped on in the X direction.
@@ -66,7 +66,7 @@ class ResultHandler
      *
      * @var array[int]
      */
-    protected $_groupXColumns = array();
+    protected $_groupXColumns = [];
 
     /**
      * List of columns that will be grouped on in the Y direction.
@@ -76,12 +76,12 @@ class ResultHandler
      *
      * @var array[int]
      */
-    protected $_groupYColumns = array();
+    protected $_groupYColumns = [];
 
     /**
      * @var array
      */
-    protected $_groupStackColumns = array();
+    protected $_groupStackColumns = [];
 
     /**
      * List of columns that will be used to split the results into
@@ -91,19 +91,19 @@ class ResultHandler
      *
      * @var array[int]
      */
-    protected $_splitColumns = array();
+    protected $_splitColumns = [];
 
     /**
      * List of select column IDs that should be totaled.
      *
      * @var array
      */
-    protected $_totalColumns = array();
+    protected $_totalColumns = [];
 
     /**
      * @var array
      */
-    protected $_flags = array();
+    protected $_flags = [];
 
     /**
      * Adds a column that will be selected/output into the results.
@@ -114,11 +114,11 @@ class ResultHandler
      */
     public function addSelectColumn($title, $resultId, $renderer = null)
     {
-        $this->_columns[] = array(
+        $this->_columns[] = [
             'title'    => $title,
             'resultId' => $resultId,
             'renderer' => $renderer,
-        );
+        ];
     }
 
     /**
@@ -143,12 +143,12 @@ class ResultHandler
      */
     public function addGroupYColumn($title, $groupResultId, $resultId, $renderer = null)
     {
-        $this->_groupYColumns[] = array(
+        $this->_groupYColumns[] = [
             'title'         => $title,
             'groupResultId' => $groupResultId,
             'resultId'      => $resultId,
             'renderer'      => $renderer,
-        );
+        ];
     }
 
     /**
@@ -172,12 +172,12 @@ class ResultHandler
      */
     public function addGroupXColumn($title, $groupResultId, $resultId, $renderer = null)
     {
-        $this->_groupXColumns[] = array(
+        $this->_groupXColumns[] = [
             'title'         => $title,
             'groupResultId' => $groupResultId,
             'resultId'      => $resultId,
             'renderer'      => $renderer,
-        );
+        ];
     }
 
     /**
@@ -192,10 +192,10 @@ class ResultHandler
 
     public function addGroupStackColumn($groupId, $printId)
     {
-        $this->_groupStackColumns[] = array(
+        $this->_groupStackColumns[] = [
             'groupId' => $groupId,
             'printId' => $printId,
-        );
+        ];
     }
 
     public function getGroupStackColumns()
@@ -211,10 +211,10 @@ class ResultHandler
      */
     public function addSplitColumn($resultId, $renderer = null)
     {
-        $this->_splitColumns[] = array(
+        $this->_splitColumns[] = [
             'resultId' => $resultId,
             'renderer' => $renderer,
-        );
+        ];
     }
 
     /**

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -109,10 +110,10 @@ class TicketReminders extends AbstractJob
         } else {
             $message->setTo($email_to->getEmailAddress(), $email_to->getName());
         }
-        $message->setTemplate('DeskPRO:emails_user:ticket-new-reminder.html.twig', array(
+        $message->setTemplate('DeskPRO:emails_user:ticket-new-reminder.html.twig', [
             'verify_url'  => $validate_url,
             'expire_date' => $saved_form->getDateExpires(),
-        ));
+        ]);
 
         App::getMailer()->send($message);
     }

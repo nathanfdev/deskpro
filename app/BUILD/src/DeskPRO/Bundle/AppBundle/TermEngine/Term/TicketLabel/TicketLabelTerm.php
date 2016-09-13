@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -41,25 +42,25 @@ class TicketLabelTerm extends AbstractTerm
     public static function configureOptions(TermOptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'label' => '',
-            )
+            ]
         );
 
         $resolver->setConstraints(
-            array(
+            [
                 new PrimaryKeyExists(
-                    array(
+                    [
                         'table' => 'labels_tickets',
-                    )
+                    ]
                 ),
-            )
+            ]
         );
     }
 
     public function getSupportedOps()
     {
-        return array(TermInterface::OP_HAS, TermInterface::OP_NOT_HAS);
+        return [TermInterface::OP_HAS, TermInterface::OP_NOT_HAS];
     }
 
     public function getDefaultOp()

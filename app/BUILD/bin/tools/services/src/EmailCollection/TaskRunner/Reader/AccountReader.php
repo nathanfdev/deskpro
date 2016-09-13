@@ -87,7 +87,7 @@ class AccountReader implements ReaderInterface
                   AND is_enabled = 1
                 ORDER BY date_read_start ASC
                 LIMIT 1
-            ", array($date_cut->format('Y-m-d H:i:s')));
+            ", [$date_cut->format('Y-m-d H:i:s')]);
         } else {
             $account_id = $db->fetchColumn("
                 SELECT id
@@ -104,13 +104,13 @@ class AccountReader implements ReaderInterface
         // The is_read_active is toggled on/off during dp:collect-email anyway,
         // but by reserving it here, it makes sure there's no races
         if ($account_id) {
-            $db->update('email_accounts', array('is_read_active' => 1), array('id' => $account_id));
+            $db->update('email_accounts', ['is_read_active' => 1], ['id' => $account_id]);
         }
 
         $db->commit();
 
         if ($account_id) {
-            return new Task(array('account_id' => $account_id));
+            return new Task(['account_id' => $account_id]);
         }
 
         return;

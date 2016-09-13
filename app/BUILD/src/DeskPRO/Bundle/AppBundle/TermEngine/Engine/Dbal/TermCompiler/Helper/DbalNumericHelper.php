@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
@@ -59,7 +60,7 @@ class DbalNumericHelper extends AbstractDbalHelper
         $part = new DbalQueryPart();
 
         $num = array_unique(array_map('intval', $num));
-        $num = $num ?: array(0);
+        $num = $num ?: [0];
 
         $where = $field_name.' ';
 
@@ -104,7 +105,7 @@ class DbalNumericHelper extends AbstractDbalHelper
             $part->setParameter('num2', $num2);
         }
 
-        $this->getLogger()->debug('DbalNumericHelper: asserting WHERE', array('where' => $where));
+        $this->getLogger()->debug('DbalNumericHelper: asserting WHERE', ['where' => $where]);
 
         $part->setWhereString($where);
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class CustomDataTicket extends AbstractEntityRepository
@@ -53,13 +54,13 @@ class CustomDataTicket extends AbstractEntityRepository
      */
     public function getDataCollectionForTicketCollection(array $tickets)
     {
-        $ids = array();
+        $ids = [];
         foreach ($tickets as $t) {
             $ids[] = $t->id;
         }
 
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $raw = $this->_em->createQuery('
@@ -67,10 +68,10 @@ class CustomDataTicket extends AbstractEntityRepository
             FROM DeskPRO:CustomDataTicket d
             LEFT JOIN d.ticket t
             WHERE d.ticket.id IN (?0)
-        ')->execute(array($ids));
+        ')->execute([$ids]);
 
         if (!$raw) {
-            return array();
+            return [];
         }
 
         // Note that this is still pretty inefficient. Doctrine doesnt know about the
@@ -78,10 +79,10 @@ class CustomDataTicket extends AbstractEntityRepository
         // on the ticket table to fetch it, just so we can use the id to index the array below
 
         // Reindex by ticket id
-        $data = array();
+        $data = [];
         foreach ($raw as $r) {
             if (!isset($data[$r->ticket->id])) {
-                $data[$r->ticket->id] = array();
+                $data[$r->ticket->id] = [];
             }
 
             $data[$r->ticket->id][] = $r;

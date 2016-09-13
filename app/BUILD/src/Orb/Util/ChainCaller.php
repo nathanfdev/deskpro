@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
 /**
@@ -40,7 +41,7 @@ namespace Orb\Util;
 class ChainCaller
 {
     /** @var arrayApplication\UserBundle\Controller\Helper\CommentsAdapter\AbstractComments */
-    protected $_objects = array();
+    protected $_objects = [];
 
     /**
      * Add a new object to the chain.
@@ -68,7 +69,7 @@ class ChainCaller
     public function __call($name, $arguments)
     {
         foreach ($this->_objects as $obj) {
-            $value = call_user_func_array(array($obj, $name), $arguments);
+            $value = call_user_func_array([$obj, $name], $arguments);
         }
 
         return $value;

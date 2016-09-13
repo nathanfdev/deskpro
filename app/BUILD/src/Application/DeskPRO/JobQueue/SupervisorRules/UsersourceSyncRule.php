@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\JobQueue\SupervisorRules;
 
 use Application\DeskPRO\Entity\Job;
@@ -57,18 +58,18 @@ class UsersourceSyncRule extends AbstractSupervisorRule
             WHERE status IN (:running_or_scheduled_status)
             AND type = :sync
             ',
-            array(
-                'running_or_scheduled_status' => array(
+            [
+                'running_or_scheduled_status' => [
                     Job::STATUS_WAITING,
                     Job::STATUS_PROCESSING,
                     Job::STATUS_RESERVED,
-                ),
+                ],
                 'sync' => UsersourceSyncProcessor::JOB_TYPE,
-            ),
-            array(
+            ],
+            [
                 'running_or_scheduled_status' => Connection::PARAM_STR_ARRAY,
                 'sync'                        => \PDO::PARAM_STR,
-            )
+            ]
         );
 
         if (count($jobs)) {
@@ -102,7 +103,7 @@ class UsersourceSyncRule extends AbstractSupervisorRule
         $this->connection->exec('DELETE FROM tmp_data WHERE name = "'.UsersourceSyncProcessor::ABORT_JOB_TMP_DATA_NAME.'"');
 
         // add a new job
-        $this->queue->add(UsersourceSyncProcessor::JOB_TYPE, array(), new \DateTime('tomorrow 1am'));
+        $this->queue->add(UsersourceSyncProcessor::JOB_TYPE, [], new \DateTime('tomorrow 1am'));
 
         return true;
     }

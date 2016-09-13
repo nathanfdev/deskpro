@@ -53,9 +53,9 @@ class AgentChromeController extends AbstractController
 
     public function loadSessionAction()
     {
-        $data = array(
+        $data = [
 
-        );
+        ];
 
         return $this->createJsonResponse($data);
     }

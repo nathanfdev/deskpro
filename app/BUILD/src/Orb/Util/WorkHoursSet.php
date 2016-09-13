@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
 use Application\DeskPRO\Util\InfLoopAssert;
@@ -66,7 +67,7 @@ class WorkHoursSet implements WorkHoursInterface
      *
      * @var array
      */
-    protected $work_days = array();
+    protected $work_days = [];
 
     /**
      * Timezone for work hours/days to be considered in.
@@ -80,7 +81,7 @@ class WorkHoursSet implements WorkHoursInterface
      *
      * @var array
      */
-    protected $work_holidays = array();
+    protected $work_holidays = [];
 
     /**
      * @param int   $work_start    Seconds into the day when work day starts
@@ -89,7 +90,7 @@ class WorkHoursSet implements WorkHoursInterface
      * @param int   $work_timezone Timezone string for the hours
      * @param array $work_holidays Array of holidays
      */
-    public function __construct($work_start, $work_end, array $work_days, $work_timezone, array $work_holidays = array())
+    public function __construct($work_start, $work_end, array $work_days, $work_timezone, array $work_holidays = [])
     {
         try {
             $tz = new \DateTimeZone($work_timezone);
@@ -102,9 +103,11 @@ class WorkHoursSet implements WorkHoursInterface
 
         // old-style array used in old triggers would pass array of [false, true, true, false ...]
         // instead of array of days (1,2,3)
-        $all_bools = array_reduce($work_days, function ($c, $v) { return $c && (is_bool($v) || $v === null); }, true);
+        $all_bools = array_reduce($work_days, function ($c, $v) {
+            return $c && (is_bool($v) || $v === null);
+        }, true);
         if ($work_days && $all_bools) {
-            $work_days_ints = array();
+            $work_days_ints = [];
             if (count($work_days) == 7) {
                 array_unshift($work_days, null); // old-style arrays might be 0-based
             }
@@ -135,7 +138,7 @@ class WorkHoursSet implements WorkHoursInterface
         }
 
         if (!$any || !Arrays::removeFalsey($work_days_array)) {
-            $work_days_array = array(null, true, true, true, true, true, true, true);
+            $work_days_array = [null, true, true, true, true, true, true, true];
         }
         if ($work_start > $work_end) {
             $tmp        = $work_start;
@@ -195,7 +198,7 @@ class WorkHoursSet implements WorkHoursInterface
 
         InfLoopAssert::reset($this);
         while ($delay > 0) {
-            if (!InfLoopAssert::count($this, 100000, array($this, 'getDebugDetails'))) {
+            if (!InfLoopAssert::count($this, 100000, [$this, 'getDebugDetails'])) {
                 return;
             }
             $date_end = $this->getNextWorkDayStart($date_end);
@@ -244,7 +247,7 @@ class WorkHoursSet implements WorkHoursInterface
 
         InfLoopAssert::reset($this);
         while ($delay < 0) {
-            if (!InfLoopAssert::count($this, 100000, array($this, 'getDebugDetails'))) {
+            if (!InfLoopAssert::count($this, 100000, [$this, 'getDebugDetails'])) {
                 return;
             }
             $date_end = $this->getNextWorkDayStart($date_end, true);
@@ -312,7 +315,7 @@ class WorkHoursSet implements WorkHoursInterface
 
         InfLoopAssert::reset($this);
         do {
-            if (!InfLoopAssert::count($this, 200, array($this, 'getDebugDetails'))) {
+            if (!InfLoopAssert::count($this, 200, [$this, 'getDebugDetails'])) {
                 return $date;
             }
 
@@ -402,7 +405,7 @@ class WorkHoursSet implements WorkHoursInterface
 
         InfLoopAssert::reset($this);
         while ($date->getTimestamp() < $end) {
-            if (!InfLoopAssert::count($this, 100000, array($this, 'getDebugDetails'))) {
+            if (!InfLoopAssert::count($this, 100000, [$this, 'getDebugDetails'])) {
                 return 0;
             }
 

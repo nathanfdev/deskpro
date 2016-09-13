@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Orb\Util\DpStrings;
@@ -41,7 +42,7 @@ class Build1410519725 extends AbstractBuild
 
         $recs = $this->container->getDb()->fetchAllCol("SELECT data FROM datastore WHERE name = 'sys.install.default_data'");
         if ($recs) {
-            $installed_list = array();
+            $installed_list = [];
 
             foreach ($recs as $r) {
                 $r = @unserialize($r);
@@ -55,12 +56,12 @@ class Build1410519725 extends AbstractBuild
             $installed_list = array_unique($installed_list);
             $installed_list = array_values($installed_list);
 
-            $this->container->getDb()->delete('datastore', array('name' => 'sys.install.default_data'));
-            $this->container->getDb()->insert('datastore', array(
+            $this->container->getDb()->delete('datastore', ['name' => 'sys.install.default_data']);
+            $this->container->getDb()->insert('datastore', [
                 'name' => 'sys.install.default_data',
                 'auth' => DpStrings::random(15),
-                'data' => serialize(array('installed' => $installed_list)),
-            ));
+                'data' => serialize(['installed' => $installed_list]),
+            ]);
         }
     }
 }

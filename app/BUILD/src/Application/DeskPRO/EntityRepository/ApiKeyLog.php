@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -52,7 +53,7 @@ class ApiKeyLog extends AbstractEntityRepository
             FROM api_key_log
             GROUP BY key_id
             HAVING COUNT(*) > ?
-        ', array($limit), array(\PDO::PARAM_INT));
+        ', [$limit], [\PDO::PARAM_INT]);
 
         if (!$key_ids) {
             return 0;
@@ -65,13 +66,13 @@ class ApiKeyLog extends AbstractEntityRepository
                 WHERE key_id = ?
                 ORDER BY id DESC
                 LIMIT $limit, 1
-            ", array($key_id));
+            ", [$key_id]);
 
             if ($lid) {
                 App::$container->getDb()->executeUpdate('
                     DELETE FROM api_key_log
                     WHERE key_id = ? AND id <= ?
-                ', array($key_id, $lid));
+                ', [$key_id, $lid]);
             }
         }
     }
@@ -89,6 +90,6 @@ class ApiKeyLog extends AbstractEntityRepository
             FROM DeskPRO:ApiKeyLog l
             WHERE l.key = ?0
             ORDER BY l.id DESC
-        ')->setMaxResults($limit)->execute(array($api_key));
+        ')->setMaxResults($limit)->execute([$api_key]);
     }
 }

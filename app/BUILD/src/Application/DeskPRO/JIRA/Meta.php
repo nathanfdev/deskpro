@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,41 +40,41 @@ class Meta
      *
      * @var array
      */
-    protected $projects = array();
+    protected $projects = [];
 
     /**
      * schema for fields.
      *
      * @var array
      */
-    protected $fields = array();
+    protected $fields = [];
 
     /**
      * available statuses.
      *
      * @var array
      */
-    protected $statuses = array();
+    protected $statuses = [];
 
     /**
      * available issue types.
      *
      * @var array
      */
-    protected $issuetypes = array();
+    protected $issuetypes = [];
 
     protected $default_project;
     protected $default_issuetype;
-    protected $default_fields_summary = array();
-    protected $default_fields_list    = array();
-    protected $system_fields          = array('project', 'issuetype', 'summary');
+    protected $default_fields_summary = [];
+    protected $default_fields_list    = [];
+    protected $system_fields          = ['project', 'issuetype', 'summary'];
 
     /**
      * @return array
      */
     public function toArray()
     {
-        $ret = array();
+        $ret = [];
 
         $ref = new \ReflectionObject($this);
         foreach ($ref->getProperties() as $prop) {
@@ -124,51 +124,51 @@ class Meta
         return $this->api_username;
     }
 
-    public function setProjects(array $projects = array())
+    public function setProjects(array $projects = [])
     {
-        $this->projects = array();
+        $this->projects = [];
         foreach ($projects as $project) {
-            $this->projects[] = array(
+            $this->projects[] = [
                 'id'   => $project['id'],
                 'key'  => $project['key'],
                 'name' => $project['name'],
-            );
+            ];
         }
     }
 
-    public function setIssuetypes(array $issuetypes = array())
+    public function setIssuetypes(array $issuetypes = [])
     {
-        $this->issuetypes = array();
+        $this->issuetypes = [];
         foreach ($issuetypes as $issuetype) {
-            $this->issuetypes[] = array(
+            $this->issuetypes[] = [
                 'id'      => $issuetype['id'],
                 'name'    => $issuetype['name'],
                 'subtask' => false,
-            );
+            ];
         }
     }
 
-    public function setStatuses(array $statuses = array())
+    public function setStatuses(array $statuses = [])
     {
-        $this->statuses = array();
+        $this->statuses = [];
         foreach ($statuses as $status) {
-            $this->statuses[] = array(
+            $this->statuses[] = [
                 'id'   => $status['id'],
                 'name' => $status['name'],
-            );
+            ];
         }
     }
 
-    public function setFields(array $fields = array())
+    public function setFields(array $fields = [])
     {
-        $this->fields = array();
+        $this->fields = [];
         foreach ($fields as $field) {
-            $this->fields[] = array(
+            $this->fields[] = [
                 'id'     => $field['id'],
                 'name'   => $field['name'],
                 'custom' => $field['custom'],
                 'schema' => $field['schema'],
-            );
+            ];
         }
     }
 }

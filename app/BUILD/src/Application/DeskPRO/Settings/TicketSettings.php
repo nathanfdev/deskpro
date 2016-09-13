@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -97,7 +97,7 @@ class TicketSettings
     /** @var bool */
     public $email_require_validation = false;
 
-    public $agent_defaults = array(
+    public $agent_defaults = [
         'newticket_status'        => 'awaiting_user',
         'newticket_agent'         => 'assign',
         'newticket_team'          => null,
@@ -114,7 +114,7 @@ class TicketSettings
         'reply_resolve_auto_close_tab'      => true,
 
         'view_reverse_order' => true,
-    );
+    ];
 
     /**
      * @param Settings $settings
@@ -182,22 +182,22 @@ class TicketSettings
         if ($wh) {
             $this->working_hours = $wh;
         } else {
-            $this->working_hours = array(
+            $this->working_hours = [
                 'timezone'   => 'UTC',
                 'start_hour' => 9,
                 'start_min'  => 0,
                 'end_hour'   => 17,
                 'end_min'    => 0,
-                'holidays'   => array(),
-                'work_days'  => array(),
-            );
+                'holidays'   => [],
+                'work_days'  => [],
+            ];
         }
 
         if (!@$this->working_hours['holidays']) {
-            $this->working_hours['holidays'] = array();
+            $this->working_hours['holidays'] = [];
         }
         if (!@$this->working_hours['work_days']) {
-            $this->working_hours['work_days'] = array();
+            $this->working_hours['work_days'] = [];
         }
 
         $this->from_email_headers = explode(',', $this->settings->get('core_email.from_email_headers'));
@@ -206,7 +206,7 @@ class TicketSettings
         $this->from_email_headers = Arrays::func($this->from_email_headers, 'strtolower');
 
         if (!$this->from_email_headers) {
-            $this->from_email_headers = array('from', 'reply-to', 'x-original-from');
+            $this->from_email_headers = ['from', 'reply-to', 'x-original-from'];
         }
 
         $this->email_reply_as_note = (bool) $this->settings->get('core_tickets.email_reply_as_note');
@@ -217,9 +217,9 @@ class TicketSettings
      */
     public function toArray()
     {
-        $export_settings = array();
+        $export_settings = [];
 
-        foreach (array(
+        foreach ([
             'satisfaction_enabled',
             'satisfaction_agentread',
             'web_require_validation',
@@ -243,7 +243,7 @@ class TicketSettings
             'working_hours',
             'from_email_headers',
             'email_reply_as_note',
-        ) as $s) {
+        ] as $s) {
             $export_settings[$s] = $this->$s;
         }
 
@@ -262,7 +262,7 @@ class TicketSettings
                 $this->from_email_headers = Arrays::removeFalsey($this->from_email_headers);
                 $this->from_email_headers = Arrays::func($this->from_email_headers, 'strtolower');
                 if (!$this->from_email_headers) {
-                    $this->from_email_headers = array('from', 'reply-to', 'x-original-from');
+                    $this->from_email_headers = ['from', 'reply-to', 'x-original-from'];
                 }
             } else {
                 if (property_exists($this, $s)) {

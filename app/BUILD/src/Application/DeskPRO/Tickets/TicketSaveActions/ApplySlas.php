@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -79,10 +80,12 @@ class ApplySlas implements TicketSaveActionInterface
         }
 
         if (count($ticket->ticket_slas)) {
-            $has_slas = array_map(function ($s) { return $s->sla->id; }, is_array($ticket->ticket_slas) ? $ticket->ticket_slas : $ticket->ticket_slas->toArray());
+            $has_slas = array_map(function ($s) {
+                return $s->sla->id;
+            }, is_array($ticket->ticket_slas) ? $ticket->ticket_slas : $ticket->ticket_slas->toArray());
             $has_slas = array_combine($has_slas, $has_slas);
         } else {
-            $has_slas = array();
+            $has_slas = [];
         }
 
         $context->getLogger()->debug(sprintf('[ApplySlas] Testing %d SLAs', count($this->slas)));
@@ -95,7 +98,7 @@ class ApplySlas implements TicketSaveActionInterface
         // - So before adding an SLA here, look it up to make sure it wasnt subject to a trigger attempting
         // to remove it.
 
-        $ignore_slas = $context->getVars()->get('removed_slas', array());
+        $ignore_slas = $context->getVars()->get('removed_slas', []);
         $ignore_slas = array_fill_keys($ignore_slas, true);
 
         foreach ($this->slas as $sla) {

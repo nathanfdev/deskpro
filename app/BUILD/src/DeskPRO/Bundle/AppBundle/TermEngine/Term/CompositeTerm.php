@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
@@ -44,10 +45,10 @@ class CompositeTerm extends AbstractTerm implements CompositeTermInterface
      */
     protected $terms;
 
-    public function __construct(array $options = array(), $op = null)
+    public function __construct(array $options = [], $op = null)
     {
         parent::__construct($options, $op);
-        $this->terms = array();
+        $this->terms = [];
     }
 
     public function getTerms()
@@ -91,7 +92,7 @@ class CompositeTerm extends AbstractTerm implements CompositeTermInterface
 
     public function getSupportedOps()
     {
-        return array(TermInterface::OP_OR, TermInterface::OP_AND);
+        return [TermInterface::OP_OR, TermInterface::OP_AND];
     }
 
     public function getDefaultOp()

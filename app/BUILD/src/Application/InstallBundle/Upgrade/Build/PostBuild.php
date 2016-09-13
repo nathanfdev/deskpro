@@ -85,9 +85,9 @@ class PostBuild extends AbstractBuild
         $this->out('invalidate lang cache');
         $this->out('invalidate lang js cache');
 
-        #------------------------------
-        # Reset opcache
-        #------------------------------
+        //------------------------------
+        // Reset opcache
+        //------------------------------
 
         if (!defined('DPC_IS_CLOUD')) {
             $this->out('Reset OPcache');
@@ -111,9 +111,9 @@ class PostBuild extends AbstractBuild
             @file_get_contents($url, null, $ctx);
         }
 
-        #------------------------------
-        # Data
-        #------------------------------
+        //------------------------------
+        // Data
+        //------------------------------
 
         $this->out('Syncing default data');
 
@@ -125,9 +125,9 @@ class PostBuild extends AbstractBuild
 
         $this->out('.. done syncing default data');
 
-        #------------------------------
-        # Apps
-        #------------------------------
+        //------------------------------
+        // Apps
+        //------------------------------
 
         $this->out('Syncing apps');
 
@@ -144,14 +144,15 @@ class PostBuild extends AbstractBuild
             SystemErrorHandler::logException($e);
         });
 
+        $appSyncer->deleteUnexisting();
         $appSyncer->runUpdates();
         $appSyncer->runSync();
 
         $this->out('.. done syncing apps');
 
-        #------------------------------
-        # Clear error logs
-        #------------------------------
+        //------------------------------
+        // Clear error logs
+        //------------------------------
 
         foreach (['cli-phperr.log', 'server-phperr-web.log', 'error.log'] as $l) {
             $path = dp_get_log_dir().DIRECTORY_SEPARATOR.$l;
@@ -161,9 +162,9 @@ class PostBuild extends AbstractBuild
             }
         }
 
-        #------------------------------
-        # Recompile tempaltes
-        #------------------------------
+        //------------------------------
+        // Recompile tempaltes
+        //------------------------------
 
         $cmd = $this->container->get('deskpro.app_env')->getConsolePhpCommand('dp:utility:recompile-templates');
         $this->out("Cmd: $cmd");
@@ -184,9 +185,9 @@ class PostBuild extends AbstractBuild
             $this->out('!!! ERROR: Compiling templates returned FAILURE');
         }
 
-        #------------------------------
-        # Compile Custom Scss
-        #------------------------------
+        //------------------------------
+        // Compile Custom Scss
+        //------------------------------
 
         $this->out('Recompiling CSS');
 

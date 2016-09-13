@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Log;
 
 /**
@@ -48,19 +49,19 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
     /**
      * @var array
      */
-    protected $_standard_fields = array(
+    protected $_standard_fields = [
         self::PRIORITY,
         self::PRIORITY_NAME,
         self::MESSAGE,
         self::MESSAGE_LINE,
         self::DATETIME,
         self::SESSION_NAME,
-    );
+    ];
 
     /**
      * @var array
      */
-    protected $info = array();
+    protected $info = [];
 
     public function __construct(array $info)
     {
@@ -165,7 +166,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
      */
     public function getExtra()
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($this->info as $k => $v) {
             if (!in_array($k, $this->_standard_fields)) {

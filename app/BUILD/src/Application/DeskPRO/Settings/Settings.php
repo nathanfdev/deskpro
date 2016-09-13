@@ -43,7 +43,7 @@ use Application\DeskPRO\DBAL\Connection;
  * This class fethces settings.
  *
  * @deprecated get the "settings_resolver" system service and fetch the SettingsBag you want from it instead.
- *             this exists only for BC.
+ *             this exists only for BC
  */
 class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 {
@@ -74,7 +74,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      * DEPRECEATED way of getting settings.
      *
      * @deprecated get the "settings_resolver" system service and fetch the SettingsBag you want from it instead.
-     *             this exists only for BC.
+     *             this exists only for BC
      *
      * @param string     $default_settings_file
      * @param Connection $db
@@ -175,9 +175,9 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function setTemporarySettingValues(array $settings)
     {
-        //
+
         // left for BC
-        //
+
         $this->settings->setArray(array_merge($this->settings->toArray(), $settings));
     }
 
@@ -194,9 +194,9 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function setSetting($setting, $value)
     {
-        //
+
         // it is not an option in the new settings resolver to SET settings directly. This is left for BC.
-        //
+
         $this->db->beginTransaction();
 
         try {

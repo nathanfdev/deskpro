@@ -413,6 +413,7 @@ class CustomDataType extends AbstractType
     private function createCustomField(CustomDefAbstract $def, $isInline = false)
     {
         switch ($def->getType()) {
+            case CustomDefAbstract::TYPE_DATA:
             case CustomDefAbstract::TYPE_TEXT:
                 return new FormField(TextType::class, [
                     'help' => $def->getRealDescription(),

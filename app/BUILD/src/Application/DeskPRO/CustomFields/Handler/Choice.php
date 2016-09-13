@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -377,9 +378,9 @@ class Choice extends HandlerAbstract
             }
         );
 
-        #------------------------------
-        # Validate selections
-        #------------------------------
+        //------------------------------
+        // Validate selections
+        //------------------------------
 
         $children        = $this->getFieldChildren();
         $parentOptionIds = [];
@@ -396,9 +397,9 @@ class Choice extends HandlerAbstract
             }
         }
 
-        #------------------------------
-        # Validate options
-        #------------------------------
+        //------------------------------
+        // Validate options
+        //------------------------------
 
         $optPrefix = '';
         if ($context == self::CONTEXT_AGENT) {

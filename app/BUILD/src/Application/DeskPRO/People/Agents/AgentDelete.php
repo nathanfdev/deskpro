@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\Agents;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -40,7 +41,7 @@ use Orb\Util\Arrays;
 
 class AgentDelete
 {
-    /** @var \Application\DeskPRO\Entity\Person  */
+    /** @var \Application\DeskPRO\Entity\Person */
     private $agent;
 
     /**
@@ -95,7 +96,7 @@ class AgentDelete
             $this->db->executeUpdate('
                 DELETE FROM department_permissions
                 WHERE person_id = ?
-            ', array($this->agent->id));
+            ', [$this->agent->id]);
 
             // Agent groups
             $agent_groups = $this->em->getRepository('DeskPRO:Usergroup')->getAgentUsergroups();
@@ -104,36 +105,36 @@ class AgentDelete
                 $this->db->executeUpdate('
                     DELETE FROM person2usergroups
                     WHERE person_id = ? AND usergroup_id IN (?)
-                ', array($this->agent->id, $agent_group_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+                ', [$this->agent->id, $agent_group_ids], [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
             }
 
             // Assigned tickets
             $this->db->executeUpdate('
                 UPDATE tickets SET agent_id = NULL
                 WHERE agent_id = ?
-            ', array($this->agent->id));
+            ', [$this->agent->id]);
             $this->db->executeUpdate('
                 UPDATE tickets_search_active SET agent_id = NULL
                 WHERE agent_id = ?
-            ', array($this->agent->id));
+            ', [$this->agent->id]);
 
             // Filters
             $this->db->executeUpdate('
                 DELETE FROM ticket_filters
                 WHERE person_id = ?
-            ', array($this->agent->id));
+            ', [$this->agent->id]);
 
             // Subscriptions
             $this->db->executeUpdate('
                 DELETE FROM ticket_filter_subscriptions
                 WHERE person_id = ?
-            ', array($this->agent->id));
+            ', [$this->agent->id]);
 
             // Agent team
-            $this->db->delete('agent_team_members', array('person_id' => $this->agent->getId()));
+            $this->db->delete('agent_team_members', ['person_id' => $this->agent->getId()]);
 
             // Permission overrides
-            $this->db->delete('permissions', array('person_id' => $this->agent->getId()));
+            $this->db->delete('permissions', ['person_id' => $this->agent->getId()]);
 
             $this->db->commit();
         } catch (\Exception $e) {
@@ -155,20 +156,20 @@ class AgentDelete
         $this->agent->can_admin  = false; // to be safe
 
         // Remove their permissions
-        $this->db->delete('department_permissions', array('person_id' => $this->agent->getId()));
-        $this->db->delete('permissions', array('person_id' => $this->agent->getId()));
-        $this->db->delete('agent_team_members', array('person_id' => $this->agent->getId()));
-        $this->db->delete('ticket_filter_subscriptions', array('person_id' => $this->agent->getId()));
+        $this->db->delete('department_permissions', ['person_id' => $this->agent->getId()]);
+        $this->db->delete('permissions', ['person_id' => $this->agent->getId()]);
+        $this->db->delete('agent_team_members', ['person_id' => $this->agent->getId()]);
+        $this->db->delete('ticket_filter_subscriptions', ['person_id' => $this->agent->getId()]);
 
         // Any open tickets should be unassigned
         $this->db->executeUpdate("
             UPDATE tickets SET agent_id = NULL
             WHERE agent_id = ? AND status IN ('awaiting_agent')
-        ", array($this->agent->id));
+        ", [$this->agent->id]);
         $this->db->executeUpdate("
             UPDATE tickets_search_active SET agent_id = NULL
             WHERE agent_id = ? AND status IN ('awaiting_agent')
-        ", array($this->agent->id));
+        ", [$this->agent->id]);
 
         $this->em->persist($this->agent);
         $this->em->flush();
@@ -187,6 +188,6 @@ class AgentDelete
      */
     private function clearSessions()
     {
-        $this->db->delete('sessions', array('person_id' => $this->agent->getId()));
+        $this->db->delete('sessions', ['person_id' => $this->agent->getId()]);
     }
 }

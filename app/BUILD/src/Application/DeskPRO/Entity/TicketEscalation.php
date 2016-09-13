@@ -87,12 +87,12 @@ class TicketEscalation extends DomainObject
     /**
      * @var array
      */
-    protected $terms = array();
+    protected $terms = [];
 
     /**
      * @var array
      */
-    protected $terms_any = array();
+    protected $terms_any = [];
 
     /**
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
@@ -158,7 +158,7 @@ class TicketEscalation extends DomainObject
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data              = parent::toApiData($primary, $deep, $visited);
         $data['terms']     = $this->terms;
@@ -184,9 +184,9 @@ class TicketEscalation extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

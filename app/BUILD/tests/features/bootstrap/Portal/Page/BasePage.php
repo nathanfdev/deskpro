@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat\Portal\Page;
 
 use Behat\Mink\Session;
@@ -43,7 +44,7 @@ class BasePage extends Page
      * @param Factory $factory
      * @param array   $parameters
      */
-    public function __construct(Session $session, Factory $factory, array $parameters = array())
+    public function __construct(Session $session, Factory $factory, array $parameters = [])
     {
         parent::__construct($session, $factory, $parameters);
         // ensure no base_url is used. this test suite is meant to be run in the symfony kernel only
@@ -58,7 +59,7 @@ class BasePage extends Page
      *
      * @return string
      */
-    protected function getUrl(array $urlParameters = array())
+    protected function getUrl(array $urlParameters = [])
     {
         return $this->makeSurePathIsAbsolute($this->unmaskUrl($urlParameters));
     }
@@ -91,7 +92,7 @@ class BasePage extends Page
         return $url;
     }
 
-    protected function verifyUrl(array $urlParameters = array())
+    protected function verifyUrl(array $urlParameters = [])
     {
         // we need to override this to allow for not using a hostname at all in the session (it uses localhost)
 

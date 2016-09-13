@@ -193,7 +193,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
                 $name = "<error>Unknown #{$this->agent_id}</error>";
             }
 
-            $ret = '<span class="with-agent" data-agent-id="'.$this->agent_id.'">'.$tr->phrase('agent.tickets.assign_to_agent_action', array('agent' => $name)).'</span>';
+            $ret = '<span class="with-agent" data-agent-id="'.$this->agent_id.'">'.$tr->phrase('agent.tickets.assign_to_agent_action', ['agent' => $name]).'</span>';
 
             return $ret;
         }

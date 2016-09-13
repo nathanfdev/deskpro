@@ -63,9 +63,9 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         return $multi;
     }
 
-    ####################################################################################################################
-    # list sms accounts
-    ####################################################################################################################
+    //###################################################################################################################
+    // list sms accounts
+    //###################################################################################################################
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -76,12 +76,12 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 
         $data = $this->getContainer()->getSerializer()->serializeArray($accounts);
 
-        return $this->createApiResponse(array('sms_accounts' => $data));
+        return $this->createApiResponse(['sms_accounts' => $data]);
     }
 
-    ####################################################################################################################
-    # get sms account
-    ####################################################################################################################
+    //###################################################################################################################
+    // get sms account
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -101,9 +101,9 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # save sms account
-    ####################################################################################################################
+    //###################################################################################################################
+    // save sms account
+    //###################################################################################################################
 
     /**
      * @param null $id
@@ -143,21 +143,21 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 
         if ($id) {
             return $this->createApiSuccessResponse(
-                array(
+                [
                     'account' => $serializedAccount,
-                ));
+                ]);
         } else {
             return $this->createApiCreateResponse(
-                array(
+                [
                     'account' => $serializedAccount,
-                ), $this->generateUrl('api_channel_sms_account_get', array('id' => $account->id))
+                ], $this->generateUrl('api_channel_sms_account_get', ['id' => $account->id])
             );
         }
     }
 
-    ####################################################################################################################
-    # connect to a provider and return provider specific info
-    ####################################################################################################################
+    //###################################################################################################################
+    // connect to a provider and return provider specific info
+    //###################################################################################################################
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -184,7 +184,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
             $data = $provider->getIncomingNumbers();
             $name = $provider->getAccountName();
             if (!isset($accountData['params'])) {
-                $accountData['params'] = array();
+                $accountData['params'] = [];
             }
             $accountData['params']['numbers'] = $data;
             $accountData['identifier']        = $name;
@@ -199,7 +199,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
                 $this->getContainer()->getEm()->flush();
             }
 
-            return $this->createApiSuccessResponse(array('account' => $accountData));
+            return $this->createApiSuccessResponse(['account' => $accountData]);
         } catch (\Exception $e) {
             return $this->createApiErrorResponse(
                 'sms.connection_error', 'Could not connect. Please check your credentials'
@@ -244,9 +244,9 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         return $this->createApiSuccessResponse();
     }
 
-    ####################################################################################################################
-    # delete sms accounts
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete sms accounts
+    //###################################################################################################################
 
     /**
      * @param $id

@@ -61,9 +61,9 @@ class TicketMessageRaw extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $charset = 'UNKNOWN';
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

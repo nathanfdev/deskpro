@@ -96,9 +96,9 @@ class NewsSubscriptions extends AbstractJob
                 continue;
             }
 
-            #------------------------------
-            # Get subscriptions
-            #------------------------------
+            //------------------------------
+            // Get subscriptions
+            //------------------------------
 
             /** @var Structure $structure */
             $structure = $this->getContainer()->getSystemService('publish_structure');
@@ -156,9 +156,9 @@ class NewsSubscriptions extends AbstractJob
                 ', [$newsIds], 'person_id', null, 'news_id', [Connection::PARAM_INT_ARRAY]);
             }
 
-            #------------------------------
-            # Sort subscriptions into users
-            #------------------------------
+            //------------------------------
+            // Sort subscriptions into users
+            //------------------------------
 
             $userToNews = $this->sortSubscriptions($rootSubs, $catSubs, $newsSubs, $helper);
 
@@ -167,9 +167,9 @@ class NewsSubscriptions extends AbstractJob
                 continue;
             }
 
-            #------------------------------
-            # Verify permissions
-            #------------------------------
+            //------------------------------
+            // Verify permissions
+            //------------------------------
 
             $userGroupMembers = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id, usergroup_id
@@ -301,9 +301,9 @@ class NewsSubscriptions extends AbstractJob
      */
     private function sendEmails($userToNews, $lastDate, $brand)
     {
-        #------------------------------
-        # Now send the emails (they are queued)
-        #------------------------------
+        //------------------------------
+        // Now send the emails (they are queued)
+        //------------------------------
 
         foreach ($userToNews as $personId => $newsArray) {
             /** @var Person $person */

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;

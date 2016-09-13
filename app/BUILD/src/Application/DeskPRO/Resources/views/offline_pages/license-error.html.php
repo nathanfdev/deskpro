@@ -1,4 +1,4 @@
-<?php include __DIR__.'/tpl-header.html.php' ?>
+<?php include __DIR__.'/tpl-header.html.php'?>
     <p>
         <?php echo $message ?>
     </p>
@@ -13,4 +13,4 @@
         If you already have a new DeskPRO license code, you need to go to the Billing Interface to activate it.<br/>
         <a class="btn btn-info" href="<?php echo $billing_url; ?>">Input your license code &rarr;</a>
     </div>
-<?php include __DIR__.'/tpl-footer.html.php' ?>
+<?php include __DIR__.'/tpl-footer.html.php'?>

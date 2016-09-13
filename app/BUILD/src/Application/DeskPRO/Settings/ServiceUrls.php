@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Settings;
 
 /**
@@ -39,7 +40,7 @@ namespace Application\DeskPRO\Settings;
 class ServiceUrls
 {
     /** @var array */
-    protected $urls = array();
+    protected $urls = [];
 
     /**
      * @param $file
@@ -48,7 +49,7 @@ class ServiceUrls
     {
         $pack_urls = require $file;
         if (!$pack_urls) {
-            $pack_urls = array();
+            $pack_urls = [];
         }
 
         $this->urls = array_merge($this->urls, $pack_urls);
@@ -78,7 +79,7 @@ class ServiceUrls
 
         if ($named_params) {
             foreach ($named_params as $k => $v) {
-                $url = str_replace(array('{{'.$k.'}}', '{{ '.$k.' }}'), $v, $url);
+                $url = str_replace(['{{'.$k.'}}', '{{ '.$k.' }}'], $v, $url);
             }
         }
 

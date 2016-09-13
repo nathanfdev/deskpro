@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,25 +37,25 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$collection->create('reports', array(
+$collection->create('reports', [
     'path'       => '/',
     'controller' => 'ReportsInterfaceBundle:Index:interface',
-));
+]);
 
-$collection->create('reports_tpl_loadmulti', array(
+$collection->create('reports_tpl_loadmulti', [
     'path'       => '/load-view/multi',
     'controller' => 'ReportsInterfaceBundle:Interface:multiLoadView',
-));
+]);
 
-$collection->create('reports_tpl_load', array(
+$collection->create('reports_tpl_load', [
     'path'         => '/load-view/{view_name}',
     'controller'   => 'ReportsInterfaceBundle:Interface:loadView',
-    'requirements' => array('view_name' => '.+'),
-));
+    'requirements' => ['view_name' => '.+'],
+]);
 
-$collection->create('reports_lang_load', array(
+$collection->create('reports_lang_load', [
     'path'       => '/load-lang.{_format}',
     'controller' => 'ReportsInterfaceBundle:Interface:loadLang',
-));
+]);
 
 return $collection;

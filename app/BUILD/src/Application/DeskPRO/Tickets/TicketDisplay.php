@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -71,7 +72,7 @@ class TicketDisplay implements PersonContextInterface
     /** @var array */
     protected $user_ratings;
     /** @var array */
-    protected $ignore_attachments = array();
+    protected $ignore_attachments = [];
 
     public function __construct(Ticket $ticket, Person $person)
     {
@@ -102,7 +103,7 @@ class TicketDisplay implements PersonContextInterface
             return $this->user_participants;
         }
 
-        $this->user_participants = array();
+        $this->user_participants = [];
 
         foreach ($this->ticket->getParticipants() as $part) {
             if (!$part->person['is_agent']) {
@@ -119,7 +120,7 @@ class TicketDisplay implements PersonContextInterface
             return $this->agent_participants;
         }
 
-        $this->agent_participants = array();
+        $this->agent_participants = [];
 
         foreach ($this->ticket->getParticipants() as $part) {
             if ($part->person['is_agent']) {
@@ -138,7 +139,7 @@ class TicketDisplay implements PersonContextInterface
 
         $this->getMessages();
 
-        $this->notes = array();
+        $this->notes = [];
 
         foreach ($this->messages as $message) {
             if ($message['is_agent_note']) {
@@ -158,12 +159,12 @@ class TicketDisplay implements PersonContextInterface
         if ($this->person_type == 'agent') {
             $this->messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
                 $this->ticket,
-                array('with_notes' => true, 'limit' => $limit, 'order' => 'DESC')
+                ['with_notes' => true, 'limit' => $limit, 'order' => 'DESC']
             );
         } else {
             $this->messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
                 $this->ticket,
-                array('with_notes' => false, 'limit' => $limit, 'order' => 'DESC')
+                ['with_notes' => false, 'limit' => $limit, 'order' => 'DESC']
             );
         }
 
@@ -176,7 +177,7 @@ class TicketDisplay implements PersonContextInterface
             return $this->message_count;
         }
 
-        $this->message_count = (int) App::getDb()->fetchColumn('SELECT COUNT(*) FROM tickets_messages WHERE ticket_id = ?', array($this->ticket->id));
+        $this->message_count = (int) App::getDb()->fetchColumn('SELECT COUNT(*) FROM tickets_messages WHERE ticket_id = ?', [$this->ticket->id]);
 
         return $this->message_count;
     }
@@ -195,7 +196,7 @@ class TicketDisplay implements PersonContextInterface
                 FROM TicketMessage m
                 WHERE m.ticket = ?0
                 ORDER BY m.id DESC
-            ')->setMaxResults(1)->setParameters(array($this->ticket))->getOneOrNullResult();
+            ')->setMaxResults(1)->setParameters([$this->ticket])->getOneOrNullResult();
         }
 
         if (!$this->first_message) {
@@ -225,7 +226,7 @@ class TicketDisplay implements PersonContextInterface
         $this->getMessages();
         $this->getAttachments();
 
-        $this->message_to_attach = array();
+        $this->message_to_attach = [];
 
         foreach ($this->attachments as $attach) {
             if (!$include_inline && $attach->is_inline) {
@@ -233,7 +234,7 @@ class TicketDisplay implements PersonContextInterface
             }
 
             if (!isset($this->message_to_attach[$attach['message']['id']])) {
-                $this->message_to_attach[$attach['message']['id']] = array();
+                $this->message_to_attach[$attach['message']['id']] = [];
             }
 
             $this->message_to_attach[$attach['message']['id']][] = $attach['id'];
@@ -254,7 +255,7 @@ class TicketDisplay implements PersonContextInterface
             return;
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($messagetoattach[$id] as $aid) {
             if (!isset($this->ignore_attachments[$aid])) {
                 $ret[$aid] = $this->attachments[$aid];
@@ -274,7 +275,7 @@ class TicketDisplay implements PersonContextInterface
             SELECT message_id, rating
             FROM ticket_feedback
             WHERE ticket_id = ? AND person_id = ?
-        ', array($this->ticket->getId(), $this->person_context->getId()));
+        ', [$this->ticket->getId(), $this->person_context->getId()]);
 
         return $this->user_ratings;
     }
@@ -292,14 +293,14 @@ class TicketDisplay implements PersonContextInterface
             }
         }
 
-        #------------------------------
-        # Custom fields
-        #------------------------------
+        //------------------------------
+        // Custom fields
+        //------------------------------
 
         $field_manager = App::getSystemService('ticket_fields_manager');
         $custom_fields = $field_manager->getDisplayArrayForObject($this->ticket);
 
-        return array(
+        return [
             'ticket' => $this->ticket,
 
             'user_participants'  => $this->getUserParticipants(),
@@ -316,6 +317,6 @@ class TicketDisplay implements PersonContextInterface
             'user_ratings' => $this->getFeedbackRatings(),
 
             'custom_fields' => $custom_fields,
-        );
+        ];
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Orb\Sms;
 
 use DpTest\DeskProTestCase;
@@ -93,9 +94,9 @@ class SmsMessageTest extends DeskProTestCase
         $chunk2  = $chunks[1];
         $chunk3  = $chunks[2];
 
-        $chunk1->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
-        $chunk2->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
-        $chunk3->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
+        $chunk1->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', []));
+        $chunk2->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', []));
+        $chunk3->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', []));
 
         $this->assertTrue($message->isSent());
     }
@@ -108,9 +109,9 @@ class SmsMessageTest extends DeskProTestCase
         $chunk2  = $chunks[1];
         $chunk3  = $chunks[2];
 
-        $chunk1->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
-        $chunk2->setResult(new SmsResult(SmsResult::SMS_FAIL, '90293029', '9020290', 'text', 'twilio', array()));
-        $chunk3->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
+        $chunk1->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', []));
+        $chunk2->setResult(new SmsResult(SmsResult::SMS_FAIL, '90293029', '9020290', 'text', 'twilio', []));
+        $chunk3->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', []));
 
         $this->assertFalse($message->isSent());
     }

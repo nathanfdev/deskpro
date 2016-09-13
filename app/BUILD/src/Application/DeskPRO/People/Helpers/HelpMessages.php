@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
@@ -70,7 +71,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
         $this->pref = $this->person->getPref($this->pref_name);
         if (!$this->pref) {
             $this->pref          = $this->person->addPreference($this->pref_name);
-            $this->pref['value'] = array();
+            $this->pref['value'] = [];
             $person              = $this->person;
 
             App::getOrm()->transactional(function ($em) use ($person) {
@@ -87,10 +88,10 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 
     public function getShortCallableNames()
     {
-        return array(
+        return [
             'getHelpMessages'   => '_getThis',
             'shouldShowMessage' => 'shouldShowMessage',
-        );
+        ];
     }
 
     public function getDismissedIds()
@@ -111,7 +112,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
     {
         $this->_initPref();
 
-        return (in_array(self::ALL, $this->pref['value']) or in_array($id, $this->pref['value']));
+        return in_array(self::ALL, $this->pref['value']) or in_array($id, $this->pref['value']);
     }
 
     public function dismiss($id)
@@ -161,7 +162,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
     {
         $this->_initPref();
 
-        $this->pref['value'] = array();
+        $this->pref['value'] = [];
 
         $pref = $this->pref;
         App::getOrm()->transactional(function ($em) use ($pref) {

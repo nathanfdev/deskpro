@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketRef;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -41,25 +42,25 @@ class TicketRefTerm extends AbstractTerm
     public static function configureOptions(TermOptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'ref' => null,
-            )
+            ]
         );
 
         $resolver->setConstraints(
-            array(
-                'ref' => array(
+            [
+                'ref' => [
                     new Assert\NotBlank(),
                     new Assert\Type('string'),
-                ),
-            )
+                ],
+            ]
         );
 
         $resolver->setNormalizer(
             'ref',
             function ($options, $value_array) {
                 if (!is_array($value_array)) {
-                    $value_array = array($value_array);
+                    $value_array = [$value_array];
                 }
 
                 return array_map('strtoupper', $value_array);
@@ -69,7 +70,7 @@ class TicketRefTerm extends AbstractTerm
 
     public function getSupportedOps()
     {
-        return array(TermInterface::OP_IS, TermInterface::OP_NOT);
+        return [TermInterface::OP_IS, TermInterface::OP_NOT];
     }
 
     public function getDefaultOp()

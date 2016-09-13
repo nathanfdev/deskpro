@@ -242,7 +242,7 @@ abstract class AbstractDbSet implements DataSetInterface
         if ($ret) {
             echo "Command Failed: $cmd\n";
             echo implode("\n", $out);
-            throw new \RuntimeException(print_r(array($cmd, $out), 1));
+            throw new \RuntimeException(print_r([$cmd, $out], 1));
         }
     }
 
@@ -281,7 +281,7 @@ abstract class AbstractDbSet implements DataSetInterface
         if ($ret) {
             echo "Command Failed: $cmd\n";
             echo implode("\n", $out);
-            throw new \RuntimeException(print_r(array($cmd, $out), 1));
+            throw new \RuntimeException(print_r([$cmd, $out], 1));
         }
     }
 
@@ -357,10 +357,10 @@ abstract class AbstractDbSet implements DataSetInterface
         } else {
             $em      = $this->container->get("doctrine.orm.{$em_name}_entity_manager");
             $gs      = new \Application\InstallBundle\Data\GenerateSchema($em, $is_master_schema);
-            $queries = array(
+            $queries = [
                 'creates' => $gs->getCreates(),
                 'alters'  => $gs->getAlters(),
-            );
+            ];
 
             if (!is_dir($this->cache_dir)) {
                 $fs = new Filesystem();

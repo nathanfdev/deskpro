@@ -189,9 +189,13 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
         )
 
         updateViewValue = ->
+          startHour = 9;
+          if(viewValue.start_hour || viewValue.start_hour == 0)
+            startHour = viewValue.start_hour
+            
           ngModel.$setViewValue({
             timezone       : scope.timezone || 'UTC',
-            start_hour     : scope.start_hour || 9,
+            start_hour     : startHour,
             start_min      : scope.start_min || 0,
             end_hour       : scope.end_hour || 18,
             end_min        : scope.end_min || 0,
@@ -209,9 +213,14 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
         ngModel.$render = ->
           element.find('.holiday-year-rows').empty()
           viewValue = ngModel.$viewValue
+
+          startHour = 9;
+          if(viewValue.start_hour || viewValue.start_hour == 0)
+            startHour = viewValue.start_hour
+
           if viewValue
             scope.timezone       = viewValue.timezone || 'UTC'
-            scope.start_hour     = viewValue.start_hour || 9
+            scope.start_hour     = startHour
             scope.start_min      = viewValue.start_min || 0
             scope.end_hour       = viewValue.end_hour || 18
             scope.end_min        = viewValue.end_min || 0

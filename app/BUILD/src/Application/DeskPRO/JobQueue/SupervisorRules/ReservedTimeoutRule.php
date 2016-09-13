@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\JobQueue\SupervisorRules;
 
 use Application\DeskPRO\Entity\Job;
@@ -56,14 +57,14 @@ class ReservedTimeoutRule extends AbstractSupervisorRule
             WHERE status = :reserved_state
             AND date_touch < :short_time_ago
             ',
-            array(
+            [
                 'reserved_state' => Job::STATUS_RESERVED,
                 'short_time_ago' => $this->date_ago,
-            ),
-            array(
+            ],
+            [
                 'reserved_state' => 'string',
                 'short_time_ago' => 'datetime',
-            )
+            ]
         );
         $result = $query->fetch();
         if (is_array($result) and array_key_exists('total', $result)) {
@@ -89,18 +90,18 @@ class ReservedTimeoutRule extends AbstractSupervisorRule
             WHERE status = :reserved_status
             AND date_touch < :short_time_ago
             ',
-            array(
+            [
                 'reserved_status' => Job::STATUS_RESERVED,
                 'short_time_ago'  => $this->date_ago,
                 'waiting_status'  => Job::STATUS_WAITING,
                 'now'             => new \DateTime(),
-            ),
-            array(
+            ],
+            [
                 'reserved_status' => 'string',
                 'short_time_ago'  => 'datetime',
                 'waiting_status'  => 'string',
                 'now'             => 'datetime',
-            )
+            ]
         );
 
         return $count > 0;

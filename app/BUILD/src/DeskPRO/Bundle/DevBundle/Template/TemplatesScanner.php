@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\DevBundle\Template;
 
 /**
@@ -50,7 +51,7 @@ class TemplatesScanner
     {
         $tpl_info = self::scan();
 
-        $php = array("<?php return array(\n");
+        $php = ["<?php return array(\n"];
 
         foreach ($tpl_info as $k => $info) {
             $php[] = "'$k' => array('path' => {$info['path']}, 'last_updated' => {$info['last_updated']}),\n";
@@ -71,7 +72,7 @@ class TemplatesScanner
      */
     private static function scan()
     {
-        $paths = array(
+        $paths = [
             'AdminInterfaceBundle'   => DP_APP_DIR.'/src/Application/AdminInterfaceBundle/Resources/views',
             'AgentBundle'            => DP_APP_DIR.'/src/Application/AgentBundle/Resources/views',
             'DeskPRO'                => DP_APP_DIR.'/src/Application/DeskPRO/Resources/views',
@@ -79,9 +80,9 @@ class TemplatesScanner
             'PortalBaseTheme'        => DP_APP_DIR.'/src/DeskPRO/Bundle/PortalBundle/Themes/Base/Resources/views',
             'PortalSidebarTheme'     => DP_APP_DIR.'/src/DeskPRO/Bundle/PortalBundle/Themes/Sidebar/Resources/views',
             'PortalStandardTheme'    => DP_APP_DIR.'/src/DeskPRO/Bundle/PortalBundle/Themes/Standard/Resources/views',
-        );
+        ];
 
-        $tpl_info = array();
+        $tpl_info = [];
 
         $bogus = true;
         if (array_key_exists('argv', $_SERVER) && in_array('--real-time', $_SERVER['argv'])) {
@@ -123,10 +124,10 @@ class TemplatesScanner
                     $path = "DP_ROOT.'/..$path'";
                 }
 
-                $tpl_info[$tplname] = array(
+                $tpl_info[$tplname] = [
                     'path'         => $path,
                     'last_updated' => $time,
-                );
+                ];
 
                 self::cli('.');
             }

@@ -70,8 +70,8 @@ class Link extends AbstractFunc
         $format        = array_shift($arguments);
         $formatLiteral = $this->_toLiteral($format);
 
-        $argNames  = array();
-        $argSelect = array();
+        $argNames  = [];
+        $argSelect = [];
         foreach ($arguments as $argument) {
             $prepped     = $argument->prepare($statement, $section, $stack, $select, $result);
             $argNames[]  = $prepped->name();
@@ -109,7 +109,7 @@ class Link extends AbstractFunc
             case 'organization': $format = 'agent/#app.people,o:%d'; break;
         }
 
-        $argValues = array();
+        $argValues = [];
         foreach ($argSelect as $key) {
             $argValues[] = urlencode($renderer->getColumnValue($row, $key));
         }

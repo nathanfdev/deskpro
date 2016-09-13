@@ -43,9 +43,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ChannelIncomingController extends AbstractController
 {
-    ####################################################################################################################
-    # incoming facebook pushes
-    ####################################################################################################################
+    //###################################################################################################################
+    // incoming facebook pushes
+    //###################################################################################################################
 
     public function facebookAction()
     {
@@ -79,9 +79,9 @@ class ChannelIncomingController extends AbstractController
         return new Response();
     }
 
-    ####################################################################################################################
-    # accept Twilio sms messages
-    ####################################################################################################################
+    //###################################################################################################################
+    // accept Twilio sms messages
+    //###################################################################################################################
 
     public function twilioSmsAction()
     {
@@ -89,7 +89,7 @@ class ChannelIncomingController extends AbstractController
             exit;
         }
 
-        $payload                = array();
+        $payload                = [];
         $payload['message']     = $this->request->request->get('Body', '');
         $payload['from_number'] = $this->request->request->get('From');
         $payload['to_number']   = $this->request->request->get('To');

@@ -80,7 +80,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
      */
     private $ava_people_files;
 
-    /** @var  Usergroup[] */
+    /** @var Usergroup[] */
     private $userGroups;
 
     /**

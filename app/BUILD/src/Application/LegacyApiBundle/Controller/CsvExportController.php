@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -64,7 +64,7 @@ class CsvExportController extends AbstractController implements ProtectedControl
         if (!$rep->getTasksInGroup('data_export')) {
             $rep->enqueueTask(
                 'Application\\DeskPRO\\TaskQueueJob\\CsvExport',
-                array(),
+                [],
                 'data_export'
             );
         }
@@ -96,7 +96,7 @@ class CsvExportController extends AbstractController implements ProtectedControl
      */
     public function statusAction()
     {
-        $res = array('status' => null);
+        $res = ['status' => null];
 
         /** @var TaskQueue $rep */
         $rep = $this->em->getRepository('DeskPRO:TaskQueue');
@@ -123,17 +123,17 @@ class CsvExportController extends AbstractController implements ProtectedControl
     public function listAction()
     {
         $datas = $this->em->getRepository('DeskPRO:TmpData')->getByName('csv_export.file', false);
-        $ret   = array();
+        $ret   = [];
 
         foreach ($datas as $data) {
             /* @var $data TmpData */
-            $ret[] = array(
+            $ret[] = [
                 'created'  => $data->date_created->format('Y-m-d H:i:s'),
                 'code'     => $data->getCode(),
                 'count'    => $data->getData('count'),
                 'filename' => pathinfo($data->getData('file'), PATHINFO_BASENAME),
                 'expire'   => $data->date_expire->format('Y-m-d H:i:s'),
-            );
+            ];
         }
 
         return $this->createApiResponse($ret);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class CustomDefFeedback extends CustomDefAbstract
@@ -54,19 +55,19 @@ class CustomDefFeedback extends CustomDefAbstract
      */
     public function getAllFlatData(\Application\DeskPRO\Entity\CustomDefFeedback $parent_category)
     {
-        $hierarchy = array();
+        $hierarchy = [];
 
         if ($parent_category['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-            $choices = array();
+            $choices = [];
 
             foreach ($parent_category->children as $child) {
                 $choices[$child->getId()] = $child;
 
-                $hierarchy[] = array(
+                $hierarchy[] = [
                     'id'        => $child->getId(),
                     'title'     => $child->getTitle(),
                     'parent_id' => $child->getOption('parent_id', 0),
-                );
+                ];
             }
 
             usort(

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -87,7 +87,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $task = new Task();
-        $form = $this->getContainer()->getFormFactory()->create(new TaskType(), $task, array('timezone' => 'UTC'));
+        $form = $this->getContainer()->getFormFactory()->create(new TaskType(), $task, ['timezone' => 'UTC']);
 
         if (!$person = $this->getCreator($context)) {
             $context->getLogger()->debug('[CreateTask] Wrong creator');
@@ -130,7 +130,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
             }
         }
 
-        $formData = array(
+        $formData = [
             'title'               => $this->getActionOption('title'),
             'date_due'            => $due_date,
             'visibility'          => (int) $this->getActionOption('public'),
@@ -138,7 +138,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
             'ticket'              => null,
             'assigned_agent'      => $assigned_agent,
             'assigned_agent_team' => $assigned_agent_team,
-        );
+        ];
 
         if ((int) $this->getActionOption('link')) {
             $formData['ticket'] = $ticket->id;
@@ -176,14 +176,14 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$person = $this->getCreator($context)) {
-            return array('agent');
+            return ['agent'];
         }
 
         $loader = new AgentPermsPersonDbLoader($person, $this->getContainer()->getEm());
         $perms  = $loader->getEffectivePermissions()->toArray();
 
         if (!$perms['tasks']) {
-            return array('tasks');
+            return ['tasks'];
         }
 
         return;

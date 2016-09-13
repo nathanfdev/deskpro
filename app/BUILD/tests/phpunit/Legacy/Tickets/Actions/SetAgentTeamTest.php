@@ -62,7 +62,7 @@ class SetAgentTeamTest extends DeskProTestCase
         $ticket->agent_team = $this->getMockContainer()->getAgentData()->getTeam(1);
         $exec               = new ExecutorContext();
 
-        $action = new SetAgentTeam(array('agent_team_id' => 55));
+        $action = new SetAgentTeam(['agent_team_id' => 55]);
         $action->setContainer($this->getMockContainer());
 
         $action->applyAction($ticket, $exec);
@@ -77,7 +77,7 @@ class SetAgentTeamTest extends DeskProTestCase
         $ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
         $exec          = new ExecutorContext();
 
-        $action = new SetAgentTeam(array('agent_team_id' => 0));
+        $action = new SetAgentTeam(['agent_team_id' => 0]);
         $action->setContainer($this->getMockContainer());
 
         $action->applyAction($ticket, $exec);
@@ -101,7 +101,7 @@ class SetAgentTeamTest extends DeskProTestCase
 
         $exec->setPersonContext($agent);
 
-        $action = new SetAgentTeam(array('agent_team_id' => -1));
+        $action = new SetAgentTeam(['agent_team_id' => -1]);
         $action->setContainer($this->getMockContainer());
 
         $action->applyAction($ticket, $exec);
@@ -128,7 +128,7 @@ class SetAgentTeamTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $action = new SetAgentTeam(array('agent_team_id' => 200));
+        $action = new SetAgentTeam(['agent_team_id' => 200]);
         $action->setContainer($this->getMockContainer());
         $action->applyAction($ticket, $exec);
 

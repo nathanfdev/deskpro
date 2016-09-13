@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Component\Pagerfanta;
 
 use DeskPRO\Component\Pagerfanta\Adapter\LimitedAdapter;

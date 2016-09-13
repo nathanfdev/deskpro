@@ -50,7 +50,9 @@ class StatefulIncidentTriggerTest extends TriggerTest
         $called_times = 0;
         $trigger      = new MockStatefulIncidentTrigger();
         $trigger->setContinuingIncidents([$this->createRaisedIncident()]);
-        $trigger->setResolvedCallback(function () use (&$called_times) { ++$called_times; });
+        $trigger->setResolvedCallback(function () use (&$called_times) {
+            ++$called_times;
+        });
 
         $trigger->consume(new MockSuccessEvent(false, 'test'));
 
@@ -65,7 +67,9 @@ class StatefulIncidentTriggerTest extends TriggerTest
         $called_times = 0;
         $trigger      = new MockStatefulIncidentTrigger();
         $trigger->setContinuingIncidents([$this->createRaisedIncident()]);
-        $trigger->setClosedCallback(function () use (&$called_times) { ++$called_times; });
+        $trigger->setClosedCallback(function () use (&$called_times) {
+            ++$called_times;
+        });
 
         $trigger->consume(new MockSuccessEvent(false, 'test'));
 
@@ -80,7 +84,9 @@ class StatefulIncidentTriggerTest extends TriggerTest
         $called_times = 0;
         $trigger      = new MockStatefulIncidentTrigger();
         $trigger->setContinuingIncidents([$this->createRaisedIncident()]);
-        $trigger->setContinuingCallback(function () use (&$called_times) { ++$called_times; });
+        $trigger->setContinuingCallback(function () use (&$called_times) {
+            ++$called_times;
+        });
 
         for ($i = 0; $i < 3; ++$i) {
             $trigger->consume(new MockEvent(false, 'test'));

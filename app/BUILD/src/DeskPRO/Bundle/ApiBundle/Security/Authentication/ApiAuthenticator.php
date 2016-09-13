@@ -291,9 +291,9 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
 
     private function extractDataFromSessionEntity(Session $session)
     {
-        //
+
         // due to the way sessions are stored in PHP, this looks rather ugly...
-        //
+
         $data = $session->getData();
         session_start(); // we dont use sessions in the API so this should always be ok
         session_decode($data); // this populates $_SESSION

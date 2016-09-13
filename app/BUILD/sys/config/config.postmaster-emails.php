@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,13 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # This file should not be edited directly. If you want
-    # to add custom postmaster patterns, create a new file named
-    # config.postmaster-emails.php in the same directory
-    # as your config.php file.
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+return [
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // This file should not be edited directly. If you want
+    // to add custom postmaster patterns, create a new file named
+    // config.postmaster-emails.php in the same directory
+    // as your config.php file.
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // postmaster@something.com
     // The proper postmaster address as defined by rfc2142
@@ -45,4 +45,4 @@ return array(
     // xyz@postmaster.something.com
     // Seen by some automated systems where the bit before the @ is a special code
     'postmaster_domain' => '#@postmaster\..*?$#i',
-);
+];

@@ -92,14 +92,14 @@ class PersonMerge implements PersonContextInterface
 
         try {
             // todo: organizations cc?
-            $standard_prop_names = array(
+            $standard_prop_names = [
                 'gravatar_url',
                 'language',
                 'organization',
                 'organization_position',
                 'picture_blob',
                 'summary',
-            );
+            ];
             foreach ($standard_prop_names as $prop_name) {
                 $prop_standard = new Property\StandardProperty($this->person, $this->other_person);
                 $prop_standard->setProperty($prop_name);
@@ -111,7 +111,7 @@ class PersonMerge implements PersonContextInterface
                 $this->person->date_created = $this->other_person->date_created;
             }
 
-            foreach (array('is_agent', 'can_agent', 'can_admin', 'can_billing', 'can_reports') as $attr) {
+            foreach (['is_agent', 'can_agent', 'can_admin', 'can_billing', 'can_reports'] as $attr) {
                 if ($this->person[$attr] || $this->other_person[$attr]) {
                     $this->person[$attr] = true;
                 }
@@ -148,11 +148,11 @@ class PersonMerge implements PersonContextInterface
 
     protected function _mergeContactData()
     {
-        $simple_tables = array(
+        $simple_tables = [
             'people_contact_data',
             'people_emails',
             'people_twitter_users',
-        );
+        ];
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
@@ -172,14 +172,14 @@ class PersonMerge implements PersonContextInterface
 
     protected function _mergeOtherPersonData()
     {
-        $simple_tables = array(
+        $simple_tables = [
             'labels_people',
             'people_notes',
             'people_prefs',
             'person2usergroups',
             'person_activity',
             'person_usersource_assoc',
-        );
+        ];
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
@@ -188,13 +188,13 @@ class PersonMerge implements PersonContextInterface
 
     protected function _mergeArticles()
     {
-        $simple_tables = array(
+        $simple_tables = [
             'articles',
             'article_attachments',
             'article_comments',
             'article_pending_create',
             'article_revisions',
-        );
+        ];
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
@@ -203,10 +203,10 @@ class PersonMerge implements PersonContextInterface
 
     protected function _mergeChats()
     {
-        $simple_tables = array(
+        $simple_tables = [
             'chat_conversations',
             'chat_conversation_to_person',
-        );
+        ];
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
@@ -218,11 +218,11 @@ class PersonMerge implements PersonContextInterface
 
     protected function _mergeDownloads()
     {
-        $simple_tables = array(
+        $simple_tables = [
             'downloads',
             'download_comments',
             'download_revisions',
-        );
+        ];
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
@@ -231,12 +231,12 @@ class PersonMerge implements PersonContextInterface
 
     protected function _mergeFeedback()
     {
-        $simple_tables = array(
+        $simple_tables = [
             'feedback',
             'feedback_attachments',
             'feedback_comments',
             'feedback_revisions',
-        );
+        ];
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
@@ -245,11 +245,11 @@ class PersonMerge implements PersonContextInterface
 
     protected function _mergeNews()
     {
-        $simple_tables = array(
+        $simple_tables = [
             'news',
             'news_comments',
             'news_revisions',
-        );
+        ];
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
@@ -258,11 +258,11 @@ class PersonMerge implements PersonContextInterface
 
     protected function _mergeTasks()
     {
-        $simple_tables = array(
+        $simple_tables = [
             'tasks',
             'task_associations',
             'task_comments',
-        );
+        ];
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
@@ -271,7 +271,7 @@ class PersonMerge implements PersonContextInterface
 
     protected function _mergeTickets()
     {
-        $simple_tables = array(
+        $simple_tables = [
             'tickets',
             'tickets_attachments',
             'tickets_logs',
@@ -281,10 +281,10 @@ class PersonMerge implements PersonContextInterface
             'ticket_access_codes',
             'ticket_charges',
             'ticket_feedback',
-        );
-        $complex_tables = array(
-            'tickets_deleted' => array('by_person_id'),
-        );
+        ];
+        $complex_tables = [
+            'tickets_deleted' => ['by_person_id'],
+        ];
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
@@ -298,12 +298,12 @@ class PersonMerge implements PersonContextInterface
 
     protected function _mergeOther()
     {
-        $simple_tables = array(
+        $simple_tables = [
             'login_log',
             'page_view_log',
             'ratings',
             'searchlog',
-        );
+        ];
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
@@ -317,6 +317,6 @@ class PersonMerge implements PersonContextInterface
             UPDATE IGNORE $table
             SET $column = ?
             WHERE $column = ?
-        ", array($this->person['id'], $this->other_person['id']));
+        ", [$this->person['id'], $this->other_person['id']]);
     }
 }

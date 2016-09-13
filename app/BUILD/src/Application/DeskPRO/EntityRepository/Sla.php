@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity;
@@ -95,7 +96,7 @@ class Sla extends AbstractEntityRepository
     {
         $slas = $this->getAllSlas();
         if (!$slas) {
-            return array();
+            return [];
         }
 
         foreach ($slas as $key => $sla) {
@@ -109,7 +110,7 @@ class Sla extends AbstractEntityRepository
 
     public function getSlaTitles(array $ids = null)
     {
-        $output = array();
+        $output = [];
         foreach ($this->getAllSlas() as $sla) {
             if (!is_array($ids) || in_array($sla->id, $ids)) {
                 $output[$sla->id] = $sla->title;
@@ -130,9 +131,9 @@ class Sla extends AbstractEntityRepository
             SELECT sla_id
             FROM sla_people
             WHERE sla_id = ? AND person_id = ?
-        ', array($sla->id, $person->id));
+        ', [$sla->id, $person->id]);
 
-        return ($id ? true : false);
+        return $id ? true : false;
     }
 
     public function doesSlaApplyToOrganization(Entity\Sla $sla, Entity\Organization $organization)
@@ -141,8 +142,8 @@ class Sla extends AbstractEntityRepository
             SELECT sla_id
             FROM sla_organizations
             WHERE sla_id = ? AND organization_id = ?
-        ', array($sla->id, $organization->id));
+        ', [$sla->id, $organization->id]);
 
-        return ($id ? true : false);
+        return $id ? true : false;
     }
 }

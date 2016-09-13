@@ -81,9 +81,9 @@ class GroupingCounter
      */
     public function getDisplayArray()
     {
-        #------------------------------
-        # Connect counts to titles
-        #------------------------------
+        //------------------------------
+        // Connect counts to titles
+        //------------------------------
 
         $display_elements = $this->getDisplayElementsArray();
         $titles1          = $display_elements['titles1'];
@@ -129,9 +129,9 @@ class GroupingCounter
             $items[$field1] = $row;
         }
 
-        #------------------------------
-        # Now fetch hierarchy which might be used
-        #------------------------------
+        //------------------------------
+        // Now fetch hierarchy which might be used
+        //------------------------------
 
         $group2_structure = [];
         $group1_structure = $this->getFieldStructure($this->grouping1, $titles1, $display_elements['ids1']);
@@ -397,9 +397,9 @@ class GroupingCounter
     {
         $counts = $this->getCounts();
 
-        #------------------------------
-        # Get titles for each grouping, and sort into a keyed structure
-        #------------------------------
+        //------------------------------
+        // Get titles for each grouping, and sort into a keyed structure
+        //------------------------------
 
         $ids1 = [];
         $ids2 = [];
@@ -418,9 +418,9 @@ class GroupingCounter
                 $ids2[] = $count['field2'];
             }
 
-            #------------------------------
-            # Into structure
-            #------------------------------
+            //------------------------------
+            // Into structure
+            //------------------------------
 
             // Set ROLLUP's (totals) to -1
             if ($count['field1'] === null) {

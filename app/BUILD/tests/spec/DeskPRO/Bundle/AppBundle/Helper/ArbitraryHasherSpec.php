@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -56,9 +56,9 @@ class ArbitraryHasherSpec extends ObjectBehavior
 
     public function it_can_hash_an_array_of_scalars()
     {
-        $standard_input             = array('hi there', 9, 4.78);
-        $different_input            = array('hi there!', 9, 4.78);
-        $reorganized_standard_input = array(9, 'hi there', 4.78);
+        $standard_input             = ['hi there', 9, 4.78];
+        $different_input            = ['hi there!', 9, 4.78];
+        $reorganized_standard_input = [9, 'hi there', 4.78];
 
         $hash = $this->generateHash($standard_input)->shouldBeString();
 
@@ -130,9 +130,9 @@ class ArbitraryHasherSpec extends ObjectBehavior
         $news2->getId()->willReturn(3);
         $article->getId()->willReturn(1);
 
-        $standard_array             = array($object1, $news1, $news2, $article, $filter, 'hi there');
-        $standard_reorganized_array = array($news1, 'hi there', $object1, $filter, $news2, $article);
-        $different_array            = array($object1, $news1, $news2, $article, $filter, 'chris tickner');
+        $standard_array             = [$object1, $news1, $news2, $article, $filter, 'hi there'];
+        $standard_reorganized_array = [$news1, 'hi there', $object1, $filter, $news2, $article];
+        $different_array            = [$object1, $news1, $news2, $article, $filter, 'chris tickner'];
 
         $hash = $this->generateHash($standard_array)->shouldBeString();
         $hash = $this->generateHash($different_array)->shouldBeString();

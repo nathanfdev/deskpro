@@ -53,10 +53,12 @@ class PeopleController extends AbstractApiController
      */
     public function getOnlineAgentsAction()
     {
-        $ids    = $this->getPersonRepository()->getActiveAgentIdsForUserChat();
-        $agents = $this->getPersonRepository()->findBy([
-            'id' => $ids,
-        ]);
+        $ids = $this->getPersonRepository()->getActiveAgentIdsForUserChat();
+
+        $agents = array_filter($this->getPersonRepository()->findBy(['id' => $ids]), function ($agent) {
+            /* @var Person $agent */
+            return $agent->hasPerm('agent_chat.use');
+        });
 
         return new View($this->wrap($agents));
     }

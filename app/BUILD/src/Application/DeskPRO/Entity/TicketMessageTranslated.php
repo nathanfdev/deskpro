@@ -88,9 +88,9 @@ class TicketMessageTranslated extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('ticket', $ticketMessage->ticket);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

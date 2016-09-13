@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -47,8 +48,8 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
 
         $statuses = $term->getOption('status');
 
-        $non_hidden = array();
-        $hidden     = array();
+        $non_hidden = [];
+        $hidden     = [];
         foreach ($statuses as $status) {
             $status = str_replace('hidden.', '', $status); // internally we use the shorter hidden status
             if ($this->isHiddenStatus($status)) {
@@ -58,10 +59,10 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
             }
         }
 
-        $this->logDebug('Processed options', array(
+        $this->logDebug('Processed options', [
             'non-hidden' => $non_hidden,
             'hidden'     => $hidden,
-        ));
+        ]);
 
         // only non hidden
         if (count($non_hidden) && !count($hidden)) {
@@ -134,10 +135,10 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
     {
         return in_array(
             $status,
-            array(
+            [
                 Ticket::HIDDEN_STATUS_SPAM,
                 Ticket::HIDDEN_STATUS_DELETED,
-            )
+            ]
         );
     }
 }

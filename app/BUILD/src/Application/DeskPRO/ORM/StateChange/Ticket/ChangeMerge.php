@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\ORM\StateChange\Ticket;
 
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
@@ -58,7 +59,7 @@ class ChangeMerge implements ChangeInterface, NonStateTrackingInterface
      * @param int    $old_ticket_id
      * @param array  $lost_data
      */
-    public function __construct($field_id, $old_ticket_id, array $lost_data = array())
+    public function __construct($field_id, $old_ticket_id, array $lost_data = [])
     {
         $this->field_id      = $field_id;
         $this->old_ticket_id = $old_ticket_id;
@@ -86,11 +87,11 @@ class ChangeMerge implements ChangeInterface, NonStateTrackingInterface
      */
     public function getNew()
     {
-        return array(
+        return [
             'field_id'      => $this->field_id,
             'old_ticket_id' => $this->old_ticket_id,
             'lost_data'     => $this->lost_data,
-        );
+        ];
     }
 
     /**

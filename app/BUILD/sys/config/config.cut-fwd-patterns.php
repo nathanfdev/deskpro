@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,16 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # This file should not be edited directly. If you want
-    # to add custom translate maps, create a new file named
-    # config.cut-fwd-patterns-translate.php in the same directory
-    # as your config.php file.
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+return [
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // This file should not be edited directly. If you want
+    // to add custom translate maps, create a new file named
+    // config.cut-fwd-patterns-translate.php in the same directory
+    // as your config.php file.
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     'standard_1' => '#-{3,15}\s*Forward(ed)?( Message)?\s*-{3,15}#i',
     'standard_2' => '#^\s*Forward(ed)?( Message):\s*$#im',
 
     'outlook_1' => '#^\-+Original Message\-+\s*$#im',
-);
+];

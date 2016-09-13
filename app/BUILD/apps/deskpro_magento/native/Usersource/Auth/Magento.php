@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace deskpro_magento\Usersource\Auth;
 
 use Doctrine\DBAL\DriverManager;
@@ -39,8 +40,12 @@ use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
 
-class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterface, Adapter\CookieLoginInterface,
-    Adapter\JsSsoInterface, Adapter\UserInfoFetchableInterface, Loggable
+class Magento extends Adapter\PluginAdapter implements
+Adapter\FormLoginInterface,
+Adapter\CookieLoginInterface,
+    Adapter\JsSsoInterface,
+Adapter\UserInfoFetchableInterface,
+Loggable
 {
     /**
      * @var \Orb\Log\Logger
@@ -70,7 +75,7 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
 
     protected function initOptions()
     {
-        $this->options = new \Orb\Util\OptionsArray(array(
+        $this->options = new \Orb\Util\OptionsArray([
             'url'          => '',
             'api_user'     => '',
             'api_key'      => '',
@@ -78,7 +83,7 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
             'sso_cookie'   => false,
             'magento_path' => '',
             'sso_js'       => false,
-        ));
+        ]);
     }
 
     /**
@@ -93,10 +98,10 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
     public function doAuthenticate()
     {
         if (!$this->set_username) {
-            return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'missing_input_username', 'error_message' => 'No username provided']);
         }
         if (!$this->set_password) {
-            return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_password', 'error_message' => 'No password provided'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'missing_input_password', 'error_message' => 'No password provided']);
         }
 
         $time_start = microtime(true);
@@ -120,7 +125,7 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
             if ($this->logger) {
                 $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
 
-                return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
+                return new Result(Result::FAILURE_EXCEPTION, null, ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]);
             }
 
             return new Result(Result::FAILURE_INVALID_CREDS);
@@ -149,11 +154,11 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
 
         // Map fields from the raw userinfo to common fields that most
         // auth adapters use by convention
-        $map = array(
+        $map = [
             'email'      => 'email_address',
             'first_name' => 'first_name',
             'last_name'  => 'last_name',
-        );
+        ];
 
         foreach ($map as $field_key => $info_key) {
             $field = $this->options[$field_key];
@@ -184,7 +189,7 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
      */
     public function getUserInfoFromIdentity($id, $id_type = null)
     {
-        $try = array();
+        $try = [];
         if ($id_type === 'email' || (!$id_type && \Orb\Validator\StringEmail::isValueValid($id))) {
             $try[] = 'getUserInfoForEmail';
         }
@@ -240,16 +245,16 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
         $id  = intval($controller->getRequest()->get('id'));
         $key = strval($controller->getRequest()->get('key'));
 
-        $record = $this->_callMagentoApi('dp_sso.validate', array('id' => $id, 'key' => $key));
+        $record = $this->_callMagentoApi('dp_sso.validate', ['id' => $id, 'key' => $key]);
 
         if (!empty($record['customer_id'])) {
-            $results = array(
+            $results = [
                 'customer_id' => $record['customer_id'],
                 'email'       => $record['email'],
                 'password'    => $record['password_hash'],
                 'first_name'  => $record['firstname'],
                 'last_name'   => $record['lastname'],
-            );
+            ];
 
             $identity = $this->getIdentityFromUserInfo($results);
 
@@ -261,7 +266,7 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
         }
     }
 
-    protected function _callMagentoApi($method, array $params = array())
+    protected function _callMagentoApi($method, array $params = [])
     {
         $url  = $this->options['url'];
         $user = $this->options['api_user'];
@@ -284,22 +289,22 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
             return false;
         }
 
-        return $client->call($session, $method, $params ? array($params) : array());
+        return $client->call($session, $method, $params ? [$params] : []);
     }
 
     public function getUserInfoForEmail($email)
     {
-        $results = $this->_callMagentoApi('customer.list', array('email' => $email, 'website_id' => $this->options->get('website_id')));
+        $results = $this->_callMagentoApi('customer.list', ['email' => $email, 'website_id' => $this->options->get('website_id')]);
         if ($results && is_array($results)) {
             $record = reset($results);
 
-            return array(
+            return [
                 'customer_id' => $record['customer_id'],
                 'email'       => $record['email'],
                 'password'    => $record['password_hash'],
                 'first_name'  => $record['firstname'],
                 'last_name'   => $record['lastname'],
-            );
+            ];
         }
 
         return;
@@ -307,15 +312,15 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
 
     public function getUserInfoForId($id)
     {
-        $record = $this->_callMagentoApi('customer.info', array('customerId' => $id));
+        $record = $this->_callMagentoApi('customer.info', ['customerId' => $id]);
         if ($record && is_array($record)) {
-            return array(
+            return [
                 'customer_id' => $record['customer_id'],
                 'email'       => $record['email'],
                 'password'    => $record['password_hash'],
                 'first_name'  => $record['firstname'],
                 'last_name'   => $record['lastname'],
-            );
+            ];
         }
 
         return;
@@ -354,25 +359,25 @@ class Magento extends Adapter\PluginAdapter implements Adapter\FormLoginInterfac
                     $config, $matches, PREG_SET_ORDER
                 );
 
-                $parts = array(
+                $parts = [
                     'host'         => 'localhost',
                     'username'     => 'root',
                     'password'     => '',
                     'dbname'       => '',
                     'table_prefix' => '',
-                );
+                ];
                 foreach ($matches as $match) {
                     $parts[$match[1]] = $match[3];
                 }
 
                 try {
-                    $conn = DriverManager::getConnection(array(
+                    $conn = DriverManager::getConnection([
                         'dbname'   => $parts['dbname'],
                         'user'     => $parts['username'],
                         'password' => $parts['password'],
                         'host'     => $parts['host'],
                         'driver'   => 'pdo_mysql',
-                    ));
+                    ]);
 
                     $qb = $conn->createQueryBuilder()
                         ->select('s.session_date')

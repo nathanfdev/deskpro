@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,21 +31,22 @@
  *
  * @category People
  */
+
 namespace Application\DeskPRO\People\UserPermissions\Value;
 
 class TicketPermissions implements PermissionValueInterface
 {
-    /** @var bool  */
+    /** @var bool */
     public $use = false;
-    /** @var bool  */
+    /** @var bool */
     public $reopen_resolved = false;
-    /** @var bool  */
+    /** @var bool */
     public $reopen_resolved_createnew = false;
 
     public function getNames()
     {
-        return array(
+        return [
             'use', 'reopen_resolved', 'reopen_resolved_createnew',
-        );
+        ];
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -153,7 +153,7 @@ abstract class AbstractEntityCheckTest extends DeskProTestCase
 
     public function testIsMatchSingleOption()
     {
-        $check = $this->createChecker('is', array('%OPT%' => array(1)));
+        $check = $this->createChecker('is', ['%OPT%' => [1]]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
@@ -163,53 +163,53 @@ abstract class AbstractEntityCheckTest extends DeskProTestCase
             return;
         }
 
-        $check = $this->createChecker('is', array('%OPT%' => array(0)));
+        $check = $this->createChecker('is', ['%OPT%' => [0]]);
         $this->assertTrue($check->isTriggerMatch($this->ticket_null, $this->exec_context));
 
-        $check = $this->createChecker('not', array('%OPT%' => array(0)));
+        $check = $this->createChecker('not', ['%OPT%' => [0]]);
         $this->assertFalse($check->isTriggerMatch($this->ticket_null, $this->exec_context));
 
-        $check = $this->createChecker('is', array('%OPT%' => array(0)));
+        $check = $this->createChecker('is', ['%OPT%' => [0]]);
         $this->assertFalse($check->isTriggerMatch($this->ticket, $this->exec_context));
 
-        $check = $this->createChecker('not', array('%OPT%' => array(0)));
+        $check = $this->createChecker('not', ['%OPT%' => [0]]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testIsMatchMultipleOptions()
     {
-        $check = $this->createChecker('is', array('%OPT%' => array(1, 2)));
+        $check = $this->createChecker('is', ['%OPT%' => [1, 2]]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testIsMatchInvalidOptions()
     {
-        $check = $this->createChecker('is', array('%OPT%' => array('invalid', 1, 2, 100)));
+        $check = $this->createChecker('is', ['%OPT%' => ['invalid', 1, 2, 100]]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testContainsMatchSingleOption()
     {
-        $check = $this->createChecker('contains', array('%OPT%' => array(1)));
+        $check = $this->createChecker('contains', ['%OPT%' => [1]]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testContainsMatchMultipleOptions()
     {
-        $check = $this->createChecker('contains', array('%OPT%' => array(1, 2)));
+        $check = $this->createChecker('contains', ['%OPT%' => [1, 2]]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testContainsMatchInvalidOptions()
     {
-        $check = $this->createChecker('contains', array('%OPT%' => array('invalid', 1, 2, 100)));
+        $check = $this->createChecker('contains', ['%OPT%' => ['invalid', 1, 2, 100]]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testNotEmptyOption()
     {
         try {
-            $check = $this->createChecker('not', array('%OPT%' => array()));
+            $check = $this->createChecker('not', ['%OPT%' => []]);
             $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
         } catch (\Orb\Util\CheckedOptionsException $e) {
             // Some optiosn dont allow empty, so dont test those checks
@@ -218,37 +218,37 @@ abstract class AbstractEntityCheckTest extends DeskProTestCase
 
     public function testNotInvalidOption()
     {
-        $check = $this->createChecker('not', array('%OPT%' => array('invalid')));
+        $check = $this->createChecker('not', ['%OPT%' => ['invalid']]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testNotOption()
     {
-        $check = $this->createChecker('not', array('%OPT%' => array(2)));
+        $check = $this->createChecker('not', ['%OPT%' => [2]]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testNotMultipleOptions()
     {
-        $check = $this->createChecker('not', array('%OPT%' => array(500, 600)));
+        $check = $this->createChecker('not', ['%OPT%' => [500, 600]]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testNotContainsSingleOption()
     {
-        $check = $this->createChecker('notcontains', array('%OPT%' => array(500)));
+        $check = $this->createChecker('notcontains', ['%OPT%' => [500]]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testNotContainsMultipleOptions()
     {
-        $check = $this->createChecker('notcontains', array('%OPT%' => array(500, 600)));
+        $check = $this->createChecker('notcontains', ['%OPT%' => [500, 600]]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 
     public function testNotContainsInvalidOptions()
     {
-        $check = $this->createChecker('notcontains', array('%OPT%' => array('invalid', 'abc')));
+        $check = $this->createChecker('notcontains', ['%OPT%' => ['invalid', 'abc']]);
         $this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
     }
 }

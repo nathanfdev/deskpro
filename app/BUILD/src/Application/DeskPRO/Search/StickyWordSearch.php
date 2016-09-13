@@ -124,13 +124,13 @@ class StickyWordSearch implements PersonContextInterface
      */
     public function getStickyWords($type, $id, $limit = 5)
     {
-        $ret = array();
+        $ret = [];
         $res = $this->db->executeQuery(sprintf('
             SELECT word
             FROM search_sticky_result
             WHERE object_type = :type AND object_id = :id
             LIMIT %d
-        ', $limit), array('type' => $type, 'id' => $id));
+        ', $limit), ['type' => $type, 'id' => $id]);
 
         while ($word = $res->fetchColumn()) {
             $ret[] = $word;
@@ -151,7 +151,7 @@ class StickyWordSearch implements PersonContextInterface
         $words = $this->getWordsFromQuery($query);
 
         if (!$words) {
-            return array();
+            return [];
         }
 
         array_unshift($words, $query);
@@ -180,20 +180,20 @@ class StickyWordSearch implements PersonContextInterface
         ', [$words, $limit_types], [Connection::PARAM_STR_ARRAY, Connection::PARAM_STR_ARRAY]);
 
         if (!$results_raw) {
-            return array();
+            return [];
         }
 
-        #------------------------------
-        # Need to verify the user can see
-        # the results that we matched
-        #------------------------------
+        //------------------------------
+        // Need to verify the user can see
+        // the results that we matched
+        //------------------------------
 
-        $check_ids = array(
+        $check_ids = [
             'DeskPRO:Article'  => [],
             'DeskPRO:News'     => [],
             'DeskPRO:Download' => [],
             'DeskPRO:Feedback' => [],
-        );
+        ];
 
         if (empty($check_ids)) {
             return [];
@@ -237,14 +237,16 @@ class StickyWordSearch implements PersonContextInterface
         }
 
         // Key them for isset() lookups below
-        $valid_ids = array_map(function ($v) { return $v ? array_combine($v, $v) : $v; }, $valid_ids);
+        $valid_ids = array_map(function ($v) {
+            return $v ? array_combine($v, $v) : $v;
+        }, $valid_ids);
 
-        #------------------------------
-        # Get and sort the results
-        #------------------------------
+        //------------------------------
+        // Get and sort the results
+        //------------------------------
 
         // Count matches
-        $results_ranked = array();
+        $results_ranked = [];
         foreach ($results_raw as $r) {
             // Make sure the result is within the list of valid
             // ids we got back from our search verify above
@@ -268,16 +270,16 @@ class StickyWordSearch implements PersonContextInterface
         }
 
         // Get IDs for each type
-        $results_typed = array();
+        $results_typed = [];
         foreach ($results_ranked as $r) {
             if (!isset($results_typed[$r['object_type']])) {
-                $results_typed[$r['object_type']] = array();
+                $results_typed[$r['object_type']] = [];
             }
             $results_typed[$r['object_type']][] = $r['object_id'];
         }
 
         // Fetech actual objects
-        $real_results = array();
+        $real_results = [];
         foreach ($results_typed as $entity_name => $ids) {
             $real_results = array_merge(
                 $real_results,
@@ -314,7 +316,7 @@ class StickyWordSearch implements PersonContextInterface
 
         // Make them a usual array we expect
         // type => typename, object => entity
-        $typed_results = array();
+        $typed_results = [];
         foreach ($real_results as $r) {
             $class       = get_class($r);
             $entity_name = $class::getEntityName();
@@ -322,10 +324,10 @@ class StickyWordSearch implements PersonContextInterface
 
             $key = $type.'.'.$r->getId();
 
-            $typed_results[$key] = array(
+            $typed_results[$key] = [
                 'type'   => $type,
                 'object' => $r,
-            );
+            ];
         }
 
         return $typed_results;

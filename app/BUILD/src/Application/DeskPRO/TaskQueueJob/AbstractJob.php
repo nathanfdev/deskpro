@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category TaskQueueJob
  */
+
 namespace Application\DeskPRO\TaskQueueJob;
 
 use Application\DeskPRO\Entity\TaskQueue;
@@ -56,7 +57,7 @@ abstract class AbstractJob
      */
     protected $_logger;
 
-    public function __construct(array $data = array(), TaskQueue $task, Logger $logger = null)
+    public function __construct(array $data, TaskQueue $task, Logger $logger = null)
     {
         $this->_data   = array_merge($this->_getDefaultData(), $data);
         $this->_task   = $task;

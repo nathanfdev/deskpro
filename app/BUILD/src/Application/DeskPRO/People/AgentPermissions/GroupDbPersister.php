@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\AgentPermissions;
 
 use Application\DeskPRO\Entity\Person;
@@ -48,10 +49,10 @@ class GroupDbPersister extends AbstractGroupDbPersister
      */
     public function saveOverridePerms(Person $person, AgentPermissions $perms)
     {
-        $current_perms = $this->db->fetchAllCol('SELECT name FROM permissions WHERE person_id = ?', array($person->id));
+        $current_perms = $this->db->fetchAllCol('SELECT name FROM permissions WHERE person_id = ?', [$person->id]);
 
-        $group_perms  = new GroupsDbLoader($person->usergroups ? $person->usergroups->toArray() : array(), $this->em);
-        $via_groups   = array();
+        $group_perms  = new GroupsDbLoader($person->usergroups ? $person->usergroups->toArray() : [], $this->em);
+        $via_groups   = [];
         $names_loader = new PermissionNamesLoader();
 
         foreach ($person->usergroups as $ug) {
@@ -60,20 +61,20 @@ class GroupDbPersister extends AbstractGroupDbPersister
                 if ($ug_perms) {
                     $ug_perms = array_fill_keys($ug_perms, true);
                 } else {
-                    $ug_perms = array();
+                    $ug_perms = [];
                 }
             } else {
                 $ug_perms = $group_perms->getGroupPermissions($ug->id);
                 if ($ug_perms) {
                     $ug_perms = $ug_perms->toArray();
                 } else {
-                    $ug_perms = array();
+                    $ug_perms = [];
                 }
             }
             $via_groups = array_merge($via_groups, $ug_perms);
         }
 
-        $set_perms = array();
+        $set_perms = [];
         foreach (AgentPermissions::$prefix_map as $real_name => $coll_name) {
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
@@ -90,10 +91,10 @@ class GroupDbPersister extends AbstractGroupDbPersister
         $del_perms = array_diff($current_perms, $set_perms);
         $new_perms = array_diff($set_perms, $current_perms);
 
-        $ins = array();
+        $ins = [];
         if ($new_perms) {
             foreach ($new_perms as $p) {
-                $ins[] = array('person_id' => $person->id, 'name' => $p, 'value' => 1, 'is_active' => 1);
+                $ins[] = ['person_id' => $person->id, 'name' => $p, 'value' => 1, 'is_active' => 1];
             }
         }
 

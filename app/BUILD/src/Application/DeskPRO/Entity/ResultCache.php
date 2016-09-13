@@ -57,21 +57,21 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var array
      */
-    protected $criteria = array();
+    protected $criteria = [];
 
     /**
      * An array of results.
      *
      * @var array
      */
-    protected $results = array();
+    protected $results = [];
 
     /**
      * Any extra data.
      *
      * @var array
      */
-    protected $extra = array();
+    protected $extra = [];
 
     /**
      * @var int
@@ -139,9 +139,9 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
         return $this->person['id'];
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

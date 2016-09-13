@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
@@ -70,9 +71,9 @@ class DbalCustomFieldHelper extends AbstractDbalHelper
     public function buildQueryPart($field_id, $op, array $values)
     {
         $part = $this->join_helper->buildQueryPart(
-            array(
+            [
                 'custom_data_ticket.value' => array_values($values),
-            ),
+            ],
             'custom_data_ticket',
             'custom_data_ticket.ticket_id = ticket.id',
             $op

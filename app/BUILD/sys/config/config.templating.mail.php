@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,9 +34,9 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /* @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
-############################################################################
-# Parameters
-############################################################################
+//###########################################################################
+// Parameters
+//###########################################################################
 
 $container->setParameter('twig.loader.filesystem.class', 'Application\\DeskPRO\\Twig\\Loader\\HybridLoader');
 $container->setParameter('twig.class', 'Application\\DeskPRO\\Twig\\Environment');
@@ -48,41 +48,41 @@ $container->setParameter('debug.templating.engine.twig.class', 'Application\\Des
 $container->setParameter('twig.cache_warmer.class', 'Application\\DeskPRO\\Twig\\CacheWarmer\\TemplateCacheCacheWarmer');
 $container->setParameter('templating.engine.delegating.class', 'Application\\DeskPRO\\Templating\\Engine');
 
-############################################################################
-# Services
-############################################################################
+//###########################################################################
+// Services
+//###########################################################################
 
 // templating.engine.jsonphp
 $definition = new Definition();
 $definition->setClass('Orb\\Templating\\Engine\\PhpVarJsonEngine');
 $definition->setArguments(
-    array(
+    [
         new Reference('templating.name_parser'),
         new Reference('service_container'),
         new Reference('templating.loader'),
         new Reference('templating.globals'),
-    )
+    ]
 );
-$definition->addTag('templating.engine', array('alias' => 'jsonphp'));
+$definition->addTag('templating.engine', ['alias' => 'jsonphp']);
 $container->setDefinition('templating.engine.jsonphp', $definition);
 
 // twig.helpers.deskpro_user_templating
 $definition = new Definition();
 $definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
-$definition->setArguments(array(
+$definition->setArguments([
     new Reference('service_container'),
-));
-$definition->addTag('twig.extension', array());
+]);
+$definition->addTag('twig.extension', []);
 $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
 
-############################################################################
-# Twig Configuration
-############################################################################
+//###########################################################################
+// Twig Configuration
+//###########################################################################
 
-$container->loadFromExtension('twig', array(
-    'form' => array(
-        'resources' => array(
+$container->loadFromExtension('twig', [
+    'form' => [
+        'resources' => [
             'DeskPRO:Form:form_div_layout.html.twig',
-        ),
-    ),
-));
+        ],
+    ],
+]);

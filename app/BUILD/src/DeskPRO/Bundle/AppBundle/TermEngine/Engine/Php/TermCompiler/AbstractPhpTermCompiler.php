@@ -59,10 +59,10 @@ abstract class AbstractPhpTermCompiler extends AbstractTermCompiler
     {
         $this->logDebug(
             'Constructed PhpCheck',
-            array(
+            [
                 'expression' => $check->getExpression(),
                 'vars'       => $check->getVariables(),
-            )
+            ]
         );
     }
 
@@ -98,7 +98,7 @@ abstract class AbstractPhpTermCompiler extends AbstractTermCompiler
         return $this->helperPool->getHelper('agent');
     }
 
-    public function turnArrayIntoPhpArrayString(array $values = array())
+    public function turnArrayIntoPhpArrayString(array $values = [])
     {
         return 'array('.implode(',', $values).')';
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -76,7 +77,7 @@ class Language extends AbstractEntityRepository
             return $this->lang_titles;
         }
 
-        $ret = array();
+        $ret = [];
         foreach ((array) $for_ids as $id) {
             $ret[$id] = $this->lang_titles[$id];
         }
@@ -163,7 +164,7 @@ class Language extends AbstractEntityRepository
             $lang_code = 'ES_es';
         }
 
-        $r = $this->findOneBy(array('locale' => $lang_code));
+        $r = $this->findOneBy(['locale' => $lang_code]);
 
         return $r;
     }

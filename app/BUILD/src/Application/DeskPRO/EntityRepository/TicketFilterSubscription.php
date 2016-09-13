@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -46,9 +47,9 @@ class TicketFilterSubscription extends AbstractEntityRepository
             FROM DeskPRO:TicketFilterSubscription s
             LEFT JOIN s.filter f
             WHERE s.person = ?1
-        ')->execute(array(1 => $person));
+        ')->execute([1 => $person]);
 
-        $ret = array();
+        $ret = [];
 
         foreach ($results as $s) {
             $ret[$s->filter->id] = $s;
@@ -78,7 +79,7 @@ class TicketFilterSubscription extends AbstractEntityRepository
      */
     public function getForAgents(array $people, array $filters = null)
     {
-        $people_ids = array();
+        $people_ids = [];
         foreach ($people as $p) {
             if (is_numeric($p)) {
                 $people_ids[] = $p;
@@ -86,7 +87,7 @@ class TicketFilterSubscription extends AbstractEntityRepository
                 $people_ids[] = $p->id;
             }
         }
-        $filter_ids = array();
+        $filter_ids = [];
         foreach ($filters as $f) {
             if (is_numeric($f)) {
                 $filter_ids[] = $f;
@@ -99,7 +100,7 @@ class TicketFilterSubscription extends AbstractEntityRepository
         $filter_ids = Arrays::removeFalsey($filter_ids);
 
         if (!$people_ids) {
-            return array();
+            return [];
         }
 
         $people_ids = implode(',', $people_ids);
@@ -123,14 +124,14 @@ class TicketFilterSubscription extends AbstractEntityRepository
             ")->execute();
         }
 
-        $ret = array();
+        $ret = [];
 
         foreach ($results as $s) {
             $agent_id  = $s->person->id;
             $filter_id = $s->filter->id;
 
             if (!isset($ret[$agent_id])) {
-                $ret[$agent_id] = array();
+                $ret[$agent_id] = [];
             }
 
             $ret[$agent_id][$filter_id] = $s;

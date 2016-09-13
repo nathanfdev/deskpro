@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -46,14 +47,14 @@ abstract class AbstractTerm implements TermInterface
     /**
      * @var TermOptionsResolver[]
      */
-    private static $options_resolvers = array();
+    private static $options_resolvers = [];
 
     /**
      * Term operation.
      *
      * @var string the op for this term
      *
-     * The op MUST be a supported TermInterface::OP_* constant.
+     * The op MUST be a supported TermInterface::OP_* constant
      *
      * @Assert\NotNull
      *
@@ -69,7 +70,7 @@ abstract class AbstractTerm implements TermInterface
      *
      * Note that default options are not stored here. We only store options
      * that were explicitly added. The only access to options is via the
-     * getOptions() method (which uses OptionsResolver to resolve the options).
+     * getOptions() method (which uses OptionsResolver to resolve the options)
      *
      * @JMS\Expose()
      * @JMS\Type("array")
@@ -80,7 +81,7 @@ abstract class AbstractTerm implements TermInterface
      * @param array  $options initial settings
      * @param string $op      initialize op
      */
-    public function __construct(array $options = array(), $op = null)
+    public function __construct(array $options = [], $op = null)
     {
         $this->options = $options;
 
@@ -147,10 +148,10 @@ abstract class AbstractTerm implements TermInterface
      */
     public function serialize()
     {
-        return array(
+        return [
             'op'      => $this->op,
             'options' => $this->options,
-        );
+        ];
     }
 
     /**

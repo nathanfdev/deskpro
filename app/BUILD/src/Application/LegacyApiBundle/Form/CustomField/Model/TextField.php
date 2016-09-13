@@ -36,20 +36,20 @@ use Orb\Util\Strings;
 
 class TextField extends CustomFieldAbstract
 {
-    /** @var  int */
+    /** @var int */
     public $min_length;
-    /** @var  int */
+    /** @var int */
     public $max_length;
-    /** @var  string */
+    /** @var string */
     public $regex;
     /** @var string */
     public $default_value = '';
 
-    /** @var  int */
+    /** @var int */
     public $agent_min_length;
-    /** @var  int */
+    /** @var int */
     public $agent_max_length;
-    /** @var  string */
+    /** @var string */
     public $agent_regex;
 
     public function init()

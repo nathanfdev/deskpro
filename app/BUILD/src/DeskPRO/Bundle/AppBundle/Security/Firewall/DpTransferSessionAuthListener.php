@@ -111,7 +111,7 @@ class DpTransferSessionAuthListener implements ListenerInterface
         $providerKey,
         AuthenticationSuccessHandlerInterface $successHandler,
         AuthenticationFailureHandlerInterface $failureHandler,
-        array $options = array(),
+        array $options = [],
         LoggerInterface $logger = null,
         EventDispatcherInterface $dispatcher = null
     ) {
@@ -192,7 +192,7 @@ class DpTransferSessionAuthListener implements ListenerInterface
      *
      * @param Request $request
      *
-     * @return mixed the session ID from the agent/admin/reporting side or FALSE.
+     * @return mixed the session ID from the agent/admin/reporting side or FALSE
      */
     protected function checkAgentInterfaceAuthNeedsTransfer(Request $request)
     {
@@ -206,9 +206,9 @@ class DpTransferSessionAuthListener implements ListenerInterface
                     FROM sessions
                     WHERE id = ?
                 ',
-                    array(
+                    [
                         $session_id,
-                    )
+                    ]
                 );
 
                 list(, $auth) = explode('-', $sid);

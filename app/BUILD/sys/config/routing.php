@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,15 +46,10 @@ $collection->addCollection($col);
 $col = $loader->import(DP_ROOT.'/src/DeskPRO/Bundle/PortalBundle/Resources/config/routing_portal.yml');
 $collection->addCollection($col);
 
-//
 // to be removed shortly (old routes)
-//
+
 $col = $loader->import(DP_ROOT.'/src/Application/UserBundle/Resources/config/user-routing.php');
 $collection->addCollection($col);
-//
-//
-//
-
 
 $col = $loader->import(DP_ROOT.'/src/Application/LegacyApiBundle/Resources/config/api-routing.php');
 $col->addPrefix('/api');

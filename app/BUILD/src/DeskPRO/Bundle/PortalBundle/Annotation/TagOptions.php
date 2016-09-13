@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Annotation;
 
 /**
@@ -37,11 +38,11 @@ namespace DeskPRO\Bundle\PortalBundle\Annotation;
  */
 class TagOptions
 {
-    public $defaults              = array();
-    public $required              = array();
-    public $allowed_values        = array();
-    public $allowed_types         = array();
-    public $attribute_expressions = array();
+    public $defaults              = [];
+    public $required              = [];
+    public $allowed_values        = [];
+    public $allowed_types         = [];
+    public $attribute_expressions = [];
 
     /**
      * An array of variables to read from the request attributes
@@ -49,5 +50,5 @@ class TagOptions
      *
      * @var array
      */
-    public $inherit_from = array();
+    public $inherit_from = [];
 }

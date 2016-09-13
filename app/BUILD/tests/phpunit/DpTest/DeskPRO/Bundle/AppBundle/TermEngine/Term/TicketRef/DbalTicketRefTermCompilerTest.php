@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketRef;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -52,22 +53,22 @@ class DbalTicketRefTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
     public function testCompileIs()
     {
         $term = new TicketRefTerm(
-            array(
-                'ref' => array(
+            [
+                'ref' => [
                     'XXX-111-XXX',
                     'ZZZ-222-ZZZ',
-                ),
-            )
+                ],
+            ]
         );
 
         $query_part = $this->term_compiler->compile($term);
 
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'string0' => 'XXX-111-XXX',
                 'string1' => 'ZZZ-222-ZZZ',
-            )
+            ]
         );
 
         $this->assertWhere($query_part, 'ticket.ref = :string0 OR ticket.ref = :string1');
@@ -78,12 +79,12 @@ class DbalTicketRefTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
     public function testCompileIsNot()
     {
         $term = new TicketRefTerm(
-            array(
-                'ref' => array(
+            [
+                'ref' => [
                     'XXX-111-XXX',
                     'ZZZ-222-ZZZ',
-                ),
-            ),
+                ],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -91,10 +92,10 @@ class DbalTicketRefTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $this->assertParameters(
             $query_part,
-            array(
+            [
                 'string0' => 'XXX-111-XXX',
                 'string1' => 'ZZZ-222-ZZZ',
-            )
+            ]
         );
 
         $this->assertWhere($query_part, 'ticket.ref != :string0 AND ticket.ref != :string1');

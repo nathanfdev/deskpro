@@ -39,7 +39,7 @@ class UserSearchProxy implements UserSearchInterface
     /** @var Mysql\UserSearch */
     protected $dbs;
 
-    /** @var DeskproContainer  */
+    /** @var DeskproContainer */
     protected $c;
 
     public function __construct(DeskproContainer $container)

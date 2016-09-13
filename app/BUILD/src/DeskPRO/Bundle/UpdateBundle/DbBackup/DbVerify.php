@@ -92,8 +92,8 @@ class DbVerify implements DbVerifyInterface, LoggerAwareInterface
 
         $this->logger->debug('Verify: File open OK');
 
-        @fseek($fp, -250000, SEEK_END);
-        $chunk = @stream_get_contents($fp);
+        $filesize = fstat($fp)[7];
+        $chunk    = @stream_get_contents($fp, 250000, $filesize - 250000);
         @fclose($fp);
 
         if (!$chunk) {
@@ -111,6 +111,7 @@ class DbVerify implements DbVerifyInterface, LoggerAwareInterface
         }
 
         $this->logger->debug('Verify: File table check OK');
+
         $this->logger->debug('Verify: Done in '.$t->getTotalTime());
 
         return true;

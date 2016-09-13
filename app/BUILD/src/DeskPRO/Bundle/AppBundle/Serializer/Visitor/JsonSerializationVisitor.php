@@ -81,6 +81,6 @@ class JsonSerializationVisitor extends BaseVisitor
      */
     public function setOptions($options)
     {
-        $this->options = (integer) $options;
+        $this->options = (int) $options;
     }
 }

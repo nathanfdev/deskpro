@@ -82,7 +82,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * The most feedbackl interval for this task to run.
@@ -223,7 +223,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
      *
      * @return \Application\DeskPRO\WorkerProcess\Job\AbstractJob
      */
-    public function createJobObj(Logger $logger, array $options = array())
+    public function createJobObj(Logger $logger, array $options = [])
     {
         $classname = $this->job_class;
 
@@ -251,9 +251,9 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
         return false;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

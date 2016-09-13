@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App\Native;
 
 use Application\DeskPRO\App\AppManager;
@@ -96,6 +97,19 @@ class NativeAppsSync
         $this->exception_handler = $exception_handler;
     }
 
+    public function deleteUnexisting()
+    {
+        $em = $this->container->get('doctrine.orm.default_entity_manager');
+        foreach ($this->manager->getAllPackages() as $package) {
+            if (strpos($package->name, 'deskpro_') === 0 && !$this->manager->getAppPath($package->name, true)) {
+                $this->manager->removePackage($package);
+                $em->remove($package);
+                $this->logger->debug(sprintf('Removing application %s.', $package->name));
+            }
+        }
+        $em->flush();
+    }
+
     /**
      * Updates apps already installed.
      */
@@ -128,7 +142,7 @@ class NativeAppsSync
         } catch (\Exception $e) {
             $this->logger->error("EXCEPTION: {$e->getMessage()}");
             if ($this->exception_handler) {
-                call_user_func($this->exception_handler, $e, array('mode' => 'install', 'package' => $app_package, 'manager' => $this->manager));
+                call_user_func($this->exception_handler, $e, ['mode' => 'install', 'package' => $app_package, 'manager' => $this->manager]);
             } else {
                 throw $e;
             }
@@ -138,7 +152,8 @@ class NativeAppsSync
         // Updates any apps
         foreach ($this->manager->getPackageApps($package) as $app) {
             $native_app = $this->manager->getNativeApp($app);
-            $class      = $native_app->getConfig()->getInstallerHandlerClass();
+
+            $class = $native_app->getConfig()->getInstallerHandlerClass();
             if ($class) {
                 $this->logger->debug("... running update for app #{$app->id}");
                 $context = new InstallerContext($this->container, $native_app);
@@ -149,7 +164,7 @@ class NativeAppsSync
                 } catch (\Exception $e) {
                     $this->logger->error("EXCEPTION: {$e->getMessage()}");
                     if ($this->exception_handler) {
-                        call_user_func($this->exception_handler, $e, array('mode' => 'update', 'package' => $app_package, 'app' => $app, 'manager' => $this->manager));
+                        call_user_func($this->exception_handler, $e, ['mode' => 'update', 'package' => $app_package, 'app' => $app, 'manager' => $this->manager]);
                     } else {
                         throw $e;
                     }
@@ -195,13 +210,24 @@ class NativeAppsSync
                 continue;
             }
 
+            if ($app_package->getManifest()->getPackageName() !== $f) {
+                // business logic does not allow manifest package name and name of directory
+                // that contains it to be different see AppManager::getAppPath
+                $this->logger->error(sprintf(
+                    'Package name in manifest [%s] does not match directory name [%s], skipping',
+                    $app_package->getManifest()->getPackageName(),
+                    $f
+                ));
+                continue;
+            }
+
             $this->logger->debug("installing new native app {$f}");
             try {
                 $this->package_installer->installPackage($app_package);
             } catch (\Exception $e) {
                 $this->logger->error("EXCEPTION: {$e->getMessage()}");
                 if ($this->exception_handler) {
-                    call_user_func($this->exception_handler, $e, array('mode' => 'install', 'package' => $app_package, 'manager' => $this->manager));
+                    call_user_func($this->exception_handler, $e, ['mode' => 'install', 'package' => $app_package, 'manager' => $this->manager]);
                 } else {
                     throw $e;
                 }

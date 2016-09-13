@@ -98,7 +98,7 @@ class Organization extends AbstractEntityRepository
     {
         if (!$for_ids) {
             // Calling without for_ids is depreciated because there might be hundreds of thousands
-            return array();
+            return [];
         }
 
         if ($this->_organization_names == null) {
@@ -114,7 +114,7 @@ class Organization extends AbstractEntityRepository
             return $this->_organization_names;
         }
 
-        $ret = array();
+        $ret = [];
         foreach ((array) $for_ids as $id) {
             if (isset($this->_organization_names[$id])) {
                 $ret[$id] = $this->_organization_names[$id];
@@ -138,7 +138,7 @@ class Organization extends AbstractEntityRepository
         });
 
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $orgs = $this->getEntityManager()->createQuery('
@@ -146,7 +146,7 @@ class Organization extends AbstractEntityRepository
             FROM DeskPRO:Organization o INDEX BY o.id
             WHERE o.id IN(?0)
             ORDER BY o.id ASC
-        ')->execute(array($ids));
+        ')->execute([$ids]);
 
         return $orgs;
     }
@@ -195,14 +195,16 @@ class Organization extends AbstractEntityRepository
      */
     public function countMembers(array $orgs)
     {
-        $ids = array_map(function ($a) { return $a->id; }, $orgs);
+        $ids = array_map(function ($a) {
+            return $a->id;
+        }, $orgs);
 
         return App::getDb()->fetchAllKeyValue('
             SELECT organization_id as id, COUNT(*) as count
             FROM people
             WHERE organization_id IN (?) AND is_deleted = 0
             GROUP BY organization_id
-        ', array($ids), array(Connection::PARAM_INT_ARRAY));
+        ', [$ids], [Connection::PARAM_INT_ARRAY]);
     }
 
     /**
@@ -219,7 +221,7 @@ class Organization extends AbstractEntityRepository
             FROM DeskPRO:Person p
             WHERE p.organization = ?1 AND p.organization_manager = 1
             ORDER BY p.last_name, p.first_name
-        ')->execute(array(1 => $org));
+        ')->execute([1 => $org]);
     }
 
     /**
@@ -249,7 +251,7 @@ class Organization extends AbstractEntityRepository
      */
     public function search($q, $limit = null, $hydrate = true)
     {
-        $q    = '%'.str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q).'%';
+        $q    = '%'.str_replace(['%', '_'], ['\\\\%', '\\\\_'], $q).'%';
         $q    = strtolower($q);
         $mode = $hydrate ? null : Query::HYDRATE_ARRAY;
 
@@ -258,7 +260,7 @@ class Organization extends AbstractEntityRepository
             FROM DeskPRO:Organization o
             WHERE LOWER(o.name) LIKE ?1
             ORDER BY o.name ASC
-        ')->setMaxResults($limit)->execute(array(1 => $q), $mode);
+        ')->setMaxResults($limit)->execute([1 => $q], $mode);
     }
 
     public function getOrgMembers(OrganizationEntity $org, $limit = 15)

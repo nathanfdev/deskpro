@@ -77,9 +77,9 @@ class RequestTypeClassifierListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             // high priority, called before everything
-            KernelEvents::REQUEST => array('onKernelPreRequest', 5000),
-        );
+            KernelEvents::REQUEST => ['onKernelPreRequest', 5000],
+        ];
     }
 }

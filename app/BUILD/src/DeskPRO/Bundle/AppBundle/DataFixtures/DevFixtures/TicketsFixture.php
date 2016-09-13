@@ -256,7 +256,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
         $this->db->batchInsert('label_defs', $batch, true);
 
-        $this->labels = $this->db->fetchAllCol('SELECT label FROM label_defs WHERE label_type = ?', array($labelType));
+        $this->labels = $this->db->fetchAllCol('SELECT label FROM label_defs WHERE label_type = ?', [$labelType]);
     }
 
     private function loadTickets()
@@ -495,9 +495,9 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 ];
             }
 
-            #------------------------------
-            # Field Data
-            #------------------------------
+            //------------------------------
+            // Field Data
+            //------------------------------
             foreach ($this->fields as $f) {
                 $customDefGenerator->addCustomDefData($fielddata_batch, $f, 'ticket_id', $ticket_id);
             }

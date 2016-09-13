@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Service\Phirehose;
 
 /**
@@ -61,7 +62,7 @@ class UserStream extends \UserstreamPhirehose
     /**
      * @var array
      */
-    protected $log = array();
+    protected $log = [];
 
     /**
      * Suppress Phirehose @error_log output.
@@ -185,12 +186,12 @@ class UserStream extends \UserstreamPhirehose
                 $event = 'delete';
             }
 
-            $data = array(
+            $data = [
                 'account_id'   => $this->account['id'],
                 'event'        => $event,
                 'data'         => serialize($status),
                 'date_created' => gmdate('Y-m-d H:i:s'),
-            );
+            ];
 
             if ($this->write_callback) {
                 $callback = $this->write_callback;

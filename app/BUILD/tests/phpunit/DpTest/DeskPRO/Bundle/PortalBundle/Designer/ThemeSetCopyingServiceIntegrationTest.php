@@ -142,7 +142,9 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
         // then
         $assets = $this->findAssets($this->destination);
         $this->assertCount(2, $assets);
-        $names = array_map(function (ThemeSetAsset $asset) { return $asset->getName(); }, $assets);
+        $names = array_map(function (ThemeSetAsset $asset) {
+            return $asset->getName();
+        }, $assets);
         $this->assertArraySubset(['First', 'Second'], $names);
     }
 
@@ -209,7 +211,9 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
         $this->copy();
 
         $this->assertCount(2, $templates = $this->findTemplates($this->destination));
-        $names = array_map(function ($tpl) { return $tpl->name; }, $templates);
+        $names = array_map(function ($tpl) {
+            return $tpl->name;
+        }, $templates);
         sort($names);
         $this->assertEquals(['tpl_1', 'tpl_2'], $names);
     }
@@ -224,8 +228,12 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
         $this->copy();
 
         $templates = $this->findTemplates($this->destination);
-        $names     = array_map(function ($tpl) { return $tpl->name; }, $templates);
-        $contents = array_map(function ($tpl) { return $tpl->template_compiled; }, $templates);
+        $names     = array_map(function ($tpl) {
+            return $tpl->name;
+        }, $templates);
+        $contents = array_map(function ($tpl) {
+            return $tpl->template_compiled;
+        }, $templates);
         sort($names);
         sort($contents);
         $this->assertEquals(['tpl_1', 'tpl_2'], $names);

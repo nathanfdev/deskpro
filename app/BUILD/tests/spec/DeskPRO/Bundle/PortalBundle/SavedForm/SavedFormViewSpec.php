@@ -44,7 +44,7 @@ class SavedFormViewSpec extends ObjectBehavior
         SavedForm $saved_form
     ) {
         $saved_form->getFormData()->willReturn(
-            array(
+            [
                 'ticket' => [
                     'department' => 2,
                     'subject'    => 'my ticket subject',
@@ -59,7 +59,7 @@ class SavedFormViewSpec extends ObjectBehavior
                     'submit'         => '',
                     '_dp_csrf_token' => '34dadfa',
                 ],
-            )
+            ]
         );
 
         $this->beConstructedWith($saved_form);

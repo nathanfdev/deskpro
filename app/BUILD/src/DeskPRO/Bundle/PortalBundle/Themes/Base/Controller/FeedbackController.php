@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -76,13 +77,13 @@ class FeedbackController extends AbstractController
     {
         $person = $this->getUser() ?: new PersonGuest();
 
-        $filter = new FeedbackFilter(array(
+        $filter = new FeedbackFilter([
             'status'            => $options['status'],
             'status_categories' => $options['status_categories'],
             'types'             => $options['types'],
             'sort'              => $options['sort'],
             'sort_direction'    => $options['sort_direction'],
-        ));
+        ]);
 
         $pager = $this->getFeedbackDataService()->getItemsPager(
             $options['page'],
@@ -100,12 +101,12 @@ class FeedbackController extends AbstractController
 
         return $this->renderThemeView(
             sprintf('Theme:Feedback:FeedbackList/%s.html.twig', $options['style']),
-            array(
+            [
                 'pager'              => $pager,
                 'show_category_link' => $options['show_category_link'],
                 'show_pager'         => $options['show_pager'],
                 'filtered'           => count($allowed) - count(($types)) > 0,
-            )
+            ]
         );
     }
 
@@ -130,8 +131,8 @@ class FeedbackController extends AbstractController
     {
         $comments = $this->getFeedbackDataService()->getItemComments($item, $this->getUser());
 
-        return $this->renderThemeView('Theme:Common:comments.html.twig', array(
+        return $this->renderThemeView('Theme:Common:comments.html.twig', [
             'comments' => $comments,
-        ));
+        ]);
     }
 }

@@ -31,6 +31,7 @@
  *
  * @category Translate
  */
+
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
@@ -561,9 +562,6 @@ class Translate implements PersonContextInterface, TranslatorInterface
         return $this->_phrases[$languageId][$phraseName];
     }
 
-    /**
-     *
-     */
     public static function reportMissingPhrases()
     {
         if (count(self::$_missing_phrases)) {
@@ -743,9 +741,9 @@ class Translate implements PersonContextInterface, TranslatorInterface
      */
     public function getPhraseObject($object, $property = null, $language = null, $fallback_default = true)
     {
-        #------------------------------
-        # Standard translation interfaces
-        #------------------------------
+        //------------------------------
+        // Standard translation interfaces
+        //------------------------------
 
         if ($object instanceof DelegatePhraseInterface) {
             return $object->getPhrase($this, $language);
@@ -781,9 +779,9 @@ class Translate implements PersonContextInterface, TranslatorInterface
             return '';
         }
 
-        #------------------------------
-        # Phrase namer inspects objects..
-        #------------------------------
+        //------------------------------
+        // Phrase namer inspects objects..
+        //------------------------------
 
         $namer       = $this->getObjectPhraseNamer();
         $phrase_name = $namer->getPhraseName($object, $property);
@@ -1081,7 +1079,6 @@ class Translate implements PersonContextInterface, TranslatorInterface
         $date = preg_replace_callback(
             '#DP\-([DlFMP])#',
             function ($m) use ($prefix, $tr, $ts, $tz_offset) {
-
                 switch ($m[1]) {
                     case 'D':
                         $phrase_name = $prefix.'short-day_'.strtolower(date('l', $ts));
@@ -1173,9 +1170,9 @@ class Translate implements PersonContextInterface, TranslatorInterface
         array_shift($args);
         array_shift($args);
 
-        #------------------------------
-        # Build priority array
-        #------------------------------
+        //------------------------------
+        // Build priority array
+        //------------------------------
 
         // Verifies lang params, converts lang IDs to objects
 
@@ -1200,9 +1197,9 @@ class Translate implements PersonContextInterface, TranslatorInterface
             }
         }
 
-        #------------------------------
-        # Pick the lang text
-        #------------------------------
+        //------------------------------
+        // Pick the lang text
+        //------------------------------
 
         $obj_lang_repos = App::getContainer()->getObjectLangRepository();
 

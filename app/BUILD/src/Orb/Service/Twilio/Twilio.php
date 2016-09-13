@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Orb\Service\Twilio;
 
 use Orb\Util\PhoneNumbers;
@@ -97,9 +98,9 @@ class Twilio
                 $number_sid = $number->sid;
                 $number     = $this->twilio->account->incoming_phone_numbers->get($number_sid);
                 $number->update(
-                    array(
+                    [
                         'SmsUrl' => 'http://demo.twilio.com/docs/sms.xml',
-                    )
+                    ]
                 );
             }
         }
@@ -109,7 +110,7 @@ class Twilio
 
     public function getIncomingNumbers()
     {
-        $numbers = array();
+        $numbers = [];
         $nums    = $this->twilio->account->incoming_phone_numbers;
         foreach ($nums as $number) {
             $numbers[$number->friendly_name] = $number->phone_number;
@@ -125,10 +126,10 @@ class Twilio
             if (PhoneNumbers::toE164Format($num->phone_number) == PhoneNumbers::toE164Format($number)) {
                 // this is the correct number
                 $num->update(
-                    array(
+                    [
                         'SmsUrl'    => $url,
                         'SmsMethod' => 'POST',
-                    )
+                    ]
                 );
             }
         }

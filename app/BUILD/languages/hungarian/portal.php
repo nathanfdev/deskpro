@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.change-password'                 => 'Jelszócsere',
     'portal.account.email-btn-resend-validation'     => 'Megerősítő e-mail újraküldése',
     'portal.account.login-register-btn'              => 'Regisztráljon',
@@ -430,4 +430,4 @@ return array(
     'user.time.time_x_second'                        => '{0} másodperc',
     'user.time.time_x_week'                          => '{0} hét',
     'user.time.time_x_year'                          => '{0} év',
-);
+];

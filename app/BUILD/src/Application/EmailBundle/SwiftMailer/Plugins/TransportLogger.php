@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SwiftMailer\Plugins;
 
 use Psr\Log\LoggerInterface;
@@ -39,12 +40,12 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     /**
      * @var array
      */
-    private $connection_log = array();
+    private $connection_log = [];
 
     /**
      * @var array
      */
-    private $message_logs = array();
+    private $message_logs = [];
 
     /**
      * @var bool
@@ -144,7 +145,7 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
      */
     public function resetMessageLogs()
     {
-        $this->message_logs = array();
+        $this->message_logs = [];
     }
 
     /**
@@ -232,7 +233,7 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     public function beforeSendPerformed(Swift_Events_SendEvent $evt)
     {
         // Reset message logger
-        $this->message_logs = array();
+        $this->message_logs = [];
         ++$this->message_count;
 
         // Prepend connection log so the log for a single message is 'complete'

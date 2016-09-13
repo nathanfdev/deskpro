@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -70,7 +71,6 @@ class TicketStatusTerm extends AbstractTerm
         $resolver->setNormalizer(
             'status',
             function ($options, $status_array) {
-
                 if (!is_array($status_array)) {
                     $status_array = [$status_array];
                 }
@@ -94,7 +94,7 @@ class TicketStatusTerm extends AbstractTerm
 
     public function getSupportedOps()
     {
-        return array(TermInterface::OP_IS, TermInterface::OP_NOT);
+        return [TermInterface::OP_IS, TermInterface::OP_NOT];
     }
 
     public function getDefaultOp()

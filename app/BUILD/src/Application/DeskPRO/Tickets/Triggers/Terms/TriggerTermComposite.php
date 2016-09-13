@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -45,7 +46,7 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
     /**
      * @var TriggerTermInterface[]
      */
-    private $terms = array();
+    private $terms = [];
 
     /**
      * @var string
@@ -56,7 +57,7 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
      * @param TriggerTermInterface[] $terms
      * @param string                 $op
      */
-    public function __construct(array $terms = array(), $op = self::OP_AND)
+    public function __construct(array $terms = [], $op = self::OP_AND)
     {
         $this->setAll($terms);
         $this->setOperator($op);
@@ -93,7 +94,7 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
      */
     public function setAll(array $terms)
     {
-        $this->terms = array();
+        $this->terms = [];
         foreach ($terms as $t) {
             $this->add($t);
         }

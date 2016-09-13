@@ -97,9 +97,6 @@ class ProblemListener
         }
     }
 
-    /**
-     *
-     */
     public function onPostUpdate(Problem $problem, LifecycleEventArgs $event)
     {
         while (!$this->updates->isEmpty()) {

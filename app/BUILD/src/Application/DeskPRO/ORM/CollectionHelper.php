@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category ORM
  */
+
 namespace Application\DeskPRO\ORM;
 
 class CollectionHelper
@@ -63,9 +64,9 @@ class CollectionHelper
      *
      * @param string        $entity
      * @param string        $prop
-     * @param Callback|null $fn_filter      Callback to filter valid items of the set. Return true to allow the item.
+     * @param Callback|null $fn_filter      Callback to filter valid items of the set. Return true to allow the item
      * @param Callback|null $fn_keep_filter Existing items are passed through this filter to determine if they should be kept.
-     *                                      E.g., use this to keep records that might otherwise be deleted because they dont match the 'set'.
+     *                                      E.g., use this to keep records that might otherwise be deleted because they dont match the 'set'
      */
     public function __construct($entity, $prop, $fn_filter = null, $fn_keep_filter = null)
     {
@@ -87,8 +88,8 @@ class CollectionHelper
     {
         $prop = $this->prop;
 
-        $have_ids = array();
-        $want_ids = array();
+        $have_ids = [];
+        $want_ids = [];
 
         foreach ($this->entity->$prop as $item) {
             if ($this->fn_keep_filter) {
@@ -118,10 +119,10 @@ class CollectionHelper
         $add_ids = array_diff($want_ids, $have_ids);
         $del_ids = array_diff($have_ids, $want_ids);
 
-        return array(
+        return [
             'add' => $add_ids,
             'del' => $del_ids,
-        );
+        ];
     }
 
     /**

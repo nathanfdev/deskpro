@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 /**
@@ -36,15 +37,15 @@ namespace Application\AgentBundle\Controller;
  */
 class MediaBrowserController extends AbstractController
 {
-    ############################################################################
-    # accept-upload
-    ############################################################################
+    //###########################################################################
+    // accept-upload
+    //###########################################################################
 
     public function acceptUploadAction()
     {
         $files = $this->request->files->get('files');
 
-        $data = array();
+        $data = [];
 
         foreach ($files as $file) {
             /* @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
@@ -56,26 +57,26 @@ class MediaBrowserController extends AbstractController
             );
             $blob_id = $blob->getId();
 
-            $data[] = array(
+            $data[] = [
                 'blob_id'  => $blob_id,
                 'is_image' => $blob->isImage(),
-                'row_html' => $this->renderView('AgentBundle:MediaBrowser:file-row.html.twig', array('blob' => $blob)),
-            );
+                'row_html' => $this->renderView('AgentBundle:MediaBrowser:file-row.html.twig', ['blob' => $blob]),
+            ];
         }
 
         return $this->createJsonResponse($data);
     }
 
-    ############################################################################
-    # image-editor
-    ############################################################################
+    //###########################################################################
+    // image-editor
+    //###########################################################################
 
     public function imageEditorAction($blob_id)
     {
         /** @var $blob \Application\DeskPRO\Entity\Blob */
         $blob = $this->em->find('DeskPRO:Blob', $blob_id);
 
-        return $this->render('AgentBundle:MediaBrowser:image-editor.html.twig', array('blob' => $blob));
+        return $this->render('AgentBundle:MediaBrowser:image-editor.html.twig', ['blob' => $blob]);
     }
 
     public function saveImageEditorAction($blob_id)
@@ -100,12 +101,12 @@ class MediaBrowserController extends AbstractController
         $this->em->persist($new_blob);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('blob_id' => $new_blob_id));
+        return $this->createJsonResponse(['blob_id' => $new_blob_id]);
     }
 
-    ############################################################################
-    # get-current
-    ############################################################################
+    //###########################################################################
+    // get-current
+    //###########################################################################
 
     public function getCurrentAction()
     {
@@ -114,17 +115,17 @@ class MediaBrowserController extends AbstractController
         if ($ids) {
             $blobs = $this->em->getRepository('DeskPRO:Blob')->getByIds($ids);
         } else {
-            $blobs = array();
+            $blobs = [];
         }
 
-        return $this->renderView('AgentBundle:MediaBrowser:current.html.twig', array(
+        return $this->renderView('AgentBundle:MediaBrowser:current.html.twig', [
             'blobs' => $blobs,
-        ));
+        ]);
     }
 
-    ############################################################################
-    # get-recent
-    ############################################################################
+    //###########################################################################
+    // get-recent
+    //###########################################################################
 
     public function getRecentAction($type = false)
     {
@@ -134,15 +135,15 @@ class MediaBrowserController extends AbstractController
             $recent_blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getRecent(30);
         }
 
-        return $this->renderView('AgentBundle:MediaBrowser:recent.html.twig', array(
+        return $this->renderView('AgentBundle:MediaBrowser:recent.html.twig', [
             'type'                => $type,
             'recent_blob_objects' => $recent_blob_objects,
-        ));
+        ]);
     }
 
-    ############################################################################
-    # update-blob
-    ############################################################################
+    //###########################################################################
+    // update-blob
+    //###########################################################################
 
     public function updateBlobAction($blob_id)
     {
@@ -158,12 +159,12 @@ class MediaBrowserController extends AbstractController
             $em->flush();
         });
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # library
-    ############################################################################
+    //###########################################################################
+    // library
+    //###########################################################################
 
     public function libraryAction($page = 1)
     {
@@ -175,16 +176,16 @@ class MediaBrowserController extends AbstractController
 
         $blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getLibraryResults($types, $labels, $qp);
 
-        return $this->renderView('AgentBundle:MediaBrowser:library.html.twig', array(
+        return $this->renderView('AgentBundle:MediaBrowser:library.html.twig', [
             'types'        => $types,
             'labels'       => $labels,
             'blob_objects' => $blob_objects,
-        ));
+        ]);
     }
 
-    ############################################################################
-    # library-kb
-    ############################################################################
+    //###########################################################################
+    // library-kb
+    //###########################################################################
 
     public function libraryKbAction($category_id, $page = 1)
     {
@@ -201,10 +202,10 @@ class MediaBrowserController extends AbstractController
 
         $category_hierarchy = $this->em->getRepository('DeskPRO:ArticleCateogory')->getFlatHierarchy();
 
-        return $this->renderView('AgentBundle:MediaBrowser:library.html.twig', array(
+        return $this->renderView('AgentBundle:MediaBrowser:library.html.twig', [
             'category_hierarchy' => $category_hierarchy,
             'labels'             => $labels,
             'blob_objects'       => $blob_objects,
-        ));
+        ]);
     }
 }

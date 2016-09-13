@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CsvUpload;
 
 use Application\DeskPRO\App;
@@ -58,19 +59,19 @@ class CsvUpload
      *
      * @return array
      */
-    public function upload(UploadedFile $file, array $options = array())
+    public function upload(UploadedFile $file, array $options = [])
     {
         // TODO proper handling of error message here
         if (defined('DPC_IS_CLOUD') && DPC_DEMO_EXPIRE) {
-            return array('error' => 'disabled_in_demo');
+            return ['error' => 'disabled_in_demo'];
         }
 
         if (!$file instanceof UploadedFile || !$file->getSize()) {
-            return array('error' => 'no_file');
+            return ['error' => 'no_file'];
         }
 
         if (!is_uploaded_file($file->getPath().DIRECTORY_SEPARATOR.$file->getFilename())) {
-            return array('error' => 'no_move');
+            return ['error' => 'no_move'];
         }
 
         $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
@@ -93,7 +94,7 @@ class CsvUpload
      *
      * @return array
      */
-    public function startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, $update_if_exists, array $options = array())
+    public function startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, $update_if_exists, array $options = [])
     {
         $has_email = false;
 
@@ -105,16 +106,16 @@ class CsvUpload
         }
 
         if (!$has_email) {
-            return array('error' => 'no_email');
+            return ['error' => 'no_email'];
         }
 
         $blob = App::getOrm()->find('DeskPRO:Blob', $filename);
 
         if (!$blob) {
-            return array('error' => 'no_move');
+            return ['error' => 'no_move'];
         }
 
-        $task_data = array(
+        $task_data = [
             'blob_id'          => $blob->getId(),
             'field_maps'       => $field_maps,
             'skip_first'       => $skip_first,
@@ -122,7 +123,7 @@ class CsvUpload
             'welcome_email'    => $welcome_email,
             'user_filename'    => $user_filename,
             'options'          => $options,
-        );
+        ];
 
         $this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
             'Application\\DeskPRO\\TaskQueueJob\\CsvImport',
@@ -130,7 +131,7 @@ class CsvUpload
             'data_import'
         );
 
-        return array('success' => 'task_started');
+        return ['success' => 'task_started'];
     }
 
     /**
@@ -139,19 +140,19 @@ class CsvUpload
     public function returnStatusOfImport()
     {
         if (defined('DPC_IS_CLOUD') && DPC_DEMO_EXPIRE) {
-            return array(
+            return [
                 'status'  => 'disabled_on_demo',
                 'message' => '',
-            );
+            ];
         }
 
         $tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getTasksInGroup('data_import', true);
 
         if (!count($tasks)) {
-            return array(
+            return [
                 'status'  => '',
                 'message' => 'No import data available.',
-            );
+            ];
         } else {
             /** @var TaskQueue $task */
             $task = end($tasks);
@@ -165,19 +166,19 @@ class CsvUpload
                     $logBlob = null;
                 }
 
-                return array(
+                return [
                     'status'   => 'completed',
                     'message'  => $task['run_status'],
                     'imported' => @$data['imported'] ?: 0,
                     'failed'   => @$data['failed'] ?: 0,
                     'log'      => $logBlob ? $logBlob->getDownloadUrl(true) : null,
-                );
+                ];
             }
 
-            return array(
+            return [
                 'status'  => 'progress',
                 'message' => $task['run_status'] ?: 'Import will start in 1 minute',
-            );
+            ];
         }
     }
 
@@ -187,13 +188,13 @@ class CsvUpload
      *
      * @return array
      */
-    protected function _returnUploadFileResponse($filename, $user_filename, array $options = array())
+    protected function _returnUploadFileResponse($filename, $user_filename, array $options = [])
     {
         $csv_path = dp_get_tmp_dir().'/blob-'.$filename.'.csv';
         $blob     = App::getOrm()->find('DeskPRO:Blob', $filename);
 
         if (!$blob) {
-            return array('error' => 'no_move');
+            return ['error' => 'no_move'];
         }
 
         if (!is_file($csv_path)) {
@@ -206,7 +207,7 @@ class CsvUpload
         $columns         = @fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
         $column_count    = count($columns);
 
-        $examples      = array();
+        $examples      = [];
         $example_total = 0;
 
         for ($i = 0; $i < 100; ++$i) {
@@ -240,7 +241,7 @@ class CsvUpload
         $custom_fields      = App::getApi('custom_fields.people')->getEnabledFields();
         $show_welcome_email = !defined('DPC_IS_CLOUD');
 
-        return array(
+        return [
             'filename'           => $filename,
             'user_filename'      => $user_filename,
             'columns'            => $columns,
@@ -248,6 +249,6 @@ class CsvUpload
             'custom_fields'      => $custom_fields,
             'show_welcome_email' => $show_welcome_email,
             'options'            => $originalOptions,
-        );
+        ];
     }
 }

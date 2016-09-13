@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Cutter;
 
 use Application\DeskPRO\EmailGateway\Cutter\Def\QuoteDef;
@@ -41,7 +42,7 @@ class PatternCutter implements QuoteDef
     /**
      * @var \Application\DeskPRO\EmailGateway\Cutter\PatternCutter\HtmlPattern[]
      */
-    protected $patterns = array();
+    protected $patterns = [];
 
     /**
      * @var PatternCutter\HtmlPattern[]
@@ -66,7 +67,7 @@ class PatternCutter implements QuoteDef
     /**
      * @var array
      */
-    private $require_from = array();
+    private $require_from = [];
 
     /**
      * How many quotes to remove (counts from bottom). 0 is unlimited.

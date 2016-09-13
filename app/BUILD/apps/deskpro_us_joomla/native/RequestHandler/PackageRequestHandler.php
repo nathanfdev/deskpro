@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_us_joomla\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
@@ -62,10 +63,10 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      */
     public function testSettingsAction(ApiPackageRequestContext $context)
     {
-        $joomla = new Joomla(array(
+        $joomla = new Joomla([
             'joomla_url'    => $context->getIn()->getString('joomla_url'),
             'joomla_secret' => $context->getIn()->getString('joomla_secret'),
-        ));
+        ]);
 
         $ar_log = new ArrayWriter();
         $logger = new Logger();
@@ -73,17 +74,17 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 
         $joomla->setLogger($logger);
 
-        $result_data = array(
+        $result_data = [
             'log'        => '',
             'error'      => false,
             'error_code' => 0,
-        );
+        ];
 
         try {
-            $joomla->setFormData(array(
+            $joomla->setFormData([
                 'username' => $context->getIn()->getString('username'),
                 'password' => $context->getIn()->getString('password'),
-            ));
+            ]);
 
             $result = $joomla->authenticate();
 

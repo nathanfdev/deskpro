@@ -66,7 +66,7 @@ class ControllerListener extends BaseControllerListener
             : $this->getConfigurations($classAnnotations);
         $methodConfigurations = $this->getConfigurations($this->reader->getMethodAnnotations($method));
 
-        $configurations = array();
+        $configurations = [];
         foreach (array_merge(array_keys($classConfigurations), array_keys($methodConfigurations)) as $key) {
             if (!array_key_exists($key, $classConfigurations)) {
                 $configurations[$key] = $methodConfigurations[$key];

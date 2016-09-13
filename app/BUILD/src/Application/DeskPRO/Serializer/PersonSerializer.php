@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Serializer;
 
 use Application\DeskPRO\Settings\Settings;
@@ -67,10 +68,10 @@ class PersonSerializer implements SerializerInterface
             $data['primary_phone_number_region'] = $this->settings->get('core.default_country_code');
         }
 
-        $data['notification_settings'] = array(
+        $data['notification_settings'] = [
             'no_allow_set_email'   => (bool) $agent->getPref('agent_notif.no_allow_set_email'),
             'no_allow_set_browser' => (bool) $agent->getPref('agent_notif.no_allow_set_browser'),
-        );
+        ];
 
         return $data;
     }

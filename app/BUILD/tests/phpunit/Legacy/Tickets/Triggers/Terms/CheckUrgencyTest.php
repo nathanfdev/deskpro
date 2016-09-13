@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,13 +45,13 @@ class CheckUrgencyTest extends DeskProTestCase
         $ticket->status  = 'awaiting_agent';
         $ticket->urgency = 5;
 
-        $check = new CheckUrgency('gt', array('urgency1' => 4));
+        $check = new CheckUrgency('gt', ['urgency1' => 4]);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
-        $check = new CheckUrgency('gt', array('urgency1' => 6));
+        $check = new CheckUrgency('gt', ['urgency1' => 6]);
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
 
-        $check = new CheckUrgency('lt', array('urgency1' => 6));
+        $check = new CheckUrgency('lt', ['urgency1' => 6]);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
     }
 
@@ -63,13 +63,13 @@ class CheckUrgencyTest extends DeskProTestCase
         $ticket->status  = 'awaiting_agent';
         $ticket->urgency = 5;
 
-        $check = new CheckUrgency('between', array('urgency1' => 4, 'urgency2' => 10));
+        $check = new CheckUrgency('between', ['urgency1' => 4, 'urgency2' => 10]);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
-        $check = new CheckUrgency('between', array('urgency1' => 5, 'urgency2' => 10));
+        $check = new CheckUrgency('between', ['urgency1' => 5, 'urgency2' => 10]);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
 
-        $check = new CheckUrgency('notbetween', array('urgency1' => 8, 'urgency2' => 10));
+        $check = new CheckUrgency('notbetween', ['urgency1' => 8, 'urgency2' => 10]);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
     }
 }

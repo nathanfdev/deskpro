@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,27 +37,27 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$collection->create('api_dpc_call_ping', array(
+$collection->create('api_dpc_call_ping', [
     'path'       => '/dpc-call/ping',
     'controller' => 'CloudLegacyApiBundle:CloudCall:ping',
-    'methods'    => array('GET'),
-));
+    'methods'    => ['GET'],
+]);
 
-$collection->create('api_dpc_call_resetpass', array(
+$collection->create('api_dpc_call_resetpass', [
     'path'       => '/dpc-call/reset-password/{person_id}',
     'controller' => 'CloudLegacyApiBundle:CloudCall:resetPassword',
-    'methods'    => array('GET', 'POST'),
-));
+    'methods'    => ['GET', 'POST'],
+]);
 
-########################################################################################################################
-# Agents
-########################################################################################################################
+//#######################################################################################################################
+// Agents
+//#######################################################################################################################
 
 $collection->rewriteController('LegacyApiBundle:Agents', 'CloudLegacyApiBundle:Agents');
 
-########################################################################################################################
-# License
-########################################################################################################################
+//#######################################################################################################################
+// License
+//#######################################################################################################################
 
 $collection->rewriteController('LegacyApiBundle:License', 'CloudLegacyApiBundle:License');
 $collection->removeRoutes(
@@ -68,27 +68,27 @@ $collection->removeRoutes(
     'api_dp_license_news'
 );
 
-$collection->create('api_dpc_call_resetpass', array(
+$collection->create('api_dpc_call_resetpass', [
     'path'       => '/dp_license/cloud/billing-login-token',
     'controller' => 'CloudLegacyApiBundle:License:getBillingLoginToken',
-    'methods'    => array('GET'),
-));
+    'methods'    => ['GET'],
+]);
 
-########################################################################################################################
-# Settings
-########################################################################################################################
+//#######################################################################################################################
+// Settings
+//#######################################################################################################################
 
-$collection->create('api_cloud_urlsettings', array(
+$collection->create('api_cloud_urlsettings', [
     'path'       => '/settings/cloud/url-settings',
     'controller' => 'CloudLegacyApiBundle:Settings:getUrlSettings',
-    'methods'    => array('GET'),
-));
+    'methods'    => ['GET'],
+]);
 
-$collection->create('api_cloud_urlsettings_save', array(
+$collection->create('api_cloud_urlsettings_save', [
     'path'       => '/settings/cloud/url-settings',
     'controller' => 'CloudLegacyApiBundle:Settings:saveUrlSettings',
-    'methods'    => array('POST'),
-));
+    'methods'    => ['POST'],
+]);
 
 $collection->rewriteController('LegacyApiBundle:Settings', 'CloudLegacyApiBundle:Settings');
 $collection->removeRoutes(
@@ -96,15 +96,15 @@ $collection->removeRoutes(
     'api_all_settings_raw_save'
 );
 
-########################################################################################################################
-# Email Accounts
-########################################################################################################################
+//#######################################################################################################################
+// Email Accounts
+//#######################################################################################################################
 
 $collection->rewriteController('LegacyApiBundle:EmailAccounts', 'CloudLegacyApiBundle:EmailAccounts');
 
-########################################################################################################################
-# Server
-########################################################################################################################
+//#######################################################################################################################
+// Server
+//#######################################################################################################################
 
 $collection->removeRoutes(
     'api_server_settings',

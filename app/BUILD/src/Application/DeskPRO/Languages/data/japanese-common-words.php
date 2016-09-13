@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     // Source: http://www.offbeatband.com/2010/12/the-most-commonly-used-japanese-words-by-frequency/
     'の', 'た', 'に', 'は', 'を', 'て', 'だ', 'が', 'と', 'する', 'ない', 'いる', 'も', 'で', 'か', 'ある', 'から', 'こと',
-    'ん','なる', 'う', 'れる', 'よう', 'その', 'ます', 'です', 'それ', 'よ', 'そう', '人', 'いう', 'ば', 'お', '言う', 'もの',
+    'ん', 'なる', 'う', 'れる', 'よう', 'その', 'ます', 'です', 'それ', 'よ', 'そう', '人', 'いう', 'ば', 'お', '言う', 'もの',
     'この', 'くる', 'へ', 'ぬ', '思う', '一', '見る', '何', 'な', 'や', 'られる', '二', 'ね', 'さ', 'まで', 'たち', 'せる',
     'く', '自分', 'って', 'じゃ', 'だけ', 'てる', '私', '中', 'さん', 'ながら', 'いく', 'わ', 'という', '来る', 'これ', '顔',
     'できる', 'いい', '彼', 'しまう', '手', 'ら', '声', 'たい', '目', 'やる', 'どう', '前', 'みる', 'でも', '男', 'あの', '者',
@@ -60,4 +60,4 @@ return array(
     'しばらく', 'きょう', '地', 'ドア', '最初', '少年', '性', 'もし', '達', 'ゆ', '小さい', '形', '影', '竜', '電話', '字',
     'ほとんど', 'かい', '変わる', '名前', 'かた', '床', '部', 'にる', 'うん', 'ええ', 'やがて', 'くん', '髪', 'あまり', 'こっち',
     '多い', '乗る', 'い', 'あたり', 'きっと', 'それでも', '思える', '扉', '店', '場合', '母', 'ゆく', '気持ち',
-);
+];

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -55,8 +56,8 @@ class LogItem extends AbstractEntityRepository
             ORDER BY id DESC
             LIMIT ?, ?
             ',
-            array($job_id, $priority, $from, $limit),
-            array(\PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT)
+            [$job_id, $priority, $from, $limit],
+            [\PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT]
         );
     }
 
@@ -110,7 +111,7 @@ class LogItem extends AbstractEntityRepository
             SELECT COUNT(*)
             FROM log_items
             WHERE log_name = ?
-        ', array('error_log'));
+        ', ['error_log']);
     }
 
     /**
@@ -143,7 +144,7 @@ class LogItem extends AbstractEntityRepository
      */
     public function clearAllErrorLogs()
     {
-        App::getDb()->executeUpdate('DELETE FROM log_items WHERE log_name = ?', array('error_log'));
+        App::getDb()->executeUpdate('DELETE FROM log_items WHERE log_name = ?', ['error_log']);
 
         return true;
     }

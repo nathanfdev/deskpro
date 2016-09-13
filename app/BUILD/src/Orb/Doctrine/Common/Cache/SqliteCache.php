@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Doctrine\Common\Cache;
 
 /**
@@ -46,7 +47,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
      *
      * @var Doctrine\DBAL\Connection[]
      */
-    protected static $named_connections = array();
+    protected static $named_connections = [];
 
     /**
      * The path to the DB file, or 'MEMORY' if its memory.
@@ -147,9 +148,9 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
             }
         }
         if (!$this->_db) {
-            $params = array(
+            $params = [
                 'driver' => 'pdo_sqlite',
-            );
+            ];
 
             if ($this->_dbfile == 'MEMORY') {
                 $params['memory'] = true;
@@ -173,7 +174,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
             }
         } else {
             if (!$this->_no_expire && mt_rand(1, 10) <= 3) {
-                $this->_db->executeUpdate("DELETE FROM {$this->_cache_name} WHERE expire < ? AND expire != 0", array(time()));
+                $this->_db->executeUpdate("DELETE FROM {$this->_cache_name} WHERE expire < ? AND expire != 0", [time()]);
             }
         }
 
@@ -182,7 +183,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
 
     public function getIds()
     {
-        $keys = array();
+        $keys = [];
 
         if ($this->_no_expire) {
             $sql = "SELECT id FROM {$this->_cache_name}";
@@ -190,7 +191,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
             $sql = "SELECT id FROM {$this->_cache_name} WHERE (expire = 0 OR expire > ?)";
         }
 
-        foreach ($this->getDbConnection()->fetchAll($sql, array(time())) as $x) {
+        foreach ($this->getDbConnection()->fetchAll($sql, [time()]) as $x) {
             $keys[] = $x['id'];
         }
 
@@ -205,10 +206,10 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
     {
         if ($this->_no_expire) {
             $sql    = "SELECT data FROM {$this->_cache_name} WHERE id = ?";
-            $params = array($id);
+            $params = [$id];
         } else {
             $sql    = "SELECT data FROM {$this->_cache_name} WHERE id = ? AND (expire = 0 OR expire > ?)";
-            $params = array($id, time());
+            $params = [$id, time()];
         }
 
         $data = $this->getDbConnection()->fetchColumn($sql, $params);
@@ -227,7 +228,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
             return isset($this->_cached_ids[$id]);
         }
 
-        $exists = $this->getDbConnection()->fetchColumn("SELECT id FROM {$this->_cache_name} WHERE id = ? AND (expire = 0 OR expire > ?)", array($id, time()));
+        $exists = $this->getDbConnection()->fetchColumn("SELECT id FROM {$this->_cache_name} WHERE id = ? AND (expire = 0 OR expire > ?)", [$id, time()]);
 
         return (bool) $exists;
     }
@@ -242,9 +243,9 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
                 $expire = time() + $lifeTime;
             }
 
-            $this->getDbConnection()->executeUpdate("INSERT OR REPLACE INTO {$this->_cache_name} (id, data, expire) VALUES (?, ?, ?)", array($id, $data, $expire));
+            $this->getDbConnection()->executeUpdate("INSERT OR REPLACE INTO {$this->_cache_name} (id, data, expire) VALUES (?, ?, ?)", [$id, $data, $expire]);
         } else {
-            $this->getDbConnection()->executeUpdate("INSERT OR REPLACE INTO {$this->_cache_name} (id, data) VALUES (?, ?)", array($id, $data));
+            $this->getDbConnection()->executeUpdate("INSERT OR REPLACE INTO {$this->_cache_name} (id, data) VALUES (?, ?)", [$id, $data]);
         }
 
         return true;
@@ -252,7 +253,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
 
     protected function doDelete($id)
     {
-        $this->getDbConnection()->executeUpdate("DELETE FROM {$this->_cache_name} WHERE id = ?", array($id));
+        $this->getDbConnection()->executeUpdate("DELETE FROM {$this->_cache_name} WHERE id = ?", [$id]);
 
         if ($this->_cached_ids !== null) {
             unset($this->_cached_ids[$id]);

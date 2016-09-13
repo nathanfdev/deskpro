@@ -105,7 +105,7 @@ class TestsContext extends BasePortalContext implements RebootableContextInterfa
      */
     public function iShouldBeAbleToLoadAnAdminUser()
     {
-        $person = $this->em->getRepository('DeskPRO:Person')->findOneBy(array('can_admin' => true));
+        $person = $this->em->getRepository('DeskPRO:Person')->findOneBy(['can_admin' => true]);
 
         expect($person)->toHaveType('Application\DeskPRO\Entity\Person');
     }

@@ -82,9 +82,9 @@ class AgentActivity extends \Application\DeskPRO\Domain\DomainObject
         $this->agent = $x;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

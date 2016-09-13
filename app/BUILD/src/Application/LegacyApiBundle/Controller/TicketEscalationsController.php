@@ -86,14 +86,14 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $escalations = $this->em->getRepository('DeskPRO:TicketEscalation')->getEscalations();
         $data        = $this->getApiData($escalations, false);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'escalations' => $data,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # get
-    ####################################################################################################################
+    //###################################################################################################################
+    // get
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -137,9 +137,9 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $esc['terms']     = $crit->exportToArray();
         $esc['terms_any'] = $crit2->exportToArray();
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'escalation' => $esc,
-        ));
+        ]);
     }
 
     /**
@@ -315,9 +315,9 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $this->em->persist($esc);
         $this->em->flush();
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'escalation_id' => $esc->id,
-        ));
+        ]);
     }
 
     /**
@@ -355,9 +355,9 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $this->em->remove($esc);
         $this->em->flush();
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'old_id' => $id,
-        ));
+        ]);
     }
 
     /**

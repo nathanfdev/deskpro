@@ -119,7 +119,7 @@ class ProductAction extends AbstractAction implements PermissionableAction
                 $name = $names[$this->product_id];
             }
 
-            return $tr->phrase('agent.tickets.set_product_action', array('product' => $name));
+            return $tr->phrase('agent.tickets.set_product_action', ['product' => $name]);
         }
     }
 }

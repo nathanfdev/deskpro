@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 namespace Application\DeskPRO\Command;
@@ -45,6 +46,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
+    /**
+     * Special exit code used to indicate bad paths.
+     */
+    const ERR_BAD_PATHS = 190;
+
     protected function configure()
     {
         $this->setName('dp:upgrade')
@@ -95,7 +101,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $output->writeln('You need to edit your config.paths.php file and correct the paths. The full path to the config fileis:');
             $output->writeln('<info>'.$root.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.paths.php</info>');
 
-            return 1;
+            return self::ERR_BAD_PATHS;
         }
 
         $doReset       = $input->getOption('reset');
@@ -104,7 +110,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $this->getContainer()->get('audit_log.doctrine_listener')->disableListener();
 
-        $dbVersion = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
+        $dbVersion     = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
+        $dbVersionName = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build_num'");
+
         if ($dbVersion && $dbVersion <= 1463676536) {
             if (!$input->getOption('info') && !$input->getOption('dobuildrun') && !$input->getOption('runsync') && !$input->getOption('reset')) {
                 $doReset      = true;
@@ -140,7 +148,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         // upgrade because the upgrade scripts need to run from the proper position
         // at build Build1464777281
         if (!$input->getOption('info') && !$input->getOption('dobuildrun') && !$input->getOption('runsync') && !$input->getOption('reset')) {
-            if ($dbVersion == '1470650875' || $dbVersion == '1471618600') {
+            if ($dbVersion == '1470650875' || $dbVersion == '1471618600' || strpos($dbVersionName, '443.') === 0) {
                 // Sanity check -- make sure someone didnt import a database dump over a new database
                 // mysqldump uses 'drop table if exists' by default, so it would work if someone
                 // tried to restore a dump into an existing database (e.g. from a fresh install).
@@ -190,9 +198,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $logger
         );
 
-        #------------------------------
-        # Info
-        #------------------------------
+        //------------------------------
+        // Info
+        //------------------------------
 
         if ($input->getOption('info')) {
             $next_id = $manager->getNextBuildId();
@@ -219,9 +227,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             return 0;
         }
 
-        #------------------------------
-        # Set build
-        #------------------------------
+        //------------------------------
+        // Set build
+        //------------------------------
 
         if ($input->getOption('setbuild')) {
             $num = time();
@@ -232,9 +240,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             return 0;
         }
 
-        #------------------------------
-        # Want to run post scripts only
-        #------------------------------
+        //------------------------------
+        // Want to run post scripts only
+        //------------------------------
 
         if ($input->getOption('runsync')) {
             $output->writeln('<info>Running post scripts</info>');
@@ -245,9 +253,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             return 0;
         }
 
-        #------------------------------
-        # Runs a build script
-        #------------------------------
+        //------------------------------
+        // Runs a build script
+        //------------------------------
 
         if (!$manager->getNextBuildId()) {
             $logger->info('All up to date');
@@ -259,9 +267,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             return 0;
         }
 
-        #------------------------------
-        # The main executor loop
-        #------------------------------
+        //------------------------------
+        // The main executor loop
+        //------------------------------
 
         chdir(DP_APP_DIR);
 
@@ -286,9 +294,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $manager->reset();
         }
 
-        #------------------------------
-        # Post Run
-        #------------------------------
+        //------------------------------
+        // Post Run
+        //------------------------------
 
         $logger->info('Running post scripts');
         $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:upgrade --runsync');

@@ -102,7 +102,7 @@ class LabelDef extends DomainObject
      */
     protected $total = 0;
 
-    public function __construct(array $data = array())
+    public function __construct(array $data = [])
     {
         foreach ($data as $k => $v) {
             if (property_exists($this, $k)) {
@@ -194,9 +194,9 @@ class LabelDef extends DomainObject
         return $this->total;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

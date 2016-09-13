@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,7 +44,7 @@ class TriggerTermCompositeTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $terms   = array();
+        $terms   = [];
         $terms[] = new CheckTestFalse('is');
         $terms[] = new CheckTestTrue('is');
         $terms[] = new CheckTestTrue('is');
@@ -58,7 +58,7 @@ class TriggerTermCompositeTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $terms   = array();
+        $terms   = [];
         $terms[] = new CheckTestTrue('is');
         $terms[] = new CheckTestTrue('is');
         $terms[] = new CheckTestFalse('is');
@@ -72,7 +72,7 @@ class TriggerTermCompositeTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $terms   = array();
+        $terms   = [];
         $terms[] = new CheckTestFalse('is');
         $terms[] = new CheckTestFalse('is');
         $terms[] = new CheckTestFalse('is');
@@ -86,7 +86,7 @@ class TriggerTermCompositeTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $terms   = array();
+        $terms   = [];
         $terms[] = new CheckTestTrue('is');
         $terms[] = new CheckTestTrue('is');
         $terms[] = new CheckTestTrue('is');
@@ -100,7 +100,7 @@ class TriggerTermCompositeTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $terms   = array();
+        $terms   = [];
         $terms[] = new CheckTestFalse('is');
         $terms[] = new CheckTestTrue('is');
         $terms[] = new CheckTestTrue('is');
@@ -114,7 +114,7 @@ class TriggerTermCompositeTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $terms   = array();
+        $terms   = [];
         $terms[] = new CheckTestTrue('is');
         $terms[] = new CheckTestTrue('is');
         $terms[] = new CheckTestFalse('is');
@@ -128,7 +128,7 @@ class TriggerTermCompositeTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $terms   = array();
+        $terms   = [];
         $terms[] = new CheckTestFalse('is');
         $terms[] = new CheckTestFalse('is');
         $terms[] = new CheckTestFalse('is');
@@ -142,7 +142,7 @@ class TriggerTermCompositeTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $terms   = array();
+        $terms   = [];
         $terms[] = new CheckTestTrue('is');
         $terms[] = new CheckTestTrue('is');
         $terms[] = new CheckTestTrue('is');
@@ -156,19 +156,19 @@ class TriggerTermCompositeTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $terms   = array();
+        $terms   = [];
         $terms[] = new CheckTestTrue('is');
         $terms[] = new CheckTestTrue('is');
         $terms[] = new CheckTestTrue('is');
         $check1  = new TriggerTermComposite($terms, 'and');
 
-        $terms   = array();
+        $terms   = [];
         $terms[] = new CheckTestFalse('is');
         $terms[] = new CheckTestFalse('is');
         $terms[] = new CheckTestTrue('is');
         $check2  = new TriggerTermComposite($terms, 'or');
 
-        $check = new TriggerTermComposite(array($check1, $check2), 'and');
+        $check = new TriggerTermComposite([$check1, $check2], 'and');
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
     }
 }

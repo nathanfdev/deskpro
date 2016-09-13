@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -77,9 +77,9 @@ class CheckEmailToAddressTest extends AbstractStringCheckTest
         $email = $ticket->subject;
 
         $value_reader = new ValueReader();
-        $value_reader->setValues(array(
-            'tos' => array('Name' => $email),
-        ));
+        $value_reader->setValues([
+            'tos' => ['Name' => $email],
+        ]);
 
         $exec = new ExecutorContext();
         $exec->setEmailContext($value_reader);
@@ -108,7 +108,7 @@ class CheckEmailToAddressTest extends AbstractStringCheckTest
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $check = $this->createChecker('is', array('%OPT%' => $this->getString1()));
+        $check = $this->createChecker('is', ['%OPT%' => $this->getString1()]);
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
     }
 }

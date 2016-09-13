@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Protocol;
 
 use Orb\Log\Loggable;
@@ -131,7 +132,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
     /**
      * {@inheritdoc}
      */
-    public function sendRequest($command, $tokens = array(), &$tag = null)
+    public function sendRequest($command, $tokens = [], &$tag = null)
     {
         if (!$tag) {
             ++$this->tagCount;
@@ -206,9 +207,9 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
         $itemList = $this->escapeList($use_items);
 
         $tag = null;  // define $tag variable before first use
-        $this->sendRequest('UID FETCH', array($set, $itemList), $tag);
+        $this->sendRequest('UID FETCH', [$set, $itemList], $tag);
 
-        $result        = array();
+        $result        = [];
         $tokens        = null; // define $tokens variable before first use
         $uid_token_pos = null;
         while (!$this->readLine($tokens, $tag)) {
@@ -243,7 +244,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
                     }
                 }
             } else {
-                $data = array();
+                $data = [];
                 while (key($tokens[2]) !== null) {
                     $data[current($tokens[2])] = next($tokens[2]);
                     next($tokens[2]);
@@ -298,14 +299,14 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
             $set = (int) $from.':'.(int) $to;
         }
 
-        $result = $this->requestAndResponse('UID STORE', array($set, $item, $flags), $silent);
+        $result = $this->requestAndResponse('UID STORE', [$set, $item, $flags], $silent);
 
         if ($silent) {
             return $result ? true : false;
         }
 
         $tokens = $result;
-        $result = array();
+        $result = [];
         foreach ($tokens as $token) {
             if ($token[1] != 'FETCH' || $token[2][0] != 'FLAGS') {
                 continue;

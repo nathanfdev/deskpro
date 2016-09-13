@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Mail\Transport;
 
 use Application\DeskPRO\App;
@@ -74,7 +75,7 @@ class QueueTransport implements \Swift_Transport
 
         $blob = App::getContainer()->getBlobStorage()->createBlobRowFromString(serialize($message), 'sendmail.obj', 'plain/text');
 
-        $sendmail = array(
+        $sendmail = [
             'date_created'      => date('Y-m-d H:i:s'),
             'blob_id'           => $blob['id'],
             'subject'           => $message->getSubject() ?: '(No Subject)',
@@ -82,13 +83,13 @@ class QueueTransport implements \Swift_Transport
             'priority'          => 10,
             'log'               => '',
             'status'            => 'pending',
-        );
+        ];
 
         if ($message instanceof \Orb\Mail\Message) {
             $sendmail['priority'] = $message->getQueuePriority();
         }
 
-        $tos = array();
+        $tos = [];
         foreach ($message->getTo() as $addr => $name) {
             $tos[] = $addr;
         }

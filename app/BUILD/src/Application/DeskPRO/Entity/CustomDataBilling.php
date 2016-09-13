@@ -104,9 +104,9 @@ class CustomDataBilling extends CustomDataAbstract
         return $this->ticket_charge;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

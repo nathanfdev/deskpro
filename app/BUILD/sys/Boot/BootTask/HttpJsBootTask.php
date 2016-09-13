@@ -28,7 +28,8 @@
 
 namespace DpSys\Boot\BootTask;
 
-use Guzzle\Http\Mimetypes;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -122,9 +123,9 @@ class HttpJsBootTask implements BootTaskInterface
         return;
     }
 
-    ####################################################################################################################
-    # Legacy widgets
-    ####################################################################################################################
+    //###################################################################################################################
+    // Legacy widgets
+    //###################################################################################################################
 
     private function serveLegacyWidget($widget)
     {
@@ -259,9 +260,9 @@ scr.src   = '$loaderSrc';
 CODE;
     }
 
-    ####################################################################################################################
-    # Dynamic asset
-    ####################################################################################################################
+    //###################################################################################################################
+    // Dynamic asset
+    //###################################################################################################################
 
     private function serveDynAsset($asset)
     {
@@ -294,11 +295,13 @@ CODE;
 
         // Invalid path, not in the dir we expected (maybe user supplied ..'s in the url)
         // Or it just doesnt exist
-        if (!$assetPath || strpos($assetPath, $this->env->getAppWwwAssetDir()) !== 0 || !is_file($assetPath)) {
+        try {
+            $asset = new File($assetPath);
+        } catch (FileNotFoundException $e) {
             return;
         }
 
-        $res = $this->getResponseForFile($assetPath);
+        $res = $this->getResponseForFile($asset);
         $res->setTtl(300);
         $res->setPublic();
         $res->isNotModified($this->request);
@@ -308,22 +311,13 @@ CODE;
     }
 
     /**
-     * @param string $filePath
+     * @param File $file
      *
      * @return Response
      */
-    private function getResponseForFile($filePath)
+    private function getResponseForFile(File $file)
     {
-        $fileExt = pathinfo($filePath, PATHINFO_EXTENSION);
-
-        switch ($fileExt) {
-            case 'js':       $contentType = 'text/javascript'; break;
-            case 'css':      $contentType = 'text/css'; break;
-            case 'woff':     $contentType = 'application/x-font-woff'; break;
-            case 'woff2':    $contentType = 'application/x-font-woff2'; break;
-            case 'ttf':      $contentType = 'application/x-font-ttf'; break;
-            default:         $contentType = Mimetypes::getInstance()->fromExtension($fileExt);
-        }
+        $contentType = $file->getMimeType();
 
         if (!$contentType) {
             $res = new Response('', 404);
@@ -332,11 +326,11 @@ CODE;
         }
 
         $res = new Response('', 200, ['Content-Type' => $contentType]);
-        $res->setEtag(sha1($filePath));
+        $res->setEtag(sha1($file->getRealPath()));
         $res->setPublic();
-        $res->setLastModified(new \DateTime('@'.filemtime($filePath)));
+        $res->setLastModified(new \DateTime('@'.$file->getMTime()));
         $res->setTtl(300);
-        $res->headers->set('Content-Length', filesize($filePath));
+        $res->headers->set('Content-Length', $file->getSize());
         $res->headers->set('Access-Control-Allow-Origin', '*');
         $res->headers->set('Access-Control-Allow-Credentials', 'true');
         $res->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -349,10 +343,10 @@ CODE;
             return $res;
         }
 
-        $res->headers->makeDisposition('inline', basename($filePath));
+        $res->headers->makeDisposition('inline', $file->getBasename());
 
         if (!$res->isNotModified($this->request)) {
-            $res->setContent(file_get_contents($filePath));
+            $res->setContent(file_get_contents($file->getRealPath()));
         }
 
         return $res;

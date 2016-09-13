@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
@@ -189,7 +190,7 @@ class PortalRequestInfoSpec extends ObjectBehavior
         Request $request,
         RouterInterface $router
     ) {
-        $special_routes = array(
+        $special_routes = [
             'saml_sls',
             'saml_metadata',
             'portal_agent_login',
@@ -202,13 +203,13 @@ class PortalRequestInfoSpec extends ObjectBehavior
             'portal_login_callback',
             'portal_login_authenticate',
             'portal_login_submit',
-        );
+        ];
 
         $this->setRouter($router);
 
         foreach ($special_routes as $route) {
             $request->getPathInfo()->willReturn('irrelevent in this test case');
-            $router->match(Argument::any())->willReturn(array('_route' => $route));
+            $router->match(Argument::any())->willReturn(['_route' => $route]);
 
             $this->isSpecialPath()->shouldReturn(true);
         }

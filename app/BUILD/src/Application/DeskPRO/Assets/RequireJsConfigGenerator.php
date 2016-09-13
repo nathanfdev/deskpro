@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Assets;
 
 class RequireJsConfigGenerator
@@ -48,12 +49,12 @@ class RequireJsConfigGenerator
     /**
      * @var array
      */
-    private $shims = array();
+    private $shims = [];
 
     /**
      * @var array
      */
-    private $paths = array();
+    private $paths = [];
 
     /**
      * @param string $url
@@ -196,7 +197,7 @@ class RequireJsConfigGenerator
         if ($this->shims) {
             $js .= "\t\"shim\": {\n";
 
-            $parts = array();
+            $parts = [];
             foreach ($this->shims as $k => $v) {
                 $parts[] = "\t\t\"$k\": $v";
             }
@@ -208,7 +209,7 @@ class RequireJsConfigGenerator
         if ($this->paths) {
             $js .= "\t\"paths\": {\n";
 
-            $parts = array();
+            $parts = [];
             foreach ($this->paths as $k => $v) {
                 $parts[] = "\t\t\"$k\": $v";
             }

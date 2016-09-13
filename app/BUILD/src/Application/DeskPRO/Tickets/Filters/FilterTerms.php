@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -96,7 +97,7 @@ class FilterTerms implements \Serializable, FilterTermInterface
     public function addTermFromArray(array $term_info)
     {
         if (isset($term_info['set_terms'])) {
-            $composite = new FilterTermComposite(array(), FilterTermComposite::OP_AND);
+            $composite = new FilterTermComposite([], FilterTermComposite::OP_AND);
             foreach ($term_info['set_terms'] as $ti) {
                 $t = $this->getTermFromArray($ti);
                 $composite->add($t);
@@ -134,40 +135,40 @@ class FilterTerms implements \Serializable, FilterTermInterface
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
         $data['version'] = 1;
-        $data['terms']   = array();
+        $data['terms']   = [];
         foreach ($this->criteria->getAll() as $criteria) {
             if ($criteria instanceof FilterTermComposite) {
-                $set_terms = array();
+                $set_terms = [];
                 foreach ($criteria->getAll() as $set_criteria) {
                     if (!($set_criteria instanceof CriteriaTermInterface)) {
                         continue;
                     }
 
-                    $set_terms[] = array(
+                    $set_terms[] = [
                         'type'    => $set_criteria->getTermType(),
                         'op'      => $set_criteria->getTermOperator(),
                         'options' => $set_criteria->getTermOptions()->all(),
-                    );
+                    ];
                 }
 
                 if ($set_terms) {
-                    $data['terms'][] = array(
+                    $data['terms'][] = [
                         'set_terms' => $set_terms,
-                    );
+                    ];
                 }
             } else {
                 if (!($criteria instanceof CriteriaTermInterface)) {
                     continue;
                 }
 
-                $data['terms'][] = array(
+                $data['terms'][] = [
                     'type'    => $criteria->getTermType(),
                     'op'      => $criteria->getTermOperator(),
                     'options' => $criteria->getTermOptions()->all(),
-                );
+                ];
             }
         }
 

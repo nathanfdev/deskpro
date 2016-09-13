@@ -1,5 +1,4 @@
 import { createReducer } from 'DeskPRO/Component/Ampliflux';
-import * as actions from '../Actions/chatActions';
 import {
   async,
   setFullPayload,
@@ -10,6 +9,7 @@ import {
   composeHandlers
 } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import moment from 'moment';
+import * as actions from '../Actions/chatActions';
 
 const initialState = {
   mute:    false,
@@ -29,10 +29,13 @@ const initialState = {
     failed: [],
     repeat: []
   },
-  messages:      [],
-  attachments:   [],
-  feedbackStage: 'dialog'
+  messages:       [],
+  attachments:    [],
+  feedbackStage:  'dialog',
+  lostConnection: false
 };
+
+let connectionRetries = 0;
 
 export default createReducer(initialState, {
   // Polling
@@ -120,5 +123,18 @@ export default createReducer(initialState, {
 
   // Feedback
   [actions.showNotHelpfulForm]: setValue('feedbackStage', 'form'),
-  [actions.sendFeedback]:       setValue('feedbackStage', 'finished')
+  [actions.sendFeedback]:       setValue('feedbackStage', 'finished'),
+
+  [actions.pollingChat]: async({
+    success: state => {
+      connectionRetries = 0;
+      return state.set('lostConnection', false);
+    },
+    error: state => {
+      connectionRetries++;
+      return connectionRetries > 2
+        ? state.set('lostConnection', true)
+        : state;
+    },
+  })
 });

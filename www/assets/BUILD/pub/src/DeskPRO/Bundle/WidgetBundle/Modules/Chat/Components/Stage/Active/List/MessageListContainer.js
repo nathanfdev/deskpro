@@ -1,12 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { chatLoadedSelector, messagesSelector, lastMessageIdSelector, muteSelector } from '../../../../Selectors/chat';
-import { widgetDimensionsSelector, widgetHeightSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
-import { peopleSelector } from '../../../../../Application/Selectors/peopleSelectors';
+import $ from 'jquery';
 import { MessageList } from './MessageList';
 import { MessageListSpinner } from './MessageListSpinner';
-import $ from 'jquery';
+import {
+  chatLoadedSelector,
+  messagesSelector,
+  lastMessageIdSelector,
+  muteSelector,
+  agentTypingDateSelector
+} from '../../../../Selectors/chat';
+import { widgetDimensionsSelector, widgetHeightSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
+import { peopleSelector } from '../../../../../Application/Selectors/peopleSelectors';
 
 @connect(state => ({
   chatLoaded:       chatLoadedSelector(state),
@@ -16,7 +22,8 @@ import $ from 'jquery';
   widgetHeight:     widgetHeightSelector(state),
   mute:             muteSelector(state),
   isBubble:         isBubbleSelector(state),
-  people:           peopleSelector(state)
+  people:           peopleSelector(state),
+  agentTypingDate:  agentTypingDateSelector(state)
 }))
 export class MessageListContainer extends React.Component {
 
@@ -41,27 +48,34 @@ export class MessageListContainer extends React.Component {
 
     let height = widgetHeight;
 
-    height -= $document.find('.dpdesignportal-chat-header-wrapper').outerHeight();
     height -= $document.find('.dpdesignportal-header').outerHeight();
+    height -= $document.find('.dpdesignportal-chat-header-wrapper').outerHeight();
+    height -= $document.find('.dpdesignportal-chat-footer').outerHeight();
     height -= $document.find('.dpdesignportal-powered-by-deskpro').outerHeight();
+    // lost margin of .dpdesignportal-chat-header-controls
+    height -= 20;
 
-    $(node).parent().children().each((i, child) => {
-      if (child !== node) {
-        height -= $(child).outerHeight();
-      }
-    });
+    $(node).parent().children()
+      .each((i, child) => {
+        if (child !== node) {
+          height -= $(child).outerHeight();
+        }
+      });
 
     if (height < 100) {
       height = 100;
     }
 
     $(node).css('height', height);
-    if (this.refs.list) {
-      this.refs.list.refresh();
+    if (this.list) {
+      this.list.refresh();
     }
   }
 
   render() {
-    return this.props.chatLoaded ? <MessageList ref="list" {...this.props} /> : <MessageListSpinner />;
+    return this.props.chatLoaded
+      ? <MessageList ref={(c) => { this.list = c; }} {...this.props} />
+      : <MessageListSpinner />;
   }
 }
+export default MessageListContainer;

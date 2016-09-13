@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Application\DeskPRO\Validator;
 
 use Application\DeskPRO\App;
@@ -52,14 +53,14 @@ class TicketPriority extends AbstractPersonContextValidator
      *
      * @var array
      */
-    protected $whitelist = array();
+    protected $whitelist = [];
 
     public function init()
     {
         parent::init();
 
         $this->allow_none = $this->getOption('allow_none', true);
-        $this->whitelist  = (array) $this->getOption('whitelist', array());
+        $this->whitelist  = (array) $this->getOption('whitelist', []);
     }
 
     /**
@@ -84,7 +85,7 @@ class TicketPriority extends AbstractPersonContextValidator
             return false;
         }
 
-        $check_pri = App::getDb()->fetchColumn('SELECT id FROM ticket_priorities WHERE id = ?', array($value));
+        $check_pri = App::getDb()->fetchColumn('SELECT id FROM ticket_priorities WHERE id = ?', [$value]);
 
         if (!$check_pri) {
             $this->addError('not_exist');

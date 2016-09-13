@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Util
  */
+
 namespace Orb\Helper;
 
 use Orb\Util\Util;
@@ -45,17 +46,17 @@ class HelperManager
      *
      * @var array
      */
-    protected $_helpers = array();
+    protected $_helpers = [];
 
     /**
      * An array of short callable names.
      */
-    protected $_callable_names = array();
+    protected $_callable_names = [];
 
     /**
      * Add a helper object.
      *
-     * @param Object $object
+     * @param object $object
      * @param string $name   The name of the helper. Defaults to strtolower of the base classname
      */
     public function addHelper($object, $name = null, $prefix_callable = false)
@@ -71,7 +72,7 @@ class HelperManager
         }
 
         if (method_exists($object, '__invoke')) {
-            $this->_callable_names[str_replace('_', '', $name)] = array($object, '__invoke');
+            $this->_callable_names[str_replace('_', '', $name)] = [$object, '__invoke'];
         }
 
         if ($object instanceof ShortCallableInterface) {
@@ -82,7 +83,7 @@ class HelperManager
 
                 $short_name = strtolower($short_name);
 
-                $this->_callable_names[$short_name] = array($object, $method);
+                $this->_callable_names[$short_name] = [$object, $method];
             }
         }
 

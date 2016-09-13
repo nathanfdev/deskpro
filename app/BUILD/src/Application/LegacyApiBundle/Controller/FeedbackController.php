@@ -116,34 +116,34 @@ class FeedbackController extends AbstractController
      */
     public function searchAction()
     {
-        $search_map = array(
+        $search_map = [
             'category_id'          => FeedbackSearch::TERM_CATEGORY,
             'category_id_specific' => FeedbackSearch::TERM_CATEGORY_SPECIFIC,
             'label'                => FeedbackSearch::TERM_LABEL,
             'status'               => FeedbackSearch::TERM_STATUS,
             'status_category_id'   => FeedbackSearch::TERM_STATUS_CATEGORY,
-        );
+        ];
 
-        $terms = array();
+        $terms = [];
 
         foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
-                $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
+                $terms[] = ['type' => $search_key, 'op' => 'contains', 'options' => $value];
             }
         }
 
         $date_created_start = $this->in->getUint('date_created_start');
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
-            $terms[] = array('type' => FeedbackSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => FeedbackSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
                 'date1' => $date_created_start,
                 'date2' => $date_created_end,
-            ));
+            ]];
         } elseif ($date_created_start) {
-            $terms[] = array('type' => FeedbackSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => FeedbackSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
                 'date1' => $date_created_start,
-            ));
+            ]];
         }
 
         $order_by = $this->in->getString('order');
@@ -151,7 +151,7 @@ class FeedbackController extends AbstractController
             $order_by = 'date_created:desc';
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -170,13 +170,13 @@ class FeedbackController extends AbstractController
         $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
         $feedback = App::getEntityRepository('DeskPRO:Feedback')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'     => $page,
             'per_page' => $per_page,
             'total'    => count($ids),
             'cache_id' => $result_cache->id,
             'feedback' => $this->getApiData($feedback),
-        ));
+        ]);
     }
 
     /**
@@ -241,21 +241,21 @@ class FeedbackController extends AbstractController
      */
     public function newFeedbackAction()
     {
-        $errors   = array();
+        $errors   = [];
         $feedback = new Feedback();
 
         $title = $this->in->getString('title');
         if ($title) {
             $feedback->title = $title;
         } else {
-            $errors['title'] = array('required_field.title', 'title is required');
+            $errors['title'] = ['required_field.title', 'title is required'];
         }
 
         $content = $this->in->getHtml('content');
         if ($content) {
             $feedback->content = $content;
         } else {
-            $errors['content'] = array('required_field.content', 'content is required');
+            $errors['content'] = ['required_field.content', 'content is required'];
         }
 
         $status_cat = $this->em->find('DeskPRO:FeedbackStatusCategory', $this->in->getUint('status_category_id'));
@@ -295,7 +295,7 @@ class FeedbackController extends AbstractController
         if ($user_category_id) {
             $field         = $this->_getUserCategoryField();
             $field_manager = $this->container->getSystemService('feedback_fields_manager');
-            $field_manager->saveFormToObject(array('field_'.$field->id => $user_category_id), $feedback, true);
+            $field_manager->saveFormToObject(['field_'.$field->id => $user_category_id], $feedback, true);
         }
 
         return $this->createApiCreateResponse(
@@ -334,7 +334,7 @@ class FeedbackController extends AbstractController
     {
         $feedback = $this->_getFeedbackOr404($feedback_id);
 
-        return $this->createApiResponse(array('feedback' => $feedback->toApiData()));
+        return $this->createApiResponse(['feedback' => $feedback->toApiData()]);
     }
 
     /**
@@ -408,7 +408,7 @@ class FeedbackController extends AbstractController
     {
         $feedback = $this->_getFeedbackOr404($feedback_id, 'edit');
 
-        $revs = array();
+        $revs = [];
 
         $title = $this->in->getString('title');
         if ($title) {
@@ -424,7 +424,7 @@ class FeedbackController extends AbstractController
         if ($content && $content != $feedback->content) {
             $feedback->content = $this->in->getHtml('content');
 
-            $rev          = ContentRevisionUtil::findOrCreate($feedback, array('content'), $this->person);
+            $rev          = ContentRevisionUtil::findOrCreate($feedback, ['content'], $this->person);
             $rev->content = $feedback->content;
 
             $revs['content'] = $rev;
@@ -463,7 +463,7 @@ class FeedbackController extends AbstractController
         if ($user_category_id) {
             $field         = $this->_getUserCategoryField();
             $field_manager = $this->container->getSystemService('feedback_fields_manager');
-            $field_manager->saveFormToObject(array('field_'.$field->id => $user_category_id), $feedback, true);
+            $field_manager->saveFormToObject(['field_'.$field->id => $user_category_id], $feedback, true);
         }
 
         return $this->createSuccessResponse();
@@ -524,7 +524,7 @@ class FeedbackController extends AbstractController
         $feedback = $this->_getFeedbackOr404($feedback_id);
         $votes    = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('feedback', $feedback->id);
 
-        return $this->createApiResponse(array('votes' => $this->getApiData($votes)));
+        return $this->createApiResponse(['votes' => $this->getApiData($votes)]);
     }
 
     /**
@@ -552,7 +552,7 @@ class FeedbackController extends AbstractController
         $feedback = $this->_getFeedbackOr404($feedback_id);
         $comments = $this->em->getRepository('DeskPRO:FeedbackComment')->getComments($feedback);
 
-        return $this->createApiResponse(array('comments' => $this->getApiData($comments)));
+        return $this->createApiResponse(['comments' => $this->getApiData($comments)]);
     }
 
     /**
@@ -669,7 +669,7 @@ class FeedbackController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        return $this->createApiResponse(array('comment' => $comment->toApiData()));
+        return $this->createApiResponse(['comment' => $comment->toApiData()]);
     }
 
     /**
@@ -861,7 +861,7 @@ class FeedbackController extends AbstractController
     {
         $feedback = $this->_getFeedbackOr404($feedback_id);
 
-        return $this->createApiResponse(array('attachments' => $this->getApiData($feedback->attachments)));
+        return $this->createApiResponse(['attachments' => $this->getApiData($feedback->attachments)]);
     }
 
     /**
@@ -978,7 +978,7 @@ class FeedbackController extends AbstractController
             }
         }
 
-        return $this->createApiResponse(array('exists' => $exists));
+        return $this->createApiResponse(['exists' => $exists]);
     }
 
     /**
@@ -1049,7 +1049,7 @@ class FeedbackController extends AbstractController
     {
         $feedback = $this->_getFeedbackOr404($feedback_id);
 
-        return $this->createApiResponse(array('labels' => $this->getApiData($feedback->labels)));
+        return $this->createApiResponse(['labels' => $this->getApiData($feedback->labels)]);
     }
 
     /**
@@ -1133,9 +1133,9 @@ class FeedbackController extends AbstractController
         $feedback = $this->_getFeedbackOr404($feedback_id);
 
         if ($feedback->getLabelManager()->hasLabel($label)) {
-            return $this->createApiResponse(array('exists' => true));
+            return $this->createApiResponse(['exists' => true]);
         } else {
-            return $this->createApiResponse(array('exists' => false));
+            return $this->createApiResponse(['exists' => false]);
         }
     }
 
@@ -1189,7 +1189,7 @@ class FeedbackController extends AbstractController
     {
         $comments   = $this->em->getRepository('DeskPRO:FeedbackComment')->getValidatingComments();
         $entity_key = 'feedback';
-        $output     = array();
+        $output     = [];
         foreach ($comments as $key => $value) {
             $output[$key] = $value->toApiData(false, true);
             if ($value->$entity_key) {
@@ -1197,7 +1197,7 @@ class FeedbackController extends AbstractController
             }
         }
 
-        return $this->createApiResponse(array('comments' => $output));
+        return $this->createApiResponse(['comments' => $output]);
     }
 
     /**
@@ -1213,7 +1213,7 @@ class FeedbackController extends AbstractController
     {
         $categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
 
-        return $this->createApiResponse(array('categories' => $categories));
+        return $this->createApiResponse(['categories' => $categories]);
     }
 
     /**
@@ -1229,7 +1229,7 @@ class FeedbackController extends AbstractController
     {
         $categories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->findAll();
 
-        return $this->createApiResponse(array('categories' => $this->getApiData($categories)));
+        return $this->createApiResponse(['categories' => $this->getApiData($categories)]);
     }
 
     /**
@@ -1246,14 +1246,14 @@ class FeedbackController extends AbstractController
         $field    = $this->_getUserCategoryField();
         $children = $field->getAllChildren();
 
-        return $this->createApiResponse(array('categories' => $this->getApiData($children)));
+        return $this->createApiResponse(['categories' => $this->getApiData($children)]);
     }
 
     protected function _insertFeedbackAttachments(Feedback $feedback)
     {
         $attachments = $this->request->files->get('attach');
         if (!is_array($attachments)) {
-            $attachments = array($attachments);
+            $attachments = [$attachments];
         }
         $accept = $this->container->getAttachmentAccepter();
 

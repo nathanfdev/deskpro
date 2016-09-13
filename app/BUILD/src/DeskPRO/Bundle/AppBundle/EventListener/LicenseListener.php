@@ -61,10 +61,10 @@ class LicenseListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             KernelEvents::REQUEST  => ['onPreRequest', 0],
             ConsoleEvents::COMMAND => ['onCommand', 0],
-        );
+        ];
     }
 
     public function onPreRequest(GetResponseEvent $event)

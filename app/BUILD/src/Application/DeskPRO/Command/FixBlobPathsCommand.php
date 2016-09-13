@@ -74,16 +74,16 @@ class FixBlobPathsCommand extends ContainerAwareCommand
 
         $db = $this->getContainer()->getDb();
 
-        $tables = array(
-            'articles'  => array('articles', 'content'),
-            'news'      => array('news', 'content'),
-            'downloads' => array('downloads', 'content'),
-            'feedback'  => array('feedback', 'content'),
-        );
+        $tables = [
+            'articles'  => ['articles', 'content'],
+            'news'      => ['news', 'content'],
+            'downloads' => ['downloads', 'content'],
+            'feedback'  => ['feedback', 'content'],
+        ];
 
         $output->write('Fetching content that needs updating...');
 
-        $queries = array();
+        $queries = [];
         foreach ($tables as $t) {
             $queries[] = "(SELECT {$t[0]}.id, '{$t[0]}' AS tablename FROM {$t[0]} WHERE {$t[0]}.{$t[1]} LIKE '%file.php/%')";
         }
@@ -123,14 +123,14 @@ class FixBlobPathsCommand extends ContainerAwareCommand
             return;
         }
 
-        $blob_ids = array();
+        $blob_ids = [];
         foreach ($matches as $m) {
             $blob_ids[] = $m[1];
         }
 
         $blob_ids = array_unique($blob_ids);
 
-        $blobs = $db->fetchAllKeyed('SELECT * FROM blobs WHERE id IN (?)', array($blob_ids), 'id', array(Connection::PARAM_INT_ARRAY));
+        $blobs = $db->fetchAllKeyed('SELECT * FROM blobs WHERE id IN (?)', [$blob_ids], 'id', [Connection::PARAM_INT_ARRAY]);
 
         if (!$blobs) {
             return;
@@ -166,7 +166,7 @@ class FixBlobPathsCommand extends ContainerAwareCommand
         }
 
         if ($this->isReal && $orig_content !== $content) {
-            $db->update($table, array($content_field => $content), array('id' => $row_id));
+            $db->update($table, [$content_field => $content], ['id' => $row_id]);
             echo "[$table.$row_id] Updated\n";
         }
     }

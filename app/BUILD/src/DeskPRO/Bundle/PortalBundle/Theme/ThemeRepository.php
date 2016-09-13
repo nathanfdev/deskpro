@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag as TagAnnotation;
@@ -72,7 +73,7 @@ class ThemeRepository
         $this->config_cache = $config_cache;
         $this->logger       = $logger;
         $this->reader       = $reader;
-        $this->theme_map    = array();
+        $this->theme_map    = [];
     }
 
     /**
@@ -125,13 +126,13 @@ class ThemeRepository
         $this->logger->debug('theme repository: creating theme map and then caching it for future use');
 
         // cache this
-        $themes = array(
+        $themes = [
             new BaseTheme(),
             new StandardTheme(),
             new SidebarTheme(),
-        );
+        ];
 
-        $this->theme_map = array();
+        $this->theme_map = [];
         foreach ($themes as $theme) {
             $this->resolveTags($theme);
             $this->resolveParent($theme);
@@ -152,7 +153,7 @@ class ThemeRepository
      */
     private function resolveTags(ThemeInterface $theme)
     {
-        $tags = array();
+        $tags = [];
 
         // source 1: static method
         $static_tags = $theme::getHardCodedTags();
@@ -283,7 +284,7 @@ class ThemeRepository
                 do {
                     $namespace .= $token[1];
                     $token = $tokens[++$i];
-                } while ($i < $count && is_array($token) && in_array($token[0], array(T_NS_SEPARATOR, T_STRING)));
+                } while ($i < $count && is_array($token) && in_array($token[0], [T_NS_SEPARATOR, T_STRING]));
             }
 
             if (T_CLASS === $token[0]) {

@@ -31,6 +31,7 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
 /**
@@ -53,7 +54,7 @@ class Web
      * HTML/Javascript to execute the redirect. Will exit the script
      * afterwards.
      *
-     * @param string $url The URL to redirect to.
+     * @param string $url The URL to redirect to
      */
     public static function redirect($url)
     {
@@ -74,7 +75,7 @@ class Web
     /**
      * Send an HTTP status code.
      *
-     * @param int $type One of the HTTP_STATUS_* constants.
+     * @param int $type One of the HTTP_STATUS_* constants
      *
      * @return bool True if sent, false if it couldnt be sent
      */
@@ -109,7 +110,7 @@ class Web
      */
     public function getAttachmentHeaders($filename, $is_inline = false, $mimetype = null, $filesize = null)
     {
-        $headers = array();
+        $headers = [];
 
         if (!$filename) {
             $filename = 'file';
@@ -250,7 +251,7 @@ class Web
             }
 
             if (!$alt_ip and isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ip_arr = array();
+                $ip_arr = [];
 
                 if (preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $ip_arr)) {
                     foreach ($ip_arr[0] as $ip) {
@@ -343,7 +344,7 @@ class Web
     /**
      * Look up a users country based off of their IP address. Returns null if no country could be found.
      *
-     * @param string $ip The IP address. Use null if you want to use the current users IP address.
+     * @param string $ip The IP address. Use null if you want to use the current users IP address
      *
      * @return string
      */
@@ -548,7 +549,7 @@ class Web
             $useragent = $_SERVER['HTTP_USER_AGENT'];
         }
 
-        $bot_strings = array(
+        $bot_strings = [
             'AdsBot-Google', 'Googlebot-Image', 'Googlebot-Mobile', 'Googlebot',
             'Yahoo! Slurp', 'Yahoo! Slurp China', 'Yahoo-MMCrawler',
             'Openbot',
@@ -560,7 +561,7 @@ class Web
             'Ask Jeeves/Teoma', 'Teoma',
             'Gigabot',
             'bingbot',
-        );
+        ];
 
         foreach ($bot_strings as $bot) {
             if (strpos($useragent, $bot) !== false) {

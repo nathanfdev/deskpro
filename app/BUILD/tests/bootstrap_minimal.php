@@ -26,9 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-#------------------------------
-# Normalize env
-#------------------------------
+//------------------------------
+// Normalize env
+//------------------------------
 
 @setlocale(LC_CTYPE, 'C');
 @date_default_timezone_set('UTC');
@@ -37,9 +37,9 @@
 @ini_set('xdebug.max_nesting_level', 1000000);
 libxml_disable_entity_loader(true);
 
-#------------------------------
-# Paths
-#------------------------------
+//------------------------------
+// Paths
+//------------------------------
 
 require __DIR__.'/../../../app/run/lib/DpRun/DpEnv.php';
 
@@ -59,17 +59,17 @@ define('DP_WEB_ROOT', $DP_ENV->getAppWwwAssetDir());
 define('DP_BUILD_NUM',  0);
 define('DP_BUILD_TIME', 1323444089);
 
-#------------------------------
-# Erorr handling
-#------------------------------
+//------------------------------
+// Erorr handling
+//------------------------------
 
 @ini_set('log_errors', true);
 @ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
-#------------------------------
-# Boot libs
-#------------------------------
+//------------------------------
+// Boot libs
+//------------------------------
 
 define('DP_INTERFACE', 'test');
 
@@ -81,9 +81,9 @@ require DP_APP_DIR.'/sys/Boot/Boot.php';
 ]);
 libxml_disable_entity_loader(false);
 
-#------------------------------
-# Set lic loader
-#------------------------------
+//------------------------------
+// Set lic loader
+//------------------------------
 
 \DpSys\License::setLoaderFunction(function () {
     $CONFIG = require __DIR__.'/config/config.all.php';

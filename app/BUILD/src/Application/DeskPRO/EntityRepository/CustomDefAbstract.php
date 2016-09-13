@@ -177,7 +177,7 @@ class CustomDefAbstract extends AbstractEntityRepository
         $x = 0;
         foreach ($display_orders as $tr_id) {
             $x += 10;
-            $db->update($this->getTableName(), array('display_order' => $x), array('id' => $tr_id));
+            $db->update($this->getTableName(), ['display_order' => $x], ['id' => $tr_id]);
         }
 
         $db->commit();
@@ -196,7 +196,7 @@ class CustomDefAbstract extends AbstractEntityRepository
         $table  = $this->_em->getRepository($entity)->getTableName();
         $con    = $this->_em->getConnection();
         $q      = sprintf('select count(*) from %s where field_id in (:ids)', $table);
-        $res    = $con->executeQuery($q, array('ids' => $ids), array('ids' => Connection::PARAM_INT_ARRAY))->fetchColumn();
+        $res    = $con->executeQuery($q, ['ids' => $ids], ['ids' => Connection::PARAM_INT_ARRAY])->fetchColumn();
 
         return (bool) $res;
     }
@@ -234,8 +234,8 @@ class CustomDefAbstract extends AbstractEntityRepository
         $q     = sprintf('update %s set field_id = :to where field_id in (:ids)', $table);
         $con->executeQuery(
             $q,
-            array('ids' => $fromIds, 'to' => $toId),
-            array('ids' => Connection::PARAM_INT_ARRAY, 'to' => \PDO::PARAM_INT)
+            ['ids' => $fromIds, 'to' => $toId],
+            ['ids' => Connection::PARAM_INT_ARRAY, 'to' => \PDO::PARAM_INT]
         );
     }
 }

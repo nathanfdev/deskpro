@@ -44,9 +44,9 @@ $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/doctrine-
 $container->setParameter('secret', 'irrelevant - compiler pass will override this');
 $container->setParameter('locale', 'en');
 
-####################################################################
-# This config is shared between kernels (DpKernel, PortalKernel and ApiKernel)
-####################################################################
+//###################################################################
+// This config is shared between kernels (DpKernel, PortalKernel and ApiKernel)
+//###################################################################
 
 // app secret (NOTE; see intall/config.php, as this is copy/pasted to that file)
 $definition = new Definition();
@@ -58,69 +58,69 @@ $definition = new Definition();
 $definition->setClass('Application\DeskPRO\NewSettings\SettingsResolver');
 $definition->setFactory('Application\DeskPRO\DependencyInjection\SystemServices\SettingsResolverService::create');
 $definition->setArguments(
-    array(
+    [
         new Reference('service_container'),
-    )
+    ]
 );
 $container->setDefinition('settings_resolver', $definition);
 
-############################################################################
-# Listeners
-############################################################################
+//###########################################################################
+// Listeners
+//###########################################################################
 
 $definition = new Definition();
 $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\SecurityHeadersResponseListener');
 $definition->addTag('kernel.event_subscriber');
 $container->setDefinition('listener.security_headers', $definition);
 
-############################################################################
-# Form Type
-############################################################################
+//###########################################################################
+// Form Type
+//###########################################################################
 
 $definition = new Definition();
 $definition->setClass('Application\DeskPRO\Form\Type\CleanerExtension');
-$definition->setArguments(array(new Reference('deskpro.core.input_cleaner')));
-$definition->addTag('form.type_extension', array('extended_type' => 'Symfony\Component\Form\Extension\Core\Type\FormType'));
+$definition->setArguments([new Reference('deskpro.core.input_cleaner')]);
+$definition->addTag('form.type_extension', ['extended_type' => 'Symfony\Component\Form\Extension\Core\Type\FormType']);
 $container->setDefinition('form.cleaner_extension', $definition);
 
-############################################################################
-# Object Router
-############################################################################
+//###########################################################################
+// Object Router
+//###########################################################################
 
 $loader->import(__DIR__.'/../../src/DeskPRO/Bundle/AppBundle/Resources/config/services/object_router.yml');
 
-############################################################################
-# Ticket Public ID Resolver
-############################################################################
+//###########################################################################
+// Ticket Public ID Resolver
+//###########################################################################
 
 $definition = new Definition();
 $definition->setClass('DeskPRO\Bundle\AppBundle\Helper\TicketPublicIdResolver');
-$definition->setArguments(array(new Reference('settings_resolver')));
+$definition->setArguments([new Reference('settings_resolver')]);
 $container->setDefinition('ticket.public_id_resolver', $definition);
 
-############################################################################
-# Input
-############################################################################
+//###########################################################################
+// Input
+//###########################################################################
 
 // Init readers
 $request_stack_reference = new Reference('request_stack');
 
 $definition = new Definition(
     'Orb\Input\Reader\Source\Superglobal',
-    array('_REQUEST', array('accept_json_post' => true), $request_stack_reference)
+    ['_REQUEST', ['accept_json_post' => true], $request_stack_reference]
 );
 $container->setDefinition('deskpro.core.input_reader_req', $definition);
 
 $definition = new Definition(
     'Orb\Input\Reader\Source\Superglobal',
-    array('_POST', array('accept_json_post' => true), $request_stack_reference)
+    ['_POST', ['accept_json_post' => true], $request_stack_reference]
 );
 $container->setDefinition('deskpro.core.input_reader_post', $definition);
 
-$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_GET'));
+$definition = new Definition('Orb\Input\Reader\Source\Superglobal', ['_GET']);
 $container->setDefinition('deskpro.core.input_reader_get', $definition);
 
-$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_COOKIE'));
+$definition = new Definition('Orb\Input\Reader\Source\Superglobal', ['_COOKIE']);
 $container->setDefinition('deskpro.core.input_reader_cookie', $definition);
 
 // Cleaner plugin: XssCleaner
@@ -133,29 +133,29 @@ $container->setDefinition('deskpro.core.input_cleaner_plugin_html_purifier', $de
 
 // Init cleaner
 $definition = new Definition('Orb\Input\Cleaner\Cleaner');
-$definition->addMethodCall('addCleaner', array(new Reference('deskpro.core.input_cleaner_plugin_xss')));
-$definition->addMethodCall('addCleaner', array(new Reference('deskpro.core.input_cleaner_plugin_html_purifier')));
+$definition->addMethodCall('addCleaner', [new Reference('deskpro.core.input_cleaner_plugin_xss')]);
+$definition->addMethodCall('addCleaner', [new Reference('deskpro.core.input_cleaner_plugin_html_purifier')]);
 $container->setDefinition('deskpro.core.input_cleaner', $definition);
 
 // Init reader
-$definition = new Definition('Application\DeskPRO\Input\Reader', array(new Reference('deskpro.core.input_cleaner')));
-$definition->addMethodCall('addSource', array('req', new Reference('deskpro.core.input_reader_req')));
-$definition->addMethodCall('addSource', array('post', new Reference('deskpro.core.input_reader_post')));
-$definition->addMethodCall('addSource', array('get', new Reference('deskpro.core.input_reader_get')));
-$definition->addMethodCall('addSource', array('cookie', new Reference('deskpro.core.input_reader_cookie')));
-$definition->addMethodCall('setArrayStringSeparator', array('.'));
+$definition = new Definition('Application\DeskPRO\Input\Reader', [new Reference('deskpro.core.input_cleaner')]);
+$definition->addMethodCall('addSource', ['req', new Reference('deskpro.core.input_reader_req')]);
+$definition->addMethodCall('addSource', ['post', new Reference('deskpro.core.input_reader_post')]);
+$definition->addMethodCall('addSource', ['get', new Reference('deskpro.core.input_reader_get')]);
+$definition->addMethodCall('addSource', ['cookie', new Reference('deskpro.core.input_reader_cookie')]);
+$definition->addMethodCall('setArrayStringSeparator', ['.']);
 $container->setDefinition('deskpro.core.input_reader', $definition);
 
-############################################################################
-# Doctrine services
-############################################################################
+//###########################################################################
+// Doctrine services
+//###########################################################################
 
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\ORM\\ContainerAwareEntityListenerResolver');
 $definition->setArguments(
-    array(
+    [
         new Reference('service_container'),
-    )
+    ]
 );
 $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
 
@@ -163,28 +163,28 @@ $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
 // NOTE: this is duplicated in the InstallExtension so that the install process can use it
 $definition = new Definition();
 $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\Content\DoctrineContentSlugListener');
-$definition->setArguments(array(new Reference('content_slug_manager')));
+$definition->setArguments([new Reference('content_slug_manager')]);
 $definition->addTag('doctrine.event_subscriber');
 $container->setDefinition('doctrine_listener.content_slug', $definition);
 // a service to set the correct slug on a content object
 // NOTE: this is duplicated in the InstallExtension so that the install process can use it
 $definition = new Definition();
 $definition->setClass('DeskPRO\Bundle\AppBundle\Content\ContentSlugManager');
-$definition->setArguments(array(new Reference('service_container')));
+$definition->setArguments([new Reference('service_container')]);
 $container->setDefinition('content_slug_manager', $definition);
 
 // slug listener (sets slugs on category)
 // NOTE: this is duplicated in the InstallExtension so that the install process can use it
 $definition = new Definition();
 $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\Content\DoctrineCategorySlugListener');
-$definition->setArguments(array(new Reference('category_slug_manager')));
+$definition->setArguments([new Reference('category_slug_manager')]);
 $definition->addTag('doctrine.event_subscriber');
 $container->setDefinition('doctrine_listener.category_slug', $definition);
 // a service to set the correct slug on a category object
 // NOTE: this is duplicated in the InstallExtension so that the install process can use it
 $definition = new Definition();
 $definition->setClass('DeskPRO\Bundle\AppBundle\Content\CategorySlugManager');
-$definition->setArguments(array(new Reference('service_container')));
+$definition->setArguments([new Reference('service_container')]);
 $container->setDefinition('category_slug_manager', $definition);
 
 $definition = new Definition();
@@ -206,29 +206,29 @@ $container->setDefinition('assets.packages', $definition);
 $definition = new Definition();
 $definition->setClass('Orb\\Doctrine\\Common\\Cache\\ArrayFileCache');
 $definition->setFactory('Application\\DeskPRO\\DependencyInjection\\SystemServices\\ArrayFileCacheFactory::create');
-$definition->setArguments(array('dql'));
+$definition->setArguments(['dql']);
 $definition->addMethodCall('registerShutdownCommit');
 $container->setDefinition('doctrine.orm.default_query_cache', $definition);
 
 // entity listeners
 $definition = new Definition();
 $definition->setClass('Application\DeskPRO\Entity\EventListener\PersonChangeLogListener');
-$definition->setArguments(array(new Reference('service_container')));
+$definition->setArguments([new Reference('service_container')]);
 $definition->addTag('doctrine.entity_listener');
 $container->setDefinition('dp.entity_lister.person_changelog', $definition);
 $definition = new Definition();
 $definition->setClass('Application\DeskPRO\Entity\EventListener\PersonContactDataChangeLogListener');
-$definition->setArguments(array(new Reference('service_container')));
+$definition->setArguments([new Reference('service_container')]);
 $definition->addTag('doctrine.entity_listener');
 $container->setDefinition('dp.entity_lister.person_contact_data_changelog', $definition);
 $definition = new Definition();
 $definition->setClass('Application\DeskPRO\Entity\EventListener\PersonCustomDataChangeLogListener');
-$definition->setArguments(array(new Reference('service_container')));
+$definition->setArguments([new Reference('service_container')]);
 $definition->addTag('doctrine.entity_listener');
 $container->setDefinition('dp.entity_lister.person_custo_data_changelog', $definition);
 $definition = new Definition();
 $definition->setClass('Application\DeskPRO\Entity\EventListener\ProblemListener');
-$definition->setArguments(array(new Reference('service_container')));
+$definition->setArguments([new Reference('service_container')]);
 $definition->addTag('doctrine.entity_listener');
 $container->setDefinition('dp.entity_lister.problem', $definition);
 $definition = new Definition();
@@ -236,9 +236,9 @@ $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboa
 $definition->addTag('doctrine.entity_listener');
 $container->setDefinition('dp.entity_lister.person_onboarding', $definition);
 
-############################################################################
-# Doctrine Configuration
-############################################################################
+//###########################################################################
+// Doctrine Configuration
+//###########################################################################
 
 $container->loadFromExtension(
     'doctrine',
@@ -321,73 +321,73 @@ $container->register(
     'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener'
 )->addArgument(new Reference('service_container'))->addTag('doctrine.entity_listener');
 
-############################################################################
-# Cache services
-############################################################################
+//###########################################################################
+// Cache services
+//###########################################################################
 
-## NOTE: duplicated in install bundle's DI
+//# NOTE: duplicated in install bundle's DI
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\SimpleArrayCache');
-$definition->setArguments(array());
+$definition->setArguments([]);
 $container->setDefinition('cache.simple_array', $definition);
 
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\ExpiringDoctrineCache');
 $seconds_in_one_day = 86400;
-$definition->setArguments(array(new Reference('doctrine.orm.default_entity_manager'), $seconds_in_one_day));
+$definition->setArguments([new Reference('doctrine.orm.default_entity_manager'), $seconds_in_one_day]);
 $container->setDefinition('cache.one_day_doctrine', $definition);
 
 // make an alias so we can easily swap out the underlying adapter for a diff implementation of the same concept
 $container->setAlias('cache.one_day', 'cache.one_day_doctrine');
 
-############################################################################
-# Swiftmailer Configuration
-############################################################################
+//###########################################################################
+// Swiftmailer Configuration
+//###########################################################################
 
 // swiftmailer.transport.dp_delegating
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport');
 $definition->setArguments(
-    array(
+    [
         new Reference('swiftmailer.mailer.default.transport.eventdispatcher'),
-    )
+    ]
 );
 $container->setDefinition('swiftmailer.mailer.transport.dp_delegating', $definition);
 
 $container->loadFromExtension(
     'swiftmailer',
-    array(
+    [
         'transport' => 'dp_delegating',
-    )
+    ]
 );
 
 // deskpro.mail_logger
 $definition = new Definition();
 $definition->setClass('Orb\\Log\\Logger');
 $definition->setFactory('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailLoggerService::create');
-$definition->setArguments(array(new Reference('service_container')));
+$definition->setArguments([new Reference('service_container')]);
 $container->setDefinition('deskpro.mail_logger', $definition);
 
 $definition = new Definition(
-    'Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', array(
+    'Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', [
         new Reference('doctrine.orm.entity_manager'),
-    )
+    ]
 );
 $container->setDefinition('deskpro.person_activity_logger', $definition);
 
 $definition = new Definition(
     'Application\DeskPRO\Log\Handler\LogEventHandler',
-    array(new Reference('doctrine.orm.entity_manager'))
+    [new Reference('doctrine.orm.entity_manager')]
 );
 $container->setDefinition('deskpro.log_handler.log_event', $definition);
 
-$definition = new Definition('Application\DeskPRO\Monolog\Logger', array('changelog'));
-$definition->addMethodCall('pushHandler', array(new Reference('deskpro.log_handler.log_event')));
+$definition = new Definition('Application\DeskPRO\Monolog\Logger', ['changelog']);
+$definition->addMethodCall('pushHandler', [new Reference('deskpro.log_handler.log_event')]);
 $container->setDefinition('deskpro.logger.changelog', $definition);
 
-############################################################################
-# Global config and Monolog handler
-############################################################################
+//###########################################################################
+// Global config and Monolog handler
+//###########################################################################
 
 $definition = new Definition('DeskPRO\Bundle\AppBundle\Logging\DeskproFilesystemHandler');
 $definition->addArgument(new Expression("service('deskpro.app_env').getUserLogsDir()"));
@@ -402,16 +402,16 @@ $definition->addArgument(new Expression("service('deskpro.app_env').getConfig('l
 $container->setDefinition('monolog.handler.deskpro_fingers_crossed', $definition);
 
 $definition = new Definition(
-    'Application\\DeskPRO\\Settings\\Settings', array(
+    'Application\\DeskPRO\\Settings\\Settings', [
         DP_ROOT.'/sys/config/settings.php',
         new Reference('database_connection'),
-    )
+    ]
 );
 $container->setDefinition('deskpro.core.settings', $definition);
 
 $definition = new Definition(
     'Application\\DeskPRO\\Groups\\GroupsReposFactory',
-    array(new Reference('doctrine.orm.entity_manager'))
+    [new Reference('doctrine.orm.entity_manager')]
 );
 $definition->setFactory('Application\\DeskPRO\\Groups\\GroupsReposFactory::createFromEntityManager');
 $container->setDefinition('deskpro.people.groups_repos_factory', $definition);
@@ -429,39 +429,39 @@ $container
     ->addArgument(new Reference('doctrine.orm.entity_manager'))
     ->addArgument(new Reference('form.factory'));
 
-############################################################################
-# Search
-############################################################################
+//###########################################################################
+// Search
+//###########################################################################
 
 $definition = new Definition();
 $definition->setClass('Application\DeskPRO\NewSearch\SearchEngine\SearchEngine');
 $definition->setFactory('Application\DeskPRO\DependencyInjection\SystemServices\SearchEngineService::create');
 $definition->setArguments(
-    array(
+    [
         new Reference('service_container'),
-    )
+    ]
 );
 $container->setDefinition('search_engine', $definition);
 
 // deskpro.search_manager.elasticsearch
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Manager\\Elasticsearch');
-$definition->addMethodCall('setContainer', array(new Reference('service_container')));
+$definition->addMethodCall('setContainer', [new Reference('service_container')]);
 $container->setDefinition('deskpro.search_manager.elasticsearch', $definition);
 
 // deskpro.search_manager.doctrine
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Manager\\Doctrine');
-$definition->addMethodCall('setContainer', array(new Reference('service_container')));
-$definition->addMethodCall('setEntityManager', array(new Reference('doctrine.orm.entity_manager')));
-$definition->addMethodCall('setSettings', array(new Reference('deskpro.core.settings')));
+$definition->addMethodCall('setContainer', [new Reference('service_container')]);
+$definition->addMethodCall('setEntityManager', [new Reference('doctrine.orm.entity_manager')]);
+$definition->addMethodCall('setSettings', [new Reference('deskpro.core.settings')]);
 $container->setDefinition('deskpro.search_manager.doctrine', $definition);
 
 // deskpro.search.ticket_to_elastica_transformer
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\TicketToElasticaTransformer');
 $container->setDefinition('deskpro.search.ticket_to_elastica_transformer', $definition);
-$definition->addMethodCall('setApacheTika', array(new Reference('deskpro.apache_tika.client_manager')));
+$definition->addMethodCall('setApacheTika', [new Reference('deskpro.apache_tika.client_manager')]);
 
 // deskpro.search.person_to_elastica_transformer
 $definition = new Definition();
@@ -502,323 +502,323 @@ $container->setDefinition('deskpro.search.feedback_to_elastica_transformer', $de
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Provider\\Doctrine');
 $definition->setArguments(
-    array(
+    [
         '',
         new Reference('fos_elastica.indexable'),
         '',
-        array(),
+        [],
         new Reference('doctrine'),
-    )
+    ]
 );
 $definition->setAbstract(true);
 $container->setDefinition('fos_elastica.provider.prototype.orm', $definition);
 
-############################################################################
-# FOS Elastica Configuration
-############################################################################
+//###########################################################################
+// FOS Elastica Configuration
+//###########################################################################
 
 $container->loadFromExtension(
     'fos_elastica',
-    array(
-        'clients' => array(
-            'default' => array('host' => 'DEFAULT', 'port' => 9200),
-        ),
-        'indexes' => array(
-            'deskpro' => array(
-                'settings' => array(
-                    'analysis' => array(
-                        'filter' => array(
-                            'ngram_filter_3' => array(
+    [
+        'clients' => [
+            'default' => ['host' => 'DEFAULT', 'port' => 9200],
+        ],
+        'indexes' => [
+            'deskpro' => [
+                'settings' => [
+                    'analysis' => [
+                        'filter' => [
+                            'ngram_filter_3' => [
                                 'type'        => 'nGram',
                                 'min_gram'    => 3,
                                 'max_gram'    => 20,
-                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol'),
-                            ),
-                            'edge_ngram_filter_3' => array(
+                                'token_chars' => ['letters', 'digit', 'punctuation', 'symbol'],
+                            ],
+                            'edge_ngram_filter_3' => [
                                 'type'        => 'edgeNGram',
                                 'min_gram'    => 3,
                                 'max_gram'    => 20,
-                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol'),
-                            ),
-                            'edge_ngram_filter_4' => array(
+                                'token_chars' => ['letters', 'digit', 'punctuation', 'symbol'],
+                            ],
+                            'edge_ngram_filter_4' => [
                                 'type'        => 'edgeNGram',
                                 'min_gram'    => 4,
                                 'max_gram'    => 20,
-                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol'),
-                            ),
-                            'ngram_filter_5' => array(
+                                'token_chars' => ['letters', 'digit', 'punctuation', 'symbol'],
+                            ],
+                            'ngram_filter_5' => [
                                 'type'        => 'nGram',
                                 'min_gram'    => 5,
                                 'max_gram'    => 20,
-                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol'),
-                            ),
-                            'email_filter' => array(
+                                'token_chars' => ['letters', 'digit', 'punctuation', 'symbol'],
+                            ],
+                            'email_filter' => [
                                 'type'              => 'pattern_capture',
                                 'preserve_original' => 1,
-                                'patterns'          => array(
+                                'patterns'          => [
                                     '(\\w+)',
                                     '(\\p{L}+)',
                                     '(\\d+)',
                                     '@(.+)',
-                                ),
-                            ),
-                            'phone_filter_leading_zero' => array(
+                                ],
+                            ],
+                            'phone_filter_leading_zero' => [
                                 'type'              => 'pattern_replace',
                                 'preserve_original' => 1,
                                 'pattern'           => '^(\\+\\d+)\\s+(\\d+)$',
                                 'replacement'       => '$1$2 $10$2 0$2 $2',
-                            ),
-                            'phone_filter' => array(
+                            ],
+                            'phone_filter' => [
                                 'type'              => 'pattern_capture',
                                 'preserve_original' => 0,
-                                'patterns'          => array(
+                                'patterns'          => [
                                     '(\\+\\d+)',
                                     '(\\d+)',
-                                ),
-                            ),
-                        ),
-                        'analyzer' => array(
-                            'title_content_analyzer' => array(
+                                ],
+                            ],
+                        ],
+                        'analyzer' => [
+                            'title_content_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'standard',
-                                'filter'    => array(
+                                'filter'    => [
                                     'standard',
                                     'stop',
                                     'lowercase',
                                     'asciifolding',
                                     'edge_ngram_filter_3',
-                                ),
-                            ),
-                            'text_content_analyzer' => array(
+                                ],
+                            ],
+                            'text_content_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'standard',
-                                'filter'    => array('standard', 'stop', 'lowercase', 'asciifolding'),
-                            ),
-                            'name_analyzer' => array(
+                                'filter'    => ['standard', 'stop', 'lowercase', 'asciifolding'],
+                            ],
+                            'name_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'whitespace',
-                                'filter'    => array('lowercase', 'asciifolding', 'edge_ngram_filter_3'),
-                            ),
-                            'email_analyzer' => array(
+                                'filter'    => ['lowercase', 'asciifolding', 'edge_ngram_filter_3'],
+                            ],
+                            'email_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'keyword',
-                                'filter'    => array('lowercase', 'email_filter', 'unique'),
-                            ),
-                            'email_domain_analyzer' => array(
+                                'filter'    => ['lowercase', 'email_filter', 'unique'],
+                            ],
+                            'email_domain_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'standard',
-                                'filter'    => array('standard', 'lowercase', 'edge_ngram_filter_4'),
-                            ),
-                            'phone_analyzer' => array(
+                                'filter'    => ['standard', 'lowercase', 'edge_ngram_filter_4'],
+                            ],
+                            'phone_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'keyword',
-                                'filter'    => array('phone_filter_leading_zero', 'phone_filter', 'ngram_filter_5'),
-                            ),
-                        ),
-                    ),
-                ),
-                'types' => array(
-                    'article' => array(
-                        'mappings' => array(
-                            'title'        => array('analyzer' => 'title_content_analyzer'),
-                            'content'      => array('analyzer' => 'text_content_analyzer'),
-                            'status'       => array(),
-                            'category_ids' => array('type' => 'integer'),
-                            'labels'       => array('analyzer' => 'title_content_analyzer'),
-                            'sticky_words' => array(),
-                            'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                            'date_active'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                        ),
-                        'persistence' => array(
+                                'filter'    => ['phone_filter_leading_zero', 'phone_filter', 'ngram_filter_5'],
+                            ],
+                        ],
+                    ],
+                ],
+                'types' => [
+                    'article' => [
+                        'mappings' => [
+                            'title'        => ['analyzer' => 'title_content_analyzer'],
+                            'content'      => ['analyzer' => 'text_content_analyzer'],
+                            'status'       => [],
+                            'category_ids' => ['type' => 'integer'],
+                            'labels'       => ['analyzer' => 'title_content_analyzer'],
+                            'sticky_words' => [],
+                            'date_created' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                            'date_active'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                        ],
+                        'persistence' => [
                             'driver'                        => 'orm',
                             'model'                         => 'Application\DeskPRO\Entity\Article',
-                            'provider'                      => array(),
-                            'finder'                        => array(),
-                            'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.article_to_elastica_transformer'),
+                            'provider'                      => [],
+                            'finder'                        => [],
+                            'elastica_to_model_transformer' => ['ignore_missing' => true],
+                            'model_to_elastica_transformer' => ['service' => 'deskpro.search.article_to_elastica_transformer'],
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\ArticleRepository',
-                        ),
-                    ),
-                    'news' => array(
-                        'mappings' => array(
-                            'title'        => array('analyzer' => 'title_content_analyzer'),
-                            'labels'       => array('analyzer' => 'title_content_analyzer'),
-                            'sticky_words' => array(),
-                            'content'      => array('analyzer' => 'text_content_analyzer'),
-                            'status'       => array(),
-                            'category_id'  => array('type' => 'integer'),
-                            'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                            'date_active'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                        ),
-                        'persistence' => array(
+                        ],
+                    ],
+                    'news' => [
+                        'mappings' => [
+                            'title'        => ['analyzer' => 'title_content_analyzer'],
+                            'labels'       => ['analyzer' => 'title_content_analyzer'],
+                            'sticky_words' => [],
+                            'content'      => ['analyzer' => 'text_content_analyzer'],
+                            'status'       => [],
+                            'category_id'  => ['type' => 'integer'],
+                            'date_created' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                            'date_active'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                        ],
+                        'persistence' => [
                             'driver'                        => 'orm',
                             'model'                         => 'Application\DeskPRO\Entity\News',
-                            'provider'                      => array(),
-                            'finder'                        => array(),
-                            'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.news_to_elastica_transformer'),
+                            'provider'                      => [],
+                            'finder'                        => [],
+                            'elastica_to_model_transformer' => ['ignore_missing' => true],
+                            'model_to_elastica_transformer' => ['service' => 'deskpro.search.news_to_elastica_transformer'],
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\NewsRepository',
-                        ),
-                    ),
-                    'download' => array(
-                        'mappings' => array(
-                            'title'        => array('analyzer' => 'title_content_analyzer'),
-                            'labels'       => array('analyzer' => 'title_content_analyzer'),
-                            'sticky_words' => array(),
-                            'content'      => array('analyzer' => 'text_content_analyzer'),
-                            'status'       => array(),
-                            'category_id'  => array('type' => 'integer'),
-                            'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                            'date_active'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                        ),
-                        'persistence' => array(
+                        ],
+                    ],
+                    'download' => [
+                        'mappings' => [
+                            'title'        => ['analyzer' => 'title_content_analyzer'],
+                            'labels'       => ['analyzer' => 'title_content_analyzer'],
+                            'sticky_words' => [],
+                            'content'      => ['analyzer' => 'text_content_analyzer'],
+                            'status'       => [],
+                            'category_id'  => ['type' => 'integer'],
+                            'date_created' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                            'date_active'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                        ],
+                        'persistence' => [
                             'driver'                        => 'orm',
                             'model'                         => 'Application\DeskPRO\Entity\Download',
-                            'provider'                      => array(),
-                            'finder'                        => array(),
-                            'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.download_to_elastica_transformer'),
+                            'provider'                      => [],
+                            'finder'                        => [],
+                            'elastica_to_model_transformer' => ['ignore_missing' => true],
+                            'model_to_elastica_transformer' => ['service' => 'deskpro.search.download_to_elastica_transformer'],
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\DownloadRepository',
-                        ),
-                    ),
-                    'feedback' => array(
-                        'mappings' => array(
-                            'title'        => array('analyzer' => 'title_content_analyzer'),
-                            'labels'       => array('analyzer' => 'title_content_analyzer'),
-                            'sticky_words' => array(),
-                            'content'      => array('analyzer' => 'text_content_analyzer'),
-                            'status'       => array(),
-                            'category_id'  => array('type' => 'integer'),
-                            'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                            'date_active'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                        ),
-                        'persistence' => array(
+                        ],
+                    ],
+                    'feedback' => [
+                        'mappings' => [
+                            'title'        => ['analyzer' => 'title_content_analyzer'],
+                            'labels'       => ['analyzer' => 'title_content_analyzer'],
+                            'sticky_words' => [],
+                            'content'      => ['analyzer' => 'text_content_analyzer'],
+                            'status'       => [],
+                            'category_id'  => ['type' => 'integer'],
+                            'date_created' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                            'date_active'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                        ],
+                        'persistence' => [
                             'driver'                        => 'orm',
                             'model'                         => 'Application\DeskPRO\Entity\Feedback',
-                            'provider'                      => array(),
-                            'finder'                        => array(),
-                            'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.feedback_to_elastica_transformer'),
+                            'provider'                      => [],
+                            'finder'                        => [],
+                            'elastica_to_model_transformer' => ['ignore_missing' => true],
+                            'model_to_elastica_transformer' => ['service' => 'deskpro.search.feedback_to_elastica_transformer'],
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\FeedbackRepository',
-                        ),
-                    ),
-                    'organization' => array(
-                        'mappings' => array(
-                            'name'          => array('type' => 'string', 'analyzer' => 'name_analyzer'),
-                            'email_domains' => array('type' => 'string', 'analyzer' => 'email_domain_analyzer'),
-                            'labels'        => array('analyzer' => 'title_content_analyzer'),
-                            'date_created'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                            'date_active'   => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                        ),
-                        'persistence' => array(
+                        ],
+                    ],
+                    'organization' => [
+                        'mappings' => [
+                            'name'          => ['type' => 'string', 'analyzer' => 'name_analyzer'],
+                            'email_domains' => ['type' => 'string', 'analyzer' => 'email_domain_analyzer'],
+                            'labels'        => ['analyzer' => 'title_content_analyzer'],
+                            'date_created'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                            'date_active'   => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                        ],
+                        'persistence' => [
                             'driver'                        => 'orm',
                             'model'                         => 'Application\DeskPRO\Entity\Organization',
-                            'provider'                      => array(),
-                            'finder'                        => array(),
-                            'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.org_to_elastica_transformer'),
+                            'provider'                      => [],
+                            'finder'                        => [],
+                            'elastica_to_model_transformer' => ['ignore_missing' => true],
+                            'model_to_elastica_transformer' => ['service' => 'deskpro.search.org_to_elastica_transformer'],
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\OrganizationRepository',
-                        ),
-                    ),
-                    'chat_conversation' => array(
-                        'mappings' => array(
-                            'subject'       => array(),
-                            'labels'        => array('analyzer' => 'title_content_analyzer'),
-                            'department_id' => array('type' => 'integer'),
-                            'is_agent'      => array('type' => 'boolean'),
-                            'agent_id'      => array('type' => 'integer'),
-                            'messages'      => array(),
-                            'date_created'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                            'date_active'   => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                        ),
-                        'persistence' => array(
+                        ],
+                    ],
+                    'chat_conversation' => [
+                        'mappings' => [
+                            'subject'       => [],
+                            'labels'        => ['analyzer' => 'title_content_analyzer'],
+                            'department_id' => ['type' => 'integer'],
+                            'is_agent'      => ['type' => 'boolean'],
+                            'agent_id'      => ['type' => 'integer'],
+                            'messages'      => [],
+                            'date_created'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                            'date_active'   => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                        ],
+                        'persistence' => [
                             'driver'                        => 'orm',
                             'model'                         => 'Application\\DeskPRO\\Entity\\ChatConversation',
-                            'provider'                      => array(),
-                            'finder'                        => array(),
-                            'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.chat_conversation_to_elastica_transformer'),
+                            'provider'                      => [],
+                            'finder'                        => [],
+                            'elastica_to_model_transformer' => ['ignore_missing' => true],
+                            'model_to_elastica_transformer' => ['service' => 'deskpro.search.chat_conversation_to_elastica_transformer'],
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\ChatConversationRepository',
-                        ),
-                    ),
-                    'person' => array(
-                        'mappings' => array(
-                            'name'          => array('type' => 'string', 'analyzer' => 'name_analyzer'),
-                            'first_name'    => array('type' => 'string', 'analyzer' => 'name_analyzer'),
-                            'last_name'     => array('type' => 'string', 'analyzer' => 'name_analyzer'),
-                            'labels'        => array('analyzer' => 'title_content_analyzer'),
-                            'emails'        => array('type' => 'string', 'analyzer' => 'email_analyzer'),
-                            'email_domains' => array('type' => 'string', 'analyzer' => 'email_domain_analyzer'),
-                            'phone_numbers' => array('type' => 'string', 'analyzer' => 'phone_analyzer'),
-                            'date_created'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                            'date_active'   => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+                        ],
+                    ],
+                    'person' => [
+                        'mappings' => [
+                            'name'          => ['type' => 'string', 'analyzer' => 'name_analyzer'],
+                            'first_name'    => ['type' => 'string', 'analyzer' => 'name_analyzer'],
+                            'last_name'     => ['type' => 'string', 'analyzer' => 'name_analyzer'],
+                            'labels'        => ['analyzer' => 'title_content_analyzer'],
+                            'emails'        => ['type' => 'string', 'analyzer' => 'email_analyzer'],
+                            'email_domains' => ['type' => 'string', 'analyzer' => 'email_domain_analyzer'],
+                            'phone_numbers' => ['type' => 'string', 'analyzer' => 'phone_analyzer'],
+                            'date_created'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                            'date_active'   => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
                             'is_agent'      => ['type' => 'boolean'],
-                        ),
-                        'persistence' => array(
+                        ],
+                        'persistence' => [
                             'driver'                        => 'orm',
                             'model'                         => 'Application\DeskPRO\Entity\Person',
-                            'provider'                      => array(),
-                            'finder'                        => array(),
-                            'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.person_to_elastica_transformer'),
+                            'provider'                      => [],
+                            'finder'                        => [],
+                            'elastica_to_model_transformer' => ['ignore_missing' => true],
+                            'model_to_elastica_transformer' => ['service' => 'deskpro.search.person_to_elastica_transformer'],
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\PersonRepository',
-                        ),
-                    ),
-                    'ticket' => array(
-                        'mappings' => array(
-                            'subject'         => array(),
-                            'ref'             => array(),
-                            'department'      => array('type' => 'integer'),
-                            'agent'           => array('type' => 'integer'),
-                            'agent_team'      => array('type' => 'integer'),
-                            'organization_id' => array('type' => 'integer'),
-                            'person_id'       => array('type' => 'integer'),
-                            'labels'          => array('analyzer' => 'title_content_analyzer'),
-                            'participants'    => array(),
-                            'messages'        => array(),
-                            'date_created'    => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                            'date_active'     => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                            'attachment'      => array('type' => 'nested'),
-                        ),
-                        'persistence' => array(
+                        ],
+                    ],
+                    'ticket' => [
+                        'mappings' => [
+                            'subject'         => [],
+                            'ref'             => [],
+                            'department'      => ['type' => 'integer'],
+                            'agent'           => ['type' => 'integer'],
+                            'agent_team'      => ['type' => 'integer'],
+                            'organization_id' => ['type' => 'integer'],
+                            'person_id'       => ['type' => 'integer'],
+                            'labels'          => ['analyzer' => 'title_content_analyzer'],
+                            'participants'    => [],
+                            'messages'        => [],
+                            'date_created'    => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                            'date_active'     => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                            'attachment'      => ['type' => 'nested'],
+                        ],
+                        'persistence' => [
                             'driver'                        => 'orm',
                             'model'                         => 'Application\DeskPRO\Entity\Ticket',
-                            'provider'                      => array(),
-                            'finder'                        => array(),
-                            'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.ticket_to_elastica_transformer'),
+                            'provider'                      => [],
+                            'finder'                        => [],
+                            'elastica_to_model_transformer' => ['ignore_missing' => true],
+                            'model_to_elastica_transformer' => ['service' => 'deskpro.search.ticket_to_elastica_transformer'],
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\TicketRepository',
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    )
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ]
 );
 
-############################################################################
-# dp_enc
-############################################################################
+//###########################################################################
+// dp_enc
+//###########################################################################
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Encryption\\DpEnc');
 $definition->setFactory('Application\\DeskPRO\\Encryption\\StandardEncFactory::create');
-$definition->setArguments(array(new Reference('service_container')));
+$definition->setArguments([new Reference('service_container')]);
 $container->setDefinition('dp_enc', $definition);
 
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Encryption\\Form\\Type\\DpEncTextType');
-$definition->setArguments(array(new Reference('dp_enc')));
-$definition->addTag('form.type', array('alias' => 'dp_enc_text'));
+$definition->setArguments([new Reference('dp_enc')]);
+$definition->addTag('form.type', ['alias' => 'dp_enc_text']);
 $container->setDefinition('dp_enc.form.type.dp_enc_text', $definition);
 
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Encryption\\Form\\Type\\DpEncPasswordType');
-$definition->setArguments(array(new Reference('dp_enc')));
-$definition->addTag('form.type', array('alias' => 'dp_enc_password'));
+$definition->setArguments([new Reference('dp_enc')]);
+$definition->addTag('form.type', ['alias' => 'dp_enc_password']);
 $container->setDefinition('dp_enc.form.type.dp_enc_password', $definition);
 
-############################################################################
-# DeskPRO Configuration
-############################################################################
+//###########################################################################
+// DeskPRO Configuration
+//###########################################################################
 
-$container->loadFromExtension('deskpro_search', array());
+$container->loadFromExtension('deskpro_search', []);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -127,8 +127,8 @@ class VersionedActionsRoutingListener extends RouterListener
      * @param string $path
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     private function getVersionedConfigYmlKey($path)
     {
@@ -176,8 +176,8 @@ class VersionedActionsRoutingListener extends RouterListener
      * @param string $key
      *
      * @throws \Exception
-     * @return array
      *
+     * @return array
      */
     private function getVersionsFromConfig($key)
     {

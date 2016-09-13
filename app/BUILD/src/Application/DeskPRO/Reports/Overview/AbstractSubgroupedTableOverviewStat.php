@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reports\Overview;
 
 use Orb\Util\Colors;
@@ -90,8 +91,6 @@ abstract class AbstractSubgroupedTableOverviewStat extends AbstractTableOverview
         return $this->group_colors;
     }
 
-    /**
-     */
     protected function _initGroupInfo()
     {
         if (!$this->grouping_field) {
@@ -102,8 +101,8 @@ abstract class AbstractSubgroupedTableOverviewStat extends AbstractTableOverview
             return;
         }
 
-        $group_max   = array();
-        $group_total = array();
+        $group_max   = [];
+        $group_total = [];
 
         foreach ($this->getValues() as $master_group => $sub_info) {
             $group_max[$master_group]   = 0;

@@ -137,7 +137,7 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_team')) {
-            return array('assign_team');
+            return ['assign_team'];
         }
 
         return;

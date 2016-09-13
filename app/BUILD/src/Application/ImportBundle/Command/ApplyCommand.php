@@ -138,7 +138,9 @@ class ApplyCommand extends AbstractImporterCommand
      */
     protected function executeUnattendedRun(InputInterface $input, OutputInterface $output)
     {
-        $arguments = array_map(function ($argument) { return escapeshellarg($argument); }, $_SERVER['argv']);
+        $arguments = array_map(function ($argument) {
+            return escapeshellarg($argument);
+        }, $_SERVER['argv']);
         $arguments[] = '-b';
 
         // todo always verbose mode by now

@@ -239,7 +239,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
      *
      * @param int $visibility One of: self::PRIVATE_VISIBILITY or self::PUBLIC_VISIBILITY
      *
-     * @throws \InvalidArgumentException Thrown when the visibility is not valid.
+     * @throws \InvalidArgumentException Thrown when the visibility is not valid
      */
     public function setVisibility($visibility)
     {
@@ -261,7 +261,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     {
         return in_array(
             $visibility,
-            array(self::PRIVATE_VISIBILITY, self::PUBLIC_VISIBILITY)
+            [self::PRIVATE_VISIBILITY, self::PUBLIC_VISIBILITY]
         );
     }
 
@@ -304,10 +304,10 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Sets the task's person id.
      *
-     * @param int id The agent's id.
+     * @param int id The agent's id
      *
      * @throws \InvalidArgumentException Thrown when there's no preson with that
-     *                                   id or the person is not an agent.
+     *                                   id or the person is not an agent
      */
     public function setPersonId($id)
     {
@@ -357,10 +357,10 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Sets the task's assigned agent's id.
      *
-     * @param int id The agent's id.
+     * @param int id The agent's id
      *
      * @throws \InvalidArgumentException Thrown when there's no preson with that
-     *                                   id or the person is not an agent.
+     *                                   id or the person is not an agent
      */
     public function setAsignedAgentId($id)
     {
@@ -399,7 +399,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Sets the task's assigned agent team's id.
      *
-     * @param int id The agent team's id.
+     * @param int id The agent team's id
      *
      * @throws \InvalidArgumentException Thrown when there's no team with that id
      */
@@ -451,11 +451,11 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         return $this->_label_manager;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
-            $data['labels'] = array();
+            $data['labels'] = [];
             foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
@@ -476,9 +476,9 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         return $this->date_due->format('i') !== '59';
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

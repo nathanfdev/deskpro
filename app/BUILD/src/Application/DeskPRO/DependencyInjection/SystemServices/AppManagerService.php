@@ -52,7 +52,9 @@ class AppManagerService
         ')->execute();
 
         if (count($apps)) {
-            $names = array_map(function ($a) { return $a->package->name; }, $apps);
+            $names = array_map(function ($a) {
+                return $a->package->name;
+            }, $apps);
 
             // This loads assets for installed apps
             // into the EM so we dont have a query-per-app
@@ -62,7 +64,7 @@ class AppManagerService
                 LEFT JOIN package.assets asset
                 WHERE package.name IN (:names)
                 ORDER BY package.title
-            ')->execute(array('names' => $names));
+            ')->execute(['names' => $names]);
         }
 
         $packages = $em->createQuery('
@@ -89,9 +91,9 @@ class AppManagerService
 
         $app_service_container = new AppServiceContainer($container);
 
-        $app_paths = array(
+        $app_paths = [
             'default' => DP_ROOT.'/apps',
-        );
+        ];
 
         $env = $container->get('deskpro.app_env');
         if ($env->getConfig('paths.app_paths')) {

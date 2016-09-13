@@ -31,6 +31,7 @@
  *
  * @category Slack
  */
+
 namespace deskpro_slack\Ticket\Actions\ActionDef;
 
 use Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef;

@@ -61,7 +61,7 @@ class AddCcAction extends AbstractAction
             $add_emails = Arrays::func($add_emails, 'trim');
         }
 
-        $valid = array();
+        $valid = [];
         foreach ($add_emails as $email) {
             if (StringEmail::isValueValid($email)) {
                 $valid[] = $email;
@@ -82,7 +82,7 @@ class AddCcAction extends AbstractAction
             return $this->add_people;
         }
 
-        $this->add_people = array();
+        $this->add_people = [];
 
         foreach ($this->add_emails as $email) {
             $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);

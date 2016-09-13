@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -92,7 +92,7 @@ class TwitterAccounts
     {
         $twitter_account = $this->em->getRepository('DeskPRO:TwitterAccount')->get($id);
 
-        $resultData = array();
+        $resultData = [];
 
         if ($twitter_account) {
             $data['id']                        = $twitter_account->id;
@@ -101,10 +101,10 @@ class TwitterAccounts
             $data['user']['name']              = $twitter_account->user->name;
             $data['user']['screen_name']       = $twitter_account->user->screen_name;
 
-            $agentsArray = array();
+            $agentsArray = [];
 
             foreach ($twitter_account->persons as $agent) {
-                $agentsArray[] = array('id' => $agent->id, 'display_name' => $agent->display_name);
+                $agentsArray[] = ['id' => $agent->id, 'display_name' => $agent->display_name];
             }
 
             $data['user']['agents'] = $agentsArray;
@@ -132,7 +132,7 @@ class TwitterAccounts
     {
         $this->preload();
 
-        $resultData = array();
+        $resultData = [];
 
         foreach ($this->twitter_accounts as $twitter_account) {
             $data['id']                        = $twitter_account->id;
@@ -154,7 +154,7 @@ class TwitterAccounts
     {
         $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
-        $resultData = array();
+        $resultData = [];
 
         foreach ($agents as $agent) {
             $data['id']           = $agent->id;

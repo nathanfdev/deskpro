@@ -6,26 +6,29 @@ import {
   chatIdSelector,
   isEndedSelector,
   lockedPollingSelector,
-  canReopenSelector
+  canReopenSelector,
+  lostConnectionSelector
 } from '../../../Selectors/chat';
 
 @connect(state => ({
-  chatId:    chatIdSelector(state),
-  locked:    lockedPollingSelector(state),
-  dateEnded: dateEndedSelector(state),
-  isEnded:   isEndedSelector(state),
-  canReopen: canReopenSelector(state)
+  chatId:         chatIdSelector(state),
+  locked:         lockedPollingSelector(state),
+  dateEnded:      dateEndedSelector(state),
+  isEnded:        isEndedSelector(state),
+  canReopen:      canReopenSelector(state),
+  lostConnection: lostConnectionSelector(state)
 }))
 export class ReopenChatContainer extends React.Component {
 
   static propTypes = {
-    dispatch:  PropTypes.func,
-    chatId:    PropTypes.number,
-    locked:    PropTypes.bool,
-    isEnded:   PropTypes.bool,
-    dateEnded: PropTypes.string,
-    canReopen: PropTypes.bool,
-    children:  PropTypes.any
+    dispatch:       PropTypes.func,
+    chatId:         PropTypes.number,
+    locked:         PropTypes.bool,
+    isEnded:        PropTypes.bool,
+    dateEnded:      PropTypes.string,
+    canReopen:      PropTypes.bool,
+    children:       PropTypes.any,
+    lostConnection: PropTypes.bool
   };
 
   onReopen = () => {
@@ -38,7 +41,7 @@ export class ReopenChatContainer extends React.Component {
   };
 
   render() {
-    const { children, canReopen, isEnded, locked } = this.props;
+    const { children, canReopen, isEnded, locked, lostConnection } = this.props;
     const childProps = children.props;
 
     return React.cloneElement(children, {
@@ -47,7 +50,9 @@ export class ReopenChatContainer extends React.Component {
       locked,
       isEnded,
       canReopen,
+      lostConnection,
       onReopen: this.onReopen
     });
   }
 }
+export default ReopenChatContainer;

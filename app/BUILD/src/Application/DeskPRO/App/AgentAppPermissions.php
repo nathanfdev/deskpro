@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -57,7 +58,7 @@ class AgentAppPermissions
      */
     public static function newFromDb(Connection $db, array $apps)
     {
-        $app_ids = array();
+        $app_ids = [];
         foreach ($apps as $a) {
             if ($a->perm_type == 'set') {
                 $app_ids[] = $a->id;
@@ -65,24 +66,24 @@ class AgentAppPermissions
         }
 
         if ($app_ids) {
-            $perms = $db->fetchAll('SELECT * FROM app_instance_permissions WHERE app_instance_id IN (?)', array($app_ids), array(Connection::PARAM_INT_ARRAY));
+            $perms = $db->fetchAll('SELECT * FROM app_instance_permissions WHERE app_instance_id IN (?)', [$app_ids], [Connection::PARAM_INT_ARRAY]);
         } else {
-            $perms = array();
+            $perms = [];
         }
 
-        $app_to_usergroups = array();
-        $app_to_people     = array();
+        $app_to_usergroups = [];
+        $app_to_people     = [];
 
         foreach ($perms as $p) {
             if ($p['usergroup_id']) {
                 if (!isset($app_to_usergroups[$p['app_instance_id']])) {
-                    $app_to_usergroups[$p['app_instance_id']] = array();
+                    $app_to_usergroups[$p['app_instance_id']] = [];
                 }
 
                 $app_to_usergroups[$p['app_instance_id']][$p['usergroup_id']] = true;
             } elseif ($p['person_id']) {
                 if (!isset($app_to_people[$p['app_instance_id']])) {
-                    $app_to_people[$p['app_instance_id']] = array();
+                    $app_to_people[$p['app_instance_id']] = [];
                 }
 
                 $app_to_people[$p['app_instance_id']][$p['person_id']] = true;

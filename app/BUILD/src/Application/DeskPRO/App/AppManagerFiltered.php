@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\Entity\AppInstance;
@@ -105,7 +106,7 @@ class AppManagerFiltered implements AppManagerInterface
      */
     public function getAllPackages()
     {
-        $packages = array();
+        $packages = [];
 
         foreach ($this->app_manager->getAllPackages() as $p) {
             if (call_user_func($this->filter, $p)) {
@@ -166,7 +167,7 @@ class AppManagerFiltered implements AppManagerInterface
      */
     public function getAllApps()
     {
-        $apps = array();
+        $apps = [];
 
         foreach ($this->app_manager->getAllApps() as $app) {
             if (call_user_func($this->filter, $app->package)) {
@@ -188,11 +189,11 @@ class AppManagerFiltered implements AppManagerInterface
     public function getPackageApps($name)
     {
         if (!$this->hasPackage($name)) {
-            return array();
+            return [];
         }
 
         $all_apps = $this->app_manager->getPackageApps($name);
-        $apps     = array();
+        $apps     = [];
 
         foreach ($all_apps as $app) {
             if (call_user_func($this->filter, $app->package)) {

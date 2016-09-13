@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -81,16 +81,16 @@ class AlertSender
 
             $cm = new ClientMessage();
             $cm->fromArray(
-                array(
+                [
                     'channel' => 'agent-notify.tickets',
-                    'data'    => array(
+                    'data'    => [
                         'type'     => $type,
                         'alert_id' => $alert->getId(),
                         'row'      => $tpl_line,
-                    ),
+                    ],
                     'for_person'        => $agent,
                     'created_by_client' => 'sys',
-                )
+                ]
             );
             $this->em->persist($cm);
             $this->em->flush($cm);
@@ -114,7 +114,7 @@ class AlertSender
         $alert->data     = $data;
 
         if (isset($data['browser_rendered'])) {
-            $alert->addTargetMap(AgentAlert::TARGET_BROWSER, array('browser_rendered'));
+            $alert->addTargetMap(AgentAlert::TARGET_BROWSER, ['browser_rendered']);
         }
 
         return $alert;
@@ -136,16 +136,16 @@ class AlertSender
 
         $cm = new ClientMessage();
         $cm->fromArray(
-            array(
+            [
                 'channel' => 'agent-notify.tickets',
-                'data'    => array(
+                'data'    => [
                     'type'     => $type,
                     'alert_id' => $alert ? $alert->id : null,
                     'row'      => $tpl_line,
-                ),
+                ],
                 'for_person'        => $agent,
                 'created_by_client' => 'sys',
-            )
+            ]
         );
         $this->em->persist($cm);
         $this->em->flush($cm);

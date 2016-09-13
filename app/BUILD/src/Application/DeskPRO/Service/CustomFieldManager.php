@@ -75,7 +75,7 @@ class CustomFieldManager
     /**
      * @var array
      */
-    protected $forms = array();
+    protected $forms = [];
 
     public function __construct(EntityManager $em, FormFactory $ff)
     {
@@ -95,7 +95,7 @@ class CustomFieldManager
      */
     public function getCustomDataForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
     {
-        $datas = array();
+        $datas = [];
 
         if (!$owner['id']) {
             return new ArrayCollection();
@@ -107,7 +107,7 @@ class CustomFieldManager
             $rootId = $data->root_definition['id'];
 
             if (!isset($datas[$rootId])) {
-                $datas[$rootId] = array($data);
+                $datas[$rootId] = [$data];
             } else {
                 $datas[$rootId][] = $data;
             }
@@ -145,7 +145,7 @@ class CustomFieldManager
      *
      * @return \Symfony\Component\Form\Form
      */
-    public function createFormForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null, array $options = array())
+    public function createFormForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null, array $options = [])
     {
         $datas = $this->getCustomDataForOwner($owner, $context, $layout);
 
@@ -179,7 +179,7 @@ class CustomFieldManager
      *
      * @return \Symfony\Component\Form\FormBuilderInterface
      */
-    public function createFieldFormBuilder(CustomFieldDefinition $definition, DomainObject $owner, DomainObject $context = null, ArrayCollection $datas = null, $options = array())
+    public function createFieldFormBuilder(CustomFieldDefinition $definition, DomainObject $owner, DomainObject $context = null, ArrayCollection $datas = null, $options = [])
     {
         if ($definition->parent) {
             throw new InvalidArgumentException('Can\'t create form for definition child');
@@ -197,11 +197,11 @@ class CustomFieldManager
         if (!$multiple && is_array($data)) {
             $data = reset($data);
         }
-        $options = array_merge($options, array(
+        $options = array_merge($options, [
             'owner'     => $owner,
             'context'   => $context,
             'persister' => $this->persister,
-        ));
+        ]);
 
         return $this->ff->createNamedBuilder($definition['id'], $definition->createType(), $data, $options);
     }
@@ -213,7 +213,7 @@ class CustomFieldManager
      *
      * @return \Symfony\Component\Form\FormBuilderInterface
      */
-    public function createFieldForm(CustomFieldDefinition $definition, DomainObject $owner, DomainObject $context = null, $options = array())
+    public function createFieldForm(CustomFieldDefinition $definition, DomainObject $owner, DomainObject $context = null, $options = [])
     {
         if (!$definition['is_enabled']) {
             // todo exception?
@@ -249,7 +249,7 @@ class CustomFieldManager
             return;
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($data as $row) {
             $ret[] = $row['value'] ? $row['title'] : $row['input'];
         }
@@ -289,11 +289,11 @@ class CustomFieldManager
     public function createDefinitionsFormForContext(DomainObject $context)
     {
         // root definitions
-        $definitions = $this->repDefinition->findBy(array(
+        $definitions = $this->repDefinition->findBy([
             'parent'        => null,
             'context_class' => ClassUtils::getClass($context),
             'is_enabled'    => true,
-        ), array('display_order' => 'ASC'));
+        ], ['display_order' => 'ASC']);
 
         $children = $this->buildDefinitionChildrenCollectionForContext($context);
 
@@ -303,14 +303,14 @@ class CustomFieldManager
         foreach ($definitions as $def) {
             /* @var $def CustomFieldDefinition */
 
-            $builder->add('definition_'.$def['id'], new ContextualChoiceDefinitionType(), array(
+            $builder->add('definition_'.$def['id'], new ContextualChoiceDefinitionType(), [
                 'context'             => $context,
                 'data'                => $def,
                 'children_collection' => $children,
                 'children_only'       => true,
                 'label'               => $def['title'],
                 'allow_edit'          => isset($def['options']['allow_edit']) ? $def['options']['allow_edit'] : false,
-            ));
+            ]);
         }
 
         return $builder->getForm();
@@ -330,10 +330,10 @@ class CustomFieldManager
             return $collection;
         }
 
-        $_children = $this->repDefinition->findBy(array(
+        $_children = $this->repDefinition->findBy([
             'context_class' => ClassUtils::getClass($context),
             'context_id'    => $context['id'],
-        ), array('display_order' => 'ASC'));
+        ], ['display_order' => 'ASC']);
 
         // build child tree
         foreach ($_children as $child) {
@@ -370,7 +370,7 @@ class CustomFieldManager
      */
     public function getDefinition($fieldId)
     {
-        return $this->repDefinition->findOneBy(array('id' => $fieldId, 'is_enabled' => true));
+        return $this->repDefinition->findOneBy(['id' => $fieldId, 'is_enabled' => true]);
     }
 
     /**

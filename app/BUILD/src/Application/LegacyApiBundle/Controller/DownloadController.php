@@ -145,35 +145,35 @@ class DownloadController extends AbstractController
      */
     public function searchAction()
     {
-        $search_map = array(
+        $search_map = [
             'category_id'          => DownloadSearch::TERM_CATEGORY,
             'category_id_specific' => DownloadSearch::TERM_CATEGORY_SPECIFIC,
             'label'                => DownloadSearch::TERM_LABEL,
             'new'                  => DownloadSearch::TERM_NEW,
             'popular'              => DownloadSearch::TERM_POPULAR,
             'status'               => DownloadSearch::TERM_STATUS,
-        );
+        ];
 
-        $terms = array();
+        $terms = [];
 
         foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
-                $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
+                $terms[] = ['type' => $search_key, 'op' => 'contains', 'options' => $value];
             }
         }
 
         $date_created_start = $this->in->getUint('date_created_start');
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
-            $terms[] = array('type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
                 'date1' => $date_created_start,
                 'date2' => $date_created_end,
-            ));
+            ]];
         } elseif ($date_created_start) {
-            $terms[] = array('type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
+            $terms[] = ['type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
                 'date1' => $date_created_start,
-            ));
+            ]];
         }
 
         $order_by = $this->in->getString('order');
@@ -181,7 +181,7 @@ class DownloadController extends AbstractController
             $order_by = 'date:desc';
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -200,13 +200,13 @@ class DownloadController extends AbstractController
         $page_ids  = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
         $downloads = App::getEntityRepository('DeskPRO:Download')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'      => $page,
             'per_page'  => $per_page,
             'total'     => count($ids),
             'cache_id'  => $result_cache->id,
             'downloads' => $this->getApiData($downloads),
-        ));
+        ]);
     }
 
     /**
@@ -271,7 +271,7 @@ class DownloadController extends AbstractController
      */
     public function newDownloadAction()
     {
-        $errors   = array();
+        $errors   = [];
         $download = new Download();
 
         $title = $this->in->getString('title');
@@ -289,7 +289,7 @@ class DownloadController extends AbstractController
 
         $cat = $this->em->find('DeskPRO:DownloadCategory', $this->in->getUint('category_id'));
         if (!$cat) {
-            $errors['category_id'] = array('invalid_argument.category_id', 'category_id not found');
+            $errors['category_id'] = ['invalid_argument.category_id', 'category_id not found'];
         } else {
             $download->category = $cat;
         }
@@ -311,13 +311,13 @@ class DownloadController extends AbstractController
                 $blob = $accept->accept($file);
             } else {
                 $message          = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
-                $errors['attach'] = array($error['error_code'].'.attach', $message);
+                $errors['attach'] = [$error['error_code'].'.attach', $message];
             }
         } else {
             $blob_id = $this->in->getUint('attach_id');
             $blob    = $this->em->find('DeskPRO:Blob', $blob_id);
             if (!$blob) {
-                $errors['attach_id'] = array('invalid_argument.attach_id', 'attach_id not found');
+                $errors['attach_id'] = ['invalid_argument.attach_id', 'attach_id not found'];
             }
         }
 
@@ -376,7 +376,7 @@ class DownloadController extends AbstractController
     {
         $download = $this->_getDownloadOr404($download_id);
 
-        return $this->createApiResponse(array('download' => $download->toApiData()));
+        return $this->createApiResponse(['download' => $download->toApiData()]);
     }
 
     /**
@@ -443,7 +443,7 @@ class DownloadController extends AbstractController
     {
         $download = $this->_getDownloadOr404($download_id, 'edit');
 
-        $revs = array();
+        $revs = [];
 
         $title = $this->in->getString('title');
         if ($title) {
@@ -464,7 +464,7 @@ class DownloadController extends AbstractController
         if ($content && $content != $download->content) {
             $download->content = $this->in->getHtml('content');
 
-            $rev          = ContentRevisionUtil::findOrCreate($download, array('content'), $this->person);
+            $rev          = ContentRevisionUtil::findOrCreate($download, ['content'], $this->person);
             $rev->content = $download->content;
 
             $revs['content'] = $rev;
@@ -495,7 +495,7 @@ class DownloadController extends AbstractController
 
             $download->blob = $blob;
 
-            $rev        = ContentRevisionUtil::findOrCreate($download, array('blob', 'title'), $this->person);
+            $rev        = ContentRevisionUtil::findOrCreate($download, ['blob', 'title'], $this->person);
             $rev->title = $download->title;
             $rev->blob  = $download->blob;
 
@@ -574,7 +574,7 @@ class DownloadController extends AbstractController
         $download = $this->_getDownloadOr404($download_id);
         $comments = $this->em->getRepository('DeskPRO:DownloadComment')->getComments($download);
 
-        return $this->createApiResponse(array('comments' => $this->getApiData($comments)));
+        return $this->createApiResponse(['comments' => $this->getApiData($comments)]);
     }
 
     /**
@@ -691,7 +691,7 @@ class DownloadController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        return $this->createApiResponse(array('comment' => $comment->toApiData()));
+        return $this->createApiResponse(['comment' => $comment->toApiData()]);
     }
 
     /**
@@ -839,7 +839,7 @@ class DownloadController extends AbstractController
     {
         $download = $this->_getDownloadOr404($download_id);
 
-        return $this->createApiResponse(array('labels' => $this->getApiData($download->labels)));
+        return $this->createApiResponse(['labels' => $this->getApiData($download->labels)]);
     }
 
     /**
@@ -922,9 +922,9 @@ class DownloadController extends AbstractController
         $download = $this->_getDownloadOr404($download_id);
 
         if ($download->getLabelManager()->hasLabel($label)) {
-            return $this->createApiResponse(array('exists' => true));
+            return $this->createApiResponse(['exists' => true]);
         } else {
-            return $this->createApiResponse(array('exists' => false));
+            return $this->createApiResponse(['exists' => false]);
         }
     }
 
@@ -978,7 +978,7 @@ class DownloadController extends AbstractController
     {
         $comments   = $this->em->getRepository('DeskPRO:DownloadComment')->getValidatingComments();
         $entity_key = 'download';
-        $output     = array();
+        $output     = [];
         foreach ($comments as $key => $value) {
             $output[$key] = $value->toApiData(false, true);
             if ($value->$entity_key) {
@@ -986,7 +986,7 @@ class DownloadController extends AbstractController
             }
         }
 
-        return $this->createApiResponse(array('comments' => $output));
+        return $this->createApiResponse(['comments' => $output]);
     }
 
     /**
@@ -1002,7 +1002,7 @@ class DownloadController extends AbstractController
     {
         $categories = $this->em->getRepository('DeskPRO:DownloadCategory')->getFlatHierarchy();
 
-        return $this->createApiResponse(array('categories' => $categories));
+        return $this->createApiResponse(['categories' => $categories]);
     }
 
     /**
@@ -1046,11 +1046,11 @@ class DownloadController extends AbstractController
      */
     public function postCategoriesAction()
     {
-        $errors = array();
+        $errors = [];
 
         $title = $this->in->getString('title');
         if (!$title) {
-            $errors['title'] = array('required_field.title', 'title empty or missing');
+            $errors['title'] = ['required_field.title', 'title empty or missing'];
         }
 
         $category = new \Application\DeskPRO\Entity\DownloadCategory();
@@ -1074,7 +1074,7 @@ class DownloadController extends AbstractController
         if ($this->in->checkIsset('usergroup_id')) {
             $usergroup_ids = $this->in->getCleanValueArray('usergroup_id', 'uint');
         } else {
-            $usergroup_ids = array($this->container->getUserGroups()->getEveryoneGroup()->getId());
+            $usergroup_ids = [$this->container->getUserGroups()->getEveryoneGroup()->getId()];
         }
 
         $this->db->beginTransaction();
@@ -1087,10 +1087,10 @@ class DownloadController extends AbstractController
                 if (!$usergroup_id) {
                     continue;
                 }
-                App::getDb()->insert('download_category2usergroup', array(
+                App::getDb()->insert('download_category2usergroup', [
                     'category_id'  => $category->getId(),
                     'usergroup_id' => $usergroup_id,
-                ));
+                ]);
             }
 
             $this->db->commit();
@@ -1132,7 +1132,7 @@ class DownloadController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        return $this->createApiResponse(array('category' => $category->toApiData()));
+        return $this->createApiResponse(['category' => $category->toApiData()]);
     }
 
     /**
@@ -1179,12 +1179,12 @@ class DownloadController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        $errors = array();
+        $errors = [];
 
         if ($this->in->checkIsset('title')) {
             $title = $this->in->getString('title');
             if (!$title) {
-                $errors['title'] = array('required_field.title', 'title empty or missing');
+                $errors['title'] = ['required_field.title', 'title empty or missing'];
             }
             $category->title = $title;
         }
@@ -1285,16 +1285,16 @@ class DownloadController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        $terms = array(
-            array('type' => DownloadSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id)),
-        );
+        $terms = [
+            ['type' => DownloadSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => [$category->id]],
+        ];
 
         $order_by = $this->in->getString('order');
         if (!$order_by) {
             $order_by = 'date:desc';
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -1313,13 +1313,13 @@ class DownloadController extends AbstractController
         $page_ids  = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
         $downloads = App::getEntityRepository('DeskPRO:Download')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'      => $page,
             'per_page'  => $per_page,
             'total'     => count($ids),
             'cache_id'  => $result_cache->id,
             'downloads' => $this->getApiData($downloads),
-        ));
+        ]);
     }
 
     /**
@@ -1345,7 +1345,7 @@ class DownloadController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        return $this->createApiResponse(array('groups' => $this->getApiData($category->usergroups)));
+        return $this->createApiResponse(['groups' => $this->getApiData($category->usergroups)]);
     }
 
     /**
@@ -1394,10 +1394,10 @@ class DownloadController extends AbstractController
         }
 
         if (!$exists) {
-            $this->db->insert('download_category2usergroup', array(
+            $this->db->insert('download_category2usergroup', [
                 'category_id'  => $category->id,
                 'usergroup_id' => $group_id,
-            ));
+            ]);
         }
 
         return $this->createApiCreateResponse(
@@ -1448,7 +1448,7 @@ class DownloadController extends AbstractController
             }
         }
 
-        return $this->createApiResponse(array('exists' => $exists));
+        return $this->createApiResponse(['exists' => $exists]);
     }
 
     /**

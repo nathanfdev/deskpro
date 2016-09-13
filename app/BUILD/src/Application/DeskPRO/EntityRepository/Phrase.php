@@ -45,13 +45,13 @@ class Phrase extends AbstractEntityRepository
                 SELECT p
                 FROM DeskPRO:Phrase p
                 WHERE p.language IS NULL AND p.name = ?1
-            ')->setParameters(array(1 => $phrase_name))->setMaxResults(1)->getOneOrNullResult();
+            ')->setParameters([1 => $phrase_name])->setMaxResults(1)->getOneOrNullResult();
         } else {
             return $this->getEntityManager()->createQuery('
                 SELECT p
                 FROM DeskPRO:Phrase p
                 WHERE p.language = ?1 AND p.name = ?2
-            ')->setParameters(array(1 => $language, 2 => $phrase_name))->setMaxResults(1)->getOneOrNullResult();
+            ')->setParameters([1 => $language, 2 => $phrase_name])->setMaxResults(1)->getOneOrNullResult();
         }
     }
 
@@ -61,7 +61,7 @@ class Phrase extends AbstractEntityRepository
             SELECT name
             FROM phrases
             WHERE language_id = ? AND phrase IS NOT NULL
-        ', array($language['id']));
+        ', [$language['id']]);
 
         return $names;
     }
@@ -84,7 +84,7 @@ class Phrase extends AbstractEntityRepository
             SELECT name, COALESCE(phrase, original_phrase) AS phrase
             FROM phrases
             WHERE language_id = ? AND groupname LIKE ?
-        ', array($language['id'], $group.'%'));
+        ', [$language['id'], $group.'%']);
 
         return $phrases;
     }
@@ -95,7 +95,7 @@ class Phrase extends AbstractEntityRepository
             SELECT p
             FROM DeskPRO:Phrase p INDEX BY p.name
             WHERE p.language = ?0 AND p.groupname = ?1
-        ')->setParameters(array($language, $group))->execute();
+        ')->setParameters([$language, $group])->execute();
     }
 
     public function getCustomPhrases($language)
@@ -104,6 +104,6 @@ class Phrase extends AbstractEntityRepository
             SELECT p
             FROM DeskPRO:Phrase p INDEX BY p.name
             WHERE p.language = ?0 AND p.phrase IS NOT NULL AND p.phrase != ''
-        ")->setParameters(array($language))->execute();
+        ")->setParameters([$language])->execute();
     }
 }

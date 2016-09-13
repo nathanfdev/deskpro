@@ -91,7 +91,7 @@ class ObjLang extends AbstractFunc
                 SELECT value
                 FROM object_lang
                 WHERE ref = ? AND prop_name = ? AND language_id = ?
-            ', array($ref_type.".$value", $ref_prop, $lang_id));
+            ', [$ref_type.".$value", $ref_prop, $lang_id]);
 
             if (!$text) {
                 $text = $db->fetchColumn('
@@ -99,7 +99,7 @@ class ObjLang extends AbstractFunc
                     FROM object_lang
                     WHERE ref = ? AND prop_name = ? AND language_id != ? AND value != ""
                     LIMIT 1
-                ', array($ref_type.".$value", $ref_prop, $lang_id));
+                ', [$ref_type.".$value", $ref_prop, $lang_id]);
             }
 
             if (!$text) {

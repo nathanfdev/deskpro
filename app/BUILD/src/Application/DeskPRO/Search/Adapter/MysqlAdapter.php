@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search\Adapter;
 
 use Application\DeskPRO\App;
@@ -44,9 +45,9 @@ use Orb\Util\Strings;
 class MysqlAdapter extends AbstractAdapter
 {
     /** @var array */
-    public static $capabilities = array(
+    public static $capabilities = [
         'searcher_content', 'searcher_content_labels',
-    );
+    ];
 
     public function __construct()
     {
@@ -64,14 +65,14 @@ class MysqlAdapter extends AbstractAdapter
     public function deleteDocumentsFromIndex(array $documents)
     {
         foreach ($documents as $doc) {
-            App::getDb()->delete('content_search', array(
+            App::getDb()->delete('content_search', [
                 'object_type' => $doc->getContentTypeName(),
                 'object_id'   => $doc->getId(),
-            ));
-            App::getDb()->delete('content_search_attribute', array(
+            ]);
+            App::getDb()->delete('content_search_attribute', [
                 'object_type' => $doc->getContentTypeName(),
                 'object_id'   => $doc->getId(),
-            ));
+            ]);
         }
     }
 
@@ -84,7 +85,7 @@ class MysqlAdapter extends AbstractAdapter
     {
         foreach ($documents as $doc) {
             if ($doc->isMarkedRemove()) {
-                $this->deleteDocumentsFromIndex(array($doc));
+                $this->deleteDocumentsFromIndex([$doc]);
                 continue;
             }
 
@@ -93,18 +94,18 @@ class MysqlAdapter extends AbstractAdapter
             App::getDb()->executeUpdate('
                 REPLACE INTO content_search
                 SET object_type = ?, object_id = ?, content = ?
-            ', array($doc->getContentTypeName(), $doc->getId(), $data['content']));
+            ', [$doc->getContentTypeName(), $doc->getId(), $data['content']]);
 
             unset($data['content']);
 
             foreach ($data as $k => $v) {
                 App::getDb()->executeUpdate('
                     DELETE FROM content_search_attribute WHERE object_type = ? AND object_id = ?
-                ', array($doc->getContentTypeName(), $doc->getId()));
+                ', [$doc->getContentTypeName(), $doc->getId()]);
                 App::getDb()->executeUpdate('
                     REPLACE INTO content_search_attribute
                     SET object_type = ?, object_id = ?, attribute_id = ?, content = ?
-                ', array($doc->getContentTypeName(), $doc->getId(), $k, $v));
+                ', [$doc->getContentTypeName(), $doc->getId(), $k, $v]);
             }
         }
     }
@@ -171,7 +172,7 @@ class MysqlAdapter extends AbstractAdapter
     {
         App::getDb()->executeUpdate('
             DELETE FROM content_search WHERE object_type = ?
-        ', array($type_name));
+        ', [$type_name]);
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
@@ -63,12 +64,12 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
      *
      * @var array
      */
-    private $_listeners = array();
+    private $_listeners = [];
 
     /**
      * @var array
      */
-    private $_custom_callables = array();
+    private $_custom_callables = [];
 
     /**
      * @var StateChangeRecorder
@@ -109,7 +110,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
      */
     public function toArray($mode = self::TOARRAY_NOOP)
     {
-        $values = array();
+        $values = [];
 
         $only_real = true;
 
@@ -172,7 +173,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         $r     = new \ReflectionObject($this);
         $props = $r->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED);
 
-        $keys = array();
+        $keys = [];
         foreach ($props as $prop) {
             // Skip _props because they arent entity properties
             if ($prop->name[0] === '_') {
@@ -284,7 +285,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         // setX
         } else {
             if (!isset($arguments[0])) {
-                $arguments = array(null);
+                $arguments = [null];
             }
 
             $this[$prop] = $arguments[0];
@@ -307,9 +308,9 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         throw new \BadMethodCallException("Method `$name` is undefined");
     }
 
-    ############################################################################
-    # ArrayAccess Implementation
-    ############################################################################
+    //###########################################################################
+    // ArrayAccess Implementation
+    //###########################################################################
 
     public function offsetExists($offset)
     {
@@ -402,7 +403,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
     public function addPropertyChangedListener(PropertyChangedListener $listener)
     {
         if (empty($this->_listeners['property'])) {
-            $this->_listeners['property'] = array();
+            $this->_listeners['property'] = [];
         }
 
         $this->_listeners['property'][] = $listener;
@@ -431,7 +432,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
      */
     public function addCustomCallable($name, $fn, $args = null)
     {
-        $this->_custom_callables[$name] = array($fn, $args);
+        $this->_custom_callables[$name] = [$fn, $args];
     }
 
     public function ensureDefaultPropertyChangedListener()
@@ -453,7 +454,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 
     public function __clone()
     {
-        $this->_listeners = array();
+        $this->_listeners = [];
     }
 
     /**

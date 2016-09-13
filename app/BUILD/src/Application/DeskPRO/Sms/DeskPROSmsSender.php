@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Sms;
 
 use Application\DeskPRO\Entity\Job;
@@ -64,7 +65,7 @@ class DeskPROSmsSender extends SmsSender
      * @param null                 $max_chunks  if a message requires more than this amount of messages to be send
      *                                          it will fail and not send any
      */
-    public function __construct(SmsProviderInterface $provider = null, $from_number = null, JobQueue $queue, $max_chunks = null)
+    public function __construct(SmsProviderInterface $provider = null, $from_number, JobQueue $queue, $max_chunks = null)
     {
         $this->default_provider = $provider;
         $this->from_number      = $from_number;
@@ -100,13 +101,13 @@ class DeskPROSmsSender extends SmsSender
 
         $from_number = $this->getFromNumber($from_number);
 
-        $data = array(
+        $data = [
             'provider'        => $provider->getName(),
             'provider_params' => $provider->getParams(),
             'to_number'       => $to_number,
             'from_number'     => $from_number,
             'message'         => $message->getRawMessage(),
-        );
+        ];
         $job = new Job(
             OutgoingSmsProcessor::JOB_TYPE,
             $data

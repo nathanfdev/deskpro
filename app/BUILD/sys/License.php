@@ -28,9 +28,9 @@
 
 namespace DpSys;
 
-###############################################################################
-# License
-###############################################################################
+//##############################################################################
+// License
+//##############################################################################
 
 final class License
 {
@@ -81,7 +81,7 @@ final class License
     /**
      * @var array
      */
-    private $options = array();
+    private $options = [];
 
     /**
      * @var bool
@@ -194,14 +194,14 @@ final class License
     {
         // "no license" mode
         if ($license_code === null) {
-            $this->data = array('no_license' => true);
+            $this->data = ['no_license' => true];
 
             return;
         }
 
         if ($license_code && strlen($license_code) < 300) {
             $this->error_code = 'invalid_license_code_1';
-            $this->data       = array('no_license' => true);
+            $this->data       = ['no_license' => true];
 
             $fn = function () use ($license_code, $install_key) {
                 $__license_code = $license_code;
@@ -238,7 +238,7 @@ final class License
             $opts = explode(',', $parts[1]);
         }
 
-        $license_code = str_replace(array("\n", "\r", ' ', "\t"), '', $license_code);
+        $license_code = str_replace(["\n", "\r", ' ', "\t"], '', $license_code);
         $license_code = base64_decode($license_code);
 
         $this->license_id   = substr($license_code, 0, 14);
@@ -287,7 +287,7 @@ final class License
 
         if (!$data) {
             $this->error_code = 'invalid_license_code_2';
-            $this->data       = array('no_license' => true);
+            $this->data       = ['no_license' => true];
 
             $fn = function () use ($license_code, $install_key) {
                 $__license_code = $license_code;
@@ -552,7 +552,7 @@ STR;
     {
         $string_len = strlen($string);
         $key_len    = strlen($key);
-        $new_string = array();
+        $new_string = [];
 
         for ($i = 0, $j = 0; $i < $string_len; $i++, $j++) {
             if ($j >= $key_len) {
@@ -567,13 +567,13 @@ STR;
         return $new_string;
     }
 
-    private static $sysdata = array(
-        'xlic' => array(
+    private static $sysdata = [
+        'xlic' => [
             'KDQP-8287-VSWH' => true,
             'JPPJ-8339-DIFJ' => true,
-        ),
+        ],
 
-        'unl_lic' => array(
+        'unl_lic' => [
             'QVMO-3549-CFYS' => true,
             'WGYX-1723-WXBX' => true,
             'EGTW-8743-ASJQ' => true,
@@ -596,6 +596,6 @@ STR;
             'PDJK-9034-ZKOX' => true,
             'QDYP-7460-HSZQ' => true,
             'TWMJ-4993-TOVP' => true,
-        ),
-    );
+        ],
+    ];
 }

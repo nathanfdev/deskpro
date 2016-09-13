@@ -52,7 +52,7 @@ class LanguagePhrases
 
     public function getGroups()
     {
-        $groups = array();
+        $groups = [];
 
         $groupToReal = [
             'adm'     => 'admin',
@@ -78,7 +78,7 @@ class LanguagePhrases
                 $file        = isset($parts[2]) ? $parts[1] : $realGroupId;
 
                 if (!isset($groups[$realGroupId])) {
-                    $groups[$realGroupId] = array();
+                    $groups[$realGroupId] = [];
                 }
                 if (!in_array($file, $groups[$realGroupId])) {
                     $groups[$realGroupId][] = $file;

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -486,8 +487,6 @@ class Person extends AbstractEntityRepository
         ', [$ug->id]);
     }
 
-    /**
-     */
     public function getChatAgentRoundRobin()
     {
         $active_agents_ids = App::getEntityRepository('DeskPRO:Session')->getAvailableAgentIds();

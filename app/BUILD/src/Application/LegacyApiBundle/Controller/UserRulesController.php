@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -51,9 +51,9 @@ class UserRulesController extends AbstractController implements ProtectedControl
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
@@ -63,15 +63,15 @@ class UserRulesController extends AbstractController implements ProtectedControl
         $user_rules = $this->container->getSystemService('user_rules');
 
         return $this->createApiResponse(
-            array(
+            [
                  'user_rules' => $user_rules->getAllAsArray(),
-            )
+            ]
         );
     }
 
-    ###################################################################################################################
-    # get
-    ####################################################################################################################
+    //##################################################################################################################
+    // get
+    //###################################################################################################################
 
     public function getAction($id)
     {
@@ -86,15 +86,15 @@ class UserRulesController extends AbstractController implements ProtectedControl
         }
 
         return $this->createApiResponse(
-            array(
+            [
                  'user_rule' => $user_rule,
-            )
+            ]
         );
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     public function saveAction($id)
     {
@@ -117,7 +117,7 @@ class UserRulesController extends AbstractController implements ProtectedControl
 
         $user_rule_edit = new UserRuleEdit($user_rule);
 
-        $form = $this->createForm(new UserRuleType(), $user_rule_edit, array('cascade_validation' => true));
+        $form = $this->createForm(new UserRuleType(), $user_rule_edit, ['cascade_validation' => true]);
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'user_rule'), true);
 
         if ($form->isValid()) {
@@ -127,16 +127,16 @@ class UserRulesController extends AbstractController implements ProtectedControl
         }
 
         return $this->createApiResponse(
-            array(
+            [
                  'success' => true,
                  'id'      => $user_rule->id,
-            )
+            ]
         );
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove
+    //###################################################################################################################
 
     public function removeAction($id)
     {
@@ -164,12 +164,12 @@ class UserRulesController extends AbstractController implements ProtectedControl
             throw $e;
         }
 
-        return $this->createSuccessResponse(array('old_id' => $old_id));
+        return $this->createSuccessResponse(['old_id' => $old_id]);
     }
 
-    ####################################################################################################################
-    # apply
-    ####################################################################################################################
+    //###################################################################################################################
+    // apply
+    //###################################################################################################################
 
     public function applyAction($id, $page_id)
     {

@@ -57,9 +57,9 @@ class PermissionUtil
     {
         $db = App::getDb();
 
-        #----------------------------------------
-        # Get agent group data
-        #----------------------------------------
+        //----------------------------------------
+        // Get agent group data
+        //----------------------------------------
 
         $ag_ids = $db->fetchAllCol('
             SELECT person2usergroups.usergroup_id
@@ -67,10 +67,10 @@ class PermissionUtil
             LEFT JOIN usergroups ON (usergroups.id = person2usergroups.usergroup_id)
             WHERE usergroups.is_agent_group = 1
               AND person2usergroups.person_id = ?;
-        ', array($person->getId()));
+        ', [$person->getId()]);
 
         if (!$ag_ids) {
-            $ag_ids = array(0);
+            $ag_ids = [0];
         }
 
         $special_ag = $db->fetchAllKeyValue("
@@ -79,12 +79,12 @@ class PermissionUtil
             WHERE sys_name IN ('agent_all_perms', 'agent_all_safe_perms')
         ");
 
-        #----------------------------------------
-        # Figure out which permissions are granted via a usergroup
-        #----------------------------------------
+        //----------------------------------------
+        // Figure out which permissions are granted via a usergroup
+        //----------------------------------------
 
         if ($ag_perms_cache !== null) {
-            $ag_perms_names = array();
+            $ag_perms_names = [];
             foreach ($ag_ids as $id) {
                 if (isset($ag_perms_cache[$id])) {
                     $ag_perms_names = array_merge($ag_perms_names, $ag_perms_cache[$id]);
@@ -95,7 +95,7 @@ class PermissionUtil
             $ag_perms_names = $db->fetchAllCol('
                 SELECT DISTINCT(name) FROM permissions
                 WHERE usergroup_id IN (?)
-            ', array($ag_ids), array(Connection::PARAM_INT_ARRAY));
+            ', [$ag_ids], [Connection::PARAM_INT_ARRAY]);
         }
 
         if (in_array($special_ag['agent_all_perms'], $ag_ids)) {
@@ -106,17 +106,17 @@ class PermissionUtil
             $ag_perms_names = array_merge($ag_perms_names, $loader->getSafeNames());
         }
 
-        #----------------------------------------
-        # Figure out which department permissions are granted via a usergroup
-        #----------------------------------------
+        //----------------------------------------
+        // Figure out which department permissions are granted via a usergroup
+        //----------------------------------------
 
         if (in_array($special_ag['agent_all_perms'], $ag_ids) || in_array($special_ag['agent_all_safe_perms'], $ag_ids)) {
             $dep_id_full_perms   = $db->fetchAllCol('SELECT id FROM departments');
-            $dep_id_assign_perms = array();
+            $dep_id_assign_perms = [];
         } else {
             if ($ag_dep_perms_cache !== null) {
-                $dep_id_full_perms   = array();
-                $dep_id_assign_perms = array();
+                $dep_id_full_perms   = [];
+                $dep_id_assign_perms = [];
 
                 foreach ($ag_ids as $id) {
                     if (isset($ag_dep_perms_cache['full'][$id])) {
@@ -136,7 +136,7 @@ class PermissionUtil
                     WHERE department_permissions.name = 'full'
                       AND department_permissions.is_active = 1
                       AND department_permissions.usergroup_id IN (?)
-                ", array($ag_ids), array(Connection::PARAM_INT_ARRAY));
+                ", [$ag_ids], [Connection::PARAM_INT_ARRAY]);
 
                 $dep_id_assign_perms = $db->fetchAllCol("
                     SELECT department_permissions.department_id
@@ -144,26 +144,26 @@ class PermissionUtil
                     WHERE department_permissions.name = 'assign'
                       AND department_permissions.is_active = 1
                       AND department_permissions.usergroup_id IN (?)
-                ", array($ag_ids), array(Connection::PARAM_INT_ARRAY));
+                ", [$ag_ids], [Connection::PARAM_INT_ARRAY]);
             }
         }
 
-        #----------------------------------------
-        # De-activate all perms that match ones granted via perms
-        #----------------------------------------
+        //----------------------------------------
+        // De-activate all perms that match ones granted via perms
+        //----------------------------------------
 
         $db->beginTransaction();
 
         // All perms are active until we specifically turn them off
-        $db->update('permissions', array('is_active' => 1), array('person_id' => $person->getId()));
-        $db->update('department_permissions', array('is_active' => 1), array('person_id' => $person->getId()));
+        $db->update('permissions', ['is_active' => 1], ['person_id' => $person->getId()]);
+        $db->update('department_permissions', ['is_active' => 1], ['person_id' => $person->getId()]);
 
         if ($ag_perms_names) {
             $db->executeUpdate('
                 UPDATE permissions
                 SET is_active = 0
                 WHERE person_id = ? AND name IN (?)
-            ', array($person->getId(), $ag_perms_names), array(\PDO::PARAM_INT, Connection::PARAM_STR_ARRAY));
+            ', [$person->getId(), $ag_perms_names], [\PDO::PARAM_INT, Connection::PARAM_STR_ARRAY]);
         }
 
         if ($dep_id_full_perms) {
@@ -171,7 +171,7 @@ class PermissionUtil
                 UPDATE department_permissions
                 SET is_active = 0
                 WHERE person_id = ? AND department_id IN (?)
-            ', array($person->getId(), $dep_id_full_perms), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            ', [$person->getId(), $dep_id_full_perms], [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
         }
 
         if ($dep_id_assign_perms) {
@@ -179,7 +179,7 @@ class PermissionUtil
                 UPDATE department_permissions
                 SET is_active = 0
                 WHERE is_active = 1 AND person_id = ? AND department_id IN (?) AND name = 'assign'
-            ", array($person->getId(), $dep_id_assign_perms), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            ", [$person->getId(), $dep_id_assign_perms], [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
         }
 
         App::getDb()->exec('DELETE FROM permissions_cache');

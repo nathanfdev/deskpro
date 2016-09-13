@@ -133,22 +133,22 @@ class AppPackage extends DomainObject
     /**
      * @var array
      */
-    protected $tags = array();
+    protected $tags = [];
 
     /**
      * @var array
      */
-    protected $trigger_events = array();
+    protected $trigger_events = [];
 
     /**
      * @var array
      */
-    protected $settings_def = array();
+    protected $settings_def = [];
 
     /**
      * @var array
      */
-    protected $scopes = array();
+    protected $scopes = [];
 
     /**
      * @var \Application\DeskPRO\Entity\AppAsset[]
@@ -228,7 +228,7 @@ class AppPackage extends DomainObject
      */
     public function getTaggedAssets($tag)
     {
-        $assets = array();
+        $assets = [];
 
         foreach ($this->assets as $asset) {
             if ($asset->tag == $tag) {
@@ -264,7 +264,7 @@ class AppPackage extends DomainObject
      */
     public function getManifest()
     {
-        return array(
+        return [
             'package_name' => $this['name'],
             'title'        => $this['title'],
             'description'  => $this['description'],
@@ -274,22 +274,22 @@ class AppPackage extends DomainObject
             'version_name' => $this['version_name'],
             'is_single'    => (bool) $this['is_single'],
             'is_native'    => null !== $this['native_name'],
-            'author'       => array(
+            'author'       => [
                 'name'  => $this['author_name'],
                 'email' => $this['author_email'],
                 'link'  => $this['author_link'],
-            ),
+            ],
             'trigger_events' => $this['trigger_events'],
             'settings_def'   => $this['settings_def'],
-        );
+        ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
-        $data                      = array();
+        $data                      = [];
         $data['name']              = $this->name;
         $data['native_name']       = $this->native_name;
         $data['title']             = $this->title;
@@ -308,7 +308,7 @@ class AppPackage extends DomainObject
         $data['scopes']            = $this->scopes;
         $data['is_usersource_app'] = $this->isUsersource();
 
-        $sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
+        $sizes = [16, 24, 32, 48, 64, 96, 128, 192, 256, 512];
         foreach ($sizes as $size) {
             $icon = $this->getTaggedAsset("icons.app.$size");
             if ($icon) {
@@ -319,9 +319,9 @@ class AppPackage extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

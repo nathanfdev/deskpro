@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -55,7 +56,7 @@ class Build1358499996 extends AbstractBuild
                 GROUP BY ticket_id
             ) AS t ON tickets.id = t.ticket_id
             SET tickets.count_agent_replies = COALESCE(t.count, 0);
-        ', array($agent_ids), array(Connection::PARAM_INT_ARRAY));
+        ', [$agent_ids], [Connection::PARAM_INT_ARRAY]);
         $this->out(sprintf("-- Updated $x rows in %.4f s", microtime(true) - $t));
 
         $this->out('Populating tickets.count_user_replies');
@@ -69,7 +70,7 @@ class Build1358499996 extends AbstractBuild
                 GROUP BY ticket_id
             ) AS t ON tickets.id = t.ticket_id
             SET tickets.count_user_replies = COALESCE(t.count, 0);
-        ', array($agent_ids), array(Connection::PARAM_INT_ARRAY));
+        ', [$agent_ids], [Connection::PARAM_INT_ARRAY]);
         $this->out(sprintf("-- Updated $x rows in %.4f s", microtime(true) - $t));
     }
 }

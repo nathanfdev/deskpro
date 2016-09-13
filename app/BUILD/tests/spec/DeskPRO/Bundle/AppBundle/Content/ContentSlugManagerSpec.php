@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -54,7 +54,7 @@ class ContentSlugManagerSpec extends ObjectBehavior
         $content_class = 'Application\DeskPRO\Entity\News';
 
         $em->getRepository($content_class)->willReturn($news_repo);
-        $news_repo->findOneBy(array('slug' => $slug))->willReturn($news);
+        $news_repo->findOneBy(['slug' => $slug])->willReturn($news);
 
         $this->findContentObjectBySlug($slug, $content_class)->shouldReturn($news);
     }
@@ -74,8 +74,8 @@ class ContentSlugManagerSpec extends ObjectBehavior
         $em->getRepository($content_class)->willReturn($news_repo);
         $em->getRepository($content_class.'SlugHistory')->willReturn($news_slug_history_repo);
 
-        $news_repo->findOneBy(array('slug' => $slug))->willReturn(null);
-        $news_slug_history_repo->findOneBy(array('slug' => $slug))->willReturn($news_history);
+        $news_repo->findOneBy(['slug' => $slug])->willReturn(null);
+        $news_slug_history_repo->findOneBy(['slug' => $slug])->willReturn($news_history);
 
         $this->findContentObjectBySlug($slug, $content_class)->shouldReturn($news);
     }

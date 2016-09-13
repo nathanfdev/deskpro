@@ -73,9 +73,9 @@ class CustomDataProduct extends CustomDataAbstract
         return $this->product;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

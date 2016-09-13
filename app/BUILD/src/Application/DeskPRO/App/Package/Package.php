@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App\Package;
 
 use Application\DeskPRO\Entity\AppPackage;
@@ -65,7 +66,7 @@ class Package
     }
 
     /**
-     * @param AppPackage $def         Existing app package to update. Otherwise, a new package is created.
+     * @param AppPackage $def         Existing app package to update. Otherwise, a new package is created
      * @param string     $native_name
      *
      * @return AppPackage
@@ -86,8 +87,8 @@ class Package
         $def->version        = $this->manifest->getVersion();
         $def->version_name   = $this->manifest->getVersionName();
         $def->is_single      = $this->manifest->getIsSingle();
-        $def->scopes         = array(AppPackage::SCOPE_AGENT);
-        $def->tags           = $this->manifest->getTags() ?: array();
+        $def->scopes         = [AppPackage::SCOPE_AGENT];
+        $def->tags           = $this->manifest->getTags() ?: [];
         $def->trigger_events = $this->manifest->getTriggerEvents();
         $def->settings_def   = $this->manifest->getSettingsDef();
         $def->native_name    = $this->manifest->getIsNative() ? $def->name : null;
@@ -204,19 +205,19 @@ class Package
      */
     private function readAssetPath($path_name)
     {
-        $assets   = array();
+        $assets   = [];
         $path     = @realpath($this->path.'/'.$path_name);
         $path_std = str_replace('\\', '/', $path);
 
         if (!$path || !is_dir($path)) {
-            return array();
+            return [];
         }
 
         $finder = Finder::create()->in($path)->files();
         switch ($path_name) {
-            case 'js':   $finder->name('*.js');   break;
+            case 'js':   $finder->name('*.js'); break;
             case 'html': $finder->name('*.html'); break;
-            case 'css':  $finder->name('*.css');  break;
+            case 'css':  $finder->name('*.css'); break;
         }
 
         foreach ($finder as $file) {
@@ -232,11 +233,11 @@ class Package
                 }
             }
 
-            $assets[] = array(
+            $assets[] = [
                 'real_path' => $full_path,
                 'path'      => $asset_path,
                 'name'      => $file_name,
-            );
+            ];
         }
 
         return $assets;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -71,7 +72,7 @@ abstract class AbstractGatewayProcessor
     /**
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * Indexed by blob id.
@@ -85,7 +86,7 @@ abstract class AbstractGatewayProcessor
      *
      * @var \Application\DeskPRO\Entity\Blob[]
      */
-    protected $processed_blobs_cid = array();
+    protected $processed_blobs_cid = [];
 
     /**
      * @var \Orb\Input\Cleaner\Cleaner
@@ -97,7 +98,7 @@ abstract class AbstractGatewayProcessor
      */
     public $logger;
 
-    public function __construct(Entity\EmailAccount $account, AbstractReader $reader, array $options = array())
+    public function __construct(Entity\EmailAccount $account, AbstractReader $reader, array $options = [])
     {
         $this->container = App::getContainer();
         $this->account   = $account;
@@ -129,7 +130,9 @@ abstract class AbstractGatewayProcessor
             $this->logMessage(sprintf('Warning: Could not get matched address for gateway %d', $account->id));
         }
 
-        $to_addresses = array_map(function ($e) { return $e->email; }, $reader->getReceivedAddresses());
+        $to_addresses = array_map(function ($e) {
+            return $e->email;
+        }, $reader->getReceivedAddresses());
         $this->sent_to = implode(',', $to_addresses);
 
         $this->logMessage('sent_to: '.$this->sent_to);
@@ -163,7 +166,7 @@ abstract class AbstractGatewayProcessor
         if ($this->processed_blobs !== null) {
             return $this->processed_blobs;
         }
-        $this->processed_blobs = array();
+        $this->processed_blobs = [];
 
         foreach ($this->reader->getAttachments() as $attach) {
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
@@ -273,6 +276,6 @@ abstract class AbstractGatewayProcessor
      */
     public function getSourceInfo()
     {
-        return array();
+        return [];
     }
 }

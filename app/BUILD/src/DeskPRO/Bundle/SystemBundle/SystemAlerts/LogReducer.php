@@ -47,13 +47,13 @@ class LogReducer
 {
     /**
      * @var int Max number of events of the same type, applied to events with quantity expiration strategy. This number
-     *          must be sufficient to raise any incident.
+     *          must be sufficient to raise any incident
      */
     private $quantityLimit = 150;
 
     /**
      * @var int Event max alive time in minutes, applied to events with time expiration strategy. This period must be
-     *          sufficient to raise any incident.
+     *          sufficient to raise any incident
      */
     private $timeLimit = 4320; // "60 * 24 * 3" PhpLint doesn't allow expression here
 
@@ -278,7 +278,9 @@ class LogReducer
             LIMIT $limit
         ";
         $ids = $this->queryAll($sql, [$eventSubjectId, $processed]);
-        $ids = array_map(function ($id) { return intval($id); }, $ids);
+        $ids = array_map(function ($id) {
+            return intval($id);
+        }, $ids);
 
         return $ids;
     }

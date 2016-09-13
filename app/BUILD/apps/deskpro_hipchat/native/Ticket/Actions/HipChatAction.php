@@ -96,19 +96,19 @@ class HipChatAction extends AbstractContainerAwareAction implements ActionInterf
                 $app->getSetting('notify')
             );
 
-            $ticket->getStateChangeRecorder()->recordData('app_message', array(
+            $ticket->getStateChangeRecorder()->recordData('app_message', [
                 'app_id'        => $app->id,
                 'app_title'     => $app->title,
                 'package_name'  => $app->package->name,
                 'package_title' => $app->package->title,
                 'message'       => "Send message to room \"$room_id\"",
-            ));
+            ]);
         } catch (\Exception $e) {
             $context->getLogger()->notice("[HipChatAction] Error sending HipChat message: {$e->getMessage()}");
 
             $ticket->getStateChangeRecorder()->recordData('app_message',
-            array('app_id'         => $app->id, 'app_title' => $app->title, 'package_name' => $app->package->name,
-                   'package_title' => $app->package->title, 'message' => "Failed sending message to room \"$room_id\"", ));
+            ['app_id'              => $app->id, 'app_title' => $app->title, 'package_name' => $app->package->name,
+                   'package_title' => $app->package->title, 'message' => "Failed sending message to room \"$room_id\"", ]);
         }
     }
 

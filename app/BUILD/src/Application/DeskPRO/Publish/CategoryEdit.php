@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
@@ -82,10 +83,10 @@ class CategoryEdit
 
         // By default also add 'Everyone' permission
         $perm_table = App::getOrm()->getRepository(get_class($obj))->getPermissionTableName();
-        App::getDb()->insert($perm_table, array(
+        App::getDb()->insert($perm_table, [
             'category_id'  => $obj->getId(),
             'usergroup_id' => '1',
-        ));
+        ]);
 
         App::getContainer()->getSystemService('publish_structure_cache')->flush();
 
@@ -108,7 +109,7 @@ class CategoryEdit
         $ids = Arrays::castToType($ids, 'integer');
 
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $cats = App::getOrm()->createQuery("
@@ -156,13 +157,13 @@ class CategoryEdit
             $cat->title = $title;
 
             if ($perm_table) {
-                App::getDb()->delete($perm_table, array('category_id' => $cat->id));
+                App::getDb()->delete($perm_table, ['category_id' => $cat->id]);
 
                 foreach ($usergroup_ids as $uid) {
-                    App::getDb()->insert($perm_table, array(
+                    App::getDb()->insert($perm_table, [
                         'category_id'  => $cat->id,
                         'usergroup_id' => $uid,
-                    ));
+                    ]);
                 }
             }
 
@@ -327,7 +328,7 @@ class CategoryEdit
                     LEFT JOIN articles ON articles.id = article_to_categories.article_id
                     WHERE category_id = ? AND (articles.hidden_status IS NULL OR (articles.hidden_status != 'deleted' AND articles.hidden_status != 'draft'))
                     LIMIT 1
-                ", array($category_id));
+                ", [$category_id]);
                 break;
             case 'downloads':
                 $counts = App::getDb()->fetchColumn("
@@ -335,7 +336,7 @@ class CategoryEdit
                     FROM downloads
                     WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
                     LIMIT 1
-                ", array($category_id));
+                ", [$category_id]);
                 break;
             case 'news':
                 $counts = App::getDb()->fetchColumn("
@@ -343,7 +344,7 @@ class CategoryEdit
                     FROM news
                     WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
                     LIMIT 1
-                ", array($category_id));
+                ", [$category_id]);
                 break;
             case 'feedback':
                 $counts = App::getDb()->fetchColumn("
@@ -351,7 +352,7 @@ class CategoryEdit
                     FROM feedback
                     WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
                     LIMIT 1
-                ", array($category_id));
+                ", [$category_id]);
                 break;
             default:
                 break;

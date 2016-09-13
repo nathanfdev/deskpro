@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.automatically_join_org_tickets'         => 'Automatisch tickets van {{org_name}} samenvoegen?',
     'portal.account.change-password'                        => 'Wachtwoord wijzigen',
     'portal.account.change-password-btn'                    => 'Wachtwoord bijwerken',
@@ -910,4 +910,4 @@ return array(
     'user.time.time_x_second'                               => '{0} seconden',
     'user.time.time_x_week'                                 => '{0} weken',
     'user.time.time_x_year'                                 => '{0} jaren',
-);
+];

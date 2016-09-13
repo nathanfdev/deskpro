@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -57,7 +58,7 @@ class TicketFilterViewSpec extends ObjectBehavior
 
         $this->getType()->shouldBe(TicketFilterView::TYPE_TABLE);
 
-        $this->shouldThrow('\InvalidArgumentException')->during('setType', array('invalid'));
+        $this->shouldThrow('\InvalidArgumentException')->during('setType', ['invalid']);
     }
 
     public function it_is_associated_with_a_filter(TicketFilter $filter)
@@ -86,55 +87,55 @@ class TicketFilterViewSpec extends ObjectBehavior
 
     public function it_has_fields()
     {
-        $this->getFields()->shouldBe(array());
+        $this->getFields()->shouldBe([]);
         $this->addField('id');
         $this->addField('name');
         $this->addField('email');
 
-        $this->getFields()->shouldBe(array('id', 'name', 'email'));
+        $this->getFields()->shouldBe(['id', 'name', 'email']);
 
         $this->removeField('name');
 
-        $this->getFields()->shouldBe(array('id', 'email'));
+        $this->getFields()->shouldBe(['id', 'email']);
 
-        $this->setFields(array('foo', 'bar'));
+        $this->setFields(['foo', 'bar']);
 
-        $this->getFields()->shouldBe(array('foo', 'bar'));
+        $this->getFields()->shouldBe(['foo', 'bar']);
     }
 
     public function it_has_icon_fields()
     {
-        $this->getIconFields()->shouldBe(array());
+        $this->getIconFields()->shouldBe([]);
         $this->addIconField('id');
         $this->addIconField('name');
         $this->addIconField('email');
 
-        $this->getIconFields()->shouldBe(array('id', 'name', 'email'));
+        $this->getIconFields()->shouldBe(['id', 'name', 'email']);
 
         $this->removeIconField('name');
 
-        $this->getIconFields()->shouldBe(array('id', 'email'));
+        $this->getIconFields()->shouldBe(['id', 'email']);
 
-        $this->setIconFields(array('foo', 'bar'));
+        $this->setIconFields(['foo', 'bar']);
 
-        $this->getIconFields()->shouldBe(array('foo', 'bar'));
+        $this->getIconFields()->shouldBe(['foo', 'bar']);
     }
 
     public function it_has_options()
     {
-        $this->getOptions()->shouldBeLike(array());
+        $this->getOptions()->shouldBeLike([]);
 
         $this->addOption('name', 'value');
         $this->addOption('other', 'val');
 
-        $this->getOptions()->shouldBeLike(array('name' => 'value', 'other' => 'val'));
+        $this->getOptions()->shouldBeLike(['name' => 'value', 'other' => 'val']);
 
         $this->removeOption('name');
 
-        $this->getOptions()->shouldBeLike(array('other' => 'val'));
+        $this->getOptions()->shouldBeLike(['other' => 'val']);
 
-        $this->setOptions(array('foo' => 'bar', 'baz' => 'santa'));
+        $this->setOptions(['foo' => 'bar', 'baz' => 'santa']);
 
-        $this->getOptions()->shouldBeLike(array('foo' => 'bar', 'baz' => 'santa'));
+        $this->getOptions()->shouldBeLike(['foo' => 'bar', 'baz' => 'santa']);
     }
 }

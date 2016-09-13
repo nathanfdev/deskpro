@@ -40,7 +40,7 @@ use Monolog\Logger;
  */
 class NoExceptionsLogger extends Logger
 {
-    public function addRecord($level, $message, array $context = array())
+    public function addRecord($level, $message, array $context = [])
     {
         try {
             return parent::addRecord($level, $message, $context);

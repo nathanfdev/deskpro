@@ -63,9 +63,9 @@ class FeedbackSubscriptions extends AbstractJob
 
         $lastDate = new \DateTime("@$lastTime");
 
-        #------------------------------
-        # Find Feedback
-        #------------------------------
+        //------------------------------
+        // Find Feedback
+        //------------------------------
 
         /** @var Feedback[] $published */
         $published = $this->getContainer()->getEm()->createQuery('
@@ -95,9 +95,9 @@ class FeedbackSubscriptions extends AbstractJob
             return;
         }
 
-        #------------------------------
-        # Get subscriptions
-        #------------------------------
+        //------------------------------
+        // Get subscriptions
+        //------------------------------
         $publishedFeedbackIds = [];
         $updatedFeedbackIds   = [];
 
@@ -130,9 +130,9 @@ class FeedbackSubscriptions extends AbstractJob
             ', [$updatedFeedbackIds], 'person_id', null, 'feedback_id', [Connection::PARAM_INT_ARRAY]);
         }
 
-        #------------------------------
-        # Sort subscriptions into users
-        #------------------------------
+        //------------------------------
+        // Sort subscriptions into users
+        //------------------------------
 
         $userToFeedback = [];
 
@@ -159,9 +159,9 @@ class FeedbackSubscriptions extends AbstractJob
             return;
         }
 
-        #------------------------------
-        # Verify permissions
-        #------------------------------
+        //------------------------------
+        // Verify permissions
+        //------------------------------
 
         $userGroupMembers = $this->getContainer()->getDb()->fetchAllGrouped('
             SELECT person_id, usergroup_id
@@ -201,9 +201,9 @@ class FeedbackSubscriptions extends AbstractJob
 
         unset($allUserToFeedback);
 
-        #------------------------------
-        # Now send the emails (they are queued)
-        #------------------------------
+        //------------------------------
+        // Now send the emails (they are queued)
+        //------------------------------
 
         foreach ($userToFeedback as $personId => $feedbacks) {
             /** @var Person $person */

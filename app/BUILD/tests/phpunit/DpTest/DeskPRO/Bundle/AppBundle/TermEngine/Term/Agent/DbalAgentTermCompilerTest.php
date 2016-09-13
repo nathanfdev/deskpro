@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
@@ -52,9 +53,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
     public function testSimpleIsCompile()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 2, 15),
-            )
+            [
+                'agent_ids' => [1, 2, 15],
+            ]
         );
 
         $query_part = $this->term_compiler->compile($term);
@@ -63,9 +64,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(1, 2, 15),
-            )
+            [
+                'ids' => [1, 2, 15],
+            ]
         );
 
         $this->assertNoJoins($query_part);
@@ -75,9 +76,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
     public function testIsCompileWithMe()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME),
-            )
+            [
+                'agent_ids' => [1, 2, 15, AgentTerm::ID_ME],
+            ]
         );
 
         $query_part = $this->term_compiler->compile($term);
@@ -89,14 +90,14 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(
+            [
+                'ids' => [
                     1,
                     2,
                     15,
                     new TermEngineExpression('agent.getId()'),
-                ),
-            )
+                ],
+            ]
         );
 
         $this->assertNoJoins($query_part);
@@ -106,9 +107,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
     public function testIsNotMe()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME),
-            ),
+            [
+                'agent_ids' => [1, 2, 15, AgentTerm::ID_ME],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -121,14 +122,14 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(
+            [
+                'ids' => [
                     1,
                     2,
                     15,
                     new TermEngineExpression('agent.getId()'),
-                ),
-            )
+                ],
+            ]
         );
 
         $this->assertNoJoins($query_part);
@@ -138,9 +139,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
     public function testWithUnassigned()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 2, 15, null),
-            ),
+            [
+                'agent_ids' => [1, 2, 15, null],
+            ],
             TermInterface::OP_IS
         );
 
@@ -153,9 +154,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(1, 2, 15),
-            )
+            [
+                'ids' => [1, 2, 15],
+            ]
         );
 
         $this->assertNoJoins($query_part);
@@ -165,9 +166,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
     public function testWithNOTUnassigned()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(0),
-            ),
+            [
+                'agent_ids' => [0],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -186,9 +187,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
     public function testWithOnlyUnassigned()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(0),
-            ),
+            [
+                'agent_ids' => [0],
+            ],
             TermInterface::OP_IS
         );
 
@@ -207,9 +208,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
     public function testAllIdTypes()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME, 0),
-            ),
+            [
+                'agent_ids' => [1, 2, 15, AgentTerm::ID_ME, 0],
+            ],
             TermInterface::OP_IS
         );
 
@@ -222,14 +223,14 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(
+            [
+                'ids' => [
                     1,
                     2,
                     15,
                     new TermEngineExpression('agent.getId()'),
-                ),
-            )
+                ],
+            ]
         );
 
         $this->assertNoJoins($query_part);
@@ -239,9 +240,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
     public function testNOTAllIdTypes()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(1, 2, 15, AgentTerm::ID_ME, 0),
-            ),
+            [
+                'agent_ids' => [1, 2, 15, AgentTerm::ID_ME, 0],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -254,14 +255,14 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 
         $this->assertParameters(
             $query_part,
-            array(
-                'ids' => array(
+            [
+                'ids' => [
                     1,
                     2,
                     15,
                     new TermEngineExpression('agent.getId()'),
-                ),
-            )
+                ],
+            ]
         );
 
         $this->assertNoJoins($query_part);
@@ -271,9 +272,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
     public function testThatEmptyArraysAndNullsCountAsUnassigned()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(),
-            ),
+            [
+                'agent_ids' => [],
+            ],
             TermInterface::OP_IS
         );
 
@@ -292,9 +293,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
     public function testThatEmptyArraysAndNullsCountAsUnassigned2()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(null),
-            ),
+            [
+                'agent_ids' => [null],
+            ],
             TermInterface::OP_IS
         );
 
@@ -313,9 +314,9 @@ class DbalAgentTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
     public function testThatEmptyArraysAndNullsCountAsUnassigned3()
     {
         $term = new AgentTerm(
-            array(
-                'agent_ids' => array(null, null, null),
-            ),
+            [
+                'agent_ids' => [null, null, null],
+            ],
             TermInterface::OP_IS
         );
 

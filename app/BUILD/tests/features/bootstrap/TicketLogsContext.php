@@ -178,7 +178,9 @@ class TicketLogsContext extends BaseContext
         $result   = $this->getTicketLogActions($ticketId, $types);
 
         if (!empty($result)) {
-            $logs = array_map(function (TicketLog $tl) { return $tl->getActionType(); }, $result);
+            $logs = array_map(function (TicketLog $tl) {
+                return $tl->getActionType();
+            }, $result);
             throw new \Exception('Found unexpected ticket logs: '.implode(',', $logs));
         }
     }

@@ -35,7 +35,7 @@ namespace Application\DeskPRO\Settings;
 /**
  * Class PortalSettings.
  *
- * @deprecated 
+ * @deprecated
  */
 class PortalSettings
 {
@@ -97,7 +97,7 @@ class PortalSettings
      */
     public function toArray()
     {
-        $export_settings = array(
+        $export_settings = [
             'portal_enabled'      => $this->portal_enabled,
             'favicon_blob_id'     => $this->favicon_blob_id,
             'favicon_blob_url'    => $this->favicon_blob_url,
@@ -106,7 +106,7 @@ class PortalSettings
             'register_captcha'    => $this->register_captcha,
             'publish_captcha'     => $this->publish_captcha,
             'always_show_captcha' => $this->always_show_captcha,
-        );
+        ];
 
         return $export_settings;
     }
@@ -138,10 +138,10 @@ class PortalSettings
             $this->settings->setSetting('core.favicon_blob_url', null);
         }
 
-        foreach (array(
+        foreach ([
             'publish_comments', 'register_captcha', 'publish_captcha',
             'always_show_captcha',
-        ) as $p) {
+        ] as $p) {
             $this->settings->setSetting("user.$p", (bool) $this->$p);
         }
     }

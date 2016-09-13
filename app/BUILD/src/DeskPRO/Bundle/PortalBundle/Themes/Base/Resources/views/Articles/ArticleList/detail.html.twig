@@ -6,7 +6,7 @@
           <div class="news-header-info">
             <a href="{{ portal_path(article) }}"><h1>{{ article.translated_title }}</h1></a>
             <div class="article-meta">
-              Posted by <span style="background: url({{ avatar_url(article.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ article.person.name }}
+              Posted by <span style="background: url({{ avatar_url(article.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ article.person.display_name_user }}
               in {{ article.date_published | date('Y-m-d') }}
               <hr>
               <span class="comments"><i class="fa fa-comments-o"></i> <a href="{{ portal_path(article) }}#comments">{{ phrase('portal.general.comments-count', {count: article.calc_num_comments}) }}</a></span>

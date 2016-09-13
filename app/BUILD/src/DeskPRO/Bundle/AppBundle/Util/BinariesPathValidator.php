@@ -47,9 +47,9 @@ class BinariesPathValidator
     {
         $path = $this->validateStandard($path);
 
-        #------------------------------
-        # Verify its php
-        #------------------------------
+        //------------------------------
+        // Verify its php
+        //------------------------------
 
         $builder = new ProcessBuilder([
             $path,
@@ -90,9 +90,9 @@ class BinariesPathValidator
             );
         }
 
-        #------------------------------
-        # Verify requirements too
-        #------------------------------
+        //------------------------------
+        // Verify requirements too
+        //------------------------------
 
         $builder = new ProcessBuilder([
             $path,
@@ -139,9 +139,9 @@ class BinariesPathValidator
     {
         $path = $this->validateStandard($path);
 
-        #------------------------------
-        # Verify its mysql
-        #------------------------------
+        //------------------------------
+        // Verify its mysql
+        //------------------------------
 
         $builder = new ProcessBuilder([
             $path,
@@ -177,9 +177,9 @@ class BinariesPathValidator
     {
         $path = $this->validateStandard($path);
 
-        #------------------------------
-        # Verify its mysqldump
-        #------------------------------
+        //------------------------------
+        // Verify its mysqldump
+        //------------------------------
 
         $builder = new ProcessBuilder([
             $path,

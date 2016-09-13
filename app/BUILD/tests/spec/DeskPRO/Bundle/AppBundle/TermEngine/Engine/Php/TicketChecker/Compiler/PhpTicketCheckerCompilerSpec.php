@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
@@ -51,9 +52,9 @@ class PhpTicketCheckerCompilerSpec extends ObjectBehavior
         PhpCheck $php_check,
         LoggerInterface $logger
     ) {
-        $this->beConstructedWith($factory, array(), $logger);
+        $this->beConstructedWith($factory, [], $logger);
         $factory->getCompiler($term)->willReturn($term_compiler);
-        $php_check->getVariables()->willReturn(array());
+        $php_check->getVariables()->willReturn([]);
         $term_compiler->compile($term)->willReturn($php_check);
         $php_check->__toString()->willReturn('');
     }
@@ -72,7 +73,7 @@ class PhpTicketCheckerCompilerSpec extends ObjectBehavior
         VisitorInterface $visitor2,
         LoggerInterface $logger
     ) {
-        $this->beConstructedWith($factory, array($visitor1, $visitor2), $logger);
+        $this->beConstructedWith($factory, [$visitor1, $visitor2], $logger);
 
         $visitor1->visit($term)->shouldBeCalled();
         $visitor2->visit($term)->shouldBeCalled();

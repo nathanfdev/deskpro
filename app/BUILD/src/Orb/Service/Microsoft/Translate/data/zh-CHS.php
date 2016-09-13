@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'ar'      => '阿拉伯语',
     'bg'      => '保加利亚语',
     'ca'      => '加泰隆语',
@@ -70,4 +70,4 @@ return array(
     'uk'      => '乌克兰语',
     'ur'      => '乌尔都语',
     'vi'      => '越南语',
-);
+];

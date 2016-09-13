@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SwiftMailer;
 
 use Application\EmailBundle\SwiftMailer\Message\MessageFactoryInterface;
@@ -105,7 +106,7 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
      * Queue the message so it is sent by the queue processor.
      *
      * @param Swift_Mime_Message $message
-     * @param \DateTime          $send_date When to send the message. If not specified, it will be sent the next time the processor is run.
+     * @param \DateTime          $send_date When to send the message. If not specified, it will be sent the next time the processor is run
      *
      * @return int
      */

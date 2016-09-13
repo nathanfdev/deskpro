@@ -54,7 +54,7 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
      *
      * @var array
      */
-    protected $objects = array(
+    protected $objects = [
         'article'           => 'DeskPRO:Article',
         'download'          => 'DeskPRO:Download',
         'feedback'          => 'DeskPRO:Feedback',
@@ -63,30 +63,30 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
         'person'            => 'DeskPRO:Person',
         'organization'      => 'DeskPRO:Organization',
         'chat_conversation' => 'DeskPRO:ChatConversation',
-    );
+    ];
 
     /**
      * Permission requirement.
      *
      * @var array
      */
-    protected $requiresPermission = array(
+    protected $requiresPermission = [
         'ticket',
-    );
+    ];
 
     /**
      * Search results.
      *
      * @var array
      */
-    protected $results = array();
+    protected $results = [];
 
     public function quickSearch($q, $sort = null, array $limit_types = null)
     {
-        $result_meta = array();
+        $result_meta = [];
         $people_top  = false;
 
-        if ($sort && !in_array($sort, array('score', 'date_active', 'date_created'))) {
+        if ($sort && !in_array($sort, ['score', 'date_active', 'date_created'])) {
             $sort = null;
         }
         if (!$sort) {
@@ -119,7 +119,7 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
                     }
                 } elseif (strlen($q) >= 3) {
                     $tickets = $ent_repos->searchTicketRef($q);
-                    $results = array();
+                    $results = [];
                     foreach ($tickets as $ticket) {
                         if ($this->person->PermissionsManager->TicketChecker->canView($ticket)) {
                             $results[] = $ticket;
@@ -154,9 +154,9 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
                 }
             }
 
-            $result = $repository->find($q, null, array(
+            $result = $repository->find($q, null, [
                 'sort_type' => $sort,
-            ));
+            ]);
             if ($result) {
                 $this->handleResult($object, $result);
             }
@@ -166,7 +166,7 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
             return Arrays::uniqueObjectArray($group);
         }, $this->results);
 
-        return array($this->results, $result_meta, $people_top);
+        return [$this->results, $result_meta, $people_top];
     }
 
     private function isAllowed($object)
@@ -186,11 +186,11 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
     private function handleResult($object, $result)
     {
         if (!isset($this->results[$object])) {
-            $this->results[$object] = array();
+            $this->results[$object] = [];
         }
 
         if (!is_array($result)) {
-            $result = array($result);
+            $result = [$result];
         }
 
         switch ($object) {

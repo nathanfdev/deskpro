@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1402588458 extends AbstractBuild
@@ -47,11 +48,11 @@ class Build1402588458 extends AbstractBuild
             FROM ticket_triggers
             WHERE sys_name = ?
             LIMIT 1
-        ', array($name));
+        ', [$name]);
 
         $new_terms = $this->procTriggerTerms($trigger['terms'], $term_type, 'not');
 
-        $this->container->getDb()->update('ticket_triggers', array('terms' => $new_terms), array('id' => $trigger['id']));
+        $this->container->getDb()->update('ticket_triggers', ['terms' => $new_terms], ['id' => $trigger['id']]);
     }
 
     /**
@@ -64,7 +65,7 @@ class Build1402588458 extends AbstractBuild
     private function procTriggerTerms($terms, $term_type, $new_op)
     {
         $terms                   = json_decode($terms, true);
-        $terms['@DATA']['terms'] = $this->procTermsSet($terms['@DATA']['terms'] ?: array(), $term_type, $new_op);
+        $terms['@DATA']['terms'] = $this->procTermsSet($terms['@DATA']['terms'] ?: [], $term_type, $new_op);
 
         return json_encode($terms);
     }

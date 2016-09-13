@@ -31,6 +31,7 @@
  *
  * @category People
  */
+
 namespace Application\DeskPRO\People\AgentPermissions;
 
 use Application\DeskPRO\People\AgentPermissions\Value\ChatPermissions;
@@ -89,7 +90,7 @@ class AgentPermissions implements PermissionsSetInterface
     /**
      * @var array
      */
-    public static $prefix_map = array(
+    public static $prefix_map = [
         'agent_tickets'  => 'ticket',
         'agent_people'   => 'people',
         'agent_org'      => 'org',
@@ -98,7 +99,7 @@ class AgentPermissions implements PermissionsSetInterface
         'agent_general'  => 'general',
         'agent_tasks'    => 'tasks',
         'agent_problems' => 'problems',
-    );
+    ];
 
     public function __construct()
     {
@@ -117,7 +118,7 @@ class AgentPermissions implements PermissionsSetInterface
      */
     public function getCollections()
     {
-        return array(
+        return [
             $this->chat,
             $this->general,
             $this->org,
@@ -126,7 +127,7 @@ class AgentPermissions implements PermissionsSetInterface
             $this->ticket,
             $this->tasks,
             $this->problems,
-        );
+        ];
     }
 
     /**
@@ -134,12 +135,12 @@ class AgentPermissions implements PermissionsSetInterface
      */
     public function toArray()
     {
-        $arr = array();
+        $arr = [];
         foreach (get_object_vars($this) as $prop => $val) {
             if (!$val instanceof PermissionValueInterface) {
                 continue;
             }
-            $arr[$prop] = array();
+            $arr[$prop] = [];
             foreach ($this->$prop->getNames() as $name) {
                 $arr[$prop][$name] = (bool) $this->$prop->$name;
             }

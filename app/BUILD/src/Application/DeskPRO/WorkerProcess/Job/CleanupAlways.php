@@ -48,9 +48,9 @@ class CleanupAlways extends AbstractJob
 
     private function doRun()
     {
-        #------------------------------
-        # cleanup chat pings
-        #------------------------------
+        //------------------------------
+        // cleanup chat pings
+        //------------------------------
 
         $cutoff = time() - 180;
 
@@ -59,9 +59,9 @@ class CleanupAlways extends AbstractJob
             WHERE ping_time < $cutoff
         ");
 
-        #------------------------------
-        # client_messages
-        #------------------------------
+        //------------------------------
+        // client_messages
+        //------------------------------
 
         // client messages are nearly instant, so this timesnip is very low
         $datetime = date('Y-m-d H:i:s', time() - 1800);
@@ -69,9 +69,9 @@ class CleanupAlways extends AbstractJob
         // Long-lived channels are still deleted after 14 days
         $datetime2 = date('Y-m-d H:i:s', time() - 1209600);
 
-        $long_lived_channels = array(
+        $long_lived_channels = [
             'agent_chat.new-message',
-        );
+        ];
 
         // We fetch first, then delete in small batches to reduce locking
         $ids = App::getDb()->fetchAllCol('
@@ -82,15 +82,15 @@ class CleanupAlways extends AbstractJob
                 date_created < ? AND channel IN (?)
             )
         ',
-            array($datetime, $long_lived_channels, $datetime2, $long_lived_channels),
-            array(\PDO::PARAM_STR, Connection::PARAM_STR_ARRAY, \PDO::PARAM_STR, Connection::PARAM_STR_ARRAY));
+            [$datetime, $long_lived_channels, $datetime2, $long_lived_channels],
+            [\PDO::PARAM_STR, Connection::PARAM_STR_ARRAY, \PDO::PARAM_STR, Connection::PARAM_STR_ARRAY]);
         if ($ids) {
             $batch_ids = array_chunk($ids, 50, false);
             foreach ($batch_ids as $ids) {
                 $num = App::getDb()->executeUpdate('
                     DELETE FROM client_messages
                     WHERE id IN (?)
-                ', array($ids), array(Connection::PARAM_INT_ARRAY));
+                ', [$ids], [Connection::PARAM_INT_ARRAY]);
 
                 if ($num) {
                     $this->logStatus("Cleaned up $num old client messages");
@@ -98,28 +98,28 @@ class CleanupAlways extends AbstractJob
             }
         }
 
-        #------------------------------
-        # Optimise perms
-        #------------------------------
+        //------------------------------
+        // Optimise perms
+        //------------------------------
 
         if (App::getSetting('trigger.optimise_perms')) {
             $db = App::getDb();
             App::getDb()->executeUpdate("REPLACE INTO `settings` (`name`, `value`) VALUES ('trigger.optimise_perms', '0')");
 
-            $ag_perms_cache     = $db->fetchAllGrouped('SELECT usergroup_id, name FROM permissions', array(), 'usergroup_id', null, 'name');
-            $ag_dep_perms_cache = array(
-                'full'   => $db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'full'", array(), 'usergroup_id', null, 'department_id'),
-                'assign' => $db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'assign'", array(), 'usergroup_id', null, 'department_id'),
-            );
+            $ag_perms_cache     = $db->fetchAllGrouped('SELECT usergroup_id, name FROM permissions', [], 'usergroup_id', null, 'name');
+            $ag_dep_perms_cache = [
+                'full'   => $db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'full'", [], 'usergroup_id', null, 'department_id'),
+                'assign' => $db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'assign'", [], 'usergroup_id', null, 'department_id'),
+            ];
 
             foreach (App::$container->getAgentData()->getAgents() as $a) {
                 PermissionUtil::optimizePermissions($a, $ag_perms_cache, $ag_dep_perms_cache);
             }
         }
 
-        #------------------------------
-        # Try to delete old update status file
-        #------------------------------
+        //------------------------------
+        // Try to delete old update status file
+        //------------------------------
 
         if (file_exists(DP_WEB_ROOT.'/auto-update-status.php') && App::getSetting('core.last_auto_upgrade_time') < time() - 180) {
             @unlink(DP_WEB_ROOT.'/auto-update-status.php');

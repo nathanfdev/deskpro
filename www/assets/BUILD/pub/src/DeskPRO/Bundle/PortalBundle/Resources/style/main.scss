@@ -10185,28 +10185,43 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 // Ticket view
 
 .ticket-view {
-  .header {
-    margin-top: 10px;
-    margin-bottom: 15px;
-    h1 {
-      font-weight: normal;
-      font-size: 1.5em;
-      color: $text-color;
+  .ticket-view-content-container {
+    float: $float-left;
+    width: 100%;
+    @include margin-right(-340px);
+
+    .header {
+      margin-top: 10px;
+      margin-bottom: 15px;
+      @include margin-right(340px);
+      h1 {
+        font-weight: normal;
+        font-size: 1.5em;
+        color: $text-color;
+      }
+    }
+
+    .ticket-messages {
+      @include margin-right(340px);
     }
   }
 
   position: relative;
-  @include padding-right(340px);
 
   .ticket-view-sidebar-wrapper {
     width: 330px;
-    position: absolute;
-    top: 0;
-    @include right(0);
+    float: $float-right;
   }
+
   // Small screens
   @media screen and (max-width: 760px) {
-    @include padding-right(0);
+    .ticket-view-content-container {
+      @include margin-right(0);
+
+      .header, .ticket-messages {
+        @include margin-right(0);
+      }
+    }
 
     .ticket-view-sidebar-wrapper {
       width: auto;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -81,13 +81,13 @@ class DbalSessionHandler implements \SessionHandlerInterface
      * @param Connection $con       A connection
      * @param string     $tableName Table name
      */
-    public function __construct(Connection $con, $tableName = 'session', VisitorIdentificationProvider $visitor_id_provider, TokenStorage $token_storage)
+    public function __construct(Connection $con, $tableName, VisitorIdentificationProvider $visitor_id_provider, TokenStorage $token_storage)
     {
-        $this->con     = $con;
-        $this->table   = $tableName;
-        $this->idCol   = 'sess_id';
-        $this->dataCol = 'sess_data';
-        $this->timeCol = 'sess_time';
+        $this->con                 = $con;
+        $this->table               = $tableName;
+        $this->idCol               = 'sess_id';
+        $this->dataCol             = 'sess_data';
+        $this->timeCol             = 'sess_time';
         $this->visitor_id_provider = $visitor_id_provider;
         $this->token_storage       = $token_storage;
     }

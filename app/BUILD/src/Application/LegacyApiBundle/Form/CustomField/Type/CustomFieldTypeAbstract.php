@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Form\CustomField\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -38,23 +39,23 @@ abstract class CustomFieldTypeAbstract extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        #------------------------------
-        # Basic fields
-        #------------------------------
+        //------------------------------
+        // Basic fields
+        //------------------------------
 
-        $builder->add('title', 'text', array('required' => true));
-        $builder->add('description', 'textarea', array('required' => false));
-        $builder->add('default_value', 'text', array('required' => false));
-        $builder->add('handler_class', 'hidden', array('required' => true));
-        $builder->add('validation_type', 'hidden', array('required' => false));
-        $builder->add('agent_validation_type', 'hidden', array('required' => false));
-        $builder->add('agent_validation_resolve', 'hidden', array('required' => false));
+        $builder->add('title', 'text', ['required' => true]);
+        $builder->add('description', 'textarea', ['required' => false]);
+        $builder->add('default_value', 'text', ['required' => false]);
+        $builder->add('handler_class', 'hidden', ['required' => true]);
+        $builder->add('validation_type', 'hidden', ['required' => false]);
+        $builder->add('agent_validation_type', 'hidden', ['required' => false]);
+        $builder->add('agent_validation_resolve', 'hidden', ['required' => false]);
 
-        $builder->add('required', 'checkbox', array('required' => false));
-        $builder->add('custom_css_classname', 'text', array('required' => false));
+        $builder->add('required', 'checkbox', ['required' => false]);
+        $builder->add('custom_css_classname', 'text', ['required' => false]);
 
-        $builder->add('is_enabled', 'checkbox', array('required' => false));
-        $builder->add('is_agent_field', 'checkbox', array('required' => false));
+        $builder->add('is_enabled', 'checkbox', ['required' => false]);
+        $builder->add('is_agent_field', 'checkbox', ['required' => false]);
 
         $this->buildCustomFieldForm($builder, $options);
     }

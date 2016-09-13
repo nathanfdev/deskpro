@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category EmailGateway
  */
+
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
@@ -137,9 +138,9 @@ class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
         $agent_pos_1 = strpos($this->body, '=== Enter your reply below this line ===');
         $agent_pos_2 = strpos($this->body, '=== Enter your reply above this line ===');
 
-        #------------------------------
-        # Agent markers
-        #------------------------------
+        //------------------------------
+        // Agent markers
+        //------------------------------
 
         if ($agent_pos_1 !== false && $agent_pos_2 !== false) {
             $this->logMessage('[TicketIncomingEmailMessageV3] read agent markers');
@@ -149,9 +150,9 @@ class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
                 '=== Enter your reply above this line ==='
             );
 
-        #------------------------------
-        # User email
-        #------------------------------
+        //------------------------------
+        // User email
+        //------------------------------
         } else {
             $this->logMessage('[TicketIncomingEmailMessageV3] no agent markers, must be a user email');
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\Entity\Person;
@@ -66,7 +67,7 @@ class PersonFieldManager extends FieldManager
 
     public function copyUsersourceData(Person $person, $raw_data, Usersource $usersource)
     {
-        $save_data = array();
+        $save_data = [];
 
         foreach ($this->getDefinedFields() as $field) {
             if ($field->handler_class != 'Application\\DeskPRO\\CustomFields\\Handler\\Data') {
@@ -85,7 +86,7 @@ class PersonFieldManager extends FieldManager
             // Reads the value and does some common input error correction:
             // - Arrays are separated by a slash or a dot: telephonenumber.0 or telephonenumber/0
             // - If the key isnt found as-is, we'll also try converting to lowercase and trying again (keys are typically lowercase)
-            foreach (array('/', '.') as $sep) {
+            foreach (['/', '.'] as $sep) {
                 $val = Arrays::keyAsPath($raw_data, $field_name, $sep, null);
 
                 if ($val === null) {

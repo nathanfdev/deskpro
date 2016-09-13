@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Orb\Input\Cleaner;
 
 use DpTest\DeskProTestCase;
@@ -56,7 +57,7 @@ class BasicXssTest extends DeskProTestCase
     {
         return array_map(
             function ($f) {
-                return array($f);
+                return [$f];
             },
             $this->_loadFileList()
         );
@@ -79,7 +80,7 @@ class BasicXssTest extends DeskProTestCase
         );
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function _normalizeResult($r)
     {
@@ -92,7 +93,7 @@ class BasicXssTest extends DeskProTestCase
     private function _loadFileList()
     {
         $dir   = dir(__DIR__.'/xss_data');
-        $files = array();
+        $files = [];
 
         while (false !== ($f = $dir->read())) {
             if (preg_match('#\.txt$#', $f)) {
@@ -119,9 +120,9 @@ class BasicXssTest extends DeskProTestCase
             throw new \Exception("$f is not properly formatted");
         }
 
-        return array(
+        return [
             'source' => trim($parts[0]),
             'result' => trim($parts[1]),
-        );
+        ];
     }
 }

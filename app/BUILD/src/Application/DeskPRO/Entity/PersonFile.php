@@ -98,9 +98,9 @@ class PersonFile extends \Application\DeskPRO\Domain\DomainObject
         return nl2br(htmlspecialchars($this->note), true);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

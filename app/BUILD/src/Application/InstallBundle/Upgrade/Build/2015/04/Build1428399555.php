@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Doctrine\DBAL\Connection;
@@ -63,7 +64,7 @@ class Build1428399555 extends AbstractBuild
                 SELECT id, ticket_id, message
                 FROM tickets_messages
                 WHERE id IN (?)
-            ', array($batch_ids), 'id', array(Connection::PARAM_INT_ARRAY));
+            ', [$batch_ids], 'id', [Connection::PARAM_INT_ARRAY]);
 
             foreach ($texts as $mid => $info) {
                 $msg       = $info['message'];
@@ -74,17 +75,17 @@ class Build1428399555 extends AbstractBuild
                     $msg_fixed = str_replace('class="dp-signature-start"', 'style="margin:0;padding:0;"', $msg_fixed);
 
                     $this->out("Fixing message $mid");
-                    $db->update('tickets_messages', array('message' => $msg_fixed), array('id' => $mid));
-                    $db->insert('tickets_logs', array(
+                    $db->update('tickets_messages', ['message' => $msg_fixed], ['id' => $mid]);
+                    $db->insert('tickets_logs', [
                         'ticket_id'   => $ticket_id,
                         'action_type' => 'message_edit',
                         'id_object'   => $mid,
-                        'details'     => serialize(array(
+                        'details'     => serialize([
                             'message_id'       => $mid,
                             'old_message'      => $msg,
                             'old_full_message' => '',
-                        )),
-                    ));
+                        ]),
+                    ]);
                 }
             }
         }

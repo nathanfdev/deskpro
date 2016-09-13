@@ -35,7 +35,7 @@ class Build1465819829 extends AbstractBuild
         $this->out('Upgrade ban ip table');
         $db        = $this->getDbConnection('default');
         $bans      = $db->fetchAll('SELECT * from `ban_ips`');
-        $createSql = <<<SQL
+        $createSql = <<<'SQL'
             CREATE TABLE ban_ips (
               id INT AUTO_INCREMENT NOT NULL, 
               banned_ip VARCHAR(100) NOT NULL, 

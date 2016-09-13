@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AuditBundle;
 
 use DeskPRO\Bundle\AuditBundle\DependencyInjection\Compiler\FilterServiceCompilerPass;

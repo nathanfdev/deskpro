@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Translate
  */
+
 namespace Application\DeskPRO\Translate;
 
 /**
@@ -41,20 +42,20 @@ interface HasPhraseName
     /**
      * Return a unique ID that we can use to look up translations for this object.
      *
-     * @param string    $property  If supplied, the property on the object we want to translate.
+     * @param string    $property  If supplied, the property on the object we want to translate
      * @param Translate $translate The translate object requesting
      *
      * @return string
      */
-    public function getPhraseName($property = null, Translate $translate);
+    public function getPhraseName($property, Translate $translate);
 
     /**
      * Get the default value phrase for the object.
      *
-     * @param string    $property  If supplied, the property on the object we want to translate.
+     * @param string    $property  If supplied, the property on the object we want to translate
      * @param Translate $translate The translate object requesting
      *
      * @return string
      */
-    public function getPhraseDefault($property = null, Translate $translate);
+    public function getPhraseDefault($property, Translate $translate);
 }

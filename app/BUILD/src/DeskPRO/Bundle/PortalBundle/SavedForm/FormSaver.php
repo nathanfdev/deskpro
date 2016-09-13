@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\SavedForm;
 
 use Application\DeskPRO\Entity\Person;
@@ -98,11 +99,11 @@ class FormSaver
      */
     public function getSavedForms(Person $person)
     {
-        $saved_forms = array();
+        $saved_forms = [];
 
-        $external_codes = $this->session->get(static::SAVED_FORMS_SESSION_KEY, array());
+        $external_codes = $this->session->get(static::SAVED_FORMS_SESSION_KEY, []);
         if (!is_array($external_codes)) {
-            $external_codes = array();
+            $external_codes = [];
         }
 
         return $this->saved_form_repo->getForPerson($person, $external_codes);
@@ -145,10 +146,10 @@ class FormSaver
 
         $saved_form = new SavedForm($data_type, SavedForm::INTENTION_LOGIN, $person);
         $saved_form->setFormData($data);
-        $saved_form->setMetaData(array(
+        $saved_form->setMetaData([
             'route'        => $route,
             'route_params' => $route_params,
-        ));
+        ]);
 
         // if we can, make it easier to login when prompted to login
         if ($email = $person->getEmailAddress()) {
@@ -162,9 +163,9 @@ class FormSaver
         $this->appendToSavedForms($saved_form);
 
         return new RedirectResponse(
-            $this->generator->generate('portal_login', array(
+            $this->generator->generate('portal_login', [
                 'saved_form' => $saved_form->getExternalCode(),
-            ))
+            ])
         );
     }
 
@@ -180,7 +181,7 @@ class FormSaver
      * @param Request       $request   the request that was used to submit the form
      * @param string|null   $name
      * @param string|null   $email
-     * @param Person        $person    - optional, a Person object if we know it. most calls to this will be for email verification and we won't know the person directly though.
+     * @param Person        $person    - optional, a Person object if we know it. most calls to this will be for email verification and we won't know the person directly though
      *
      * @return SavedForm
      */
@@ -195,12 +196,12 @@ class FormSaver
 
         $saved_form = new SavedForm($data_type, SavedForm::INTENTION_VERIFY_EMAIL, $person); // may or may not be a person, but if there is saved it to the form
         $saved_form->setFormData($data);
-        $saved_form->setMetaData(array(
+        $saved_form->setMetaData([
             'route'        => $route,
             'route_params' => $route_params,
             'email'        => $email,
             'name'         => $name,
-        ));
+        ]);
 
         // if we can, make it easier to login when prompted to login
         if ($email) {
@@ -237,9 +238,9 @@ class FormSaver
         }
 
         // remove it from the in-session list
-        $existing = $this->session->get(static::SAVED_FORMS_SESSION_KEY, array());
+        $existing = $this->session->get(static::SAVED_FORMS_SESSION_KEY, []);
         if (!is_array($existing)) {
-            $existing = array();
+            $existing = [];
         }
         $new_existing = array_filter(
             $existing,
@@ -270,10 +271,10 @@ class FormSaver
      */
     protected function appendToSavedForms(SavedForm $saved_form)
     {
-        $existing = $this->session->get(static::SAVED_FORMS_SESSION_KEY, array());
+        $existing = $this->session->get(static::SAVED_FORMS_SESSION_KEY, []);
 
         if (!is_array($existing)) {
-            $existing = array();
+            $existing = [];
         }
 
         if (!in_array($saved_form->getExternalCode(), $existing)) {
@@ -295,7 +296,7 @@ class FormSaver
         // auth codes from the BlobType form type and then "insert" them
         // into $data
         $form_views          = $form->createView();
-        $attachment_raw_data = array();
+        $attachment_raw_data = [];
         foreach ($form_views as $name => $form_view) {
             if ($name === 'attachments') {
                 foreach ($form_view->children as $attachment_view) {
@@ -309,7 +310,7 @@ class FormSaver
         if (count($attachment_raw_data)) {
             $accessor = PropertyAccess::createPropertyAccessor();
             foreach ($attachment_raw_data as $full_name => $value) {
-                $path     = array();
+                $path     = [];
                 $exploded = explode('[', $full_name);
                 foreach ($exploded as $piece) {
                     $path[] = '['.$piece.(strpos($piece, ']') ? '' : ']');

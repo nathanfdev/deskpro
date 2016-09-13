@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -45,11 +46,11 @@ class ChatPingTimeout extends AbstractJob
     public function run()
     {
         /** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
-        $chat_manager = App::getSystemObject('user_chat_manager', array('session' => null));
+        $chat_manager = App::getSystemObject('user_chat_manager', ['session' => null]);
 
-        #------------------------------
-        # Agent timeouts
-        #------------------------------
+        //------------------------------
+        // Agent timeouts
+        //------------------------------
 
         $cutoff = date('Y-m-d H:i:s', time() - 20); // 20 secs for agents
 
@@ -59,7 +60,7 @@ class ChatPingTimeout extends AbstractJob
             FROM sessions
             JOIN people ON people.id = sessions.person_id
             WHERE people.is_agent = 1 AND sessions.date_last > ?
-        ', array($cutoff));
+        ', [$cutoff]);
 
         $agent_ids[] = 0;
 
@@ -68,7 +69,7 @@ class ChatPingTimeout extends AbstractJob
             SELECT c.id, c.agent_id
             FROM chat_conversations c
             WHERE c.status = 'open' AND c.agent_id NOT IN (?)
-        ", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
+        ", [$agent_ids], [Connection::PARAM_INT_ARRAY]);
 
         $count_agents = 0;
         foreach ($timeouts as $chat_id => $agent_id) {
@@ -82,9 +83,9 @@ class ChatPingTimeout extends AbstractJob
 
         \Application\DeskPRO\Chat\UserChat\AvailableTrigger::update();
 
-        #------------------------------
-        # User timeouts
-        #------------------------------
+        //------------------------------
+        // User timeouts
+        //------------------------------
 
         $cutoff = time() - 50;
 
@@ -93,7 +94,7 @@ class ChatPingTimeout extends AbstractJob
             FROM chat_conversations c
             JOIN chat_conversation_pings AS p ON (p.chat_id = c.id AND p.ping_time > ?)
             WHERE c.status = 'open' AND c.is_agent = 0 AND p.id IS NULL
-        ", array($cutoff));
+        ", [$cutoff]);
 
         $count_users = 0;
         while ($chat_id = array_pop($chat_ids)) {
@@ -104,9 +105,9 @@ class ChatPingTimeout extends AbstractJob
             $this->logger->log("User timed out in chat {$chat->id}", Logger::INFO);
         }
 
-        #------------------------------
-        # Max waiting times
-        #------------------------------
+        //------------------------------
+        // Max waiting times
+        //------------------------------
 
         $max_time   = App::getSetting('core_chat.max_wait_time');
         $count_wait = 0;
@@ -117,7 +118,7 @@ class ChatPingTimeout extends AbstractJob
                 SELECT id
                 FROM chat_conversations c
                 WHERE c.status = 'open' AND c.date_user_waiting < ?
-            ", array($timesnip));
+            ", [$timesnip]);
 
             while ($chat_id = array_pop($chat_ids)) {
                 $chat = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
@@ -129,9 +130,9 @@ class ChatPingTimeout extends AbstractJob
             }
         }
 
-        #------------------------------
-        # Abandoned chats after user timeout
-        #------------------------------
+        //------------------------------
+        // Abandoned chats after user timeout
+        //------------------------------
 
         $max_time        = App::getSetting('core_chat.abandoned_time');
         $count_abandoned = 0;
@@ -142,7 +143,7 @@ class ChatPingTimeout extends AbstractJob
                 SELECT id
                 FROM chat_conversations c
                 WHERE c.status = 'ended' AND c.ended_by = 'timeout' AND c.date_ended < ?
-            ", array($timesnip));
+            ", [$timesnip]);
 
             while ($chat_id = array_pop($chat_ids)) {
                 $chat = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
@@ -155,11 +156,11 @@ class ChatPingTimeout extends AbstractJob
         }
 
         if ($count_agents || $count_users) {
-            $this->logStatus("Chat timeouts: {$count_agents} agents, {$count_users} users, {$count_wait} wait", array(
+            $this->logStatus("Chat timeouts: {$count_agents} agents, {$count_users} users, {$count_wait} wait", [
                 'count_agents' => $count_agents,
                 'count_users'  => $count_users,
                 'count_wait'   => $count_wait,
-            ));
+            ]);
         }
     }
 }

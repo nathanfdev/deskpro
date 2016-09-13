@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.change-password'                 => 'Ändra Lösenord',
     'portal.account.change-password-btn'             => 'Uppdatera Lösenord',
     'portal.account.email-add'                       => 'Lägg till mailadress',
@@ -418,4 +418,4 @@ return array(
     'user.time.time_x_second'                        => '{0} sekunder',
     'user.time.time_x_week'                          => '{0} veckor',
     'user.time.time_x_year'                          => '{0} år',
-);
+];

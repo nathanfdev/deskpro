@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Application\Cache;
 
 use Application\DeskPRO\Cache\ConvenientCache;
@@ -72,7 +73,7 @@ class ConvenientCacheTest extends DeskProTestCase
         $adapter->shouldReceive('set')->with('key', 'some_val')->once();
 
         $cache = new ConvenientCache($adapter);
-        $val   = $cache->get('key', array($this, 'getReturnVal'));
+        $val   = $cache->get('key', [$this, 'getReturnVal']);
 
         $this->assertEquals('some_val', $val);
     }
@@ -87,7 +88,7 @@ class ConvenientCacheTest extends DeskProTestCase
         $adapter = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
         $adapter->shouldReceive('has')->with('key')->andReturn(false)->once();
 
-        $not_callable = array('some_key_that_is_not_a_class', 'getReturnVal');
+        $not_callable = ['some_key_that_is_not_a_class', 'getReturnVal'];
 
         $adapter->shouldReceive('set')->with('key', $not_callable)->once();
 

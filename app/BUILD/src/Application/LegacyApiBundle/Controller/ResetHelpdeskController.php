@@ -43,7 +43,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class ResetHelpdeskController extends AbstractController implements ProtectedControllerInterface
 {
-    public static $types = array(
+    public static $types = [
         'users',
         'agents',
         'tickets',
@@ -62,7 +62,7 @@ class ResetHelpdeskController extends AbstractController implements ProtectedCon
         'labels',
         'snippets',
         'apps',
-    );
+    ];
 
     /**
      * {@inheritdoc}
@@ -97,9 +97,9 @@ class ResetHelpdeskController extends AbstractController implements ProtectedCon
                 continue;
             }
 
-            $job = $queue->add('reset.'.$v, array(
+            $job = $queue->add('reset.'.$v, [
                 'context_person_id' => $this->person['id'],
-            ));
+            ]);
 
             if ($last) {
                 $job->depends_on_job = $last;
@@ -119,18 +119,18 @@ class ResetHelpdeskController extends AbstractController implements ProtectedCon
 
     protected function getStatus()
     {
-        $res = array('waiting' => false);
+        $res = ['waiting' => false];
         $rep = $this->em->getRepository('DeskPRO:Job');
 
         foreach (self::$types as $type) {
-            if (!$jobs = $rep->findBy(array('type' => 'reset.'.$type), array('date_created' => 'desc'), 1)) {
+            if (!$jobs = $rep->findBy(['type' => 'reset.'.$type], ['date_created' => 'desc'], 1)) {
                 continue;
             }
             $status = $jobs[0]['status'];
-            if (in_array($status, array('rejected', 'aborted'))) {
+            if (in_array($status, ['rejected', 'aborted'])) {
                 $status = 'error';
             }
-            if (in_array($status, array('inserting', 'reserved', 'processing'))) {
+            if (in_array($status, ['inserting', 'reserved', 'processing'])) {
                 $status = 'waiting';
             }
             $res[$type] = $status;

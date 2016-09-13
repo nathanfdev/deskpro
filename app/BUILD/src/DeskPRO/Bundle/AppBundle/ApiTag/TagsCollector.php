@@ -82,9 +82,6 @@ class TagsCollector
         return $this->hierarchyCreator;
     }
 
-    /**
-     *
-     */
     public function resetHierarchy()
     {
         $this->hierarchyCreator = new HierarchyCreator();

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\FragmentRouter;
@@ -278,11 +279,17 @@ function Orb_Util_TimeAgo_getPhraseFor(type, num, ago)
 }
 JS;
 
-        $ls     = $this->container->getLanguageData();
-        $locale = null;
-        if ($defaultLanguage = $ls->getDefault()) {
-            $locale = $defaultLanguage['locale'];
+        $person = App::getCurrentPerson();
+        if ($person && $person->getLanguage()) {
+            $locale = $person->getLanguage()->getLocale();
+        } else {
+            $ls     = $this->container->getLanguageData();
+            $locale = null;
+            if ($defaultLanguage = $ls->getDefault()) {
+                $locale = $defaultLanguage['locale'];
+            }
         }
+
         $js[] = sprintf('window.DESKPRO_DEFAULT_LANG = "%s";', $locale);
 
         $js = implode("\n", $js);
@@ -897,9 +904,9 @@ JS;
         $code      = $this->session->getEntity()->generateSecurityToken('password_confirm'.$this->person->secret_string);
         $valid_res = $this->createJsonResponse(['code' => $code]);
 
-        #------------------------------
-        # Auth local
-        #------------------------------
+        //------------------------------
+        // Auth local
+        //------------------------------
 
         $adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
         $adapter->setCredentials($this->person->getPrimaryEmailAddress(), $password);
@@ -909,9 +916,9 @@ JS;
             return $valid_res;
         }
 
-        #------------------------------
-        # Auth usersources that accept local input
-        #------------------------------
+        //------------------------------
+        // Auth usersources that accept local input
+        //------------------------------
 
         $usersources = $this->em->getRepository(Usersource::class)->getLocalInputUsersources();
         foreach ($usersources as $us) {

@@ -156,10 +156,10 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         if ($config->getOption('department_id')) {
-            $hierarchy  = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($config->getOption('person'));
-            $choiceList = $hierarchy->getChoiceList();
+            $hierarchy    = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($config->getOption('person'));
+            $choiceLoader = $hierarchy->getChoiceLoader();
 
-            $choice = current($choiceList->getChoicesForValues([$config->getOption('department_id')]));
+            $choice = current($choiceLoader->loadChoicesForValues([$config->getOption('department_id')]));
             if ($choice) {
                 $data->setDepartment($choice->getData());
             }

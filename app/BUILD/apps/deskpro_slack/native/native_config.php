@@ -26,11 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
-    'api' => array(
+return [
+    'api' => [
         'package_request_handler' => 'deskpro_slack\\RequestHandler\\PackageRequestHandler',
-    ),
-    'install' => array(
+    ],
+    'install' => [
         'handler' => 'deskpro_slack\\InstallerHandler',
-    ),
-);
+    ],
+];

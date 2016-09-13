@@ -893,7 +893,7 @@ class TicketMessage extends DomainObject
     /**
      * A nice and easy way to retrieve all participants in the ticket. Mainly for display.
      *
-     * @return array the list of participants as an array of strings.
+     * @return array the list of participants as an array of strings
      */
     public function getCcedParticipants()
     {
@@ -942,9 +942,9 @@ class TicketMessage extends DomainObject
         $this->setModelField('ip_address', $ip_address);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

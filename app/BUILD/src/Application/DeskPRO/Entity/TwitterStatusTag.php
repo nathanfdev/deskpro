@@ -107,9 +107,9 @@ class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
         return $entity;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

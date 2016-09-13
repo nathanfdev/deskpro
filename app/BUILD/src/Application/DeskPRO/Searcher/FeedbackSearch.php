@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -86,7 +86,7 @@ class FeedbackSearch extends SearcherAbstract
         $ids = $this->getMatches($limit);
 
         if (!$ids) {
-            return array();
+            return [];
         }
 
         return App::getEntityRepository('DeskPRO:Feedback')->getByResultIds($ids);
@@ -128,9 +128,9 @@ class FeedbackSearch extends SearcherAbstract
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-        #------------------------------
-        # Add joins
-        #------------------------------
+        //------------------------------
+        // Add joins
+        //------------------------------
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
@@ -146,9 +146,9 @@ class FeedbackSearch extends SearcherAbstract
             $sql .= " $order_join ";
         }
 
-        #------------------------------
-        # Add wheres
-        #------------------------------
+        //------------------------------
+        // Add wheres
+        //------------------------------
 
         if ($this->include_hidden) {
             $sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp')) AND ";
@@ -182,9 +182,9 @@ class FeedbackSearch extends SearcherAbstract
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-        #------------------------------
-        # Add joins
-        #------------------------------
+        //------------------------------
+        // Add joins
+        //------------------------------
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
@@ -201,9 +201,9 @@ class FeedbackSearch extends SearcherAbstract
             $order_by = $real_order_by;
         }
 
-        #------------------------------
-        # Add wheres
-        #------------------------------
+        //------------------------------
+        // Add wheres
+        //------------------------------
 
         if ($this->include_hidden) {
             $sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp')) AND ";
@@ -241,7 +241,7 @@ class FeedbackSearch extends SearcherAbstract
     {
         // Set a default if none
         if (!$this->order_by) {
-            $this->order_by = array('id', 'DESC');
+            $this->order_by = ['id', 'DESC'];
         }
 
         list($type, $dir) = $this->order_by;
@@ -262,7 +262,7 @@ class FeedbackSearch extends SearcherAbstract
             case 'i-voted':
             case 'i_voted':
                 if (!$this->person) {
-                    $this->order_by = array('id', 'DESC');
+                    $this->order_by = ['id', 'DESC'];
 
                     return $this->getOrderBy();
                 }
@@ -275,10 +275,10 @@ class FeedbackSearch extends SearcherAbstract
                     return $order_by;
                 }
 
-                $order_by = array(
+                $order_by = [
                     $join,
                     'ORDER BY ratings.date_created DESC, feedback.id DESC',
-                );
+                ];
                 break;
 
             case 'popular':
@@ -303,8 +303,8 @@ class FeedbackSearch extends SearcherAbstract
     {
         $db = App::getDbRead('search.filter.feedback');
 
-        $wheres = array();
-        $joins  = array();
+        $wheres = [];
+        $joins  = [];
 
         foreach ($this->terms as $info) {
             $join_id   = Util::requestUniqueId();
@@ -320,7 +320,7 @@ class FeedbackSearch extends SearcherAbstract
 
                     if ($op == self::OP_CONTAINS || is_array($choice)) {
                         if (!is_array($choice)) {
-                            $choice = array($choice);
+                            $choice = [$choice];
                         }
                         $wheres[] = $this->_choiceMatch('feedback.id', 'is', $choice);
                     } else {
@@ -346,9 +346,9 @@ class FeedbackSearch extends SearcherAbstract
 
                 case self::TERM_STATUS:
 
-                    $cats         = array();
-                    $types        = array();
-                    $hidden_types = array();
+                    $cats         = [];
+                    $types        = [];
+                    $hidden_types = [];
 
                     foreach ((array) $choice as $c) {
                         if (strpos($c, '.') !== false) {
@@ -371,11 +371,11 @@ class FeedbackSearch extends SearcherAbstract
                     // Visible is a special type name
                     if (($k = array_search('visible', $types)) !== false) {
                         unset($types[$k]);
-                        $types = array_merge($types, array('new', 'active', 'closed'));
+                        $types = array_merge($types, ['new', 'active', 'closed']);
                         $types = array_unique($types);
                     }
 
-                    $part_where = array();
+                    $part_where = [];
                     if ($cats) {
                         $part_where[] = $this->_choiceMatch('feedback.status_category_id', $op, $cats);
                     }
@@ -405,7 +405,7 @@ class FeedbackSearch extends SearcherAbstract
                         break;
                     }
 
-                    $w   = array();
+                    $w   = [];
                     $w[] = '('.$this->_stringSearch('feedback.title', $op, $string, $type).')';
                     $w[] = '('.$this->_stringSearch('feedback.content', $op, $string, $type).')';
 
@@ -415,7 +415,7 @@ class FeedbackSearch extends SearcherAbstract
                 case self::TERM_CATEGORY:
                 case self::TERM_CATEGORY_SPECIFIC:
                     $base_ids = (array) ((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
-                    $ids      = array();
+                    $ids      = [];
 
                     if ($term == self::TERM_CATEGORY_SPECIFIC) {
                         $ids = $base_ids;
@@ -460,7 +460,7 @@ class FeedbackSearch extends SearcherAbstract
                 case self::TERM_LABEL:
                     $this->_normalizeOpAndChoice($op, $choice);
 
-                    $choices_in = array();
+                    $choices_in = [];
                     if (is_array($choice)) {
                         foreach ((array) $choice as $c) {
                             $choices_in[] = $db->quote($c);
@@ -470,44 +470,44 @@ class FeedbackSearch extends SearcherAbstract
 
                     switch ($op) {
                         case self::OP_IS:
-                            $joins[] = array(
+                            $joins[] = [
                                 'labels_feedback',
                                 "LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id)",
-                            );
+                            ];
                             $wheres[] = "$join_name.label = ".$db->quote($choice);
                             break;
                         case self::OP_NOT:
-                            $joins[] = array(
+                            $joins[] = [
                                 'labels_feedback',
                                 "LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id AND $join_name.label = '.$db->quote($choice).')",
-                            );
+                            ];
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
                         case self::OP_CONTAINS:
-                            $joins[] = array(
+                            $joins[] = [
                                 'labels_feedback',
                                 "LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id)",
-                            );
+                            ];
                             $wheres[] = "$join_name.label IN ($choices_in)";
                             break;
 
                         case self::OP_NOTCONTAINS:
-                            $joins[] = array(
+                            $joins[] = [
                                 'labels_feedback',
                                 "LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id AND $join_name.label IN ($choices_in)",
-                            );
+                            ];
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
                     }
-                    break;// end labels
+                    break; // end labels
             }
         }
 
         $joins = array_unique($joins);
 
-        return array(
+        return [
             'joins'  => $joins,
             'wheres' => $wheres,
-        );
+        ];
     }
 }

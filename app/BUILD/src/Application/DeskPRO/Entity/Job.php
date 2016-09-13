@@ -116,7 +116,7 @@ class Job extends DomainObject
      * error: The job has stopped due to error.
      * rejected: The job has been rejected and will not be retried.
      * delegated: The job has been delegated to an external job service.
-     * aborted: The job was manually aborted/cancelled by the admin.
+     * aborted: The job was manually aborted/cancelled by the admin
      *
      * @JMS\Expose()
      * @JMS\Type("string")
@@ -130,7 +130,7 @@ class Job extends DomainObject
      *
      * For example, 'error' might have a status_code with 'server_error'
      * for an exception, or maybe 'expired' to mean that the job can't complete because necessary data is no longer
-     * available.
+     * available
      *
      * @JMS\Expose()
      * @JMS\Type("string")
@@ -143,7 +143,7 @@ class Job extends DomainObject
      * @var \DateTime
      *
      * We'll use this in processors to prevent supervisors from
-     * considering the job a timeout.
+     * considering the job a timeout
      *
      * @JMS\Expose()
      * @JMS\Type("DateTime")
@@ -257,7 +257,7 @@ class Job extends DomainObject
      */
     protected $worker_id;
 
-    public function __construct($type, array $data = array())
+    public function __construct($type, array $data = [])
     {
         $this->date_created  = new \DateTime();
         $this->date_next_try = new \DateTime();
@@ -269,9 +269,9 @@ class Job extends DomainObject
         $this->data          = $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

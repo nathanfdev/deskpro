@@ -64,6 +64,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const HANDLER_CLASS_DATETIME = Handler\DateTime::class;
     const HANDLER_CLASS_DISPLAY  = Handler\Display::class;
     const HANDLER_CLASS_HIDDEN   = Handler\Hidden::class;
+    const HANDLER_CLASS_DATA     = Handler\Data::class;
 
     const TYPE_TEXT     = 'text';
     const TYPE_TEXTAREA = 'textarea';
@@ -73,6 +74,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const TYPE_DATETIME = 'datetime';
     const TYPE_DISPLAY  = 'display';
     const TYPE_HIDDEN   = 'hidden';
+    const TYPE_DATA     = 'data';
 
     /**
      * The unique ID.
@@ -588,7 +590,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public function getAllChildTitles()
     {
-        $titles = array();
+        $titles = [];
         foreach ($this->children as $child) {
             $titles[$child->getId()] = $child->getTitle();
         }
@@ -928,7 +930,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         } elseif ($this->isMulti()) {
             if ($this->default_value) {
                 $ids = explode(',', $this->default_value);
-                $ids = array_map(function ($id) { return (int) $id; }, $ids);
+                $ids = array_map(function ($id) {
+                    return (int) $id;
+                }, $ids);
 
                 return $ids;
             }
@@ -1146,7 +1150,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      *
      * @return string
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -1164,7 +1168,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      *
      * @return string
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'description') {
             return $this->description;
@@ -1184,8 +1188,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         $data['type_name'] = $this->getTypeName();
 
         if ($data['type_name'] == 'choice') {
-            $data['choices'] = array();
-            $has_children    = $map    = array();
+            $data['choices'] = [];
+            $has_children    = $map    = [];
 
             foreach ($this->children as $c) {
                 $map[$c['id']] = $c;

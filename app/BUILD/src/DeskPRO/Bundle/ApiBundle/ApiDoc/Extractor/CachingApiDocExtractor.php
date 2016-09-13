@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -91,7 +91,7 @@ class CachingApiDocExtractor extends ApiDocExtractor
         $cache = $this->getViewCache($view);
 
         if (!$cache->isFresh()) {
-            $resources = array();
+            $resources = [];
             foreach ($this->getRoutes() as $route) {
                 if (null !== ($method = $this->getReflectionMethod($route->getDefault('_controller')))
                     && null !== ($annotation = $this->reader->getMethodAnnotation($method, self::ANNOTATION_CLASS))) {

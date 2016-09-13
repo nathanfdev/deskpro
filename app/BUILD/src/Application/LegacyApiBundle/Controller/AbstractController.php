@@ -411,7 +411,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * @param ConstraintViolationList|ConstraintViolationList[] $errors A violation list, or an array of violation lists keyed by some prefix.
+     * @param ConstraintViolationList|ConstraintViolationList[] $errors A violation list, or an array of violation lists keyed by some prefix
      * @param array                                             $extra  Any other extra data you want to return
      * @param int                                               $status The HTTP status code to return
      *

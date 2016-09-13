@@ -54,17 +54,17 @@ class DeskproBlobStorage implements Loggable
     /**
      * @var \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter[]
      */
-    protected $adapters = array();
+    protected $adapters = [];
 
     /**
      * @var string[]
      */
-    protected $disabled_adapters = array();
+    protected $disabled_adapters = [];
 
     /**
      * @var array
      */
-    protected $tag_to_adapter = array();
+    protected $tag_to_adapter = [];
 
     /**
      * @var \Application\DeskPRO\DBAL\Connection
@@ -86,7 +86,7 @@ class DeskproBlobStorage implements Loggable
      */
     public function __construct(EntityManager $em)
     {
-        $this->adapters = array();
+        $this->adapters = [];
         $this->em       = $em;
         $this->db       = $em->getConnection();
         $this->logger   = new Logger();
@@ -256,7 +256,7 @@ class DeskproBlobStorage implements Loggable
      */
     private function _getOrderedAdaptersForBlobArray(array $blob_array)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($this->adapters as $id => $ad) {
             if (isset($this->disabled_adapters[$id])) {
@@ -322,9 +322,9 @@ class DeskproBlobStorage implements Loggable
         $blob = new Blob(
             $blob_entity_tmp->filename,
             $blob_entity_tmp->content_type,
-            array(
+            [
                 'blob_id' => $blob_entity_tmp->id,
-            )
+            ]
         );
 
         $blob->setMeta('batch', $batch);
@@ -393,7 +393,7 @@ class DeskproBlobStorage implements Loggable
         $blob_update = $blob_array;
         unset($blob_update['id']);
 
-        $this->db->update('blobs', $blob_update, array('id' => $blob_array['id']));
+        $this->db->update('blobs', $blob_update, ['id' => $blob_array['id']]);
 
         $this->logger->logDebug('[DeskproBlobStorage] (saveBlobRecordFromFile) Save success');
 
@@ -470,9 +470,9 @@ class DeskproBlobStorage implements Loggable
         $blob = new Blob(
             $blob_entity_tmp->filename,
             $blob_entity_tmp->content_type,
-            array(
+            [
                 'blob_id' => $blob_entity_tmp->id,
-            )
+            ]
         );
 
         $blob->setMeta('batch', $batch);
@@ -541,7 +541,7 @@ class DeskproBlobStorage implements Loggable
         $blob_update = $blob_array;
         unset($blob_update['id']);
 
-        $this->db->update('blobs', $blob_update, array('id' => $blob_array['id']));
+        $this->db->update('blobs', $blob_update, ['id' => $blob_array['id']]);
 
         $this->logger->logDebug('[DeskproBlobStorage] (saveBlobRecordFromString) Save success');
 
@@ -690,7 +690,7 @@ class DeskproBlobStorage implements Loggable
      */
     public function copyBlobRowIdToString($blob_row_id)
     {
-        $blob_row = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', array($blob_row_id));
+        $blob_row = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', [$blob_row_id]);
         if (!$blob_row) {
             throw new BlobStorageException("Could not find blob with ID $blob_row_id", BlobStorageException::INVALID_BLOB_ID);
         }
@@ -743,7 +743,7 @@ class DeskproBlobStorage implements Loggable
      * @param Blob   $blob
      * @param string $adapter_id
      * @param bool   $ex_on_error Throw an exception if there's an error (useful if you want raw exception from storage adapter)
-     *                            Otherwise, you can still check error state based on the return value.
+     *                            Otherwise, you can still check error state based on the return value
      *
      * @throws \Exception
      *
@@ -774,7 +774,7 @@ class DeskproBlobStorage implements Loggable
     /**
      * @param BlobEntity $blob_entity
      * @param bool       $ex_on_error Throw an exception if there's an error (useful if you want raw exception from storage adapter)
-     *                                Otherwise, you can still check error state based on the return value.
+     *                                Otherwise, you can still check error state based on the return value
      *
      * @throws \Exception
      *
@@ -807,7 +807,7 @@ class DeskproBlobStorage implements Loggable
     /**
      * @param array $blob_row
      * @param bool  $ex_on_error Throw an exception if there's an error (useful if you want raw exception from storage adapter)
-     *                           Otherwise, you can still check error state based on the return value.
+     *                           Otherwise, you can still check error state based on the return value
      *
      * @throws \Exception
      *
@@ -821,7 +821,7 @@ class DeskproBlobStorage implements Loggable
 
         try {
             $this->deleteBlob($blob, $blob_row['storage_loc']);
-            $this->db->delete('blobs', array('id' => $blob_row['id']));
+            $this->db->delete('blobs', ['id' => $blob_row['id']]);
         } catch (\Exception $e) {
             $this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRow) Delete failed: {$e->getCode()} {$e->getMessage()}");
             if ($ex_on_error) {
@@ -843,7 +843,7 @@ class DeskproBlobStorage implements Loggable
      */
     public function deleteBlobRowId($blob_row_id)
     {
-        $blob_row = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', array($blob_row_id));
+        $blob_row = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', [$blob_row_id]);
         if (!$blob_row) {
             return;
         }
@@ -861,9 +861,9 @@ class DeskproBlobStorage implements Loggable
         $blob = new Blob(
             $blob_entity->filename,
             $blob_entity->content_type,
-            array(
+            [
                 'blob_id' => $blob_entity->id,
-            )
+            ]
         );
         $blob->setPath($blob_entity->save_path);
         if ($blob_entity->file_url) {
@@ -885,9 +885,9 @@ class DeskproBlobStorage implements Loggable
         $blob = new Blob(
             $blob_row['filename'],
             $blob_row['content_type'],
-            array(
+            [
                 'blob_id' => $blob_row['id'],
-            )
+            ]
         );
         $blob->setPath($blob_row['save_path']);
         if ($blob_row['file_url']) {
@@ -916,11 +916,11 @@ class DeskproBlobStorage implements Loggable
             $authcode = $blob_entity->getId().DpStrings::random(15, Strings::CHARS_KEY_ALPHA).'0';
         }
 
-        $blobauth_moved = array(
+        $blobauth_moved = [
             'old_authcode' => $blob_entity->authcode,
             'new_authcode' => $authcode,
             'filename'     => $blob_entity->filename,
-        );
+        ];
 
         $blob->setMeta('authcode', $authcode);
         $blob->setMeta('batch', $batch);

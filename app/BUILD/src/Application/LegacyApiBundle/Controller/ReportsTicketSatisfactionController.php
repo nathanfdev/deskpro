@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,9 +39,9 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  */
 class ReportsTicketSatisfactionController extends AbstractController
 {
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction($page)
     {
@@ -52,20 +52,20 @@ class ReportsTicketSatisfactionController extends AbstractController
         $html_vars                   = $reports_ticket_satisfaction->getVarsForFeedHtmlView($page);
 
         return $this->createApiResponse(
-            array(
+            [
                  'page'      => $html_vars['page'],
                  'num_pages' => $html_vars['num_pages'],
                  'html'      => $this->renderView(
                      'ReportsInterfaceBundle:TicketSatisfaction:results-feed.html.twig',
                      $html_vars
                  ),
-            )
+            ]
         );
     }
 
-    ####################################################################################################################
-    # summary
-    ####################################################################################################################
+    //###################################################################################################################
+    // summary
+    //###################################################################################################################
 
     public function summaryAction($date)
     {
@@ -76,12 +76,12 @@ class ReportsTicketSatisfactionController extends AbstractController
         $html_vars                   = $reports_ticket_satisfaction->getVarsForSummaryHtmlView($date);
 
         return $this->createApiResponse(
-            array(
+            [
                  'html' => $this->renderView(
                      'ReportsInterfaceBundle:TicketSatisfaction:results-summary.html.twig',
                      $html_vars
                  ),
-            )
+            ]
         );
     }
 }

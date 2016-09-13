@@ -48,12 +48,27 @@ class OfflineCheckBootTask implements BootTaskInterface
             return;
         }
 
-        // A manually run CLI command doesn't get disabled
-        if (php_sapi_name() === 'cli' && !in_array('dp:worker-job', $_SERVER['argv'])) {
-            return;
+        $isCli        = php_sapi_name() === 'cli';
+        $isCron       = false;
+        $isCliVerbose = false;
+
+        if ($isCli) {
+            $argv = !empty($resources['argv']) ? $resources['argv'] : $_SERVER['argv'];
+            if (in_array('dp:worker-job', $argv)) {
+                $isCron = true;
+            } else {
+                // A manually run CLI command (i.e. not cron) doesn't get disabled
+                return;
+            }
+
+            if (in_array('-v', $argv) || in_array('-vv', $argv) || in_array('-vvv', $argv) || in_array('--verbose', $argv)) {
+                $isCliVerbose = true;
+            }
         }
 
-        if (php_sapi_name() === 'cli') {
+        if ($isCron) {
+            $mode = 'cron';
+        } elseif ($isCli) {
             $mode = 'cli';
         } else {
             /** @var Request $request */
@@ -73,7 +88,10 @@ class OfflineCheckBootTask implements BootTaskInterface
 
         switch ($mode) {
             case 'cli':
-                echo $messageTxt;
+            case 'cron':
+                if (!$isCron || $isCliVerbose) {
+                    echo $messageTxt;
+                }
                 break;
 
             case 'text':

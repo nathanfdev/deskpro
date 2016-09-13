@@ -63,6 +63,6 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $router = $context->getContainer()->get('router');
         $url    = $router->generate('email_callback', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return $context->createJsonResponse(array('url' => $url));
+        return $context->createJsonResponse(['url' => $url]);
     }
 }

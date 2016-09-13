@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category ORM
  */
+
 namespace Application\DeskPRO\Labels;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -52,19 +53,19 @@ class LabelDefManager
     /**
      * @var array
      */
-    public static $types = array(
-        'articles'      => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
-        'deals'         => array('table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'),
-        'downloads'     => array('table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'),
-        'feedback'      => array('table' => 'labels_feedback',           'entity' => 'DeskPRO:LabelFeedback'),
-        'chat'          => array('table' => 'labels_chat_conversations', 'entity' => 'DeskPRO:LabelChatConversation'),
-        'news'          => array('table' => 'labels_news',               'entity' => 'DeskPRO:LabelNews'),
-        'organizations' => array('table' => 'labels_organizations',      'entity' => 'DeskPRO:LabelOrganization'),
-        'people'        => array('table' => 'labels_people',             'entity' => 'DeskPRO:LabelPeople'),
-        'tasks'         => array('table' => 'labels_tasks',              'entity' => 'DeskPRO:LabelTask'),
-        'tickets'       => array('table' => 'labels_tickets',            'entity' => 'DeskPRO:LabelTicket'),
-        'kb'            => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
-    );
+    public static $types = [
+        'articles'      => ['table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'],
+        'deals'         => ['table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'],
+        'downloads'     => ['table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'],
+        'feedback'      => ['table' => 'labels_feedback',           'entity' => 'DeskPRO:LabelFeedback'],
+        'chat'          => ['table' => 'labels_chat_conversations', 'entity' => 'DeskPRO:LabelChatConversation'],
+        'news'          => ['table' => 'labels_news',               'entity' => 'DeskPRO:LabelNews'],
+        'organizations' => ['table' => 'labels_organizations',      'entity' => 'DeskPRO:LabelOrganization'],
+        'people'        => ['table' => 'labels_people',             'entity' => 'DeskPRO:LabelPeople'],
+        'tasks'         => ['table' => 'labels_tasks',              'entity' => 'DeskPRO:LabelTask'],
+        'tickets'       => ['table' => 'labels_tickets',            'entity' => 'DeskPRO:LabelTicket'],
+        'kb'            => ['table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'],
+    ];
 
     /**
      * @param \Doctrine\ORM\EntityManager $em
@@ -88,7 +89,7 @@ class LabelDefManager
         $labels = $this->getLabels($types);
         $counts = $this->countDefUsages($types);
 
-        $ret = array();
+        $ret = [];
 
         foreach ($labels as $l) {
             $ret[$l] = 0;
@@ -121,7 +122,7 @@ class LabelDefManager
         }
 
         if (!$types) {
-            return array();
+            return [];
         }
 
         $types = array_map(function ($t) {
@@ -137,9 +138,9 @@ class LabelDefManager
             throw new \InvalidArgumentException();
         }
 
-        $parts  = array('SELECT DISTINCT(label) FROM label_defs ');
-        $params = array();
-        $qtypes = array();
+        $parts  = ['SELECT DISTINCT(label) FROM label_defs '];
+        $params = [];
+        $qtypes = [];
 
         if (count($types) < 8) {
             $parts[0] .= ' WHERE label_type IN (?)';
@@ -167,20 +168,20 @@ class LabelDefManager
      */
     public function getAllLabelsToTyped()
     {
-        $ret = array();
+        $ret = [];
 
         // Admin defined
         foreach ($this->db->fetchAll('SELECT * FROM label_defs') as $x) {
             if (!isset($x['label'])) {
-                $ret[$x['label']] = array();
+                $ret[$x['label']] = [];
             }
 
             $ret[$x['label']][] = $x['label_type'];
         }
 
         // Non-admin defined
-        $types = array('articles', 'downloads', 'feedback', 'news', 'organizations', 'people', 'tickets', 'chat_conversations');
-        $parts = array();
+        $types = ['articles', 'downloads', 'feedback', 'news', 'organizations', 'people', 'tickets', 'chat_conversations'];
+        $parts = [];
         foreach ($types as $t) {
             $parts[] = "SELECT DISTINCT(label) AS label, '$t' AS label_type FROM labels_$t";
         }
@@ -188,7 +189,7 @@ class LabelDefManager
         $q = '('.implode(') UNION (', $parts).')';
         foreach ($this->db->fetchAll($q) as $x) {
             if (!isset($x['label'])) {
-                $ret[$x['label']] = array();
+                $ret[$x['label']] = [];
             }
 
             $ret[$x['label']][] = $x['label_type'];
@@ -206,7 +207,7 @@ class LabelDefManager
      */
     public function countDefUsages($types = null)
     {
-        $query = array();
+        $query = [];
 
         if (!$types) {
             $types = array_keys(self::$types);
@@ -227,7 +228,7 @@ class LabelDefManager
 
         $count_res = $this->db->fetchAll($query);
 
-        $label_counts = array();
+        $label_counts = [];
 
         foreach ($count_res as $r) {
             if (!isset($label_counts[$r['label']])) {
@@ -247,8 +248,8 @@ class LabelDefManager
      */
     public function countLabelUsages($label, $types = null)
     {
-        $query  = array();
-        $params = array();
+        $query  = [];
+        $params = [];
 
         if (!$types) {
             $types = array_keys(self::$types);
@@ -299,7 +300,7 @@ class LabelDefManager
             foreach ($types as $t) {
                 $this->db->executeUpdate(
                     'INSERT IGNORE INTO label_defs SET label_type = ?, label = ?, color = ?, total = 0',
-                    array($t, $label, $color)
+                    [$t, $label, $color]
                 );
             }
 
@@ -330,8 +331,8 @@ class LabelDefManager
             foreach ($types as $t) {
                 $table = self::$types[$t]['table'];
 
-                $this->db->executeUpdate('DELETE FROM label_defs WHERE label_type = ? AND label = ?', array($t, $label));
-                $this->db->executeUpdate("DELETE FROM $table WHERE label = ?", array($label));
+                $this->db->executeUpdate('DELETE FROM label_defs WHERE label_type = ? AND label = ?', [$t, $label]);
+                $this->db->executeUpdate("DELETE FROM $table WHERE label = ?", [$label]);
             }
 
             $this->db->commit();
@@ -363,9 +364,9 @@ class LabelDefManager
             foreach ($types as $t) {
                 $table = self::$types[$t]['table'];
 
-                $this->db->executeUpdate('DELETE FROM label_defs WHERE label_type = ? AND label = ?', array($t, $old_label));
-                $this->db->executeUpdate("UPDATE IGNORE $table SET label = ? WHERE label = ?", array($new_label, $old_label));
-                $this->db->executeUpdate("DELETE FROM $table WHERE label = ?", array($old_label));
+                $this->db->executeUpdate('DELETE FROM label_defs WHERE label_type = ? AND label = ?', [$t, $old_label]);
+                $this->db->executeUpdate("UPDATE IGNORE $table SET label = ? WHERE label = ?", [$new_label, $old_label]);
+                $this->db->executeUpdate("DELETE FROM $table WHERE label = ?", [$old_label]);
             }
 
             $this->db->commit();
@@ -374,9 +375,9 @@ class LabelDefManager
             throw $e;
         }
 
-        #------------------------------
-        # Rename labels within filters/macros/triggers
-        #------------------------------
+        //------------------------------
+        // Rename labels within filters/macros/triggers
+        //------------------------------
 
         $replace_label_arr = function ($actions_str, $accept_types) use ($old_label, $new_label) {
             $actions = @unserialize($actions_str);
@@ -406,16 +407,16 @@ class LabelDefManager
                     WHERE actions LIKE '%\"add_labels\"%' OR actions LIKE '%\"remove_labels\"%'
                 ");
                 foreach ($macros as $r) {
-                    $actions_new = $replace_label_arr($r['actions'], array('add_labels', 'remove_labels'));
+                    $actions_new = $replace_label_arr($r['actions'], ['add_labels', 'remove_labels']);
 
                     if ($actions_new != $r['actions']) {
-                        $this->db->update('ticket_macros', array('actions' => $actions_new), array('id' => $r['id']));
+                        $this->db->update('ticket_macros', ['actions' => $actions_new], ['id' => $r['id']]);
                     }
                 }
             }
 
             // TODO - fix removing labels from triggers/filters
-            if (false && in_array($t, array('persons', 'tickets', 'organizations'))) {
+            if (false && in_array($t, ['persons', 'tickets', 'organizations'])) {
                 $triggers = $this->db->fetchAll("
                     SELECT id, actions, terms, terms_any
                     FROM ticket_triggers
@@ -430,9 +431,9 @@ class LabelDefManager
                         OR terms_any LIKE '%\"org_label\"%'
                 ");
                 foreach ($triggers as $r) {
-                    $changes = array();
+                    $changes = [];
                     if ($t == 'tickets') {
-                        $actions_new = $replace_label_arr($r['actions'], array('add_labels', 'remove_labels'));
+                        $actions_new = $replace_label_arr($r['actions'], ['add_labels', 'remove_labels']);
                         if ($actions_new != $r['actions']) {
                             $changes['actions'] = $actions_new;
                         }
@@ -440,13 +441,13 @@ class LabelDefManager
 
                     $terms_new = $r['terms'];
                     if ($t == 'tickets') {
-                        $terms_new = $replace_label_arr($terms_new, array('ticket_label', 'label'));
+                        $terms_new = $replace_label_arr($terms_new, ['ticket_label', 'label']);
                     }
                     if ($t == 'persons') {
-                        $terms_new = $replace_label_arr($terms_new, array('person_label'));
+                        $terms_new = $replace_label_arr($terms_new, ['person_label']);
                     }
                     if ($t == 'organizations') {
-                        $terms_new = $replace_label_arr($terms_new, array('org_label'));
+                        $terms_new = $replace_label_arr($terms_new, ['org_label']);
                     }
                     if ($terms_new != $r['terms']) {
                         $changes['terms'] = $terms_new;
@@ -454,20 +455,20 @@ class LabelDefManager
 
                     $terms_any_new = $r['terms_any'];
                     if ($t == 'tickets') {
-                        $terms_any_new = $replace_label_arr($terms_any_new, array('ticket_label', 'label'));
+                        $terms_any_new = $replace_label_arr($terms_any_new, ['ticket_label', 'label']);
                     }
                     if ($t == 'persons') {
-                        $terms_any_new = $replace_label_arr($terms_any_new, array('person_label'));
+                        $terms_any_new = $replace_label_arr($terms_any_new, ['person_label']);
                     }
                     if ($t == 'organizations') {
-                        $terms_any_new = $replace_label_arr($terms_any_new, array('org_label'));
+                        $terms_any_new = $replace_label_arr($terms_any_new, ['org_label']);
                     }
                     if ($terms_any_new != $r['terms']) {
                         $changes['terms_any'] = $terms_any_new;
                     }
 
                     if ($changes) {
-                        $this->db->update('ticket_triggers', $changes, array('id' => $r['id']));
+                        $this->db->update('ticket_triggers', $changes, ['id' => $r['id']]);
                     }
                 }
 
@@ -480,23 +481,23 @@ class LabelDefManager
                         OR terms LIKE '%\"person_label\"%'
                 ");
                 foreach ($filters as $r) {
-                    $changes   = array();
+                    $changes   = [];
                     $terms_new = $r['terms'];
                     if ($t == 'tickets') {
-                        $terms_new = $replace_label_arr($terms_new, array('ticket_label', 'label'));
+                        $terms_new = $replace_label_arr($terms_new, ['ticket_label', 'label']);
                     }
                     if ($t == 'persons') {
-                        $terms_new = $replace_label_arr($terms_new, array('person_label'));
+                        $terms_new = $replace_label_arr($terms_new, ['person_label']);
                     }
                     if ($t == 'organizations') {
-                        $terms_new = $replace_label_arr($terms_new, array('org_label'));
+                        $terms_new = $replace_label_arr($terms_new, ['org_label']);
                     }
                     if ($terms_new != $r['terms']) {
                         $changes['terms'] = $terms_new;
                     }
 
                     if ($changes) {
-                        $this->db->update('ticket_filters', $changes, array('id' => $r['id']));
+                        $this->db->update('ticket_filters', $changes, ['id' => $r['id']]);
                     }
                 }
             }

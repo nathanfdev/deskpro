@@ -36,7 +36,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplySetProjectAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
-    /** @var  TaskProject */
+    /** @var TaskProject */
     private $project;
 
     public function init()

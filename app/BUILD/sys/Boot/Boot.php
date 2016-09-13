@@ -112,9 +112,9 @@ class Boot
      */
     public static function bootWeb(\DpRun\DpEnv $env)
     {
-        #------------------------------
-        # verify www path
-        #------------------------------
+        //------------------------------
+        // verify www path
+        //------------------------------
 
         // Makes sure the www path we have in cache
         // is the same as the path we are requesting
@@ -134,9 +134,9 @@ class Boot
             }
         }
 
-        #------------------------------
-        # Boot request and handle serverinfo reqs
-        #------------------------------
+        //------------------------------
+        // Boot request and handle serverinfo reqs
+        //------------------------------
 
         // An 'early' serverinfo request
         if (isset($_GET['__serverinfo'])) {
@@ -177,9 +177,9 @@ class Boot
 
         $res = self::runBootTasks($env, ['HttpVerifyRequirements', 'OfflineCheck'], $res);
 
-        #------------------------------
-        # Boot to low scripts
-        #------------------------------
+        //------------------------------
+        // Boot to low scripts
+        //------------------------------
 
         $lowClass = null;
         if (substr($path, 0, 7) === '/dp.php' && (!isset($path[7]) || $path[7] === '/')) {
@@ -200,9 +200,9 @@ class Boot
             return;
         }
 
-        #------------------------------
-        # Set trusted proxies
-        #------------------------------
+        //------------------------------
+        // Set trusted proxies
+        //------------------------------
 
         $proxies     = [];
         $proxyConfig = $env->getConfig('env.trust_proxy_data', []);
@@ -224,15 +224,15 @@ class Boot
         }
         Request::setTrustedProxies($proxies);
 
-        #------------------------------
-        # JS boot tasks
-        #------------------------------
+        //------------------------------
+        // JS boot tasks
+        //------------------------------
 
         self::runBootTasks($env, ['HttpJs'], $res);
 
-        #------------------------------
-        # Boot to a normal symfony request
-        #------------------------------
+        //------------------------------
+        // Boot to a normal symfony request
+        //------------------------------
 
         $res = self::runBootTasks($env, ['HttpKernel'], $res);
 
@@ -291,6 +291,10 @@ class Boot
      */
     public static function bootCron(\DpRun\DpEnv $env)
     {
+        $argv    = $_SERVER['argv'];
+        $argv[0] = 'console';
+        array_splice($argv, 1, 0, ['dp:worker-job']);
+
         $tasks = [
             'CliVerifyRequirements',
             'Loader',
@@ -300,14 +304,10 @@ class Boot
             'CliKernel',
         ];
 
-        $res = self::runBootTasks($env, $tasks);
+        $res = self::runBootTasks($env, $tasks, ['argv' => $argv]);
 
         /** @var \Symfony\Component\HttpKernel\KernelInterface $kernel */
         $kernel = $res['cli_kernel'];
-
-        $argv    = $_SERVER['argv'];
-        $argv[0] = 'console';
-        array_splice($argv, 1, 0, ['dp:worker-job']);
 
         $input = new ArgvInput($argv);
 

@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.reset-password-btn'              => 'Nullstill passord',
     'portal.account.section-title-reset-password'    => 'Nullstill passord',
     'portal.articles.search-title'                   => 'Kunnskapsbase',
@@ -292,4 +292,4 @@ return array(
     'user.tickets.from_x_at_y'                       => 'Fra {{name}}, {{date}}',
     'user.tickets.label_cced'                        => 'CCet',
     'user.tickets.no_subject'                        => '(tomt emne)',
-);
+];

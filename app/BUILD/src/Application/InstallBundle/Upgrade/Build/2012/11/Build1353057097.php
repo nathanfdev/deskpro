@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -38,14 +39,14 @@ class Build1353057097 extends AbstractBuild
     public function run()
     {
         $this->out('Ensure one department exists and correct bad departments');
-        $count = $this->container->getDb()->count('departments', array('is_tickets_enabled' => 1));
+        $count = $this->container->getDb()->count('departments', ['is_tickets_enabled' => 1]);
 
         if (!$count) {
             // Insert default department
-            $this->container->getDb()->insert('departments', array(
+            $this->container->getDb()->insert('departments', [
                 'title'              => 'Default',
                 'is_tickets_enabled' => 1,
-            ));
+            ]);
 
             $default_department = $this->container->getDb()->lastInsertId();
 
@@ -56,27 +57,27 @@ class Build1353057097 extends AbstractBuild
                 WHERE is_agent = 1
             ');
 
-            $batch = array();
+            $batch = [];
             foreach ($agent_ids as $aid) {
-                $batch[] = array(
+                $batch[] = [
                     'department_id' => $default_department,
                     'person_id'     => $aid,
                     'app'           => 'tickets',
                     'name'          => 'full',
                     'value'         => 1,
-                );
+                ];
             }
 
             $this->container->getDb()->batchInsert('department_permissions', $batch);
 
             // Give 'everyone' access too
-            $this->container->getDb()->insert('department_permissions', array(
+            $this->container->getDb()->insert('department_permissions', [
                 'department_id' => $default_department,
                 'usergroup_id'  => 1,
                 'app'           => 'tickets',
                 'name'          => 'full',
                 'value'         => 1,
-            ));
+            ]);
         } else {
             $default_department = $this->container->getEm()->getRepository('DeskPRO:Department')->getDefaultDepartment('ticket');
             $default_department = $default_department->id;
@@ -94,12 +95,12 @@ class Build1353057097 extends AbstractBuild
                 UPDATE tickets
                 SET department_id = ?
                 WHERE department_id IN (?) OR department_id IS NULL
-            ', array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            ', [$default_department, $chat_deps], [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
             $this->container->getDb()->executeUpdate('
                 UPDATE tickets_search_active
                 SET department_id = ?
                 WHERE department_id IN (?) OR department_id IS NULL
-            ', array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            ', [$default_department, $chat_deps], [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
         }
 
         // Clean permissions too

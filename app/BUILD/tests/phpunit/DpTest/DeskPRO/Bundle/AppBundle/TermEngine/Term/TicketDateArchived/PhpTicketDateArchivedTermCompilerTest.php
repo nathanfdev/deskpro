@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateArchived;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketStatusTermCompiler;
@@ -54,9 +55,9 @@ class PhpTicketDateArchivedTermCompilerTest extends AbstractPhpTermCompilerTest
         $date2 = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
 
         $term = new TicketDateArchivedTerm(
-            array(
+            [
                 'date' => $date,
-            )
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -83,9 +84,9 @@ class PhpTicketDateArchivedTermCompilerTest extends AbstractPhpTermCompilerTest
         $date2 = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
 
         $term = new TicketDateArchivedTerm(
-            array(
+            [
                 'date' => $date,
-            ),
+            ],
             TermInterface::OP_NOT
         );
 
@@ -114,9 +115,9 @@ class PhpTicketDateArchivedTermCompilerTest extends AbstractPhpTermCompilerTest
         $tomorrow  = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
 
         $term = new TicketDateArchivedTerm(
-            array(
+            [
                 'date' => $today,
-            ),
+            ],
             TermInterface::OP_GT
         );
 
@@ -145,9 +146,9 @@ class PhpTicketDateArchivedTermCompilerTest extends AbstractPhpTermCompilerTest
         $tomorrow  = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
 
         $term = new TicketDateArchivedTerm(
-            array(
+            [
                 'date' => $today,
-            ),
+            ],
             TermInterface::OP_LT
         );
 
@@ -177,10 +178,10 @@ class PhpTicketDateArchivedTermCompilerTest extends AbstractPhpTermCompilerTest
         $tomorrow     = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
 
         $term = new TicketDateArchivedTerm(
-            array(
+            [
                 'date'  => $yesterday,
                 'date2' => $tomorrow,
-            ),
+            ],
             TermInterface::OP_RANGE
         );
 
@@ -210,10 +211,10 @@ class PhpTicketDateArchivedTermCompilerTest extends AbstractPhpTermCompilerTest
         $tomorrow     = new \DateTime('+1 day', new \DateTimeZone('Europe/London'));
 
         $term = new TicketDateArchivedTerm(
-            array(
+            [
                 'date'  => $yesterday,
                 'date2' => $tomorrow,
-            ),
+            ],
             TermInterface::OP_NOT_RANGE
         );
 

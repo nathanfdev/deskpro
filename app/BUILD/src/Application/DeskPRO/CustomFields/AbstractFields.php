@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
@@ -66,9 +67,9 @@ abstract class AbstractFields
         return $field;
     }
 
-    public function getFieldsDisplayArray($field_defs, $data_structured = array(), $field_group = null)
+    public function getFieldsDisplayArray($field_defs, $data_structured = [], $field_group = null)
     {
-        $custom_fields = array();
+        $custom_fields = [];
         foreach ($field_defs as $f_def) {
             $default_value = $f_def['default_value'];
             if ($f_def->getTypeName() == 'hidden') {
@@ -79,7 +80,7 @@ abstract class AbstractFields
                 }
             }
 
-            $value = !empty($data_structured[$f_def['id']]) && $data_structured[$f_def['id']]['value'] !== null ? $data_structured[$f_def['id']] : array('value' => $default_value);
+            $value = !empty($data_structured[$f_def['id']]) && $data_structured[$f_def['id']]['value'] !== null ? $data_structured[$f_def['id']] : ['value' => $default_value];
 
             $f = $f_def->getHandler()->getFormField($value);
 
@@ -95,7 +96,7 @@ abstract class AbstractFields
                 $formView = $form->createView();
             }
 
-            $custom_fields[$f_def['id']] = array(
+            $custom_fields[$f_def['id']] = [
                 'elId'          => Util::requestUniqueIdString(),
                 'id'            => $f_def['id'],
                 'name'          => 'field_'.$f_def['id'],
@@ -106,7 +107,7 @@ abstract class AbstractFields
                 'formView'      => $formView,
                 'value'         => $value,
                 'field_handler' => strtolower(Util::getBaseClassname($f_def->getHandler())),
-            );
+            ];
         }
 
         return $custom_fields;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1433777718 extends AbstractBuild
@@ -42,7 +43,7 @@ class Build1433777718 extends AbstractBuild
             $days = explode(',', $days ?: '');
             $days = $this->getFixedDaysArray($days);
             $days = implode(',', $days);
-            $db->update('slas', array('work_days' => $days), array('id' => $id));
+            $db->update('slas', ['work_days' => $days], ['id' => $id]);
         }
 
         $default_wh = $db->fetchColumn("SELECT value FROM settings WHERE name = 'core_tickets.work_hours'");
@@ -51,7 +52,7 @@ class Build1433777718 extends AbstractBuild
         }
         if ($default_wh && @$default_wh['work_days']) {
             $default_wh['work_days'] = $this->getFixedDaysArray($default_wh['work_days'], true);
-            $db->update('settings', array('value' => serialize($default_wh)), array('name' => 'core_tickets.work_hours'));
+            $db->update('settings', ['value' => serialize($default_wh)], ['name' => 'core_tickets.work_hours']);
         }
     }
 
@@ -65,11 +66,11 @@ class Build1433777718 extends AbstractBuild
      */
     private function getFixedDaysArray(array $bad_days, $is_setting = false)
     {
-        $days = array();
+        $days = [];
 
         if ($is_setting) {
             if (count($bad_days) === 7) {
-                $days = array();
+                $days = [];
                 foreach ($bad_days as $n => $onoff) {
                     if ($onoff) {
                         if ($n === 0) {

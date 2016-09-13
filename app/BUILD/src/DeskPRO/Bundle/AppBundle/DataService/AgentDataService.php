@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -75,7 +75,7 @@ class AgentDataService extends AbstractDataService
             FROM sessions s
             INNER JOIN people p ON (s.person_id = p.id)
             WHERE p.is_agent = 1 AND p.is_deleted = 0 AND s.date_last > ?
-        ', array($cutoff), array(), 0, 0);
+        ', [$cutoff], [], 0, 0);
 
         return $this->online_agent_ids;
     }
@@ -102,7 +102,7 @@ class AgentDataService extends AbstractDataService
             SELECT DISTINCT s.person_id, s.date_last
             FROM sessions s
             WHERE s.person_id = ?
-        ', array($id));
+        ', [$id]);
 
         return (is_array($last_seen)) ? array_shift($last_seen) : false;
     }
@@ -125,8 +125,12 @@ class AgentDataService extends AbstractDataService
         ', [$cutoff], [], 0, 1);
 
         $this->agents_online_status = [
-            'online'  => array_values(array_filter(array_keys($data), function ($value) use ($data) {return $data[$value];})),
-            'offline' => array_values(array_filter(array_keys($data), function ($value) use ($data) {return !$data[$value];})),
+            'online' => array_values(array_filter(array_keys($data), function ($value) use ($data) {
+                return $data[$value];
+            })),
+            'offline' => array_values(array_filter(array_keys($data), function ($value) use ($data) {
+                return !$data[$value];
+            })),
         ];
 
         return $this->agents_online_status;

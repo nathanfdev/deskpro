@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,14 @@
 /**
  * Orb.
  */
+
 namespace Orb\Doctrine\DBAL\Driver\PDOODBC;
 
 class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements \Doctrine\DBAL\Driver\Connection
 {
-    /** @var bool|null  */
+    /** @var bool|null */
     protected $_pdoTransactionsSupport = null;
-    /** @var bool|null  */
+    /** @var bool|null */
     protected $_pdoLastInsertIdSupport = null;
 
     /**
@@ -67,14 +68,14 @@ class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements \Doctrin
                     return $value;
                 }
 
-                $non_displayables = array(
+                $non_displayables = [
                     '/%0[0-8bcef]/',            // url encoded 00-08, 11, 12, 14, 15
                     '/%1[0-9a-f]/',             // url encoded 16-31
                     '/[\x00-\x08]/',            // 00-08
                     '/\x0b/',                   // 11
                     '/\x0c/',                   // 12
                     '/[\x0e-\x1f]/',             // 14-31
-                );
+                ];
                 foreach ($non_displayables as $regex) {
                     $value = preg_replace($regex, '', $value);
                 }

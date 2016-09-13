@@ -71,9 +71,9 @@ class RelatedContent extends \Application\DeskPRO\Domain\DomainObject
         $this['rel_object_id']   = $entity2->getId();
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

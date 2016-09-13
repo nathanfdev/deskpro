@@ -147,11 +147,11 @@ class EmailAccount extends DomainObject
      */
     public function setAccountType($account_type)
     {
-        if (!in_array($account_type, array(
+        if (!in_array($account_type, [
             self::TYPE_OUT,
             self::TYPE_TICKETS,
             self::TYPE_ARTICLES,
-        ))) {
+        ])) {
             throw new \InvalidArgumentException();
         }
 
@@ -189,7 +189,7 @@ class EmailAccount extends DomainObject
      */
     public function getAllAddresses()
     {
-        $addrs = $this->other_addresses ?: array();
+        $addrs = $this->other_addresses ?: [];
         array_unshift($addrs, $this->address);
 
         return $addrs;
@@ -296,7 +296,7 @@ class EmailAccount extends DomainObject
             }
         } else {
             if (!$new) {
-                $new = array();
+                $new = [];
             }
             $new[$name] = $value;
         }
@@ -316,18 +316,18 @@ class EmailAccount extends DomainObject
         $this->setModelField('options', $options);
     }
 
-    ############################################################################
-    # Export
-    ############################################################################
+    //###########################################################################
+    // Export
+    //###########################################################################
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
-        $data['incoming_account']      = $this->incoming_account ? $this->incoming_account->serializeJsonArray() : array();
+        $data['incoming_account']      = $this->incoming_account ? $this->incoming_account->serializeJsonArray() : [];
         $data['incoming_account_type'] = $this->getIncomingAccountType();
         $data['outgoing_account_type'] = $this->getOutgoingAccountType();
-        $data['outgoing_account']      = $this->outgoing_account ? $this->outgoing_account->serializeJsonArray() : array();
+        $data['outgoing_account']      = $this->outgoing_account ? $this->outgoing_account->serializeJsonArray() : [];
         $data['use_email_address']     = $this->getUseEmailAddress();
 
         return $data;
@@ -338,9 +338,9 @@ class EmailAccount extends DomainObject
         return sprintf('<EmailAccount:%d> %s', $this->id, implode(', ', $this->getAllAddresses()));
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

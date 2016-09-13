@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketId;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketIdTermCompiler;
@@ -50,9 +51,9 @@ class DbalTicketIdTermCompilerTest extends AbstractDbalTicketFilterTermCompilerT
 
     public function testSimpleISCase()
     {
-        $params = array(
-            'num' => array(1, 2, 3),
-        );
+        $params = [
+            'num' => [1, 2, 3],
+        ];
 
         $term       = new TicketIdTerm($params);
         $query_part = $this->term_compiler->compile($term);
@@ -65,9 +66,9 @@ class DbalTicketIdTermCompilerTest extends AbstractDbalTicketFilterTermCompilerT
 
     public function testSimpleNOTCase()
     {
-        $params = array(
-            'num' => array(1, 2, 3),
-        );
+        $params = [
+            'num' => [1, 2, 3],
+        ];
 
         $term       = new TicketIdTerm($params, TermInterface::OP_NOT);
         $query_part = $this->term_compiler->compile($term);
@@ -80,9 +81,9 @@ class DbalTicketIdTermCompilerTest extends AbstractDbalTicketFilterTermCompilerT
 
     public function testSimpleGTCase()
     {
-        $params = array(
-            'num' => array(1, 2, 3),
-        );
+        $params = [
+            'num' => [1, 2, 3],
+        ];
 
         $term          = new TicketIdTerm($params, TermInterface::OP_GT);
         $params['num'] = max($params['num']);
@@ -96,9 +97,9 @@ class DbalTicketIdTermCompilerTest extends AbstractDbalTicketFilterTermCompilerT
 
     public function testSimpleGTECase()
     {
-        $params = array(
-            'num' => array(1, 2, 3),
-        );
+        $params = [
+            'num' => [1, 2, 3],
+        ];
 
         $term          = new TicketIdTerm($params, TermInterface::OP_GTE);
         $params['num'] = max($params['num']);
@@ -112,9 +113,9 @@ class DbalTicketIdTermCompilerTest extends AbstractDbalTicketFilterTermCompilerT
 
     public function testSimpleLTCase()
     {
-        $params = array(
-            'num' => array(1, 2, 3),
-        );
+        $params = [
+            'num' => [1, 2, 3],
+        ];
 
         $term          = new TicketIdTerm($params, TermInterface::OP_LT);
         $params['num'] = min($params['num']);
@@ -128,9 +129,9 @@ class DbalTicketIdTermCompilerTest extends AbstractDbalTicketFilterTermCompilerT
 
     public function testSimpleLTECase()
     {
-        $params = array(
-            'num' => array(1, 2, 3),
-        );
+        $params = [
+            'num' => [1, 2, 3],
+        ];
 
         $term          = new TicketIdTerm($params, TermInterface::OP_LTE);
         $params['num'] = min($params['num']);
@@ -144,10 +145,10 @@ class DbalTicketIdTermCompilerTest extends AbstractDbalTicketFilterTermCompilerT
 
     public function testMultipleRANGECase()
     {
-        $params = array(
-            'num'  => array(1, 2, 3),
+        $params = [
+            'num'  => [1, 2, 3],
             'num2' => 3,
-        );
+        ];
 
         $term          = new TicketIdTerm($params, TermInterface::OP_RANGE);
         $params['num'] = reset($params['num']);
@@ -161,10 +162,10 @@ class DbalTicketIdTermCompilerTest extends AbstractDbalTicketFilterTermCompilerT
 
     public function testMultipleNOTRANGECase()
     {
-        $params = array(
-            'num'  => array(1, 2, 3),
+        $params = [
+            'num'  => [1, 2, 3],
             'num2' => 3,
-        );
+        ];
 
         $term          = new TicketIdTerm($params, TermInterface::OP_NOT_RANGE);
         $params['num'] = reset($params['num']);
@@ -178,9 +179,9 @@ class DbalTicketIdTermCompilerTest extends AbstractDbalTicketFilterTermCompilerT
 
     public function testOneNumRANGECase()
     {
-        $params = array(
-            'num' => array(1),
-        );
+        $params = [
+            'num' => [1],
+        ];
 
         $term          = new TicketIdTerm($params, TermInterface::OP_RANGE);
         $params['num'] = $params['num2'] = reset($params['num']);
@@ -194,9 +195,9 @@ class DbalTicketIdTermCompilerTest extends AbstractDbalTicketFilterTermCompilerT
 
     public function testOneNumNOTRANGECase()
     {
-        $params = array(
-            'num' => array(1),
-        );
+        $params = [
+            'num' => [1],
+        ];
 
         $term          = new TicketIdTerm($params, TermInterface::OP_NOT_RANGE);
         $params['num'] = $params['num2'] = reset($params['num']);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -50,7 +51,7 @@ class Problem extends AbstractEntityRepository
     public function getCountsForAgentInterface(array $problems, Entity\Person $person_context = null)
     {
         if (!$problems) {
-            return array();
+            return [];
         }
 
         if (!$person_context) {
@@ -61,9 +62,9 @@ class Problem extends AbstractEntityRepository
             throw new \InvalidArgumentException('Person must be an agent');
         }
 
-        $where_perm = array();
+        $where_perm = [];
 
-        if ($disallowed = $person_context->getHelperManager()->callName('getdisalloweddepartments', array())) {
+        if ($disallowed = $person_context->getHelperManager()->callName('getdisalloweddepartments', [])) {
             $where_perm[] = 't.department_id NOT IN ('.implode(',', $disallowed).')';
         }
 
@@ -72,10 +73,10 @@ class Problem extends AbstractEntityRepository
         }
 
         if (!$person_context->hasPerm('agent_tickets.view_others')) {
-            $part   = array();
+            $part   = [];
             $part[] = "t.agent_id = {$person_context['id']}";
 
-            if ($teams = $person_context->getHelperManager()->callName('getagentteamids', array())) {
+            if ($teams = $person_context->getHelperManager()->callName('getagentteamids', [])) {
                 $part[] = 't.agent_team_id IN ('.implode(',', $teams).')';
             }
 
@@ -89,13 +90,13 @@ class Problem extends AbstractEntityRepository
         $where = '(('.implode(' AND ', $where_perm).') OR (';
 
         $where .= "t.agent_id = {$person_context['id']} OR ";
-        if ($teams = $person_context->getHelperManager()->callName('getagentteamids', array())) {
+        if ($teams = $person_context->getHelperManager()->callName('getagentteamids', [])) {
             $where .= 't.agent_team_id IN ('.implode(',', $teams).') OR ';
         }
 
         $where .= 'tp.person_id IS NOT NULL))';
 
-        $ids = array();
+        $ids = [];
         foreach ($problems as $problem) {
             $ids[] = $problem->id;
         }
@@ -115,7 +116,7 @@ class Problem extends AbstractEntityRepository
         "
         );
 
-        $output = array();
+        $output = [];
         foreach ($results as $result) {
             $output[$result['id']] = $result['count'];
         }

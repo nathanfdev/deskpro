@@ -62,9 +62,9 @@ Feature: Custom per field types
       | custom_field_{f1} |
 
     When I go to "/tickets/ref/edit"
-    And I check "ticket_custom_field_{f1}_data_{c1}"
-    And I check "ticket_custom_field_{f1}_data_{c2}"
+    And I check "ticket_custom_field_{f1}_data_0"
+    And I check "ticket_custom_field_{f1}_data_1"
     And I press "Save"
     And I go to "/tickets/ref/edit"
-    Then the "ticket_custom_field_{f1}_data_{c1}" checkbox should be checked
-    And the "ticket_custom_field_{f1}_data_{c2}" checkbox should be checked
+    Then the "ticket_custom_field_{f1}_data_0" checkbox should be checked
+    And the "ticket_custom_field_{f1}_data_1" checkbox should be checked

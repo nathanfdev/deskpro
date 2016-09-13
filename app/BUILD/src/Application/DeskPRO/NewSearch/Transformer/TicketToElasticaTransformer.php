@@ -100,7 +100,9 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         }
 
         if ($object->labels) {
-            $labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);
+            $labels = Arrays::map(function ($l) {
+                return $l->label;
+            }, $object->labels);
             $document->set('labels', $labels);
         } else {
             $document->set('labels', []);
@@ -129,10 +131,10 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
                     foreach ($object->getAttachments() as $attachment) {
                         $blob = $attachment->getBlob();
                         if (!$blob->isImage()) {
-                            $attachments[] = array(
+                            $attachments[] = [
                                 'filename' => $blob->getFilenameSafe(),
                                 'content'  => $client->getText($blob->getDownloadUrl(true)),
-                            );
+                            ];
                         }
                     }
                 } catch (\Exception $e) {

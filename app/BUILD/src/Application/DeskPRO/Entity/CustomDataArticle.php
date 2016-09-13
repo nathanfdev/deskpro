@@ -104,9 +104,9 @@ class CustomDataArticle extends CustomDataAbstract
         return $this->article;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

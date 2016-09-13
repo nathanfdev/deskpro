@@ -180,14 +180,13 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                     $agent_sess_data = $agent_session['sess_data'];
                     $agent_sess_data = base64_decode($agent_session['sess_data']);
 
-                    //
                     // a hack to maintain the original session data, while still decoding the
                     // stored portal session
                     $orig = $_SESSION;
                     session_decode($agent_sess_data);
                     $agent_sess_data = $_SESSION;
                     $_SESSION        = $orig;
-                    //
+
                     // end session hack
 
                     if ($agent_sess_data && $person_id = Arrays::findPropertyPath($agent_sess_data, '[_sf2_attributes][auth_person_id]')) {

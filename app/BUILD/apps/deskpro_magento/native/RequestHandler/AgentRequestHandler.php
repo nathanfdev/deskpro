@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_magento\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestContext;
@@ -62,14 +63,14 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         $key  = $context->getAppSetting('api_key');
 
         if (!$url || !$user || !$key) {
-            return $context->createJsonResponse(array('error' => 'API URL, user or key missing. Please configure the plugin.'));
+            return $context->createJsonResponse(['error' => 'API URL, user or key missing. Please configure the plugin.']);
         }
 
         if (!class_exists('\SoapClient')) {
-            return $context->createJsonResponse(array('error' => 'SOAP support missing from PHP.'));
+            return $context->createJsonResponse(['error' => 'SOAP support missing from PHP.']);
         }
 
-        $matches = array();
+        $matches = [];
 
         $email = $context->getIn()->getString('email');
         if ($email) {
@@ -79,27 +80,27 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                 $client = new \Application\DeskPRO\SoapClient\SafeSoapClient($url.'/api?wsdl');
                 error_reporting($error);
             } catch (\SoapFault $e) {
-                return $context->createJsonResponse(array('error' => 'Invalid Magento URL'));
+                return $context->createJsonResponse(['error' => 'Invalid Magento URL']);
             }
 
             try {
                 $session = $client->login($user, $key);
             } catch (\SoapFault $e) {
-                return $context->createJsonResponse(array('error' => 'Invalid Magento API user or key'));
+                return $context->createJsonResponse(['error' => 'Invalid Magento API user or key']);
             }
 
-            $results = $client->call($session, 'customer.list', array(
-                array('email' => $email),
-            ));
+            $results = $client->call($session, 'customer.list', [
+                ['email' => $email],
+            ]);
 
             foreach ($results as $record) {
-                $sales = $client->call($session, 'sales_order.list', array(
-                    array('customer_id' => $record['customer_id']),
-                ));
+                $sales = $client->call($session, 'sales_order.list', [
+                    ['customer_id' => $record['customer_id']],
+                ]);
 
-                $orders = array();
+                $orders = [];
                 foreach ($sales as $sale) {
-                    $orders[] = array(
+                    $orders[] = [
                         'id'          => $sale['increment_id'],
                         'order_id'    => $sale['order_id'],
                         'created_at'  => $sale['created_at'],
@@ -107,21 +108,21 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                         'currency'    => $sale['order_currency_code'],
                         'status'      => $sale['status'],
                         'url'         => $url.'/admin/sales_order/view/order_id/'.$sale['order_id'].'/',
-                    );
+                    ];
                 }
 
-                $matches[] = array(
+                $matches[] = [
                     'id'      => $record['customer_id'],
                     'name'    => $record['firstname'].' '.$record['lastname'],
                     'email'   => $record['email'],
                     'profile' => $url.'/admin/customer/edit/id/'.$record['customer_id'].'/',
                     'orders'  => $orders,
-                );
+                ];
             }
 
             $client->endSession($session);
         }
 
-        return $context->createJsonResponse(array('matched' => count($matches), 'matches' => $matches));
+        return $context->createJsonResponse(['matched' => count($matches), 'matches' => $matches]);
     }
 }

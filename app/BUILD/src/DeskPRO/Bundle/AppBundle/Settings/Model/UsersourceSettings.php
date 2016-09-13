@@ -55,7 +55,7 @@ class UsersourceSettings
 
     /**
      * True if registration is enabled for usersource.
-     * 
+     *
      * @var bool
      *
      * @JMS\Type("boolean")

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Log\Writer;
 
 use Orb\Log\LogItem;
@@ -39,7 +40,7 @@ use Orb\Log\LogItem;
 class ArrayWriter extends AbstractWriter
 {
     /** @var array */
-    protected $messages = array();
+    protected $messages = [];
     /** @var int */
     protected $max_size = 10000;
     /** @var int */
@@ -82,6 +83,6 @@ class ArrayWriter extends AbstractWriter
 
     public function clear()
     {
-        $this->messages = array();
+        $this->messages = [];
     }
 }

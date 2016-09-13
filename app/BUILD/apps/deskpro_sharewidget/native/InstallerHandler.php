@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_sharewidget;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
@@ -65,9 +66,9 @@ class InstallerHandler extends AbstractInstallerHandler
     {
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_widget',   1);
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', $context->getApp()->getSetting('show_share_facebook') ?: null);
-        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter')  ?: null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter') ?: null);
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', $context->getApp()->getSetting('show_share_linkedin') ?: null);
-        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus')    ?: null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus') ?: null);
     }
 
     /**
@@ -85,8 +86,8 @@ class InstallerHandler extends AbstractInstallerHandler
     {
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_widget',   1);
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', $context->getApp()->getSetting('show_share_facebook') ?: null);
-        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter')  ?: null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter') ?: null);
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', $context->getApp()->getSetting('show_share_linkedin') ?: null);
-        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus')    ?: null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus') ?: null);
     }
 }

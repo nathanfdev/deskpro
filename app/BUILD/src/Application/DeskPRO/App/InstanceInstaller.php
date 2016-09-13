@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
@@ -93,7 +94,7 @@ class InstanceInstaller
         $handler  = $this->createInstallHandler($this->package, $app);
 
         $settings = $handler->processSettings($context, $settings);
-        $app->setSettings($settings ?: array());
+        $app->setSettings($settings ?: []);
         $this->em->persist($app);
         $this->em->flush();
 
@@ -164,7 +165,7 @@ class InstanceInstaller
      */
     public static function readAppSettings(AppPackage $package, array $settings_form)
     {
-        $settings = array();
+        $settings = [];
         foreach ($package->settings_def as $setting_def) {
             $value = isset($settings_form[$setting_def['name']]) ? $settings_form[$setting_def['name']] : null;
             if (!is_scalar($value)) {
@@ -206,10 +207,10 @@ class InstanceInstaller
                 $settings[$setting_def['name']] = $value;
             }
 
-            #------------------------------------------
-            # include dependant children
-            # TODO: meant to be expanded to allow more options and diffent kinds of dependant fields
-            #------------------------------------------
+            //------------------------------------------
+            // include dependant children
+            // TODO: meant to be expanded to allow more options and diffent kinds of dependant fields
+            //------------------------------------------
             if (isset($setting_def['inline_dependant'])) {
                 $dep = $setting_def['inline_dependant'];
                 $val = isset($settings_form[$dep['name']]) ? $settings_form[$dep['name']] : null;

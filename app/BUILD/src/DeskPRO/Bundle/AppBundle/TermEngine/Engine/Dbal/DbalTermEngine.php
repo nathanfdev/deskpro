@@ -41,7 +41,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
  * DbalTicketFilterEngine. The reason why it exists: can't compile a term not wrapping it in a TicketFilter using
  * existing services.
  *
- * @todo Fix it.
+ * @todo Fix it
  */
 class DbalTermEngine
 {

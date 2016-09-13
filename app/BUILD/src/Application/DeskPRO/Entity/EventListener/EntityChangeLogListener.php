@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,19 +41,19 @@ use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
 abstract class EntityChangeLogListener
 {
-    /** @var  DeskproContainer */
+    /** @var DeskproContainer */
     protected $container;
 
     /** @var array */
-    protected $queued_inserts = array();
+    protected $queued_inserts = [];
 
     /** @var array */
-    protected $queued_updates = array();
+    protected $queued_updates = [];
 
-    /** @var array  */
-    protected $queued_deletions = array();
+    /** @var array */
+    protected $queued_deletions = [];
 
-    /** @var \Application\DeskPRO\Monolog\Logger  */
+    /** @var \Application\DeskPRO\Monolog\Logger */
     protected $logger;
 
     public function __construct(DeskproContainer $container)
@@ -77,9 +77,6 @@ abstract class EntityChangeLogListener
         return $person;
     }
 
-    /**
-     *
-     */
     protected function tryToGetPersonFromContext()
     {
         $c = $this->container;
@@ -103,9 +100,6 @@ abstract class EntityChangeLogListener
         }
     }
 
-    /**
-     *
-     */
     protected function tryToGetApiKeyFromContext()
     {
         $c = $this->container;
@@ -127,7 +121,7 @@ abstract class EntityChangeLogListener
      */
     protected function getChangesForEntity(DomainObject $entity)
     {
-        $ret = array();
+        $ret = [];
 
         /** @var StateChangeRecorder $stateChangeRecorder */
         $stateChangeRecorder = $entity->getStateChangeRecorder();
@@ -161,7 +155,7 @@ abstract class EntityChangeLogListener
     {
         $oid = spl_object_hash($entity);
 
-        foreach (array('inserts', 'updates', 'deletions') as $type) {
+        foreach (['inserts', 'updates', 'deletions'] as $type) {
             $this->doFlush($oid, $type);
         }
     }

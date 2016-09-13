@@ -37,6 +37,7 @@ use Application\DeskPRO\JIRA\Api;
 use Application\DeskPRO\JIRA\ApiCoreException;
 use Application\DeskPRO\JIRA\Meta;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\JiraApiExceptionEvent;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -52,7 +53,7 @@ class JIRA
     const PARAM_KEY      = 'private_key';
     const SSL_AUTHORITY  = 'ssl_authority';
 
-    protected $allowed = array(
+    protected $allowed = [
         'project',
         'issuetype',
         'summary',
@@ -68,9 +69,9 @@ class JIRA
         'duedate',
         'components',
         'versions',
-    );
+    ];
 
-    protected $allowed_custom = array(
+    protected $allowed_custom = [
         'com.atlassian.jira.plugin.system.customfieldtypes:textfield',
         'com.atlassian.jira.plugin.system.customfieldtypes:textarea',
         'com.atlassian.jira.plugin.system.customfieldtypes:select',
@@ -82,7 +83,7 @@ class JIRA
         'com.atlassian.jira.plugin.system.customfieldtypes:datetime',
         'com.atlassian.jira.plugin.system.customfieldtypes:float',
         'com.atlassian.jira.plugin.system.customfieldtypes:url',
-    );
+    ];
 
     /**
      * @var DeskproContainer
@@ -98,6 +99,11 @@ class JIRA
      * @var AppInstance
      */
     protected $app = false;
+
+    /**
+     * @var EventLogger
+     */
+    protected $logger;
 
     public function __construct(DeskproContainer $container)
     {
@@ -142,7 +148,23 @@ class JIRA
             return;
         }
 
-        return $app->getSetting(self::SSL_AUTHORITY);
+        $setting = $app->getSetting(self::SSL_AUTHORITY);
+        if ($setting === 'default') {
+            $cert = $this->container->getParameter('kernel.root_dir')
+                .DIRECTORY_SEPARATOR
+                .'Resources'
+                .DIRECTORY_SEPARATOR
+                .'cacert.pem';
+            if (file_exists($cert)) {
+                $setting = $cert;
+            }
+        } elseif ($setting === 'disabled') {
+            $setting = false;
+        } else {
+            $setting = true;
+        }
+
+        return $setting;
     }
 
     /**
@@ -188,11 +210,11 @@ class JIRA
     public function getTokens()
     {
         if (!$app = $this->getApp()) {
-            return array();
+            return [];
         }
 
         if (!$tokens = $app->getSetting(self::PARAM_TOKENS)) {
-            return array();
+            return [];
         }
 
         return $tokens;
@@ -218,11 +240,13 @@ class JIRA
      *
      * @return Meta
      */
-    public function updateMeta(array $properties = array())
+    public function updateMeta(array $properties = [])
     {
         if (!$app = $this->getApp()) {
             return;
         }
+
+        $meta = null;
 
         try {
             unset($properties['projects'], $properties['statuses'], $properties['fields'], $properties['api_username']);
@@ -234,10 +258,7 @@ class JIRA
 
             $session                    = $api->call('rest/auth/1/session');
             $properties['api_username'] = $session['name'];
-
-//            $res = $this->getCreateMeta();
-//            $properties['projects'] = $res['projects'];
-            $meta = Meta::fromArray($properties);
+            $meta                       = Meta::fromArray($properties);
 
             $fields     = $api->get('/field');
             $keys       = array_flip($this->allowed);
@@ -254,7 +275,7 @@ class JIRA
             $app->setSetting(self::PARAM_META, $meta->toArray());
             $this->container->getEm()->flush($app);
         } catch (\Exception $e) {
-            $this->container->get('dp_sys.alerts.event_logger')->log(new JiraApiExceptionEvent($e));
+            $this->logException($e);
         }
 
         return $meta;
@@ -264,7 +285,7 @@ class JIRA
     {
         if ($api = $this->getApi()) {
             $projectId = (int) $projectId;
-            $params    = array('expand' => 'projects.issuetypes.fields');
+            $params    = ['expand' => 'projects.issuetypes.fields'];
             if ($projectId) {
                 $params['projectIds'] = $projectId;
             }
@@ -272,7 +293,7 @@ class JIRA
             return $api->get('/issue/createmeta', $params);
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -329,31 +350,28 @@ class JIRA
         try {
             return $this->getApi()->searchIssues(sprintf('id IN (%s)', implode(',', $ids)), $this->getMeta()->getAllFields());
         } catch (\Exception $e) {
-            return;
         }
     }
 
     /**
-     * @param int    $issueId
+     * @param $issueId
      * @param Person $author
      * @param Ticket $ticket
-     * @param string $message
+     * @param $message
      *
-     * @throws \Exception
+     * @return mixed
      */
     public function createComment($issueId, Person $author, Ticket $ticket, $message)
     {
-        $url = $this->container->get('router')->generate('agent', array(), RouterInterface::ABSOLUTE_URL)
-            .'#app.tickets,t.o:'.$ticket['id'];
-
         try {
-            return $this->getApi()->post('/issue/'.$issueId.'/comment?expand=renderedBody', array(
-                'body' => sprintf('[%s via DeskPRO #%d|%s]: %s', $author->getDisplayName(), $ticket['id'], $url, $message),
-            ));
-        } catch (\Exception $e) {
-            $this->container->get('dp_sys.alerts.event_logger')->log(new JiraApiExceptionEvent($e));
+            $url = $this->container->get('router')->generate('agent', [], RouterInterface::ABSOLUTE_URL)
+                .'#app.tickets,t.o:'.$ticket['id'];
 
-            return;
+            return $this->getApi()->post('/issue/'.$issueId.'/comment?expand=renderedBody', [
+                'body' => sprintf('[%s via DeskPRO #%d|%s]: %s', $author->getDisplayName(), $ticket['id'], $url, $message),
+            ]);
+        } catch (\Exception $e) {
+            $this->logException($e);
         }
     }
 
@@ -361,34 +379,34 @@ class JIRA
      * @param Ticket $ticket
      * @param $issueId
      *
-     * @throws \Exception
+     * @return mixed
      */
     public function createRemoteIssueLink(Ticket $ticket, $issueId)
     {
         try {
-            $url = $this->container->get('router')->generate('agent', array(), RouterInterface::ABSOLUTE_URL)
+            $url = $this->container->get('router')->generate('agent', [], RouterInterface::ABSOLUTE_URL)
                 .'#app.tickets,t.o:'.$ticket['id'];
 
-            $data = array(
+            $data = [
                 'globalId'     => 'deskpro_ticket_'.$ticket['id'],
                 'relationship' => 'linked with',
-                'object'       => array(
+                'object'       => [
                     'title'   => 'DeskPRO #'.$ticket['id'],
                     'summary' => $ticket['subject'],
                     'url'     => $url,
-                ),
-            );
+                ],
+            ];
 
             return $this->getApi()->post('/issue/'.$issueId.'/remotelink', $data);
         } catch (\Exception $e) {
-            $this->container->get('dp_sys.alerts.event_logger')->log(new JiraApiExceptionEvent($e));
+            $this->logException($e);
         }
     }
 
     /**
      * @param JiraIssue $issue
      *
-     * @throws \Exception
+     * @return bool
      */
     public function removeRemoteIssueLink(JiraIssue $issue)
     {
@@ -399,7 +417,7 @@ class JIRA
 
             return true;
         } catch (\Exception $e) {
-            $this->container->get('dp_sys.alerts.event_logger')->log(new JiraApiExceptionEvent($e));
+            $this->logException($e);
         }
     }
 
@@ -417,12 +435,12 @@ class JIRA
         $rep = $this->container->getEm()->getRepository('DeskPRO:JiraIssue');
 
         // already linked
-        if ($issue = $rep->findOneBy(array('ticket' => $ticket['id'], 'issue_id' => $issueId))) {
+        if ($issue = $rep->findOneBy(['ticket' => $ticket['id'], 'issue_id' => $issueId])) {
             return;
         }
 
         // api error
-        if (!$result = $this->searchByIds(array($issueId))) {
+        if (!$result = $this->searchByIds([$issueId])) {
             return;
         }
 
@@ -467,7 +485,7 @@ class JIRA
     {
         $em    = $this->container->getEm();
         $rep   = $em->getRepository('DeskPRO:JiraIssue');
-        $issue = $rep->findOneBy(array('ticket' => $ticket['id'], 'issue_id' => $issueId));
+        $issue = $rep->findOneBy(['ticket' => $ticket['id'], 'issue_id' => $issueId]);
         if (!$issue) {
             return;
         }
@@ -488,8 +506,8 @@ class JIRA
     public function issues($ticketId)
     {
         $em     = $this->container->getEm();
-        $issues = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('ticket' => $ticketId));
-        $map    = array();
+        $issues = $em->getRepository('DeskPRO:JiraIssue')->findBy(['ticket' => $ticketId]);
+        $map    = [];
         foreach ($issues as $issue) {
             $map[$issue['issue_id']] = $issue;
         }
@@ -543,17 +561,17 @@ class JIRA
         $rep = $this->container->getEm()->getRepository('DeskPRO:JiraIssue');
 
         if (!$issueId) {
-            if (!$issues = $rep->findBy(array('ticket' => $ticketId))) {
+            if (!$issues = $rep->findBy(['ticket' => $ticketId])) {
                 throw new NotFoundHttpException();
             }
         } else {
-            if (!$issue = $rep->findOneBy(array('ticket' => $ticketId, 'issue_id' => $issueId))) {
+            if (!$issue = $rep->findOneBy(['ticket' => $ticketId, 'issue_id' => $issueId])) {
                 throw new NotFoundHttpException();
             }
-            $issues = array($issue);
+            $issues = [$issue];
         }
 
-        $response = array('body' => '');
+        $response = ['body' => ''];
         /** @var Ticket $ticket */
         $ticket = null;
 
@@ -579,9 +597,24 @@ class JIRA
      *
      * @param $id
      * @param $json
+     *
+     * @return mixed
      */
     public function updateIssueJson($id, $json)
     {
         return $this->getApi()->updateIssueJson($id, $json);
+    }
+
+    /**
+     * @param \Exception $e
+     */
+    protected function logException(\Exception $e)
+    {
+        if (!$this->logger) {
+            /* @var EventLogger logger */
+            $this->logger = $this->container->get('dp_sys.alerts.event_logger');
+        }
+
+        $this->logger->log(new JiraApiExceptionEvent($e));
     }
 }

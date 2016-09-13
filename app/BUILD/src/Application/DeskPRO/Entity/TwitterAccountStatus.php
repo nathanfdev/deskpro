@@ -173,9 +173,9 @@ class TwitterAccountStatus extends \Application\DeskPRO\Domain\DomainObject
         ;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

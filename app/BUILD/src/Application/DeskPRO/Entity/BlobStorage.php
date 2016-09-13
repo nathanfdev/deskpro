@@ -107,9 +107,9 @@ class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('data', $data);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

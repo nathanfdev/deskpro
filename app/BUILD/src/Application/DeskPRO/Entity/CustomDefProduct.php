@@ -54,9 +54,9 @@ class CustomDefProduct extends CustomDefAbstract
      */
     protected $children = null;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

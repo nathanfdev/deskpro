@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Renderer\Values;
 
 use Application\DeskPRO\App;
@@ -87,7 +88,7 @@ abstract class AbstractValues
                 return $this->escapeValue($value);
 
             case 'number':
-            case 'numberraw';
+            case 'numberraw':
             case 'id':
                 if (preg_match('/^(\d*)\.(\d+)$/', $value, $match)) {
                     // float
@@ -97,7 +98,7 @@ abstract class AbstractValues
                     $decimals = 0;
                 }
 
-                if (in_array($format, array('numberraw', 'id'))) {
+                if (in_array($format, ['numberraw', 'id'])) {
                     $thousands = '';
                 } else {
                     $thousands = ',';
@@ -113,11 +114,11 @@ abstract class AbstractValues
             case 'datetime':
             case 'date':
             case 'time':
-                $settingMap = array(
+                $settingMap = [
                     'datetime' => 'core.date_fulltime',
                     'date'     => 'core.date_full',
                     'time'     => 'core.date_time',
-                );
+                ];
 
                 $tz = App::getCurrentPerson()->getTimezone();
                 try {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -58,9 +59,9 @@ class PersonPref extends AbstractEntityRepository
             SELECT name, value_str, value_array
             FROM people_prefs
             WHERE person_id = ? AND name LIKE ?
-        ', array($person_id, "$pref_group.%"));
+        ', [$person_id, "$pref_group.%"]);
 
-        $ret_prefs = array();
+        $ret_prefs = [];
 
         while ($pref = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $pref_name = $pref['name'];
@@ -103,7 +104,7 @@ class PersonPref extends AbstractEntityRepository
     {
         if (is_array($pref_name)) {
             $is_single = false;
-            $args      = array($person_id);
+            $args      = [$person_id];
             $args      = array_merge($args, $pref_name);
 
             $in_str = implode(',', array_fill(0, count($pref_name), '?'));
@@ -115,7 +116,7 @@ class PersonPref extends AbstractEntityRepository
             ", $args, 'name');
 
             if (!$prefs) {
-                return array();
+                return [];
             }
         } else {
             $is_single = true;
@@ -123,16 +124,16 @@ class PersonPref extends AbstractEntityRepository
                 SELECT value_str, value_array
                 FROM people_prefs
                 WHERE person_id = ? AND name = ?
-            ', array($person_id, $pref_name));
+            ', [$person_id, $pref_name]);
 
             if (!$pref) {
                 return;
             }
 
-            $prefs = array($pref_name => $pref);
+            $prefs = [$pref_name => $pref];
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($prefs as $pref_name => $pref) {
             if ($pref['value_array']) {
                 $pref['value_array'] = @unserialize($pref['value_array']);
@@ -159,20 +160,20 @@ class PersonPref extends AbstractEntityRepository
         $this->getEntityManager()->getConnection()->executeUpdate('
             DELETE FROM people_prefs
             WHERE person_id = ? AND name LIKE ? LIMIT 1
-        ', array($person_id, $pref_name.'%'));
+        ', [$person_id, $pref_name.'%']);
     }
 
     public function savePref($person, $pref_id, $value)
     {
         $pref = $person->setPreference($pref_id, $value);
 
-        App::getDb()->replace('people_prefs', array(
+        App::getDb()->replace('people_prefs', [
             'person_id'   => $person->getId(),
             'name'        => $pref['name'],
             'value_str'   => $pref['value_str'],
             'value_array' => $pref['value_array'],
             'date_expire' => $pref['date_expire'],
-        ));
+        ]);
 
         return $pref;
     }

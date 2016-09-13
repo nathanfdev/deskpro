@@ -401,6 +401,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @refreshPreviewUrl()
 
     promptEmail: =>
+      baseUrl = @$scope.baseUrl
+
       modalInstance = @$modal.open({
         templateUrl: @getTemplatePath('Portal/Editor/email-modal.html'),
         controller: ['$scope', '$modalInstance', '$http', 'preview_as', ($scope, $modalInstance, $http, preview_as) ->
@@ -409,7 +411,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           $scope.ok = () -> $modalInstance.close(@email)
           $scope.cancel = () -> $modalInstance.dismiss('cancel')
           $scope.loadEmails = (val) ->
-            $http.get(@$scope.baseUrl+'/portal/api/emails?term=' + val + '&target=' + preview_as)
+            $http.get(baseUrl+'/portal/api/emails?term=' + val + '&target=' + preview_as)
                  .then((response) => response.data)
         ],
         resolve: {

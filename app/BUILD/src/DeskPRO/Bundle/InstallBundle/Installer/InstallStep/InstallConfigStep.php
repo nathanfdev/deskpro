@@ -160,6 +160,10 @@ class InstallConfigStep extends AbstractStep
         $fs         = new Filesystem();
         $configPath = $this->getConfigPath();
 
+        if (!is_dir($configPath)) {
+            return;
+        }
+
         $backupBasedir = $this->getContext()->getDpEnv()->getUserBackupsDir().DIRECTORY_SEPARATOR.'config_backup';
         $backupDir     = $backupBasedir.DIRECTORY_SEPARATOR.date('Ymd_His').'_'.mt_rand(1000, 9999);
         $any           = false;

@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
@@ -55,9 +54,9 @@ class CommonController extends AbstractController
      */
     public function agentBarAction()
     {
-        //
+
         // AGENT IMPERSONATION
-        //
+
         $agent           = null;
         $impersonationOn = false;
 
@@ -95,9 +94,8 @@ class CommonController extends AbstractController
     {
         $user = $this->getUser();
 
-        //
         // DIFFERENT LANG
-        //
+
         $person   = $this->getCurrentPerson();
         $langDiff = false;
         if (!$person instanceof PersonGuest) {
@@ -117,9 +115,8 @@ class CommonController extends AbstractController
             }
         }
 
-        //
         // SAVED FORMS
-        //
+
         $saved_forms = [];
         if ($user && $all_saved = $this->getFormSaver()->getSavedForms($user)) {
             foreach ($all_saved as $saved) {
@@ -134,9 +131,8 @@ class CommonController extends AbstractController
             }
         }
 
-        //
         // TICKETS AWAITING REPLY
-        //
+
         $ticketsAwaitingReply = [];
         if (!$person instanceof PersonGuest) {
             /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepo */

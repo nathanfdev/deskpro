@@ -69,22 +69,22 @@ class ImportersController extends AbstractController implements ProtectedControl
         $is = $this->get('deskpro.import');
 
         if (count($importers) !== count($is::$allowed)) {
-            $importers = array();
+            $importers = [];
             foreach ($is::$allowed as $type) {
                 $importers[] = $is->getImporter($type);
             }
         }
 
-        $ret = array();
+        $ret = [];
 
         foreach ($importers as $importer) {
-            $ret[] = array(
+            $ret[] = [
                 'id'          => str_replace('importers.', '', $importer['name']),
                 'title'       => $importer->getData('title'),
                 'description' => $importer->getData('description'),
                 'status'      => $importer->getData('status'),
                 'icon'        => $this->getIcon($importer),
-            );
+            ];
         }
 
         return $this->createJsonResponse($ret);
@@ -172,9 +172,9 @@ class ImportersController extends AbstractController implements ProtectedControl
             $config = $is->createGeneratorConfig($importer);
             $reader = Generator\GeneratorFactory::createReader($this->getContainer(), $config);
 
-            $res = $this->createJsonResponse(array('result' => $reader->checkConfig()));
+            $res = $this->createJsonResponse(['result' => $reader->checkConfig()]);
         } catch (\Exception $e) {
-            $res = $this->createJsonResponse(array('error_message' => $e->getMessage()));
+            $res = $this->createJsonResponse(['error_message' => $e->getMessage()]);
         }
 
         $is->cleanup($importer);

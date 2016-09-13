@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
 use Application\DeskPRO\Entity\Brand;
@@ -60,24 +61,24 @@ class ThemeViewSpec extends ObjectBehavior
         $portalBrandThemeLoader->getPortalBrandTheme($brand)->willReturn($portalBrandTheme);
         $portalBrandTheme->getActiveTheme()->willReturn($theme);
         $theme->resolveTag('tag_name')->willReturn($tag);
-        $tag->getDefinedOptions()->willReturn(array('a', 'b', 'c', 'd', 'e'));
+        $tag->getDefinedOptions()->willReturn(['a', 'b', 'c', 'd', 'e']);
 
-        $this->beConstructedWith($brand_stack, $portalBrandThemeLoader, array(
+        $this->beConstructedWith($brand_stack, $portalBrandThemeLoader, [
             'a' => 'default',
             'd' => 'the controller sets these page defaults',
-        ));
+        ]);
     }
 
     public function it_will_call_a_tag_using_the_constructed_default_options(
         PortalBrandTheme $portalBrandTheme,
         $default_options
     ) {
-        $portalBrandTheme->renderTag('tag_name', array(
+        $portalBrandTheme->renderTag('tag_name', [
             'a' => 'default',
             'd' => 'the controller sets these page defaults',
-        ))->shouldBeCalled();
+        ])->shouldBeCalled();
 
-        $no_explicit_options = array(array()); // uses first arg in the array (because twig, see commnets in class)
+        $no_explicit_options = [[]]; // uses first arg in the array (because twig, see commnets in class)
 
         $this->__call('tag_name', $no_explicit_options);
     }
@@ -86,15 +87,15 @@ class ThemeViewSpec extends ObjectBehavior
         PortalBrandTheme $portalBrandTheme,
         $default_options
     ) {
-        $portalBrandTheme->renderTag('tag_name', array(
+        $portalBrandTheme->renderTag('tag_name', [
             'a' => 'NEW VAL',
             'b' => 'something',
             'd' => 'the controller sets these page defaults',
-        ))->shouldBeCalled();
+        ])->shouldBeCalled();
 
-        $this->__call('tag_name', array(array( // uses first arg in the array (because twig, see commnets in class)
+        $this->__call('tag_name', [[ // uses first arg in the array (because twig, see commnets in class)
             'a' => 'NEW VAL',
             'b' => 'something',
-        )));
+        ]]);
     }
 }

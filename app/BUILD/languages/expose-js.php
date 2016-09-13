@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,20 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
-    'admin' => array(
+return [
+    'admin' => [
         'agent.general.*',
         'agent.tickets.*',
         'adm.general.*',
         'adm.departments.*',
         'adm.tickets.*',
-    ),
+    ],
 
-    'reports' => array(
+    'reports' => [
         'agent.general.*',
         'agent.tickets.*',
         'adm.general.*',
         'adm.departments.*',
         'adm.tickets.*',
-    ),
-);
+    ],
+];

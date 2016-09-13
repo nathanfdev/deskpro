@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,13 +55,13 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
         return $multi;
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
-        $data = array();
+        $data = [];
 
         /** @var \Application\DeskPRO\CustomFields\OrganizationFieldManager $field_manager */
         $field_manager = $this->container->getSystemService('org_fields_manager');
@@ -72,9 +72,9 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # get-custom-field
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-custom-field
+    //###################################################################################################################
 
     public function getCustomFieldAction($id)
     {
@@ -83,15 +83,15 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
             throw $this->createNotFoundException();
         }
 
-        $data          = array();
+        $data          = [];
         $data['field'] = $field->toApiData();
 
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # save-custom-field
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-custom-field
+    //###################################################################################################################
 
     public function saveCustomFieldAction($id)
     {
@@ -115,23 +115,23 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
 
         if ($id) {
             return $this->createSuccessResponse(
-                array(
+                [
                      'field_id' => $field->id,
-                )
+                ]
             );
         } else {
             return $this->createSuccessResponse(
-                array(
+                [
                      'field_id' => $field->id,
-                     $this->generateUrl('api_org_fields_get', array('id' => $field->id)),
-                )
+                     $this->generateUrl('api_org_fields_get', ['id' => $field->id]),
+                ]
             );
         }
     }
 
-    ####################################################################################################################
-    # delete-custom-field
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete-custom-field
+    //###################################################################################################################
 
     public function deleteCustomFieldAction($id)
     {
@@ -146,9 +146,9 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
         return $this->createApiDeleteResponse();
     }
 
-    ####################################################################################################################
-    # toggleField
-    ####################################################################################################################
+    //###################################################################################################################
+    // toggleField
+    //###################################################################################################################
 
     public function toggleFieldAction($field_id, $is_enabled)
     {
@@ -159,9 +159,9 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # save-display-order
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-display-order
+    //###################################################################################################################
 
     public function saveDisplayOrderAction()
     {

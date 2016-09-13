@@ -62,7 +62,7 @@ class App
      *
      * @var array
      */
-    protected static $_fileconfig = array();
+    protected static $_fileconfig = [];
 
     /**
      * Array of instantiated API handlers.
@@ -160,7 +160,7 @@ class App
      *
      * @return mixed
      */
-    public static function getSystemObject($service_name, array $options = array())
+    public static function getSystemObject($service_name, array $options = [])
     {
         return self::$container->getSystemObject($service_name, $options);
     }
@@ -414,7 +414,7 @@ class App
     /**
      * @var array
      */
-    protected static $_api_handler_names = array(
+    protected static $_api_handler_names = [
         'tickets'                     => 'Application\\DeskPRO\\Tickets\\Tickets',
         'tickets.filters'             => 'Application\\DeskPRO\\Tickets\\Filters',
         'tickets.edit'                => 'Application\\DeskPRO\\Tickets\\TicketEdit',
@@ -428,7 +428,7 @@ class App
         'custom_fields.products'      => 'Application\\DeskPRO\\CustomFields\\ProductFields',
         'custom_fields.util'          => 'Application\\DeskPRO\\CustomFields\\Util',
         'filestorage'                 => '',
-    );
+    ];
 
     /**
      * Get an API handler. It will be instantiated if it hasn't been already.

@@ -56,7 +56,7 @@ class TagRequest extends SymfonyRequest
     }
 
     /**
-     * @param array $collectAttr Array of attributes to fetch options from a parent request.
+     * @param array $collectAttr Array of attributes to fetch options from a parent request
      *
      * @return array
      */

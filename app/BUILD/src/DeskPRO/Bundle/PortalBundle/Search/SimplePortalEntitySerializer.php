@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Search;
 
 use Application\DeskPRO\Entity;
@@ -67,7 +68,7 @@ class SimplePortalEntitySerializer
      */
     public function serializeArray(array $data)
     {
-        $result = array();
+        $result = [];
 
         foreach ($data as $key => $node) {
             $result[$key] = $this->transformNode($node);
@@ -81,7 +82,7 @@ class SimplePortalEntitySerializer
         if (is_object($node)) {
             $result = $this->transformObject($node);
         } elseif (is_array($node)) {
-            $result = array();
+            $result = [];
             foreach ($node as $key => $val) {
                 $result[$key] = $this->transformNode($val);
             }
@@ -94,7 +95,7 @@ class SimplePortalEntitySerializer
 
     protected function transformObject($object)
     {
-        $result = array();
+        $result = [];
 
         if ($object instanceof Entity\Article
             || $object instanceof Entity\News

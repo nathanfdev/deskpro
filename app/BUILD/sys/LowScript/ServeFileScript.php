@@ -34,7 +34,7 @@ use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
 
 if (!isset($DP_LOG_MESSAGES)) {
-    $DP_LOG_MESSAGES = array();
+    $DP_LOG_MESSAGES = [];
 }
 
 /**
@@ -213,10 +213,10 @@ class ServeFileScript extends LowScriptAbstract
             $message = vsprintf($message, $args);
         }
 
-        $DP_LOG_MESSAGES[] = array(
+        $DP_LOG_MESSAGES[] = [
             'time'    => time(),
             'message' => $message,
-        );
+        ];
     }
 
     /**
@@ -249,12 +249,12 @@ class ServeFileScript extends LowScriptAbstract
         ) {
             $did_reload = true;
             $container  = $this->bootFullSystem();
-            $css        = $container->get('templating')->render('UserBundle:Css:main.css.twig', array());
+            $css        = $container->get('templating')->render('UserBundle:Css:main.css.twig', []);
 
             if ($is_rtl) {
                 // filter CSS to change LTR ideas to RTL
                 preg_match_all('#/\*@no_rtl\*/(.*)/\*@/no_rtl\*/#sU', $css, $matches, PREG_SET_ORDER);
-                $replace = array();
+                $replace = [];
 
                 foreach ($matches as $key => $match) {
                     $replace[$key] = $match[1];
@@ -397,7 +397,7 @@ class ServeFileScript extends LowScriptAbstract
             );
             $blob_id = $blob->getId();
 
-            $container->getDb()->update('styles', array($blob_column => $blob_id), array('id' => 1));
+            $container->getDb()->update('styles', [$blob_column => $blob_id], ['id' => 1]);
 
             $sth = $this->getPdoRead()->prepare('
                 SELECT blobs.*
@@ -405,7 +405,7 @@ class ServeFileScript extends LowScriptAbstract
                 WHERE blobs.id =?
                 LIMIT 1
             ');
-            $sth->execute(array($blob_id));
+            $sth->execute([$blob_id]);
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
         }
 
@@ -450,7 +450,7 @@ class ServeFileScript extends LowScriptAbstract
         require DP_ROOT.'/src/Orb/Images/Util.php';
 
         $start_color = isset($_REQUEST['start_color']) ? (string) $_REQUEST['start_color'] : '000000';
-        $end_color   = isset($_REQUEST['end_color'])   ? (string) $_REQUEST['end_color']   : '000000';
+        $end_color   = isset($_REQUEST['end_color']) ? (string) $_REQUEST['end_color'] : '000000';
 
         $get_rgb = function ($color) {
             // Not rgb(
@@ -469,15 +469,15 @@ class ServeFileScript extends LowScriptAbstract
             }
 
             if (preg_match('#rgb\((.*?),(.*?),(.*?)\)#i', $color, $m)) {
-                $rgb = array(
+                $rgb = [
                     'red'   => (int) trim($m[1]),
                     'green' => (int) trim($m[2]),
                     'blue'  => (int) trim($m[3]),
-                );
+                ];
 
                 return $rgb;
             } else {
-                return array('red' => 0, 'green' => 0, 'blue' => 0);
+                return ['red' => 0, 'green' => 0, 'blue' => 0];
             }
         };
 
@@ -556,7 +556,7 @@ class ServeFileScript extends LowScriptAbstract
             LEFT JOIN people ON (blobs.id = people.picture_blob_id)
             WHERE people.id = :person_id
         ');
-        $sth->execute(array('person_id' => $person_id));
+        $sth->execute(['person_id' => $person_id]);
         $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
         if (!$blob) {
@@ -590,7 +590,7 @@ class ServeFileScript extends LowScriptAbstract
             LEFT JOIN organizations ON (blobs.id = organizations.picture_blob_id)
             WHERE organizations.id = :org_id
         ');
-        $sth->execute(array('org_id' => $org_id));
+        $sth->execute(['org_id' => $org_id]);
         $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
         if (!$blob) {
@@ -622,7 +622,7 @@ class ServeFileScript extends LowScriptAbstract
         }
 
         $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE sys_name = :sys_name');
-        $sth->execute(array('sys_name' => $name));
+        $sth->execute(['sys_name' => $name]);
         $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
         // The default avatar blob hasnt been inserted yet, default it from the resources dir now
@@ -639,7 +639,7 @@ class ServeFileScript extends LowScriptAbstract
                 $file,
                 pathinfo($file, PATHINFO_BASENAME),
                 $mime,
-                array('sys_name' => $name)
+                ['sys_name' => $name]
             );
 
             $blob = $blob_entity->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
@@ -708,7 +708,7 @@ class ServeFileScript extends LowScriptAbstract
         $name = 'orgpicture-default';
 
         $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE sys_name = :sys_name');
-        $sth->execute(array('sys_name' => $name));
+        $sth->execute(['sys_name' => $name]);
         $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
         // The default avatar blob hasnt been inserted yet, default it from the resources dir now
@@ -718,7 +718,7 @@ class ServeFileScript extends LowScriptAbstract
                 DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg',
                 $name.'.jpeg',
                 'image/jpeg',
-                array('sys_name' => $name)
+                ['sys_name' => $name]
             );
 
             $blob = $blob_entity->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
@@ -739,10 +739,10 @@ class ServeFileScript extends LowScriptAbstract
      */
     protected function handleFilesystemBlobRequest($batch, $authcode, $blob_id, $namehash, $filename)
     {
-        #------------------------------
-        # If its a simple file request we
-        # can serve it without a db connection
-        #------------------------------
+        //------------------------------
+        // If its a simple file request we
+        // can serve it without a db connection
+        //------------------------------
 
         $base_path = $this->dpEnv->getUserFilesDir();
 
@@ -771,7 +771,7 @@ class ServeFileScript extends LowScriptAbstract
             $this->addLogMessage('Hash mismatch: %s !=', $check_namehash, $namehash);
 
             $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE id = :id');
-            $sth->execute(array('id' => $blob_id));
+            $sth->execute(['id' => $blob_id]);
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
             if ($blob['filename']) {
@@ -804,7 +804,7 @@ class ServeFileScript extends LowScriptAbstract
         // The file doesnt exist on disk
         if (!file_exists($filepath)) {
             $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE id = :id');
-            $sth->execute(array('id' => $blob_id));
+            $sth->execute(['id' => $blob_id]);
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
             // Try to detect bad css file and reload it automatically
@@ -833,9 +833,9 @@ class ServeFileScript extends LowScriptAbstract
             return;
         }
 
-        #------------------------------
-        # See if we need to resize
-        #------------------------------
+        //------------------------------
+        // See if we need to resize
+        //------------------------------
 
         if ($size) {
             $this->showBlob($blob_id, $size);
@@ -843,9 +843,9 @@ class ServeFileScript extends LowScriptAbstract
             return;
         }
 
-        #------------------------------
-        # Serve up
-        #------------------------------
+        //------------------------------
+        // Serve up
+        //------------------------------
 
         $mimetype = \Orb\Data\ContentTypes::getContentTypeFromFilename($filename);
         if (!$mimetype) {
@@ -896,9 +896,9 @@ class ServeFileScript extends LowScriptAbstract
      */
     protected function showBlob($blob, $size = null, $blob_auth = null)
     {
-        #------------------------------
-        # Fetch the blob
-        #------------------------------
+        //------------------------------
+        // Fetch the blob
+        //------------------------------
 
         if (!is_array($blob)) {
             $blob_id = $blob;
@@ -906,7 +906,7 @@ class ServeFileScript extends LowScriptAbstract
             $this->addLogMessage('Loading blob %d', $blob_id);
 
             $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE id = :id');
-            $sth->execute(array('id' => $blob_id));
+            $sth->execute(['id' => $blob_id]);
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
             if (!$blob) {
@@ -960,9 +960,9 @@ class ServeFileScript extends LowScriptAbstract
 
         $blob_id = $blob['id'];
 
-        #------------------------------
-        # Serve the file
-        #------------------------------
+        //------------------------------
+        // Serve the file
+        //------------------------------
 
         if (!isset($blob['filename_safe'])) {
             $filename_safe         = Strings::utf8_accents_to_ascii($blob['filename']);
@@ -987,12 +987,12 @@ class ServeFileScript extends LowScriptAbstract
             $is_fit = false;
 
             if (isset($_GET['size-fit'])) {
-                $is_fit = (boolean) $_GET['size-fit'];
+                $is_fit = (bool) $_GET['size-fit'];
                 $this->addLogMessage('Is fit: %d', $is_fit);
             }
 
             $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE original_blob_id = :original_blob_id AND sys_name = :sys_name');
-            $sth->execute(array('original_blob_id' => $blob_id, 'sys_name' => $this->getSizedBlobSysName($blob_id, $size, $is_fit)));
+            $sth->execute(['original_blob_id' => $blob_id, 'sys_name' => $this->getSizedBlobSysName($blob_id, $size, $is_fit)]);
             $sub_blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
             // Already have the cached resized blob
@@ -1016,9 +1016,9 @@ class ServeFileScript extends LowScriptAbstract
             // Need to send through this controller if its a download
             // request and the file is usually stored with an inline disposition
             if ($this->local_mode || $this->dpEnv->getConfig('settings.remote_blobs_proxy_local')) {
-                $context = stream_context_create(array(
-                    'http' => array('timeout' => 10.0), // read timeout. we do it in chunks, so this is rather low
-                ));
+                $context = stream_context_create([
+                    'http' => ['timeout' => 10.0], // read timeout. we do it in chunks, so this is rather low
+                ]);
 
                 $time_start = time();
                 $max_time   = 30;
@@ -1130,7 +1130,7 @@ class ServeFileScript extends LowScriptAbstract
         $this->sendHeaders($blob);
 
         $sth = $this->getPdoRead()->prepare('SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id ASC');
-        $sth->execute(array('blob_id' => $blob['id']));
+        $sth->execute(['blob_id' => $blob['id']]);
 
         while (($seg = $sth->fetchColumn(0)) !== false) {
             echo $seg;
@@ -1320,10 +1320,10 @@ class ServeFileScript extends LowScriptAbstract
             @unlink($tmp);
         }
 
-        $new_blob = $bs->createBlobRecordFromString($file, $blob->filename, $blob->content_type, array(
+        $new_blob = $bs->createBlobRecordFromString($file, $blob->filename, $blob->content_type, [
             'sys_name'      => $this->getSizedBlobSysName($blob->id, $size, $is_fit),
             'original_blob' => $blob,
-        ));
+        ]);
 
         $this->addLogMessage('Cached resize as blob %d', $new_blob->getId());
 
@@ -1415,10 +1415,10 @@ class ServeFileScript extends LowScriptAbstract
             if ($prefix === 'default' || strpos($appname, $prefix) === 0) {
                 $path = $base_path.'/'.$appname.'/'.$type_f.$filename;
                 if (file_exists($path)) {
-                    return array(
+                    return [
                         'filepath' => $path,
                         'basepath' => $base_path.'/'.$appname.'/'.$type_f,
-                    );
+                    ];
                 }
             }
         }
@@ -1427,10 +1427,10 @@ class ServeFileScript extends LowScriptAbstract
         foreach ($paths as $prefix => $base_path) {
             $path = $base_path.'/'.$appname.'/'.$type_f.$filename;
             if (file_exists($path)) {
-                return array(
+                return [
                     'filepath' => $path,
                     'basepath' => $base_path.'/'.$appname.'/'.$type_f,
-                );
+                ];
             }
         }
 
@@ -1442,7 +1442,7 @@ class ServeFileScript extends LowScriptAbstract
         $moved = $this->findMovedBlobAuthInfo($old_authcode);
         if ($moved) {
             $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE authcode = :authcode');
-            $sth->execute(array('authcode' => $moved['new_authcode']));
+            $sth->execute(['authcode' => $moved['new_authcode']]);
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
             return $blob;
@@ -1454,7 +1454,7 @@ class ServeFileScript extends LowScriptAbstract
     private function findMovedBlobAuthInfo($old_authcode)
     {
         $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs_auth_moved WHERE old_authcode = :authcode');
-        $sth->execute(array('authcode' => $old_authcode));
+        $sth->execute(['authcode' => $old_authcode]);
         $moved = $sth->fetch(\PDO::FETCH_ASSOC);
 
         if ($moved) {

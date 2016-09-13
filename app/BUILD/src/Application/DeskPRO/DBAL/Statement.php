@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\DBAL;
 
 use Doctrine\DBAL\DBALException;
@@ -49,9 +50,9 @@ class Statement extends \Doctrine\DBAL\Statement
         try {
             return parent::execute($params);
         } catch (\Exception $e) {
-                if ($is_ignore) {
-                    return false;
-                }
+            if ($is_ignore) {
+                return false;
+            }
             if ($e instanceof DBALException || $e instanceof \PDOException) {
                 $e->_dp_query        = $this->sql;
                 $e->_dp_query_params = $params;

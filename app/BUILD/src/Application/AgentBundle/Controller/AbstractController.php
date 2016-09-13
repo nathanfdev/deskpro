@@ -73,10 +73,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     {
         if (!$this->person['id']) {
             if ($request->isXmlHttpRequest()) {
-                $data = array(
+                $data = [
                     'error'          => 'session_expired',
                     'redirect_login' => $this->generateUrl('agent_login'),
-                );
+                ];
 
                 return $this->createJsonResponse($data, 403);
             } else {
@@ -86,9 +86,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                     $return = $request->getRequestUri();
                 }
 
-                return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
+                return $this->render('AgentBundle:Login:redirect-login.html.twig', [
                     'return' => $return,
-                ));
+                ]);
             }
         }
 
@@ -98,23 +98,23 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
             if ($request->isXmlHttpRequest()) {
-                $data = array(
+                $data = [
                     'error'          => 'invalid_request_token',
                     'redirect_login' => $this->generateUrl('agent_login'),
-                );
+                ];
 
                 return $this->createJsonResponse($data, 403);
             } else {
-                return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
+                return $this->render('AgentBundle:Login:redirect-login.html.twig', [
                     'return' => $this->get('router')->generate('agent'),
-                ));
+                ]);
             }
         }
 
-        if (!CheckWhitelistedIP::checkIP($this->getRequest(), $this->container, $this->person)) {
-            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-                'ip' => $this->getRequest()->getClientIp(),
-            ));
+        if (!CheckWhitelistedIP::checkIP($request, $this->container, $this->person)) {
+            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', [
+                'ip' => $request->getClientIp(),
+            ]);
         }
 
         $this->person->loadHelper('Agent');
@@ -143,7 +143,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      */
     protected function createPermissionErrorResponse($message)
     {
-        return $this->createJsonResponse(array('error' => 'not_allowed', 'message' => $message), 403);
+        return $this->createJsonResponse(['error' => 'not_allowed', 'message' => $message], 403);
     }
 
     /**

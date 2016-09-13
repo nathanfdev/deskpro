@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipant;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketStatusTermCompiler;
@@ -51,22 +52,22 @@ class PhpTicketParticipantTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testCompileIs()
     {
         $term = new TicketParticipantTerm(
-            array(
-                'person_ids' => array(4, 9),
-            )
+            [
+                'person_ids' => [4, 9],
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
 
         $ticket = $this->createTicketProphecy();
 
-        $ticket->hasAnyParticipantId(array(4, 9))->willReturn(true);
+        $ticket->hasAnyParticipantId([4, 9])->willReturn(true);
         $this->assertTicketCheck(
             $php_check,
             true,
             $ticket
         );
-        $ticket->hasAnyParticipantId(array(4, 9))->willReturn(false);
+        $ticket->hasAnyParticipantId([4, 9])->willReturn(false);
         $this->assertTicketCheck(
             $php_check,
             false,
@@ -77,9 +78,9 @@ class PhpTicketParticipantTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testCompileIsNot()
     {
         $term = new TicketParticipantTerm(
-            array(
-                'person_ids' => array(4, 9),
-            ),
+            [
+                'person_ids' => [4, 9],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -87,13 +88,13 @@ class PhpTicketParticipantTermCompilerTest extends AbstractPhpTermCompilerTest
 
         $ticket = $this->createTicketProphecy();
 
-        $ticket->hasAnyParticipantId(array(4, 9))->willReturn(true);
+        $ticket->hasAnyParticipantId([4, 9])->willReturn(true);
         $this->assertTicketCheck(
             $php_check,
             false,
             $ticket
         );
-        $ticket->hasAnyParticipantId(array(4, 9))->willReturn(false);
+        $ticket->hasAnyParticipantId([4, 9])->willReturn(false);
         $this->assertTicketCheck(
             $php_check,
             true,

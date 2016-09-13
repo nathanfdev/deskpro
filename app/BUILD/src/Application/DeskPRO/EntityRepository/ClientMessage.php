@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -52,7 +53,7 @@ class ClientMessage extends AbstractEntityRepository
      */
     public function getMessageData(PersonEntity $person, HttpSession $session, $since = 0, $with_last_since = null, $is_initial = false)
     {
-        $data         = array('messages' => array(), 'last_id' => -1);
+        $data         = ['messages' => [], 'last_id' => -1];
         $all_messages = false;
 
         if (!$since) {
@@ -83,16 +84,16 @@ class ClientMessage extends AbstractEntityRepository
                 $msg_data                = $message['data'];
                 $msg_data['from_client'] = $message['created_by_client'];
 
-                $info = array(
+                $info = [
                     $message['id'],
                     $message['channel'],
                     $msg_data,
-                );
+                ];
 
                 if ($message['id'] < $since && $with_last_since) {
-                    $info[] = array(
+                    $info[] = [
                         'offline_messsage' => true,
-                    );
+                    ];
                 }
 
                 $data['messages'][] = $info;
@@ -107,7 +108,7 @@ class ClientMessage extends AbstractEntityRepository
         if ($is_initial && $person->is_agent) {
             $convos = $this->_em->getRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment(0, -1);
             foreach ($convos as $c) {
-                $chatdata = array(
+                $chatdata = [
                     'conversation_id' => $c->getId(),
                     'author_id'       => $c->person ? $c->person->getId() : 0,
                     'author_name'     => $c->person ? $c->person->getDisplayName() : 0,
@@ -118,13 +119,13 @@ class ClientMessage extends AbstractEntityRepository
                     'department_id'   => $c->department ? $c->department->getId() : 0,
                     'department_name' => $c->department ? $c->department->getTitle() : '',
                     'date_created'    => $c->date_created->getTimestamp(),
-                );
+                ];
 
-                $data['messages'][] = array(
+                $data['messages'][] = [
                     null,
                     'chat.new',
                     $chatdata,
-                );
+                ];
             }
         }
 
@@ -145,17 +146,17 @@ class ClientMessage extends AbstractEntityRepository
      *
      * @return array|mixed
      */
-    public function getMessagesForClientInChannels($client_id, $person_id = null, array $channels, $since_id = null)
+    public function getMessagesForClientInChannels($client_id, $person_id, array $channels, $since_id = null)
     {
-        $names      = array();
-        $names_like = array();
+        $names      = [];
+        $names_like = [];
         foreach ($channels as $ch) {
             $names[]      = "'{$ch}'";
             $names_like[] = "channel LIKE '{$ch}.%'";
         }
 
         if (!$names) {
-            return array();
+            return [];
         }
 
         $names      = implode(',', $names);
@@ -169,7 +170,7 @@ class ClientMessage extends AbstractEntityRepository
                 (channel IN ($names) OR ($names_like))
                 AND (created_by_client != ? OR (channel LIKE 'chat.%') OR (channel LIKE 'chat_convo.%'))
         ";
-        $params = array($client_id);
+        $params = [$client_id];
 
         if ($person_id) {
             $sql .= 'AND (for_client = ? OR for_person_id = ? OR (for_client IS NULL AND for_person_id IS NULL))';
@@ -213,7 +214,7 @@ class ClientMessage extends AbstractEntityRepository
             WHERE
                 for_person_id = ?
         ';
-        $params = array($person_id);
+        $params = [$person_id];
 
         if ($since_id) {
             $sql .= 'AND (id > ?)';
@@ -251,7 +252,7 @@ class ClientMessage extends AbstractEntityRepository
             $person_id = 0;
         }
 
-        $channels = array();
+        $channels = [];
 
         // Implicit subscriptions
         if ($person && $person->is_agent && $since_id) {
@@ -296,7 +297,7 @@ class ClientMessage extends AbstractEntityRepository
             FROM chat_conversations c
             JOIN chat_conversation_to_person AS c2p ON c2p.conversation_id = c.id
             WHERE c.agent_id = ? OR c2p.person_id = ?
-        ', array($person_id, $person_id));
+        ', [$person_id, $person_id]);
 
         foreach ($chat_ids as $chat_id) {
             $channels[] = 'chat_convo.'.$chat_id;

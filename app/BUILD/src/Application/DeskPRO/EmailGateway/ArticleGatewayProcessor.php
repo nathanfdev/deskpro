@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -78,11 +79,11 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
     /**
      * @var array
      */
-    protected $inline_blobs = array();
+    protected $inline_blobs = [];
     /**
      * @var array
      */
-    protected $dupe_inline_blobs = array();
+    protected $dupe_inline_blobs = [];
 
     protected function init()
     {
@@ -98,7 +99,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
                 FROM email_sources
                 WHERE uid = ? AND gateway_id = ? AND status = 'complete'
                 LIMIT 1
-            ", array($this->reader->getProperty('email_source')->uid, $this->account->getId()));
+            ", [$this->reader->getProperty('email_source')->uid, $this->account->getId()]);
 
             if ($has_processed) {
                 $this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
@@ -110,9 +111,9 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 
         $person_processor = new PersonFromEmailProcessor();
 
-        #-------------------------
-        # Run detectors to see if its a reply
-        #-------------------------
+        //-------------------------
+        // Run detectors to see if its a reply
+        //-------------------------
 
         $person = null;
 
@@ -143,7 +144,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
                         AND status = 'error'
                         AND error_code = 'perm_insufficient'
                     LIMIT 1
-                ", array($this->account->getId(), $cutoff_date, '%'.$this->reader->getFromAddress()->getEmail().'%'));
+                ", [$this->account->getId(), $cutoff_date, '%'.$this->reader->getFromAddress()->getEmail().'%']);
 
                 if ($has_processed) {
                     return;
@@ -151,10 +152,10 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
             }
 
             $message = App::getMailer()->createMessage();
-            $message->setTemplate('DeskPRO:emails_agent:error-agent-only.html.twig', array(
+            $message->setTemplate('DeskPRO:emails_agent:error-agent-only.html.twig', [
                 'subject' => $this->reader->getSubject()->getSubjectUtf8(),
                 'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-            ));
+            ]);
             $message->setTo($this->reader->getFromAddress()->getEmail());
             App::getMailer()->send($message);
 
@@ -181,11 +182,11 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
     {
         $this->person = $person;
 
-        #------------------------------
-        # Read email body/subject
-        #------------------------------
+        //------------------------------
+        // Read email body/subject
+        //------------------------------
 
-        $email_info = array();
+        $email_info = [];
 
         $this->processBlobs();
         $inline_images = new InlineImageTokens($this->reader);
@@ -212,7 +213,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
                 $this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
             }
 
-            $email_info['body']         = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
+            $email_info['body']         = str_replace(["\n", "\r"], '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
             $email_info['body_is_html'] = false;
         }
 
@@ -233,9 +234,9 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
         $email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email_postclean');
         $email_info['body'] = $this->replaceInlineAttachTokens($email_info['body'], $inline_images);
 
-        #------------------------------
-        # Create the article
-        #------------------------------
+        //------------------------------
+        // Create the article
+        //------------------------------
 
         $article          = new \Application\DeskPRO\Entity\Article();
         $article->title   = $email_info['subject'];
@@ -281,11 +282,11 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 
         $this->logMessage('[ArticleGatewayProcessor] Forwarded article by '.$agent->getId().' '.$agent->getDisplayContact());
 
-        #------------------------------
-        # Read in email props and create cutter
-        #------------------------------
+        //------------------------------
+        // Read in email props and create cutter
+        //------------------------------
 
-        $email_info            = array();
+        $email_info            = [];
         $email_info['subject'] = $this->reader->getSubject()->subject;
         if ($email_info['body'] = $this->getBodyPlain()) {
             $email_info['body_is_html'] = false;
@@ -302,10 +303,10 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
             $this->error = \Application\DeskPRO\Entity\EmailSource::ERR_INVALID_FWD;
 
             $message = App::getMailer()->createMessage();
-            $message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', array(
+            $message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', [
                 'subject' => $this->reader->getSubject()->getSubjectUtf8(),
                 'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-            ));
+            ]);
             $message->setTo($this->reader->getFromAddress()->getEmail());
             $message->attach(\Swift_Attachment::newInstance(
                 $this->reader->getRawSource(),
@@ -320,9 +321,9 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 
         $email_info['subject'] = ForwardCutter::cutSubjectForwardPrefix($email_info['subject']);
 
-        #------------------------------
-        # Create article
-        #------------------------------
+        //------------------------------
+        // Create article
+        //------------------------------
 
         $article          = new \Application\DeskPRO\Entity\Article();
         $article->title   = $email_info['subject'];
@@ -364,7 +365,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 
     public function replaceInlineAttachTokens($body, InlineImageTokens $inline_images)
     {
-        $exist_inline_blobs = array();
+        $exist_inline_blobs = [];
 
         foreach ($inline_images->getCids() as $cid) {
             if (!isset($this->processed_blobs_cid[$cid])) {
@@ -401,9 +402,9 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
     public function getSourceInfo()
     {
         if ($this->source_info) {
-            $messages = is_array($this->source_info) ? $this->source_info : array($this->source_info);
+            $messages = is_array($this->source_info) ? $this->source_info : [$this->source_info];
         } else {
-            $messages = array();
+            $messages = [];
         }
 
         if (isset($this->options['logger_messages'])) {

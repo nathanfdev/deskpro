@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_ms_translator;
 
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestContext;
@@ -65,9 +66,9 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         $from       = $context->getIn()->getString('from');
         $to         = $context->getIn()->getString('to');
 
-        #------------------------------
-        # Get ticket message
-        #------------------------------
+        //------------------------------
+        // Get ticket message
+        //------------------------------
 
         /** @var \Application\DeskPRO\Entity\TicketMessage $message */
         $message = $context->getEm()->find('DeskPRO:TicketMessage', $message_id);
@@ -85,23 +86,23 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 
         $message_text = $message->message;
 
-        #------------------------------
-        # Translate it
-        #------------------------------
+        //------------------------------
+        // Translate it
+        //------------------------------
 
         $message_translated = $context->getEm()->getRepository('DeskPRO:TicketMessageTranslated')->getForMessage($message, $to);
 
         if ($message_translated) {
             // The translated text is only good if it matches the 'from' or if the user chose 'auto'
             if ($from == 'auto' || $from == $message_translated->from_lang_code) {
-                return $context->createJsonResponse(array(
+                return $context->createJsonResponse([
                     'ticket_id'             => $ticket->getId(),
                     'message_id'            => $message->getId(),
                     'message_translated_id' => $message_translated->getId(),
                     'message'               => $message_translated->message,
                     'from_lang_code'        => $message_translated->from_lang_code,
                     'to_lang_code'          => $message_translated->lang_code,
-                ));
+                ]);
             }
         }
 
@@ -112,7 +113,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
             try {
                 $from = $api->detect($message_text);
             } catch (\Exception $e) {
-                return $context->createJsonResponse(array('error_code' => 'no_detect', 'message' => 'Could not detect language', 'exception' => $e->getMessage()));
+                return $context->createJsonResponse(['error_code' => 'no_detect', 'message' => 'Could not detect language', 'exception' => $e->getMessage()]);
             }
 
             if (!$message->lang_code) {
@@ -130,20 +131,20 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         try {
             $message_translated->message = $api->translate($message_text, $from, $to, 'text/html');
         } catch (\Exception $e) {
-            return $context->createJsonResponse(array('error_code' => 'no_translate', 'message' => 'Could not translate message', 'exception' => $e->getMessage()));
+            return $context->createJsonResponse(['error_code' => 'no_translate', 'message' => 'Could not translate message', 'exception' => $e->getMessage()]);
         }
 
         $context->getEm()->persist($message_translated);
         $context->getEm()->flush();
 
-        return $context->createJsonResponse(array(
+        return $context->createJsonResponse([
             'ticket_id'             => $ticket->getId(),
             'message_id'            => $message->getId(),
             'message_translated_id' => $message_translated->getId(),
             'message'               => $message_translated->message,
             'from_lang_code'        => $message_translated->from_lang_code,
             'to_lang_code'          => $message_translated->lang_code,
-        ));
+        ]);
     }
 
     /**
@@ -164,20 +165,20 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
             try {
                 $from = $api->detect($message_text);
             } catch (\Exception $e) {
-                return $context->createJsonResponse(array('error_code' => 'no_detect', 'message' => 'Could not detect language', 'exception' => $e->getMessage()));
+                return $context->createJsonResponse(['error_code' => 'no_detect', 'message' => 'Could not detect language', 'exception' => $e->getMessage()]);
             }
         }
 
         try {
             $trans_text = $api->translate($message_text, $from, $to, 'text/html');
         } catch (\Exception $e) {
-            return $context->createJsonResponse(array('error_code' => 'no_translate', 'message' => 'Could not translate message', 'exception' => $e->getMessage()));
+            return $context->createJsonResponse(['error_code' => 'no_translate', 'message' => 'Could not translate message', 'exception' => $e->getMessage()]);
         }
 
-        return $context->createJsonResponse(array(
+        return $context->createJsonResponse([
             'message'        => $trans_text,
             'from_lang_code' => $from,
             'to_lang_code'   => $to,
-        ));
+        ]);
     }
 }

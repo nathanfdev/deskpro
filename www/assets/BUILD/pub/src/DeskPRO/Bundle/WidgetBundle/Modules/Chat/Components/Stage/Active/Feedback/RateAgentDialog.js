@@ -24,18 +24,19 @@ export class RateAgentDialog extends React.Component {
 
     return (
       <div className="dpdesignportal-agent-rating">
-        <div></div>
+        <div />
         <h1><span>{portalPhrases.get('portal.chat.rate_agent_title', { '{agentName}': agentName })}</span></h1>
 
         <div className="dpdesignportal-agent-rating-buttons">
-          <a href="#" className="dpdesignportal-button" onClick={this.onClickHelpful}>
+          <button className="dpdesignportal-button" onClick={this.onClickHelpful}>
             <i className="fa fa-thumbs-up" /> {portalPhrases.get('portal.chat.helpful')}
-          </a>
-          <a href="#" className="dpdesignportal-button negative" onClick={this.onClickNotHelpful}>
+          </button>
+          <button className="dpdesignportal-button negative" onClick={this.onClickNotHelpful}>
             <i className="fa fa-thumbs-down" /> {portalPhrases.get('portal.chat.not_helpful')}
-          </a>
+          </button>
         </div>
       </div>
     );
   }
 }
+export default RateAgentDialog;

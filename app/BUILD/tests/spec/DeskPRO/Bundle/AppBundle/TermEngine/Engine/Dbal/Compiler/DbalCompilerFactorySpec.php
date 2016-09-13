@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Compiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalAgentTermCompiler;
@@ -53,11 +54,11 @@ class DbalTermCompilerFactorySpec extends ObjectBehavior
         DbalCompositeTermCompiler $composite_compiler
     ) {
         $this->beConstructedWith(
-            array(
+            [
                 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTerm'      => $agent_compiler,
                 'DeskPRO\Bundle\AppBundle\TermEngine\Term\DepartmentTerm' => $department_compiler,
                 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm'  => $composite_compiler,
-            )
+            ]
         );
     }
 
@@ -76,7 +77,7 @@ class DbalTermCompilerFactorySpec extends ObjectBehavior
         DbalDepartmentTermCompiler $department_compiler,
         DbalCompositeTermCompiler $composite_compiler
     ) {
-        $this->shouldThrow('\InvalidArgumentException')->during('getCompiler', array(new FakeTerm()));
+        $this->shouldThrow('\InvalidArgumentException')->during('getCompiler', [new FakeTerm()]);
     }
 }
 

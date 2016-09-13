@@ -145,9 +145,9 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
         throw new \InvalidArgumentException("Invalid type id. Got:`$type`");
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

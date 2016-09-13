@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category TaskQueueJob
  */
+
 namespace Application\DeskPRO\TaskQueueJob;
 
 use Application\DeskPRO\App;
@@ -49,17 +50,17 @@ class CsvExport extends AbstractJob
 
     protected function _getDefaultData()
     {
-        return array(
+        return [
             'file'    => null,
             'offset'  => 0,
             'limit'   => 50,
-            'headers' => array(
+            'headers' => [
                 'ID', 'Name', 'Title', 'Primary Email', 'Additional Emails', 'Organization', 'Org Position',
                 'Date Created', 'Date Last Login', 'Usergroup IDs', 'Timezone', 'Labels',
-            ),
-            'contact_headers'       => array(),
-            'custom_fields_headers' => array(),
-        );
+            ],
+            'contact_headers'       => [],
+            'custom_fields_headers' => [],
+        ];
     }
 
     public function run($max_time)
@@ -110,7 +111,7 @@ class CsvExport extends AbstractJob
         $rep = $em->getRepository('DeskPRO:Person');
 
         while (microtime(true) - $start_time < $max_time) {
-            if (!$batch = $rep->findBy(array(), array(), $this->_data['limit'], $this->_data['offset'])) {
+            if (!$batch = $rep->findBy([], [], $this->_data['limit'], $this->_data['offset'])) {
                 break;
             }
 
@@ -120,9 +121,9 @@ class CsvExport extends AbstractJob
                 }
 
                 /* @var $person Person */
-                $row = array(
+                $row = [
                     $person['id'],
-                    implode(',', array($person['name'], $person['first_name'], $person['last_name'])),
+                    implode(',', [$person['name'], $person['first_name'], $person['last_name']]),
                     $person['title_prefix'],
                     $person->getPrimaryEmailAddress(),
                     implode(',', $person->getEmailAddresses(true)),
@@ -133,7 +134,7 @@ class CsvExport extends AbstractJob
                     implode(',', $person->getUsergroupIds()),
                     $person->getTimezone(),
                     implode(',', $person->getLabelManager()->getLabelsArray()),
-                );
+                ];
 
                 $this->fillWithContactData($person, $row);
                 $this->fillCustomFieldsValues($person, $row);
@@ -185,7 +186,7 @@ class CsvExport extends AbstractJob
                     );
                     $data = TmpData::create(
                         'csv_export.file',
-                        array('file' => $file, 'url' => $blob->getDownloadUrl(true), 'count' => $this->_data['offset']),
+                        ['file' => $file, 'url' => $blob->getDownloadUrl(true), 'count' => $this->_data['offset']],
                         '+28 hours'
                     );
                 } else {
@@ -198,14 +199,14 @@ class CsvExport extends AbstractJob
                     );
                     $data = TmpData::create(
                         'csv_export.file',
-                        array('file' => $file, 'url' => $blob->getDownloadUrl(true), 'count' => $this->_data['offset']),
+                        ['file' => $file, 'url' => $blob->getDownloadUrl(true), 'count' => $this->_data['offset']],
                         '+28 hours'
                     );
                 }
             } else {
                 $data = TmpData::create(
                 'csv_export.file',
-                array('file' => $file, 'count' => $this->_data['offset']),
+                ['file' => $file, 'count' => $this->_data['offset']],
                     '+28 hours'
             );
             }
@@ -230,13 +231,13 @@ class CsvExport extends AbstractJob
             return $this->_data['contact_headers'];
         }
 
-        $ch = array(
+        $ch = [
             'address', 'facebook', 'fax', 'instant_message', 'linked_in', 'mobile', 'phone', 'skype', 'twitter', 'website',
-        );
+        ];
 
         foreach ($ch as $type) {
             $q   = 'select max(cnt) from (select count(person_id) as cnt from people_contact_data where contact_type = :type group by person_id) as counts';
-            $res = App::getOrm()->getConnection()->executeQuery($q, array('type' => $type))->fetchColumn();
+            $res = App::getOrm()->getConnection()->executeQuery($q, ['type' => $type])->fetchColumn();
             if (!$res) {
                 continue;
             }
@@ -273,7 +274,7 @@ class CsvExport extends AbstractJob
      */
     protected function fillWithContactData(Person $person, &$row)
     {
-        $types = array();
+        $types = [];
         foreach ($person->getContactData() as $cd) {
             /* @var $cd PersonContactData */
             $data = ('phone' === $cd['contact_type'] || 'mobile' === $cd['contact_type'])

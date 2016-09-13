@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
@@ -52,7 +53,7 @@ class FieldDisplayArray implements \ArrayAccess
     /**
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * @var string|null
@@ -64,7 +65,7 @@ class FieldDisplayArray implements \ArrayAccess
      */
     protected $use_default = false;
 
-    public function __construct(FieldManager $field_manager, CustomDefAbstract $field_def, $field_data = array(), $field_group = null, $use_default = false)
+    public function __construct(FieldManager $field_manager, CustomDefAbstract $field_def, $field_data = [], $field_group = null, $use_default = false)
     {
         $this->field_manager = $field_manager;
         $this->field_def     = $field_def;
@@ -84,22 +85,22 @@ class FieldDisplayArray implements \ArrayAccess
 
         if ($value === null && $use_default && $default_value) {
             if ($field_def['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-                $value = array('children' => array());
+                $value = ['children' => []];
                 if (!is_array($default_value)) {
                     $default_value = explode(',', $default_value);
                 }
                 foreach ($default_value as $v) {
-                    $value['children'][$v] = array('value' => 1);
+                    $value['children'][$v] = ['value' => 1];
                 }
             } else {
-                $value = array('value' => $default_value);
+                $value = ['value' => $default_value];
             }
         }
         if (!$field_def->isFormField()) {
-            $value = array();
+            $value = [];
         }
 
-        $this->data = array(
+        $this->data = [
             'elId'          => \Orb\Util\Util::requestUniqueIdString(),
             'hasValue'      => ($value !== null),
             'id'            => $field_def->getId(),
@@ -107,7 +108,7 @@ class FieldDisplayArray implements \ArrayAccess
             'title'         => $field_def->getTitle(),
             'value'         => $value,
             'field_handler' => strtolower(\Orb\Util\Util::getBaseClassname($field_def->getHandler())),
-        );
+        ];
     }
 
     public function initValue($offset)

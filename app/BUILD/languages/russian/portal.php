@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.automatically_join_org_tickets'         => 'Автоматически добавляться в запросы от  {{org_name}}.',
     'portal.account.change-password'                        => 'Поменять пароль',
     'portal.account.change-password-btn'                    => 'Обновить пароль',
@@ -867,4 +867,4 @@ return array(
     'user.time.time_x_second'                               => 'секунд: {0}',
     'user.time.time_x_week'                                 => 'недель: {0}',
     'user.time.time_x_year'                                 => 'лет: {0}',
-);
+];

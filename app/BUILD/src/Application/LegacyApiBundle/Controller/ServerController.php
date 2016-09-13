@@ -39,6 +39,7 @@ use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
 use Application\DeskPRO\Server\ApcStatus;
 use Application\DeskPRO\Server\CronStatus;
 use Application\DeskPRO\ServerFileCheck\ServerFileCheck;
+use Application\DeskPRO\ServerFileUploads\ServerFileUploads;
 use Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
 use Application\DeskPRO\ServerReportFile\ServerReportFile;
@@ -60,9 +61,9 @@ class ServerController extends AbstractController implements ProtectedController
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # get Server Reqs
-    ####################################################################################################################
+    //###################################################################################################################
+    // get Server Reqs
+    //###################################################################################################################
 
     public function getServerReqsAction(Request $request)
     {
@@ -75,9 +76,9 @@ class ServerController extends AbstractController implements ProtectedController
         return $this->createApiResponse(['check_requirements_url' => $url]);
     }
 
-    ####################################################################################################################
-    # get PHP Info
-    ####################################################################################################################
+    //###################################################################################################################
+    // get PHP Info
+    //###################################################################################################################
 
     public function getPhpInfoAction()
     {
@@ -87,15 +88,15 @@ class ServerController extends AbstractController implements ProtectedController
         $server_php_info = $this->container->getSystemService('server_php_info');
 
         return $this->createApiResponse(
-            array(
-                 'server_php_info' => $server_php_info->getPhpInfo(),
-            )
+            [
+                'server_php_info' => $server_php_info->getPhpInfo(),
+            ]
         );
     }
 
-    ####################################################################################################################
-    # get MySQL Info
-    ####################################################################################################################
+    //###################################################################################################################
+    // get MySQL Info
+    //###################################################################################################################
 
     public function getMysqlInfoAction()
     {
@@ -107,7 +108,7 @@ class ServerController extends AbstractController implements ProtectedController
             'sys'     => $this->getContainer()->get('doctrine.orm.system_entity_manager'),
         ]);
 
-        return $this->createApiResponse(array('server_mysql_info' => $mysql_info->getMysqlInfo()));
+        return $this->createApiResponse(['server_mysql_info' => $mysql_info->getMysqlInfo()]);
     }
 
     public function getMysqlSchemaDiffAction()
@@ -120,12 +121,12 @@ class ServerController extends AbstractController implements ProtectedController
             'sys'     => $this->getContainer()->get('doctrine.orm.system_entity_manager'),
         ]);
 
-        return $this->createApiResponse(array('mysql_schema_diff' => $mysql_info->getSchemaDiff()));
+        return $this->createApiResponse(['mysql_schema_diff' => $mysql_info->getSchemaDiff()]);
     }
 
-    ####################################################################################################################
-    # get MySQL Status
-    ####################################################################################################################
+    //###################################################################################################################
+    // get MySQL Status
+    //###################################################################################################################
 
     public function getMysqlStatusAction()
     {
@@ -135,31 +136,31 @@ class ServerController extends AbstractController implements ProtectedController
         $server_mysql_status = $this->container->getSystemService('server_mysql_status');
 
         return $this->createApiResponse(
-            array(
-                 'server_mysql_status' => $server_mysql_status->getMysqlStatus(),
-            )
+            [
+                'server_mysql_status' => $server_mysql_status->getMysqlStatus(),
+            ]
         );
     }
 
-    ####################################################################################################################
-    # get Mysql Sort Order
-    ####################################################################################################################
+    //###################################################################################################################
+    // get Mysql Sort Order
+    //###################################################################################################################
 
     public function getMysqlSortOrderAction()
     {
         $server_mysql_sort_order = new ServerMysqlSortOrder($this->settings);
 
         return $this->createApiResponse(
-            array(
-                 'server_mysql_sort_order' => $server_mysql_sort_order->toArray(),
-                 'all_collations'          => $server_mysql_sort_order->getCollationsTable(),
-            )
+            [
+                'server_mysql_sort_order' => $server_mysql_sort_order->toArray(),
+                'all_collations'          => $server_mysql_sort_order->getCollationsTable(),
+            ]
         );
     }
 
-    ####################################################################################################################
-    # save Mysql Sort Order
-    ####################################################################################################################
+    //###################################################################################################################
+    // save Mysql Sort Order
+    //###################################################################################################################
 
     public function saveMysqlSortOrderAction()
     {
@@ -170,9 +171,9 @@ class ServerController extends AbstractController implements ProtectedController
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # get Mysql Sort Order Status
-    ####################################################################################################################
+    //###################################################################################################################
+    // get Mysql Sort Order Status
+    //###################################################################################################################
 
     public function getMysqlSortOrderStatusAction()
     {
@@ -181,9 +182,9 @@ class ServerController extends AbstractController implements ProtectedController
         return $this->createApiResponse($server_mysql_sort_order->getUpdateStatus());
     }
 
-    ####################################################################################################################
-    # list Error Logs
-    ####################################################################################################################
+    //###################################################################################################################
+    // list Error Logs
+    //###################################################################################################################
 
     public function listErrorLogsAction()
     {
@@ -193,16 +194,16 @@ class ServerController extends AbstractController implements ProtectedController
         $server_error_logs = $this->container->getSystemService('server_error_logs');
 
         return $this->createApiResponse(
-            array(
-                 'path'              => $this->container->get('deskpro.app_env')->getUserLogsDir(),
-                 'server_error_logs' => $server_error_logs->getAll(),
-            )
+            [
+                'path'              => $this->container->get('deskpro.app_env')->getUserLogsDir(),
+                'server_error_logs' => $server_error_logs->getAll(),
+            ]
         );
     }
 
-    ####################################################################################################################
-    # get Error Logs
-    ####################################################################################################################
+    //###################################################################################################################
+    // get Error Logs
+    //###################################################################################################################
 
     public function getErrorLogsAction($id)
     {
@@ -217,15 +218,15 @@ class ServerController extends AbstractController implements ProtectedController
         }
 
         return $this->createApiResponse(
-            array(
-                 'server_error_log' => $server_error_log,
-            )
+            [
+                'server_error_log' => $server_error_log,
+            ]
         );
     }
 
-    ####################################################################################################################
-    # remove Error Logs
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove Error Logs
+    //###################################################################################################################
 
     public function removeErrorLogsAction()
     {
@@ -241,9 +242,9 @@ class ServerController extends AbstractController implements ProtectedController
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # get Task Queue
-    ####################################################################################################################
+    //###################################################################################################################
+    // get Task Queue
+    //###################################################################################################################
 
     public function getTaskQueueAction()
     {
@@ -253,15 +254,15 @@ class ServerController extends AbstractController implements ProtectedController
         $server_task_queue = $this->container->getSystemService('server_task_queue');
 
         return $this->createApiResponse(
-            array(
-                 'server_task_queue' => $server_task_queue->getInfo(),
-            )
+            [
+                'server_task_queue' => $server_task_queue->getInfo(),
+            ]
         );
     }
 
-    ####################################################################################################################
-    # list Cron
-    ####################################################################################################################
+    //###################################################################################################################
+    // list Cron
+    //###################################################################################################################
 
     public function listCronAction()
     {
@@ -270,19 +271,19 @@ class ServerController extends AbstractController implements ProtectedController
          */
         $server_cron = $this->container->getSystemService('server_cron');
 
-        $returned_data         = $server_cron->getTimes();
-        $returned_data['jobs'] = $server_cron->getAllForApi();
+        $returnedData         = $server_cron->getTimes();
+        $returnedData['jobs'] = $server_cron->getAllForApi();
 
         return $this->createApiResponse(
-            array(
-                 'server_cron' => $returned_data,
-            )
+            [
+                'server_cron' => $returnedData,
+            ]
         );
     }
 
-    ####################################################################################################################
-    # logs Cron
-    ####################################################################################################################
+    //###################################################################################################################
+    // logs Cron
+    //###################################################################################################################
 
     public function logsCronAction()
     {
@@ -301,24 +302,24 @@ class ServerController extends AbstractController implements ProtectedController
             $page = 1;
         }
 
-        $returned_data['page']      = $page;
-        $returned_data['num_pages'] = $server_cron->getPagesCount($job_id, $priority);
-        $returned_data['priority']  = $priority;
-        $returned_data['job_id']    = $job_id;
+        $returnedData['page']      = $page;
+        $returnedData['num_pages'] = $server_cron->getPagesCount($job_id, $priority);
+        $returnedData['priority']  = $priority;
+        $returnedData['job_id']    = $job_id;
 
-        $returned_data['logs'] = $server_cron->getLogs($job_id, $priority, $page);
-        $returned_data['jobs'] = $server_cron->getAllForApi();
+        $returnedData['logs'] = $server_cron->getLogs($job_id, $priority, $page);
+        $returnedData['jobs'] = $server_cron->getAllForApi();
 
         return $this->createApiResponse(
-            array(
-                 'server_cron_logs' => $returned_data,
-            )
+            [
+                'server_cron_logs' => $returnedData,
+            ]
         );
     }
 
-    ####################################################################################################################
-    # remove Cron
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove Cron
+    //###################################################################################################################
 
     public function removeCronAction()
     {
@@ -331,117 +332,115 @@ class ServerController extends AbstractController implements ProtectedController
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # get File Uploads
-    ####################################################################################################################
+    //###################################################################################################################
+    // get File Uploads
+    //###################################################################################################################
 
     public function getFileUploadsAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
-         */
-        $server_file_uploads = $this->container->getSystemService('server_file_uploads');
+        /** @var ServerFileUploads $serverFileUploads */
+        $serverFileUploads = $this->container->getSystemService('server_file_uploads');
 
-        $returned_data['php_vars']                  = $server_file_uploads->getPhpVars();
-        $returned_data['effective_max_upload_size'] = $server_file_uploads->getEffectiveMaxUploadSize();
-        $returned_data['url_to_learn_php_ini']      = $server_file_uploads->getUrlToLearnPhpIni();
-        $returned_data['php_ini_path']              = $server_file_uploads->getPhpIniPath();
-        $returned_data['restrictions']              = $server_file_uploads->getRestrictions();
-        $returned_data['file_uploader_url']         = $server_file_uploads->getFileUploaderUrl();
-        $returned_data['filestorage_method']        = $server_file_uploads->getStorageMethod();
-        $returned_data['file_storage_path']         = $server_file_uploads->getFileStoragePath();
-        $returned_data['s3_bucket']                 = $this->container->getSetting('core.filestorage_s3_bucket');
-        $returned_data['s3_key']                    = $this->container->getSetting('core.filestorage_s3_key');
-        $returned_data['s3_secret']                 = $this->container->getSetting('core.filestorage_s3_secret');
-        $returned_data['moving_files']              = $server_file_uploads->getMovingFiles();
+        $returnedData = [
+            'php_vars'                  => $serverFileUploads->getPhpVars(),
+            'effective_max_upload_size' => $serverFileUploads->getEffectiveMaxUploadSize(),
+            'url_to_learn_php_ini'      => $serverFileUploads->getUrlToLearnPhpIni(),
+            'php_ini_path'              => $serverFileUploads->getPhpIniPath(),
+            'restrictions'              => $serverFileUploads->getRestrictions(),
+            'file_uploader_url'         => $serverFileUploads->getFileUploaderUrl(),
+            'filestorage_method'        => $serverFileUploads->getStorageMethod(),
+            'file_storage_path'         => $serverFileUploads->getFileStoragePath(),
+            's3_bucket'                 => $this->container->getSetting('core.filestorage_s3_bucket'),
+            's3_key'                    => $this->container->getSetting('core.filestorage_s3_key'),
+            's3_secret'                 => $this->container->getSetting('core.filestorage_s3_secret'),
+            'moving_files'              => $serverFileUploads->getMovingFiles(),
+        ];
 
         return $this->createApiResponse(
-            array(
-                 'server_file_uploads' => $returned_data,
-            )
+            [
+                'server_file_uploads' => $returnedData,
+            ]
         );
     }
 
-    ####################################################################################################################
-    # test upload
-    ####################################################################################################################
+    //###################################################################################################################
+    // test upload
+    //###################################################################################################################
 
     public function testFileUploadAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
-         */
-        $server_file_uploads = $this->container->getSystemService('server_file_uploads');
+        /** @var ServerFileUploads $serverFileUploads */
+        $serverFileUploads = $this->container->getSystemService('server_file_uploads');
 
         $file = $this->request->files->get('file');
 
         return $this->createApiResponse(
-            $server_file_uploads->getUploadResults($file)
+            $serverFileUploads->getUploadResults($file)
         );
     }
 
-    ####################################################################################################################
-    # switch file storage mechanism
-    ####################################################################################################################
+    //###################################################################################################################
+    // switch file storage mechanism
+    //###################################################################################################################
 
     public function switchFileStorageAction()
     {
         /*
          * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
          */
-        $server_file_uploads = $this->container->getSystemService('server_file_uploads');
-        $server_file_uploads->switchStorage($this->in->getArrayValue('options'));
+        $serverFileUploads = $this->container->getSystemService('server_file_uploads');
+        $serverFileUploads->switchStorage($this->in->getArrayValue('options'));
 
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # switch file storage mechanism status
-    ####################################################################################################################
+    //###################################################################################################################
+    // switch file storage mechanism status
+    //###################################################################################################################
 
     public function switchFileStorageStatusAction()
     {
-        /** @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads $server_file_uploads */
-        $server_file_uploads = $this->container->getSystemService('server_file_uploads');
+        /** @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads $serverFileUploads */
+        $serverFileUploads = $this->container->getSystemService('server_file_uploads');
 
-        $server_file_uploads->switchStorageStatus();
+        $serverFileUploads->switchStorageStatus();
 
-        return $this->createApiResponse($server_file_uploads->switchStorageStatus());
+        return $this->createApiResponse($serverFileUploads->switchStorageStatus());
     }
 
-    ####################################################################################################################
-    # list File Check
-    ####################################################################################################################
+    //###################################################################################################################
+    // list File Check
+    //###################################################################################################################
 
     public function listFileCheckAction()
     {
         $server_file_check = new ServerFileCheck($this->em);
 
         return $this->createApiResponse(
-            array(
-                 'server_file_check' => $server_file_check->getCount(),
-            )
+            [
+                'server_file_check' => $server_file_check->getCount(),
+            ]
         );
     }
 
-    ####################################################################################################################
-    # get File Check
-    ####################################################################################################################
+    //###################################################################################################################
+    // get File Check
+    //###################################################################################################################
 
     public function getFileCheckAction($id)
     {
         $server_file_check = new ServerFileCheck($this->em);
 
         return $this->createApiResponse(
-            array(
-                 'server_file_check' => $server_file_check->getById($id),
-            )
+            [
+                'server_file_check' => $server_file_check->getById($id),
+            ]
         );
     }
 
-    ####################################################################################################################
-    # get Report File
-    ####################################################################################################################
+    //###################################################################################################################
+    // get Report File
+    //###################################################################################################################
 
     public function getReportFileAction()
     {
@@ -450,9 +449,9 @@ class ServerController extends AbstractController implements ProtectedController
         $server_report_file->outputArchive();
     }
 
-    ####################################################################################################################
-    # save integrity file check results
-    ####################################################################################################################
+    //###################################################################################################################
+    // save integrity file check results
+    //###################################################################################################################
 
     public function saveFileCheckResultsAction()
     {
@@ -466,50 +465,50 @@ class ServerController extends AbstractController implements ProtectedController
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # cron-status
-    ####################################################################################################################
+    //###################################################################################################################
+    // cron-status
+    //###################################################################################################################
 
     public function cronStatusAction()
     {
         $status = new CronStatus($this->db);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'last_run_ts'         => $status->getLastRunTimestamp(),
             'last_run'            => $status->getLastRunDate() ? $status->getLastRunDate()->format('Y-m-d H:i:s') : null,
             'secs_since_last_run' => $status->getSecsSinceLastRun(),
             'is_problem'          => $status->guessIsProblem(),
             'cron_boot_errors'    => $status->getCronBootErrors(),
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # error-status
-    ####################################################################################################################
+    //###################################################################################################################
+    // error-status
+    //###################################################################################################################
 
     public function errorStatusAction()
     {
         $err_reader  = new ErrorLogReader(dp_get_log_dir().'/error.log');
         $error_count = $err_reader->quickCount();
 
-        $gateway_error_count  = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(array('ticket', 'ticketmessage'));
+        $gateway_error_count  = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(['ticket', 'ticketmessage']);
         $sendmail_error_count = $this->db->fetchColumn("SELECT COUNT(*) FROM sendmail_sources WHERE status = 'error'");
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'error_count'          => $error_count,
             'gateway_error_count'  => $gateway_error_count,
             'sendmail_error_count' => $sendmail_error_count,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # apc-info
-    ####################################################################################################################
+    //###################################################################################################################
+    // apc-info
+    //###################################################################################################################
 
     public function apcStatusAction()
     {
         $status = new ApcStatus();
-        $data   = array(
+        $data   = [
             'is_enabled'         => $status->isEnabled(),
             'is_problem'         => $status->guessIsProblem(),
             'num_reqs'           => $status->getNumTotalReqs(),
@@ -528,14 +527,14 @@ class ServerController extends AbstractController implements ProtectedController
             'perc_mem_free_str'  => sprintf('%.1f', $status->getMemFreePercent()),
             'hit_miss_chart_url' => $status->getHitMissChartUrl(),
             'mem_chart_url'      => $status->getMemChartUrl(),
-        );
+        ];
 
-        return $this->createJsonResponse(array('apc_info' => $data));
+        return $this->createJsonResponse(['apc_info' => $data]);
     }
 
-    ####################################################################################################################
-    # begin-automatic-update
-    ####################################################################################################################
+    //###################################################################################################################
+    // begin-automatic-update
+    //###################################################################################################################
 
     public function beginAutomaticUpdateAction()
     {
@@ -569,17 +568,17 @@ class ServerController extends AbstractController implements ProtectedController
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # automatic-update-status
-    ####################################################################################################################
+    //###################################################################################################################
+    // automatic-update-status
+    //###################################################################################################################
 
     public function getAutomaticUpdateStatusAction()
     {
         $update_time = $this->container->getSetting('core.upgrade_time');
         if (!$update_time) {
-            return $this->createApiResponse(array('is_scheduled' => false));
+            return $this->createApiResponse(['is_scheduled' => false]);
         } else {
-            return $this->createApiResponse(array(
+            return $this->createApiResponse([
                 'is_scheduled'    => true,
                 'start_time'      => $update_time,
                 'scheduled_at'    => $this->container->getSetting('core.upgrade_set_at'),
@@ -587,13 +586,13 @@ class ServerController extends AbstractController implements ProtectedController
                 'backup_db'       => $this->container->getSetting('core.upgrade_backup_db'),
                 'is_started'      => $this->container->getSetting('core.upgrade_started'),
                 'with_perm_error' => $this->container->getSetting('core.upgrade_error_writeperm'),
-            ));
+            ]);
         }
     }
 
-    ####################################################################################################################
-    # abort-automatic-update
-    ####################################################################################################################
+    //###################################################################################################################
+    // abort-automatic-update
+    //###################################################################################################################
 
     public function abortAutomaticUpdateAction()
     {
@@ -612,9 +611,9 @@ class ServerController extends AbstractController implements ProtectedController
         return $this->createApiSuccessResponse();
     }
 
-    ####################################################################################################################
-    # encryption-status
-    ####################################################################################################################
+    //###################################################################################################################
+    // encryption-status
+    //###################################################################################################################
 
     /**
      * @return array
@@ -644,7 +643,7 @@ class ServerController extends AbstractController implements ProtectedController
             }
         }
 
-        return array(
+        return [
             'is_able'          => $is_able,
             'unable_error'     => $is_able_error,
             'key_file'         => $key_file,
@@ -652,7 +651,7 @@ class ServerController extends AbstractController implements ProtectedController
             'is_enabled'       => (bool) ((int) $is_enabled),
             'can_disable_file' => $can_disable_file,
             'can_disable'      => $can_disable,
-        );
+        ];
     }
 
     public function encryptionStatusAction()
@@ -660,9 +659,9 @@ class ServerController extends AbstractController implements ProtectedController
         return $this->createApiResponse($this->getEncStatus());
     }
 
-    ####################################################################################################################
-    # enable-encryption
-    ####################################################################################################################
+    //###################################################################################################################
+    // enable-encryption
+    //###################################################################################################################
 
     public function enableEncryptionAction()
     {
@@ -713,7 +712,7 @@ class ServerController extends AbstractController implements ProtectedController
 
         $this->db->commit();
 
-        return $this->createApiResponse(array('success' => true));
+        return $this->createApiResponse(['success' => true]);
     }
 
     public function disableEncryptionAction()
@@ -749,6 +748,6 @@ class ServerController extends AbstractController implements ProtectedController
 
         $this->db->commit();
 
-        return $this->createApiResponse(array('success' => true));
+        return $this->createApiResponse(['success' => true]);
     }
 }

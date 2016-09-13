@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Highrise
  */
+
 namespace Orb\Service\Highrise\Resource;
 
 /**
@@ -66,7 +67,7 @@ class Person extends AbstractResource
         $resource = '/people.xml';
         $offset   = ($page - 1) * 500;
 
-        $response = $this->highrise->sendReadRequest($resource, array('n' => $offset));
+        $response = $this->highrise->sendReadRequest($resource, ['n' => $offset]);
 
         return $this->highrise->xmlToArray($response->getBody());
     }
@@ -84,7 +85,7 @@ class Person extends AbstractResource
         $resource = '/people.xml';
         $offset   = ($page - 1) * 500;
 
-        $response = $this->highrise->sendReadRequest($resource, array('n' => $offset, 'tag_id' => $tag_id));
+        $response = $this->highrise->sendReadRequest($resource, ['n' => $offset, 'tag_id' => $tag_id]);
 
         return $this->highrise->xmlToArray($response->getBody());
     }
@@ -102,7 +103,7 @@ class Person extends AbstractResource
         $resource = '/people.xml';
         $offset   = ($page - 1) * 500;
 
-        $response = $this->highrise->sendReadRequest($resource, array('n' => $offset, 'title' => $title));
+        $response = $this->highrise->sendReadRequest($resource, ['n' => $offset, 'title' => $title]);
 
         return $this->highrise->xmlToArray($response->getBody());
     }
@@ -120,7 +121,7 @@ class Person extends AbstractResource
         $resource = '/companies/'.$company_id.'/people.xml';
         $offset   = ($page - 1) * 500;
 
-        $response = $this->highrise->sendReadRequest($resource, array('n' => $offset));
+        $response = $this->highrise->sendReadRequest($resource, ['n' => $offset]);
 
         return $this->highrise->xmlToArray($response->getBody());
     }
@@ -142,12 +143,12 @@ class Person extends AbstractResource
      *
      * @return array
      */
-    public function findPeopleWithCriteria(array $criteria = array(), $page = 1)
+    public function findPeopleWithCriteria(array $criteria = [], $page = 1)
     {
         $resource = '/people/search.xml';
         $offset   = ($page - 1) * 25;
 
-        $postfields = array('n' => $offset);
+        $postfields = ['n' => $offset];
         foreach ($criteria as $k => $v) {
             $postfields["criteria[$k]"] = $v;
         }
@@ -155,7 +156,7 @@ class Person extends AbstractResource
         $response = $this->highrise->sendReadRequest($resource, $postfields);
         $body     = new \SimpleXMLElement($response->getBody());
 
-        $people = array();
+        $people = [];
         foreach ($body as $person) {
             $people[] = $this->highrise->xmlToArray($person);
         }
@@ -182,7 +183,7 @@ class Person extends AbstractResource
             $since = date('YmdHis', $since);
         }
 
-        $response = $this->highrise->sendReadRequest($resource, array('n' => $offset, 'since' => $since));
+        $response = $this->highrise->sendReadRequest($resource, ['n' => $offset, 'since' => $since]);
 
         return $this->highrise->xmlToArray($response->getBody());
     }

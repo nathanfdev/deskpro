@@ -41,49 +41,49 @@ class ListUtilsTest extends DeskProTestCase
     public function testFilterOutFalsey()
     {
         $this->assertEquals(
-            array(1, 2, 3),
-            ListUtils::filterOutFalsey(array(false, 1, 2, null, 3))
+            [1, 2, 3],
+            ListUtils::filterOutFalsey([false, 1, 2, null, 3])
         );
 
         $this->assertEquals(
-            array(1, 2, 3),
-            ListUtils::filterOutFalsey(array('a' => false, 55 => 1, 'b' => 2, 0 => null, 0, 'c' => 3))
+            [1, 2, 3],
+            ListUtils::filterOutFalsey(['a' => false, 55 => 1, 'b' => 2, 0 => null, 0, 'c' => 3])
         );
 
         $this->assertEquals(
-            array(),
-            ListUtils::filterOutFalsey(array(false, null, 0, ''))
+            [],
+            ListUtils::filterOutFalsey([false, null, 0, ''])
         );
     }
 
     public function testFilterOutValues()
     {
         $this->assertEquals(
-            array(false, 2, null, 3),
-            ListUtils::filterOutValues(array(false, 1, 2, null, 3), 1)
+            [false, 2, null, 3],
+            ListUtils::filterOutValues([false, 1, 2, null, 3], 1)
         );
 
         $this->assertEquals(
-            array(1, 2, null, 3),
-            ListUtils::filterOutValues(array(false, 1, 2, null, 3), false)
+            [1, 2, null, 3],
+            ListUtils::filterOutValues([false, 1, 2, null, 3], false)
         );
 
         $this->assertEquals(
-            array(1, 2, 3),
-            ListUtils::filterOutValues(array(false, 1, 2, null, 3), false, false)
+            [1, 2, 3],
+            ListUtils::filterOutValues([false, 1, 2, null, 3], false, false)
         );
     }
 
     public function testUnique()
     {
         $this->assertEquals(
-            array(false, 2, 3),
-            ListUtils::unique(array(false, 2, null, 3, false, null, 3, '3'), '==')
+            [false, 2, 3],
+            ListUtils::unique([false, 2, null, 3, false, null, 3, '3'], '==')
         );
 
         $this->assertEquals(
-            array(false, 2, null, 3, '3'),
-            ListUtils::unique(array(false, 2, null, 3, false, null, 3, '3'), '===')
+            [false, 2, null, 3, '3'],
+            ListUtils::unique([false, 2, null, 3, false, null, 3, '3'], '===')
         );
     }
 

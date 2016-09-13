@@ -69,8 +69,8 @@ class ChatVoter extends AbstractVoter
      */
     protected function supports($attribute, $subject)
     {
-        return $subject instanceof ChatConversation && in_array($attribute, array(
+        return $subject instanceof ChatConversation && in_array($attribute, [
             self::CHAT_VIEW,
-        ));
+        ]);
     }
 }

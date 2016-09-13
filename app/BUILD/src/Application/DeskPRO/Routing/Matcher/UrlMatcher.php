@@ -36,23 +36,23 @@ use Orb\Util\Strings;
 
 class UrlMatcher extends \Symfony\Component\Routing\Matcher\UrlMatcher
 {
-    /** @var bool|null  */
+    /** @var bool|null */
     protected $got_locale = null;
 
     public function match($pathInfo)
     {
-        #------------------------------
-        # We check for locale prefix in user section
-        #------------------------------
+        //------------------------------
+        // We check for locale prefix in user section
+        //------------------------------
 
         $this->got_locale = null;
 
-        $nocheck_sections = array(
+        $nocheck_sections = [
             '/agent',
             '/admin',
             '/dev',
             '/api',
-        );
+        ];
 
         $check_for_locale = true;
         foreach ($nocheck_sections as $s) {

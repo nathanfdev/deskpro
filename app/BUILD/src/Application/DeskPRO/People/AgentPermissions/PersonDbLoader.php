@@ -84,7 +84,7 @@ class PersonDbLoader
         $has_all_perms      = false;
         $has_all_safe_perms = false;
 
-        $agent_group_ids = array();
+        $agent_group_ids = [];
         foreach ($this->person->usergroups as $ug) {
             if ($ug->is_agent_group) {
                 $agent_group_ids[] = $ug->id;
@@ -108,10 +108,10 @@ class PersonDbLoader
             FROM permissions
             WHERE (usergroup_id IN (?) OR (person_id = ?))
                 AND value = 1 AND is_active = 1
-        ', array($agent_group_ids, $this->person['id']), array(Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT));
+        ', [$agent_group_ids, $this->person['id']], [Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT]);
 
         if ($has_all_perms || $has_all_safe_perms) {
-            $names_loader = new PermissionNamesLoader();//TODO inject
+            $names_loader = new PermissionNamesLoader(); //TODO inject
 
             if ($has_all_perms) {
                 $add      = $names_loader->getNames();
@@ -122,19 +122,19 @@ class PersonDbLoader
             }
 
             foreach ($add as $n) {
-                $perm_recs[] = array(
+                $perm_recs[] = [
                     'name'         => $n,
                     'usergroup_id' => $add_ugid,
                     'person_id'    => null,
-                );
+                ];
             }
         }
 
-        $this->perms = array(
-            'effective' => array(),
-            'group'     => array(),
-            'person'    => array(),
-        );
+        $this->perms = [
+            'effective' => [],
+            'group'     => [],
+            'person'    => [],
+        ];
 
         foreach ($perm_recs as $rec) {
             $this->perms['effective'][$rec['name']] = true;

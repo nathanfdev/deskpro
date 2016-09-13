@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1395063357 extends AbstractBuild
@@ -52,10 +53,10 @@ class Build1395063357 extends AbstractBuild
             }
 
             if ($do_add) {
-                $terms[] = array('type' => 'agent_team', 'op' => 'is', 'options' => array('agent_team' => '0'));
+                $terms[] = ['type' => 'agent_team', 'op' => 'is', 'options' => ['agent_team' => '0']];
 
                 $terms = serialize($terms);
-                $this->container->getDb()->update('ticket_filters', array('terms' => $terms), array('id' => $fid));
+                $this->container->getDb()->update('ticket_filters', ['terms' => $terms], ['id' => $fid]);
             }
         }
     }

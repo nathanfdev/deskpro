@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Component\SassCompiler\ScssPhp;
 
 class DefaultFileLoader implements FileLoaderInterface
@@ -36,10 +37,10 @@ class DefaultFileLoader implements FileLoaderInterface
     /**
      * @var array
      */
-    private $whitelist_paths = array();
+    private $whitelist_paths = [];
 
     /**
-     * @param array|null $whitelist_paths Optionally supply a list of paths you can read from. Every other path will throw an exception.
+     * @param array|null $whitelist_paths Optionally supply a list of paths you can read from. Every other path will throw an exception
      */
     public function __construct(array $whitelist_paths = null)
     {
