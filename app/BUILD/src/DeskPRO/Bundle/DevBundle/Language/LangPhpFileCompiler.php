@@ -78,7 +78,7 @@ class LangPhpFileCompiler
         $php   = ["<?php\n\n"];
         $php[] = $this->getFileHeader();
         $php[] = "\n\n";
-        $php[] = "return array(\n";
+        $php[] = "return [\n";
 
         ksort($phrases, \SORT_STRING);
 
@@ -86,7 +86,7 @@ class LangPhpFileCompiler
             $php[] = sprintf("    %-{$maxLen}s => %s,\n", "'$phraseId'", var_export($string, true));
         }
 
-        $php[] = ");\n";
+        $php[] = "];\n";
 
         $php = implode('', $php);
 
