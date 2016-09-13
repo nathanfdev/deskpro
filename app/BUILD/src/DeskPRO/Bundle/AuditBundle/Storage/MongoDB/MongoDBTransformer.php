@@ -36,6 +36,9 @@ use DeskPRO\Bundle\AuditBundle\Storage\AbstractTransformer;
  */
 class MongoDBTransformer extends AbstractTransformer
 {
+    /**
+     * @return AuditLogDocument
+     */
     protected function createAuditLog()
     {
         return new AuditLogDocument();

@@ -17,21 +17,26 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
         api_key: ''
       }
       @logs = []
+      @purge = 'day';
       @pagination = {
         total: 0
         count: 0
-        per_page: 20
+        per_page: 50
         current_page: 1
+        virtual_current_page: 1
         total_pages: 1
         page_nums: [1]
+        plain: false
       }
 
     initialLoad: ->
-      @makeQuery()
+      @updateFilter()
 
-      @$scope.$watch('ServerAuditLogs.pagination.current_page', (newVal, oldVal) => if parseInt(newVal) != parseInt(oldVal) then @updateFilter())
+    newSearch: ->
+      @pagination.current_page = @pagination.virtual_current_page = 1;
+      @updateFilter()
 
-    makeQuery: ->
+    updateFilter: ->
       @is_loading = true
       params = {}
       for key in Object.keys(@filters)
@@ -49,25 +54,61 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
         (response) =>
           @logs = response.data.data
           @pagination = response.data.meta.pagination
+          @pagination.virtual_current_page = @pagination.current_page
           page_nums = []
+          if(@pagination.total_pages > 250)
+            @pagination.plain = true
+            @is_loading = false
+            return
+
           for i in [0...@pagination.total_pages]
             page_nums.push(i + 1)
           @pagination.page_nums = page_nums
           @is_loading = false
       )
 
+    purgeLogs: ->
+      @is_loading = true
+      inst = @$modal.open({
+        templateUrl: @getTemplatePath('Server/server-audit-logs-delete-modal.html'),
+        controller: ['$scope', '$modalInstance',  ($scope, $modalInstance) ->
+          $scope.confirm = ->
+            $modalInstance.close()
+
+          $scope.dismiss = ->
+            $modalInstance.dismiss()
+        ]
+      });
+
+      inst.result.then( () =>
+        @Api2.sendPostJson('/audit_logs/purge', {period: @purge}).then(
+          () =>
+            @clearFilter()
+            @is_loading = false
+        )
+      ).catch ( () => @is_loading = false );
+
+
     goPrevPage: ->
-      @pagination.current_page = parseInt(@pagination.current_page) - 1
+      @pagination.current_page = @pagination.virtual_current_page = parseInt(@pagination.current_page) - 1
       if (@pagination.current_page < 0)
-        @pagination.current_page = 0
+        @pagination.current_page = @pagination.virtual_current_page = 0
+      @updateFilter()
 
     goNextPage: ->
-      @pagination.current_page = parseInt(@pagination.current_page) + 1
+      @pagination.current_page = @pagination.virtual_current_page = parseInt(@pagination.current_page) + 1
       if (@pagination.current_page > @pagination.total_pages)
-        @pagination.current_page = @pagination.total_pages
+        @pagination.current_page = @pagination.virtual_current_page = @pagination.total_pages
+      @updateFilter()
 
-    updateFilter: ->
-      @makeQuery()
+    goCurrentPage: () ->
+      @pagination.current_page = parseInt(@pagination.virtual_current_page)
+      if (@pagination.current_page > @pagination.total_pages)
+        @pagination.current_page = @pagination.virtual_current_page = @pagination.total_pages
+      else if(@pagination.current_page < 0)
+        @pagination.current_page = @pagination.virtual_current_page = 0
+      @updateFilter()
+      return false
 
     clearFilter: ->
       @filters = {
@@ -82,6 +123,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
         api_key: ''
       }
       @pagination.current_page = 1
-      @makeQuery()
+      @pagination.virtual_current_page = 1
+      @updateFilter()
 
   Admin_ServerAuditLogs_Ctrl_ServerAuditLogs.EXPORT_CTRL()

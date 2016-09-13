@@ -3424,7 +3424,7 @@ class TicketController extends AbstractController
         $date_created = clone $message->date_created;
         $date_created->setTimezone($this->person->getDateTimezone());
 
-        $top = trim($this->renderView('DeskPRO:emails_common:ticket-fwd-out-header.html.twig', [
+        $top = trim($this->container->get('templating.email.twig')->render('DeskPRO:emails_common:ticket-fwd-out-header.html.twig', [
             'agent'   => $this->person,
             'ticket'  => $ticket,
             'message' => $message,
@@ -3519,7 +3519,7 @@ class TicketController extends AbstractController
         $date_created->setTimezone($this->person->getDateTimezone());
         $date_created = $date_created->format($this->container->getSetting('core.date_fulltime'));
 
-        $top = trim($this->renderView('DeskPRO:emails_common:ticket-fwd-out-header.html.twig', [
+        $top = trim($this->container->get('templating.email.twig')->render('DeskPRO:emails_common:ticket-fwd-out-header.html.twig', [
             'agent'   => $this->person,
             'ticket'  => $ticket,
             'message' => $message,

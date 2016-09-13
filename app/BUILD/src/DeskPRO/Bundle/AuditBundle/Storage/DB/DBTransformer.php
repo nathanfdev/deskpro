@@ -36,6 +36,9 @@ use DeskPRO\Bundle\AuditBundle\Storage\AbstractTransformer;
  */
 class DBTransformer extends AbstractTransformer
 {
+    /**
+     * @return AuditLogEntity
+     */
     protected function createAuditLog()
     {
         return new AuditLogEntity();
