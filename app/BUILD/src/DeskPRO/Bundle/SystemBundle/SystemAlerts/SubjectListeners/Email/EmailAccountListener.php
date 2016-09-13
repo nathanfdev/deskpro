@@ -53,12 +53,12 @@ class EmailAccountListener
      * @var array Array of event and incident classes to be deleted if their subject gets changes or removed
      */
     private static $targets = [
+        IncomingEmailFailureIncident::class,
+        OutgoingEmailFailureIncident::class,
         IncomingEmailFailureEvent::class,
         IncomingEmailSuccessEvent::class,
         OutgoingEmailFailureEvent::class,
         OutgoingEmailSuccessEvent::class,
-        IncomingEmailFailureIncident::class,
-        OutgoingEmailFailureIncident::class,
     ];
 
     /**
