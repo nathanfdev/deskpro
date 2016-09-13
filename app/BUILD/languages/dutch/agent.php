@@ -1544,6 +1544,7 @@ return [
     'agent.tickets.set_as_normal_message'                     => 'Als normaal bericht instellen',
     'agent.tickets.set_as_note'                               => 'Stel in als mederwerkersnotitie',
     'agent.tickets.set_as_spam'                               => 'Stel Ticket in als spam',
+    'agent.tickets.set_awaiting_agent'                        => 'Stel wachtende medewerker in',
     'agent.tickets.set_awaiting_user'                         => 'Stel wachtende gebruiker in',
     'agent.tickets.set_category_action'                       => 'Stel categorie in op {{category}}',
     'agent.tickets.set_delete'                                => 'Markeren voor verwijdering',
