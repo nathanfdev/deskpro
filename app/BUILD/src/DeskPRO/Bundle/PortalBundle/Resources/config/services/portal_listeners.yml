@@ -73,7 +73,7 @@ services:
 
   redirect_to_url_exception.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\RedirectToUrlExceptionListener
-    arguments: ["@logger", "@settings_resolver", "@brand_stack"]
+    arguments: ["@logger", "@?settings_resolver", "@?brand_stack"]
     tags:
       - { name: kernel.event_subscriber }
 
