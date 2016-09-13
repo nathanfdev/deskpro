@@ -89,6 +89,9 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
     this.opened = true;
     this.frameWrap.css('display', 'block');
 
+    var event = new CustomEvent('dpOpenOverlayFrame', { 'detail': { id: this.frameId } });
+    window.document.dispatchEvent(event);
+
     if (path) {
       var frameWindow = this.getFrameWindow();
       frameWindow.location.href = this.frameUrl + '#' + path;

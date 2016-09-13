@@ -4,18 +4,54 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
+import ticketsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tickets.svg';
+import chatSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/chat.svg';
+import crmSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/crm.svg';
+import feedbackSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/feedback.svg';
+import publishingSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/publishing.svg';
+import tasksSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tasks.svg';
+import reportsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg';
+import settingsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/settings.svg';
+import billingSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/billing.svg';
+import portalSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/portal.svg';
+import logoSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logo.svg';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/sideBarActions';
+import * as onboardingActions from '../../Onboarding/Actions/onboardingActions';
 
 @connect(state => ({
   me:             meSelector(state),
-  currentSection: state.SideBar.sections.get('current')
+  currentSection: state.SideBar.sections.get('current'),
+  logoCallback:   state.Onboarding.onboarding.get('logoCallback'),
+  logoActive:     state.Onboarding.onboarding.get('logoActive')
 }))
 export class SideBarContainer extends SeparateComponent {
   static propTypes = {
     me:             PropTypes.object.isRequired,
     currentSection: PropTypes.string.isRequired,
+    logoCallback:   PropTypes.func,
+    logoActive:     PropTypes.bool,
     dispatch:       PropTypes.func.isRequired
+  };
+
+  constructor(props) {
+    super(props);
+    window.document.addEventListener('dpOpenOverlayFrame', (e) => {
+      if (e.detail.id === 'reports') {
+        this.changeSection('menu_reports');
+      } else if (e.detail.id === 'admin') {
+        this.changeSection('menu_admin');
+      }
+    });
+  }
+
+  componentWillMount = () => {
+    if (window.parent.DP_FRAME_OVERLAYS.reports.opened) {
+      this.changeSection('menu_reports');
+    }
+    if (window.parent.DP_FRAME_OVERLAYS.admin.opened) {
+      this.changeSection('menu_admin');
+    }
   };
 
   static getType() {
@@ -86,24 +122,28 @@ export class SideBarContainer extends SeparateComponent {
     this.props.dispatch(actions.changeSection({ section }));
   };
 
+  resumeOnboarding = () => {
+    this.props.dispatch(onboardingActions.resumeOnboarding());
+  };
+
   render() {
     const props = {
-      hoverMode:      true,
-      canUseTicket:   this.canUseTicket(),
-      canUseChat:     this.canUseChat(),
-      canUsePeople:   this.canUsePeople(),
-      canUseFeedback: this.canUseFeedback(),
-      canUsePublish:  this.canUsePublish(),
-      canUseTasks:    this.canUseTasks(),
-      canUseReports:  this.canUseReports(),
-      canUseAdmin:    this.canUseAdmin(),
-      canUseBilling:  this.canUseBilling(),
-      canUsePortal:   this.canUsePortal(),
-      closeIframes:   this.closeIframes,
-      openAdmin:      this.openAdmin,
-      openReports:    this.openReports,
-      openBilling:    this.openBilling,
-      changeSection:  this.changeSection
+      canUseTicket:     this.canUseTicket(),
+      canUseChat:       this.canUseChat(),
+      canUsePeople:     this.canUsePeople(),
+      canUseFeedback:   this.canUseFeedback(),
+      canUsePublish:    this.canUsePublish(),
+      canUseTasks:      this.canUseTasks(),
+      canUseReports:    this.canUseReports(),
+      canUseAdmin:      this.canUseAdmin(),
+      canUseBilling:    this.canUseBilling(),
+      canUsePortal:     this.canUsePortal(),
+      closeIframes:     this.closeIframes,
+      openAdmin:        this.openAdmin,
+      openReports:      this.openReports,
+      openBilling:      this.openBilling,
+      changeSection:    this.changeSection,
+      resumeOnboarding: this.resumeOnboarding
     };
     return <SideBar {...this.props} {...props} />;
   }
@@ -111,24 +151,26 @@ export class SideBarContainer extends SeparateComponent {
 
 export class SideBar extends React.Component {
   static propTypes = {
-    me:             PropTypes.object,
-    hoverMode:      PropTypes.bool.isRequired,
-    canUseTicket:   PropTypes.bool.isRequired,
-    canUseChat:     PropTypes.bool.isRequired,
-    canUsePeople:   PropTypes.bool.isRequired,
-    canUseFeedback: PropTypes.bool.isRequired,
-    canUsePublish:  PropTypes.bool.isRequired,
-    canUseTasks:    PropTypes.bool.isRequired,
-    canUseReports:  PropTypes.bool.isRequired,
-    canUseAdmin:    PropTypes.bool.isRequired,
-    canUseBilling:  PropTypes.bool.isRequired,
-    canUsePortal:   PropTypes.bool.isRequired,
-    closeIframes:   PropTypes.func.isRequired,
-    openAdmin:      PropTypes.func.isRequired,
-    openReports:    PropTypes.func.isRequired,
-    openBilling:    PropTypes.func.isRequired,
-    changeSection:  PropTypes.func.isRequired,
-    currentSection: PropTypes.string.isRequired
+    me:               PropTypes.object,
+    canUseTicket:     PropTypes.bool.isRequired,
+    canUseChat:       PropTypes.bool.isRequired,
+    canUsePeople:     PropTypes.bool.isRequired,
+    canUseFeedback:   PropTypes.bool.isRequired,
+    canUsePublish:    PropTypes.bool.isRequired,
+    canUseTasks:      PropTypes.bool.isRequired,
+    canUseReports:    PropTypes.bool.isRequired,
+    canUseAdmin:      PropTypes.bool.isRequired,
+    canUseBilling:    PropTypes.bool.isRequired,
+    canUsePortal:     PropTypes.bool.isRequired,
+    closeIframes:     PropTypes.func.isRequired,
+    openAdmin:        PropTypes.func.isRequired,
+    openReports:      PropTypes.func.isRequired,
+    openBilling:      PropTypes.func.isRequired,
+    changeSection:    PropTypes.func.isRequired,
+    currentSection:   PropTypes.string.isRequired,
+    logoCallback:     PropTypes.func,
+    logoActive:       PropTypes.bool,
+    resumeOnboarding: PropTypes.func
   };
 
   getMenus = () => {
@@ -137,7 +179,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'tickets',
         label:     'Tickets',
-        icon:      'tickets.svg',
+        icon:      ticketsSvg,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('tickets_section');
           this.props.closeIframes();
@@ -148,7 +190,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'chats',
         label:     'Chats',
-        icon:      'chat.svg',
+        icon:      chatSvg,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('chat_section');
           this.props.closeIframes();
@@ -159,7 +201,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'crm',
         label:     'CRM',
-        icon:      'crm.svg',
+        icon:      crmSvg,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('people_section');
           this.props.closeIframes();
@@ -170,7 +212,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'feedback',
         label:     'Feedback',
-        icon:      'feedback.svg',
+        icon:      feedbackSvg,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('feedback_section');
           this.props.closeIframes();
@@ -181,7 +223,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'publish',
         label:     'Publish',
-        icon:      'publishing.svg',
+        icon:      publishingSvg,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('publish_section');
           this.props.closeIframes();
@@ -192,7 +234,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'tasks',
         label:     'Tasks',
-        icon:      'tasks.svg',
+        icon:      tasksSvg,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('tasks_section');
           this.props.closeIframes();
@@ -203,7 +245,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'reports',
         label:     'Reports',
-        icon:      'reports.svg',
+        icon:      reportsSvg,
         callback:  () => {
           this.props.openReports();
         }
@@ -213,7 +255,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'admin',
         label:     'Admin',
-        icon:      'settings.svg',
+        icon:      settingsSvg,
         callback:  () => {
           this.props.openAdmin();
         }
@@ -223,7 +265,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'billing',
         label:     'Billing',
-        icon:      'billing.svg',
+        icon:      billingSvg,
         callback:  () => {
           this.props.openBilling();
         }
@@ -233,7 +275,8 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'portal',
         label:     'Portal',
-        icon:      'portal.svg'
+        icon:      portalSvg,
+        href:      window.DESKPRO_PORTAL_HOME
       });
     }
     return menus;
@@ -242,10 +285,8 @@ export class SideBar extends React.Component {
   getMenuItems = () => {
     const menus = [];
     const currentSection = this.props.currentSection;
-    const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     this.getMenus().map((item) => {
       const menuItem = item;
-      const title = this.props.hoverMode ? '' : menuItem.label;
       menuItem.key = `menu_${menuItem.className}`;
       menus.push(
         <MenuItem
@@ -253,8 +294,8 @@ export class SideBar extends React.Component {
           classes={classNames(menuItem.className, { active: currentSection === menuItem.key })}
           onClick={() => this.clickMenu(menuItem)}
         >
-          <span className="menu-icon" title={title}>
-            <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/${menuItem.icon}`} />
+          <span className="menu-icon">
+            <Isvg src={menuItem.icon} />
           </span>
           <span className="menu-label">{menuItem.label}</span>
         </MenuItem>
@@ -265,18 +306,36 @@ export class SideBar extends React.Component {
   };
 
   clickMenu = (item) => {
-    this.props.changeSection(item.key);
     if (item.callback) {
+      this.props.changeSection(item.key);
       item.callback();
+    } else if (item.href) {
+      window.open(item.href, '_blank');
     }
   };
 
+  clickLogo = () => {
+    if (this.props.logoActive) {
+      this.props.logoCallback();
+      this.props.resumeOnboarding();
+    } else {
+      this.openDeskPro();
+    }
+  };
+
+  openDeskPro() {
+    window.open('http://deskpro.com', '_blank');
+  }
+
   render() {
-    const { hoverMode } = this.props;
+    const { logoActive } = this.props;
     return (
       <div
-        className={classNames('sidebar-menu', 'ui', 'vertical', 'menu', { 'hover-mode': hoverMode })}
+        className={classNames('sidebar-menu', 'ui', 'vertical', 'menu')}
       >
+        <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo}>
+          <Isvg src={logoSvg} />
+        </div>
         {this.getMenuItems()}
       </div>
     );

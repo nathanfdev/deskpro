@@ -5,6 +5,7 @@ import $ from 'jquery';
 import moment from 'moment';
 import Isvg from 'react-inlinesvg';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import backArrowSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/back-arrow.svg';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/onboardingActions';
 import * as Tours from '../Tours';
@@ -226,14 +227,13 @@ export class AgentOnboarding extends React.Component {
       type,
       disableOverlay: force
     };
-    const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     return (<div>
       <Joyride
         ref={(c) => { this.joyride = c; }}
         steps={this.state.steps}
         showSkipButton={false}
         locale={{
-          back:  (<Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/back-arrow.svg`} />),
+          back:  (<Isvg src={backArrowSvg} />),
           close: (<span>Close</span>),
           last:  (<span>Finish</span>),
           next:  (<span>Next</span>)

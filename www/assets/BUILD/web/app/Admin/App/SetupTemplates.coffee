@@ -32,16 +32,8 @@ define [
 		# Preload templates
 		Module.run(['dpTemplateManager', (dpTemplateManager) ->
 			templates = [
-				'Index/app-nav-setup.html',
-				'Index/app-nav-agents.html',
-				'Index/app-nav-tickets.html',
-				'Index/app-nav-crm.html',
 				'Index/app-nav-portal.html',
-				'Index/app-nav-brand.html',
-				'Index/app-nav-chat.html',
 				'Index/app-nav-twitter.html',
-				'Index/app-nav-apps.html',
-				'Index/app-nav-server.html',
 				'Index/modal-alert.html',
 				'Index/modal-confirm-leavetab.html',
 				'Languages/modal-translate-phrase.html',
