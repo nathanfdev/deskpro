@@ -110,7 +110,7 @@ class OneSkyUploadCommand extends ContainerAwareCommand
                 $projectName
             );
 
-            $tmpDir = TmpDir::create($this->getContainer()->get('deskpro.app_env')->getUserTmpDir());
+            $tmpDir = TmpDir::makeTmpDir($this->getContainer()->get('deskpro.app_env')->getUserTmpDir());
 
             foreach ($project->getFiles() as $f) {
                 $friendlyPath = str_replace($langDir.'/', '', str_replace('\\', '/', $f->getRealPath()));
