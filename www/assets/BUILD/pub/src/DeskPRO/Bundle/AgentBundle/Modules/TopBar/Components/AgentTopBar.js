@@ -5,9 +5,9 @@ import classNames from 'classnames';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
+import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
@@ -155,8 +155,8 @@ class AgentTopBar extends SeparateComponent {
           placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
         />
       </TopBarItem>
-      <TopBarItem classes={['legacy-omnibox recent']}>
-        <i className="icon wait" onClick={this.onRecent} />
+      <TopBarItem classes={['legacy-omnibox recent']} onClick={this.onRecent}>
+        <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
       </TopBarItem>
       {/* <TopBarItem classes={['z-index-stub']}>*/}
         {/* <HeaderWidget />*/}
@@ -165,13 +165,13 @@ class AgentTopBar extends SeparateComponent {
 
       <AddButton closeIframes={this.closeIframes} />
       <TopBarRightMenu>
-        <TopBarItem classes={['view_mode']} onClick={this.toggleViewMode}>
+        <TopBarItem classes={['views']} onClick={this.toggleViewMode}>
           <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
         </TopBarItem>
         <TopBarItem classes={['legacy-omnibox notifications']} onClick={this.onNotification}>
           <TopBarNotificationIcon
             elementId="notifications"
-            icon="alarm outline hover pointer"
+            svg="notifications.svg"
             count={notificationCount}
           />
         </TopBarItem>

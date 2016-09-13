@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import Isvg from 'react-inlinesvg';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
@@ -209,6 +210,7 @@ class Chat extends React.Component {
 
   render() {
     const { activeChat } = this.state;
+    const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     return (<div className="chat" onClick={this.togglePopup}>
       <PopUp
         positionMy="right top"
@@ -221,7 +223,11 @@ class Chat extends React.Component {
         classes={['chat_popup']}
         content={this.getPopupContent()}
       >
-        <i className={classNames('icon', 'comments', 'outline', { on: activeChat })} /><br />
+        <Isvg
+          className={classNames({ on: activeChat })}
+          src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/chat.svg`}
+        />
+        <br />
         {this.getStatus()}
       </PopUp>
     </div>);
