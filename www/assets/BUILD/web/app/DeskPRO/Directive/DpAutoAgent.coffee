@@ -62,7 +62,7 @@ define ['angular'], (angular) ->
               </select>
 
               <label>
-                <input type="checkbox" ng-model="action.filter_enabled" />
+                <input type="checkbox" ng-model="action.filter_enabled" ng-change="changeFilter(action)" />
                 only if
               </label>
               <input type="text" class="form-control" ng-model="action.filter" ng-if="action.filter_enabled" style="width: 70px;" />
@@ -85,6 +85,9 @@ define ['angular'], (angular) ->
         $scope.ngModel.actions = $scope.ngModel.actions || []
         index = $scope.ngModel.actions.indexOf action
         $scope.ngModel.actions.splice(index, 1) if index != -1
+      $scope.changeFilter = (action) ->
+        action.filter = '' if !action.filter_enabled
+
 
     link: ($scope) ->
       $scope.groups = groups

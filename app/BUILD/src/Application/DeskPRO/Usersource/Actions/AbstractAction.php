@@ -30,9 +30,21 @@ namespace Application\DeskPRO\Usersource\Actions;
 
 abstract class AbstractAction
 {
+    protected $filter;
+
     abstract public function getData();
 
     abstract public function setData($value);
+
+    public function getFilter()
+    {
+        return (string) $this->filter;
+    }
+
+    public function setFilter($value)
+    {
+        $this->filter = (string) $value;
+    }
 
     /**
      * @return array
@@ -42,8 +54,10 @@ abstract class AbstractAction
         $class = get_class($this);
 
         return [
-            'type' => substr($class, strrpos($class, '\\') + 1),
-            'data' => $this->getData(),
+            'type'           => substr($class, strrpos($class, '\\') + 1),
+            'data'           => $this->getData(),
+            'filter_enabled' => strlen($this->getFilter()) ?: false,
+            'filter'         => $this->getFilter(),
         ];
     }
 
@@ -58,6 +72,7 @@ abstract class AbstractAction
         /** @var self $obj */
         $obj = new $class();
         $obj->setData(@$action['data']);
+        $obj->setFilter(@$action['filter']);
 
         return $obj;
     }
