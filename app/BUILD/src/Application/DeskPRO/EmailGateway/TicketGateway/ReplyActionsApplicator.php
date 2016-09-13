@@ -138,16 +138,6 @@ class ReplyActionsApplicator implements Loggable
                 foreach ($param as $l) {
                     if ($label = LabelManager::normalizeLabel($l)) {
                         $ticket->addLabelByString($l);
-                    } else {
-                        /* @todo remove after confirmed */
-                        /* @see https://trello.com/c/3yGjrcjU/2114-weird-empty-label */
-                        $this->logger->logError(
-                            'Trying to add an empty label in ReplyActionsApplicator',
-                            [
-                                'labels'    => $param,
-                                'ticket_id' => $ticket->getId(),
-                            ]
-                        );
                     }
                 }
                 break;
