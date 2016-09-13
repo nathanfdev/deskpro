@@ -152,35 +152,14 @@
   background-image: url('../img/semantic/tick.svg');
 }
 
-#dp_header {
-  background-color: #fff;
-}
 .ui.menu.topbar {
   border: 0;
+  margin-left: 52px;
   border-bottom: 3px solid $dp-sonic-primary;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 
   .pointer {
     cursor: pointer;
-  }
-  .logo {
-    width: 24px;
-    background-color: $dp-sonic-primary;
-    background-image: url('../img/deskpro_dots_white.svg');
-    background-position: center;
-    background-size: 24px;
-    background-repeat: no-repeat;
-    padding: 11px 14px;
-    cursor: pointer;
-    border-bottom: 3px solid #2b2f33;
-    margin-bottom: -3px;
-    &.active {
-      background-color: $dp-emerald-primary;
-    }
-    img {
-      width: 24px;
-      height: 24px;
-    }
   }
   .icon {
     padding-left: 0;
@@ -515,19 +494,45 @@
 
 $folded-width: 52px;
 $expanded-width: 150px;
+$transition-open-time: 0.2s;
+$transition-open-delay: 0.1s;
+$transition-delayed-delay: 2s;
+$transition-close-time: 0.2s;
+$transition-close-delay: 0.1s;
 .sidebar-menu.ui.vertical.menu {
   background-color: $dp-night-sky;
   font-family: 'Open Sans', Helvetica, sans-serif;
   position: absolute;
-  top: 50px;
+  top: 0;
   left: 0;
   bottom: 0;
   border: 0;
   right: auto;
   width: $folded-width;
-  transition: width 0.2s;
-  transition-delay: 0.1s;
-  z-index: 10000;
+  transition: width $transition-close-time;
+  transition-delay: $transition-close-delay;
+  z-index: 1000;
+  box-shadow: none;
+  .logo {
+    height: 51px;
+    width: 52px;
+    background-color: $dp-sonic-primary;
+    cursor: pointer;
+    padding: 13px;
+    transition: width $transition-close-time;
+    transition-delay: $transition-close-delay;
+    &.active {
+      background-color: $dp-emerald-primary;
+    }
+    svg {
+      height: 26px;
+      .text {
+        fill: transparent;
+        transition: fill $transition-close-time;
+        transition-delay: $transition-close-delay;
+      }
+    }
+  }
   .ui.item {
     height: 52px;
     width: $folded-width;
@@ -536,8 +541,8 @@ $expanded-width: 150px;
     white-space: nowrap;
     padding: 14px;
     vertical-align: middle;
-    transition: width 0.2s;
-    transition-delay: 0.1s;
+    transition: width $transition-close-time;
+    transition-delay: $transition-close-delay;
     &:before {
       left: $folded-width - 12px;
     }
@@ -549,17 +554,20 @@ $expanded-width: 150px;
     span.menu-label {
       position: relative;
       top: -5px;
-      visibility: hidden;
-      transition-delay: 0.2s;
+      width: 0;
+      display: inline-block;
+      transition: width 0s;
+      overflow: hidden;
     }
     svg {
       width: 24px;
       height: 24px;
-      transition: transform 0.2s;
+      transition: transform 0s;
     }
     &:hover:not(.active) {
       svg {
         transform: scale(1.25);
+        transition: transform 0.2s;
       }
     }
     &.active {
@@ -575,20 +583,46 @@ $expanded-width: 150px;
         left: $folded-width - 6px;
         top: 20px;
         background: black;
-        transition: left 0.2s;
-        transition-delay: 0.1s;
+        transition: left $transition-close-time;
+        transition-delay: $transition-close-delay;
       };
     }
   }
-  &.hover-mode:hover {
-    &, .ui.item {
+  &:hover {
+    .logo svg .text {
+      fill: #fff;
+      transition: fill $transition-open-time;
+      transition-delay: $transition-open-delay;
+    }
+    &, .ui.item, .logo {
       width: $expanded-width;
+      transition: width $transition-open-time;
+      transition-delay: $transition-open-delay;
       &.active:before {
         left: $expanded-width - 6px;
+        transition: left $transition-open-time;
+        transition-delay: $transition-open-delay;
       }
     }
-    span.menu-label {
-      visibility: visible;
+    .ui.item span.menu-label {
+      width: $expanded-width - $folded-width;
+      transition: width $transition-open-time;
+      transition-delay: $transition-open-delay;
     }
+  }
+
+}
+.panevis-source-off .sidebar-menu.ui.vertical.menu:hover {
+  .logo svg .text {
+    transition-delay: $transition-delayed-delay;
+  }
+  &, .ui.item, .logo {
+    transition-delay: $transition-delayed-delay;
+    &.active:before {
+      transition-delay: $transition-delayed-delay;
+    }
+  }
+  .ui.item span.menu-label {
+    transition-delay: $transition-delayed-delay;
   }
 }
