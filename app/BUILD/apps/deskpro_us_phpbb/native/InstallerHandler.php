@@ -59,8 +59,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
         $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
         $us->source_type       = $type;
 
-        $this->setupAutoAgent();
-        $this->setupUsergroup($us, $app->getSetting('auto_user_permission_group'));
+        $this->setupActions();
 
         $em->persist($us);
         $em->persist($app);

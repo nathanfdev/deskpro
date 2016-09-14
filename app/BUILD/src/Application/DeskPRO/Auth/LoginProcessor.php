@@ -460,14 +460,6 @@ class LoginProcessor
 
     public static function tryUsergroupPromotion(Usersource $usersource, Person $person, $raw_info)
     {
-        if ($usersource->type == Usersource::TYPE_USER) {
-            if ($usersource->user_permission_group) {
-                $person->addUsergroup($usersource->user_permission_group);
-            }
-
-            return;
-        }
-
         if (!$usersource->type == Usersource::TYPE_AGENT || !$usersource->auto_agent) {
             return;
         }

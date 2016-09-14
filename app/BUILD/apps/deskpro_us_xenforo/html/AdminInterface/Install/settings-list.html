@@ -43,21 +43,21 @@
 	</div>
 </div>
 
-<dp-auto-agent ng-if="Ctrl.usersourceType == 'agent'" ng-model="setting_values" />
-
-<div ng-if="Ctrl.usersourceType == 'user'">
-	<div class="form-group">
-		<div class="col-lg-4">
-			<h3>Grant Usergroup</h3>
-		</div>
-		<div class="col-lg-8">
-			<select
-					ng-model="setting_values.auto_user_permission_group"
-					ng-options="obj.value as obj.label for obj in Ctrl.permission_groups_user"
-					ng-required="false"
-					>
-			</select>
-			<span class="help-block">Add this usergroup to users who login with this usersource.</span>
-		</div>
+<div class="form-group" ng-if="Ctrl.usersourceType == 'agent'">
+	<div class="col-lg-4">
+		<h3>Auto Agent</h3>
+	</div>
+	<div class="col-lg-8">
+		<label>
+			<input type="checkbox" ng-model="setting_values.auto_agent" />
+			Automatically create agents if they do not already exist
+		</label>
 	</div>
 </div>
+
+<dp-person-actions ng-model="setting_values.actions"
+				   actions="Ctrl.allowedActions"
+				   title="Login Actions"
+				   ng-if="Ctrl.usersourceType == 'user' || setting_values.auto_agent"
+>
+</dp-person-actions>

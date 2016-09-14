@@ -18,7 +18,7 @@ define [
   'DeskPRO/Directive/DpErrorClass',
   'DeskPRO/Directive/DpLabel',
   'DeskPRO/Directive/DpClipboard',
-  'DeskPRO/Directive/DpAutoAgent',
+  'DeskPRO/Directive/DpPersonActions',
 
   'Admin/Main/Directive/Autofocus',
   'Admin/Main/Directive/BgImg',
@@ -81,7 +81,7 @@ define [
   DeskPRO_Directive_DpErrorClass,
   DeskPRO_Directive_DpLabel,
   DeskPRO_Directive_DpClipboard,
-  DeskPRO_Directive_DpAutoAgent,
+  DeskPRO_Directive_DpPersonActions,
 
   Admin_Main_Directive_Autofocus,
   Admin_Main_Directive_BgImg,
@@ -145,7 +145,7 @@ define [
     Module.directive('dpErrorClass',                   DeskPRO_Directive_DpErrorClass)
     Module.directive('dpLabel',                        DeskPRO_Directive_DpLabel)
     Module.directive('dpClipboard',                    DeskPRO_Directive_DpClipboard)
-    Module.directive('dpAutoAgent',                    DeskPRO_Directive_DpAutoAgent)
+    Module.directive('dpPersonActions',                DeskPRO_Directive_DpPersonActions)
 
     Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
     Module.directive('dpLiGroupSection',               Admin_Main_Directive_DpLiGroupSection)

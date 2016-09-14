@@ -96,13 +96,11 @@
 			"label": "Auto Agent",
 			"checkbox_label": "Automatically create agents if they do not already exist",
 			"usersource_display": "agent",
-			"default_value": true,
-
-			"inline_dependant": {
-				"name": "actions",
-				"type": "choice",
-				"is_required": true
-			}
+			"default_value": true
+		},
+		{
+			"name": "actions",
+			"type": "choice"
 		},
 		{
 		  "name": "sync_enabled",
@@ -125,15 +123,6 @@
 		  "label": "LDAP Size Limit",
 		  "description": "LDAP servers typically set a limit on the number of entries that we can query for during a sync. For no limit, enter 0. If you are not sure, please check with your LDAP server administrator.",
 		  "default_value": 0
-		},
-		{
-		  "name": "auto_user_permission_group",
-		  "usersource_display": "user",
-		  "type": "dynamic_choice",
-		  "options_variable": "permission_groups_user",
-		  "label": "Grant Usergroup",
-		  "description": "Add this usergroup to users who login with this usersource",
-		  "is_required": false
 		},
 		{
 		  "name": "raw_info_filter",

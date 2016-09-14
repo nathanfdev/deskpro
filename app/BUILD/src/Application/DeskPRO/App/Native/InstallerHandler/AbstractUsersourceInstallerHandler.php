@@ -77,7 +77,7 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
         return;
     }
 
-    public function setupAutoAgent()
+    public function setupActions()
     {
         if (!$context = $this->context) {
             throw new \RuntimeException('please ensure an installer context is present');
@@ -86,43 +86,17 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
         $us  = $context->getUsersource();
         $app = $context->getApp();
 
-        if (Usersource::TYPE_AGENT !== $us->type) {
-            $us->auto_agent = false;
-            $us->actions    = new ActionsCollection();
+        if (Usersource::TYPE_AGENT === $us->type) {
+            $us->auto_agent = $app->getSetting('auto_agent') ? true : false;
 
-            return;
-        }
+            if (!$us->auto_agent) {
+                $us->actions = new ActionsCollection();
 
-        if (!$app->getSetting('auto_agent')) {
-            $us->auto_agent = false;
-            $us->actions    = new ActionsCollection();
-
-            return;
-        }
-
-        $us->auto_agent = true;
-        $us->actions    = ActionsCollection::unserializeJsonArray($app->getSetting('actions') ?: []);
-    }
-
-    public function setupUsergroup(Usersource $us, $permission_group_id)
-    {
-        if ($context = $this->context) {
-            if (Usersource::TYPE_USER == $us->type) {
-                if ($permission_group_id) {
-                    $permission_group = $context->getEm()->getRepository('DeskPRO:Usergroup')->find($permission_group_id);
-
-                    if ($permission_group) {
-                        $us->user_permission_group = $permission_group;
-                    }
-                } else {
-                    $us->user_permission_group = null;
-                }
-            } else {
-                $us->user_permission_group = null;
+                return;
             }
-        } else {
-            throw new \RuntimeException('please ensure an installer context is present');
         }
+
+        $us->actions = ActionsCollection::unserializeJsonArray($app->getSetting('actions') ?: []);
     }
 
     /**

@@ -69,7 +69,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->source_type       = 'deskpro_magento\\Usersource\\Adapter\\Magento';
 
-        $this->setupAutoAgent();
+        $this->setupActions();
 
         if ($app->getSetting('enable_sso')) {
             $us->makeSsoBackgroundOnly();
