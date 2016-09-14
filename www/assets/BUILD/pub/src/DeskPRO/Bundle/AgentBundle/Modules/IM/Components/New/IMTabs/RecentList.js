@@ -50,7 +50,7 @@ class RecentList extends React.Component {
 
         return (<PersonAvatar
           person={agent}
-          size={12}
+          size={24}
           classes={classes}
           color={chooseColor(agent)}
         />);
@@ -83,10 +83,10 @@ class RecentList extends React.Component {
           <div
             className={classNames(
                 ['ui', 'knuckles', 'label', 'message-counter'],
-                { grey: notificationCount < 1 })
+                { grey: !notificationCount || notificationCount < 1 })
             }
           >
-            {notificationCount}
+            {notificationCount || 0}
           </div>
         </div>
         <div className="timestamp content right floated">

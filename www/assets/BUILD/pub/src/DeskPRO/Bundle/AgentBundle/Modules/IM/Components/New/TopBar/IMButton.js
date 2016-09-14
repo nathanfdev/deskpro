@@ -1,12 +1,11 @@
 import React from 'react';
+import Isvg from 'react-inlinesvg';
+import IMSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/IM.svg';
 
 function IMButton() {
   return (
     <span className="ui image avatar im" id="im-button">
-      <i className="icons">
-        <i className="big thin circle icon" />
-        <i className="user add icon" />
-      </i>
+      <Isvg src={IMSvg} />
     </span>
   );
 }

@@ -11,7 +11,11 @@ class TopBarRecentImList extends RecentList {
   static propTypes = {
     chats:         PropTypes.object.isRequired,
     children:      PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-    onRecentClick: PropTypes.func.isRequired
+    onRecentClick: PropTypes.func.isRequired,
+    me:            PropTypes.object.isRequired,
+    agents:        PropTypes.object.isRequired,
+    departments:   PropTypes.object.isRequired,
+    teams:         PropTypes.object.isRequired
   };
 
   getItems() {

@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
-import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
+import classNames from 'classnames';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
 import { Segment, SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
 import {
@@ -26,6 +28,7 @@ export default class IMOverlay extends React.Component {
     onRecentClick:      PropTypes.func.isRequired,
     onParticipantClick: PropTypes.func.isRequired,
     createNewGroup:     PropTypes.func.isRequired,
+    toggleOverlay:      PropTypes.func.isRequired,
     isOpen:             PropTypes.bool.isRequired
   };
 
@@ -109,19 +112,30 @@ export default class IMOverlay extends React.Component {
   }
 
   render() {
-    return (<PopUp
-      classes={['im wrapper']}
-      innerClasses={['im tabs']}
-      positionMy="center-3 top-5"
-      positionAt="center bottom"
-      id={100500}
-      zIndex={99999}
-      content={this.getContent()}
-      autoClose={false}
-      autoOpen={false}
-      opened={this.props.isOpen}
-    >
-      {this.props.children}
-    </PopUp>);
+    const { isOpen, children, toggleOverlay } = this.props;
+
+    return (
+      <div
+        style={{ display: 'inline-block' }}
+        className={classNames({ active: isOpen }, ['im', 'wrapper'])}
+        ref={c => { this.imButton = c; }}
+        onClick={toggleOverlay}
+        onMouseEnter={this.onMouseEnter}
+      >
+        {children}
+        <Detached
+          positionMy="center-25 top"
+          isOpen={isOpen}
+          positionTarget={this.imButton}
+          {...this.props}
+        >
+          <ClickOut onClickOut={toggleOverlay}>
+            <div className={classNames(['ui', 'popup', 'im', 'tabs', 'center', 'bottom'], { visible: isOpen })}>
+              {this.getContent()}
+            </div>
+          </ClickOut>
+        </Detached>
+      </div>
+    );
   }
 }

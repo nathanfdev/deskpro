@@ -28,7 +28,12 @@ class AbstractList extends React.Component {
 
   getItem(item, type, titleProp) {
     const classes = ['im', type];
-
+    let size = item.get('agents').size;
+    if (size > 2) {
+      size -= 1;
+    } else {
+      size = 0;
+    }
     return (
       <ListElement
         key={item.get('id')}
@@ -41,7 +46,7 @@ class AbstractList extends React.Component {
         >
           <div className="header">
             {item.get(titleProp)}
-            <span className="agents-counter">({item.get('agents').length - 1})</span>
+            {size ? <span className="agents-counter">({size})</span> : null}
           </div>
           <span className="agents-list">{this.getAgents(item)}</span>
         </div>
