@@ -851,6 +851,42 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     }
 
     /**
+     * @return Person[]|ArrayCollection
+     */
+    public function getEmployees()
+    {
+        return $this->employees;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function addEmployee(Person $person)
+    {
+        $person->setOrganization($this);
+        $this->employees->add($person);
+
+        return $this;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function removeEmployee(Person $person)
+    {
+        if ($this->employees->contains($person)) {
+            $person->setOrganization(null);
+            $this->employees->removeElement($person);
+        }
+
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getTicketsCount()

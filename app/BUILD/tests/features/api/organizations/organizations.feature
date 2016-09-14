@@ -308,3 +308,43 @@ Feature: /organizations endpoint
 
     When I send a GET request to "/api/v2/organizations?no_labels=1"
     Then the JSON node "data" should have 1 element
+
+  Scenario: I set org members
+    Given "user1@deskpro.dev" user exists
+    And "user2@deskpro.dev" user exists
+    And "user3@deskpro.dev" user exists
+    And I send a PUT request to "/api/v2/organizations/{yahoo}" with body:
+    """
+    {
+      "members": [~user1@deskpro.dev~, ~user2@deskpro.dev~, ~user3@deskpro.dev~]
+    }
+    """
+
+    When I send a GET request to "/api/v2/organizations/{yahoo}"
+    Then the JSON node "data.members" should have 3 elements
+    And the JSON node "data.members[0]" should be equal to "{user1@deskpro.dev}"
+    And the JSON node "data.members[1]" should be equal to "{user2@deskpro.dev}"
+    And the JSON node "data.members[2]" should be equal to "{user3@deskpro.dev}"
+
+
+  Scenario: I update org members
+    Given only the following Organization records exist:
+      | #  | Name |
+      | o1 | Org  |
+    And only the following User records exist:
+      | #  | Email             | Organization |
+      | u1 | user1@deskpro.dev | {o1}         |
+      | u2 | user2@deskpro.dev | {o1}         |
+      | u3 | user3@deskpro.dev | {o1}         |
+      | u4 | user4@deskpro.dev | NULL         |
+    And I send a PUT request to "/api/v2/organizations/{o1}" with body:
+    """
+    {
+      "members": [~u2~, ~u4~]
+    }
+    """
+
+    When I send a GET request to "/api/v2/organizations/{o1}"
+    Then the JSON node "data.members" should have 2 elements
+    And the JSON node "data.members[0]" should be equal to "{u2}"
+    And the JSON node "data.members[1]" should be equal to "{u4}"

@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
 use Application\DeskPRO\Entity\LabelOrganization;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
@@ -37,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -100,6 +102,12 @@ class OrganizationType extends AbstractType
             ->add('contact_data', ContactDataType::class, [
                 'owner'          => $builder->getData(),
                 'parent_builder' => $builder,
+            ])
+            ->add('members', EntityType::class, [
+                'class'         => Person::class,
+                'multiple'      => true,
+                'property_path' => 'employees',
+                'by_reference'  => false,
             ])
         ;
     }
