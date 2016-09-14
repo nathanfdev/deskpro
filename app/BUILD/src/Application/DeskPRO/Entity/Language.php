@@ -235,12 +235,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         }
 
         /**
-         * Return a unique ID that we can use to look up translations for this object.
-         *
-         * @param string    $property  If supplied, the property on the object we want to translate
-         * @param Translate $translate The translate object requesting
-         *
-         * @return string
+         * {@inheritdoc}
          */
         public function getPhraseName($property, Translate $translate)
         {
@@ -248,12 +243,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         }
 
         /**
-         * Get the default value phrase for the object.
-         *
-         * @param string    $property  If supplied, the property on the object we want to translate
-         * @param Translate $translate The translate object requesting
-         *
-         * @return string
+         * {@inheritdoc}
          */
         public function getPhraseDefault($property, Translate $translate)
         {

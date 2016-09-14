@@ -107,11 +107,7 @@ class Product extends CategoryAbstract implements HasPhraseName
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseName($property, Translate $translate)
     {
@@ -124,11 +120,7 @@ class Product extends CategoryAbstract implements HasPhraseName
     }
 
     /**
-     * Get the default value phrase for the object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseDefault($property, Translate $translate)
     {

@@ -173,11 +173,7 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseName($property, Translate $translate)
     {
@@ -191,11 +187,7 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
     }
 
     /**
-     * Get the default value phrase for the object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseDefault($property, Translate $translate)
     {
