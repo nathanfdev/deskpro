@@ -14,15 +14,21 @@ class Container extends React.Component {
     teams:       PropTypes.object.isRequired,
     current:     PropTypes.number.isRequired,
     isOpen:      PropTypes.bool.isRequired,
+    clickOut:    PropTypes.func,
     children:    PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     onChange:    PropTypes.func.isRequired,
     onAttach:    PropTypes.func.isRequired
   };
 
+  static defaultProps = {
+    clickOut() {
+
+    }
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      isOpen:      !!this.props.isOpen,
       emojiOpened: false
     };
 
@@ -66,9 +72,7 @@ class Container extends React.Component {
   }
 
   closePopup() {
-    this.setState({
-      isOpen: false
-    });
+    this.props.clickOut();
   }
 
   openEmoji() {
@@ -96,7 +100,7 @@ class Container extends React.Component {
   render() {
     return (
       <Detached
-        isOpen={this.state.isOpen}
+        isOpen={this.props.isOpen}
         positionTarget={document.getElementById(`chat-${this.props.chats.getIn([this.props.current, 'id'])}`)}
         positionMy="left-40 top+3"
       >

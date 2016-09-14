@@ -17,6 +17,7 @@ class GroupAddDrawer extends React.Component
     isOpen:        PropTypes.bool.isRequired,
     agentClick:    PropTypes.func,
     clickOut:      PropTypes.func,
+    createGroup:   PropTypes.func,
     checkedAgents: PropTypes.object
   };
 
@@ -25,6 +26,9 @@ class GroupAddDrawer extends React.Component
 
     },
     clickOut() {
+
+    },
+    createGroup() {
 
     },
     checkedAgents: {}
@@ -50,6 +54,7 @@ class GroupAddDrawer extends React.Component
       groupName:          ''
     };
     this.agentClick = this.agentClick.bind(this);
+    this.createGroup = this.createGroup.bind(this);
   }
 
   getAgentsHeader() {
@@ -73,6 +78,10 @@ class GroupAddDrawer extends React.Component
         checkedAgentsCount: GroupAddDrawer.recalculateChecked(this.state.checkedAgents)
       }
     );
+  }
+
+  createGroup() {
+    this.props.createGroup(Object.keys(this.state.checkedAgents));
   }
 
   clickOut() {
@@ -131,6 +140,9 @@ class GroupAddDrawer extends React.Component
                   </Scrollable>
                 </List>
               </Segment>
+              <button className="ui create-group primary button" onClick={this.createGroup}>
+                Create group
+              </button>
             </div>
           </div>
         </ClickOut>

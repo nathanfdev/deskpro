@@ -54,7 +54,14 @@ storiesOf('Agent: IM', module)
       <TopBarItem childrenWrapper="im-list">
         <span>
           <TopBarRecentImList {...imState} onRecentClick={action('recent chat (top bar) click')}>
-            <Container isOpen {...chatState} current={1} onChange={action('reply')} onAttach={action('attach')} />
+            <Container
+              isOpen
+              {...chatState}
+              current={1}
+              onChange={action('reply')}
+              onAttach={action('attach')}
+              clickOut={action('clickout')}
+            />
           </TopBarRecentImList>
         </span>
       </TopBarItem>
@@ -72,7 +79,13 @@ storiesOf('Agent: IM', module)
       </TopBarItem>
       <TopBarItem>
         <IMButton />
-        <GroupAddDrawer isOpen target={document.getElementById('im-button')} {...imState} checkedAgents={{ 2: true, 6: true }} />
+        <GroupAddDrawer
+          isOpen
+          target={document.getElementById('im-button')}
+          {...imState}
+          checkedAgents={{ 2: true, 6: true }}
+          createGroup={action('creategroup')}
+        />
       </TopBarItem>
     </TopBar>
   )
