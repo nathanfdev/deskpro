@@ -26,7 +26,7 @@ define ['angular'], (angular) ->
             Add Action
           </a>
           <div ng-repeat="action in ngModel" style="">
-            <select ng-model="action.type">
+            <select ng-model="action.type" ng-change="onChangeActionType(action)">
               <option value="AddToAgentGroup" ng-if="allowedActions['AddToAgentGroup']">
                 Add to agent permission group
               </option>
@@ -35,6 +35,21 @@ define ['angular'], (angular) ->
               </option>
               <option value="AddToUserGroup" ng-if="allowedActions['AddToUserGroup']">
                 Add to usergroup
+              </option>
+              <option value="AddToOrg" ng-if="allowedActions['AddToOrg']">
+                Add to Organization
+              </option>
+              <option value="AddToOrgExpression" ng-if="allowedActions['AddToOrgExpression']">
+                Add to Organization from value
+              </option>
+              <option value="AddLabel" ng-if="allowedActions['AddLabel']">
+                Add label
+              </option>
+              <option value="AddLabelExpression" ng-if="allowedActions['AddLabelExpression']">
+                Add label from value
+              </option>
+              <option value="MakeAnAdmin" ng-if="allowedActions['MakeAnAdmin']">
+                Make agent an admin
               </option>
             </select>
 
@@ -62,6 +77,13 @@ define ['angular'], (angular) ->
               >
             </select>
 
+            <input type="text"
+                   ng-model="action.data"
+                   ng-if="['AddToOrg', 'AddToOrgExpression', 'AddLabel', 'AddLabelExpression'].indexOf(action.type) !== -1"
+                   class="form-control"
+                   style="width: 70px;"
+                   />
+
             <label>
               <input type="checkbox" ng-model="action.filter_enabled" ng-change="changeFilter(action)" />
               only if
@@ -78,6 +100,8 @@ define ['angular'], (angular) ->
 
     controller: ($scope) ->
       $scope.ngModel = $scope.ngModel || []
+      $scope.onChangeActionType = (action) ->
+        action.data = null
       $scope.addAction = ->
         action = if $scope.defaultAction then {type: $scope.defaultAction} else {}
         $scope.ngModel.push action

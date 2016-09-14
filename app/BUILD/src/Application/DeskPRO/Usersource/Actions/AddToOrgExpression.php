@@ -26,46 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace Application\DeskPRO\Usersource\Actions;
 
-namespace Application\AgentBundle\Form\Type;
-
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-
-class NewOrganization extends AbstractType
+class AddToOrgExpression extends AbstractAction
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    protected $expression;
+
+    public function getData()
     {
-        $builder->add('name', 'text', ['required' => false]);
-
-        $builder->add('labels', 'collection', [
-            'type'         => 'text',
-            'required'     => false,
-            'allow_add'    => true,
-            'allow_delete' => true,
-        ]);
-
-        $builder->add('usergroup_ids', 'collection', [
-            'type'         => 'text',
-            'required'     => false,
-            'allow_add'    => true,
-            'allow_delete' => true,
-        ]);
+        return $this->expression;
     }
 
-    public function getDefaultOptions(array $options)
+    public function setData($value)
     {
-        return [
-            'data_class'      => 'Application\\AgentBundle\\Form\\Model\\NewOrganization',
-            'csrf_protection' => false,
-        ];
-    }
-
-    public function getName()
-    {
-        return 'neworg';
+        $this->expression = (string) $value;
     }
 }

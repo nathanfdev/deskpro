@@ -193,12 +193,12 @@
 		},
 		{
 			"name": "actions",
-			"type": "choice"
+			"type": "array"
 		},
 		{
 			"name": "sync_enabled",
 			"type": "checkbox",
-		  "usersource_display": "user",
+		  	"usersource_display": "user",
 			"label": "Enable Auto Sync",
 			"checkbox_label": "Routinely sync user information from this usersource to DeskPRO",
 			"default_value": false

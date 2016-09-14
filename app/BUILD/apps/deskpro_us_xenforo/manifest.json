@@ -53,7 +53,7 @@
 		},
 		{
 			"name": "actions",
-			"type": "choice"
+			"type": "array"
 		},
 		{
 		  "name": "raw_info_filter",

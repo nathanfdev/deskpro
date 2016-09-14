@@ -71,13 +71,11 @@
 			"label": "Auto Agent",
 			"checkbox_label": "Automatically create agents if they do not already exist",
 			"usersource_display": "agent",
-			"default_value": true,
-
-			"inline_dependant": {
-				"name": "actions",
-				"type": "choice",
-				"is_required": true
-			}
+			"default_value": true
+		},
+		{
+			"name": "actions",
+			"type": "array"
 		},
 		{
 		  "name": "raw_info_filter",

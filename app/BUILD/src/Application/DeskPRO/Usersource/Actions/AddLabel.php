@@ -26,73 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace Application\DeskPRO\Usersource\Actions;
 
-namespace Application\DeskPRO\Entity;
-
-use Application\DeskPRO\Entity\Labels\Label;
-use Symfony\Component\Validator\Constraints as Assert;
-
-/**
- * Base labels associations class.
- */
-abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject implements Label
+class AddLabel extends AbstractAction
 {
-    /**
-     * The 'type' of label this is for, as it could be found in the
-     * LabelDef.
-     */
-    const LABEL_TYPENAME = 'OVERRIDE';
-
-    /**
-     * @var string
-     *
-     * @Assert\NotBlank()
-     */
     protected $label;
 
-    public function __construct($value)
-    {
-        $this->setLabel($value);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setLabel($label)
-    {
-        $label = trim($label);
-        $label = str_replace(',', '', $label);
-        $this->setModelField('label', $label);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabel()
+    public function getData()
     {
         return $this->label;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
+    public function setData($value)
     {
-        return static::LABEL_TYPENAME;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __toString()
-    {
-        return $this->label;
+        $this->label = (string) $value;
     }
 }

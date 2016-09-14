@@ -14,9 +14,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       @$scope.enableCustomFooter = => @$scope.has_own_footer = true
       @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
       if @usersourceType == 'agent'
-        @allowedActions = ['AddToAgentGroup', 'AddToTeam', 'AddToUserGroup']
+        @allowedActions = ['AddToAgentGroup', 'AddToTeam', 'AddToUserGroup', 'MakeAnAdmin', 'AddLabel', 'AddLabelExpression']
       if @usersourceType == 'user'
-        @allowedActions = ['AddToUserGroup']
+        @allowedActions = ['AddToUserGroup', 'AddToOrg', 'AddToOrgExpression', 'AddLabel', 'AddLabelExpression']
       @presaveCallback = null
       @app = null
 

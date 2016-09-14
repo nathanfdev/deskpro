@@ -100,7 +100,7 @@
 		},
 		{
 			"name": "actions",
-			"type": "choice"
+			"type": "array"
 		},
 		{
 		  "name": "sync_enabled",
