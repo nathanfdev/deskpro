@@ -58,10 +58,7 @@ class ListElement extends React.Component {
   }
 
   render() {
-    const content = this.getContent();
-    console.log(content);
     const { classes, children } = this.props;
-
     return (<div className={classNames('item', classes)}>
       {this.getIcon()}
       {this.getContent()}

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
@@ -7,6 +8,7 @@ import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'Des
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { IMOverlay, IMButton, TopBarRecentImList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
@@ -21,6 +23,8 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
 @connect(state => ({
   agents:          collectionSelectorFactory('Person', 'agents')(state),
   chatDepartments: collectionSelectorFactory('Department', 'all_chat')(state),
+  myDepartments:   collectionSelectorFactory('Department', 'all_tickets')(state),
+  teams:           collectionSelectorFactory('AgentTeams', 'my')(state),
   me:              meSelector(state),
   voiceEnabled:    isVoiceEnabledSelector(state),
   userChatEnabled: userChatEnabledSelector(state),
@@ -29,9 +33,11 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
 export class AgentTopBarContainer extends SeparateComponent {
 
   static propTypes = {
-    dispatch:        PropTypes.func,
     agents:          PropTypes.object.isRequired,
     chatDepartments: PropTypes.object.isRequired,
+    myDepartments:   PropTypes.object.isRequired,
+    teams:           PropTypes.object.isRequired,
+    dispatch:        PropTypes.func.isRequired,
     me:              PropTypes.object
   };
 
@@ -155,7 +161,10 @@ export class AgentTopBar extends React.Component {
   static propTypes = {
     agents:             PropTypes.object.isRequired,
     chatDepartments:    PropTypes.object.isRequired,
-    me:                 PropTypes.object,
+    myDepartments:      PropTypes.object.isRequired,
+    teams:              PropTypes.object.isRequired,
+    me:                 PropTypes.object.isRequired,
+    TopBar:             PropTypes.object,
     notificationCount:  PropTypes.number,
     updateVolume:       PropTypes.func,
     onSearch:           PropTypes.func,
@@ -196,67 +205,82 @@ export class AgentTopBar extends React.Component {
   render() {
     const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
     const { onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat } = this.props;
-    const { closeIframes, toggleViewMode } = this.props;
+    const { closeIframes, toggleViewMode, me, myDepartments, teams } = this.props;
 
-    return (
-      <TopBar>
-        <TopBarItem className="search-box legacy-omnibox">
-          <SearchBox
-            onUserInput={onSearch}
-            onFocus={onSearchFocus}
-            onBlur={onSearchBlur}
-            onClearInput={onClearSearchInput}
-            placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
-            ref={(c) => { this.searchBox = c; }}
-          />
+    return (<TopBar>
+      <TopBarItem className="search-box legacy-omnibox">
+        <SearchBox
+          onUserInput={onSearch}
+          onFocus={onSearchFocus}
+          onBlur={onSearchBlur}
+          onClearInput={onClearSearchInput}
+          placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
+          ref={(c) => { this.searchBox = c; }}
+        />
+      </TopBarItem>
+      <TopBarItem
+        className="legacy-omnibox recent"
+        onClick={onRecent}
+        title={agentPhrases.get('agent.chrome.recent_tooltip')}
+      >
+        <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
+      </TopBarItem>
+      <TopBarItem childrenWrapper="im-list">
+        <TopBarRecentImList
+          chats={Immutable.fromJS({})}
+          onRecentClick={() => console.log('recent click')}
+        >
+          <IMOverlay
+            me={me}
+            agents={agents}
+            departments={myDepartments}
+            teams={teams}
+            onRecentClick={() => console.log('recent click')}
+            onParticipantClick={() => console.log('participant click')}
+            createNewGroup={() => console.log('create new group click')}
+            isOpen
+            notifications={Immutable.fromJS({})}
+            chats={Immutable.fromJS({})}
+          >
+            <IMButton />
+          </IMOverlay>
+        </TopBarRecentImList>
+      </TopBarItem>
+      <AddButton closeIframes={closeIframes} />
+      <TopBarRightMenu>
+        <TopBarItem
+          className="views"
+          onClick={toggleViewMode}
+          title={agentPhrases.get('agent.chrome.view_tooltip')}
+        >
+          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
         </TopBarItem>
         <TopBarItem
-          className="legacy-omnibox recent"
-          onClick={onRecent}
-          title={agentPhrases.get('agent.chrome.recent_tooltip')}
+          className="legacy-omnibox notifications"
+          onClick={onNotification}
+          title={agentPhrases.get('agent.chrome.notification_tooltip')}
         >
-          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
+          <TopBarNotificationIcon
+            elementId="notifications"
+            svg={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg`}
+            count={notificationCount}
+          />
         </TopBarItem>
-        {/* <TopBarItem className='z-index-stub'>*/}
-        {/* <HeaderWidget />*/}
-        {/* <IMContainer />*/}
-        {/* </TopBarItem>*/}
-
-        <AddButton closeIframes={closeIframes} />
-        <TopBarRightMenu>
-          <TopBarItem
-            className="views"
-            onClick={toggleViewMode}
-            title={agentPhrases.get('agent.chrome.view_tooltip')}
-          >
-            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
-          </TopBarItem>
-          <TopBarItem
-            className="legacy-omnibox notifications"
-            onClick={onNotification}
-            title={agentPhrases.get('agent.chrome.notification_tooltip')}
-          >
-            <TopBarNotificationIcon
-              elementId="notifications"
-              svg={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg`}
-              count={notificationCount}
-            />
-          </TopBarItem>
-          <TopBarItem>
-            {window.DP_HAS_VOICE && voiceEnabled && <VoiceMenu />}
-            <User src={this.getUserPicture()} />
-            <Chat
-              activeChat={userChatEnabled}
-              onlineAgents={onlineAgents}
-              agents={agents.toArray()}
-              chatDepartments={chatDepartments.toArray()}
-              updateVolume={this.onChatVolumeUpdate}
-              volume={8}
-              onToggleChat={onToggleChat}
-            />
-          </TopBarItem>
-        </TopBarRightMenu>
-      </TopBar>
+        <TopBarItem>
+          {window.DP_HAS_VOICE && voiceEnabled && <VoiceMenu />}
+          <User src={this.getUserPicture()} />
+          <Chat
+            activeChat={userChatEnabled}
+            onlineAgents={onlineAgents}
+            agents={agents.toArray()}
+            chatDepartments={chatDepartments.toArray()}
+            updateVolume={this.onChatVolumeUpdate}
+            volume={8}
+            onToggleChat={onToggleChat}
+          />
+        </TopBarItem>
+      </TopBarRightMenu>
+    </TopBar>
     );
   }
 }
