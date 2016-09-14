@@ -7,6 +7,7 @@ import './AgentBundle/Modules/Common/NavFrame/Section';
 import './AgentBundle/Modules/Common/NavFrame/grouping-control';
 import './AgentBundle/Modules/Common/NavFrame/Lists/NestedList';
 import './AgentBundle/Frames/nav';
+import './DemoBundle/Modules/Application/login';
 import './Semantic/Accordion/accordion';
 import './Semantic/Form/form';
 import './Semantic/List/list';

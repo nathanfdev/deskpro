@@ -4,6 +4,7 @@
 
 @labelDistance: 0.625rem;
 @labelFontWeight: 600;
+@labelFontSize: 16px;
 
 /*******************************
     Input
