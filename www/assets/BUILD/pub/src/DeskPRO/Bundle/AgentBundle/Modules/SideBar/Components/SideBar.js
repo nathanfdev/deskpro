@@ -48,7 +48,7 @@ export class SideBarContainer extends SeparateComponent {
             sectionsBadges
           });
         }
-      } else if (e.detail.count === 0) {
+      } else {
         const index = sectionsBadges.indexOf(e.detail.sectionId);
         if (index > -1) {
           sectionsBadges.splice(index, 1);
@@ -166,7 +166,7 @@ export class SideBarContainer extends SeparateComponent {
       openBilling:      this.openBilling,
       changeSection:    this.changeSection,
       resumeOnboarding: this.resumeOnboarding,
-      sectionsBadges: this.state.sectionsBadges
+      sectionsBadges:   this.state.sectionsBadges
     };
     return <SideBar {...this.props} {...props} />;
   }
@@ -194,7 +194,7 @@ export class SideBar extends React.Component {
     logoCallback:     PropTypes.func,
     logoActive:       PropTypes.bool,
     resumeOnboarding: PropTypes.func,
-    sectionsBadges: PropTypes.array
+    sectionsBadges:   PropTypes.array
   };
 
   getMenus = () => {
