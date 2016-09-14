@@ -480,12 +480,30 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
                 }
 
                 if ($val instanceof PersistentCollection) {
-                    $val->initialize();
-                    $new_coll = new ArrayCollection($val->getSnapshot());
+                    if ($val->isInitialized()) {
+                        $newVal = new ArrayCollection($val->getSnapshot());
+                    } else {
+                        $reflection = new \ReflectionClass($val);
+                        $newVal     = $reflection->newInstanceWithoutConstructor();
+
+                        foreach ($reflection->getProperties() as $reflectionProperty) {
+                            $reflectionProperty->setAccessible(true);
+
+                            if ($reflectionProperty->getName() === 'collection') {
+                                $propValue = new ArrayCollection();
+                            } else {
+                                $propValue = $reflectionProperty->getValue($val);
+                            }
+
+                            $reflectionProperty->setValue($newVal, $propValue);
+                            $reflectionProperty->setAccessible(false);
+                        }
+                    }
                 } else {
-                    $new_coll = $val;
+                    $newVal = $val;
                 }
-                $this->_state_clone->__setPropValue__($prop, $new_coll);
+
+                $this->_state_clone->__setPropValue__($prop, $newVal);
             }
         }
 

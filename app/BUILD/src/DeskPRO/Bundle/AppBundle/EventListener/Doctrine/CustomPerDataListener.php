@@ -148,8 +148,14 @@ class CustomPerDataListener implements EventSubscriber
             return;
         }
 
-        $oldCollection = $this->getLazyCriteriaCollection($entity, $em);
         $newCollection = $entity->getCustomPerData();
+        if ($newCollection instanceof LazyCriteriaCollection) {
+            if (!$newCollection->isInitialized()) {
+                return;
+            }
+        }
+
+        $oldCollection = $this->getLazyCriteriaCollection($entity, $em);
 
         // persist new and changed entities
         foreach ($newCollection as $customData) {
@@ -207,7 +213,9 @@ class CustomPerDataListener implements EventSubscriber
             ;
 
             $defs = $qb->getQuery()->getResult();
-            $ids  = array_map(function (CustomFieldDefinition $def) { return $def->getId(); }, $defs);
+            $ids  = array_map(function (CustomFieldDefinition $def) {
+                return $def->getId();
+            }, $defs);
 
             $this->defIds[$entityClass] = $ids;
         }

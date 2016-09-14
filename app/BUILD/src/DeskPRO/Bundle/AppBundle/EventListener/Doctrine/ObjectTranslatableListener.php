@@ -133,8 +133,14 @@ class ObjectTranslatableListener implements EventSubscriber
      */
     private function updateObjectTranslations(ObjectTranslatableInterface $entity, EntityManager $em)
     {
-        $oldCollection = $this->getLazyCriteriaCollection($entity, $em);
         $newCollection = $entity->getObjectPropsTranslations();
+        if ($newCollection instanceof LazyCriteriaCollection) {
+            if (!$newCollection->isInitialized()) {
+                return;
+            }
+        }
+
+        $oldCollection = $this->getLazyCriteriaCollection($entity, $em);
 
         // persist new and changed entities
         foreach ($newCollection as $objectLang) {
