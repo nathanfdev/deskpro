@@ -26,48 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Controller
- */
+namespace DeskPRO\Bundle\DevBundle\Command\MassLoader;
 
-namespace Application\DeskPRO\ClientMessage\MessageServer;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\ClientMessage\Event;
-use Application\DeskPRO\Entity;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * A message server is something that listenes on the ClientMessages event
- * to handle dispatching messages through various protocols.
+ * Class ManyTicketMessagesCommand.
  */
-abstract class AbstractMessageServer
+class TicketMessagesCommand extends AbstractLoadDataCommand
 {
-    public function __construct(array $options)
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
     {
-        $event_dispatcher = App::get('event_dispatcher');
-        $event_dispatcher->addListener('DeskPRO_onNewClientMessage', $this);
-
-        $this->init($options);
-    }
-
-    protected function init(array $options)
-    {
-        // hook for children
-    }
-
-    public function DeskPRO_onNewClientMessage(Event $event)
-    {
-        $this->handleNewMessage($event->getClientMessage());
+        $this->setName('dpdev:load-data:ticket-messages');
+        $this->setDescription('Test ticket load performance with a lot of replies');
     }
 
     /**
-     * Handle a new message.
-     *
-     * @param ClientMessage $message
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    abstract public function handleNewMessage(Entity\ClientMessage $message);
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->output = $output;
+        $this->clearSection('tickets');
+        $this->iterate('Create %s ticket batches', 1, 'loadTicketBatch', [
+            'ticketsBatchCount'  => 100,
+            'messagesBatchCount' => 1000,
+        ]);
+        $output->writeln('');
+        $output->writeln('Done.');
+    }
 }

@@ -162,6 +162,9 @@ class TicketTrigger extends DomainObject
      */
     protected $run_order = 0;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->terms   = new TriggerTerms();

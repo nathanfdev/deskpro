@@ -155,7 +155,7 @@ abstract class SearcherAbstract implements PersonContextInterface
      *
      * @param \Application\DeskPRO\Entity\Person $person
      */
-    public function setPersonContext(Person $person)
+    public function setPersonContext(Person $person = null)
     {
         $this->person = $person;
     }
@@ -163,7 +163,7 @@ abstract class SearcherAbstract implements PersonContextInterface
     /**
      * @deprecated Use setPersonContext
      */
-    public function setPerson($person)
+    public function setPerson($person = null)
     {
         $this->setPersonContext($person);
     }

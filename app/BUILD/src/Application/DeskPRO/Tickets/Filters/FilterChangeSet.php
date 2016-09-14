@@ -37,6 +37,9 @@ namespace Application\DeskPRO\Tickets\Filters;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Ticket;
 
+/**
+ * Class FilterChangeSet.
+ */
 class FilterChangeSet
 {
     /**
@@ -64,6 +67,15 @@ class FilterChangeSet
      */
     private $field_versions = [];
 
+    /**
+     * Constructor.
+     *
+     * @param Ticket $ticket
+     * @param int    $state_id
+     * @param array  $affected_filters
+     * @param array  $changed_filters
+     * @param array  $field_versions
+     */
     public function __construct(Ticket $ticket, $state_id, array $affected_filters, array $changed_filters, array $field_versions)
     {
         $this->ticket           = $ticket;
@@ -116,9 +128,11 @@ class FilterChangeSet
     /**
      * Get an array of client messages to send to clients about lists updating.
      *
+     * @param array $onlineAgentsIds
+     *
      * @return \Application\DeskPRO\Entity\ClientMessage[]
      */
-    public function getListUpdateClientMessages()
+    public function getListUpdateClientMessages(array $onlineAgentsIds)
     {
         $messages = [];
 
@@ -129,29 +143,43 @@ class FilterChangeSet
         foreach ($this->changed_filters as $filter_change) {
             $filter = $filter_change->getFilter();
 
+            $ticketId = $this->ticket->getId();
+            $filterId = $filter['id'];
+
             foreach ($filter_change->getAgentsAdded() as $agent) {
-                $cm          = new ClientMessage();
-                $cm->channel = 'agent.filter-update';
-                $cm->data    = [
-                    'ticket_id' => $this->ticket->id,
-                    'filter_id' => $filter->id,
+                if (!in_array($agent->getId(), $onlineAgentsIds)) {
+                    continue;
+                }
+
+                $cm = new ClientMessage();
+                $cm->setChannel('agent.filter-update');
+                $cm->setData([
+                    'ticket_id' => $ticketId,
+                    'filter_id' => $filterId,
                     'op'        => 'add',
-                ];
-                $cm->for_person        = $agent;
-                $cm->created_by_client = 'sys';
-                $messages[]            = $cm;
+                ]);
+                $cm->setForPerson($agent);
+                $cm->setCreatedByClient('sys');
+
+                $messages[] = $cm;
             }
+
             foreach ($filter_change->getAgentsRemoved() as $agent) {
-                $cm          = new ClientMessage();
-                $cm->channel = 'agent.filter-update';
-                $cm->data    = [
-                    'ticket_id' => $this->ticket->id,
-                    'filter_id' => $filter->id,
+                if (!in_array($agent->getId(), $onlineAgentsIds)) {
+                    continue;
+                }
+
+                $cm = new ClientMessage();
+                $cm->setChannel('agent.filter-update');
+                $cm->setData([
+                    'ticket_id' => $ticketId,
+                    'filter_id' => $filterId,
                     'op'        => 'del',
-                ];
-                $cm->for_person        = $agent;
-                $cm->created_by_client = 'sys';
-                $messages[]            = $cm;
+                ]);
+                $cm->setForPerson($agent);
+                $cm->setCreatedByClient('sys');
+
+                $messages[] = $cm;
             }
         }
 

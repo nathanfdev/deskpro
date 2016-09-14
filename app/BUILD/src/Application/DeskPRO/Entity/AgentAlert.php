@@ -151,6 +151,30 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param Person $person
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->person = $person;
+    }
+
+    /**
+     * @param string $typename
+     */
+    public function setTypename($typename)
+    {
+        $this->typename = $typename;
+    }
+
+    /**
+     * @param array $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
      * @return bool
      */
     public function isDismissed()

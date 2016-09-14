@@ -431,11 +431,9 @@ class TicketResultsDisplay implements PersonContextInterface
      */
     public function getPerson(Ticket $ticket)
     {
-        if (!$ticket->person) {
-            return;
-        }
+        $person = $ticket->getPerson();
 
-        return $this->people[$ticket->person->getId()];
+        return $person ? $this->people[$person->getId()] : null;
     }
 
     /**
@@ -445,11 +443,9 @@ class TicketResultsDisplay implements PersonContextInterface
      */
     public function getAgent(Ticket $ticket)
     {
-        if (!$ticket->agent) {
-            return;
-        }
+        $agent = $ticket->getAgent();
 
-        return $this->people[$ticket->agent->getId()];
+        return $agent ? $this->people[$agent->getId()] : null;
     }
 
     /**
@@ -494,20 +490,15 @@ class TicketResultsDisplay implements PersonContextInterface
                 tickets_messages.is_agent_note
             FROM tickets_messages
             LEFT JOIN people ON (people.id = tickets_messages.person_id)
-            WHERE tickets_messages.ticket_id IN (?)
-            ORDER BY tickets_messages.id DESC
+            WHERE tickets_messages.id IN (SELECT MAX(id) FROM tickets_messages WHERE ticket_id IN (?) GROUP by ticket_id)
         ', [$this->ticket_ids], 'id', [Connection::PARAM_INT_ARRAY]);
 
         $extra_people     = [];
         $extra_people_ids = [];
-        $agent_data       = App::$container->getAgentData();
+
         foreach ($message_data as $m) {
             if (!isset($this->people[$m['person_id']])) {
-                if ($agent_data->has($m['person_id'])) {
-                    $extra_people[$m['person_id']] = $agent_data->get($m['person_id']);
-                } else {
-                    $extra_people_ids[] = $m['person_id'];
-                }
+                $extra_people_ids[] = $m['person_id'];
             }
         }
         if ($extra_people_ids) {

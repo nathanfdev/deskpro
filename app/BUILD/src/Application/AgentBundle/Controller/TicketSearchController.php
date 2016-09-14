@@ -34,8 +34,9 @@ namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\PeopleFields;
+use Application\DeskPRO\CustomFields\TicketFields;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\LabelDef;
@@ -54,6 +55,8 @@ use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
+use Application\DeskPRO\Tickets\TicketResultsDisplay;
+use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\UI\RuleBuilder;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
@@ -1107,7 +1110,7 @@ class TicketSearchController extends AbstractController
         ];
         $vars['search_form'] = $search_form;
 
-        return $this->_getResponseForTickets('filter', $filter['id'], $helper, $vars);
+        return $this->_getResponseForTickets('filter', $filter->getId(), $helper, $vars);
     }
 
     public function runNamedFilterAction($filter_name)
@@ -1293,6 +1296,7 @@ class TicketSearchController extends AbstractController
             $cursor = 0;
         }
 
+        /** @var Ticket[] $tickets */
         $tickets = [];
 
         if (!$this->in->checkIsset('grouping_option') || $this->in->getString('grouping_option') == '-1' || $this->in->getString('grouping_option') == 'DP_NOT_SET') {
@@ -1343,33 +1347,18 @@ class TicketSearchController extends AbstractController
             $vars['display_fields'] = ['date_created', 'department'];
         }
 
-        $macros         = null;
-        $ticket_options = null;
-        if (!$is_partial) {
-            $macros         = $this->em->getRepository(TicketMacro::class)->getMacrosForPerson($this->person);
-            $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
-
-            $ticket_field_defs                      = App::getApi('custom_fields.tickets')->getEnabledFields();
-            $custom_fields                          = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
-            $ticket_options['custom_ticket_fields'] = $custom_fields;
-
-            // People stuff
-            $ticket_options['people_organizations'] = $this->em->getRepository(Organization::class)->getOrganizationNames();
-            $people_field_defs                      = App::getApi('custom_fields.people')->getEnabledFields();
-            $ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
-        }
+        /** @var TicketFields $customTicketFieldsHandler */
+        $customTicketFieldsHandler = App::getApi('custom_fields.tickets');
+        /** @var PeopleFields $customPersonFieldsHandler */
+        $customPersonFieldsHandler = App::getApi('custom_fields.people');
 
         // ticket and person defs for columns
-        $ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-        $person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+        $ticket_field_defs = $customTicketFieldsHandler->getEnabledFields();
+        $person_field_defs = $customPersonFieldsHandler->getEnabledFields();
 
         $vars['display_fields'] = array_unique($vars['display_fields']);
 
         $pageinfo = Numbers::getPaginationPages($results_helper->getCount(), $page, $per_page);
-
-        $agents      = $this->em->getRepository(Person::class)->getAgents();
-        $agent_teams = $this->em->getRepository(AgentTeam::class)->findAll();
-        $brands      = $this->em->getRepository(Brand::class)->findAll();
 
         $has_t_fields = false;
         $has_u_fields = false;
@@ -1390,19 +1379,19 @@ class TicketSearchController extends AbstractController
             $field_manager      = $this->container->getSystemService('ticket_fields_manager');
             $user_field_manager = $this->container->getSystemService('person_fields_manager');
 
-            foreach ($tickets as $t) {
+            foreach ($tickets as $ticket) {
                 if ($has_t_fields) {
-                    $all_custom_fields[$t->id] = $field_manager->getDisplayArrayForObject($t);
+                    $all_custom_fields[$ticket->getId()] = $field_manager->getDisplayArrayForObject($ticket);
                 }
 
                 if ($has_u_fields) {
-                    $p                              = $t->person;
-                    $user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
+                    $person                                   = $ticket->getPerson();
+                    $user_all_custom_fields[$person->getId()] = $user_field_manager->getDisplayArrayForObject($person);
                 }
             }
         }
 
-        $ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
+        $ticket_display = new TicketResultsDisplay($tickets);
         $ticket_display->setPersonContext($this->person);
 
         $json_renderer = new TicketListRenderer($ticket_display);
@@ -1412,9 +1401,6 @@ class TicketSearchController extends AbstractController
         }
 
         $vars = array_merge($vars, [
-            'agents'                 => $agents,
-            'agent_teams'            => $agent_teams,
-            'brands'                 => $brands,
             'type'                   => $type,
             'type_id'                => $type_id,
             'ticket_display'         => $ticket_display,
@@ -1422,11 +1408,9 @@ class TicketSearchController extends AbstractController
             'all_ticket_ids'         => $is_grouping ? $results_helper->getGroupTicketIds($grouping_option) : $results_helper->getTicketIds(),
             'count'                  => $results_helper->getCount(),
             'flagged_tickets'        => $flagged_tickets,
-            'ticket_options'         => $ticket_options,
             'page'                   => $page,
             'pageinfo'               => $pageinfo,
             'per_page'               => $per_page,
-            'macros'                 => $macros,
             'show_flag'              => true,
             'grouped_info'           => $grouped_info,
             'group_by'               => $results_helper->getGroupField(),
@@ -1438,8 +1422,6 @@ class TicketSearchController extends AbstractController
             'load_first'             => $this->in->getBool('load_first'),
             'all_custom_fields'      => $all_custom_fields,
             'user_all_custom_fields' => $user_all_custom_fields,
-            'agent_signature'        => $this->person->getSignature(),
-            'agent_signature_html'   => $this->person->getSignatureHtml(),
         ]);
 
         if ($view_type == 'csv') {
@@ -2071,6 +2053,44 @@ class TicketSearchController extends AbstractController
             'failed_tickets'  => $permission_errors,
             'client_messages' => $client_messages,
             'ticket_data'     => $ticket_data,
+        ]);
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getTicketMassActionOverlayAction()
+    {
+        $agents      = $this->em->getRepository(Person::class)->getAgents();
+        $agent_teams = $this->em->getRepository(Entity\AgentTeam::class)->findAll();
+        $brands      = $this->em->getRepository(Brand::class)->findAll();
+        $macros      = $this->em->getRepository(TicketMacro::class)->getMacrosForPerson($this->person);
+
+        /** @var TicketFields $customTicketFieldsHandler */
+        $customTicketFieldsHandler = App::getApi('custom_fields.tickets');
+        /** @var PeopleFields $customPersonFieldsHandler */
+        $customPersonFieldsHandler = App::getApi('custom_fields.people');
+
+        // ticket and person defs for columns
+        $ticket_field_defs = $customTicketFieldsHandler->getEnabledFields();
+        $person_field_defs = $customPersonFieldsHandler->getEnabledFields();
+
+        /** @var Tickets $ticketsService */
+        $ticketsService = App::getApi('tickets');
+        $ticket_options = $ticketsService->getTicketOptions($this->person);
+
+        $ticket_options['custom_ticket_fields'] = $customTicketFieldsHandler->getFieldsDisplayArray($ticket_field_defs);
+        $ticket_options['people_organizations'] = $this->em->getRepository(Organization::class)->getOrganizationNames();
+        $ticket_options['custom_people_fields'] = $customPersonFieldsHandler->getFieldsDisplayArray($person_field_defs);
+
+        return $this->render('AgentBundle:TicketSearch:filter-massactions-overlay.html.twig', [
+            'agents'               => $agents,
+            'agent_teams'          => $agent_teams,
+            'brands'               => $brands,
+            'macros'               => $macros,
+            'agent_signature'      => $this->person->getSignature(),
+            'agent_signature_html' => $this->person->getSignatureHtml(),
+            'ticket_options'       => $ticket_options,
         ]);
     }
 }

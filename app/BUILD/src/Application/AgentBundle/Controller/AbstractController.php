@@ -120,7 +120,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         $this->person->loadHelper('Agent');
         $this->person->loadHelper('AgentTeam');
         $this->person->loadHelper('AgentPermissions');
-        $this->person->loadHelper('PermissionsManager');
+        $this->person->loadHelper('PermissionsManager', ['force_load_usergroups' => true]);
         $this->person->loadHelper('HelpMessages');
         $this->person->loadHelper('AgentPrefs');
     }

@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\LowLevel;
 
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;

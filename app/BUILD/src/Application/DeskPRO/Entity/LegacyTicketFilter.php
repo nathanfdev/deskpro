@@ -36,6 +36,9 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Searcher\OrganizationSearch;
+use Application\DeskPRO\Searcher\PersonSearch;
+use Application\DeskPRO\Searcher\TicketSearch;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -205,6 +208,14 @@ class LegacyTicketFilter extends DomainObject
         }
     }
 
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
     public function getAgentTeamId()
     {
         if (!$this->agent_team) {
@@ -248,27 +259,46 @@ class LegacyTicketFilter extends DomainObject
     /**
      * Get the searcher for this.
      *
-     * @return \Application\DeskPRO\Searcher\TicketSearch
+     * @param array $forceTerms
+     *
+     * @return TicketSearch
      */
-    public function getSearcher(array $force_terms = [])
+    public function getSearcher(array $forceTerms = [])
     {
-        if (!$force_terms && $this->_searcher) {
+        if (!$forceTerms && $this->_searcher) {
             return $this->_searcher;
         }
 
-        $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+        $searcher = self::createSearcher($this->sys_name, $this->terms, $forceTerms);
+        if (!$forceTerms) {
+            $this->_searcher = $searcher;
+        }
 
-        if (!$this->sys_name || strpos($this->sys_name, 'archive_') !== 0) {
+        return $searcher;
+    }
+
+    /**
+     * @param string $sysName
+     * @param array  $terms
+     * @param array  $forceTerms
+     *
+     * @return TicketSearch
+     */
+    public static function createSearcher($sysName, array $terms, array $forceTerms = [])
+    {
+        $searcher = new TicketSearch();
+
+        if (!$sysName || strpos($sysName, 'archive_') !== 0) {
             $searcher->enableFilterSearch();
         }
 
-        $user_searcher  = new \Application\DeskPRO\Searcher\PersonSearch();
-        $org_searcher   = new \Application\DeskPRO\Searcher\OrganizationSearch();
+        $user_searcher  = new PersonSearch();
+        $org_searcher   = new OrganizationSearch();
         $has_user_terms = false;
         $has_org_terms  = false;
 
         $force_term_types = [];
-        foreach ($force_terms as $term) {
+        foreach ($forceTerms as $term) {
             if ($term['op'] != 'ignore') {
                 if (strpos($term['type'], 'person_') === 0) {
                     $user_searcher->addTerm($term['type'], $term['op'], $term['options']);
@@ -284,7 +314,7 @@ class LegacyTicketFilter extends DomainObject
             $force_term_types[] = $term['type'];
         }
 
-        foreach ($this->terms as $term) {
+        foreach ($terms as $term) {
             if (in_array($term['type'], $force_term_types)) {
                 continue;
             }
@@ -305,10 +335,6 @@ class LegacyTicketFilter extends DomainObject
         }
         if ($has_org_terms) {
             $searcher->setOrganizationSearch($org_searcher);
-        }
-
-        if (!$force_terms) {
-            $this->_searcher = $searcher;
         }
 
         return $searcher;
@@ -382,6 +408,14 @@ class LegacyTicketFilter extends DomainObject
     public function getSysName()
     {
         return $this->sys_name;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGlobal()
+    {
+        return $this->is_global;
     }
 
     /**

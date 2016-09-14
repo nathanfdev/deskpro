@@ -47,6 +47,11 @@ class CustomPerDataListener implements EventSubscriber
     /**
      * @var array
      */
+    private $defIds = [];
+
+    /**
+     * @var array
+     */
     private $updateQueue = [];
 
     /**
@@ -188,22 +193,25 @@ class CustomPerDataListener implements EventSubscriber
      */
     private function getDefIds(CustomPerDataOwnerInterface $entity, EntityManager $em)
     {
-        $qb = $em->createQueryBuilder();
-        $qb
-            ->select('d')
-            ->from(CustomFieldDefinition::class, 'd')
-            ->where(
-                'd.owner_class = :owner_class',
-                'd.parent is null'
-            )
-            ->setParameter('owner_class', ClassUtils::getClass($entity))
-        ;
+        $entityClass = ClassUtils::getClass($entity);
+        if (!isset($this->defIds[$entityClass])) {
+            $qb = $em->createQueryBuilder();
+            $qb
+                ->select('d')
+                ->from(CustomFieldDefinition::class, 'd')
+                ->where(
+                    'd.owner_class = :owner_class',
+                    'd.parent is null'
+                )
+                ->setParameter('owner_class', ClassUtils::getClass($entity))
+            ;
 
-        $defs = $qb->getQuery()->getResult();
-        $ids  = array_map(function (CustomFieldDefinition $def) {
-            return $def->getId();
-        }, $defs);
+            $defs = $qb->getQuery()->getResult();
+            $ids  = array_map(function (CustomFieldDefinition $def) { return $def->getId(); }, $defs);
 
-        return $ids;
+            $this->defIds[$entityClass] = $ids;
+        }
+
+        return $this->defIds[$entityClass];
     }
 }

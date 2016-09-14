@@ -702,9 +702,41 @@ GroupSequenceProviderInterface
     /**
      * @return string
      */
+    public function getFirstName()
+    {
+        return $this->first_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->last_name;
+    }
+
+    /**
+     * @return string
+     */
     public function getOverrideDisplayName()
     {
         return $this->override_display_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitlePrefix()
+    {
+        return $this->title_prefix;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSummary()
+    {
+        return $this->summary;
     }
 
     /**
@@ -795,6 +827,14 @@ GroupSequenceProviderInterface
     }
 
     /**
+     * @return string
+     */
+    public function getOrganizationPosition()
+    {
+        return $this->organization_position;
+    }
+
+    /**
      * Is this a guest?
      *
      * @return bool
@@ -868,14 +908,52 @@ GroupSequenceProviderInterface
         return $this->is_disabled;
     }
 
+    /**
+     * @return bool
+     */
     public function isAgent()
     {
         return $this->is_agent;
     }
 
+    /**
+     * @return bool
+     */
     public function isAdmin()
     {
         return $this->can_admin;
+    }
+
+    /**
+     * @return bool
+     */
+    public function wasAgent()
+    {
+        return $this->was_agent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canAgent()
+    {
+        return $this->can_agent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canAdmin()
+    {
+        return $this->can_admin;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActiveAgent()
+    {
+        return $this->is_agent && !$this->is_deleted && !$this->is_disabled;
     }
 
     /**
@@ -966,17 +1044,26 @@ GroupSequenceProviderInterface
     }
 
     /**
+     * @return string
+     */
+    public function getCreationSystem()
+    {
+        return $this->creation_system;
+    }
+
+    /**
      * Add a new helper.
      *
-     * @param string $name Name of the helper class
+     * @param string $name    Name of the helper class
+     * @param array  $options
      */
     public function loadHelper($name, array $options = [])
     {
         $classname = 'Application\\DeskPRO\\People\\Helpers\\'.$name;
+        $manager   = $this->getHelperManager();
 
-        if (!$this->getHelperManager()->hasHelper($name)) {
-            $object = new $classname($this, $options);
-            $this->getHelperManager()->addHelper($object);
+        if (!$manager->hasHelper($name)) {
+            $manager->addHelper(new $classname($this, $options));
         }
     }
 
@@ -1050,6 +1137,28 @@ GroupSequenceProviderInterface
         return $this->organization;
     }
 
+    /**
+     * @param string $context
+     * @param bool   $forceAgentData
+     *
+     * @return array
+     */
+    public function getAllowedDepartments($context = 'tickets', $forceAgentData = false)
+    {
+        return $this->_onNotCallable('getalloweddepartments', [$context, $forceAgentData]);
+    }
+
+    /**
+     * @param string $context
+     * @param bool   $forceAgentData
+     *
+     * @return array
+     */
+    public function getDisallowedDepartments($context = 'tickets', $forceAgentData = false)
+    {
+        return $this->_onNotCallable('getdisalloweddepartments', [$context, $forceAgentData]);
+    }
+
     protected function _onNotCallable($name, $arguments)
     {
         if ($this->_helper_manager) {
@@ -1099,28 +1208,19 @@ GroupSequenceProviderInterface
      */
     public function getDisplayName($id_fallback = true)
     {
-        if ($this['first_name'] and $this['last_name']) {
-            return $this['first_name'].' '.$this['last_name'];
-        } elseif ($this['name']) {
-            return $this['name'];
-        } elseif ($this['last_name']) {
-            return $this['last_name'];
-        } elseif ($this['first_name']) {
-            return $this['first_name'];
-        } elseif ($this['primary_email']) {
+        if ($this->first_name and $this->last_name) {
+            return $this->first_name.' '.$this->last_name;
+        } elseif ($this->name) {
+            return $this->name;
+        } elseif ($this->last_name) {
+            return $this->last_name;
+        } elseif ($this->first_name) {
+            return $this->first_name;
+        } elseif ($this->primary_email) {
             // try to get a nice name from the email address
-            $email      = $this['primary_email']['email'];
-            list($name) = explode('@', $email, 2);
-
-            $name = str_replace('_', ' ', $name);
-            $name = str_replace('.', ' ', $name);
-            $name = preg_replace('#[ ]{2,}#', ' ', $name); //consec spaces to single space
-
-            $name = Strings::utf8_ucwords($name);
-
-            return $name;
+            return Strings::getNameFromEmail($this->primary_email->getEmail());
         } elseif ($id_fallback) {
-            return 'ID-'.$this['id'];
+            return 'ID-'.$this->id;
         }
 
         return;
@@ -2209,11 +2309,11 @@ GroupSequenceProviderInterface
     {
         $arr = [];
         foreach ($this->emails as $email) {
-            if ($skipPrimary && $email->email === $this->primary_email->email) {
+            if ($skipPrimary && $email->getEmail() === $this->primary_email->getEmail()) {
                 continue;
             }
-            if ($email->is_validated) {
-                $arr[] = $email->email;
+            if ($email->isValidated()) {
+                $arr[] = $email->getEmail();
             }
         }
 
@@ -2285,13 +2385,13 @@ GroupSequenceProviderInterface
     public function getEmailByAddress($email_address)
     {
         $email_address = strtolower($email_address);
-        if ($this->primary_email && strtolower($this->primary_email->email) == $email_address) {
+        if ($this->primary_email && strtolower($this->primary_email->getEmail()) === $email_address) {
             return $this->primary_email;
         }
 
         if ($this->emails) {
             foreach ($this->emails as $email) {
-                if (strtolower($email->email) == $email_address) {
+                if (strtolower($email->getEmail()) === $email_address) {
                     return $email;
                 }
             }
@@ -3139,6 +3239,14 @@ GroupSequenceProviderInterface
         return $this;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
     public function getTimezone()
     {
         if (!$this->timezone) {
@@ -3465,23 +3573,18 @@ GroupSequenceProviderInterface
         $data['usergroup_ids']  = Arrays::castToType($data['usergroup_ids'], 'int');
         $data['agentgroup_ids'] = Arrays::castToType($data['agentgroup_ids'], 'int');
 
-        $data['picture_url']    = $this->getPictureUrl();
-        $data['picture_url_80'] = $this->getPictureUrl(80);
-        $data['picture_url_64'] = $this->getPictureUrl(64);
-        $data['picture_url_50'] = $this->getPictureUrl(50);
-        $data['picture_url_45'] = $this->getPictureUrl(45);
-        $data['picture_url_32'] = $this->getPictureUrl(32);
-        $data['picture_url_22'] = $this->getPictureUrl(22);
-        $data['picture_url_16'] = $this->getPictureUrl(16);
+        $urlTemplate        = $this->getPictureUrl('{{size}}');
+        $defaultUrlTemplate = $this->getPictureUrl('{{size}}', null, true);
+        $encodedTag         = urlencode('{{size}}');
 
-        $data['default_picture_url']    = $this->getPictureUrl(80, null, true);
-        $data['default_picture_url_80'] = $this->getPictureUrl(80, null, true);
-        $data['default_picture_url_64'] = $this->getPictureUrl(64, null, true);
-        $data['default_picture_url_50'] = $this->getPictureUrl(50, null, true);
-        $data['default_picture_url_45'] = $this->getPictureUrl(45, null, true);
-        $data['default_picture_url_32'] = $this->getPictureUrl(32, null, true);
-        $data['default_picture_url_22'] = $this->getPictureUrl(22, null, true);
-        $data['default_picture_url_16'] = $this->getPictureUrl(16, null, true);
+        $pictureSizes = [80, 64, 50, 45, 32, 22, 16];
+        foreach ($pictureSizes as $pictureSize) {
+            $data['picture_url_'.$pictureSize]         = $urlTemplate ? str_replace($encodedTag, $pictureSize, $urlTemplate) : null;
+            $data['default_picture_url_'.$pictureSize] = $defaultUrlTemplate ? str_replace($encodedTag, $pictureSize, $defaultUrlTemplate) : null;
+        }
+
+        $data['picture_url']         = $data['picture_url_80'];
+        $data['default_picture_url'] = $data['default_picture_url_80'];
 
         // Render custom fields to text values
         $field_manager = App::getContainer()->getSystemService('person_fields_manager');

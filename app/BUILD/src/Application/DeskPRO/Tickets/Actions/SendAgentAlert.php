@@ -34,7 +34,13 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\AgentAlert;
+use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFilterSubscription;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Orb\Util\CheckedOptionsArray;
@@ -76,20 +82,20 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         foreach ($agent_ids as $aid) {
             // -1 = current user
             if ($aid == -1) {
-                if ($context->getPersonContext() && $context->getPersonContext()->is_agent) {
+                if ($context->getPersonContext() && $context->getPersonContext()->isAgent()) {
                     $agents[] = $context->getPersonContext();
                 }
 
             // assigned agent
             } elseif ($aid == 'agent') {
-                if ($ticket->agent) {
-                    $agents[] = $ticket->agent;
+                if ($ticket->getAgent()) {
+                    $agents[] = $ticket->getAgent();
                 }
 
             // agents of assigned team
             } elseif ($aid == 'team') {
-                if ($ticket->agent_team) {
-                    foreach ($ticket->agent_team->members as $agent) {
+                if ($ticket->getAgentTeam()) {
+                    foreach ($ticket->getAgentTeam()->getPersonList() as $agent) {
                         $agents[] = $agent;
                     }
                 }
@@ -104,13 +110,14 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 
             // based on notify list
             } elseif ($aid == 'notify_list') {
+                /** @var \Application\DeskPRO\EntityRepository\TicketFilterSubscription $subscriptionRepo */
+                $subscriptionRepo = $this->getContainer()->getEm()->getRepository(TicketFilterSubscription::class);
+                $forAgentIds      = $subscriptionRepo->getSubscribedActiveAgentIds();
+
                 $change_detect = $this->getContainer()->getTicketFilterChangeDetector();
-                $change_set    = $change_detect->getFilterChangeSet($ticket, $context);
-                $list_builder  = new AgentNotifyListBuilder(
-                    $ticket,
-                    $change_set,
-                    $this->getContainer()->getEm()->getRepository('DeskPRO:TicketFilterSubscription')
-                );
+                $change_set    = $change_detect->getFilterChangeSet($ticket, $context, $forAgentIds);
+                $list_builder  = new AgentNotifyListBuilder($ticket, $change_set, $subscriptionRepo);
+
                 $list_builder->setLogger($context->getLogger());
 
                 $notify = $list_builder->genNotifyList();
@@ -181,15 +188,11 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             'log_items'          => $this->getActionOption('ticket_logs'),
         ];
 
-        $log_ids = array_map(function ($l) {
-            return $l->id;
-        }, $vars['log_items']);
-        $alert_sender = $this->getContainer()->getAgentAlertSender();
-
-        $alert_data = [
+        $log_ids = array_map(function ($l) { return $l->getId(); }, $vars['log_items']);
+        $alertData = [
             '@fetch_types'       => ['ticket' => 'DeskPRO:Ticket', 'performer' => 'DeskPRO:Person', 'log_items' => 'DeskPRO:TicketLog'],
             'ticket'             => $ticket->getId(),
-            'performer'          => $vars['performer'] ? $vars['performer']->id : 0,
+            'performer'          => $vars['performer'] ? $vars['performer']->getId() : 0,
             'is_new_ticket'      => $vars['is_new_ticket'],
             'is_new_agent_reply' => $vars['is_new_agent_reply'],
             'is_new_agent_note'  => $vars['is_new_agent_note'],
@@ -197,51 +200,95 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             'log_items'          => $log_ids,
         ];
 
-        $sent_count = 0;
-        $em         = $this->getContainer()->getEm();
-        $tpl        = $this->getContainer()->getTemplating();
-        $tr         = $this->getContainer()->getTranslator();
+        $em  = $this->getContainer()->getEm();
+        $tpl = $this->getContainer()->getTemplating();
+        $tr  = $this->getContainer()->getTranslator();
 
-        $alert_records = [];
+        /** @var Connection $connection */
+        $connection = $em->getConnection();
 
+        $agentsToLang = [];
+        $languages    = [];
+
+        /** @var Person $agent */
         foreach ($agents as $agent) {
             if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
                 continue;
             }
 
-            $vars['agent'] = $agent;
+            $language   = $agent->getLanguage();
+            $languageId = $language ? $language->getId() : 'default';
 
-            if (!empty($this->notify_info[$agent->id])) {
-                $vars['notify_info'] = $this->notify_info[$agent->id];
-            }
+            $languages[$languageId]      = $language;
+            $agentsToLang[$languageId][] = $agent;
+        }
 
-            $tpl_line = $tr->callWithPersonContext($agent, function () use ($tpl, $vars) {
+        if (isset($languages['default'])) {
+            $languages['default'] = $em->getRepository(Language::class)->findOneBy([]);
+        }
+
+        $connection->beginTransaction();
+
+        $alertsMap = [];
+        $date      = date('Y-m-d H:i');
+
+        foreach ($agentsToLang as $languageId => $agents) {
+            $alertData['browser_rendered'] = $tr->callWithLanguage($languages[$languageId], function () use ($tpl, $vars) {
                 return $tpl->render('AgentBundle:TicketSearch:notify-row.html.twig', $vars);
             });
-            $alert_data['browser_rendered'] = $tpl_line;
 
-            $alert = $alert_sender->createAlert($agent, 'tickets', $alert_data);
+            $serializedAlertData = serialize(array_merge($alertData, [
+                '@target_maps' => [
+                    AgentAlert::TARGET_BROWSER => ['browser_rendered'],
+                ],
+            ]));
 
-            if ($alert) {
-                ++$sent_count;
-                $em->persist($alert);
+            // batch insert alerts
+            $alerts = [];
+            foreach ($agents as $agent) {
+                $alerts[] = [
+                    'person_id'    => $agent->getId(),
+                    'typename'     => 'tickets',
+                    'date_created' => $date,
+                    'data'         => $serializedAlertData,
+                ];
 
-                $alert_records[] = [$agent, $alert_data, $alert];
+                $alertsMap[] = [
+                    'agent_id'         => $agent->getId(),
+                    'browser_rendered' => $alertData['browser_rendered'],
+                ];
+            }
+
+            $connection->batchInsert('agent_alerts', $alerts);
+
+            $firstAlertId = (int) $connection->lastInsertId();
+            foreach ($alertsMap as $num => &$alertMap) {
+                $alertMap['alert_id'] = $firstAlertId + $num;
             }
         }
 
-        $em->flush();
-
-        if ($alert_records) {
-            foreach ($alert_records    as $rec) {
-                $cm = $alert_sender->createClientMessage($rec[0], 'tickets', $rec[1], $rec[2]);
-                if ($cm) {
-                    $em->persist($cm);
-                }
+        // batch insert client messages
+        if ($alertsMap) {
+            $clientMessages = [];
+            foreach ($alertsMap as $alertRecord) {
+                $clientMessages[] = [
+                    'for_person_id'     => $alertRecord['agent_id'],
+                    'channel'           => 'agent-notify.tickets',
+                    'date_created'      => $date,
+                    'created_by_client' => 'sys',
+                    'auth'              => ClientMessage::generateAuthCode(),
+                    'data'              => serialize([
+                        'type'     => 'tickets',
+                        'alert_id' => $alertRecord['alert_id'],
+                        'row'      => $alertRecord['browser_rendered'],
+                    ]),
+                ];
             }
-            $em->flush();
+
+            $connection->batchInsert('client_messages', $clientMessages);
         }
 
-        $context->getLogger()->info(sprintf('[SendAgentAlert] Sent %d alerts in %.3fs', $sent_count, microtime(true) - $start_time));
+        $connection->commit();
+        $context->getLogger()->info(sprintf('[SendAgentAlert] Sent %d alerts in %.3fs', count($alertsMap), microtime(true) - $start_time));
     }
 }

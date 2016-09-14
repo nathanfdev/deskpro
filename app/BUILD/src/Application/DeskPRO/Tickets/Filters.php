@@ -274,7 +274,8 @@ class Filters
     /**
      * Get an array of IDs for each filter in a collection.
      *
-     * @param $ticket_filters
+     * @param LegacyTicketFilter[] $ticket_filters
+     * @param Person               $person_context
      *
      * @return array
      */
@@ -287,7 +288,7 @@ class Filters
                 continue;
             }
 
-            $all_ids[$ticket_filter['id']] = $ticket_filter->getResults($person_context);
+            $all_ids[$ticket_filter->getId()] = $ticket_filter->getResults($person_context);
         }
 
         return $all_ids;
@@ -296,7 +297,7 @@ class Filters
     /**
      * Get an array of IDs for each filter in a collection.
      *
-     * @param $ticket_filters
+     * @param LegacyTicketFilter[] $ticket_filters
      *
      * @return array
      */
@@ -305,8 +306,8 @@ class Filters
         $all_ids = [];
 
         foreach ($ticket_filters as $ticket_filter) {
-            $searcher                      = $ticket_filter->getSearcher(['type' => 'is_hold', 'op' => 'is', 'options' => ['is_hold' => 1]]);
-            $all_ids[$ticket_filter['id']] = $searcher->getResults();
+            $searcher                         = $ticket_filter->getSearcher(['type' => 'is_hold', 'op' => 'is', 'options' => ['is_hold' => 1]]);
+            $all_ids[$ticket_filter->getId()] = $searcher->getResults();
         }
 
         return $all_ids;

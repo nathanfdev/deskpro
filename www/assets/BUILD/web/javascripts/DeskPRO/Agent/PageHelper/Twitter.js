@@ -859,7 +859,7 @@ DeskPRO.Agent.PageHelper.Twitter = new Orb.Class({
 		});
 
 		DeskPRO_Window.initAgentNotifierForRte(
-			self, textarea, agentMap || false, true
+			self, textarea, true
 		);
 	}
 

@@ -141,7 +141,7 @@ class SendArbitraryUserEmail extends AbstractEmailAction
         foreach ($send_people as $person) {
             $context->getLogger()->debug(sprintf('[SendArbitraryUserEmail] Sending to Person#%d %s <%s>', $person->id, $person->getDisplayName(), $person->primary_email ? $person->primary_email->email : '?'));
 
-            $build = TicketEmailBuilder::createFromContainer($this->getContainer())
+            $builder = TicketEmailBuilder::createFromContainer($this->getContainer())
                 ->setTicket($ticket)
                 ->setToPerson($person)
                 ->setUserMode()
@@ -152,7 +152,8 @@ class SendArbitraryUserEmail extends AbstractEmailAction
                 ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
                 ->setFromEmailAccount($from_account);
 
-            $ticket_email = $build->buildTicketEmail();
+            $ticket_email = $builder->buildTicketEmail();
+            $default_vars = array_merge($builder->getCommonVars($person->isAgent()));
 
             try {
                 $ticket_email->send($default_vars);

@@ -106,12 +106,13 @@ class TicketListRenderer
         $ticket_ids = [];
 
         foreach ($this->ticket_display->getTickets() as $ticket) {
-            $ticket_ids[] = $ticket->id;
-            if ($ticket->person) {
-                $person_ids[] = $ticket->person->id;
+            $ticket_ids[] = $ticket->getId();
+            if ($ticket->getPerson()) {
+            	$person_ids[] = $ticket->getPersonId();
             }
-            if ($ticket->organization) {
-                $org_ids[] = $ticket->organization->id;
+
+            if ($ticket->getOrganization()) {
+                $org_ids[] = $ticket->getOrganization()->getId();
             }
         }
 
@@ -160,40 +161,70 @@ class TicketListRenderer
     {
         $data = [];
 
-        $data['id']                     = $ticket->id;
-        $data['ref']                    = $ticket->ref;
-        $data['auth']                   = $ticket->auth;
-        $data['sent_to_address']        = $ticket->sent_to_address;
-        $data['creation_system']        = $ticket->creation_system;
-        $data['creation_system_option'] = $ticket->creation_system_option;
-        $data['ticket_hash']            = $ticket->ticket_hash;
-        $data['status']                 = $ticket->status;
-        $data['hidden_status']          = $ticket->hidden_status;
-        $data['is_hold']                = $ticket->is_hold;
-        $data['urgency']                = $ticket->urgency;
-        $data['count_agent_replies']    = $ticket->count_agent_replies;
-        $data['count_user_replies']     = $ticket->count_user_replies;
-        $data['feedback_rating']        = $ticket->feedback_rating;
+        $data['id']                     = $ticket->getId();
+        $data['ref']                    = $ticket->getRef();
+        $data['auth']                   = $ticket->getAuth();
+        $data['sent_to_address']        = $ticket->getSentToAddresses();
+        $data['creation_system']        = $ticket->getCreationSystem();
+        $data['creation_system_option'] = $ticket->getCreationSystemOption();
+        $data['ticket_hash']            = $ticket->getTicketHash();
+        $data['status']                 = $ticket->getStatus();
+        $data['hidden_status']          = $ticket->getHiddenStatus();
+        $data['is_hold']                = $ticket->isHold();
+        $data['urgency']                = $ticket->getUrgency();
+        $data['count_agent_replies']    = $ticket->getCountAgentReplies();
+        $data['count_user_replies']     = $ticket->getCountUserReplies();
+        $data['feedback_rating']        = $ticket->getFeedbackRating();
 
-        foreach (['date_feedback_rating', 'date_created', 'date_resolved', 'date_archived', 'date_first_agent_assign', 'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked'] as $field) {
-            if ($ticket->$field) {
-                if ($timezone = $this->person ? new \DateTimeZone($this->person->getTimezone()) : null) {
-                    $ticket->$field->setTimezone($timezone);
-                }
-                $data[$field]        = $ticket->$field->format('Y-m-d H:i:s');
-                $data["{$field}_ts"] = $ticket->$field->getTimestamp();
+        $dateFields = [
+            'date_feedback_rating'    => 'getDateFeedbackRating',
+            'date_created'            => 'getDateCreated',
+            'date_resolved'           => 'getDateResolved',
+            'date_archived'           => 'getDateArchived',
+            'date_first_agent_assign' => 'getDateFirstAgentAssign',
+            'date_first_agent_reply'  => 'getDateFirstAgentReply',
+            'date_last_agent_reply'   => 'getDateLastAgentReply',
+            'date_last_user_reply'    => 'getDateLastUserReply',
+            'date_agent_waiting'      => 'getDateAgentWaiting',
+            'date_user_waiting'       => 'getDateUserWaiting',
+            'date_status'             => 'getDateStatus',
+            'date_locked'             => 'getDateLocked',
+        ];
+
+        $timezone = $this->person ? new \DateTimeZone($this->person->getTimezone()) : null;
+        foreach ($dateFields as $field => $getter) {
+            $dateValue = $ticket->$getter();
+            if ($dateValue instanceof \DateTime && $timezone) {
+                $dateValue->setTimezone($timezone);
+
+                $data[$field]        = $dateValue->format('Y-m-d H:i:s');
+                $data["{$field}_ts"] = $dateValue->getTimestamp();
             }
         }
 
-        $data['total_user_waiting']   = $ticket->total_user_waiting;
-        $data['total_to_first_reply'] = $ticket->total_to_first_reply;
-        $data['subject']              = $ticket->subject;
-        $data['properties']           = $ticket->properties;
-        $data['worst_sla_status']     = $ticket->worst_sla_status;
-        $data['waiting_times']        = $ticket->waiting_times;
+        $data['total_user_waiting']   = $ticket->getTotalUserWaiting();
+        $data['total_to_first_reply'] = $ticket->getTotalToFirstReply();
+        $data['subject']              = $ticket->getSubject();
+        $data['properties']           = $ticket->getProperties();
+        $data['worst_sla_status']     = $ticket->getWorstSlaStatus();
+        $data['waiting_times']        = $ticket->getWaitingTimes();
 
-        foreach (['language', 'department', 'brand', 'category', 'priority', 'workflow', 'product', 'person', 'agent',
-                  'agent_team', 'organization', 'locked_by_agent', ] as $field) {
+        $relationFields = [
+            'language',
+            'department',
+            'brand',
+            'category',
+            'priority',
+            'workflow',
+            'product',
+            'person',
+            'agent',
+            'agent_team',
+            'organization',
+            'locked_by_agent',
+        ];
+
+        foreach ($relationFields as $field) {
             $data[$field] = null;
 
             if (!$ticket->$field) {
@@ -247,11 +278,14 @@ class TicketListRenderer
                     break;
 
                 case 'agent':
-                    $data['agent'] = $this->container->getAgentData()->has($ticket->agent->getId()) ? $this->renderPerson($this->container->getAgentData()->get($ticket->agent->getId())) : null;
+                    $agent     = $ticket->getAgent();
+                    $agentData = $this->ticket_display->getAgent($ticket);
+
+                    $data['agent'] = $agentData ? $this->renderPerson($agentData) : null;
 
                     // Deleted agent, render from the related object
-                    if ($ticket->agent && !$data['agent']) {
-                        $data['agent'] = $this->renderPerson($ticket->agent);
+                    if ($agent && !$data['agent']) {
+                        $data['agent'] = $this->renderPerson($agent);
                     }
                     break;
 
@@ -325,7 +359,8 @@ class TicketListRenderer
         }
 
         $data['previews'] = [];
-        foreach ($this->ticket_display->getTicketPreview($ticket) as $m) {
+        $previews         = $this->ticket_display->getTicketPreview($ticket);
+        foreach ($previews as $m) {
             $data['previews'][] = [
                 'message' => [
                     'id'              => $m['id'],
@@ -349,50 +384,59 @@ class TicketListRenderer
         return $data;
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return array
+     */
     private function renderPerson(Person $person)
     {
         $data = [];
 
-        $data['id']                    = $person->id;
-        $data['is_contact']            = $person->is_contact;
-        $data['is_user']               = $person->is_user;
-        $data['is_agent']              = $person->is_agent;
-        $data['was_agent']             = $person->was_agent;
-        $data['can_agent']             = $person->can_agent;
-        $data['can_admin']             = $person->can_admin;
-        $data['is_confirmed']          = $person->is_confirmed;
-        $data['is_deleted']            = $person->is_deleted;
-        $data['is_disabled']           = $person->is_disabled;
-        $data['creation_system']       = $person->creation_system;
-        $data['name']                  = $person->name;
-        $data['first_name']            = $person->first_name;
-        $data['last_name']             = $person->last_name;
-        $data['title_prefix']          = $person->title_prefix;
-        $data['override_display_name'] = $person->override_display_name;
-        $data['summary']               = $person->summary;
-        $data['organization_position'] = $person->organization_position;
-        $data['organization_manager']  = $person->organization_manager;
-        $data['timezone']              = $person->timezone;
+        $data['id']                    = $person->getId();
+        $data['is_contact']            = $person->isContact();
+        $data['is_user']               = $person->isAgent();
+        $data['is_agent']              = $person->isAdmin();
+        $data['was_agent']             = $person->wasAgent();
+        $data['can_agent']             = $person->canAgent();
+        $data['can_admin']             = $person->canAdmin();
+        $data['is_confirmed']          = $person->isConfirmed();
+        $data['is_deleted']            = $person->isDeleted();
+        $data['is_disabled']           = $person->isDisabled();
+        $data['creation_system']       = $person->getCreationSystem();
+        $data['name']                  = $person->getName();
+        $data['first_name']            = $person->getFirstName();
+        $data['last_name']             = $person->getLastName();
+        $data['title_prefix']          = $person->getTitlePrefix();
+        $data['override_display_name'] = $person->getOverrideDisplayName();
+        $data['summary']               = $person->getSummary();
+        $data['organization_position'] = $person->getOrganizationPosition();
+        $data['organization_manager']  = $person->isOrganizationManager();
+        $data['timezone']              = $person->getTimezone();
 
-        $data['date_created']    = $person->date_created->format('Y-m-d H:i:s');
-        $data['date_created_ts'] = $person->date_created->getTimestamp();
+        $dateCreated = $person->getDateCreated();
+
+        $data['date_created']    = $dateCreated->format('Y-m-d H:i:s');
+        $data['date_created_ts'] = $dateCreated->getTimestamp();
 
         $data['display_name'] = $person->getDisplayName();
-        if ($person->primary_email) {
+
+        $primaryEmail = $person->getPrimaryEmail();
+        if ($primaryEmail) {
             $data['primary_email'] = [
-                'id'    => $person->primary_email->id,
-                'email' => $person->primary_email->email,
+                'id'    => $primaryEmail->getId(),
+                'email' => $primaryEmail->getEmail(),
             ];
         }
 
-        $data['picture_url']    = $person->getPictureUrl();
-        $data['picture_url_80'] = $person->getPictureUrl(80);
-        $data['picture_url_64'] = $person->getPictureUrl(64);
-        $data['picture_url_50'] = $person->getPictureUrl(50);
-        $data['picture_url_45'] = $person->getPictureUrl(45);
-        $data['picture_url_32'] = $person->getPictureUrl(32);
-        $data['picture_url_22'] = $person->getPictureUrl(22);
-        $data['picture_url_16'] = $person->getPictureUrl(16);
+        $pictureSizes = [80, 64, 50, 45, 32, 22, 16];
+        $urlTemplate  = $person->getPictureUrl('{{size}}');
+        $encodedTag   = urlencode('{{size}}');
+        foreach ($pictureSizes as $pictureSize) {
+            $data['picture_url_'.$pictureSize] = $urlTemplate ? str_replace($encodedTag, $pictureSize, $urlTemplate) : null;
+        }
+
+        $data['picture_url'] = $data['picture_url_80'];
 
         $custom_data = $this->ticket_display->getUserFieldData($person);
         if ($custom_data) {

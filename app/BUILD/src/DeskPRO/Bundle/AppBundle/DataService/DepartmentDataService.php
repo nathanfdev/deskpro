@@ -139,6 +139,8 @@ class DepartmentDataService extends AbstractDataService
     {
         // department data service is used both for the portal and api
         // so we can't rely on portal permission bag and use legacy permission manager
+        $person->loadHelper('PermissionsManager', ['force_load_usergroups' => true]);
+
         $allowedDepartments = $person->getPermissionsManager()->Departments->getAllAllowed();
 
         $chatDepartments   = isset($allowedDepartments['chat']) ? array_keys($allowedDepartments['chat']) : [];

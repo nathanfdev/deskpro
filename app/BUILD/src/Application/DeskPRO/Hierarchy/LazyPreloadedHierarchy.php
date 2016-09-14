@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\Hierarchy;
 
+use Application\DeskPRO\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 
 abstract class LazyPreloadedHierarchy
@@ -42,13 +43,24 @@ abstract class LazyPreloadedHierarchy
     protected $em;
 
     /**
+     * @var Connection
+     */
+    protected $connection;
+
+    /**
      * @var \Application\DeskPRO\Hierarchy\PreloadedHierarchy
      */
     protected $hierarchy;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
-        $this->em = $em;
+        $this->em         = $em;
+        $this->connection = $this->em->getConnection();
     }
 
     /**

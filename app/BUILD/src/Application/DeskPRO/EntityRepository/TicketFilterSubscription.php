@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person as PersonEntity;
-use Orb\Util\Arrays;
 
 class TicketFilterSubscription extends AbstractEntityRepository
 {
@@ -59,6 +58,24 @@ class TicketFilterSubscription extends AbstractEntityRepository
     }
 
     /**
+     * @return array
+     */
+    public function getSubscribedActiveAgentIds()
+    {
+        /** @var Connection $connection */
+        $connection = $this->getEntityManager()->getConnection();
+        $agentIds   = $connection->fetchAllCol(<<<SQL
+            SELECT DISTINCT s.person_id
+            FROM ticket_filter_subscriptions s
+            JOIN people p ON p.id = s.person_id
+            WHERE p.is_agent = 1 AND p.is_disabled = 0 AND p.is_deleted = 0
+SQL
+        );
+
+        return array_map('intval', $agentIds);
+    }
+
+    /**
      * Return an array of subscription info for all agents in $people, optionally only for $filters.
      *
      * Returned array structure:
@@ -72,83 +89,44 @@ class TicketFilterSubscription extends AbstractEntityRepository
      * )
      * </code>
      *
-     * @param array $people
-     * @param array $filters
+     * @param array $peopleIds
+     * @param array $filtersIds
      *
      * @return array
      */
-    public function getForAgents(array $people, array $filters = null)
+    public function getForAgents(array $peopleIds, array $filtersIds = null)
     {
-        $people_ids = [];
-        foreach ($people as $p) {
-            if (is_numeric($p)) {
-                $people_ids[] = $p;
-            } else {
-                $people_ids[] = $p->id;
-            }
-        }
-        $filter_ids = [];
-        foreach ($filters as $f) {
-            if (is_numeric($f)) {
-                $filter_ids[] = $f;
-            } else {
-                $filter_ids[] = $f->id;
-            }
-        }
-
-        $people_ids = Arrays::removeFalsey($people_ids);
-        $filter_ids = Arrays::removeFalsey($filter_ids);
-
-        if (!$people_ids) {
+        if (!$peopleIds) {
             return [];
         }
 
-        $people_ids = implode(',', $people_ids);
-        $filter_ids = implode(',', $filter_ids);
+        $qb = $this->_em->getConnection()->createQueryBuilder();
+        $qb
+            ->select('*')
+            ->from('ticket_filter_subscriptions', 's')
+            ->where('s.person_id IN (:people_ids)')
+            ->setParameter('people_ids', $peopleIds, Connection::PARAM_INT_ARRAY)
+        ;
 
-        if ($filter_ids) {
-            $results = $this->getEntityManager()->createQuery("
-                SELECT s
-                FROM DeskPRO:TicketFilterSubscription s
-                LEFT JOIN s.filter f
-                LEFT JOIN s.person a
-                WHERE s.person IN ($people_ids) AND s.filter IN ($filter_ids)
-            ")->execute();
-        } else {
-            $results = $this->getEntityManager()->createQuery("
-                SELECT s
-                FROM DeskPRO:TicketFilterSubscription s
-                LEFT JOIN s.filter f
-                LEFT JOIN s.person a
-                WHERE s.person IN ($people_ids)
-            ")->execute();
+        if ($filtersIds) {
+            $qb->andWhere('s.filter_id IN (:filter_ids)');
+            $qb->setParameter('filter_ids', $filtersIds, Connection::PARAM_INT_ARRAY);
         }
 
+        $results = $qb->execute()->fetchAll();
+
         $ret = [];
-
         foreach ($results as $s) {
-            $agent_id  = $s->person->id;
-            $filter_id = $s->filter->id;
+            $personId = $s['person_id'];
+            $filterId = $s['filter_id'];
 
-            if (!isset($ret[$agent_id])) {
-                $ret[$agent_id] = [];
+            if (!isset($ret[$personId])) {
+                $ret[$personId] = [];
             }
 
-            $ret[$agent_id][$filter_id] = $s;
+            $ret[$personId][$filterId] = $s;
         }
 
         return $ret;
-    }
-
-    /**
-     * @return array
-     */
-    public function getSimplePropertyChangeSubscriptions()
-    {
-        return App::$container->getDb()->fetchAll('
-            SELECT filter_id, person_id
-            FROM ticket_filter_subscriptions
-            WHERE email_property_change = 1 OR alert_property_change = 1
-        ');
     }
 }
