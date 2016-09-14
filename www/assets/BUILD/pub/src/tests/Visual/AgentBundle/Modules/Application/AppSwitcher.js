@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import { css } from 'Visual/decorators';
 import { AppSwitcher } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/AppSwitcher';
+import { css } from '../../../decorators';
 
 window.DP_BASE_URL_RELATIVE = 'demo';
 window.DP_AGENT_INTERFACE_PATH_NAMESPACE = 'demo';
