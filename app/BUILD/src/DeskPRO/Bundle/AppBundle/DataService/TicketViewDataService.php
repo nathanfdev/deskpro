@@ -220,14 +220,14 @@ class TicketViewDataService extends AbstractDataService
                         $value = implode(', ', array_map(function (CustomFieldData $customData) {
                             return $customData->getDefinition()->getTitle();
                         }, $data));
-                    }
 
-                    $view->addProperty(
-                        $field_id,
-                        $fieldDef->getTitle(),
-                        $value,
-                        $layout_field->isVisibleOnViewAlways()
-                    );
+                        $view->addProperty(
+                            $field_id,
+                            $fieldDef->getTitle(),
+                            $value,
+                            $layout_field->isVisibleOnViewAlways()
+                        );
+                    }
                     break;
             }
         }
