@@ -50,14 +50,23 @@ class JsonSerializationVisitor extends BaseVisitor
                 return $result;
 
             case JSON_ERROR_UTF8:
-                $root = $this->getRoot();
-                array_walk_recursive($root, function (&$item) {
-                    $item = is_string($item) ? iconv('UTF-8', 'UTF-8//IGNORE', $item) : $item;
-                });
-                $result = @json_encode($root, $this->options);
+                $iterator = function ($value) use (&$iterator) {
+                    if (is_array($value) || $value instanceof \Traversable) {
+                        foreach ($value as $key => $item) {
+                            $value[$key] = $iterator($item);
+                        }
+                    } elseif (is_string($value)) {
+                        $value = iconv('UTF-8', 'UTF-8//IGNORE', $value);
+                    }
+
+                    return $value;
+                };
+
+                $converted = $iterator($this->getRoot());
+                $result    = @json_encode($converted, $this->options);
 
                 if (json_last_error() === JSON_ERROR_UTF8) {
-                    trigger_error('Failed to serialize value: '.SystemErrorHandler::varToString($root), E_USER_NOTICE);
+                    trigger_error('Failed to serialize value: '.SystemErrorHandler::varToString($this->getRoot()), E_USER_NOTICE);
 
                     return '';
                 } else {
