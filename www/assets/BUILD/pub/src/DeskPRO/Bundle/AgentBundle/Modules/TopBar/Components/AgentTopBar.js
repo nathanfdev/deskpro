@@ -24,10 +24,10 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
 @connect(state => ({
   agents:          collectionSelectorFactory('Person', 'agents')(state),
   chatDepartments: collectionSelectorFactory('Department', 'all_chat')(state),
-  myDepartments:   collectionSelectorFactory('Department', 'all_tickets')(state),
+  myDepartments:   collectionSelectorFactory('Department', 'my_tickets')(state),
   recentChats:     collectionSelectorFactory('AgentChat', 'recent')(state),
   recentLoaded:    isLoadedCollectionSelectorFactory('AgentChat', 'recent')(state),
-  teams:           collectionSelectorFactory('AgentTeams', 'my')(state),
+  teams:           collectionSelectorFactory('AgentTeam', 'my')(state),
   me:              meSelector(state),
   voiceEnabled:    isVoiceEnabledSelector(state),
   userChatEnabled: userChatEnabledSelector(state),

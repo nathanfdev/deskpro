@@ -63,6 +63,9 @@ class AbstractList extends React.Component {
 
         const classes = ['ui avatar image im'];
         const agent = this.props.agents.get(`${agentId}`);
+        if (!agent) {
+          return null;
+        }
         if (!agent.get('online')) {
           classes.push('offline');
         }
