@@ -35,8 +35,8 @@
 namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\People\PersonContextInterface;
-use Proxies\__CG__\Application\DeskPRO\Entity\Usergroup;
 
 /**
  * @deprecated use new PermissionsManager to get the PermissionsBag instead of people helpers
