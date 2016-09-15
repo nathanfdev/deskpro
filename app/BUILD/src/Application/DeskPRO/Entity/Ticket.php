@@ -2897,16 +2897,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $use_date;
     }
 
+    /**
+     * @deprecated Use TicketMessage repository getLastAgentReply() instead
+     *
+     * @return TicketMessage|null
+     */
     public function getLastAgentMessage()
     {
-        $non_agent_note_agent_messages = $this->messages->filter(
-            function (TicketMessage $message) {
-                // agents and not agent notes
-                return !$message->is_agent_note && $message->getPerson() && $message->getPerson()->is_agent;
-            }
-        );
-
-        return $non_agent_note_agent_messages->last();
+        return App::getEntityRepository(TicketMessage::class)->getLastAgentReply($this);
     }
 
     /**
