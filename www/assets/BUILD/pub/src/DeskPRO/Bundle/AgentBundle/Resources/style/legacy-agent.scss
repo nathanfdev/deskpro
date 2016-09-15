@@ -553,11 +553,12 @@ $transition-close-delay: 0.1s;
     }
     span.menu-label {
       position: relative;
-      top: -5px;
+      top: 0;
       width: 0;
       display: inline-block;
       transition: width 0s;
       overflow: hidden;
+      height: 20px;
     }
     svg {
       width: 24px;
@@ -586,6 +587,19 @@ $transition-close-delay: 0.1s;
         transition: left $transition-close-time;
         transition-delay: $transition-close-delay;
       };
+    }
+    &.badge .menu-icon .isvg {
+      position: relative;
+      &:after {
+        content: '';
+        background: $dp-knuckles-primary;
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        position: absolute;
+        right: -5px;
+        top: -10px;
+      }
     }
   }
   &:hover {

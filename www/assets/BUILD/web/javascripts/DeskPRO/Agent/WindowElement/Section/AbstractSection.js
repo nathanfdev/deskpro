@@ -322,11 +322,14 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		this.badgeCount = count;
-		DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.badge_updated', {
+		var badgeUpdate = {
 			section: this,
 			sectionId: this.buttonEl.attr('id'),
 			count: count
-		});
+		};
+		DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.badge_updated', badgeUpdate);
+		var event = new CustomEvent('dpUpdateSideBarBadge', { 'detail': badgeUpdate });
+		window.document.dispatchEvent(event);
 	},
 
 	modBadgeCount: function(op, num) {
