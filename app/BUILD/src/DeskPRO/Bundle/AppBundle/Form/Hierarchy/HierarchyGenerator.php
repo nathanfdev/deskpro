@@ -98,11 +98,11 @@ class HierarchyGenerator
      * @param BrandStack            $brandStack
      */
     public function __construct(
-        EntityManager $em,
+        EntityManager         $em,
         DepartmentDataService $departmentDataService,
-        FeedbackDataService $feedbackDataService,
-        LanguageManager $languageManager,
-        BrandStack $brandStack
+        FeedbackDataService   $feedbackDataService,
+        LanguageManager       $languageManager,
+        BrandStack            $brandStack
     ) {
         $this->em                    = $em;
         $this->departmentDataService = $departmentDataService;
@@ -167,24 +167,24 @@ class HierarchyGenerator
     }
 
     /**
-     * @param CustomFieldDefinition $field
-     * @param array                 $contextual_choices
+     * @param CustomFieldDefinition   $field
+     * @param CustomFieldDefinition[] $contextualChoices
      *
      * @return Hierarchy
      */
-    public function generateForCustomPerFormField(CustomFieldDefinition $field, array $contextual_choices = [])
+    public function generateForCustomPerFormField(CustomFieldDefinition $field, array $contextualChoices = [])
     {
         return $this->generateAndCache(
             [
                 'generateForCustomPerFormField',
                 $field,
-                $contextual_choices,
+                $contextualChoices,
             ],
-            function () use ($field, $contextual_choices) {
-                $root_nodes = [];
-                foreach ($contextual_choices as $field_child) {
+            function () use ($field, $contextualChoices) {
+                $rootNodes = [];
+                foreach ($contextualChoices as $fieldChild) {
                     // fields with a parent_id are dealt with below
-                    $root_nodes[] = new HierarchyNode($field_child, 0, HierarchyGenerator::reverseDisplayOrder($field_child->display_order));
+                    $rootNodes[] = new HierarchyNode($fieldChild, 0, HierarchyGenerator::reverseDisplayOrder($fieldChild->getDisplayOrder()));
                 }
 
                 $expanded = $field->getOption('expanded');
@@ -194,7 +194,7 @@ class HierarchyGenerator
                     $formatter = new FlatListLanguageAwareFormatter($this->languageManager);
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, $formatter);
+                $hierarchy = new Hierarchy($rootNodes, $formatter);
                 $hierarchy->markOnlyLeafSelections();
 
                 return $hierarchy;
@@ -207,35 +207,34 @@ class HierarchyGenerator
      */
     public function generateTicketProductsHierarchy()
     {
-        $em = $this->em;
-
         return $this->generateAndCache(
             [
                 'generateTicketProductsHierarchy',
             ],
-            function () use ($em) {
-                $products = $em->getRepository('DeskPRO:Product')->findAll();
-
-                $root_nodes = [];
+            function () {
+                $products = $this->em->getRepository(Product::class)->findAll();
+                $rootNodes = [];
                 foreach ($products as $product) {
                     if ($product->getParent()) {
                         continue;
                     }
-                    $root_nodes[] = new HierarchyNode($product, 0, HierarchyGenerator::reverseDisplayOrder($product->display_order));
+
+                    $rootNodes[] = new HierarchyNode($product, 0, HierarchyGenerator::reverseDisplayOrder($product->getDisplayOrder()));
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->languageManager));
+                $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->languageManager));
                 $hierarchy->markOnlyLeafSelections();
 
                 $recursive = function (Product $prod, HierarchyNode $parent, $depth) use (&$recursive) {
-                    foreach ($prod->children as $child) {
-                        $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->display_order)));
+                    foreach ($prod->getChildren() as $child) {
+                        $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));
                         $recursive($child, $child_node, $depth + 1);
                     }
                 };
 
-                foreach ($hierarchy as $root_node) {
-                    $recursive($root_node->getData(), $root_node, 1);
+                /** @var HierarchyNode $rootNode */
+                foreach ($hierarchy as $rootNode) {
+                    $recursive($rootNode->getData(), $rootNode, 1);
                 }
 
                 return $hierarchy;
@@ -254,8 +253,6 @@ class HierarchyGenerator
      */
     public function generateTicketDepartmentsHierarchy(Person $person, Ticket $ticket = null)
     {
-        $departmentDataService = $this->departmentDataService;
-
         $brand = $this->brandStack->getActive()->getBrand();
 
         return $this->generateAndCache(
@@ -265,8 +262,8 @@ class HierarchyGenerator
                 $ticket,
                 $brand,
             ],
-            function () use ($departmentDataService, $person, $ticket, $brand) {
-                $allowedDepartments = $departmentDataService->getTicketDepartmentsForPerson($person);
+            function () use ($person, $ticket, $brand) {
+                $allowedDepartments = $this->departmentDataService->getTicketDepartmentsForPerson($person);
                 /** @var ArrayCollection|Department[] $allowedDepartments */
                 $allowedDepartments = new ArrayCollection($allowedDepartments); // for convenient methods
                 foreach ($allowedDepartments as $key => $department) {
@@ -317,7 +314,7 @@ class HierarchyGenerator
                     $rootNodes[] = new HierarchyNode(
                         $department,
                         0,
-                        HierarchyGenerator::reverseDisplayOrder($department->display_order)
+                        HierarchyGenerator::reverseDisplayOrder($department->getDisplayOrder())
                     );
                 }
 
@@ -329,17 +326,17 @@ class HierarchyGenerator
                     $allowedDepartments
                 ) {
                     /** @var \Application\DeskPRO\Entity\Department $child */
-                    foreach ($dep->children as $child) {
+                    foreach ($dep->getChildren() as $child) {
                         if (!$allowedDepartments->contains($child)) {
                             continue; // not allowed to use this dep.
                         }
 
-                        $parent->addChild($childNode = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->display_order)));
+                        $parent->addChild($childNode = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));
                         $recursive($child, $childNode, $depth + 1);
                     }
                 };
 
-                /** @var \Application\DeskPRO\Entity\Department $rootNode */
+                /** @var HierarchyNode $rootNode */
                 foreach ($hierarchy as $rootNode) {
                     $recursive($rootNode->getData(), $rootNode, 1);
                 }
@@ -361,28 +358,29 @@ class HierarchyGenerator
                 'generateTicketCategoriesHierarchy',
             ],
             function () use ($em) {
-                $products = $em->getRepository('DeskPRO:TicketCategory')->findAll();
-
-                $root_nodes = [];
-                foreach ($products as $product) {
-                    if ($product->getParent()) {
+                $categories = $em->getRepository(TicketCategory::class)->findAll();
+                $rootNodes = [];
+                foreach ($categories as $category) {
+                    if ($category->getParent()) {
                         continue;
                     }
-                    $root_nodes[] = new HierarchyNode($product, 0, HierarchyGenerator::reverseDisplayOrder($product->display_order));
+
+                    $rootNodes[] = new HierarchyNode($category, 0, HierarchyGenerator::reverseDisplayOrder($category->getDisplayOrder()));
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->languageManager));
+                $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->languageManager));
                 $hierarchy->markOnlyLeafSelections();
 
-                $recursive = function (TicketCategory $prod, HierarchyNode $parent, $depth) use (&$recursive) {
-                    foreach ($prod->getChildren() as $child) {
-                        $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->display_order)));
+                $recursive = function (TicketCategory $category, HierarchyNode $parent, $depth) use (&$recursive) {
+                    foreach ($category->getChildren() as $child) {
+                        $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));
                         $recursive($child, $child_node, $depth + 1);
                     }
                 };
 
-                foreach ($hierarchy as $root_node) {
-                    $recursive($root_node->getData(), $root_node, 1);
+                /** @var HierarchyNode $rootNode */
+                foreach ($hierarchy as $rootNode) {
+                    $recursive($rootNode->getData(), $rootNode, 1);
                 }
 
                 return $hierarchy;
@@ -406,16 +404,16 @@ class HierarchyGenerator
             ],
             function () use ($feedback_data_service, $person) {
                 $categories = $feedback_data_service->getFeedbackCategoriesForPerson($person);
-
-                $root_nodes = [];
+                $rootNodes = [];
                 foreach ($categories as $category) {
                     if ($category->getParent()) {
                         continue;
                     }
-                    $root_nodes[] = new HierarchyNode($category, 0, HierarchyGenerator::reverseDisplayOrder($category->display_order));
+
+                    $rootNodes[] = new HierarchyNode($category, 0, HierarchyGenerator::reverseDisplayOrder($category->getDisplayOrder()));
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->languageManager));
+                $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->languageManager));
                 $hierarchy->markOnlyLeafSelections();
 
                 $recursive = function (FeedbackCategory $cat, HierarchyNode $parent, $depth) use (&$recursive) {
@@ -425,8 +423,9 @@ class HierarchyGenerator
                     }
                 };
 
-                foreach ($hierarchy as $root_node) {
-                    $recursive($root_node->getData(), $root_node, 1);
+                /** @var HierarchyNode $rootNode */
+                foreach ($hierarchy as $rootNode) {
+                    $recursive($rootNode->getData(), $rootNode, 1);
                 }
 
                 return $hierarchy;
