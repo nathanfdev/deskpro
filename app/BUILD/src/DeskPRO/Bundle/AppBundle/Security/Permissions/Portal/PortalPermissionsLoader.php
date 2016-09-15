@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
-use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -37,7 +36,6 @@ use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
-use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 
@@ -47,19 +45,19 @@ use Doctrine\ORM\EntityManager;
 class PortalPermissionsLoader
 {
     /**
-     * @var ArbitraryHasher
-     */
-    protected $hash_generator;
-
-    /**
-     * @var ConvenientCache
-     */
-    protected $cache;
-
-    /**
      * @var EntityManager
      */
     private $em;
+
+    /**
+     * @var array
+     */
+    private $usergroupsCache = [];
+
+    /**
+     * @var array
+     */
+    private $departmentsCache = [];
 
     /**
      * Constructor.
@@ -133,7 +131,7 @@ class PortalPermissionsLoader
      */
     public function getAllowedTicketDepartments(array $userGroups)
     {
-        return $this->getAllowedDepartments($userGroups, DepartmentPermission::APP_TICKETS);
+        return $this->getAllowedUsergroupDepartments($userGroups, DepartmentPermission::APP_TICKETS);
     }
 
     /**
@@ -143,7 +141,7 @@ class PortalPermissionsLoader
      */
     public function getAllowedChatDepartments(array $userGroups)
     {
-        return $this->getAllowedDepartments($userGroups, DepartmentPermission::APP_CHAT);
+        return $this->getAllowedUsergroupDepartments($userGroups, DepartmentPermission::APP_CHAT);
     }
 
     /**
@@ -152,7 +150,7 @@ class PortalPermissionsLoader
      *
      * @return array
      */
-    private function getAllowedCategories($entityClass, array $userGroups)
+    public function getAllowedCategories($entityClass, array $userGroups)
     {
         /** @var CategoryHierarchy $repository */
         $repository = $this->em->getRepository($entityClass);
@@ -166,28 +164,39 @@ class PortalPermissionsLoader
      *
      * @return mixed
      */
-    private function getAllowedDepartments(array $userGroups, $app)
+    public function getAllowedUsergroupDepartments(array $userGroups, $app)
     {
-        $userGroupIds = [];
-        foreach ($userGroups as $userGroup) {
-            if ($userGroup instanceof Usergroup) {
-                $userGroupIds[] = $userGroup->getId();
-            } elseif (is_scalar($userGroup)) {
-                $userGroupIds[] = (int) $userGroup;
-            }
-        }
+        $userGroupIds = array_map(function ($userGroup) {
+            return $userGroup instanceof Usergroup ? $userGroup->getId() : (int) $userGroup;
+        }, $userGroups);
 
-        // load department permissions
-        $permissions = $this->em->getConnection()->fetchAll(
-            "SELECT dp.name, dp.value, dp.department_id
+        $cacheKey = md5(serialize([$userGroupIds, $app]));
+        if (!isset($this->usergroupsCache[$cacheKey])) {
+            // load department permissions
+            $permissions = $this->em->getConnection()->fetchAll(
+                "SELECT dp.name, dp.value, dp.department_id
             FROM department_permissions dp
             JOIN departments d ON dp.department_id = d.id
             WHERE dp.usergroup_id IN (:usergroup_ids) AND dp.is_active = 1 AND dp.value = 1 AND d.is_{$app}_enabled = 1",
 
-            ['usergroup_ids' => $userGroupIds],
-            ['usergroup_ids' => Connection::PARAM_INT_ARRAY]
-        );
+                ['usergroup_ids' => $userGroupIds],
+                ['usergroup_ids' => Connection::PARAM_INT_ARRAY]
+            );
 
+            $this->usergroupsCache[$cacheKey] = $this->getAllowedPermissionDepartments($permissions, $app);
+        }
+
+        return $this->usergroupsCache[$cacheKey];
+    }
+
+    /**
+     * @param array  $permissions
+     * @param string $app
+     *
+     * @return array
+     */
+    public function getAllowedPermissionDepartments(array $permissions, $app)
+    {
         $permissionMap = [];
         foreach ($permissions as $permission) {
             $permissionMap[$permission['department_id']][] = [
@@ -197,13 +206,17 @@ class PortalPermissionsLoader
         }
 
         // load departments
-        $departments = $this->em->getConnection()->fetchAll(
-            "SELECT id, parent_id FROM departments WHERE is_{$app}_enabled = 1"
-        );
+        if (!isset($this->departmentsCache[$app])) {
+            $departments = $this->em->getConnection()->fetchAll(
+                "SELECT id, parent_id FROM departments WHERE is_{$app}_enabled = 1"
+            );
+
+            $this->departmentsCache[$app] = $departments;
+        }
 
         $departmentParents  = [];
         $departmentChildren = [];
-        foreach ($departments as $department) {
+        foreach ($this->departmentsCache[$app] as $department) {
             if ($department['parent_id']) {
                 $departmentParents[$department['id']][$department['parent_id']]  = true;
                 $departmentChildren[$department['parent_id']][$department['id']] = true;
