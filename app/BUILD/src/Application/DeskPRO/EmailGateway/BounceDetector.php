@@ -131,6 +131,15 @@ class BounceDetector
             return true;
         }
 
+        $failed = strpos($this->reader->getHeader('Content-Type')->getHeader(), 'multipart/report') !== false;
+        if ($failed) {
+            if ($this->logger) {
+                $this->logger->logDebug('Is bounced based on Content-Type (multipart/report) header');
+            }
+
+            return true;
+        }
+
         // A custom header, can be used to explicitly mark message as a bounce (e.g., for debug or custom rules in mail server)
         $failed = $this->reader->getHeader('X-Is-Bounce');
         if ($failed && $failed->getHeader()) {
