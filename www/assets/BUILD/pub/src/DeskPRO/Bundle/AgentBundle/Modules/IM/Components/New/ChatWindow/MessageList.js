@@ -4,9 +4,11 @@ import Message from './Message';
 
 class MessageList extends React.Component {
   static propTypes = {
-    me:       PropTypes.object.isRequired,
-    agents:   PropTypes.object.isRequired,
-    messages: PropTypes.object.isRequired
+    me:          PropTypes.object.isRequired,
+    agents:      PropTypes.object.isRequired,
+    messages:    PropTypes.object.isRequired,
+    searchQuery: PropTypes.string,
+    current:     PropTypes.object.isRequired
   };
 
   static renderEmpty() {
@@ -18,6 +20,17 @@ class MessageList extends React.Component {
       </ul>
     );
   }
+
+  getPath = () => {
+    let path;
+    if (!this.props.searchQuery) {
+      path = ['chatMessages', this.props.current.get('id')];
+    } else {
+      path = ['searchMessages', this.props.current.get('id')];
+    }
+    return path;
+  };
+
 
   renderList(msg) {
     let previous = false;
@@ -45,7 +58,9 @@ class MessageList extends React.Component {
   }
 
   render() {
-    const msg = this.props.messages.sort((first, second) => first.timestamp - second.timestamp);
+    let msg = this.props.messages.hasIn(this.getPath()) ? this.props.messages.getIn(this.getPath()).messages : [];
+    console.log(msg, this.props.messages);
+    msg = msg.sort((first, second) => first.timestamp - second.timestamp);
     return msg.size > 0 ? this.renderList(msg) : MessageList.renderEmpty();
   }
 }

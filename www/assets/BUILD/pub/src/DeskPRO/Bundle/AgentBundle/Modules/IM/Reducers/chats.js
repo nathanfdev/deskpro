@@ -1,6 +1,8 @@
 import { createReducer } from 'Ampliflux';
+import Immutable from 'immutable';
 import { async } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/chatsActions';
+
 
 const initialState = {
   current:        {},
@@ -10,9 +12,11 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [actions.startChat]:                async({ success: (state, payload) => state.set('current', payload) }),
+  [actions.startChat]: async({
+    success: (state, payload) => state.set('current', Immutable.fromJS(payload))
+  }),
   [actions.toggleOverlay]:            (state) => state.set('overlayShown', !state.get('overlayShown')),
   [actions.openChat]:                 (state) => state.mergeIn([], { overlayShown: false, chating: true }),
-  [actions.closeChat]:                (state) => state.merge({ chating: false, current: {} }),
+  [actions.closeChat]:                (state) => state.merge({ chating: false, current: Immutable.fromJS({}) }),
   [actions.markChatAsManuallyClosed]: (state, payload) => state.setIn(['manuallyClosed', payload], true)
 });

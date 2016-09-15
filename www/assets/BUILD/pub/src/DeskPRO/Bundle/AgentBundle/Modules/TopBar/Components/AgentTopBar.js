@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import { Container } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow';
 import * as chatsActions from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/chatsActions';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
@@ -22,34 +23,40 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
 // import { HeaderWidget } from '../IM/Components/HeaderWidget';
 
 @connect(state => ({
-  agents:          collectionSelectorFactory('Person', 'agents')(state),
-  chatDepartments: collectionSelectorFactory('Department', 'all_chat')(state),
-  myDepartments:   collectionSelectorFactory('Department', 'my_tickets')(state),
-  recentChats:     collectionSelectorFactory('AgentChat', 'recent')(state),
-  recentLoaded:    isLoadedCollectionSelectorFactory('AgentChat', 'recent')(state),
-  teams:           collectionSelectorFactory('AgentTeam', 'my')(state),
-  me:              meSelector(state),
+  agents:           collectionSelectorFactory('Person', 'agents')(state),
+  chatDepartments:  collectionSelectorFactory('Department', 'all_tickets')(state),
+  myDepartments:    collectionSelectorFactory('Department', 'my_tickets')(state),
+  recentChats:      collectionSelectorFactory('AgentChat', 'recent')(state),
+  recentLoaded:     isLoadedCollectionSelectorFactory('AgentChat', 'recent')(state),
+  teams:            collectionSelectorFactory('AgentTeam', 'my')(state),
+  me:               meSelector(state),
+  current:          state.IM.chats.get('current'),
+  chating:          state.IM.chats.get('chating'),
+  overlayShown:     state.IM.chats.get('overlayShown'),
+  messages:         state.IM.messages,
+  loadingMessages:  state.IM.messages.get('loadingMessages'),
+  updatingMessages: state.IM.messages.get('updatingMessages')
   voiceEnabled:    isVoiceEnabledSelector(state),
   userChatEnabled: userChatEnabledSelector(state),
   onlineAgents:    onlineUserChatAgentsSelector(state),
-  current:         state.IM.chats.get('current'),
-  chating:         state.IM.chats.get('chating'),
-  overlayShown:    state.IM.chats.get('overlayShown')
 }))
 export class AgentTopBarContainer extends SeparateComponent {
 
   static propTypes = {
-    agents:          PropTypes.object.isRequired,
-    chatDepartments: PropTypes.object.isRequired,
-    myDepartments:   PropTypes.object.isRequired,
-    teams:           PropTypes.object.isRequired,
-    recentChats:     PropTypes.object.isRequired,
-    recentLoaded:    PropTypes.bool.isRequired,
-    dispatch:        PropTypes.func.isRequired,
-    me:              PropTypes.object,
-    current:         PropTypes.number,
-    chating:         PropTypes.bool.isRequired,
-    overlayShown:    PropTypes.bool.isRequired
+    agents:           PropTypes.object.isRequired,
+    chatDepartments:  PropTypes.object.isRequired,
+    myDepartments:    PropTypes.object.isRequired,
+    teams:            PropTypes.object.isRequired,
+    recentChats:      PropTypes.object.isRequired,
+    recentLoaded:     PropTypes.bool.isRequired,
+    loadingMessages:  PropTypes.bool.isRequired,
+    updatingMessages: PropTypes.bool.isRequired,
+    messages:         PropTypes.object,
+    dispatch:         PropTypes.func.isRequired,
+    me:               PropTypes.object,
+    current:          PropTypes.object,
+    chating:          PropTypes.bool.isRequired,
+    overlayShown:     PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -63,6 +70,9 @@ export class AgentTopBarContainer extends SeparateComponent {
       });
     });
     this.toggleImOverlay = this.toggleImOverlay.bind(this);
+    this.recentClick = this.recentClick.bind(this);
+    this.participantClick = this.participantClick.bind(this);
+    this.chatClickOut = this.chatClickOut.bind(this);
   }
 
   componentWillMount() {
@@ -91,6 +101,18 @@ export class AgentTopBarContainer extends SeparateComponent {
       angularOmnibox.touchSearch();
       window.$('.dp-omnibox-results').show();
     }
+  }
+
+  recentClick(chatId) {
+    this.props.dispatch(chatsActions.startChat(null, null, chatId));
+  }
+
+  participantClick(id, type) {
+    this.props.dispatch(chatsActions.startChat(id, type));
+  }
+
+  chatClickOut(chatId) {
+    this.props.dispatch(chatsActions.closeChat(chatId));
   }
 
   componentWillMount = () => {
@@ -162,17 +184,20 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   render() {
     const props = { ...this.props,
-      updateVolume:       AgentTopBarContainer.updateVolume,
-      onSearch:           AgentTopBarContainer.onSearch,
-      onSearchFocus:      this.onSearchFocus,
-      onSearchBlur:       AgentTopBarContainer.onSearchBlur,
-      toggleViewMode:     AgentTopBarContainer.toggleViewMode,
-      onRecent:           AgentTopBarContainer.onRecent,
-      onNotification:     AgentTopBarContainer.onNotification,
-      closeIframes:       AgentTopBarContainer.closeIframes,
-      toggleImOverlay:    this.toggleImOverlay,
+      updateVolume:      AgentTopBarContainer.updateVolume,
+      onSearch:          AgentTopBarContainer.onSearch,
+      onSearchFocus:     this.onSearchFocus,
+      onSearchBlur:      AgentTopBarContainer.onSearchBlur,
+      toggleViewMode:    AgentTopBarContainer.toggleViewMode,
+      onRecent:          AgentTopBarContainer.onRecent,
+      onNotification:    AgentTopBarContainer.onNotification,
+      closeIframes:      AgentTopBarContainer.closeIframes,
+      notificationCount: this.state.notificationCount,
+      toggleImOverlay:   this.toggleImOverlay,
+      chatClickOut:      this.chatClickOut,
+      recentClick:       this.recentClick,
+      participantClick:  this.recentClick,
       onClearSearchInput: AgentTopBarContainer.onClearSearchInput,
-      notificationCount:  this.state.notificationCount,
       onToggleChat:       this.onToggleChat
     };
     return <AgentTopBar {...props} ref={(c) => { this.agentTopBar = c; }} />;
@@ -190,6 +215,7 @@ export class AgentTopBar extends React.Component {
     recentLoaded:       PropTypes.bool.isRequired,
     TopBar:             PropTypes.object,
     notificationCount:  PropTypes.number,
+    dispatch:           PropTypes.func.isRequired,
     updateVolume:       PropTypes.func,
     onSearch:           PropTypes.func,
     onSearchFocus:      PropTypes.func,
@@ -198,6 +224,10 @@ export class AgentTopBar extends React.Component {
     onNotification:     PropTypes.func,
     closeIframes:       PropTypes.func,
     toggleImOverlay:    PropTypes.func,
+    chatClickOut:       PropTypes.func,
+    recentClick:        PropTypes.func,
+    participantClick:   PropTypes.func,
+    messages:           PropTypes.object,
     current:            PropTypes.number,
     chating:            PropTypes.bool.isRequired,
     overlayShown:       PropTypes.bool.isRequired,
@@ -231,6 +261,7 @@ export class AgentTopBar extends React.Component {
   };
 
   render() {
+    const {current, chating, recentClick, messages, chatClickOut, participantClick, dispatch } = this.props;
     const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
     const { onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
     const { closeIframes, toggleViewMode, me, myDepartments, teams, recentChats, recentLoaded, overlayShown } = this.props;
@@ -261,15 +292,15 @@ export class AgentTopBar extends React.Component {
             departments={myDepartments}
             teams={teams}
             chats={recentChats}
-            onRecentClick={() => console.log('recent click')}
+            onRecentClick={recentClick}
           >
             <IMOverlay
               me={me}
               agents={agents}
               departments={myDepartments}
               teams={teams}
-              onRecentClick={() => console.log('recent click')}
-              onParticipantClick={() => console.log('participant click')}
+              onRecentClick={recentClick}
+              onParticipantClick={participantClick}
               createNewGroup={() => console.log('create new group click')}
               isOpen={overlayShown}
               notifications={Immutable.fromJS({})}
@@ -278,6 +309,20 @@ export class AgentTopBar extends React.Component {
             >
               <IMButton />
             </IMOverlay>
+            {current.get('id') ? <Container
+              isOpen={chating}
+              agents={agents}
+              departments={myDepartments}
+              teams={teams}
+              me={me}
+              messages={messages}
+              current={current}
+              onChange={() => console.log('change')}
+              onAttach={() => console.log('attach')}
+              clickOut={chatClickOut}
+              dispatch={dispatch}
+            /> : null }
+
           </TopBarRecentImList>
           : null
         }
@@ -299,7 +344,7 @@ export class AgentTopBar extends React.Component {
           <TopBarNotificationIcon
             elementId="notifications"
             svg={notificationsSvg}
-            count={notificationCount}ж
+            count={notificationCount}
           />
         </TopBarItem>
         <TopBarItem>

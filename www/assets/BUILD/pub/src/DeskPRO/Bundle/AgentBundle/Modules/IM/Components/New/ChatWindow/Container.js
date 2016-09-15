@@ -2,22 +2,23 @@ import React, { PropTypes } from 'react';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
+import { loadMessages } from '../../../Actions/messagesActions';
 import MessageList from './MessageList';
 import EmojiBox from './EmojiBox';
 
 class Container extends React.Component {
   static propTypes = {
     me:          PropTypes.object.isRequired,
-    chats:       PropTypes.object.isRequired,
     agents:      PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
     teams:       PropTypes.object.isRequired,
-    current:     PropTypes.number.isRequired,
+    current:     PropTypes.object.isRequired,
     isOpen:      PropTypes.bool.isRequired,
     clickOut:    PropTypes.func,
-    children:    PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     onChange:    PropTypes.func.isRequired,
-    onAttach:    PropTypes.func.isRequired
+    onAttach:    PropTypes.func.isRequired,
+    messages:    PropTypes.object,
+    dispatch:    PropTypes.func
   };
 
   static defaultProps = {
@@ -32,11 +33,14 @@ class Container extends React.Component {
       emojiOpened: false
     };
 
-    this.closePopup   = this.closePopup.bind(this);
     this.openEmoji    = this.openEmoji.bind(this);
     this.closeEmoji   = this.closeEmoji.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.addEmoji     = this.addEmoji.bind(this);
+  }
+
+  componentDidMount() {
+    this.refresh();
   }
 
   getAgentHeader(chat) {
@@ -57,8 +61,9 @@ class Container extends React.Component {
   getAgentTeamHeader(chat) {
     return this.props.teams.getIn([chat.get('agent_teams')[0], 'name']);
   }
+
   getHeader() {
-    const current = this.props.chats.get(this.props.current);
+    const { current } = this.props;
     switch (current.get('chat_type')) {
       case 'agent':
         return this.getAgentHeader(current);
@@ -71,8 +76,8 @@ class Container extends React.Component {
     }
   }
 
-  closePopup() {
-    this.props.clickOut();
+  refresh() {
+    this.props.dispatch(loadMessages(this.props.current.get('id'), ''));
   }
 
   openEmoji() {
@@ -98,18 +103,25 @@ class Container extends React.Component {
   }
 
   render() {
+    const { current, isOpen, messages, me, agents, clickOut } = this.props;
+
     return (
       <Detached
-        isOpen={this.props.isOpen}
-        positionTarget={document.getElementById(`chat-${this.props.chats.getIn([this.props.current, 'id'])}`)}
+        isOpen={isOpen}
+        positionTarget={document.getElementById(`chat-${current.get('id')}`)}
         positionMy="left-40 top+3"
       >
-        <ClickOut onClickOut={this.closePopup} ignoreNodes={['.emoji.box']}>
+        <ClickOut onClickOut={() => clickOut(current.get('id'))} ignoreNodes={['.emoji.box']}>
           <div className="ui popup left bottom im chat drawer">
             <div className="header">{this.getHeader()}</div>
             <div className="box">
               <Scrollable vertical>
-                <MessageList {...this.props} />
+                <MessageList
+                  current={current}
+                  messages={messages}
+                  me={me}
+                  agents={agents}
+                />
               </Scrollable>
             </div>
             <div className="reply">
