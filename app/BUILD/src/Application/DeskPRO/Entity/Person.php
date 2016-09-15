@@ -2904,7 +2904,7 @@ GroupSequenceProviderInterface
 
         $url = $this->primary_email ? $this->primary_email->getGravatarUrl($secure) : '';
         if ($size != 80) {
-            $url .= '&s='.$size;
+            $url .= '&s='.urlencode($size);
         }
 
         if ($this->organization && $this->organization->hasPicture()) {
