@@ -50,6 +50,7 @@ class Pop3AccountType extends AbstractType
             'choices'     => ['ssl' => 'ssl', 'tls' => 'tls'],
             'empty_value' => true,
         ]);
+        $builder->add('disable_cert_validation', 'checkbox', ['required' => true]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
