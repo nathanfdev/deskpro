@@ -59,7 +59,6 @@ class MessageList extends React.Component {
 
   render() {
     let msg = this.props.messages.hasIn(this.getPath()) ? this.props.messages.getIn(this.getPath()).messages : [];
-    console.log(msg, this.props.messages);
     msg = msg.sort((first, second) => first.timestamp - second.timestamp);
     return msg.size > 0 ? this.renderList(msg) : MessageList.renderEmpty();
   }

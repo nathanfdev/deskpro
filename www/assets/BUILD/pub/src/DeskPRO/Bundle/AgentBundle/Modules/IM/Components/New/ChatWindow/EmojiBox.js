@@ -31,7 +31,7 @@ class EmojiBox extends React.Component
       ]
     };
 
-    return (<Detached isOpen={isOpen} positionTarget={emojiNode} positionMy="right+28 top+35">
+    return (<Detached isOpen={isOpen} positionTarget={emojiNode} positionMy="right+25 top+35">
       <ClickOut onClickOut={clickOut} ignoreNodes={['.emoji.trigger']}>
         <div className="emoji box">
           <Tabs {...tabsStructure} />

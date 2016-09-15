@@ -2,9 +2,11 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
+import uuid from 'node-uuid';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Container } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow';
 import * as chatsActions from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/chatsActions';
+import * as messagesActions from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
@@ -69,10 +71,11 @@ export class AgentTopBarContainer extends SeparateComponent {
         notificationCount: e.detail.count
       });
     });
-    this.toggleImOverlay = this.toggleImOverlay.bind(this);
-    this.recentClick = this.recentClick.bind(this);
+    this.toggleImOverlay  = this.toggleImOverlay.bind(this);
+    this.recentClick      = this.recentClick.bind(this);
     this.participantClick = this.participantClick.bind(this);
-    this.chatClickOut = this.chatClickOut.bind(this);
+    this.chatClickOut     = this.chatClickOut.bind(this);
+    this.onSubmit         = this.onSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -113,6 +116,11 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   chatClickOut(chatId) {
     this.props.dispatch(chatsActions.closeChat(chatId));
+  }
+
+  onSubmit(message) {
+    const { dispatch, current, me } = this.props;
+    dispatch(messagesActions.addMessage(current.get('id'), message, uuid(), me));
   }
 
   componentWillMount = () => {
@@ -196,7 +204,8 @@ export class AgentTopBarContainer extends SeparateComponent {
       toggleImOverlay:   this.toggleImOverlay,
       chatClickOut:      this.chatClickOut,
       recentClick:       this.recentClick,
-      participantClick:  this.recentClick,
+      participantClick:  this.participantClick,
+      onSubmit:          this.onSubmit,
       onClearSearchInput: AgentTopBarContainer.onClearSearchInput,
       onToggleChat:       this.onToggleChat
     };
@@ -227,10 +236,11 @@ export class AgentTopBar extends React.Component {
     chatClickOut:       PropTypes.func,
     recentClick:        PropTypes.func,
     participantClick:   PropTypes.func,
-    messages:           PropTypes.object,
-    current:            PropTypes.number,
+    onSubmit:           PropTypes.func,
+    current:            PropTypes.object,
     chating:            PropTypes.bool.isRequired,
     overlayShown:       PropTypes.bool.isRequired,
+    messages:           PropTypes.object,
     onClearSearchInput: PropTypes.func,
     toggleViewMode:     PropTypes.func,
     voiceEnabled:       PropTypes.bool,
@@ -263,7 +273,7 @@ export class AgentTopBar extends React.Component {
   render() {
     const {current, chating, recentClick, messages, chatClickOut, participantClick, dispatch } = this.props;
     const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
-    const { onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
+    const { onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
     const { closeIframes, toggleViewMode, me, myDepartments, teams, recentChats, recentLoaded, overlayShown } = this.props;
 
     return (<TopBar>
@@ -317,6 +327,7 @@ export class AgentTopBar extends React.Component {
               me={me}
               messages={messages}
               current={current}
+              onSubmit={onSubmit}
               onChange={() => console.log('change')}
               onAttach={() => console.log('attach')}
               clickOut={chatClickOut}

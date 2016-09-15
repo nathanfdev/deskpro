@@ -213,7 +213,7 @@ const teamThree = {
 };
 
 const chatOne = {
-  id:                1,
+  id:                '1',
   chat_type:         'agent',
   agents:            [1, 6],
   departments:       [],
@@ -355,9 +355,15 @@ const messageFour = {
   uuid:         'c6e789a6-cd72-4a1b-888c-c93e1868c6b6'
 };
 
-export const messages = Immutable.Seq({
-  [messageOne.uuid]:   messageOne,
-  [messageTwo.uuid]:   messageTwo,
-  [messageThree.uuid]: messageThree,
-  [messageFour.uuid]:  messageFour
+export const messages = Immutable.Map({
+  chatMessages: Immutable.Map({
+    [chatOne.id]: {
+      messages: Immutable.List([
+        messageOne,
+        messageTwo,
+        messageThree,
+        messageFour
+      ])
+    }
+  })
 });

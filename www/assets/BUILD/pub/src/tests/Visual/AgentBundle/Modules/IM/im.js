@@ -6,6 +6,7 @@ import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { Container } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow';
 import { IMOverlay, IMButton, TopBarRecentImList, GroupAddDrawer } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar';
 import { imState, messages } from 'DemoState/AgentBundle/Modules/IM/im';
+import Immutable from 'immutable';
 
 const chatState = {
   ...imState,
@@ -55,9 +56,10 @@ storiesOf('Agent: IM', module)
         <span>
           <TopBarRecentImList {...imState} onRecentClick={action('recent chat (top bar) click')}>
             <Container
+              dispatch={() => console.log('www')}
               isOpen
               {...chatState}
-              current={1}
+              current={Immutable.fromJS({ id: '1', chat_type: 'agent', agents: [1, 6] })}
               onChange={action('reply')}
               onAttach={action('attach')}
               clickOut={action('clickout')}
