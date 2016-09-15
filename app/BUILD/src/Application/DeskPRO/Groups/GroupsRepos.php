@@ -28,17 +28,19 @@
 
 namespace Application\DeskPRO\Groups;
 
+use Application\DeskPRO\Entity\Usergroup;
+
 abstract class GroupsRepos implements \Countable, \IteratorAggregate
 {
     /**
-     * @var \Application\DeskPRO\Entity\Usergroup[]
+     * @var Usergroup[]
      */
     private $groups;
 
     /**
      * Groups mapped by sysname.
      *
-     * @var \Application\DeskPRO\Entity\Usergroup[]
+     * @var Usergroup[]
      */
     private $groups_named;
 
@@ -48,8 +50,8 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
     private $count;
 
     /**
-     * @param array $groups */
-
+     * @param array $groups
+     */
     public function __construct(array $groups)
     {
         $this->groups       = [];
@@ -87,7 +89,7 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
     /**
      * @param int $id
      *
-     * @return \Application\DeskPRO\Entity\Usergroup
+     * @return Usergroup
      */
     public function getGroup($id)
     {
@@ -101,7 +103,7 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
     /**
      * @param string $name
      *
-     * @return \Application\DeskPRO\Entity\Usergroup
+     * @return Usergroup
      */
     public function getSysGroup($name)
     {
@@ -113,7 +115,7 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\Usergroup[]
+     * @return Usergroup[]
      */
     public function getAll()
     {
@@ -121,7 +123,7 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\Usergroup[]
+     * @return Usergroup[]
      */
     public function getAllSys()
     {
