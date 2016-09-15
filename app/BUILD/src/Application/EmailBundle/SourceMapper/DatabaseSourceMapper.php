@@ -187,7 +187,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
                 if ($email && !$account_id) {
                     $acc = $this->email_accounts->findAccountForEmailAddress($email, 'with_transport');
                     if ($acc) {
-                        $account_id = $acc->id;
+                        $account_id = $acc->getId();
                     } else {
                         $acc        = null;
                         $account_id = null;
