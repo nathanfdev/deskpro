@@ -70,16 +70,22 @@ class Pop3Config implements AccountConfigInterface
     public $secure_mode = null;
 
     /**
+     * @var bool
+     */
+    public $disable_cert_validation = false;
+
+    /**
      * {@inheritdoc}
      */
     public function serializeJsonArray()
     {
         return [
-            'host'        => $this->host,
-            'port'        => $this->port,
-            'user'        => $this->user,
-            'password'    => $this->password,
-            'secure_mode' => $this->secure_mode,
+            'host'                    => $this->host,
+            'port'                    => $this->port,
+            'user'                    => $this->user,
+            'password'                => $this->password,
+            'secure_mode'             => $this->secure_mode,
+            'disable_cert_validation' => $this->disable_cert_validation,
         ];
     }
 

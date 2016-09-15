@@ -139,6 +139,7 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
     public function addWord(GlossaryWord $word)
     {
         $this->words->add($word);
+        $word->setDefinition($this);
     }
 
     /**

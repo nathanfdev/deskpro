@@ -26,15 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
-
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
@@ -44,29 +37,19 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 class VerifyAgent implements TicketSaveActionInterface
 {
     /**
-     * @var AgentDataService
-     */
-    private $agent_data;
-
-    /**
-     * @param AgentDataService $agent_data
-     */
-    public function __construct(AgentDataService $agent_data)
-    {
-        $this->agent_data = $agent_data;
-    }
-
-    /**
      * @param Ticket                   $ticket
      * @param ExecutorContextInterface $context
      */
     public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
-        if ($ticket->status == 'awaiting_agent' && $ticket->agent) {
+        $agent = $ticket->getAgent();
+
+        if ($ticket->getStatus() === 'awaiting_agent' && $agent) {
             $context->getLogger()->info('Checking assigned agent is not deleted');
-            if (!$this->agent_data->has($ticket->agent->id)) {
+
+            if (!$agent->isActiveAgent()) {
                 $context->getLogger()->info('Unassigning deleted agent');
-                $ticket->agent = null;
+                $ticket->setAgent(null);
             }
         }
     }

@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Tickets\Filters;
 
-use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 
 /**
@@ -43,7 +42,7 @@ use Application\DeskPRO\Entity\Person;
 class FilterChange
 {
     /**
-     * @var \Application\DeskPRO\Entity\LegacyTicketFilter
+     * @var array
      */
     private $filter;
 
@@ -68,15 +67,15 @@ class FilterChange
     private $new_match_for_agents = [];
 
     /**
-     * @param LegacyTicketFilter $filter
+     * @param array $filter
      */
-    public function __construct(LegacyTicketFilter $filter)
+    public function __construct(array $filter)
     {
         $this->filter = $filter;
     }
 
     /**
-     * @return LegacyTicketFilter
+     * @return array
      */
     public function getFilter()
     {
@@ -88,7 +87,7 @@ class FilterChange
      */
     public function addForAgent(Person $agent)
     {
-        $this->added_for_agents[$agent->id] = $agent;
+        $this->added_for_agents[$agent->getId()] = $agent;
     }
 
     /**
@@ -96,7 +95,7 @@ class FilterChange
      */
     public function removeForAgent(Person $agent)
     {
-        $this->removed_for_agents[$agent->id] = $agent;
+        $this->removed_for_agents[$agent->getId()] = $agent;
     }
 
     /**
@@ -104,7 +103,7 @@ class FilterChange
      */
     public function originalMatchForAgent(Person $agent)
     {
-        $this->orig_match_for_agents[$agent->id] = $agent;
+        $this->orig_match_for_agents[$agent->getId()] = $agent;
     }
 
     /**
@@ -112,7 +111,7 @@ class FilterChange
      */
     public function newMatchForAgent(Person $agent)
     {
-        $this->new_match_for_agents[$agent->id] = $agent;
+        $this->new_match_for_agents[$agent->getId()] = $agent;
     }
 
     /**

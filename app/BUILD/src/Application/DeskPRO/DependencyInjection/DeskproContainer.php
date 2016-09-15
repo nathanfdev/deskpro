@@ -781,6 +781,9 @@ class DeskproContainer extends Container
 
     /**
      * @return \Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService
+     *
+     * @deprecated Avoid using it as much as possible. It works really slow if we have many agents/usergroups/teams
+     * because it pre loads them ALL, even if we need something just for one agent
      */
     public function getAgentData()
     {

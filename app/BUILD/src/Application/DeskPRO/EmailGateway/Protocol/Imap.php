@@ -77,12 +77,22 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
     /**
      * {@inheritdoc}
      */
-    public function connect($host, $port = null, $ssl = false)
+    public function connect($host, $port = null, $ssl = false, $verifyCertificate = true)
     {
+        // it seems that it never used
         $ssl = $ssl ? strtoupper($ssl) : $ssl;
 
-        if ($ssl == 'SSL') {
-            $host = 'ssl://'.$host;
+        switch ($ssl) {
+            case 'SSL':
+                $host    = 'ssl://'.$host;
+                $wrapper = 'ssl';
+                break;
+            case 'TLS':
+                $host    = 'tls://'.$host;
+                $wrapper = 'ssl';
+                break;
+            default:
+                $wrapper = 'tcp';
         }
 
         if ($port === null) {
@@ -90,8 +100,20 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
         }
 
         ErrorHandler::start();
-        $this->socket = fsockopen($host, $port, $errno, $errstr, $this->connect_timeout);
-        $error        = ErrorHandler::stop();
+        $this->socket = @stream_socket_client(
+            $host.':'.$port,
+            $errno,
+            $errstr,
+            $this->stream_timeout,
+            \STREAM_CLIENT_CONNECT,
+            stream_context_create([
+                $wrapper => [
+                    'verify_peer'      => $verifyCertificate,
+                    'verify_peer_name' => $verifyCertificate,
+                ],
+            ])
+        );
+        $error = ErrorHandler::stop();
         if (!$this->socket) {
             throw new Exception\RuntimeException(sprintf(
                 'cannot connect to host%s',

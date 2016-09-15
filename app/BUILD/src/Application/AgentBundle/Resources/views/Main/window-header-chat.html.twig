@@ -53,7 +53,7 @@
 					{% endfor %}
 				</ul>
 				<ul class="agents list normal">
-					{% for agent in agents %}
+					{% for agent in app.getAgentData().getAgentAvatarList() %}
 						<li
 							data-department-ids="{{ agent_chat_depmap[agent.id]|join(',') }}"
 							class="agent agent-{{ agent.id }} {% if agent.id in userchat_online_agent_ids %}online-now{% endif %}"

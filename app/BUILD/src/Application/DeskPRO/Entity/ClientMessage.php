@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\MessageHandler\BasicArray;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -113,23 +112,12 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     protected $date_created;
 
     /**
-     * Event manager. This is used in the PostPersist callback to notify
-     * any listeners. For example, if the web socket server is enabled,
-     * it'll listen to this even and can handle pushing the message through
-     * to clients.
-     *
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     * Constructor.
      */
-    protected $event_dispatcher = null;
-
     public function __construct()
     {
-        $this->setModelField('date_created', new \DateTime());
-        $this->setModelField('auth', DpStrings::random(15, Strings::CHARS_KEY));
-
-        if (App::has('event_dispatcher')) {
-            $this->event_dispatcher = App::get('event_dispatcher');
-        }
+        $this->date_created = new \DateTime();
+        $this->auth         = self::generateAuthCode();
     }
 
     /**
@@ -153,6 +141,22 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuth()
+    {
+        return $this->auth;
+    }
+
+    /**
      * @param array $data
      *
      * @return $this
@@ -162,6 +166,14 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('data', $data);
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 
     /**
@@ -176,6 +188,42 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @param Person $for_person
+     *
+     * @return $this
+     */
+    public function setForPerson(Person $for_person = null)
+    {
+        $this->setModelField('for_person', $for_person);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getForPerson()
+    {
+        return $this->for_person;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedByClient()
+    {
+        return $this->created_by_client;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getForClient()
+    {
+        return $this->for_client;
+    }
+
     public function getHandler()
     {
         $handler = new BasicArray($this);
@@ -183,15 +231,20 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         return $handler;
     }
 
-    public function notifyMessageServers()
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
     {
-        if (!$this->event_dispatcher) {
-            return;
-        }
+        return $this->date_created;
+    }
 
-        $event = new \Application\DeskPRO\ClientMessage\Event($this);
-
-        $this->event_dispatcher->dispatch('DeskPRO_onNewClientMessage', $event);
+    /**
+     * @return string
+     */
+    public static function generateAuthCode()
+    {
+        return DpStrings::random(15, Strings::CHARS_KEY);
     }
 
     //###########################################################################
@@ -204,7 +257,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ClientMessage';
         $metadata->setPrimaryTable(['name' => 'client_messages']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->addLifecycleCallback('notifyMessageServers', 'postPersist');
         $metadata->mapField([
             'fieldName'  => 'id',
             'type'       => 'integer',

@@ -44,6 +44,9 @@ class Header
         return $this->name;
     }
 
+    /**
+     * @return null|string
+     */
     public function getHeader()
     {
         if (!$this->header_parts) {
@@ -53,6 +56,9 @@ class Header
         return $this->header_parts[0];
     }
 
+    /**
+     * @return string[]
+     */
     public function getAllParts()
     {
         return $this->header_parts;

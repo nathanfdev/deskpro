@@ -412,10 +412,7 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName, Hiera
     }
 
     /**
-     * @param null      $property
-     * @param Translate $translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseName($property, Translate $translate)
     {
@@ -431,10 +428,7 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName, Hiera
     }
 
     /**
-     * @param null      $property
-     * @param Translate $translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseDefault($property, Translate $translate)
     {

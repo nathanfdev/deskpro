@@ -26,42 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\DevBundle;
 
-use Symfony\Component\Console\Application;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Class DevBundle.
+ */
 class DevBundle extends Bundle
 {
-    public function registerCommands(Application $application)
-    {
-        $application->add(new Command\DevTestCommand());
-
-        $application->add(new Command\Gen\GenIntegrityMapCommand());
-        $application->add(new Command\Gen\GenSchemaFileCommand());
-        $application->add(new Command\Gen\GenTemplateMapCommand());
-        $application->add(new Command\Gen\GenWarmUpFileCommand());
-
-        $application->add(new Command\Lang\CheckMissingCommand());
-        $application->add(new Command\Lang\CheckUsesCommand());
-        $application->add(new Command\Lang\FindDupesCommand());
-        $application->add(new Command\Lang\OneSkyDownloadCommand());
-        $application->add(new Command\Lang\OneSkyUploadCommand());
-        $application->add(new Command\Lang\RemovePhrasesCommand());
-        $application->add(new Command\Lang\TrimExtraLangFilesCommand());
-    }
-
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
-    }
 }

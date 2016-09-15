@@ -120,14 +120,16 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
     /**
      * @param \Application\DeskPRO\Entity\Person $person
+     * @param array                              $options
      */
-    public function __construct(Person $person)
+    public function __construct(Person $person, array $options = null)
     {
         $this->person = $person;
+        $personId     = $person->getId();
+        $agent_data   = App::$container->getAgentData();
+        $forceLoadUg  = isset($options['force_load_usergroups']) && $options['force_load_usergroups'];
 
-        $agent_data = App::$container->getAgentData();
-
-        if ($agent_data->has($person->id)) {
+        if (!$forceLoadUg && $person->isActiveAgent()) {
             $this->usergroup_ids = $agent_data->getGroupIdsForAgent($person);
         } else {
             $this->usergroup_ids = App::getDb()->fetchAllCol('
@@ -135,30 +137,30 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
                 FROM person2usergroups
                 LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
                 WHERE person2usergroups.person_id = ? AND usergroups.is_enabled = 1
-            ', [$this->person['id']]);
+            ', [$this->person->getId()]);
         }
 
         $everyone_ug = App::$container->getUserGroups()->getEveryoneGroup();
-        if ($everyone_ug && $everyone_ug->is_enabled) {
-            $this->usergroup_ids[] = $everyone_ug->id;
+        if ($everyone_ug && $everyone_ug->isEnabled()) {
+            $this->usergroup_ids[] = $everyone_ug->getId();
         } else {
             $this->usergroup_ids[] = 0;
         }
 
         $reg_ug = App::$container->getUserGroups()->getRegisteredGroup();
-        if ($person->getId() && $reg_ug->is_enabled) {
-            $this->usergroup_ids[] = $reg_ug->id;
+        if ($personId && $reg_ug->isEnabled()) {
+            $this->usergroup_ids[] = $reg_ug->getId();
         }
 
         // And org ones...
         $this->org_usergroup_ids = [];
-        if ($this->person->organization) {
+        if ($this->person->getOrganization()) {
             $this->org_usergroup_ids = App::getDb()->fetchAllCol('
                 SELECT organization2usergroups.usergroup_id
                 FROM organization2usergroups
                 JOIN usergroups ON usergroups.id = organization2usergroups.usergroup_id
                 WHERE organization2usergroups.organization_id = ? AND usergroups.is_enabled = 1
-            ', [$this->person->organization['id']]);
+            ', [$this->person->getOrganization()->getId()]);
 
             if ($this->org_usergroup_ids) {
                 $this->usergroup_ids = array_merge($this->usergroup_ids, $this->org_usergroup_ids);
@@ -170,8 +172,8 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
         $this->usergroups_key = PermissionCache::generateUsergroupSetKey($this->usergroup_ids);
 
-        if ($this->person->is_agent) {
-            $this->usergroups_key = $this->usergroups_key.'-person-'.$this->person->id;
+        if ($this->person->isAgent()) {
+            $this->usergroups_key = $this->usergroups_key.'-person-'.$personId;
         }
 
         \DpShutdown::add([$this, 'flushCache']);
@@ -376,25 +378,25 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             return true;
         }
 
-        if ($name == 'agent_tickets.create') {
+        if ($name === 'agent_tickets.create') {
             if (!App::getDataService('Department')->getPersonDepartments($this->person, 'tickets', [], 'assign')) {
                 return false;
             }
         }
 
-        if ($name == 'articles.use' && !$crossBrandAppSettings['core.apps_kb']) {
+        if ($name === 'articles.use' && !$crossBrandAppSettings['core.apps_kb']) {
             return false;
         }
-        if ($name == 'feedback.use' && !$crossBrandAppSettings['core.apps_feedback']) {
+        if ($name === 'feedback.use' && !$crossBrandAppSettings['core.apps_feedback']) {
             return false;
         }
-        if ($name == 'downloads.use' && !$crossBrandAppSettings['core.apps_downloads']) {
+        if ($name === 'downloads.use' && !$crossBrandAppSettings['core.apps_downloads']) {
             return false;
         }
-        if ($name == 'news.use' && !$crossBrandAppSettings['core.apps_news']) {
+        if ($name === 'news.use' && !$crossBrandAppSettings['core.apps_news']) {
             return false;
         }
-        if ($name == 'chat.use' || $name == 'agent_chat.use') {
+        if ($name === 'chat.use' || $name === 'agent_chat.use') {
             if (!App::getSetting('core.apps_chat')) {
                 return false;
             }
@@ -403,7 +405,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
                 return false;
             }
         }
-        if ($name == 'articles.comment' || $name == 'downloads.comment' || $name == 'news.comment') {
+        if ($name === 'articles.comment' || $name === 'downloads.comment' || $name === 'news.comment') {
             if (!$crossBrandAppSettings['user.publish_comments']) {
                 return false;
             }

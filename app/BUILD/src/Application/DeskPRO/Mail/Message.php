@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\App;
@@ -40,6 +36,9 @@ use Orb\Html\Html2Text;
 use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
+/**
+ * Class Message.
+ */
 class Message extends \Orb\Mail\Message
 {
     /**
@@ -199,8 +198,8 @@ class Message extends \Orb\Mail\Message
 
             if (
                 !$this->set_to_person
-                || ($this->set_to_person && !$this->set_to_person->is_agent)
-                || ($this->set_to_person && $this->set_to_person->is_agent && $this->set_to_person->getPref(
+                || ($this->set_to_person && !$this->set_to_person->isAgent())
+                || ($this->set_to_person && $this->set_to_person->isAgent() && $this->set_to_person->getPref(
                         'agent.enable_plaintext_email'
                     ))
             ) {
@@ -319,8 +318,8 @@ class Message extends \Orb\Mail\Message
                     // in case the src is referenced twice
                     $embed_map[$src] = $self->embed(\Swift_Image::newInstance(
                         App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob),
-                        $blob->filename,
-                        $blob->content_type
+                        $blob->getFilename(),
+                        $blob->getContentType()
                     ));
                 }
 
@@ -373,7 +372,7 @@ class Message extends \Orb\Mail\Message
     }
 
     /**
-     * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
+     * @param EngineInterface $template_engine
      */
     public function setTemplateEngine(EngineInterface $template_engine)
     {

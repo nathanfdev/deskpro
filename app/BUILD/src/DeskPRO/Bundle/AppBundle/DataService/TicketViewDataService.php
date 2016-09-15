@@ -163,6 +163,11 @@ class TicketViewDataService extends AbstractDataService
                         // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
                         break;
                     }
+                    if ($fieldDef->isDisplayType()) {
+                        // ignore display fields on 'view'
+                        break;
+                    }
+
                     /* @var \Application\DeskPRO\Entity\CustomDataTicket $data */
                     $data = CustomFieldUtil::getCustomDataForField($fieldDef, $ticket->getCustomData());
                     $this->addCustomDataProperty($view, $field_id, $fieldDef, $data, $layout_field->isVisibleOnViewAlways());
@@ -177,6 +182,11 @@ class TicketViewDataService extends AbstractDataService
                         // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
                         break;
                     }
+                    if ($fieldDef->isDisplayType()) {
+                        // ignore display fields on 'view'
+                        break;
+                    }
+
                     /* @var \Application\DeskPRO\Entity\CustomDataOrganization $data */
                     $data = CustomFieldUtil::getCustomDataForField($fieldDef, $organization->getCustomData());
                     $this->addCustomDataProperty($view, $field_id, $fieldDef, $data, $layout_field->isVisibleOnViewAlways());
@@ -187,6 +197,11 @@ class TicketViewDataService extends AbstractDataService
                         // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
                         break;
                     }
+                    if ($fieldDef->isDisplayType()) {
+                        // ignore display fields on 'view'
+                        break;
+                    }
+
                     /* @var \Application\DeskPRO\Entity\CustomDataPerson $data */
                     $data = CustomFieldUtil::getCustomDataForField($fieldDef, $ticket->person->getCustomData());
                     $this->addCustomDataProperty($view, $field_id, $fieldDef, $data, $layout_field->isVisibleOnViewAlways());
@@ -205,14 +220,14 @@ class TicketViewDataService extends AbstractDataService
                         $value = implode(', ', array_map(function (CustomFieldData $customData) {
                             return $customData->getDefinition()->getTitle();
                         }, $data));
-                    }
 
-                    $view->addProperty(
-                        $field_id,
-                        $fieldDef->getTitle(),
-                        $value,
-                        $layout_field->isVisibleOnViewAlways()
-                    );
+                        $view->addProperty(
+                            $field_id,
+                            $fieldDef->getTitle(),
+                            $value,
+                            $layout_field->isVisibleOnViewAlways()
+                        );
+                    }
                     break;
             }
         }

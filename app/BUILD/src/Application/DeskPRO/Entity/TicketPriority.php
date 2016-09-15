@@ -149,9 +149,7 @@ class TicketPriority extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param string $property
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseName($property, Translate $translate)
     {
@@ -164,9 +162,7 @@ class TicketPriority extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param string $property
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseDefault($property, Translate $translate)
     {

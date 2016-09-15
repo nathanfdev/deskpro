@@ -34,6 +34,8 @@
 
 namespace Orb\Util;
 
+use DeskPRO\Component\Util\RegexUtils;
+
 /**
  * String utility functions.
  *
@@ -2715,5 +2717,35 @@ class Strings
         });
 
         return $arr;
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return string
+     */
+    public static function getNameFromEmail($email)
+    {
+        list($name) = explode('@', $email, 2);
+
+        $name = str_replace('_', ' ', $name);
+        $name = str_replace('.', ' ', $name);
+        $name = preg_replace('#[ ]{2,}#', ' ', $name); //consec spaces to single space
+
+        return self::utf8_ucwords($name);
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return string
+     */
+    public static function getFilenameSafe($filename)
+    {
+        $filename_safe = self::utf8_accents_to_ascii($filename);
+        $filename_safe = RegexUtils::safePregReplace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
+        $filename_safe = RegexUtils::safePregReplace('#\-{2,}#', '-', $filename_safe);
+
+        return $filename_safe ?: 'file';
     }
 }

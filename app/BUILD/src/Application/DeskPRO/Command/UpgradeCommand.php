@@ -98,7 +98,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $output->writeln('<error>One or more paths to system binaries are incorrect</error>');
             $output->writeln('The following paths are incorrect: '.implode(', ', $wrongPaths));
             $output->writeln('');
-            $output->writeln('You need to edit your config.paths.php file and correct the paths. The full path to the config fileis:');
+            $output->writeln(
+                'You need to edit your config.paths.php file and correct the paths. The full path to theconfig file is:'
+            );
             $output->writeln('<info>'.$root.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.paths.php</info>');
 
             return self::ERR_BAD_PATHS;

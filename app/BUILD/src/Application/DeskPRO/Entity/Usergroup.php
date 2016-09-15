@@ -199,6 +199,14 @@ class Usergroup extends DomainObject
     }
 
     /**
+     * @return bool
+     */
+    public function hasAllSafePermissions()
+    {
+        return $this->sys_name === self::AGENT_ALL_SAFE_PERM || $this->sys_name === self::AGENT_ALL_PERM;
+    }
+
+    /**
      * Set title.
      *
      * @param string $title
@@ -258,6 +266,14 @@ class Usergroup extends DomainObject
         $this->setModelField('is_agent_group', $is_agent_group);
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->is_enabled;
     }
 
     /**

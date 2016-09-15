@@ -366,7 +366,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @var string
      */
-    protected $status = 'awaiting_agent';
+    protected $status;
 
     /**
      * @var string
@@ -659,6 +659,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this['date_status']  = new \DateTime();
 
         $this['auth'] = DpStrings::random(self::TAC_AUTHCODE_LEN, Strings::CHARS_KEY);
+        $this->setModelField('status', self::STATUS_AWAITING_AGENT);
 
         $this->__dp_auto_ticket_process = true;
     }
@@ -2216,7 +2217,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             return 0;
         }
 
-        return $this->department['id'];
+        return $this->department->getId();
     }
 
     /**
@@ -3665,14 +3666,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return 0;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
-        $hash = $this->getStateChangeRecorder()->getStateVersion().(int) $primary.(int) $deep;
-        if ($hash === $this->api_data_hash) {
-            return $this->api_data;
-        }
-        $this->api_data_hash = $hash;
-
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
             $data['labels'] = [];
@@ -3693,9 +3691,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             unset($data['email_account']['incoming_account']);
             unset($data['email_account']['outgoing_account']);
         }
-        $data['department']['parent'] = $this->department && $this->department->parent
-            ? $this->department->parent->toApiData(true, false)
+
+        $data['department']['parent'] = $this->department && $this->department->getParent()
+            ? $this->department->getParent()->toApiData(true, false)
             : [];
+
         $data['total_user_waiting_real']   = $this->getRealTotalUserWaiting();
         $data['total_user_waiting_work']   = $this->getTotalUserWaitingWorkTime();
         $data['current_user_waiting']      = $this->getCurrentUserWaitingTime();
@@ -3717,7 +3717,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $field_manager = App::getContainer()->getTicketFieldManager();
         $field_manager->addApiData($this, $data);
 
-        return $this->api_data = $data;
+        return $data;
     }
 
     /**
@@ -4077,6 +4077,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function getOrganization()
     {
         return $this->organization;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getOrganizationId()
+    {
+        return $this->organization ? $this->organization->getId() : null;
     }
 
     public function isOwner(Person $person)

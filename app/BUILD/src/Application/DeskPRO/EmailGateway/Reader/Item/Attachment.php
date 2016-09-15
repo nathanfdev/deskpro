@@ -32,25 +32,69 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader\Item;
 
+/**
+ * Class Attachment.
+ */
 class Attachment
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     public $tmp_file;
-    /** @var callable */
+
+    /**
+     * @var callable
+     */
     public $file_contents_callback;
-    /** @var string|null */
+
+    /**
+     * @var string|null
+     */
     public $file_contents = null;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $file_name;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $file_name_utf8;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $mime_type;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $original_charset; // with Rfc822 types
-    /** @var string ? */
+
+    /**
+     * @var string ?
+     */
     public $content_id;
 
+    /**
+     * @var string
+     */
+    public $ctype_primary;
+
+    /**
+     * @var string
+     */
+    public $ctype_secondary;
+
+    /**
+     * @var int
+     */
+    public $size;
+
+    /**
+     * @return string
+     */
     public function getFileContents()
     {
         if ($this->file_contents !== null) {
@@ -64,11 +108,17 @@ class Attachment
         }
     }
 
+    /**
+     * @return string
+     */
     public function getFileName()
     {
         return $this->file_name;
     }
 
+    /**
+     * @return string
+     */
     public function getFileNameUtf8()
     {
         if (!$this->file_name_utf8) {
@@ -78,11 +128,17 @@ class Attachment
         return $this->file_name_utf8;
     }
 
+    /**
+     * @return string
+     */
     public function getMimeType()
     {
         return $this->mime_type;
     }
 
+    /**
+     * @return string
+     */
     public function getContentId()
     {
         return $this->content_id;

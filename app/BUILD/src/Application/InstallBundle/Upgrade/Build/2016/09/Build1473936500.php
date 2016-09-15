@@ -28,13 +28,12 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1472048787 extends AbstractBuild
+class Build1473936500 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Add top bar onboarding');
-        $this->execDbQuery('default', 'INSERT INTO person_onboarding 
-      (`id`, `person_id`, `current_step`, `onboarding_class`, `status`, `application`)
-        SELECT NULL, p.id, 0, \'topbar\', 0, \'Agent\' FROM people p WHERE p.is_agent = 1');
+        $this->out('Add Person Onboarding table');
+        $this->execDbQuery('default', 'CREATE TABLE person_onboarding (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, current_step INT DEFAULT NULL, onboarding_class VARCHAR(255) NOT NULL, status INT NOT NULL, application VARCHAR(255) NOT NULL, date_completion DATETIME DEFAULT NULL, INDEX IDX_151CD81B217BBB47 (person_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;');
+        $this->execDbQuery('default', 'ALTER TABLE person_onboarding ADD CONSTRAINT FK_151CD81B217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
     }
 }

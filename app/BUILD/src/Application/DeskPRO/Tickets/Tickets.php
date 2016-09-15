@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -46,21 +42,17 @@ class Tickets
      */
     public function getTicketsFromIds(array $ids)
     {
-        return App::getOrm()
-            ->getRepository('DeskPRO:Ticket')
-            ->getTicketsFromIds($ids);
+        return App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ids);
     }
 
     /**
-     * @param Ticket $ticket
+     * @param Entity\Ticket $ticket
      *
      * @return TicketEdit
      */
     public function getTicketEditor(Entity\Ticket $ticket)
     {
-        $ticket_edit = new TicketEdit($ticket);
-
-        return $ticket_edit;
+        return new TicketEdit($ticket);
     }
 
     /**
@@ -75,7 +67,7 @@ class Tickets
         $options = [];
 
         if ($person['is_agent']) {
-            $options['agents'] = App::getDataService('Person')->getAgentNames();
+            $options['agents'] = App::$container->get('agent_data')->getAgentNames();
 
             if (App::getSetting('core.use_agent_team')) {
                 $options['agent_teams'] = App::getDataService('AgentTeam')->getTeamNames();

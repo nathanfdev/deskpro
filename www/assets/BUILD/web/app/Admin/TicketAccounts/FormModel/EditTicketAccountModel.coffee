@@ -85,6 +85,8 @@ define [
           @form.in_pop3_account.secure_mode = @account.incoming_account.secure_mode
           @form.in_pop3_account.user        = @account.incoming_account.user
           @form.in_pop3_account.password    = @account.incoming_account.password
+
+          @form.in_pop3_account.disable_cert_validation = @account.incoming_account.disable_cert_validation
           if @form.in_pop3_account.secure_mode and @form.in_pop3_account.secure_mode != ''
             @form.in_pop3_account.secure = true
 

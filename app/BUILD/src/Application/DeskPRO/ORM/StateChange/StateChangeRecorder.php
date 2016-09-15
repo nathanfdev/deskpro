@@ -82,6 +82,9 @@ class StateChangeRecorder
      */
     private $current_change_metadata = [];
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->state_version = self::$global_state_version;

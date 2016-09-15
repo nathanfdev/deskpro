@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Departments;
 
 use Application\DeskPRO\Hierarchy\LazyPreloadedHierarchy;
@@ -40,6 +36,16 @@ class TicketDepartments extends LazyPreloadedHierarchy
      * @var int
      */
     private $default_id;
+
+    /**
+     * @var array
+     */
+    private $allAllowedIds;
+
+    /**
+     * @var array
+     */
+    private $allAllowedList;
 
     /**
      * @return array
@@ -167,5 +173,37 @@ class TicketDepartments extends LazyPreloadedHierarchy
     public function getAll()
     {
         return parent::getAll();
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllAllowedIds()
+    {
+        if (null === $this->allAllowedIds) {
+            $this->allAllowedIds = $this->connection->fetchAllCol('SELECT id FROM departments WHERE is_tickets_enabled = 1');
+        }
+
+        return $this->allAllowedIds;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllAllowedList()
+    {
+        if (null === $this->allAllowedList) {
+            $this->allAllowedList = [];
+            foreach ($this->getAllAllowedIds() as $id) {
+                $this->allAllowedList[] = [
+                    'department_id' => $id,
+                    'app'           => 'tickets',
+                    'name'          => 'full',
+                    'value'         => 1,
+                ];
+            }
+        }
+
+        return $this->allAllowedList;
     }
 }

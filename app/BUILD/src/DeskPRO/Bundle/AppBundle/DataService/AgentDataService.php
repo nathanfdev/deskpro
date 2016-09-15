@@ -52,6 +52,11 @@ class AgentDataService extends AbstractDataService
      */
     protected $db;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         parent::__construct($em);

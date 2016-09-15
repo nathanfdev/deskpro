@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Form\Model\NewTicket;
@@ -82,6 +78,7 @@ use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
+use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
@@ -94,7 +91,6 @@ use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -119,6 +115,11 @@ class TicketController extends AbstractController
     // view
     //###########################################################################
 
+    /**
+     * @param int $ticket_id
+     *
+     * @return Response
+     */
     public function viewAction($ticket_id)
     {
         $isPdf    = $this->in->getBool('pdf');
@@ -126,7 +127,7 @@ class TicketController extends AbstractController
 
         try {
             $ticket = $this->getTicketOr404($ticket_id);
-        } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+        } catch (NotFoundHttpException $e) {
             // try to find a delete log
             $delete_log = $this->em->getRepository(TicketDeleted::class)->findOneBy(['ticket_id' => $ticket_id]);
             if ($delete_log) {
@@ -136,11 +137,18 @@ class TicketController extends AbstractController
             }
         }
 
-        $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+        /** @var Tickets $ticketsService */
+        $ticketsService = App::getApi('tickets');
+        $ticket_options = $ticketsService->getTicketOptions($this->person);
 
         $ticket_attachments = $this->em->getRepository(TicketAttachment::class)->getTicketAttachments($ticket);
         if (!$ticket_attachments) {
             $ticket_attachments = [];
+        }
+
+        $organization = null;
+        if ($ticket->getPerson()) {
+            $organization = $ticket->getPerson()->getOrganization();
         }
 
         //------------------------------
@@ -157,10 +165,10 @@ class TicketController extends AbstractController
 
         $custom_fields        = $field_manager->getDisplayArrayForObject($ticket);
         $person_fields_group  = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
-        $custom_person_fields = $person_field_manager->getDisplayArrayForObject($ticket->person, $person_fields_group);
+        $custom_person_fields = $person_field_manager->getDisplayArrayForObject($ticket->getPerson(), $person_fields_group);
         $org_fields_group     = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
-        $custom_org_fields    = $ticket->person->organization
-            ? $org_field_manager->getDisplayArrayForObject($ticket->person->organization, $org_fields_group)
+        $custom_org_fields    = $organization
+            ? $org_field_manager->getDisplayArrayForObject($organization, $org_fields_group)
             : [];
 
         if (App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) {
@@ -176,12 +184,12 @@ class TicketController extends AbstractController
         // new custom fields
         $new_field_manager = $this->container->getCustomFieldManager();
         $new_custom_fields = $new_field_manager->createFormForOwner(
-            $ticket, $ticket->person, null, ['allow_edit' => true]
+            $ticket, $ticket->getPerson(), null, ['allow_edit' => true]
         );
-        if ($org = $ticket->person->organization) {
+        if ($organization) {
             $new_field_manager->merge(
                 $new_custom_fields,
-                $new_field_manager->createFormForOwner($ticket, $org, null, ['allow_edit' => true])
+                $new_field_manager->createFormForOwner($ticket, $organization, null, ['allow_edit' => true])
             );
         }
 
@@ -197,31 +205,31 @@ class TicketController extends AbstractController
 
         $ticket_flagged = $this->em->getRepository(TicketFlagged::class)->getFlagForTicket($ticket, $this->person);
 
-        $macros = $this->person->Agent->getMacros();
-
-        $tpl = 'AgentBundle:Ticket:view.html.twig';
-
+        $macros      = $this->person->Agent->getMacros();
         $hidden_data = $this->_getHiddenBarData($ticket);
 
         // Check if the search adapter
         $show_related_content = false;
 
-        $participants = $ticket->participants;
+        $participants = $ticket->getParticipants();
 
         $participant_ids = [];
         $agent_parts     = [];
         $user_parts      = [];
 
-        foreach ($participants as $p) {
-            $participant_ids[$p->person->getId()] = $p->person->id;
-            if ($p->person->is_agent) {
-                $agent_parts[$p->person->getId()] = $p;
+        foreach ($participants as $participant) {
+            $participantPerson   = $participant->getPerson();
+            $participantPersonId = $participantPerson->getId();
+
+            $participant_ids[$participantPersonId] = $participantPersonId;
+
+            if ($participantPerson->isAgent()) {
+                $agent_parts[$participantPersonId] = $participant;
             } else {
-                $user_parts[$p->person->getId()] = $p;
+                $user_parts[$participantPersonId] = $participant;
             }
         }
 
-        $agents      = $this->container->getAgentData()->getAgents();
         $agent_teams = $this->container->getDataService('AgentTeam')->getTeams();
 
         //------------------------------
@@ -249,20 +257,30 @@ class TicketController extends AbstractController
             $ticket_api[$key] = $ticket->$key;
         }
 
-        foreach ([
-                     'date_created', 'date_resolved', 'date_archived', 'date_first_agent_assign',
-                     'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply',
-                     'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked',
-                 ] as $date_key) {
+        $dateProps = [
+            'date_created',
+            'date_resolved',
+            'date_archived',
+            'date_first_agent_assign',
+            'date_first_agent_reply',
+            'date_last_agent_reply',
+            'date_last_user_reply',
+            'date_agent_waiting',
+            'date_user_waiting',
+            'date_status',
+            'date_locked',
+        ];
+
+        foreach ($dateProps as $date_key) {
             if ($ticket->$date_key instanceof \DateTime) {
                 $ticket_api[$date_key] = $ticket->$date_key->getTimestamp();
             }
         }
 
-        $ticket_api['person'] = $ticket->person->getDataForWidget();
+        $ticket_api['person'] = $ticket->getPerson()->getDataForWidget();
 
-        if ($ticket->agent) {
-            $ticket_api['agent'] = $ticket->agent->getDataForWidget();
+        if ($ticket->getAgent()) {
+            $ticket_api['agent'] = $ticket->getAgent()->getDataForWidget();
         }
 
         foreach ([
@@ -277,12 +295,12 @@ class TicketController extends AbstractController
                 $ticket_api[$key] = ['id' => $ticket->$key->id, $title_field => $ticket->$key->$title_field];
             }
         }
-        if ($ticket->product) {
-            $ticket_api['product'] = $ticket->product->toApiData();
+        if ($ticket->getProduct()) {
+            $ticket_api['product'] = $ticket->getProduct()->toApiData();
         }
-        if (count($ticket->labels)) {
+        if (count($ticket->getLabels())) {
             $ticket_api['labels'] = [];
-            foreach ($ticket->labels as $label) {
+            foreach ($ticket->getLabels() as $label) {
                 $ticket_api['labels'][] = $label['label'];
             }
         }
@@ -295,31 +313,22 @@ class TicketController extends AbstractController
             ];
         }
 
-        $draft = $this->em->getRepository(Draft::class)->getDraft('ticket', $ticket->id);
+        $draft = $this->em->getRepository(Draft::class)->getDraft('ticket', $ticket->getId());
         if ($draft && !empty($draft->extras['attach'])) {
             $draft_attachments = $this->em->getRepository(Blob::class)->getByIds($draft->extras['attach'], true);
         } else {
             $draft_attachments = [];
         }
 
-        $active_drafts = $this->em->getRepository(Draft::class)->getActiveDrafts('ticket', $ticket->id);
-        unset($active_drafts[$this->person->id]);
+        $active_drafts = $this->em->getRepository(Draft::class)->getActiveDrafts('ticket', $ticket->getId());
+        unset($active_drafts[$this->person->getId()]);
 
         $edit_person = $this->person->hasPerm('agent_people.edit');
         if ($edit_person) {
-            if (!$this->person->can_admin && $ticket->person->is_agent && $ticket->person->getId() != $this->person->getId()) {
+            if (!$this->person->canAdmin() && $ticket->getPerson()->isAgent() && $ticket->getPerson() !== $this->person) {
                 $edit_person = false;
             }
         }
-
-        $agent_map = [];
-        foreach ($agents as $agent) {
-            $agent_map[$agent->getId()] = [
-                'name'        => $agent->getDisplayName(),
-                'picture_url' => $agent->getPictureUrl(20),
-            ];
-        }
-        unset($agent_map[$this->person->getId()]);
 
         //------------------------------
         // Validate a ticket to see if we need to lock the reply form
@@ -351,16 +360,17 @@ class TicketController extends AbstractController
             'count'    => 0,
         ];
 
-        if ($ticket->parent_ticket && $ticket->parent_ticket->status != 'hidden' && $this->checkPerm($ticket->parent_ticket, 'view')) {
-            $linked_tickets['parent'] = $ticket->parent_ticket;
+        $parentTicket = $ticket->getParentTicket();
+        if ($parentTicket && $parentTicket->getStatus() !== 'hidden' && $this->checkPerm($parentTicket, 'view')) {
+            $linked_tickets['parent'] = $parentTicket;
 
             // Find siblings
             $linked_tickets['siblings'] = $this->permCheckArray(
-                $this->em->getRepository(Ticket::class)->getLinkedTickets($ticket->parent_ticket),
+                $this->em->getRepository(Ticket::class)->getLinkedTickets($parentTicket),
                 'view'
             );
             $linked_tickets['siblings'] = array_filter($linked_tickets['siblings'], function ($t) use ($ticket) {
-                if ($t->id == $ticket->id) {
+                if ($t->id == $ticket->getId()) {
                     return false;
                 } else {
                     return true;
@@ -403,9 +413,7 @@ class TicketController extends AbstractController
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
         $vars = [
-            'agents'      => $agents,
             'agent_teams' => $agent_teams,
-            'agent_map'   => $agent_map,
             'tasks'       => $tasks,
             'brands'      => $brands,
 
@@ -454,7 +462,7 @@ class TicketController extends AbstractController
             'agent_signature_html' => $this->person->getSignatureHtml(),
 
             'addable_slas'         => $addable_slas,
-            'person_object_counts' => $this->em->getRepository(Person::class)->getPersonObjectCounts($ticket->person),
+            'person_object_counts' => $this->em->getRepository(Person::class)->getPersonObjectCounts($ticket->getPerson()),
             'open_problems'        => $open_problems,
             'incidents'            => $incidents,
         ];
@@ -499,7 +507,7 @@ class TicketController extends AbstractController
             $this->em->flush();
         }
 
-        return $this->render($tpl, $vars);
+        return $this->render('AgentBundle:Ticket:view.html.twig', $vars);
     }
 
     public function getMessagePageAction($ticket_id, $page)
@@ -666,11 +674,14 @@ class TicketController extends AbstractController
 
         $message_ids = array_slice($all_message_ids, ($page - 1) * $per_page, $per_page);
 
-        $ticket_messages = $this->em->getRepository(TicketMessage::class)->getByIds($message_ids);
+        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $ticketMessageRepo */
+        $ticketMessageRepo = $this->em->getRepository(TicketMessage::class);
+        /** @var TicketMessage[] $ticket_messages */
+        $ticket_messages = $ticketMessageRepo->getByIds($message_ids);
 
-        usort($ticket_messages, function ($a, $b) {
-            $ts_a = $a->date_created->getTimestamp();
-            $ts_b = $b->date_created->getTimestamp();
+        usort($ticket_messages, function (TicketMessage $a, TicketMessage $b) {
+            $ts_a = $a->getDateCreated()->getTimestamp();
+            $ts_b = $b->getDateCreated()->getTimestamp();
 
             if ($ts_a == $ts_b) {
                 return 0;
@@ -686,8 +697,9 @@ class TicketController extends AbstractController
         $ticket_messages_translated = $this->em->getRepository(TicketMessageTranslated::class)->getForMessages($ticket_messages, $this->person->getLanguage()->getLocale());
 
         foreach ($ticket_messages as $message) {
-            if (!isset($ticket_messages_translated[$message->id]) && $message->primary_translation) {
-                $ticket_messages_translated[$message->id] = $message->primary_translation;
+            $messageId = $message->getId();
+            if (!isset($ticket_messages_translated[$messageId]) && $message->getPrimaryTranslation()) {
+                $ticket_messages_translated[$messageId] = $message->getPrimaryTranslation();
             }
         }
 
@@ -707,11 +719,13 @@ class TicketController extends AbstractController
         $last_message_id = 0;
 
         $ticket_messages_num = [];
-        foreach ($ticket_messages as $m) {
-            $ticket_messages_num[$m['id']] = $message_numbers[$m['id']] + 1;
+        foreach ($ticket_messages as $message) {
+            $messageId = $message->getId();
 
-            if ($m['id'] > $last_message_id) {
-                $last_message_id = $m['id'];
+            $ticket_messages_num[$messageId] = $message_numbers[$messageId] + 1;
+
+            if ($messageId > $last_message_id) {
+                $last_message_id = $messageId;
             }
         }
 
@@ -774,18 +788,18 @@ class TicketController extends AbstractController
         $ticket_messages_blockcache = [
             'status'               => $ticket->getStatusCode(),
             'language_id'          => $ticket->getLanguageId(),
-            'urgency'              => $ticket->urgency,
+            'urgency'              => $ticket->getUrgency(),
             'department_id'        => $ticket->getDepartmentId(),
             'category_id'          => $ticket->getCategoryId(),
             'product_id'           => $ticket->getProductId(),
             'workflow_id'          => $ticket->getWorkflowId(),
             'priority_id'          => $ticket->getPriorityId(),
-            'is_hold'              => $ticket->is_hold,
+            'is_hold'              => $ticket->isHold(),
             'agent_id'             => $ticket->getAgentId(),
             'agent_team_id'        => $ticket->getAgentTeamId(),
             'is_locked'            => $ticket->hasLock(),
-            'locked_by_agent_id'   => $ticket->hasLock() ? $ticket->locked_by_agent->getId() : null,
-            'locked_by_agent_name' => $ticket->hasLock() ? $ticket->locked_by_agent->getDisplayName() : null,
+            'locked_by_agent_id'   => $ticket->hasLock() ? $ticket->getLockedByAgent()->getId() : null,
+            'locked_by_agent_name' => $ticket->hasLock() ? $ticket->getLockedByAgent()->getDisplayName() : null,
 
             'incidents'     => $incidents,
             'problem_id'    => $problem_id,
@@ -3890,22 +3904,12 @@ class TicketController extends AbstractController
             ['title' => 'asc']
         );
 
-        $agent_map = [];
-        foreach ($agents as $agent) {
-            $agent_map[$agent->getId()] = [
-                'name'        => $agent->getDisplayName(),
-                'picture_url' => $agent->getPictureUrl(20),
-            ];
-        }
-        unset($agent_map[$this->person->getId()]);
-
         return $this->render('AgentBundle:Ticket:newticket.html.twig', [
             'ticket'               => $ticket,
             'person'               => $person,
             'message'              => $message,
             'attachments'          => isset($attachments) ? $attachments : null,
             'agents'               => $agents,
-            'agent_map'            => $agent_map,
             'agent_signature'      => $this->person->getSignature(),
             'agent_signature_html' => $this->person->getSignatureHtml(),
             'agent_teams'          => $agent_teams,
