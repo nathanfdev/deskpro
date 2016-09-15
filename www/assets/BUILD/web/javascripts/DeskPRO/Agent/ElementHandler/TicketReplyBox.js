@@ -872,8 +872,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			if (isWysiwyg && textarea.data('redactor')) {
-				textarea.data('redactor').syncCode();
+			var api = textarea.data('redactor');
+      if (isWysiwyg && api) {
+				api.$editor.linkify();
+				api.syncCode();
 			}
 
 			if (isWysiwyg) {
