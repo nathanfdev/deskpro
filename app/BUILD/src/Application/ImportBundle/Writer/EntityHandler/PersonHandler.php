@@ -66,6 +66,7 @@ class PersonHandler extends AbstractEntityHandler
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setIsDisabled($model->isDisabled())
             ->setIsDeleted($model->isDeleted())
+            ->setTitlePrefix($model->getTitlePrefix())
         ;
 
         if ($model->getDateCreated()) {

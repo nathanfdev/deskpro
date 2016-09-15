@@ -29,6 +29,7 @@
 namespace Application\ImportBundle\Model\ContactData;
 
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Address.
@@ -39,15 +40,19 @@ class Address extends AbstractContactData
      * @var string
      *
      * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
      */
-    protected $address;
+    protected $address = 'n/a';
 
     /**
      * @var string
      *
      * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
      */
-    protected $city;
+    protected $city = 'n/a';
 
     /**
      * @var string
@@ -67,8 +72,10 @@ class Address extends AbstractContactData
      * @var string
      *
      * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
      */
-    protected $country;
+    protected $country = 'n/a';
 
     /**
      * {@inheritdoc}

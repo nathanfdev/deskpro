@@ -52,7 +52,7 @@ interface ParserInterface
      * @param ImporterContext $context
      * @param string          $modelClass
      *
-     * @return Model\ImportModelCollection
+     * @return Model\PrimaryImportModelInterface[]
      */
     public function exportByType(ImporterContext $context, $modelClass);
 }

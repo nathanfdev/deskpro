@@ -28,7 +28,6 @@
 
 namespace Application\ImportBundle\Importer;
 
-use Application\ImportBundle\Model\ImportModelCollection;
 use Application\ImportBundle\Model\PrimaryImportModelInterface;
 use DeskPRO\Component\Util\AbstractCollection;
 
@@ -41,19 +40,29 @@ use DeskPRO\Component\Util\AbstractCollection;
 class ImporterCollection extends AbstractCollection
 {
     /**
-     * Add an model collection.
-     *
-     * @param string                $type
-     * @param ImportModelCollection $models
+     * @param PrimaryImportModelInterface $model
      *
      * @return $this
      */
-    public function add($type, ImportModelCollection $models)
+    public function add(PrimaryImportModelInterface $model)
+    {
+        $this->collection[get_class($model)][$model->getOid()] = $model;
+
+        return $this;
+    }
+
+    /**
+     * Add an model collection.
+     *
+     * @param string $type
+     * @param array  $models
+     *
+     * @return $this
+     */
+    public function addByType($type, array $models)
     {
         if (isset($this->collection[$type])) {
-            /** @var ImportModelCollection $collection */
-            $collection = $this->collection[$type];
-            $collection->merge($models);
+            $this->collection[$type] += $models;
         } else {
             $this->collection[$type] = $models;
         }
@@ -70,9 +79,8 @@ class ImporterCollection extends AbstractCollection
      */
     public function remove(PrimaryImportModelInterface $model)
     {
-        foreach ($this->collection as $type => $type_collection) {
-            /* @var ImportModelCollection $type_collection */
-            $type_collection->detach($model);
+        if (isset($this->collection[get_class($model)][$model->getOid()])) {
+            unset($this->collection[get_class($model)][$model->getOid()]);
         }
 
         return $this;
@@ -85,7 +93,7 @@ class ImporterCollection extends AbstractCollection
      *
      * @throws \Exception
      *
-     * @return ImportModelCollection|PrimaryImportModelInterface[]
+     * @return PrimaryImportModelInterface[]
      */
     public function getByType($type)
     {
@@ -93,25 +101,6 @@ class ImporterCollection extends AbstractCollection
             return $this->collection[$type];
         }
 
-        throw new \Exception(sprintf('Entities collection `%s` not found', $type));
-    }
-
-    /**
-     * Returns if collection has models of current type.
-     *
-     * @param string $type
-     *
-     * @return bool
-     */
-    public function hasEntitiesByType($type)
-    {
-        if (isset($this->collection[$type])) {
-            /** @var ImportModelCollection $type_collection */
-            $type_collection = $this->collection[$type];
-
-            return $type_collection->count() > 0;
-        }
-
-        return false;
+        return [];
     }
 }
