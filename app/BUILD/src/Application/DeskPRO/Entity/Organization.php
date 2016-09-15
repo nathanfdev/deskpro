@@ -154,7 +154,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     /**
      * @var Person[]|ArrayCollection
      */
-    protected $employees;
+    protected $members;
 
     /**
      * @var Organization|null
@@ -198,7 +198,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
 
         $this->slas          = new ArrayCollection();
         $this->children      = new ArrayCollection();
-        $this->employees     = new ArrayCollection();
+        $this->members       = new ArrayCollection();
         $this->tickets       = new ArrayCollection();
         $this->email_domains = new ArrayCollection();
     }
@@ -845,9 +845,45 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     /**
      * @return int
      */
-    public function getEmployeesCount()
+    public function getMembersCount()
     {
-        return $this->employees->count();
+        return $this->members->count();
+    }
+
+    /**
+     * @return Person[]|ArrayCollection
+     */
+    public function getMembers()
+    {
+        return $this->members;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function addMember(Person $person)
+    {
+        $person->setOrganization($this);
+        $this->members->add($person);
+
+        return $this;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function removeMember(Person $person)
+    {
+        if ($this->members->contains($person)) {
+            $person->setOrganization(null);
+            $this->members->removeElement($person);
+        }
+
+        return $this;
     }
 
     /**
@@ -1068,7 +1104,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         );
         $metadata->mapOneToMany(
             [
-                'fieldName'    => 'employees',
+                'fieldName'    => 'members',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => 'organization',
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
