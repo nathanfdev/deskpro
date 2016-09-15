@@ -263,14 +263,9 @@ class HierarchyGenerator
                 $brand,
             ],
             function () use ($person, $ticket, $brand) {
-                $allowedDepartments = $this->departmentDataService->getTicketDepartmentsForPerson($person);
                 /** @var ArrayCollection|Department[] $allowedDepartments */
-                $allowedDepartments = new ArrayCollection($allowedDepartments); // for convenient methods
-                foreach ($allowedDepartments as $key => $department) {
-                    if (!$department->hasBrand($brand)) {
-                        $allowedDepartments->remove($key);
-                    }
-                }
+                $allowedDepartments = new ArrayCollection($this->departmentDataService->getTicketDepartmentsForPerson($person, $brand));
+
                 if ($ticket) {
                     $ticketDepartment = $ticket->getDepartment();
                     if ($ticketDepartment && !$allowedDepartments->contains($ticketDepartment)) {
