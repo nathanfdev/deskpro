@@ -24,8 +24,7 @@
       "24": {
         "id": 24,
          "name": "Walter-Steuber",
-         "importance": 1,
-         "employees_count": 19
+         "importance": 1
       }
     }
   }

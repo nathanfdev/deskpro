@@ -155,16 +155,7 @@ class Organization
     protected $ticketsCount;
 
     /**
-     * How many employees organization has.
-     *
-     * @JMS\Type("integer")
-     *
-     * @var int
-     */
-    protected $employeesCount;
-
-    /**
-     * Organization employees.
+     * Organization members.
      *
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Person>>")
      *
@@ -180,20 +171,19 @@ class Organization
      */
     public function __construct(OrganizationEntity $organization, $chatsCount)
     {
-        $this->id             = $organization->getId();
-        $this->name           = $organization->getName();
-        $this->summary        = $organization->getSummary();
-        $this->importance     = $organization->getImportance();
-        $this->fields         = $organization->getCustomData();
-        $this->userGroups     = $organization->getPublicUsergroups();
-        $this->labels         = $organization->getLabels();
-        $this->contactData    = $organization->getContactData();
-        $this->emailDomains   = $organization->getEmailDomains();
-        $this->dateCreated    = $organization->getDateCreated();
-        $this->parent         = $organization->getParent();
-        $this->chatsCount     = $chatsCount;
-        $this->ticketsCount   = $organization->getTicketsCount();
-        $this->employeesCount = $organization->getEmployeesCount();
-        $this->members        = $organization->getEmployees();
+        $this->id           = $organization->getId();
+        $this->name         = $organization->getName();
+        $this->summary      = $organization->getSummary();
+        $this->importance   = $organization->getImportance();
+        $this->fields       = $organization->getCustomData();
+        $this->userGroups   = $organization->getPublicUsergroups();
+        $this->labels       = $organization->getLabels();
+        $this->contactData  = $organization->getContactData();
+        $this->emailDomains = $organization->getEmailDomains();
+        $this->dateCreated  = $organization->getDateCreated();
+        $this->parent       = $organization->getParent();
+        $this->chatsCount   = $chatsCount;
+        $this->ticketsCount = $organization->getTicketsCount();
+        $this->members      = $organization->getMembers();
     }
 }

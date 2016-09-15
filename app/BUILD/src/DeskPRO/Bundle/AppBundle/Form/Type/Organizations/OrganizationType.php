@@ -104,10 +104,9 @@ class OrganizationType extends AbstractType
                 'parent_builder' => $builder,
             ])
             ->add('members', EntityType::class, [
-                'class'         => Person::class,
-                'multiple'      => true,
-                'property_path' => 'employees',
-                'by_reference'  => false,
+                'class'        => Person::class,
+                'multiple'     => true,
+                'by_reference' => false,
             ])
         ;
     }

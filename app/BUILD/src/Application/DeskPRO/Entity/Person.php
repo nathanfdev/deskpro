@@ -4196,7 +4196,7 @@ GroupSequenceProviderInterface
                 'fieldName'    => 'organization',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
                 'mappedBy'     => null,
-                'inversedBy'   => 'employees',
+                'inversedBy'   => 'members',
                 'fetch'        => ClassMetadata::FETCH_EAGER,
                 'cascade'      => ['persist'],
                 'joinColumns'  => [
