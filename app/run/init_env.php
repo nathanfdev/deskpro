@@ -269,3 +269,7 @@ if ($init_scripts = $DP_ENV->getConfig('env.init_scripts')) {
         }, $init_scripts);
     }
 }
+
+if ($DP_ENV->getConfig('env.init_fn')) {
+    call_user_func($DP_ENV->getConfig('env.init_fn'), $DP_ENV);
+}
