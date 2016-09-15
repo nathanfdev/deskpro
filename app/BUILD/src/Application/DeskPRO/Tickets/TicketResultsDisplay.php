@@ -490,7 +490,8 @@ class TicketResultsDisplay implements PersonContextInterface
                 tickets_messages.is_agent_note
             FROM tickets_messages
             LEFT JOIN people ON (people.id = tickets_messages.person_id)
-            WHERE tickets_messages.id IN (SELECT MAX(id) FROM tickets_messages WHERE ticket_id IN (?) GROUP by ticket_id)
+            JOIN (SELECT MAX(id) AS id FROM tickets_messages WHERE ticket_id IN (?) GROUP by ticket_id) tickets_messages2
+            WHERE tickets_messages.id = tickets_messages2.id
         ', [$this->ticket_ids], 'id', [Connection::PARAM_INT_ARRAY]);
 
         $extra_people     = [];
