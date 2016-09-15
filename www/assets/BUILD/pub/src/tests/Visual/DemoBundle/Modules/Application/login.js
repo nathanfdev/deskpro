@@ -7,10 +7,10 @@ import { ForgottenPassword } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Compo
 import { ConfirmExtend } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/ConfirmExtend';
 import { ConfirmReset } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/ConfirmReset';
 import { DeleteAccountFeedback } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/DeleteAccountFeedback';
+import { ExtendTrial } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/ExtendTrial';
 import { demoCss } from '../../../decorators';
 
 storiesOf('Demo: expired demo', module)
-  .addDecorator(story => demoCss(story()))
   .addDecorator(story =>
     <div className="container">
       <div className="logo">
@@ -19,35 +19,44 @@ storiesOf('Demo: expired demo', module)
       {story()}
     </div>
   )
+  .addDecorator(story => demoCss(story()))
   .add(
-    'Login',
-    () =>
-      <Login onForgotPassword={linkTo('Demo: expired demo', 'Forgotten Password')} />
+    'Login', () =>
+      <Login
+        onForgotPassword={linkTo('Demo: expired demo', 'Forgotten Password')}
+        onLogin={linkTo('Demo: expired demo', 'Extend your trial')}
+      />
   )
   .add(
-    'Forgotten Password',
-    () =>
-      <ForgottenPassword onBackToLogin={linkTo('Demo: expired demo', 'Login')} />
+    'Forgotten Password', () =>
+      <ForgottenPassword
+        onBackToLogin={linkTo('Demo: expired demo', 'Login')}
+        onEmailInstructions={action('Email instructions')}
+      />
   )
   .add(
-    'Demo Extended',
-    () =>
+    'Extend your trial', () =>
+      <ExtendTrial
+        onResumeTrial={linkTo('Demo: expired demo', 'Demo Extended')}
+        onDeleteAccount={linkTo('Demo: expired demo', 'Delete account feedback')}
+      />
+  )
+  .add(
+    'Demo Extended', () =>
       <ConfirmExtend
         onPreserveData={action('Preserve data')}
         onDeleteData={linkTo('Demo: expired demo', 'Confirm reset')}
       />
   )
   .add(
-    'Confirm reset',
-    () =>
+    'Confirm reset', () =>
       <ConfirmReset
         onReset={action('Confirm reset')}
         onCancelButton={linkTo('Demo: expired demo', 'Demo Extended')}
       />
   )
   .add(
-    'Delete account feedback',
-    () =>
+    'Delete account feedback', () =>
       <DeleteAccountFeedback
         onSubmit={action('Submit')}
       />

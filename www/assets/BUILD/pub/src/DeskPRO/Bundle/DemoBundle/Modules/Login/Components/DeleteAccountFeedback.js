@@ -24,9 +24,9 @@ export class DeleteAccountFeedback extends React.Component {
           We're always looking to improve our product and would love to hear your feedback.
         </p>
         <Form>
-          <TextArea placeholder="Type feedback here..." />
-          <Button onClick={this.props.onSubmit}>Submit feedback</Button>
+          <TextArea placeholder="Type feedback here..." rows={4} />
         </Form>
+        <Button onClick={this.props.onSubmit}>Submit feedback</Button>
       </Segment>
     );
   }

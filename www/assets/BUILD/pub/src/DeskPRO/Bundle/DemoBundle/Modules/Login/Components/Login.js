@@ -10,7 +10,8 @@ export class LoginContainer extends React.Component {
 }
 export class Login extends React.Component {
   static propTypes = {
-    onForgotPassword: PropTypes.func
+    onForgotPassword: PropTypes.func,
+    onLogin:          PropTypes.func
   };
 
   render() {
@@ -27,8 +28,8 @@ export class Login extends React.Component {
             <label htmlFor="password">Password</label>
             <InputText id="password" icon="lock" iconPosition="left" />
           </Field>
-          <Button classes="positive">Log in</Button>
         </Form>
+        <Button classes="positive" onClick={this.props.onLogin}>Log in</Button>
         <p><a onClick={this.props.onForgotPassword}>Forgot your password?</a></p>
 
       </Segment>
