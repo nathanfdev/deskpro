@@ -468,7 +468,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField([
             'fieldName'  => 'from_email',
             'type'       => 'string',
-            'length'     => 500,
+            'length'     => 255,
             'columnName' => 'from_email',
         ]);
         $metadata->mapField([
