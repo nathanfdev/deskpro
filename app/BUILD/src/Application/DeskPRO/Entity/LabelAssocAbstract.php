@@ -55,9 +55,11 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
      */
     protected $label;
 
-    public function __construct($value)
+    public function __construct($value = null)
     {
-        $this->setLabel($value);
+        if ($value) {
+            $this->setLabel($value);
+        }
     }
 
     /**
