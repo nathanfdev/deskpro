@@ -432,7 +432,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
             $language = $this->_language;
         }
 
-        $language_id = $language->id;
+        $language_id = $language->getId();
 
         if (!isset($this->_pending_groups[$language_id])) {
             $this->_pending_groups[$language_id] = [];
@@ -531,7 +531,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
         if (Numbers::isInteger($language)) {
             $languageId = $language;
         } else {
-            $languageId = $language['id'];
+            $languageId = $language->getId();
         }
 
         if (!isset($this->_phrases[$languageId][$phraseName])) {

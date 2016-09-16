@@ -66,11 +66,7 @@ class DeskproLoader implements LoaderInterface
     }
 
     /**
-     * @param array $groups
-     * @param mixed $language
-     * @param array $loaded_phrases
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function load($groups, $language, array $loaded_phrases = null)
     {
