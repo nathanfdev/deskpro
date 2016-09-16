@@ -34,12 +34,14 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Mail\Message;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Monolog\Logger;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -274,12 +276,11 @@ class TicketEmail
 
     /**
      * @param array $vars
+     *
+     * @return Message
      */
-    public function send(array $vars = [])
+    public function prepareMailerMessage(array $vars = [])
     {
-        $mailer     = $this->mailer;
-        $translator = $this->translate;
-
         $ticketDisplay = new TicketDisplay($this->ticket, $this->toPerson);
         $ticketDisplay->setPersonContext($this->toPerson, $this->userMode);
 
@@ -328,7 +329,7 @@ class TicketEmail
         $this->sentWithCcs = [];
 
         /** @var Message $message */
-        $message = $mailer->createMessage();
+        $message = $this->mailer->createMessage();
         $this->logger->info(sprintf('[TicketEmail] To: %s -- Name: %s', $toEmail, $this->toPerson->getDisplayName()));
         $message->setTo([$toEmail => $this->toPerson->getDisplayName()]);
         $message->setContextId('ticket_gateway');
@@ -404,7 +405,7 @@ class TicketEmail
         $this->logger->info(sprintf('[TicketEmail] Language: %s', $lang->getSystemName()));
 
         $start = microtime(true);
-        $translator->setTemporaryLanguage($lang, function () use ($message) {
+        $this->translate->setTemporaryLanguage($lang, function () use ($message) {
             $message->prepare();
         });
         $this->logger->info(sprintf('[TicketEmail] Prepare took %.3fs', microtime(true) - $start));
@@ -413,24 +414,46 @@ class TicketEmail
             $message->getHeaders()->addTextHeader($header['name'], $header['value']);
         }
 
-        $start = microtime(true);
-
-        if ($mailer instanceof StorageTransportInterface) {
-            $id = $mailer->queueMessage($message);
-            if ($id) {
-                $this->logger->info(sprintf('[TicketEmail] SendmailSource ID #%d', $id));
-                $this->sendmailSourceId = $id;
-            }
-        } else {
-            $mailer->send($message);
-        }
-
         /* If we added a brand in the stack we remove it */
         if ($this->ticket->getBrand()) {
             $this->brandStack->pop();
         }
 
-        $this->logger->info(sprintf('[TicketEmail] Send took %.3fs', microtime(true) - $start));
+        return $message;
+    }
+
+    /**
+     * @param Message $message
+     * @param Logger  $logger
+     *
+     * @return $int
+     */
+    public static function sendMailerMessage(Message $message, Logger $logger)
+    {
+        $mailer = App::$container->getMailer();
+        $start  = microtime(true);
+
+        if ($mailer instanceof StorageTransportInterface) {
+            $id = $mailer->queueMessage($message);
+            if ($id) {
+                $logger->info(sprintf('[TicketEmail] SendmailSource ID #%d', $id));
+            }
+        } else {
+            $mailer->send($message);
+            $id = null;
+        }
+
+        $logger->info(sprintf('[TicketEmail] Send took %.3fs', microtime(true) - $start));
+
+        return $id;
+    }
+
+    /**
+     * @param array $vars
+     */
+    public function send(array $vars = [])
+    {
+        $this->sendmailSourceId = self::sendMailerMessage($this->prepareMailerMessage($vars), $this->logger);
     }
 
     /**
