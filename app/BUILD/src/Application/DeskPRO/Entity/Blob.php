@@ -478,6 +478,14 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getStorageLocPref()
+    {
+        return $this->storage_loc_pref;
+    }
+
+    /**
      * @param string $storage_loc
      */
     public function setStorageLocSpecific($storage_loc)
@@ -487,6 +495,14 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         } else {
             $this->setModelField('storage_loc_specific', $storage_loc);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getStorageLocSpecific()
+    {
+        return $this->storage_loc_specific;
     }
 
     /**
@@ -544,9 +560,81 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @return string
      */
+    public function getFileUrl()
+    {
+        return $this->file_url;
+    }
+
+    /**
+     * @param string $file_url
+     *
+     * @return $this
+     */
+    public function setFileUrl($file_url)
+    {
+        $this->setModelField('file_url', $file_url);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getFilesize()
     {
         return $this->filesize;
+    }
+
+    /**
+     * @param string $filesize
+     *
+     * @return $this
+     */
+    public function setFilesize($filesize)
+    {
+        $this->setModelField('filesize', $filesize);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBlobHash()
+    {
+        return $this->blob_hash;
+    }
+
+    /**
+     * @param string $blob_hash
+     *
+     * @return $this
+     */
+    public function setBlobHash($blob_hash)
+    {
+        $this->setModelField('blob_hash', $blob_hash);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStorageLoc()
+    {
+        return $this->storage_loc;
+    }
+
+    /**
+     * @param string $storage_loc
+     *
+     * @return $this
+     */
+    public function setStorageLoc($storage_loc)
+    {
+        $this->setModelField('storage_loc', $storage_loc);
+
+        return $this;
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = [])

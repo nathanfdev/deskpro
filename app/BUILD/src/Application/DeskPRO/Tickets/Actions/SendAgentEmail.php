@@ -243,33 +243,38 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
         $defaultVars = array_merge($defaultVars, $emailBuilder->getCommonVars(true));
 
+        $changedAgent        = $state->hasChangedField('agent');
+        $changedAgentTeam    = $state->hasChangedField('agent_team');
+        $changedParticipants = $state->hasChangedField('participants');
+        $changedStatus       = $state->hasChangedField('status');
+        $changedSlaStatus    = $state->hasChangedField('ticket_sla_status');
+
         /** @var Person[] $agents */
         foreach ($agents as $agent) {
             ++$sent_count;
 
             $context->getLogger()->debug(sprintf('[SendAgentEmail] Sending to <Person:%d> %s', $agent->getId(), $agent->getDisplayName()));
-
             $vars = $defaultVars;
 
-            $type_flag = null;
-            if ($state->hasChangedField('agent') && $ticket->getAgent() && $ticket->getAgent() === $agent) {
-                $type_flag = 'assigned';
-            } elseif ($state->hasChangedField('agent_team') && $ticket->getAgentTeam() && $agent->getHelper('Agent')->isTeamMember($ticket->getAgentTeam()->getId())) {
-                $type_flag = 'assigned_team';
-            } elseif ($state->hasChangedField('participants') && $fn_check_new_part($agent)) {
-                $type_flag = 'added_part';
-            } elseif ($state->hasChangedField('status')) {
-                $type_flag = 'status_changed';
+            $typeFlag = null;
+            if ($changedAgent && $ticket->getAgent() && $ticket->getAgent() === $agent) {
+                $typeFlag = 'assigned';
+            } elseif ($changedAgentTeam && $ticket->getAgentTeam() && $agent->getHelper('Agent')->isTeamMember($ticket->getAgentTeam()->getId())) {
+                $typeFlag = 'assigned_team';
+            } elseif ($changedParticipants && $fn_check_new_part($agent)) {
+                $typeFlag = 'added_part';
+            } elseif ($changedStatus) {
+                $typeFlag = 'status_changed';
             }
 
-            if ($state->hasChangedField('ticket_sla_status')) {
+            $vars['type_flag'] = $typeFlag;
+
+            if ($changedSlaStatus) {
                 $change             = $state->getLastChangeForField('ticket_sla_status');
                 $new                = $change->getNew();
                 $vars['sla']        = $new['sla'];
                 $vars['sla_status'] = $new['status'];
             }
-
-            $vars['type_flag'] = $type_flag;
 
             if (isset($mentioned_agents_map[$agent->getId()])) {
                 $vars['is_my_mention'] = true;

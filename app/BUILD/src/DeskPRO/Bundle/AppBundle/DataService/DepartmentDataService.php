@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
@@ -39,9 +40,9 @@ use Doctrine\ORM\EntityManager;
 class DepartmentDataService extends AbstractDataService
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager
+     * @var PermissionsManager
      */
-    private $permissions_manager;
+    private $permissionsManager;
 
     /**
      * Constructor.
@@ -52,8 +53,7 @@ class DepartmentDataService extends AbstractDataService
     public function __construct(EntityManager $em, PermissionsManager $permissionsManager)
     {
         parent::__construct($em);
-
-        $this->permissions_manager = $permissionsManager;
+        $this->permissionsManager = $permissionsManager;
     }
 
     /**
@@ -66,18 +66,20 @@ class DepartmentDataService extends AbstractDataService
      * See the HierarchyGenerator which makes hierarchy's for you.
      *
      * @param Person $person
+     * @param Brand  $brand
      *
      * @return Department[]
      */
-    public function getTicketDepartmentsForPerson(Person $person)
+    public function getTicketDepartmentsForPerson(Person $person, Brand $brand = null)
     {
         return $this->generateAndCache(
             [
                 'getAuthorizedDepartmentsForPersonInPortal',
                 $person,
+                $brand,
             ],
             [$this, 'fetchDepartments'],
-            [$person, 'ticket']
+            [$person, $brand, 'ticket']
         );
     }
 
@@ -90,18 +92,20 @@ class DepartmentDataService extends AbstractDataService
      * See the HierarchyGenerator which makes hierarchy's for you.
      *
      * @param Person $person
+     * @param Brand  $brand
      *
      * @return Department[]
      */
-    public function getChatDepartmentsForPerson(Person $person)
+    public function getChatDepartmentsForPerson(Person $person, Brand $brand = null)
     {
         return $this->generateAndCache(
             [
                 'getChatDepartmentsForPerson',
                 $person,
+                $brand,
             ],
             [$this, 'fetchDepartments'],
-            [$person, 'chat']
+            [$person, $brand, 'chat']
         );
     }
 
@@ -131,11 +135,12 @@ class DepartmentDataService extends AbstractDataService
 
     /**
      * @param Person $person
+     * @param Brand  $brand
      * @param string $type
      *
      * @return array
      */
-    public function fetchDepartments(Person $person, $type = '')
+    public function fetchDepartments(Person $person, Brand $brand = null, $type = '')
     {
         // department data service is used both for the portal and api
         // so we can't rely on portal permission bag and use legacy permission manager
@@ -153,6 +158,12 @@ class DepartmentDataService extends AbstractDataService
             ->where('d.id IN (:allowed_department_ids)')
             ->orderBy('d.display_order', 'ASC')
         ;
+
+        if ($brand) {
+            $qb->join('d.brands', 'b');
+            $qb->andWhere('b.id = :brand');
+            $qb->setParameter('brand', $brand);
+        }
 
         switch ($type) {
             case 'chat':

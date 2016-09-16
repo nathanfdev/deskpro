@@ -39,10 +39,15 @@ use Application\DeskPRO\Entity;
 
 class TicketMessage extends AbstractEntityRepository
 {
+    /**
+     * @param $ticket
+     *
+     * @return \Application\DeskPRO\Entity\TicketMessage|null
+     */
     public function getLastAgentReply($ticket)
     {
         if (!($ticket instanceof Entity\Ticket)) {
-            $ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket);
+            $ticket = App::getEntityRepository(Entity\Ticket::class)->find($ticket);
         }
 
         return $this->getEntityManager()->createQuery('
