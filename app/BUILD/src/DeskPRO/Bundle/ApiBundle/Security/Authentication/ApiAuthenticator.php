@@ -65,19 +65,30 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
     public function createToken(Request $request, $providerKey)
     {
         // agent session cookie
-        if (
-            ($session_id = $request->cookies->get('dpsid-admin'))
-            ||
-            ($session_id = $request->cookies->get('dpsid-agent'))
-        ) {
-            $agent_token = new AgentSessionSecurityToken('anon.', $session_id, $providerKey);
+        /** @var \Application\DeskPRO\EntityRepository\Session $sessionRepo */
+        $sessionRepo = $this->em->getRepository(Session::class);
 
-            // add app if possible
-            if ($app_id = $request->headers->get(self::APP_HEADER_NAME, null, true)) {
-                $agent_token->setAppId($app_id);
+        foreach (['dpsid-admin', 'dpsid-agent'] as $cookieName) {
+            $sessionId = $request->cookies->get($cookieName);
+            if (!$sessionId) {
+                continue;
             }
 
-            return $agent_token;
+            // check that session still exists
+            $session = $sessionRepo->getSessionFromCode($sessionId);
+            if (!$session) {
+                continue;
+            }
+
+            $agentToken = new AgentSessionSecurityToken('anon.', $sessionId, $providerKey);
+
+            // add app if possible
+            $appId = $request->headers->get(self::APP_HEADER_NAME, null, true);
+            if ($appId) {
+                $agentToken->setAppId($appId);
+            }
+
+            return $agentToken;
         }
 
         // Authorize header
