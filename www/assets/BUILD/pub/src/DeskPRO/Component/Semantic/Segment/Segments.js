@@ -1,19 +1,19 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-class Field extends React.Component {
+class Segments extends React.Component {
   static propTypes = {
     children: PropTypes.node,
     classes:  PropTypes.string
   };
 
   render() {
-    const { children, classes } = this.props;
+    const { classes, children } = this.props;
     return (
-      <div className={classNames('field', classes)}>
+      <div className={classNames('ui segments', classes)}>
         {children}
       </div>
     );
   }
 }
-export default Field;
+export default Segments;

@@ -1,4 +1,5 @@
 @import '../../../AppBundle/Resources/style/variables';
+@import "../../../../../../node_modules/bourbon/app/assets/stylesheets/css3/_placeholder";
 
 $font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 body {
@@ -9,6 +10,12 @@ body {
 h3 {
   font-family: $font-family;
   font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+h4 {
+  font-family: $font-family;
+  font-size: 14px;
   font-weight: 600;
   margin-bottom: 30px;
 }
@@ -25,9 +32,19 @@ form.form {
   button.ui.button {
     margin: 0 auto;
   }
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 }
 a {
   cursor: pointer;
+}
+@include placeholder {
+  font-family: $font-family;
+  color: $dp-greyscale-300;
+  font-style: italic;
 }
 .segment.login,
 .segment.confirm-extend,
@@ -43,6 +60,49 @@ a {
   button.ui.button {
     margin: 20px auto 0;
     width: 150px;
+  }
+}
+.segment.extend-trial {
+  width: 910px;
+  padding: 40px 95px;
+  .green {
+    color: $dp-emerald-primary;
+  }
+  .ui.form .field > label {
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .segments {
+    border: none;
+    box-shadow: none;
+    margin-top: 40px;
+  }
+  .segment.address {
+    border: none;
+    background: $dp-greyscale-100;
+    padding: 30px;
+  }
+  .segment.credit-card {
+    border: none;
+    background: $dp-greyscale-50;
+    padding: 30px 40px;
+  }
+  .expiry input {
+    @include placeholder {
+      font-style: normal;
+    }
+  }
+  .card-number svg {
+    height: 18px;
+    vertical-align: middle;
+  }
+  .expiry .ui.input,
+  .security-code .ui.input {
+    width: 60px;
+  }
+  .security-code img {
+    height: 40px;
+    vertical-align: bottom;
   }
 }
 .delete-account-feedback {

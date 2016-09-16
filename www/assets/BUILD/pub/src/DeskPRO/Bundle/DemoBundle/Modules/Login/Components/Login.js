@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
-import { Field, Form, InputText } from 'DeskPRO/Component/Semantic/Form';
+import { Field, Form, Input } from 'DeskPRO/Component/Semantic/Form';
 
 export class LoginContainer extends React.Component {
   render() {
@@ -22,11 +22,11 @@ export class Login extends React.Component {
         <Form>
           <Field>
             <label htmlFor="username">Email / Username</label>
-            <InputText id="username" icon="mail" iconPosition="left" />
+            <Input id="username" icon="mail" iconPosition="left" />
           </Field>
           <Field>
             <label htmlFor="password">Password</label>
-            <InputText id="password" icon="lock" iconPosition="left" />
+            <Input id="password" icon="lock" iconPosition="left" />
           </Field>
         </Form>
         <Button classes="positive" onClick={this.props.onLogin}>Log in</Button>

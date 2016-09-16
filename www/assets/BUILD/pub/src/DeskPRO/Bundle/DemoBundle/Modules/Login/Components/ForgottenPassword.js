@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
-import { Field, Form, InputText } from 'DeskPRO/Component/Semantic/Form';
+import { Field, Form, Input } from 'DeskPRO/Component/Semantic/Form';
 
 export class ForgottenPasswordContainer extends React.Component {
   render() {
@@ -24,7 +24,7 @@ export class ForgottenPassword extends React.Component {
         <Form>
           <Field>
             <label htmlFor="username">Email</label>
-            <InputText id="username" icon="mail" iconPosition="left" />
+            <Input id="username" icon="mail" iconPosition="left" />
           </Field>
         </Form>
         <Button onClick={this.props.onEmailInstructions}>Email instructions</Button>

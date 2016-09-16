@@ -1,14 +1,18 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-class InputText extends React.Component {
+class Input extends React.Component {
   static propTypes = {
     icon:         PropTypes.string,
     iconPosition: PropTypes.string,
     id:           PropTypes.string,
     name:         PropTypes.string,
     placeholder:  PropTypes.string,
-    value:        PropTypes.string
+    value:        PropTypes.string,
+    type:         PropTypes.string
+  };
+  static defaultProps = {
+    type: 'text'
   };
 
   getIcon = () => {
@@ -19,13 +23,13 @@ class InputText extends React.Component {
   };
 
   render() {
-    const { placeholder, icon, iconPosition, id, value } = this.props;
+    const { placeholder, icon, iconPosition, id, type, value } = this.props;
     return (
       <div className={classNames('ui', 'input', iconPosition, { icon: !!icon })}>
-        <input id={id}  value={value} ref={(c) => { this.input = c; }} type="text" name={name} placeholder={placeholder} />
+        <input id={id}  value={value} ref={(c) => { this.input = c; }} type={type} name={name} placeholder={placeholder} />
         {this.getIcon()}
       </div>
     );
   }
 }
-export default InputText;
+export default Input;

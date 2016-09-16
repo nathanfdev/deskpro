@@ -39,6 +39,7 @@ class MenuItem extends React.Component {
     return (<a
       className={classNames('ui', 'item', { dropdown: !!subContent }, classes)}
       onClick={this.handleClick}
+      ref={(c) => { this.node = c; }}
     >
       {this.getIcon()}
       {label}
