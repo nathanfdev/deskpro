@@ -66,8 +66,9 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
     {
         // agent session cookie
         if (
+            ($session_id = $request->cookies->get('dpsid-admin'))
+            ||
             ($session_id = $request->cookies->get('dpsid-agent'))
-            || ($session_id = $request->cookies->get('dpsid-admin'))
         ) {
             $agent_token = new AgentSessionSecurityToken('anon.', $session_id, $providerKey);
 
