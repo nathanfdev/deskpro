@@ -30,6 +30,7 @@ namespace Application\DeskPRO\Usersource\Actions;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\LabelPerson;
+use Application\DeskPRO\Entity\Person;
 
 class AddLabel extends AbstractAction
 {
@@ -50,10 +51,10 @@ class AddLabel extends AbstractAction
         return $this->getData();
     }
 
-    protected function doHandle(DeskproContainer $container, array $data)
+    protected function doHandle(DeskproContainer $container, Person $person, array $rawInput)
     {
-        $value = $this->getValue($data);
+        $value = $this->getValue($rawInput);
         $label = new LabelPerson($value);
-        $this->getPerson($data)->addLabel($label);
+        $person->addLabel($label);
     }
 }

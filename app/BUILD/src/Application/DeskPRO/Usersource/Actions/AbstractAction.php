@@ -35,10 +35,6 @@ use Symfony\Component\ExpressionLanguage\ParserCache\ArrayParserCache;
 
 abstract class AbstractAction
 {
-    const KEY_PERSON = 'person';
-
-    const KEY_RAW_DATA = 'raw_data';
-
     protected $filter;
 
     abstract public function getData();
@@ -87,38 +83,6 @@ abstract class AbstractAction
     }
 
     /**
-     * @param $data
-     *
-     * @throws \Exception
-     *
-     * @return Person
-     */
-    protected function getPerson(array $data)
-    {
-        if (!@$data[self::KEY_PERSON] instanceof Person) {
-            throw new \Exception('Person is required');
-        }
-
-        return $data[self::KEY_PERSON];
-    }
-
-    /**
-     * @param array $data
-     *
-     * @throws \Exception
-     *
-     * @return array
-     */
-    protected function getRawData(array $data)
-    {
-        if (!array_key_exists(self::KEY_RAW_DATA, $data)) {
-            throw new \Exception('Raw data is required');
-        }
-
-        return $data[self::KEY_RAW_DATA] ?: [];
-    }
-
-    /**
      * @param $value
      * @param array $data
      *
@@ -136,11 +100,14 @@ abstract class AbstractAction
 
     /**
      * @param DeskproContainer $container
-     * @param array            $data
+     * @param Person           $person
+     * @param array            $rawInput
+     *
+     * @internal param array $data
      */
-    public function handle(DeskproContainer $container, array $data)
+    public function handle(DeskproContainer $container, Person $person, array $rawInput)
     {
-        if ($this->getFilter() && !$this->evaluate($this->getFilter(), ['user' => $this->getRawData($data)])) {
+        if ($this->getFilter() && !$this->evaluate($this->getFilter(), ['user' => $rawInput])) {
             return;
         }
 
@@ -148,14 +115,17 @@ abstract class AbstractAction
             return;
         }
 
-        $this->doHandle($container, $data);
+        $this->doHandle($container, $person, $rawInput);
     }
 
     /**
      * @param DeskproContainer $container
-     * @param array            $data
+     * @param Person           $person
+     * @param array            $rawInput
      *
      * @return mixed
+     *
+     * @internal param array $data
      */
-    abstract protected function doHandle(DeskproContainer $container, array $data);
+    abstract protected function doHandle(DeskproContainer $container, Person $person, array $rawInput);
 }

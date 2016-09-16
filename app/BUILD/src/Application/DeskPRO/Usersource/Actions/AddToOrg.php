@@ -29,6 +29,7 @@
 namespace Application\DeskPRO\Usersource\Actions;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Organization;
 use Symfony\Component\Form\Form;
 
@@ -51,9 +52,9 @@ class AddToOrg extends AbstractAction
         return $this->getData();
     }
 
-    protected function doHandle(DeskproContainer $container, array $data)
+    protected function doHandle(DeskproContainer $container, Person $person, array $rawInput)
     {
-        $value = $this->getValue($data);
+        $value = $this->getValue($rawInput);
         /** @var Organization $orgRep */
         $orgRep = $container->getEm()->getRepository('DeskPRO:Organization');
 
@@ -74,7 +75,7 @@ class AddToOrg extends AbstractAction
         }
 
         if ($org) {
-            $this->getPerson($data)->organization = $org;
+            $person->organization = $org;
         }
     }
 }

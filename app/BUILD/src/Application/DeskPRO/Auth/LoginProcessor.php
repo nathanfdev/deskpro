@@ -460,10 +460,7 @@ class LoginProcessor
 
         foreach ($usersource->actions as $action) {
             /* @var $action AbstractAction */
-            $action->handle(App::$container, [
-                AbstractAction::KEY_PERSON   => $person,
-                AbstractAction::KEY_RAW_DATA => $raw_info,
-            ]);
+            $action->handle(App::$container, $person, $raw_info);
 
             // todo how to handle exceptions here?
         }

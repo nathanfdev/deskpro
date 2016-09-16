@@ -29,6 +29,7 @@
 namespace Application\DeskPRO\Usersource\Actions;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\AgentTeam;
 
 class AddToTeam extends AbstractAction
@@ -49,11 +50,13 @@ class AddToTeam extends AbstractAction
         $this->teamId = (int) $value;
     }
 
-    protected function doHandle(DeskproContainer $container, array $data)
+    protected function doHandle(DeskproContainer $container, Person $person, array $rawInput)
     {
         /** @var AgentTeam $teamsRep */
         $teamsRep = $container->getEm()->getRepository('DeskPRO:AgentTeam');
         $teams    = $teamsRep->getTeamsFromIds([$this->getData()]);
-        $this->getPerson($data)->addTeam(reset($teams));
+        if ($team = reset($teams)) {
+            $person->addTeam($team);
+        }
     }
 }

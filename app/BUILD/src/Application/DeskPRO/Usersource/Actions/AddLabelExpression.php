@@ -37,6 +37,6 @@ class AddLabelExpression extends AddLabel
      */
     protected function getValue(array $data)
     {
-        return $this->evaluate($this->getData(), ['user' => $this->getRawData($data)]);
+        return $this->evaluate($this->getData(), ['user' => $data]);
     }
 }

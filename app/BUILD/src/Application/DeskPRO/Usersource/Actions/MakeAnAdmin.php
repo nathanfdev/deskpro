@@ -29,6 +29,7 @@
 namespace Application\DeskPRO\Usersource\Actions;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Person;
 
 class MakeAnAdmin extends AbstractAction
 {
@@ -41,8 +42,8 @@ class MakeAnAdmin extends AbstractAction
     {
     }
 
-    protected function doHandle(DeskproContainer $container, array $data)
+    protected function doHandle(DeskproContainer $container, Person $person, array $rawInput)
     {
-        $this->getPerson($data)->setCanAdmin(true);
+        $person->setCanAdmin(true);
     }
 }
