@@ -28,6 +28,8 @@
 
 namespace Application\DeskPRO\Usersource\Actions;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+
 class AddToAgentGroup extends AbstractAction
 {
     protected $groupId;
@@ -44,5 +46,13 @@ class AddToAgentGroup extends AbstractAction
         }
 
         $this->groupId = (int) $value;
+    }
+
+    protected function doHandle(DeskproContainer $container, array $data)
+    {
+        /** @var $agentGroupsHelper */
+        $agentGroupsHelper = $container->getAgentGroups();
+        $group             = $agentGroupsHelper->getGroup($this->getData());
+        $this->getPerson($data)->addUsergroup($group);
     }
 }

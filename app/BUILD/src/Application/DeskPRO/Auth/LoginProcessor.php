@@ -34,30 +34,16 @@ namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\SystemServices\AgentCheckerService;
-use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\EntityRepository\AgentTeam;
-use Application\DeskPRO\EntityRepository\Organization;
 use Application\DeskPRO\Usersource\Actions\AbstractAction;
-use Application\DeskPRO\Usersource\Actions\AddLabel;
-use Application\DeskPRO\Usersource\Actions\AddLabelExpression;
-use Application\DeskPRO\Usersource\Actions\AddToAgentGroup;
-use Application\DeskPRO\Usersource\Actions\AddToOrg;
-use Application\DeskPRO\Usersource\Actions\AddToOrgExpression;
-use Application\DeskPRO\Usersource\Actions\AddToTeam;
-use Application\DeskPRO\Usersource\Actions\AddToUserGroup;
-use Application\DeskPRO\Usersource\Actions\MakeAnAdmin;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
-use Symfony\Component\ExpressionLanguage\ParserCache\ArrayParserCache;
-use Symfony\Component\Form\Form;
 
 class LoginProcessor
 {
@@ -472,92 +458,14 @@ class LoginProcessor
             return;
         }
 
-        // it won't get any worse
-        $agentGroupsHelper = App::$container->getAgentGroups();
-        $userGroupsHelper  = App::$container->getUserGroups();
-        $teamsRep          = App::getEntityRepository('DeskPRO:AgentTeam');
-        $orgRep            = App::getEntityRepository('DeskPRO:Organization');
-        $lang              = new ExpressionLanguage(new ArrayParserCache());
-        $evaluate          = function ($value) use ($lang, $raw_info) {
-            try {
-                return @$lang->evaluate($value, ['user' => $raw_info]);
-            } catch (\Exception $e) {
-            }
-        };
-
-        /* @var $teamsRep AgentTeam */
-        /* @var $orgRep Organization */
-
         foreach ($usersource->actions as $action) {
-            /** @var $action AbstractAction */
-            if ($action->getFilter() && !$evaluate($action->getFilter())) {
-                continue;
-            }
+            /* @var $action AbstractAction */
+            $action->handle(App::$container, [
+                AbstractAction::KEY_PERSON   => $person,
+                AbstractAction::KEY_RAW_DATA => $raw_info,
+            ]);
 
             // todo how to handle exceptions here?
-
-            if (!$action->getData() && !$action instanceof MakeAnAdmin) {
-                continue;
-            }
-
-            switch (true) {
-
-                case $action instanceof AddToAgentGroup:
-                    $group = $agentGroupsHelper->getGroup($action->getData());
-                    $person->addUsergroup($group);
-                    break;
-
-                case $action instanceof AddToUserGroup:
-                    $group = $userGroupsHelper->getGroup($action->getData());
-                    $person->addUsergroup($group);
-                    break;
-
-                case $action instanceof AddToTeam:
-                    $teams = $teamsRep->getTeamsFromIds([$action->getData()]);
-                    $person->addTeam(reset($teams));
-                    break;
-
-                case $action instanceof MakeAnAdmin:
-                    $person->setCanAdmin(true);
-                    break;
-
-                case $action instanceof AddToOrg:
-                case $action instanceof AddToOrgExpression:
-                    $value = $action instanceof AddToOrgExpression
-                        ? $evaluate($action->getData())
-                        : $action->getData();
-
-                    if (!$org = $orgRep->findOneByName($value)) {
-                        $neworg   = new \Application\AgentBundle\Form\Model\NewOrganization();
-                        $formType = new \Application\AgentBundle\Form\Type\NewOrganization();
-                        /** @var Form $form */
-                        $form = App::$container->get('form.factory')->create(
-                            $formType,
-                            $neworg,
-                            // this was REALLY unexpected and hard to find!
-                            ['csrf_double_submit_protection' => false]
-                        );
-                        $form->submit(['name' => $action->getData()], true);
-                        if ($form->isValid()) {
-                            $org = $neworg->save();
-                        }
-                    }
-
-                    if ($org) {
-                        $person->organization = $org;
-                    }
-                    break;
-
-                case $action instanceof AddLabel:
-                case $action instanceof AddLabelExpression:
-                    $value = $action instanceof AddLabelExpression
-                        ? $evaluate($action->getData())
-                        : $action->getData();
-
-                    $label = new LabelPerson($value);
-                    $person->addLabel($label);
-                    break;
-            }
         }
     }
 }

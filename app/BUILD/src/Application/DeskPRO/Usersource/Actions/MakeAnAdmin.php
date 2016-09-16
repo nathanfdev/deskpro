@@ -28,6 +28,8 @@
 
 namespace Application\DeskPRO\Usersource\Actions;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+
 class MakeAnAdmin extends AbstractAction
 {
     public function getData()
@@ -37,5 +39,10 @@ class MakeAnAdmin extends AbstractAction
 
     public function setData($value)
     {
+    }
+
+    protected function doHandle(DeskproContainer $container, array $data)
+    {
+        $this->getPerson($data)->setCanAdmin(true);
     }
 }

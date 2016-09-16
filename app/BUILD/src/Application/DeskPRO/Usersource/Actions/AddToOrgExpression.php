@@ -28,17 +28,15 @@
 
 namespace Application\DeskPRO\Usersource\Actions;
 
-class AddToOrgExpression extends AbstractAction
+class AddToOrgExpression extends AddToOrg
 {
-    protected $expression;
-
-    public function getData()
+    /**
+     * @param array $data
+     *
+     * @return string
+     */
+    protected function getValue(array $data)
     {
-        return $this->expression;
-    }
-
-    public function setData($value)
-    {
-        $this->expression = (string) $value;
+        return $this->evaluate($this->getData(), ['user' => $this->getRawData($data)]);
     }
 }
