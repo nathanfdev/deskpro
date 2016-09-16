@@ -90,7 +90,7 @@ class AppOptionsMapper
         }
 
         if (!$options['port']) {
-            if (isset($options['useSsl'])) {
+            if (isset($options['useSsl']) && $options['useSsl']) {
                 $options['port'] = 636;
             } else {
                 $options['port'] = 389;

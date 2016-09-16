@@ -39,8 +39,6 @@ use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
 
 class UsersourceTester
 {
@@ -174,28 +172,10 @@ class UsersourceTester
 
         if ($result && $result->isValid() && $result->getIdentity()) {
             $result_raw = "DATA RECORD:\n=======================================================\n";
-            $raw_data   = Arrays::mapRecursive($result->getIdentity()->getRawData(), function ($v) {
-                if (is_int($v) || is_float($v) || ctype_digit($v) || is_bool($v) || is_null($v) || ctype_print($v)) {
-                    return $v;
-                } else {
-                    return Strings::utf8_bad_strip($v);
-                }
-            });
-            $result_raw .= print_r($raw_data, true);
+            $result_raw .= print_r($result->getIdentity()->getRawData(), true);
         } else {
             $result_raw = 'No Identity';
         }
-
-        $clean = $result_raw;
-        if (!$clean) {
-            $result_raw = Strings::utf8_bad_strip($result_raw);
-            $clean      = @htmlspecialchars($result_raw, \ENT_QUOTES, 'ISO-8895-1');
-            if (!$clean) {
-                $clean = '[Data contains invalid characters]';
-            }
-        }
-
-        $result_raw = $clean;
 
         $this->log      = $log;
         $this->raw_data = $result_raw;
