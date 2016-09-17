@@ -247,7 +247,14 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         $changedAgentTeam    = $state->hasChangedField('agent_team');
         $changedParticipants = $state->hasChangedField('participants');
         $changedStatus       = $state->hasChangedField('status');
-        $changedSlaStatus    = $state->hasChangedField('ticket_sla_status');
+
+        if ($state->hasChangedField('ticket_sla_status')) {
+            $change = $state->getLastChangeForField('ticket_sla_status');
+            $new    = $change->getNew();
+
+            $defaultVars['sla']        = $new['sla'];
+            $defaultVars['sla_status'] = $new['status'];
+        }
 
         /** @var Person[] $agents */
         foreach ($agents as $agent) {
@@ -268,14 +275,6 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             }
 
             $vars['type_flag'] = $typeFlag;
-
-            if ($changedSlaStatus) {
-                $change             = $state->getLastChangeForField('ticket_sla_status');
-                $new                = $change->getNew();
-                $vars['sla']        = $new['sla'];
-                $vars['sla_status'] = $new['status'];
-            }
-
             if (isset($mentioned_agents_map[$agent->getId()])) {
                 $vars['is_my_mention'] = true;
             }
