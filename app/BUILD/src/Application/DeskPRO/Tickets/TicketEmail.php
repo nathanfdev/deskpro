@@ -281,16 +281,12 @@ class TicketEmail
      */
     public function prepareMailerMessage(array $vars = [])
     {
-        $ticketDisplay = new TicketDisplay($this->ticket, $this->toPerson);
-        $ticketDisplay->setPersonContext($this->toPerson, $this->userMode);
-
         if ($this->toPerson && $this->toPerson->isAgent()) {
             $this->toPerson->loadHelper('Agent');
             $this->toPerson->loadHelper('AgentTeam');
         }
 
-        $vars['person']        = $this->toPerson;
-        $vars['ticketdisplay'] = $ticketDisplay;
+        $vars['person'] = $this->toPerson;
 
         if ($this->ticket->getBrand()) {
             $this->brandStack->push($this->ticket->getBrand());
@@ -337,7 +333,6 @@ class TicketEmail
         if (isset($vars['attached_blobs'])) {
             /** @var TicketAttachment $attachment */
             foreach ($vars['attached_blobs'] as $attachment) {
-                $ticketDisplay->setIgnoreAttachment($attachment);
                 $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), $attachment->isInline());
             }
         }

@@ -392,7 +392,12 @@ class TicketEmailBuilder
         $messageRepo = $this->em->getRepository(TicketMessage::class);
         $messages    = $messageRepo->getTicketMessages(
             $ticket,
-            ['with_notes' => $forAgent, 'limit' => 15, 'order' => 'DESC']
+            [
+                'with_notes'       => $forAgent,
+                'with_attachments' => true,
+                'limit'            => 15,
+                'order'            => 'DESC',
+            ]
         );
 
         $vars = [
