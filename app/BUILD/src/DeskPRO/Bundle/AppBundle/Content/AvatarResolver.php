@@ -132,6 +132,10 @@ class AvatarResolver
                 $url = $blobUrl;
             } elseif ($this->use_gravatar && $blob['email']) {
                 // gravatar
+                if (!$blobUrl) {
+                    $blobUrl = 'mm';
+                }
+
                 $url = $gravatarUrl.strtolower(md5($blob['email'])).'?&s='.urlencode($size).'&d='.$blobUrl;
             } elseif ($blobUrl) {
                 // org picture
