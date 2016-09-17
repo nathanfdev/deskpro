@@ -21,8 +21,7 @@ Feature: API Authentication
     And the response status code should be 401
     And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
     Then the JSON node "status" should be equal to 401
-    Then the JSON node "code" should be equal to "invalid_session_id"
-    And the JSON node "message" should be equal to "Invalid session ID."
+    Then the JSON node "code" should be equal to "unauthorized"
 
   Scenario: I use a malformed Authorization header
     When I add Authorization header equal to "key 1:XYZ invalid"
