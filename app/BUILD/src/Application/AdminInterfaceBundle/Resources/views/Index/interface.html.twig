@@ -144,24 +144,24 @@
                         <option ng-repeat="brand in brands | orderBy: 'name'" value="{{ ng_var('brand.id') }}">{{ ng_var('brand.name') }}</option>
                         <option class="new-brand"value="-1">{{ phrase('admin.setup.new_brand') }}</option>
                     </select>
-                    {{ nav.list_subitem('Setup', ng_href('portal.setup'), 'portal.setup', 'fa-th-large') }}
+                    {{ nav.list_subitem('Setup', ng_href('portal.setup', '{brandId: brandId}'), 'portal.setup', 'fa-th-large') }}
                     <div ng-if="brandId > 0">
-                        {{ nav.list_subitem_regex_statemark('Knowledgebase', ng_href('portal.kb_settings'), 'portal.kb_settings', 'fa-book', null, '{"is-disabled": !Ctrl.settings.apps_kb || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
-                        {{ nav.list_subitem_regex_statemark('News', ng_href('portal.news_settings'), 'portal.news_settings', 'fa-clock-o', null, '{"is-disabled": !Ctrl.settings.apps_news || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
-                        {{ nav.list_subitem_regex_statemark('Downloads', ng_href('portal.downloads_settings'), 'portal.downloads_settings', 'fa-download', null, '{"is-disabled": !Ctrl.settings.apps_downloads || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
-                        {{ nav.list_subitem_regex_statemark('Feedback', ng_href('portal.feedback_settings'), 'portal.feedback_settings', 'fa-thumbs-up', null, '{"is-disabled": !Ctrl.settings.apps_feedback || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
+                        {{ nav.list_subitem_regex_statemark('Knowledgebase', ng_href('portal.kb_settings', '{brandId: brandId}'), 'portal.kb_settings', 'fa-book', null, '{"is-disabled": !Ctrl.settings.apps_kb || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
+                        {{ nav.list_subitem_regex_statemark('News', ng_href('portal.news_settings', '{brandId: brandId}'), 'portal.news_settings', 'fa-clock-o', null, '{"is-disabled": !Ctrl.settings.apps_news || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
+                        {{ nav.list_subitem_regex_statemark('Downloads', ng_href('portal.downloads_settings', '{brandId: brandId}'), 'portal.downloads_settings', 'fa-download', null, '{"is-disabled": !Ctrl.settings.apps_downloads || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
+                        {{ nav.list_subitem_regex_statemark('Feedback', ng_href('portal.feedback_settings', '{brandId: brandId}'), 'portal.feedback_settings', 'fa-thumbs-up', null, '{"is-disabled": !Ctrl.settings.apps_feedback || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                     </div>
                     <div ng-if="brandId > 0">
-                        {{ nav.list_subitem('Portal', ng_href('portal.portal_editor'), 'portal.portal_editor', 'fa-home', 'true', '{"is-disabled": !Ctrl.settings.iface_portal}') }}
-                        {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor'), 'portal.widget_editor', 'fa-puzzle-piece') }}
-                        {{ nav.list_subitem('Ticket Form Widget', ng_href('portal.ticket_form_widget'), 'portal.ticket_form_widget', 'fa-envelope') }}
+                        {{ nav.list_subitem('Portal', ng_href('portal.portal_editor', '{brandId: brandId}'), 'portal.portal_editor', 'fa-home', 'true', '{"is-disabled": !Ctrl.settings.iface_portal}') }}
+                        {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor', '{brandId: brandId}'), 'portal.widget_editor', 'fa-puzzle-piece') }}
+                        {{ nav.list_subitem('Ticket Form Widget', ng_href('portal.ticket_form_widget', '{brandId: brandId}'), 'portal.ticket_form_widget', 'fa-envelope') }}
                     </div>
                 {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.apps_chat'), 'fa-comments-o', '', 'chat') }}
                     {{ nav.list_subitem('Chat Departments', ng_href('chat.chat_deps'), 'chat.chat_deps', 'fa-briefcase') }}
                     {{ nav.list_subitem('Fields', ng_href('chat.fields'), 'chat.fields', 'fa-terminal') }}
                     {{ nav.list_subitem('Labels', ng_href('chat.labels'), 'chat.labels', 'fa-tags') }}
-                    {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor', {brandId: 1}), 'portal.widget_editor_link', 'fa-puzzle-piece') }}
+                    {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor', '{brandId: brandId}'), 'portal.widget_editor_link', 'fa-puzzle-piece') }}
                 {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.apps'), 'fa-cubes', '', 'apps') }}
                     {{ nav.list_subitem(phrase('adm.general.apps'), ng_href('apps.apps'), 'apps.apps', 'fa-puzzle-piece') }}
@@ -190,7 +190,7 @@
                 {{ nav.list_end() }}
             </div>
         </nav>
-        <div class="dp-layout" ui-view></div>
+        <div class="dp-layout" ng-class="{'billing': isBillingInterface}" ui-view></div>
     </div>
 
     {{ ng_tpl('AdminInterfaceBundle:Index:modal-network-error.html.twig') }}

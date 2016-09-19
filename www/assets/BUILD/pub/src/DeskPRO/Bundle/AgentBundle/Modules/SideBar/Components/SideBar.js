@@ -62,7 +62,11 @@ export class SideBarContainer extends SeparateComponent {
       if (e.detail.id === 'reports') {
         this.changeSection('menu_reports');
       } else if (e.detail.id === 'admin') {
-        this.changeSection('menu_admin');
+        if (e.detail.path === '/license') {
+          this.changeSection('menu_billing');
+        } else {
+          this.changeSection('menu_admin');
+        }
       }
     });
   }
@@ -72,7 +76,11 @@ export class SideBarContainer extends SeparateComponent {
       this.changeSection('menu_reports');
     }
     if (window.parent.DP_FRAME_OVERLAYS.admin.opened) {
-      this.changeSection('menu_admin');
+      if (window.parent.DP_FRAME_OVERLAYS.admin.frame[0].baseURI.match(/#admin:\/license$/)) {
+        this.changeSection('menu_billing');
+      } else {
+        this.changeSection('menu_admin');
+      }
     }
   };
 
@@ -137,7 +145,7 @@ export class SideBarContainer extends SeparateComponent {
 
   openBilling = () => {
     this.closeIframes();
-    window.DP_FRAME_OVERLAYS.billing.open();
+    window.DP_FRAME_OVERLAYS.admin.open('/license');
   };
 
   changeSection = (section) => {

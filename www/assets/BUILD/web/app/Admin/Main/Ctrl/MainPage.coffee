@@ -57,9 +57,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @$scope.brands = res.data.data
 
     changeBrand: ->
-      if @$scope.brandId == '-1'
-        @$state.go 'portal.setup', {brandId: 'new'}
-      else if @$scope.brandId
-        @$state.go 'portal.setup', {brandId: @$scope.brandId}
+      if typeof @$stateParams.brandId != 'undefined'
+        if @$scope.brandId == '-1'
+          @$state.go 'portal.setup', {brandId: 'new'}
+        else if @$scope.brandId
+          @$state.go 'portal.setup', {brandId: @$scope.brandId}
 
   Admin_Main_Ctrl_MainPage.EXPORT_CTRL()
