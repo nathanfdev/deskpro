@@ -121,12 +121,6 @@ services:
     tags:
       - { name: form.type }
 
-  form.recaptcha:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType
-    arguments: ["@brand_stack", "@language_manager"]
-    tags:
-      - { name: form.type }
-
   form.api.chat_create:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType
     arguments: ["@form.api.chat.set_person_listener", "@widget_settings_resolver", "@custom_field_manager"]
