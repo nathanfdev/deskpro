@@ -28,7 +28,6 @@
 
 namespace Application\DeskPRO\Service;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\JiraIssue;
 use Application\DeskPRO\Entity\Person;
@@ -36,8 +35,11 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\JIRA\Api;
 use Application\DeskPRO\JIRA\ApiCoreException;
 use Application\DeskPRO\JIRA\Meta;
+use Application\DeskPRO\Tickets\StateChangeRecorder;
+use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\JiraApiExceptionEvent;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -86,7 +88,7 @@ class JIRA
     ];
 
     /**
-     * @var DeskproContainer
+     * @var Container
      */
     protected $container;
 
@@ -105,7 +107,7 @@ class JIRA
      */
     protected $logger;
 
-    public function __construct(DeskproContainer $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }
@@ -196,7 +198,7 @@ class JIRA
      */
     protected function getApp()
     {
-        $rep = $this->container->getEm()->getRepository('DeskPRO:AppInstance');
+        $rep = $this->container->get('doctrine.orm.entity_manager')->getRepository('DeskPRO:AppInstance');
         if (false === $this->app) {
             $this->app = $rep->getInstanceByName('deskpro_jira');
         }
@@ -230,7 +232,7 @@ class JIRA
         }
 
         $app->setSetting(self::PARAM_TOKENS, $tokens);
-        $this->container->getEm()->flush($app);
+        $this->container->get('doctrine.orm.entity_manager')->flush($app);
     }
 
     /**
@@ -273,7 +275,7 @@ class JIRA
             $meta->setIssuetypes($api->get('/issuetype'));
 
             $app->setSetting(self::PARAM_META, $meta->toArray());
-            $this->container->getEm()->flush($app);
+            $this->container->get('doctrine.orm.entity_manager')->flush($app);
         } catch (\Exception $e) {
             $this->logException($e);
         }
@@ -432,7 +434,7 @@ class JIRA
      */
     public function link(Ticket $ticket, $issueId, Person $byPerson)
     {
-        $rep = $this->container->getEm()->getRepository('DeskPRO:JiraIssue');
+        $rep = $this->container->get('doctrine.orm.entity_manager')->getRepository('DeskPRO:JiraIssue');
 
         // already linked
         if ($issue = $rep->findOneBy(['ticket' => $ticket['id'], 'issue_id' => $issueId])) {
@@ -456,13 +458,13 @@ class JIRA
         // create remote issue link on JIRA side
         $this->createRemoteIssueLink($ticket, $issueId);
 
-        $em = $this->container->getEm();
+        $em = $this->container->get('doctrine.orm.entity_manager');
 
         $em->persist($issue);
         $em->flush($issue);
 
         // trigger an update event
-        $manager = $this->container->getTicketManager();
+        $manager = $this->container->get('ticket_manager');
         $state   = $ticket->getStateChangeRecorder();
         $context = $manager->createAppExecutorContext($this->getApp(), 'issue_update');
 
@@ -483,7 +485,7 @@ class JIRA
      */
     public function unlink(Ticket $ticket, $issueId)
     {
-        $em    = $this->container->getEm();
+        $em    = $this->container->get('doctrine.orm.entity_manager');
         $rep   = $em->getRepository('DeskPRO:JiraIssue');
         $issue = $rep->findOneBy(['ticket' => $ticket['id'], 'issue_id' => $issueId]);
         if (!$issue) {
@@ -505,7 +507,7 @@ class JIRA
      */
     public function issues($ticketId)
     {
-        $em     = $this->container->getEm();
+        $em     = $this->container->get('doctrine.orm.entity_manager');
         $issues = $em->getRepository('DeskPRO:JiraIssue')->findBy(['ticket' => $ticketId]);
         $map    = [];
         foreach ($issues as $issue) {
@@ -558,7 +560,7 @@ class JIRA
      */
     public function addComment($message, $ticketId, Person $performer, $issueId = null)
     {
-        $rep = $this->container->getEm()->getRepository('DeskPRO:JiraIssue');
+        $rep = $this->container->get('doctrine.orm.entity_manager')->getRepository('DeskPRO:JiraIssue');
 
         if (!$issueId) {
             if (!$issues = $rep->findBy(['ticket' => $ticketId])) {
@@ -580,7 +582,9 @@ class JIRA
             $ticket   = $ticket ?: $issue->ticket;
         }
 
-        $manager = $this->container->getTicketManager();
+        /** @var TicketManager $manager */
+        $manager = $this->container->get('ticket_manager');
+        /** @var StateChangeRecorder $state */
         $state   = $issue->ticket->getStateChangeRecorder();
         $context = $manager->createAppExecutorContext($this->getApp(), 'issue_update');
 
