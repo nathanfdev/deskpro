@@ -34,11 +34,11 @@ namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\JIRA\WebhookHandler;
 use Application\DeskPRO\Service\JIRA;
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class JIRAWebhookController extends AbstractController
+class JIRAWebhookController extends Controller
 {
     /**
      * JIRA webhook endpoint.

@@ -95,7 +95,11 @@ services:
     arguments: ["@request_stack"]
 
   portal_mode_factory:
-      class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory
+    class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory
 
   portal_mode_storage:
-      class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
+    class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
+
+  dp.jira:
+    class: Application\DeskPRO\Service\JIRA
+    arguments: ["@service_container"]
