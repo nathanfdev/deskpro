@@ -28,8 +28,8 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidRecaptcha2;
 use ReCaptchaSecureToken\ReCaptchaToken;
 use Symfony\Component\Form\AbstractType;
@@ -43,9 +43,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ReCaptchaType extends AbstractType
 {
     /**
-     * @var BrandStack
+     * @var SettingsResolver
      */
-    private $brandStack;
+    private $settingsResolver;
 
     /**
      * @var LanguageManager
@@ -55,13 +55,13 @@ class ReCaptchaType extends AbstractType
     /**
      * Constructor.
      *
-     * @param BrandStack      $brandStack
-     * @param LanguageManager $languageManager
+     * @param SettingsResolver $settingsResolver
+     * @param LanguageManager  $languageManager
      */
-    public function __construct(BrandStack $brandStack, LanguageManager $languageManager)
+    public function __construct(SettingsResolver $settingsResolver, LanguageManager $languageManager)
     {
-        $this->languageManager = $languageManager;
-        $this->brandStack      = $brandStack;
+        $this->languageManager  = $languageManager;
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -113,7 +113,7 @@ class ReCaptchaType extends AbstractType
      */
     protected function getSecretKey()
     {
-        $setting_secret = $this->brandStack->getActive()->getSetting('core.recaptcha2_secret_key');
+        $setting_secret = $this->settingsResolver->getGlobalSettings()->get('core.recaptcha2_secret_key');
 
         if (strlen($setting_secret) > 0) {
             return $setting_secret;
@@ -127,7 +127,7 @@ class ReCaptchaType extends AbstractType
      */
     protected function getSiteKey()
     {
-        $setting_key = $this->brandStack->getActive()->getSetting('core.recaptcha2_site_key');
+        $setting_key = $this->settingsResolver->getGlobalSettings()->get('core.recaptcha2_site_key');
 
         if (strlen($setting_key) > 0) {
             return $setting_key;
