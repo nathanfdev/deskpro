@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\C
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractTranslationModel;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class WidgetBrandChatPopupTranslation.
@@ -43,7 +42,6 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      * @var string
      *
      * @JMS\Type("string")
-     * @Assert\NotBlank()
      */
     private $title = 'Customer Support';
 
@@ -53,7 +51,6 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      * @var string
      *
      * @JMS\Type("string")
-     * @Assert\NotBlank()
      */
     private $message = 'Need help? Just reply to start a live chat with one of our team.';
 
@@ -63,7 +60,6 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      * @var string
      *
      * @JMS\Type("string")
-     * @Assert\NotBlank()
      */
     private $heading = 'Ask us a question!';
 
@@ -73,7 +69,6 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      * @var string
      *
      * @JMS\Type("string")
-     * @Assert\NotBlank()
      */
     private $subheading = 'Our team are online and ready to help with your enquiries. Send us a message to get started.';
 
