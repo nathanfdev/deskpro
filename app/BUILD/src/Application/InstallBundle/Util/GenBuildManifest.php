@@ -161,21 +161,21 @@ class GenBuildManifest
 CODE;
 
         $file   = [];
-        $file[] = $header.PHP_EOL.'return array(';
+        $file[] = $header.PHP_EOL.'return [';
 
         $builds_array       = $this->getBuildsArray();
         $builds_array_count = count($builds_array);
         foreach ($builds_array as $build_id => $build_info) {
-            $row = $indent.$build_id.' => array('.PHP_EOL;
+            $row = $indent.$build_id.' => ['.PHP_EOL;
             $row .= $indent.$indent."'file'      => '".$build_info['file']."',".PHP_EOL;
             $row .= $indent.$indent."'classname' => '".$build_info['classname']."',".PHP_EOL;
-            $row .= $indent.')';
+            $row .= $indent.']';
             $row .= ',';
 
             $file[] = $row;
         }
 
-        $file[] = ');'.PHP_EOL;
+        $file[] = '];'.PHP_EOL;
 
         $file = implode(PHP_EOL, $file);
 
