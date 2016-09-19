@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import Loader from 'react-loader';
 import classNames from 'classnames';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
@@ -29,48 +30,75 @@ export default class IMOverlay extends React.Component {
     onParticipantClick: PropTypes.func.isRequired,
     createNewGroup:     PropTypes.func.isRequired,
     toggleOverlay:      PropTypes.func.isRequired,
-    isOpen:             PropTypes.bool.isRequired
+    isOpen:             PropTypes.bool.isRequired,
+    recentLoaded:       PropTypes.bool.isRequired,
+    teamsLoaded:        PropTypes.bool.isRequired,
+    departmentsLoaded:  PropTypes.bool.isRequired,
+    agentsLoaded:       PropTypes.bool.isRequired
   };
 
   getRecentTab() {
+    const { agentsLoaded, teamsLoaded, departmentsLoaded, recentLoaded } = this.props;
+    const loaded = agentsLoaded && teamsLoaded && departmentsLoaded && recentLoaded;
+    const content = (
+      <Loader loaded={loaded} opacity={0} width={4} color="#4696dc">
+        <Scrollable vertical>
+          <RecentList {...this.props} />
+        </Scrollable>
+      </Loader>
+    );
     return  {
-      id:      'recent',
-      content: <Scrollable vertical><RecentList {...this.props} /></Scrollable>,
-      title:   <span><i className="fa fa-clock-o dp-im-tab-menu-icon" />Recent</span>
+      id:    'recent',
+      title: <span><i className="fa fa-clock-o dp-im-tab-menu-icon" />Recent</span>,
+      content
     };
   }
 
+
   getAgentsTab() {
-    const { agents, notifications, onParticipantClick } = this.props;
+    const { agents, notifications, onParticipantClick, agentsLoaded } = this.props;
+    const content = (
+      <Loader loaded={agentsLoaded} opacity={0} width={4} color="#4696dc">
+        <Scrollable vertical>
+          <AgentList agents={agents} notifications={notifications} onParticipantClick={onParticipantClick} />
+        </Scrollable>
+      </Loader>
+    );
     return  {
-      id:      'agents',
-      content: <Scrollable vertical><AgentList agents={agents} notifications={notifications} onParticipantClick={onParticipantClick} /></Scrollable>,
-      title:   <span><i className="fa fa-user dp-im-tab-menu-icon" />Agents</span>
+      id:    'agents',
+      title: <span><i className="fa fa-user dp-im-tab-menu-icon" />Agents</span>,
+      content
     };
   }
 
   getGroupsTab() {
     const { agents, departments, me, onParticipantClick, createNewGroup, teams } = this.props;
+    const { agentsLoaded, teamsLoaded, departmentsLoaded } = this.props;
+    const loaded = agentsLoaded && teamsLoaded && departmentsLoaded;
     const content = (
-      <div style={{ height: '355px' }}>
-        <Scrollable vertical>
-          <Header
-            size={4}
-            classes={['group-list']}
-            content={<span>everyone<span className="agents-counter">({agents.size})</span></span>}
-          />
-          <EveryoneSegment agents={agents} onParticipantClick={onParticipantClick} />
-          <div className="ui divider" />
-          <Header size={4} classes={['group-list']} content="im groups" />
-          <Segment classes={['new-im-group']} raised vertical><span onClick={() => createNewGroup()}>+ create new im group</span></Segment>
-          <div className="ui divider" />
-          <Header size={4} classes={['group-list']} content="department" />
-          <DepartmentList agents={agents} departments={departments} me={me} onParticipantClick={onParticipantClick} />
-          <div className="ui divider" />
-          <Header size={4} classes={['group-list']} content="teams" />
-          <AgentTeamList agents={agents} teams={teams} me={me} onParticipantClick={onParticipantClick} />
-        </Scrollable>
-      </div>
+      <Loader loaded={loaded} opacity={0} width={4} color="#4696dc">
+        <div style={{ height: '355px' }}>
+          <Scrollable vertical>
+            <Header
+              size={4}
+              classes={['group-list']}
+              content={<span>everyone<span className="agents-counter">({agents.size})</span></span>}
+            />
+            <EveryoneSegment agents={agents} onParticipantClick={onParticipantClick} />
+            <div className="ui divider" />
+            <Header size={4} classes={['group-list']} content="im groups" />
+            <Segment classes={['new-im-group']} raised vertical>
+              <span onClick={() => createNewGroup()}>+ create new im group</span>
+            </Segment>
+            <div className="ui divider" />
+            <Header size={4} classes={['group-list']} content="department" />
+            <DepartmentList agents={agents} departments={departments} me={me} onParticipantClick={onParticipantClick} />
+            <div className="ui divider" />
+            <Header size={4} classes={['group-list']} content="teams" />
+            <AgentTeamList agents={agents} teams={teams} me={me} onParticipantClick={onParticipantClick} />
+          </Scrollable>
+        </div>
+      </Loader>
     );
     return  {
       content,

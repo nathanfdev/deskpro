@@ -36,6 +36,8 @@ storiesOf('Agent: IM', module)
           onRecentClick={action('recent chat (list) click')}
           onParticipantClick={action('participant click')}
           createNewGroup={action('create new group')}
+          toggleOverlay={action('toggle overlay')}
+          isOpen
         >
           <IMButton />
         </IMOverlay>

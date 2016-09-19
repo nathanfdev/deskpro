@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
@@ -35,15 +36,15 @@ class RecentList extends React.Component {
     return this.props.chats.map(this.getItem.bind(this));
   }
 
-  getAgents(department) {
-    return department.get('agents').map(
+  getAgents(container) {
+    return container.get('agents').map(
       (agentId) => {
         if (agentId === this.props.me.get('id')) {
           return null;
         }
 
         const classes = ['ui avatar image im'];
-        const agent = this.props.agents.get(`${agentId}`);
+        const agent = this.props.agents.get(agentId);
         if (!agent.get('online')) {
           classes.push('offline');
         }
@@ -97,7 +98,7 @@ class RecentList extends React.Component {
   }
 
   renderDepartment(chat) {
-    const department = this.props.departments.get(chat.get('departments')[0]);
+    const department = this.props.departments.get(chat.getIn(['departments', 0]));
     const classes = ['im', 'department', 'recent'];
     return (
       <ListElement
@@ -121,7 +122,7 @@ class RecentList extends React.Component {
   }
 
   renderTeam(chat) {
-    const team = this.props.teams.get(chat.get('agent_teams')[0]);
+    const team = this.props.teams.get(chat.getIn(['agent_teams', 0]));
     const classes = ['im', 'team', 'recent'];
     return (
       <ListElement
@@ -147,7 +148,8 @@ class RecentList extends React.Component {
     return (
       <List classes={['im', 'middle', 'aligned', 'selection']}>
         {this.getItems()}
-      </List>);
+      </List>
+    );
   }
 }
 

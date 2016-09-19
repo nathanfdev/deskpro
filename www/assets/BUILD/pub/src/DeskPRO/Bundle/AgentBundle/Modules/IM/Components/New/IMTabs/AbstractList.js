@@ -54,15 +54,15 @@ class AbstractList extends React.Component {
     );
   }
 
-  getAgents(team) {
-    return team.get('agents').map(
+  getAgents(container) {
+    return container.get('agents').map(
       (agentId) => {
         if (agentId === this.props.me.get('id')) {
           return null;
         }
 
         const classes = ['ui avatar image im'];
-        const agent = this.props.agents.get(`${agentId}`);
+        const agent = this.props.agents.get(agentId);
         if (!agent) {
           return null;
         }
