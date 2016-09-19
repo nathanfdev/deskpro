@@ -46,6 +46,10 @@ $collection->addCollection($col);
 $col = $loader->import(DP_ROOT.'/src/DeskPRO/Bundle/PortalBundle/Resources/config/routing_portal.yml');
 $collection->addCollection($col);
 
+// ClOUD BILLING ROUTES
+$col = $loader->import(DP_ROOT.'/src/DeskPROCloud/Bundle/CloudBillingBundle/Resources/config/services/routing.yml');
+$collection->addCollection($col);
+
 // to be removed shortly (old routes)
 
 $col = $loader->import(DP_ROOT.'/src/Application/UserBundle/Resources/config/user-routing.php');
