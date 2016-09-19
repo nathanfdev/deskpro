@@ -1,8 +1,11 @@
 import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
-import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';
-import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/AgentTeamAvatar';
+import {
+  Avatar,
+  DepartmentAvatar,
+  PersonAvatar,
+  AgentTeamAvatar
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import classNames from 'classnames';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
@@ -65,6 +68,22 @@ class TopBarRecentImList extends RecentList {
     return (
       <span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>
         <AgentTeamAvatar agentTeam={team} size={24} classes={['ui avatar image im']} />
+      </span>
+    );
+  }
+
+  renderEveryone(chat) {
+    const props = {
+      size:       24,
+      color:      '#DD00AA',
+      urlPattern: null,
+      gravatar:   null,
+      text:       'E',
+      classes:    ['ui avatar image im']
+    };
+    return (
+      <span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>
+        <Avatar {...props} />
       </span>
     );
   }

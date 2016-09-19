@@ -57,6 +57,7 @@ trait AgentChatFiltersTrait
                 'participants.team IN (:agent_teams)',
                 'participants.department IN (:departments)'
             ))
+            ->orWhere("$alias.type = 'everyone'")
             ->setParameter('person', $person)
             ->setParameter('agent_teams', $person->getTeams())
             ->setParameter('departments', $departments)

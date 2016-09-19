@@ -1,7 +1,10 @@
 import React from 'react';
-import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/DepartmentAvatar';
-import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/AgentTeamAvatar';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
+import {
+  Avatar,
+  DepartmentAvatar,
+  PersonAvatar,
+  AgentTeamAvatar
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 
 class AvatarHelper
@@ -21,6 +24,20 @@ class AvatarHelper
       classes={['ui avatar image im']}
     />);
   }
+
+  static renderEveryoneAvatar() {
+    const props = {
+      size:       24,
+      color:      '#DD00AA',
+      urlPattern: null,
+      gravatar:   null,
+      text:       'E',
+      classes:    ['ui avatar image im']
+    };
+
+    return <Avatar {...props} />;
+  }
+
 }
 
 export default AvatarHelper;

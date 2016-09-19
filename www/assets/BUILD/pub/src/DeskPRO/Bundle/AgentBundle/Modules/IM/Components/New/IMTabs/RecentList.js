@@ -27,6 +27,8 @@ class RecentList extends React.Component {
         return this.renderDepartment(chat);
       case 'team':
         return this.renderTeam(chat);
+      case 'everyone':
+        return this.renderEveryone(chat);
       default:
         return null;
     }
@@ -135,6 +137,27 @@ class RecentList extends React.Component {
           <div className="header">
             {team.get('name')}
             <span className="agents-list">{this.getAgents(team)}</span>
+          </div>
+        </div>
+        <div className="timestamp content right floated">
+          {AbstractList.getTimestamp(chat.get('date_last_message'))}
+        </div>
+      </ListElement>
+    );
+  }
+
+  renderEveryone(chat) {
+    const classes = ['im', 'team', 'recent'];
+    return (
+      <ListElement
+        onClick={() => this.props.onRecentClick(chat.get('id'))}
+        key="everyone"
+        classes={classes}
+        imageNode={AvatarHelper.renderEveryoneAvatar()}
+      >
+        <div className="content team" onClick={() => this.props.onRecentClick(chat.get('id'))}>
+          <div className="header">
+            Everyone
           </div>
         </div>
         <div className="timestamp content right floated">

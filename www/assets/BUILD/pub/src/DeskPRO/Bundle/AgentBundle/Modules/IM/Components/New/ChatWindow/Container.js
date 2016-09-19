@@ -76,6 +76,8 @@ class Container extends React.Component {
         return this.getDepartmentHeader(current);
       case 'team':
         return this.getAgentTeamHeader(current);
+      case 'everyone':
+        return 'Everyone';
       default:
         return 'some im';
     }
