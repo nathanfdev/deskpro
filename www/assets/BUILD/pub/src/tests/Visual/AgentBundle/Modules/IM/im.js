@@ -1,14 +1,14 @@
 import React from 'react';
+import Isvg from 'react-inlinesvg';
 import { storiesOf, action } from '@kadira/storybook'; // eslint-disable-line import/no-extraneous-dependencies
 import { css } from 'Visual/decorators';
 import { TopBar, TopBarItem } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { Container } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow';
+import AddButton from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AddButton';
 import { IMOverlay, IMButton, TopBarRecentImList, GroupAddDrawer } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar';
 import { imState, messages } from 'DemoState/AgentBundle/Modules/IM/im';
 import recentSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg';
-import viewsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg';
-import notificationsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg';
 import Immutable from 'immutable';
 
 const chatState = {
@@ -47,6 +47,7 @@ storiesOf('Agent: IM', module)
             </IMOverlay>
           </TopBarRecentImList>
         </TopBarItem>
+        <AddButton />
       </TopBar>
     </div>
   )
@@ -55,12 +56,11 @@ storiesOf('Agent: IM', module)
     () =>
       <div id="react_dp_agent_top_bar">
         <TopBar>
-          <div className="logo">
-            <img src="/assets/BUILD/web/images/dp-logo-48.png" alt="DeskPRO logo" />
-          </div>
-          <SearchBox onUserInput={action('Search')} placeholder="Search ..." />
-          <TopBarItem>
-            <i className="icon wait" />
+          <TopBarItem classes={['search-box legacy-omnibox']}>
+            <SearchBox onUserInput={action('Search')} placeholder="Search ..." />
+          </TopBarItem>
+          <TopBarItem classes={['recent']}>
+            <Isvg src={recentSvg} />
           </TopBarItem>
           <TopBarItem childrenWrapper="im-list">
             <span>
@@ -77,6 +77,7 @@ storiesOf('Agent: IM', module)
               </TopBarRecentImList>
             </span>
           </TopBarItem>
+          <AddButton />
         </TopBar>
       </div>
   )
@@ -85,12 +86,11 @@ storiesOf('Agent: IM', module)
     () =>
       <div id="react_dp_agent_top_bar">
         <TopBar>
-          <div className="logo">
-            <img src="/assets/BUILD/web/images/dp-logo-48.png" alt="DeskPRO logo" />
-          </div>
-          <SearchBox onUserInput={action('Search')} placeholder="Search ..." />
-          <TopBarItem>
-            <i className="icon wait" />
+          <TopBarItem classes={['search-box legacy-omnibox']}>
+            <SearchBox onUserInput={action('Search')} placeholder="Search ..." />
+          </TopBarItem>
+          <TopBarItem classes={['recent']}>
+            <Isvg src={recentSvg} />
           </TopBarItem>
           <TopBarItem>
             <IMButton />
