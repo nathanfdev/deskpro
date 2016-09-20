@@ -66,11 +66,19 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     /** @var array */
     protected $counter_registry;
 
+    /**
+     * TemplatingExtension constructor.
+     *
+     * @param DeskproContainer $container
+     */
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
     }
 
+    /**
+     * @return array
+     */
     public function getGlobals()
     {
         return [
@@ -78,6 +86,9 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         ];
     }
 
+    /**
+     * @return DeskproContainer|\Symfony\Component\DependencyInjection\ContainerInterface
+     */
     public function getContainer()
     {
         return $this->container;
@@ -242,6 +253,14 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         ];
     }
 
+    /**
+     * @param string $name
+     * @param array  $parameters
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
     public function getPath($name, $parameters = [])
     {
         try {
@@ -255,6 +274,14 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         }
     }
 
+    /**
+     * @param string $name
+     * @param array  $parameters
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
     public function getUrl($name, $parameters = [])
     {
         try {
@@ -268,6 +295,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         }
     }
 
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function getBaseTemplateName($name)
     {
         $parts = explode(':', $name);
@@ -277,6 +309,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $name;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
     public function getConstant($name = '')
     {
         static $whitelist = [
@@ -300,6 +337,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return constant($name);
     }
 
+    /**
+     * @param $size
+     *
+     * @return string
+     */
     public function filesizeDisplay($size)
     {
         if ($size < 0) {
@@ -309,6 +351,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return \Orb\Util\Numbers::filesizeDisplay($size);
     }
 
+    /**
+     * @param int $time
+     *
+     * @return mixed|string
+     */
     public function getTimeGroupPhrase($time)
     {
         static $time_phrases = [
@@ -347,6 +394,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return '> 6 months';
     }
 
+    /**
+     * @param string $email
+     * @param int    $size
+     *
+     * @return string
+     */
     public function gravatar($email, $size = 80)
     {
         $hash = strtolower(md5($email));
@@ -356,6 +409,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $url;
     }
 
+    /**
+     * @param $var
+     *
+     * @return mixed|void
+     */
     public function getFirst($var)
     {
         if (!$var) {
@@ -365,6 +423,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return \Orb\Util\Arrays::getFirstItem($var);
     }
 
+    /**
+     * @param $var
+     *
+     * @return mixed|void
+     */
     public function getLast($var)
     {
         if (!$var) {
@@ -374,11 +437,21 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return \Orb\Util\Arrays::getLastItem($var);
     }
 
+    /**
+     * @param $var
+     *
+     * @return mixed
+     */
     public function isArray($var)
     {
         return is_array($var);
     }
 
+    /**
+     * @param string $method
+     *
+     * @return mixed
+     */
     public function getInstanceAbility($method)
     {
         $method = Strings::underscoreToCamelCase($method);
@@ -386,6 +459,14 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $this->container->getSystemService('instance_ability')->$method();
     }
 
+    /**
+     * @param string $name
+     * @param array  $params
+     * @param array  $named_params
+     * @param bool   $html
+     *
+     * @return mixed
+     */
     public function getServiceUrl($name, $params = null, $named_params = null, $html = true)
     {
         if (!$params || !is_array($params)) {
@@ -398,16 +479,38 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $this->container->get('deskpro.service_urls')->get($name, $params, $named_params, $html);
     }
 
+    /**
+     * @param string $name
+     * @param array  $params
+     * @param array  $named_params
+     *
+     * @return mixed
+     */
     public function getServiceUrlRaw($name, $params = null, $named_params = null)
     {
         return $this->getServiceUrl($name, $params, $named_params, false);
     }
 
+    /**
+     * @param int $secs
+     * @param int $detail
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
     public function relativeTime($secs, $detail = 2)
     {
         return Dates::secsToReadable($secs, $detail);
     }
 
+    /**
+     * @param string $str
+     * @param int    $width
+     * @param bool   $dots
+     *
+     * @return mixed
+     */
     public function strTruncate($str, $width = 80, $dots = true)
     {
         if (strlen($str) <= $width) {
@@ -425,6 +528,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         }
     }
 
+    /**
+     * @param string $name
+     * @param int    $start
+     *
+     * @return string
+     */
     public function startCounter($name = 'default', $start = 1)
     {
         $this->counter_registry[$name] = 1;
@@ -432,11 +541,21 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return '';
     }
 
+    /**
+     * @param string $name
+     *
+     * @return int|mixed
+     */
     public function getCounter($name = 'default')
     {
         return isset($this->counter_registry[$name]) ? $this->counter_registry[$name] : 0;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function incCounter($name = 'default')
     {
         if (!isset($this->counter_registry[$name])) {
@@ -448,6 +567,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $v;
     }
 
+    /**
+     * @param string $string
+     *
+     * @return mixed
+     */
     public function getUrlDomain($string)
     {
         $urlinfo = @parse_url($string);
@@ -458,6 +582,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return @$urlinfo['host'];
     }
 
+    /**
+     * @param string $string
+     *
+     * @return mixed
+     */
     public function crc32($string)
     {
         $string = (string) $string;
@@ -465,11 +594,21 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return sprintf('%u', crc32($string));
     }
 
+    /**
+     * @param string $text
+     *
+     * @return string
+     */
     public function safeLinkUrlsHtml($text)
     {
         return Strings::linkifyHtml($text, true);
     }
 
+    /**
+     * @param string $text
+     *
+     * @return string
+     */
     public function safeLinkUrls($text)
     {
         $text = htmlspecialchars($text);
@@ -478,7 +617,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     }
 
     /**
-     * @param $html
+     * @param string $html
      *
      * @return mixed
      *
@@ -510,6 +649,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $html;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function getAssetic($name)
     {
         $assetic_manager = $this->container->getSystemService('assetic_manager');
@@ -517,6 +661,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $assetic_manager->getUrl($name);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function getAsseticRaw($name)
     {
         $assetic_manager = $this->container->getSystemService('assetic_manager');
@@ -524,6 +673,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $assetic_manager->getRawUrls($name);
     }
 
+    /**
+     * @param        $array
+     * @param string $sep
+     *
+     * @return string
+     */
     public function implodeArray($array, $sep = ', ')
     {
         if (!$array || !is_array($array)) {
@@ -533,6 +688,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return implode($array, $sep);
     }
 
+    /**
+     * @param string $string
+     * @param string $del
+     *
+     * @return array
+     */
     public function explodeString($string, $del = ',')
     {
         $ret    = [];
@@ -545,11 +706,21 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $ret;
     }
 
+    /**
+     * @param string $str
+     *
+     * @return string
+     */
     public function stripHtml($str)
     {
         return Strings::html2Text($str);
     }
 
+    /**
+     * @param string $str
+     *
+     * @return mixed
+     */
     public function stripLinebreaks($str)
     {
         $str = str_replace(["\r\n", "\n"], ' ', $str);
@@ -559,6 +730,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $str;
     }
 
+    /**
+     * @param string $name
+     * @param array  $options
+     *
+     * @return mixed
+     */
     public function htmlGetAssetic($name, $options = [])
     {
         $raw_packs            = $this->container->get('settings_resolver')->getGlobalSettings()->get('raw_assets');
@@ -613,6 +790,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return implode("\n", $html);
     }
 
+    /**
+     * @param int $id
+     *
+     * @return array|null
+     */
     public function getData($id)
     {
         switch ($id) {
@@ -641,6 +823,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         }
     }
 
+    /**
+     * @param string $string
+     * @param array  $words
+     *
+     * @return mixed
+     */
     public function emphasizeWords($string, $words)
     {
         if (!is_array($words)) {
@@ -660,6 +848,13 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $string;
     }
 
+    /**
+     * @param Usersource $usersource
+     * @param string     $type
+     * @param array      $params
+     *
+     * @return string
+     */
     public function renderUsersource(Usersource $usersource, $type, array $params = [])
     {
         // clean up params
@@ -677,11 +872,24 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $html;
     }
 
+    /**
+     * @param string $str
+     *
+     * @return string
+     */
     public function slugify($str)
     {
         return Strings::slugifyTitle($str);
     }
 
+    /**
+     * @param        $context
+     * @param        $date
+     * @param string $format
+     * @param null   $timezone
+     *
+     * @return string
+     */
     public function userDate($context, $date, $format = 'fulltime', $timezone = null)
     {
         // Backwards compat calls: args shifted back one
@@ -776,6 +984,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $this->container->getTranslator()->date($format, $date, $prefix);
     }
 
+    /**
+     * @param string $format
+     *
+     * @return mixed
+     */
     public function jqueryUiDateFormat($format)
     {
         // Map of PHP symbols to jQuery date format symbols
@@ -821,11 +1034,22 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return implode('', $new_format);
     }
 
+    /**
+     * @param int $length
+     * @param int $max_unit
+     *
+     * @return string
+     */
     public function timeLength($length, $max_unit = null)
     {
         return \Application\DeskPRO\Util::getPrintableTimeLength($length, $max_unit);
     }
 
+    /**
+     * @param string $format
+     *
+     * @return string
+     */
     public function momentJsFormat($format)
     {
         switch ($format) {
@@ -858,6 +1082,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return \Application\DeskPRO\Util::momentJsDateFormat($format);
     }
 
+    /**
+     * @param string $name
+     * @param string $field_name
+     *
+     * @return string
+     */
     public function formToken($name = '', $field_name = '_dp_security_token')
     {
         if (!$this->container->getSession()->getEntity()->getPersonId()) {
@@ -878,21 +1108,44 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $html;
     }
 
+    /**
+     * @param string $name
+     * @param int    $timeout
+     *
+     * @return string
+     */
     public function securityToken($name = '', $timeout = 43200)
     {
         return $this->container->getSession()->getEntity()->generateSecurityToken($name, $timeout);
     }
 
+    /**
+     * @param string $name
+     * @param int    $timeout
+     *
+     * @return string
+     */
     public function staticSecurityToken($name = '', $timeout = 18000)
     {
         return $this->container->generateStaticSecurityToken($name, $timeout);
     }
 
+    /**
+     * @param string $secret
+     * @param int    $timeout
+     *
+     * @return string
+     */
     public function staticSecurityTokenSecret($secret, $timeout = 43200)
     {
         return Util::generateStaticSecurityToken($secret, $timeout);
     }
 
+    /**
+     * @param $var
+     *
+     * @return mixed
+     */
     public function debugVar($var)
     {
         ob_start();
@@ -902,6 +1155,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $str;
     }
 
+    /**
+     * @param mixed $var
+     * @param bool  $basename
+     *
+     * @return string
+     */
     public function getType($var, $basename = true)
     {
         // Primitive types
@@ -923,6 +1182,13 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $var_type;
     }
 
+    /**
+     * @param object $object
+     * @param array  $params
+     * @param string $context
+     *
+     * @return mixed
+     */
     public function getObjectPath($object, array $params = [], $context = 'user')
     {
         /** @var Router $router */
@@ -932,11 +1198,23 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $generator->generateObjectUrl($object, $params, $context);
     }
 
+    /**
+     * @param object $object
+     * @param array  $params
+     *
+     * @return mixed
+     */
     public function getObjectPathAgent($object, array $params = [])
     {
         return $this->getObjectPath($object, $params, 'agent');
     }
 
+    /**
+     * @param mixed  $var
+     * @param string $type
+     *
+     * @return bool
+     */
     public function compareType($var, $type)
     {
         // Primitive types
@@ -954,6 +1232,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         }
     }
 
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function flashMessage($name)
     {
         $session = $this->container->get('session');
@@ -961,36 +1244,76 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $session->getFlash($name, null);
     }
 
+    /**
+     * @param int $num
+     *
+     * @return string
+     */
     public function encNum($num)
     {
         return Util::baseEncode((int) $num, Util::LETTERS_ALPHABET);
     }
 
+    /**
+     * @param int $num
+     *
+     * @return int
+     */
     public function decNum($num)
     {
         return Util::baseDecode((int) $num, Util::LETTERS_ALPHABET);
     }
 
+    /**
+     * @param int $min
+     * @param int $max
+     *
+     * @return mixed
+     */
     public function rand($min = 1, $max = 10)
     {
         return mt_rand((int) $min, (int) $max);
     }
 
+    /**
+     * @param string $str
+     * @param int    $count
+     *
+     * @return mixed
+     */
     public function strRepeat($str, $count = 1)
     {
         return str_repeat($str, $count);
     }
 
+    /**
+     * @param string $str
+     * @param array  $chars
+     *
+     * @return mixed
+     */
     public function strTrim($str, $chars = null)
     {
         return trim($str, $chars);
     }
 
+    /**
+     * @param string $str
+     * @param array  $chars
+     *
+     * @return mixed
+     */
     public function strLtrim($str, $chars = null)
     {
         return ltrim($str, $chars);
     }
 
+    /**
+     * @param string $str
+     * @param array  $chars
+     *
+     * @return mixed
+     */
     public function strRtrim($str, $chars = null)
     {
         return rtrim($str, $chars);
@@ -1008,16 +1331,16 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     {
         return $prefix
         .Util::baseEncode(time() - strtotime('-15 days'), 'base36') // 4 digits. 15 days to save a few digits
-.Util::baseEncode(mt_rand(36, 1295), 'base36') // 2 digits
-.Util::baseEncode(Util::requestUniqueId(), 'base36'); // 1-2 digits
+        .Util::baseEncode(mt_rand(36, 1295), 'base36') // 2 digits
+        .Util::baseEncode(Util::requestUniqueId(), 'base36'); // 1-2 digits
     }
 
     /**
      * Just gets a full helpdesk URL minus the http:// and www bits.
      * Makes it prettier when displaying links in emails.
      *
-     * @param       $name
-     * @param array $parameters
+     * @param string $name
+     * @param array  $parameters
      *
      * @return mixed|string
      */
@@ -1029,9 +1352,17 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $url;
     }
 
+    /**
+     * @param string $name
+     * @param array  $parameters
+     *
+     * @deprecated - use getUrl instead
+     *
+     * @return mixed
+     */
     public function urlFull($name, array $parameters = [])
     {
-        return $this->container->get('router')->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
+        return $this->getUrl($name, $parameters);
     }
 
     /**
@@ -1057,6 +1388,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $this->getBrandStack()->getActive()->getSetting($setting, $default);
     }
 
+    /**
+     * @param $path
+     *
+     * @return bool
+     */
     public function isHelpdeskPath($path)
     {
         if (!preg_match('#^/[^/]#', $path)) {
@@ -1078,6 +1414,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return true;
     }
 
+    /**
+     * @param string $name
+     * @param array  $parameters
+     *
+     * @return mixed
+     */
     public function urlFragment($name, array $parameters = [])
     {
         /** @var Router $router */
@@ -1086,6 +1428,10 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $router->getGenerator()->generateFragment($name, $parameters, false);
     }
 
+    /**
+     * @param array $display_array
+     * @param array $vars
+     */
     public function renderCustomField($display_array, array $vars = [])
     {
         if ($display_array instanceof FormView) {
@@ -1102,6 +1448,14 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $handler->renderHtml($display_array['value'], $vars);
     }
 
+    /**
+     * @param array $display_array
+     * @param array $vars
+     *
+     * @throws \Twig_Error_Runtime
+     *
+     * @return string
+     */
     public function renderCustomFieldForm($display_array, array $vars = [])
     {
         if ($display_array instanceof FormView) {
@@ -1121,6 +1475,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $handler->renderFormHtml($formView, $vars);
     }
 
+    /**
+     * @param array $display_array
+     * @param array $vars
+     *
+     * @return mixed
+     */
     public function renderCustomFieldText($display_array, array $vars = [])
     {
         if ($display_array instanceof FormView) {
@@ -1137,6 +1497,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $handler->renderText($display_array['value'], $vars);
     }
 
+    /**
+     * @param null $language
+     *
+     * @return mixed
+     */
     public function getLanguageHtmlAttributes($language = null)
     {
         if (!($language instanceof Language)) {
@@ -1151,6 +1516,13 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return implode(' ', $attributes);
     }
 
+    /**
+     * @param      $ltr
+     * @param null $rtl
+     * @param null $language
+     *
+     * @return null|string
+     */
     public function getLanguageArrow($ltr, $rtl = null, $language = null)
     {
         if ($rtl === null) {
@@ -1179,6 +1551,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         }
     }
 
+    /**
+     * @param null $language
+     *
+     * @return bool
+     */
     public function isRtl($language = null)
     {
         if (!($language instanceof Language)) {
@@ -1188,16 +1565,32 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $language->is_rtl;
     }
 
+    /**
+     * @param       $phrase_name
+     * @param array $vars
+     *
+     * @return mixed
+     */
     public function getPhraseDev($phrase_name, array $vars = [])
     {
         return $this->container->get('deskpro.core.translate')->replaceVarsInString($phrase_name, $vars);
     }
 
+    /**
+     * @param $phrase_name
+     *
+     * @return mixed
+     */
     public function hasPhrase($phrase_name)
     {
         return $this->container->get('deskpro.core.translate')->hasPhrase($phrase_name);
     }
 
+    /**
+     * @param $phrase_name
+     *
+     * @return mixed
+     */
     public function getPhraseText($phrase_name)
     {
         $p = $this->container->get('deskpro.core.translate')->getPhraseText($phrase_name);
@@ -1205,6 +1598,14 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $p;
     }
 
+    /**
+     * @param      $context
+     * @param      $phrase_name
+     * @param null $vars
+     * @param bool $raw
+     *
+     * @return mixed
+     */
     public function getPhrase($context, $phrase_name, $vars = null, $raw = false)
     {
         if (!$vars || !is_array($vars)) {
@@ -1222,16 +1623,30 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $this->container->get('deskpro.core.translate')->phrase($phrase_name, $vars);
     }
 
+    /**
+     * @param      $phrase_name
+     * @param null $property
+     *
+     * @return mixed
+     */
     public function getPhraseObject($phrase_name, $property = null)
     {
         return $this->container->get('deskpro.core.translate')->getPhraseObject($phrase_name, $property);
     }
 
+    /**
+     * @return bool
+     */
     public function isDebugMode()
     {
         return $this->container->isDebug();
     }
 
+    /**
+     * @param string $string
+     *
+     * @return mixed
+     */
     public function getMd5($string)
     {
         return md5($string);
@@ -1261,21 +1676,41 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $assetUrl;
     }
 
+    /**
+     * @param string $str
+     *
+     * @return mixed
+     */
     public function rawUrlEncode($str)
     {
         return rawurlencode($str);
     }
 
+    /**
+     * @param string $str
+     *
+     * @return mixed
+     */
     public function strUpper($str)
     {
         return Strings::utf8_strtoupper($str);
     }
 
+    /**
+     * @param string $str
+     *
+     * @return mixed
+     */
     public function strLower($str)
     {
         return Strings::utf8_strtolower($str);
     }
 
+    /**
+     * @param $hex
+     *
+     * @return array|bool
+     */
     public function hex2rgb($hex)
     {
         $hex = preg_replace('/[^0-9A-Fa-f]/', '', $hex);
@@ -1296,6 +1731,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $rgb;
     }
 
+    /**
+     * @param string $type
+     *
+     * @return mixed
+     */
     public function captchaHtml($type = 'default')
     {
         $captcha = $this->container->getSystemObject('form_captcha', ['type' => $type]);
@@ -1313,6 +1753,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return 'deskpro_templating';
     }
 
+    /**
+     * @param $path
+     *
+     * @return string
+     */
     public function includeFile($path)
     {
         if (!$this->container->get('deskpro.app_env')->getConfig('sys.tpl.enable_include_file')) {
@@ -1329,6 +1774,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return file_get_contents($path);
     }
 
+    /**
+     * @param            $path
+     * @param array|null $with
+     *
+     * @return string
+     */
     public function includePhpFile($path, array $with = null)
     {
         if (!$this->container->get('deskpro.app_env')->getConfig('sys.tpl.enable_include_file')) {
@@ -1353,11 +1804,22 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $content;
     }
 
+    /**
+     * @param $var
+     *
+     * @return string
+     */
     public function dumpVar($var)
     {
         return \DpSys\LowError\SystemErrorHandler::varToString($var);
     }
 
+    /**
+     * @param      $url
+     * @param bool $trim_adv
+     *
+     * @return mixed
+     */
     public function urlTrimScheme($url, $trim_adv = false)
     {
         $ret = preg_replace('#^https?://#i', '', $url);
@@ -1379,6 +1841,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $ret;
     }
 
+    /**
+     * @param $code
+     *
+     * @return string
+     */
     public function countryName($code)
     {
         $name = Countries::getCountryFromCode($code);
@@ -1389,8 +1856,20 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $name;
     }
 
+    /**
+     * @var array
+     */
     protected $_widgetCache = [];
 
+    /**
+     * @param        $baseId
+     * @param        $page
+     * @param        $location
+     * @param string $position
+     * @param array  $data
+     *
+     * @return string
+     */
     public function getWidgets($baseId, $page, $location, $position = '*', $data = [])
     {
         return '';
@@ -1413,6 +1892,13 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $output;
     }
 
+    /**
+     * @param        $page
+     * @param        $location
+     * @param string $position
+     *
+     * @return array|string
+     */
     public function getWidgetsRaw($page, $location, $position = '')
     {
         return '';
@@ -1420,6 +1906,13 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $this->_getPageLocationWidgets($page, $location, $position);
     }
 
+    /**
+     * @param        $page
+     * @param        $location
+     * @param string $position
+     *
+     * @return array
+     */
     protected function _getPageLocationWidgets($page, $location, $position = '')
     {
         return [];
@@ -1448,21 +1941,50 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         }
     }
 
+    /**
+     * @param $baseId
+     * @param $widget
+     *
+     * @return string
+     */
     public function getWidgetHtmlId($baseId, $widget)
     {
         return '';
     }
 
+    /**
+     * @param       $baseId
+     * @param       $widget
+     * @param       $wrapper
+     * @param array $data
+     *
+     * @return string
+     */
     protected function _insertWidget($baseId, $widget, $wrapper, $data = [])
     {
         return '';
     }
 
+    /**
+     * @param $content
+     * @param $data
+     * @param $context
+     *
+     * @return mixed
+     */
     protected function _replaceWidgetPlaceholders($content, $data, $context)
     {
         return $content;
     }
 
+    /**
+     * @param       $baseId
+     * @param       $page
+     * @param       $location
+     * @param array $tabs
+     *
+     * @return string
+     */
     public function getWidgetTabsHeader($baseId, $page, $location, array $tabs)
     {
         $originalCount = count($tabs);
@@ -1499,11 +2021,25 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         }
     }
 
+    /**
+     * @param       $baseId
+     * @param       $page
+     * @param       $location
+     * @param       $wrapper
+     * @param array $data
+     *
+     * @return string
+     */
     public function getWidgetTabsBody($baseId, $page, $location, $wrapper, $data = [])
     {
         return '';
     }
 
+    /**
+     * @param string $interface
+     *
+     * @return string
+     */
     public function getJsSsoLoader($interface = 'user')
     {
         ///////////////////////////////////////////////////////////////////////
@@ -1589,6 +2125,9 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return implode("\n\n", $output);
     }
 
+    /**
+     * @return string
+     */
     public function getJsSsoShare()
     {
         $person = App::getCurrentPerson();
@@ -1626,6 +2165,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return array_key_exists($key, $array) ? $array[$key] : null;
     }
 
+    /**
+     * @param string $str
+     *
+     * @return int
+     */
     public function countLines($str)
     {
         if (is_object($str) && method_exists($str, '__toString')) {
@@ -1640,6 +2184,9 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return substr_count($str, "\n") + 1;
     }
 
+    /**
+     * @return mixed
+     */
     public function min()
     {
         $args = func_get_args();
@@ -1647,6 +2194,9 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return call_user_func_array('min', $args);
     }
 
+    /**
+     * @return mixed
+     */
     public function max()
     {
         $args = func_get_args();
@@ -1654,6 +2204,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return call_user_func_array('max', $args);
     }
 
+    /**
+     * @param $content
+     *
+     * @return mixed
+     */
     public function plain_template_filter($content)
     {
         $content = RegexUtils::safePregReplace('#<\s*script#i', '<deskpro_script', $content);
@@ -1662,6 +2217,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $content;
     }
 
+    /**
+     * @param string $str
+     * @param        $regex
+     *
+     * @return bool|int
+     */
     public function match($str, $regex)
     {
         $regex = Strings::getInputRegexPattern($regex);
@@ -1672,6 +2233,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return RegexUtils::safePregMatch($regex, $str);
     }
 
+    /**
+     * @param $context
+     * @param $k
+     * @param $v
+     */
     public function set_tplvar($context, $k, $v)
     {
         if (!isset($context['tplvars'])) {
@@ -1683,6 +2249,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return;
     }
 
+    /**
+     * @param        $id
+     * @param string $name
+     *
+     * @return string
+     */
     public function getTplSourceTemplate($id, $name)
     {
         $source = $this->container->getTemplating()->getSource($name);
@@ -1693,11 +2265,21 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $source;
     }
 
+    /**
+     * @param $var
+     *
+     * @return string
+     */
     public function ngVar($var)
     {
         return '{{'.$var.'}}';
     }
 
+    /**
+     * @param $phrase_name
+     *
+     * @return mixed
+     */
     public function ngPluralPhrase($phrase_name)
     {
         $positions = [];
@@ -1732,16 +2314,33 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return json_encode($positions);
     }
 
+    /**
+     * @param $var
+     *
+     * @return string
+     */
     public function ngBind($var)
     {
         return '<span ng-bind="'.htmlspecialchars($var).'"></span>';
     }
 
+    /**
+     * @param $var
+     *
+     * @return string
+     */
     public function ngStaticVar($var)
     {
         return '<span bo-bind="'.htmlspecialchars($var).'"></span>';
     }
 
+    /**
+     * @param      $context
+     * @param      $tpl_name
+     * @param null $save_name
+     *
+     * @return string
+     */
     public function ngIncTpl($context, $tpl_name, $save_name = null)
     {
         $name = $tpl_name;
@@ -1771,6 +2370,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $html;
     }
 
+    /**
+     * @param        $route
+     * @param string $params
+     *
+     * @return string
+     */
     public function ngHref($route, $params = '{}')
     {
         if (is_array($params)) {
@@ -1780,11 +2385,24 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return '{{ state_path(\''.addslashes($route).'\', '.$params.') }}';
     }
 
+    /**
+     * @param        $route_var
+     * @param string $params
+     *
+     * @return string
+     */
     public function ngHrefVar($route_var, $params = '{}')
     {
         return '{{ state_path('.$route_var.', '.str_replace(["'", '"'], ['&apos;', '&quot;'], $params).') }}';
     }
 
+    /**
+     * @param string $string
+     * @param int    $len
+     * @param null   $break
+     *
+     * @return string
+     */
     public function smartWrap($string, $len = 50, $break = null)
     {
         if ($break === null) {
@@ -1794,6 +2412,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return Strings::smartWordWrap($string, $len, $break);
     }
 
+    /**
+     * @param $base_id
+     * @param $loc_name
+     *
+     * @return string
+     */
     public function getDpAppLocation($base_id, $loc_name)
     {
         $loc_id = preg_replace('#[^a-zA-Z0-9_]#', '_', $loc_name);
@@ -1801,11 +2425,22 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return '<div id="'.$base_id.'_'.$loc_id.'" class="dp-app-context-container as-default-hidden" data-location-name="'.$loc_name.'"></div>';
     }
 
+    /**
+     * @param $data
+     *
+     * @return string
+     */
     public function jsonEncodeInHtml($data)
     {
         return \Application\DeskPRO\Util::jsonEncode($data);
     }
 
+    /**
+     * @param string $string
+     * @param        $length
+     *
+     * @return mixed
+     */
     public function textWrapMarks($string, $length)
     {
         // Inserts a 0-width space at position $length
@@ -1813,6 +2448,14 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return RegexUtils::safePregReplace('/(.{'.$length.'})/u', '$1'.Strings::chrUtf8(8203), $string);
     }
 
+    /**
+     * @param     $string
+     * @param     $regex
+     * @param     $replace
+     * @param int $limit
+     *
+     * @return mixed
+     */
     public function regexReplace($string, $regex, $replace, $limit = -1)
     {
         $regex = Strings::getInputRegexPattern($regex);
@@ -1830,6 +2473,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $result;
     }
 
+    /**
+     * @param $what
+     *
+     * @return bool
+     */
     public function serverCapable($what)
     {
         switch ($what) {
@@ -1844,6 +2492,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return false;
     }
 
+    /**
+     * @param       $loc
+     * @param array $options
+     *
+     * @return string
+     */
     public function js_error_tracking($loc, array $options = [])
     {
         if ($this->getContainer()->isDebug()) {
@@ -1892,6 +2546,16 @@ HTML;
         return $html;
     }
 
+    /**
+     * @param                          $string
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param array|null               $extra_vars
+     *
+     * @throws null
+     *
+     * @return null|string
+     */
     public function renderTicketTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = null)
     {
         // Simple string, cant be a template so dont waste time evaluating it
