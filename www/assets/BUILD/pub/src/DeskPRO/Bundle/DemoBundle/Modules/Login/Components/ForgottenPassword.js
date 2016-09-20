@@ -4,8 +4,20 @@ import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Field, Form, Input } from 'DeskPRO/Component/Semantic/Form';
 
 export class ForgottenPasswordContainer extends React.Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
+  onBackToLogin = () => {
+    this.context.router.push('/login');
+  };
+
   render() {
-    return <ForgottenPassword />;
+    return (
+      <ForgottenPassword
+        onBackToLogin={this.onBackToLogin}
+      />
+    );
   }
 }
 export class ForgottenPassword extends React.Component {

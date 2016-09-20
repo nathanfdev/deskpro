@@ -2,8 +2,25 @@ import React, { PropTypes } from 'react';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 
 export class ConfirmExtendContainer extends React.Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
+  onDeleteData = () => {
+    this.context.router.push('/confirm-reset');
+  }
+
+  onPreserveData = () => {
+
+  }
+
   render() {
-    return <ConfirmExtend />;
+    return (
+      <ConfirmExtend
+        onDeleteData={this.onDeleteData}
+        onPreserveData={this.onPreserveData}
+      />
+    );
   }
 }
 export class ConfirmExtend extends React.Component {

@@ -4,8 +4,26 @@ import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Field, Form, Input } from 'DeskPRO/Component/Semantic/Form';
 
 export class LoginContainer extends React.Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
+  onForgotPassword = () => {
+    this.context.router.push('/forgot-password');
+  };
+
+  onLogin = () => {
+    // Check credential via API then
+    this.context.router.push('/extend-trial');
+  }
+
   render() {
-    return <Login />;
+    return (
+      <Login
+        onForgotPassword={this.onForgotPassword}
+        onLogin={this.onLogin}
+      />
+    );
   }
 }
 export class Login extends React.Component {

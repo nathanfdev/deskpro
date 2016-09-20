@@ -3,14 +3,30 @@ import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 
 export class ConfirmResetContainer extends React.Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
+  onCancelButton = () => {
+    this.context.router.push('/confirm-extend');
+  }
+
+  onReset = () => {
+  }
+
   render() {
-    return <ConfirmReset />;
+    return (
+      <ConfirmReset
+        onCancelButton={this.onCancelButton}
+        onReset={this.onReset}
+      />
+    );
   }
 }
 export class ConfirmReset extends React.Component {
   static propTypes = {
-    onReset:        PropTypes.func,
-    onCancelButton: PropTypes.func
+    onCancelButton: PropTypes.func,
+    onReset:        PropTypes.func
   };
 
   render() {

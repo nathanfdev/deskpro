@@ -6,8 +6,26 @@ import { Message } from 'DeskPRO/Component/Semantic/Message';
 import { Field, Form, Input, TextArea } from 'DeskPRO/Component/Semantic/Form';
 
 export class ExtendTrialContainer extends React.Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
+  onDeleteAccount = () => {
+    this.context.router.push('/delete-account');
+  };
+
+  onResumeTrial = () => {
+    // Do API call and then
+    this.context.router.push('/confirm-extend');
+  };
+
   render() {
-    return <ExtendTrial />;
+    return (
+      <ExtendTrial
+        onDeleteAccount={this.onDeleteAccount}
+        onResumeTrial={this.onResumeTrial}
+      />
+    );
   }
 }
 

@@ -30,18 +30,17 @@ namespace DeskPROCloud\Bundle\CloudBillingBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class TestController extends BaseController
+class DemoExpiredController extends BaseController
 {
     /**
-     * "user" is the "old" route name for homepage, and it's important we back port that.
+     * @Route("expired_demo", name="expired_demo")
      *
-     * @Route("/test", name="billing_test")
+     * @return Response
      */
-    public function testAction(Request $request)
+    public function indexAction()
     {
-        return new Response('Test action');
+        return $this->render('CloudBillingBundle:DemoExpired:index.html.twig');
     }
 }
