@@ -541,7 +541,7 @@ class LegacyTermsTransformer
                 ]);
 
             case 'label':
-                $labels = @$options['label'] ?: [];
+                $labels = @$options['labels'] ?: [];
                 if (!is_array($labels)) {
                     $labels = [$labels];
                 }
