@@ -137,7 +137,7 @@ class TicketWithLayoutsManipulatorType extends AbstractType
     public function onPreSubmit(FormEvent $event)
     {
         $context   = TicketWithLayoutsContext::createOnPreSubmit($event);
-        $extracted = TicketLayoutHelper::getExtractedData($event->getData(), $context);
+        $extracted = TicketLayoutHelper::getExtractedData($event->getData() ?: [], $context);
 
         TicketLayoutHelper::renderFormFields($context, function (LayoutField $field) use ($extracted) {
             return $field->getCriteria()->isSubmittedDataMatch($extracted);
