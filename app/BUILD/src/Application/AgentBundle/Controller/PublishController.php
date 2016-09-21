@@ -1054,8 +1054,8 @@ class PublishController extends AbstractController
 
     public function searchAction()
     {
-        $type     = $this->in->getString('content_type');
-        $brand_id = $this->in->getUInt('brand_id');
+        $type    = $this->in->getString('content_type');
+        $brandId = $this->in->getUInt('brand');
         switch ($type) {
             case 'articles':
                 $searcher = new ArticleSearch();
@@ -1101,7 +1101,7 @@ class PublishController extends AbstractController
         $query      = $this->in->getString('query');
 
         if (!$result_cache) {
-            $searcher->addTerm('brand', 'is', $brand_id);
+            $searcher->addTerm('brand', 'is', $brandId);
             $cats = Arrays::removeFalsey($cats);
             if ($cats) {
                 $searcher->addTerm('category', 'is', $cats);
@@ -1122,7 +1122,7 @@ class PublishController extends AbstractController
                 'cats'       => $cats,
                 'query'      => $query,
                 'query_type' => $query_type,
-                'brand_id'   => $brand_id,
+                'brand_id'   => $brandId,
             ];
             $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
