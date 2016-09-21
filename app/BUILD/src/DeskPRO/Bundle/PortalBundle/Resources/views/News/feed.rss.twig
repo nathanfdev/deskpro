@@ -2,12 +2,12 @@
 <rss version="2.0">
     <channel>
         {% if category %}
-            <title>{{ brand_setting('core.deskpro_name') }} - {{ category.full_title  }}</title>
-            <description>{{ brand_setting('core.deskpro_name') }} - {{ category.full_title }}</description>
+            <title>{{ brand_setting('core.deskpro_name')|e }} - {{ category.full_title  }}</title>
+            <description>{{ brand_setting('core.deskpro_name')|e }} - {{ category.full_title }}</description>
             <link>{{ url('portal_news_browse', { slug: category.slug }) }}</link>
         {% else %}
-            <title>{{ brand_setting('core.deskpro_name') }} - {{ phrase('user.news.title') }}</title>
-            <description>{{ brand_setting('core.deskpro_name') }} - {{ phrase('user.news.title') }}</description>
+            <title>{{ brand_setting('core.deskpro_name')|e }} - {{ phrase('user.news.title') }}</title>
+            <description>{{ brand_setting('core.deskpro_name')|e }} - {{ phrase('user.news.title') }}</description>
             <link>{{ url('portal_news') }}</link>
         {% endif %}
         <lastBuildDate>{{ 'now'|date('r') }}</lastBuildDate>
