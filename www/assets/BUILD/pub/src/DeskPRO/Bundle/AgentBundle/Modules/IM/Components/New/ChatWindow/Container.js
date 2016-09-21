@@ -8,18 +8,19 @@ import EmojiBox from './EmojiBox';
 
 class Container extends React.Component {
   static propTypes = {
-    me:          PropTypes.object.isRequired,
-    agents:      PropTypes.object.isRequired,
-    departments: PropTypes.object.isRequired,
-    teams:       PropTypes.object.isRequired,
-    current:     PropTypes.object.isRequired,
-    isOpen:      PropTypes.bool.isRequired,
-    clickOut:    PropTypes.func,
-    onSubmit:    PropTypes.func,
-    onChange:    PropTypes.func.isRequired,
-    onAttach:    PropTypes.func.isRequired,
-    messages:    PropTypes.object,
-    dispatch:    PropTypes.func
+    me:              PropTypes.object.isRequired,
+    agents:          PropTypes.object.isRequired,
+    departments:     PropTypes.object.isRequired,
+    teams:           PropTypes.object.isRequired,
+    current:         PropTypes.object.isRequired,
+    isOpen:          PropTypes.bool.isRequired,
+    clickOut:        PropTypes.func,
+    onSubmit:        PropTypes.func,
+    onChange:        PropTypes.func.isRequired,
+    onAttach:        PropTypes.func.isRequired,
+    messages:        PropTypes.object,
+    dispatch:        PropTypes.func,
+    loadingMessages: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
@@ -119,7 +120,7 @@ class Container extends React.Component {
   }
 
   render() {
-    const { current, isOpen, messages, me, agents } = this.props;
+    const { current, isOpen, messages, me, agents, loadingMessages } = this.props;
 
     return (
       <Detached
@@ -133,6 +134,7 @@ class Container extends React.Component {
             <div className="box">
               <Scrollable vertical>
                 <MessageList
+                  loadingMessages={loadingMessages}
                   current={current}
                   messages={messages}
                   me={me}

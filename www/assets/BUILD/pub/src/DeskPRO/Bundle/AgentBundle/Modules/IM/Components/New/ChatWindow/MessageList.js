@@ -1,14 +1,17 @@
 import React, { PropTypes } from 'react';
+import Loader from 'react-loader';
 import { SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
 import Message from './Message';
 
+
 class MessageList extends React.Component {
   static propTypes = {
-    me:          PropTypes.object.isRequired,
-    agents:      PropTypes.object.isRequired,
-    messages:    PropTypes.object.isRequired,
-    searchQuery: PropTypes.string,
-    current:     PropTypes.object.isRequired
+    me:              PropTypes.object.isRequired,
+    agents:          PropTypes.object.isRequired,
+    messages:        PropTypes.object.isRequired,
+    searchQuery:     PropTypes.string,
+    current:         PropTypes.object.isRequired,
+    loadingMessages: PropTypes.bool.isRequired
   };
 
   static renderEmpty() {
@@ -60,7 +63,12 @@ class MessageList extends React.Component {
   render() {
     let msg = this.props.messages.hasIn(this.getPath()) ? this.props.messages.getIn(this.getPath()).messages : [];
     msg = msg.sort((first, second) => first.timestamp - second.timestamp);
-    return msg.size > 0 ? this.renderList(msg) : MessageList.renderEmpty();
+    const loaded = !this.props.loadingMessages || msg.size > 0;
+    return (
+      <Loader loaded={loaded} parentClassName="box">
+        {msg.size > 0 ? this.renderList(msg) : MessageList.renderEmpty()}
+      </Loader>
+    );
   }
 }
 

@@ -48,18 +48,18 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
 export class AgentTopBarContainer extends SeparateComponent {
 
   static propTypes = {
+    me:                  PropTypes.object,
+    dispatch:            PropTypes.func.isRequired,
     agents:              PropTypes.object.isRequired,
     chatDepartments:     PropTypes.object.isRequired,
     myDepartments:       PropTypes.object.isRequired,
     teams:               PropTypes.object.isRequired,
     recentChats:         PropTypes.object.isRequired,
+    messages:            PropTypes.object,
+    current:             PropTypes.object,
     recentLoaded:        PropTypes.bool.isRequired,
     loadingMessages:     PropTypes.bool.isRequired,
     updatingMessages:    PropTypes.bool.isRequired,
-    messages:            PropTypes.object,
-    dispatch:            PropTypes.func.isRequired,
-    me:                  PropTypes.object,
-    current:             PropTypes.object,
     chating:             PropTypes.bool.isRequired,
     overlayShown:        PropTypes.bool.isRequired,
     teamsLoaded:         PropTypes.bool.isRequired,
@@ -245,6 +245,7 @@ export class AgentTopBar extends React.Component {
     onSubmit:            PropTypes.func,
     messages:            PropTypes.object,
     current:             PropTypes.object,
+    loadingMessages:     PropTypes.bool.isRequired,
     chating:             PropTypes.bool.isRequired,
     overlayShown:        PropTypes.bool.isRequired,
     recentLoaded:        PropTypes.bool.isRequired,
@@ -280,7 +281,7 @@ export class AgentTopBar extends React.Component {
   };
 
   render() {
-    const { teamsLoaded, myDepartmentsLoaded, agentsLoaded } = this.props;
+    const { teamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
     const { current, chating, recentClick, messages, chatClickOut, participantClick, dispatch } = this.props;
     const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
     const { onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
@@ -352,6 +353,7 @@ export class AgentTopBar extends React.Component {
             onAttach={() => console.log('attach')}
             clickOut={chatClickOut}
             dispatch={dispatch}
+            loadingMessages={loadingMessages}
           /> : null }
         </TopBarRecentImList>
       </TopBarItem>

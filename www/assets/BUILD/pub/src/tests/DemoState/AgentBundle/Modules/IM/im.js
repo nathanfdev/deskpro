@@ -304,7 +304,8 @@ export const imState = {
   recentLoaded:      true,
   teamsLoaded:       true,
   departmentsLoaded: true,
-  agentsLoaded:      true
+  agentsLoaded:      true,
+  loadingMessages:   false
 };
 
 const messageOne = {
