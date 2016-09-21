@@ -1,18 +1,44 @@
 import 'babel-polyfill';
-import React, { PropTypes } from 'react';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux';
 import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
-import Isvg from 'react-inlinesvg';
+import { IntlProvider } from 'react-intl';
 import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
-import logoSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/logo.svg';
+import DpAppContainer from './Modules/Application/Components/DpAppContainer';
 import { repositoriesConfig } from './DAL/config';
 import AdminReducers from './DemoApp_Reducers';
 import AppReducers from '../AppBundle/AppApp_Reducers';
 
-export class DemoApp extends React.Component {
-  static propTypes = {
-    children: PropTypes.node
+window.DP_LOCALE = 'en';
+window.DP_LANG = {
+  'cloud.demo_expired.login_title': 'Your free trial has ended',
+  'feedback.nav.title':             'Feedback',
+  'feedback.nav.tabs.status':       'Status'
+};
+
+class DemoApp {
+  run = () => {
+    this.start();
+  };
+
+  start() {
+    /* global __DEV__ */
+    window.DP_DEV_MODE = __DEV__;
+    const store = DemoApp.createStore();
+
+    ReactDOM.render(
+      <div>
+        <Provider store={store}>
+          <IntlProvider locale={window.DP_LOCALE} messages={window.DP_LANG}>
+            <DpAppContainer />
+          </IntlProvider>
+        </Provider>
+      </div>,
+      document.getElementById('app')
+    );
   }
 
   static createStore(initialState = {}) {
@@ -47,23 +73,5 @@ export class DemoApp extends React.Component {
     return makeStore(reducer, initialState, window.devToolsExtension ? window.devToolsExtension() : f => f);
   }
 
-  componentWillMount() {
-    this.start();
-    document.addEventListener('DOMContentLoaded', () => this.start());
-  }
-
-  start() {
-    /* global __DEV__ */
-    window.DP_DEV_MODE = __DEV__;
-    this.store = DemoApp.createStore();
-  }
-
-  render = () =>
-    <div className="container">
-      <div className="logo">
-        <Isvg src={logoSvg} />
-      </div>
-      {this.props.children}
-    </div>
 }
 export default DemoApp;

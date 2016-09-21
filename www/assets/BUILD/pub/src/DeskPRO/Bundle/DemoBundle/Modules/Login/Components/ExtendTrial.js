@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { FormattedMessage } from 'react-intl';
 import Isvg from 'react-inlinesvg';
 import { Segment, Segments } from 'DeskPRO/Component/Semantic/Segment';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
@@ -37,36 +38,87 @@ export class ExtendTrial extends React.Component {
   render() {
     return (
       <Segment className="extend-trial">
-        <h3>Extend your trial</h3>
-        <p>Get <span className="green">7 extra days</span> by entering your details below.</p>
+        <h3>
+          <FormattedMessage
+            id="cloud.demo_expired.extend_trial_title"
+            defaultMessage="Sorry to see you go"
+          />
+          Extend your trial
+        </h3>
+        <p>
+          <FormattedMessage
+            id="cloud.demo_expired.extend_trial_desc"
+            defaultMessage="Get {period} by entering your details below."
+            values={{
+              period:
+                <span className="green">
+                  <FormattedMessage
+                    id="cloud.demo_expired.extend_trial_period"
+                    defaultMessage="7 extra days"
+                  />
+                </span>
+            }}
+          />
+        </p>
         <Message className="positive">
-          You won&apos;t pay anything whilst in your trial and you can still cancel at any time.
+          <FormattedMessage
+            id="cloud.demo_expired.extend_trial_message"
+            defaultMessage="You won't pay anything whilst in your trial and you can still cancel at any time."
+          />
         </Message>
         <Segments className="horizontal">
           <Segment className="address">
             <Form>
               <h4>
                 <i className="icon home" />
-                Billing address
+                <FormattedMessage
+                  id="cloud.demo_expired.billing_address"
+                  defaultMessage="Billing address"
+                />
               </h4>
               <Field>
-                <label htmlFor="address">Address</label>
+                <label htmlFor="address">
+                  <FormattedMessage
+                    id="cloud.demo_expired.address"
+                    defaultMessage="Address"
+                  />
+                </label>
                 <TextArea id="address" rows={2} />
               </Field>
               <Field>
-                <label htmlFor="city">City</label>
+                <label htmlFor="city">
+                  <FormattedMessage
+                    id="cloud.demo_expired.city"
+                    defaultMessage="City"
+                  />
+                </label>
                 <Input id="city" />
               </Field>
               <Field>
-                <label htmlFor="zipcode">Zip / Post Code</label>
+                <label htmlFor="zipcode">
+                  <FormattedMessage
+                    id="cloud.demo_expired.post_code"
+                    defaultMessage="Zip / Post Code"
+                  />
+                </label>
                 <Input id="zipcode" />
               </Field>
               <Field>
-                <label htmlFor="state">State</label>
+                <label htmlFor="state">
+                  <FormattedMessage
+                    id="cloud.demo_expired.state"
+                    defaultMessage="State"
+                  />
+                </label>
                 <Input id="state" />
               </Field>
               <Field>
-                <label htmlFor="country">Country</label>
+                <label htmlFor="country">
+                  <FormattedMessage
+                    id="cloud.demo_expired.country"
+                    defaultMessage="Country"
+                  />
+                </label>
                 <Input id="country" />
               </Field>
             </Form>
@@ -75,15 +127,32 @@ export class ExtendTrial extends React.Component {
             <Form>
               <h4>
                 <i className="icon lock" />
-                Credit card details
+                <FormattedMessage
+                  id="cloud.demo_expired.credit_card_title"
+                  defaultMessage="Credit card details"
+                />
               </h4>
               <Field>
-                <label htmlFor="card_holder">Card holder name</label>
-                <Input id="card_holder" placeholder="As it appears on the card" />
+                <label htmlFor="card_holder">
+                  <FormattedMessage
+                    id="cloud.demo_expired.card_holder"
+                    defaultMessage="Card holder name"
+                  />
+                </label>
+                <Input
+                  id="card_holder"
+                  placeholder={<FormattedMessage
+                    id="cloud.demo_expired.card_holder_placeholder"
+                    defaultMessage="As it appears on the card"
+                  />}
+                />
               </Field>
               <Field className="card-number">
                 <label htmlFor="card_number">
-                  Card number
+                  <FormattedMessage
+                    id="cloud.demo_expired.card_number"
+                    defaultMessage="Card number"
+                  />
                   <Isvg
                     src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/visa.svg`}
                   />
@@ -98,13 +167,34 @@ export class ExtendTrial extends React.Component {
               </Field>
               <Field className="expiry">
                 <label htmlFor="expiry_month">Expiry</label>
-                <Input id="expiry_month" placeholder="MM" type="number" />
+                <Input
+                  id="expiry_month"
+                  placeholder={
+                    <FormattedMessage
+                      id="cloud.demo_expired.expiry_month"
+                      defaultMessage="MM"
+                    />
+                  }
+                  type="number"
+                />
                 <span> / </span>
-                <Input id="expiry_year" placeholder="YY" type="number" />
+                <Input
+                  id="expiry_year"
+                  placeholder={
+                    <FormattedMessage
+                      id="cloud.demo_expired.expiry_year"
+                      defaultMessage="YY"
+                    />
+                  }
+                  type="number"
+                />
               </Field>
               <Field className="security-code">
                 <label htmlFor="security_code">
-                  Security code
+                  <FormattedMessage
+                    id="cloud.demo_expired.security_code"
+                    defaultMessage="Security code"
+                  />
                 </label>
                 <Input id="security_code" type="number" />
                 <img
@@ -112,7 +202,12 @@ export class ExtendTrial extends React.Component {
                   alt="Back of card"
                 />
               </Field>
-              <Button onClick={this.props.onResumeTrial} className="positive">Resume free trial</Button>
+              <Button onClick={this.props.onResumeTrial} className="positive">
+                <FormattedMessage
+                  id="cloud.demo_expired.extend_trial_resume"
+                  defaultMessage="Resume free trial"
+                />
+              </Button>
             </Form>
           </Segment>
         </Segments>

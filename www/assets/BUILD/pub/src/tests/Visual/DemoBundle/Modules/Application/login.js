@@ -8,7 +8,7 @@ import { ConfirmExtend } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Component
 import { ConfirmReset } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/ConfirmReset';
 import { DeleteAccountFeedback } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/DeleteAccountFeedback';
 import { ExtendTrial } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/ExtendTrial';
-import { demoCss } from '../../../decorators';
+import { demoCss, redux } from '../../../decorators';
 
 storiesOf('Demo: expired demo', module)
   .addDecorator(story =>
@@ -20,6 +20,7 @@ storiesOf('Demo: expired demo', module)
     </div>
   )
   .addDecorator(story => demoCss(story()))
+  .addDecorator(story => redux({}, story()))
   .add(
     'Login', () =>
       <Login

@@ -1,4 +1,7 @@
+$fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
+
 @import '../../../AppBundle/Resources/style/variables';
+@import "../../../../../../node_modules/font-awesome/scss/font-awesome";
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/css3/_placeholder";
 
 $font-family: 'Open Sans', Helvetica, Arial, sans-serif;
