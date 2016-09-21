@@ -299,9 +299,9 @@ class AgentHelper implements PersonContextInterface
     //###########################################################################
 
     /**
-     * @param int    $limit
-     * @param int    $brandId
-     * @param string $order_dir
+     * @param int|array $limit
+     * @param int       $brandId
+     * @param string    $order_dir
      *
      * @return array
      */
