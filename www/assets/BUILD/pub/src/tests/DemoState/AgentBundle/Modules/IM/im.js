@@ -215,7 +215,7 @@ const teamThree = {
 const chatOne = {
   id:                '1',
   chat_type:         'agent',
-  agents:            [1, 6],
+  agents:            Immutable.List([1, 6]),
   departments:       [],
   agent_teams:       [],
   date_created:      moment().subtract(2, 'hours').format(),
@@ -226,7 +226,7 @@ const chatTwo = {
   id:                2,
   chat_type:         'department',
   agents:            [],
-  departments:       [2],
+  departments:       Immutable.List([2]),
   agent_teams:       [],
   date_created:      moment().subtract(3, 'days').format(),
   date_last_message: moment().subtract(1, 'day').format()
@@ -235,7 +235,7 @@ const chatTwo = {
 const chatThree = {
   id:                3,
   chat_type:         'agent',
-  agents:            [1, 7],
+  agents:            Immutable.List([1, 7]),
   departments:       [],
   agent_teams:       [],
   date_created:      moment().subtract(12, 'days').format(),
@@ -248,7 +248,7 @@ const chatFour = {
   chat_type:         'team',
   agents:            [],
   departments:       [],
-  agent_teams:       [2],
+  agent_teams:       Immutable.List([2]),
   date_created:      moment().subtract(12, 'days').format(),
   date_last_message: moment().subtract(2, 'hours').format()
 };
@@ -299,8 +299,12 @@ export const imState = {
     [teamTwo.id]:   Immutable.Map(teamTwo),
     [teamThree.id]: Immutable.Map(teamThree)
   }),
-  notifications: Immutable.Seq(notifications),
-  chats:         Immutable.Seq(chats)
+  notifications:     Immutable.Seq(notifications),
+  chats:             Immutable.Seq(chats),
+  recentLoaded:      true,
+  teamsLoaded:       true,
+  departmentsLoaded: true,
+  agentsLoaded:      true
 };
 
 const messageOne = {

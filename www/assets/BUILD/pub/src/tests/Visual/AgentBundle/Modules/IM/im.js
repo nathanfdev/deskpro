@@ -19,10 +19,6 @@ const chatState = {
 storiesOf('Agent: IM', module)
   .addDecorator(story => css(story()))
   .add(
-    'IMOverlay',
-    () => <IMOverlay {...imState}>click here to open overlay</IMOverlay>
-  )
-  .add(
   'Agent: IM: TopBar intergrated with recent list',
   () =>
     <div id="react_dp_agent_top_bar">
