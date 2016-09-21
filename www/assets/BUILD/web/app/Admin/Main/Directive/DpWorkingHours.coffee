@@ -168,15 +168,18 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
         )
 
         updateViewValue = ->
-          startHour = 9;
+          startHour = 9
+          endHour = 18
           if(scope.start_hour || scope.start_hour == 0)
             startHour = scope.start_hour
+          if(scope.end_hour || scope.end_hour == 0)
+            endHour = scope.end_hour
             
           ngModel.$setViewValue({
             timezone       : scope.timezone || 'UTC',
             start_hour     : startHour,
             start_min      : scope.start_min || 0,
-            end_hour       : scope.end_hour || 18,
+            end_hour       : endHour,
             end_min        : scope.end_min || 0,
             holidays       : scope.holidays || [],
             work_days      : scope.work_days || [null, false, true, true, true, true, true, false]
@@ -193,15 +196,18 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
           element.find('.holiday-year-rows').empty()
           viewValue = ngModel.$viewValue
 
-          startHour = 9;
+          startHour = 9
+          endHour = 18
           if(viewValue.start_hour || viewValue.start_hour == 0)
             startHour = viewValue.start_hour
+          if(viewValue.end_hour || viewValue.end_hour == 0)
+            endHour = viewValue.end_hour
 
           if viewValue
             scope.timezone       = viewValue.timezone || 'UTC'
             scope.start_hour     = startHour
             scope.start_min      = viewValue.start_min || 0
-            scope.end_hour       = viewValue.end_hour || 18
+            scope.end_hour       = endHour
             scope.end_min        = viewValue.end_min || 0
             scope.holidays       = viewValue.holidays || []
 
