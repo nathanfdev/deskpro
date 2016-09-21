@@ -7,6 +7,7 @@ class Input extends React.Component {
     iconPosition: PropTypes.string,
     id:           PropTypes.string,
     name:         PropTypes.string,
+    onChange:     PropTypes.func,
     placeholder:  PropTypes.string,
     value:        PropTypes.string,
     type:         PropTypes.string
@@ -23,10 +24,18 @@ class Input extends React.Component {
   };
 
   render() {
-    const { placeholder, icon, iconPosition, id, type, value } = this.props;
+    const { placeholder, onChange, icon, iconPosition, id, type, value } = this.props;
     return (
       <div className={classNames('ui', 'input', iconPosition, { icon: !!icon })}>
-        <input id={id}  value={value} ref={(c) => { this.input = c; }} type={type} name={name} placeholder={placeholder} />
+        <input
+          id={id}
+          value={value}
+          ref={(c) => { this.input = c; }}
+          type={type}
+          name={name}
+          onChange={onChange}
+          placeholder={placeholder}
+        />
         {this.getIcon()}
       </div>
     );

@@ -27392,6 +27392,11 @@ Configuration file to allow overriding of semantic variables and styling
 .ui.form .field.error input[type="url"] {
   border-left: 4px solid #d4145a;
 }
+.ui.form .field.error div.error-message {
+  font-size: 10px;
+  color: #d4145a;
+  margin-top: 5px;
+}
 .ui.form .field:last-child,
 .ui.form .fields:last-child,
 .ui.form .fields:last-child .field {
@@ -58428,4 +58433,5 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
          Site Overrides
 *******************************/
-/*# sourceMappingURL=semantic.css.map */
+
+/*# sourceMappingURL=/semantic.css.map */

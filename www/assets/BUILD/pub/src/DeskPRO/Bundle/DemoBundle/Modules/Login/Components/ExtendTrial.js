@@ -1,49 +1,42 @@
 import React, { PropTypes } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { defineMessages, injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import Isvg from 'react-inlinesvg';
 import { Segment, Segments } from 'DeskPRO/Component/Semantic/Segment';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Message } from 'DeskPRO/Component/Semantic/Message';
 import { Field, Form, Input, TextArea } from 'DeskPRO/Component/Semantic/Form';
 
-export class ExtendTrialContainer extends React.Component {
-  static contextTypes = {
-    router: PropTypes.object.isRequired
-  };
-
-  onDeleteAccount = () => {
-    this.context.router.push('/delete-account');
-  };
-
-  onResumeTrial = () => {
-    // Do API call and then
-    this.context.router.push('/confirm-extend');
-  };
-
-  render() {
-    return (
-      <ExtendTrial
-        onDeleteAccount={this.onDeleteAccount}
-        onResumeTrial={this.onResumeTrial}
-      />
-    );
+const messages = defineMessages({
+  card_holder_placeholder: {
+    id:             'cloud.demo_expired.card_holder_placeholder',
+    defaultMessage: 'As it appears on the card'
+  },
+  expiry_month: {
+    id:             'cloud.demo_expired.expiry_month',
+    defaultMessage: 'MM'
+  },
+  expiry_year: {
+    id:             'cloud.demo_expired.expiry_year',
+    defaultMessage: 'YY'
   }
-}
+});
 
-export class ExtendTrial extends React.Component {
+class ExtendTrial extends React.Component {
   static propTypes = {
-    onResumeTrial: PropTypes.func
+    intl:            intlShape.isRequired,
+    onResumeTrial:   PropTypes.func
   };
 
   render() {
+    const { formatMessage } = this.props.intl;
+
     return (
       <Segment className="extend-trial">
         <h3>
           <FormattedMessage
             id="cloud.demo_expired.extend_trial_title"
-            defaultMessage="Sorry to see you go"
+            defaultMessage="Extend your trial"
           />
-          Extend your trial
         </h3>
         <p>
           <FormattedMessage
@@ -141,10 +134,7 @@ export class ExtendTrial extends React.Component {
                 </label>
                 <Input
                   id="card_holder"
-                  placeholder={<FormattedMessage
-                    id="cloud.demo_expired.card_holder_placeholder"
-                    defaultMessage="As it appears on the card"
-                  />}
+                  placeholder={formatMessage(messages.card_holder_placeholder)}
                 />
               </Field>
               <Field className="card-number">
@@ -169,23 +159,13 @@ export class ExtendTrial extends React.Component {
                 <label htmlFor="expiry_month">Expiry</label>
                 <Input
                   id="expiry_month"
-                  placeholder={
-                    <FormattedMessage
-                      id="cloud.demo_expired.expiry_month"
-                      defaultMessage="MM"
-                    />
-                  }
+                  placeholder={formatMessage(messages.expiry_month)}
                   type="number"
                 />
                 <span> / </span>
                 <Input
                   id="expiry_year"
-                  placeholder={
-                    <FormattedMessage
-                      id="cloud.demo_expired.expiry_year"
-                      defaultMessage="YY"
-                    />
-                  }
+                  placeholder={formatMessage(messages.expiry_year)}
                   type="number"
                 />
               </Field>
@@ -215,3 +195,4 @@ export class ExtendTrial extends React.Component {
     );
   }
 }
+export default injectIntl(ExtendTrial);

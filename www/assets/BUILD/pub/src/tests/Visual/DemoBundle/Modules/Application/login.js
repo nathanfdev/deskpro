@@ -7,7 +7,7 @@ import { ForgottenPassword } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Compo
 import { ConfirmExtend } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/ConfirmExtend';
 import { ConfirmReset } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/ConfirmReset';
 import { DeleteAccountFeedback } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/DeleteAccountFeedback';
-import { ExtendTrial } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/ExtendTrial';
+import ExtendTrial from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/ExtendTrial';
 import { demoCss, redux } from '../../../decorators';
 
 storiesOf('Demo: expired demo', module)

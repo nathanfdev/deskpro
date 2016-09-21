@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import DpAppRouteContainer from './DpAppRouteContainer';
 import { LoginContainer } from '../../Login/Components/Login';
 import { ForgottenPasswordContainer } from '../../Login/Components/ForgottenPassword';
-import { ExtendTrialContainer } from '../../Login/Components/ExtendTrial';
+import ExtendTrialContainer from '../../Login/Components/ExtendTrialContainer';
 import { DeleteAccountFeedbackContainer } from '../../Login/Components/DeleteAccountFeedback';
 import { ConfirmResetContainer } from '../../Login/Components/ConfirmReset';
 import { ConfirmExtendContainer } from '../../Login/Components/ConfirmExtend';
