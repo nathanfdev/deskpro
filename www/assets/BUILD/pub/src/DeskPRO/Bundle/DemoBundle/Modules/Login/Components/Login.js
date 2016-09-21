@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Field, Form, Input } from 'DeskPRO/Component/Semantic/Form';
-import login from '../Actions/loginActions';
+import * as actions from '../Actions/loginActions';
 
 @connect()
 export class LoginContainer extends React.Component {
@@ -25,6 +25,17 @@ export class LoginContainer extends React.Component {
       submit:   false,
       errors:   null
     };
+  }
+
+  componentWillMount() {
+    const { dispatch } = this.props;
+    const promise = dispatch(actions.checkToken());
+
+    promise.then(
+      () => {
+        this.context.router.push('/extend-trial');
+      }
+    );
   }
 
   componentDidMount() {
@@ -59,7 +70,7 @@ export class LoginContainer extends React.Component {
       submit: true
     });
 
-    const promise = dispatch(login({
+    const promise = dispatch(actions.login({
       email:    this.form.username.input.value,
       password: this.form.password.input.value
     }));

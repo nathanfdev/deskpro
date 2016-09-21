@@ -78,7 +78,7 @@ class SessionController extends BaseController
         $data = session_encode();
 
         /** @var \Application\DeskPRO\EntityRepository\Session $session_repository */
-        $session_repository = $this->getDoctrine()->getRepository('DeskPRO:Session');
+        $session_repository = $this->getDoctrine()->getRepository(Session::class);
         $session            = $session_repository->getSessionFromCode($session_code);
         if (!$session) {
             $session = new Session();

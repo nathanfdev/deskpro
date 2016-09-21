@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Router, Route, hashHistory, RouterContext, IndexRoute } from 'react-router';
 import { connect } from 'react-redux';
 import DpAppRouteContainer from './DpAppRouteContainer';
@@ -8,19 +8,40 @@ import ExtendTrialContainer from '../../Login/Components/ExtendTrialContainer';
 import { DeleteAccountFeedbackContainer } from '../../Login/Components/DeleteAccountFeedback';
 import { ConfirmResetContainer } from '../../Login/Components/ConfirmReset';
 import { ConfirmExtendContainer } from '../../Login/Components/ConfirmExtend';
+import * as actions from '../../Login/Actions/loginActions';
 
 @connect()
 class DpAppContainer extends React.Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired
+  };
+
+  requireAuth = (nextState, replace) => {
+    const { dispatch } = this.props;
+    const promise = dispatch(actions.checkToken());
+
+    promise.then(
+      () => {},
+      () => {
+        console.log('not logged in');
+        replace({
+          pathname: '/login',
+          state:    { nextPathname: nextState.location.pathname }
+        });
+      }
+    );
+  };
+
   render = () =>
     <Router history={hashHistory} render={props => <RouterContext {...props} />}>
       <Route path="/" component={DpAppRouteContainer}>
         <IndexRoute component={LoginContainer} />
         <Route name="login" path="/login" component={LoginContainer} />
-        <Route name="forgot_password" path="/forgot-password" component={ForgottenPasswordContainer} />
-        <Route name="extend-trial" path="/extend-trial" component={ExtendTrialContainer} />
-        <Route name="delete_account" path="/delete-account" component={DeleteAccountFeedbackContainer} />
-        <Route name="confirm_reset" path="/confirm-reset" component={ConfirmResetContainer} />
-        <Route name="confirm_extend" path="/confirm-extend" component={ConfirmExtendContainer} />
+        <Route name="forgot_password" path="/forgot-password" component={ForgottenPasswordContainer} onEnter={this.requireAuth} />
+        <Route name="extend-trial" path="/extend-trial" component={ExtendTrialContainer} onEnter={this.requireAuth} />
+        <Route name="delete_account" path="/delete-account" component={DeleteAccountFeedbackContainer} onEnter={this.requireAuth} />
+        <Route name="confirm_reset" path="/confirm-reset" component={ConfirmResetContainer} onEnter={this.requireAuth} />
+        <Route name="confirm_extend" path="/confirm-extend" component={ConfirmExtendContainer} onEnter={this.requireAuth} />
       </Route>
     </Router>
 }
