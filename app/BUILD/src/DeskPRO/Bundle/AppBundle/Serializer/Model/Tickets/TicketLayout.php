@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets;
 
 use Application\DeskPRO\Entity\Department as DepartmentEntity;
 use Application\DeskPRO\TicketLayout\Layout;
-use Application\DeskPRO\TicketLayout\LayoutField;
+use Application\DeskPRO\TicketLayout\LayoutField as BaseLayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use JMS\Serializer\Annotation as JMS;
 
@@ -55,7 +55,7 @@ class TicketLayout
      *
      * @JMS\Type("array<Application\DeskPRO\TicketLayout\LayoutField>")
      *
-     * @var LayoutField[]
+     * @var LayoutFieldModel[]
      */
     private $fields;
 
@@ -94,11 +94,11 @@ class TicketLayout
      * @param Layout $layout
      * @param string $context
      *
-     * @return LayoutField[]
+     * @return BaseLayoutField[]
      */
     private function getOrderedFields(Layout $layout, $context)
     {
-        /** @var LayoutField[] $fields */
+        /** @var BaseLayoutField[] $fields */
         $fields = array_values($layout->all());
 
         if ($context === 'agent') {

@@ -19,7 +19,7 @@
 				{#######################}
 
 				<li class="with-drag-handle" data-id="departmentGroup" dp-li-group-section ng-if="List.depList.length" data-trigger-id="departments" data-move-to-pos="{{ ng_var('dep_order') }}">
-					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
+					<span class="toggle link">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper">
 							<button dp-toggle-switch ng-model="List.depTriggersEnabled" ng-change="List.updateDepTriggersEnabledState();"></button>
@@ -32,7 +32,7 @@
 							<i class="fa fa-caret-down as-closed"></i>
 							<i class="fa fa-caret-up as-open"></i>
 						</h4>
-					</a>
+					</span>
 					<div class="group-section-wrapper">
 						<div class="group-section-shadow"></div>
 						<div class="group-section-content">
@@ -95,7 +95,7 @@
 				{#######################}
 
 				<li class="with-drag-handle" data-id="emailGroup" dp-li-group-section ng-if="List.accounts.length" data-move-to-pos="{{ ng_var('emailaccount_order') }}" data-trigger-id="emailaccounts">
-					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
+					<span class="toggle link">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper">
 							<button dp-toggle-switch ng-model="List.emailTriggersEnabled" ng-change="List.updateEmailTriggersEnabledState();"></button>
@@ -108,7 +108,7 @@
 							<i class="fa fa-caret-down as-closed"></i>
 							<i class="fa fa-caret-up as-open"></i>
 						</h4>
-					</a>
+					</span>
 					<div class="group-section-wrapper">
 						<div class="group-section-shadow"></div>
 						<div class="group-section-content">

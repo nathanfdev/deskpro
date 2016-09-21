@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Command\Configure;
 
-use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -58,10 +57,6 @@ class ConfigElasticCommand extends ContainerAwareCommand
     {
         /* @var \DpRun\DpEnv */
         global $DP_ENV;
-
-        if (!$DP_ENV->getDatManager()->hasTxtFile('server_info_auth')) {
-            $DP_ENV->getDatManager()->writeTxtFile('server_info_auth', Strings::random(30, Strings::CHARS_ALPHANUM_IU));
-        }
 
         $rawUrl = $input->getArgument('elasticUrl');
         if ($rawUrl === 'OFF') {
@@ -112,7 +107,7 @@ class ConfigElasticCommand extends ContainerAwareCommand
                 return 1;
             }
         }
-        
+
         $output->writeln('<info>Done</info>');
 
         return 0;

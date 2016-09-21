@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Command;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Monolog\Logger;
 use Application\InstallBundle\Upgrade\Build\PostBuild;
+use DeskPRO\Bundle\AppBundle\Util\BinariesPathValidator;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Input\InputInterface;
@@ -61,13 +62,52 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     {
         set_time_limit(0);
 
+        global $DP_ENV;
+        $validator  = new BinariesPathValidator();
+        $wrongPaths = [];
+
+        $root          = $DP_ENV->getDpRoot();
+        $phpPath       = $DP_ENV->getConfig('paths.php_path');
+        $mysqlPath     = $DP_ENV->getConfig('paths.mysql_path');
+        $mysqldumpPath = $DP_ENV->getConfig('paths.mysqldump_path');
+
+        try {
+            $validator->validatePhpPath($phpPath, $root);
+        } catch (\Exception $e) {
+            $wrongPaths[] = $phpPath ?: 'php';
+        }
+
+        try {
+            $validator->validateMysqlPath($mysqlPath);
+        } catch (\Exception $e) {
+            $wrongPaths[] = $mysqlPath ?: 'mysql';
+        }
+
+        try {
+            $validator->validateMysqldumpPath($mysqldumpPath);
+        } catch (\Exception $e) {
+            $wrongPaths[] = $mysqldumpPath ?: 'mysqldump';
+        }
+
+        if ($wrongPaths) {
+            $output->writeln('<error>One or more paths to system binaries are incorrect</error>');
+            $output->writeln('The following paths are incorrect: '.implode(', ', $wrongPaths));
+            $output->writeln('');
+            $output->writeln('You need to edit your config.paths.php file and correct the paths. The full path to the config fileis:');
+            $output->writeln('<info>'.$root.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.paths.php</info>');
+
+            return 1;
+        }
+
         $doReset       = $input->getOption('reset');
         $versionError  = false;
         $ignore_errors = $input->getOption('ignore-errors');
 
         $this->getContainer()->get('audit_log.doctrine_listener')->disableListener();
 
-        $dbVersion = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
+        $dbVersion     = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
+        $dbVersionName = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build_num'");
+
         if ($dbVersion && $dbVersion <= 1463676536) {
             if (!$input->getOption('info') && !$input->getOption('dobuildrun') && !$input->getOption('runsync') && !$input->getOption('reset')) {
                 $doReset      = true;
@@ -103,7 +143,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         // upgrade because the upgrade scripts need to run from the proper position
         // at build Build1464777281
         if (!$input->getOption('info') && !$input->getOption('dobuildrun') && !$input->getOption('runsync') && !$input->getOption('reset')) {
-            if ($dbVersion == '1470650875' || $dbVersion == '1471618600') {
+            if ($dbVersion == '1470650875' || $dbVersion == '1471618600' || strpos($dbVersionName, '443.') === 0) {
                 // Sanity check -- make sure someone didnt import a database dump over a new database
                 // mysqldump uses 'drop table if exists' by default, so it would work if someone
                 // tried to restore a dump into an existing database (e.g. from a fresh install).

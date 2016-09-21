@@ -26,13 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields;
 
-use Application\DeskPRO\CustomFields\Handler\Choice;
+use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
@@ -543,10 +539,12 @@ class FieldManager
     /**
      * Save a posted form of custom field data to an object.
      *
-     * @param array $form_data
-     * @param       $object
+     * @param array $form
+     * @param mixed $object
+     * @param bool  $only_set
+     * @param bool  $flushChanges
      */
-    public function saveFormToObject(array $form, $object, $only_set = false)
+    public function saveFormToObject(array $form, $object, $only_set = false, $flushChanges = true)
     {
         $fields = $this->getFields();
 
@@ -561,14 +559,16 @@ class FieldManager
 
         $this->_orig_display = $this->getDisplayArrayForObject($object);
 
+        /** @var CustomDefAbstract $field_def */
         foreach ($fields as $field_def) {
             if ($only_set && !array_key_exists('field_'.$field_def->getId(), $form)) {
                 continue;
             }
 
+            /** @var HandlerAbstract $handler */
             $handler = $field_def->getHandler();
 
-            if (!$data = $handler->getDataFromForm($form, $handler instanceof Choice ? 1 : 0)) {
+            if (!$data = $handler->getDataFromForm($form)) {
                 $this->removeCustomDataOnObject($object, $field_def);
                 continue;
             }
@@ -577,7 +577,7 @@ class FieldManager
             $fieldsIds = array_flip(array_map(function ($a) {
                 return $a[0];
             }, $data));
-            foreach ($field_def->children as $child) {
+            foreach ($field_def->getChildren() as $child) {
                 if (!$customDataForField = $object->getCustomDataForField($child)) {
                     continue;
                 }
@@ -595,7 +595,11 @@ class FieldManager
         }
 
         $this->_orig_display = null;
-        $this->em->flush();
+
+        // BC: $em should be flushed outside this method
+        if ($flushChanges) {
+            $this->em->flush();
+        }
     }
 
     /**
@@ -676,7 +680,6 @@ class FieldManager
 
         // No value
         if ($value === null || $set_field === null) {
-            // maybe better set CustomData's value to null?
             $this->removeCustomDataOnObject($object, $field_def);
 
             return;
