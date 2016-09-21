@@ -55,7 +55,7 @@ class CleanerExtension extends AbstractTypeExtension
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 128); // high priority
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], -1);
     }
 
     public function onPreSubmit(FormEvent $event)
