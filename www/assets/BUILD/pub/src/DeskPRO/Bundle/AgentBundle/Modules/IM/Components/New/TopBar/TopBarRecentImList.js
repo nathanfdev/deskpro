@@ -27,7 +27,7 @@ class TopBarRecentImList extends RecentList {
   };
 
   getItems() {
-    return this.props.chats.map(agent => this.getItem(agent));
+    return RecentList.sortList(this.props.chats).slice(0, 10).map(agent => this.getItem(agent));
   }
 
   renderAgent(chat) {
@@ -94,8 +94,8 @@ class TopBarRecentImList extends RecentList {
     return (
       <Loader loaded={loaded} opacity={0} width={3} scale={0.5} color="#4696dc">
         <div className={classNames(['im', 'recent', { empty: this.props.chats.size < 1 }])}>
-            {this.getItems()}
-            {this.props.children}
+          {this.getItems()}
+          {this.props.children}
         </div>
       </Loader>
     );

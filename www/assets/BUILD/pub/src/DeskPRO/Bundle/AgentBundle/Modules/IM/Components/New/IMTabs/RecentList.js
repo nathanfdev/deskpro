@@ -19,6 +19,14 @@ class RecentList extends React.Component {
     onRecentClick: PropTypes.func.isRequired
   };
 
+  static sortList(list) {
+    return list.sort((first, second) => {
+      const fDate = Date.parse(first.get('date_last_message'));
+      const sDate = Date.parse(second.get('date_last_message'));
+      return sDate - fDate;
+    });
+  }
+
   getItem(chat) {
     switch (chat.get('chat_type')) {
       case 'agent':
@@ -35,7 +43,7 @@ class RecentList extends React.Component {
   }
 
   getItems() {
-    return this.props.chats.map(this.getItem.bind(this));
+    return RecentList.sortList(this.props.chats).map(this.getItem.bind(this));
   }
 
   getAgents(container) {
