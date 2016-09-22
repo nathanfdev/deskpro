@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
 import { SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
+import { Header } from 'DeskPRO/Component/Semantic/Common';
 import Message from './Message';
 
 
@@ -16,11 +17,11 @@ class MessageList extends React.Component {
 
   static renderEmpty() {
     return (
-      <ul className="chat-message-list">
-        <li className="chat-controls">
-          <a>Sorry, nothing found here</a>
-        </li>
-      </ul>
+      <Header
+        classes="empty"
+        level={5}
+        content="Sorry, nothing found here"
+      />
     );
   }
 

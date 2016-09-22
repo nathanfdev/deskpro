@@ -124,16 +124,16 @@ class GroupAddDrawer extends React.Component
             <div className="im add group">
               <Segment vertical>
                 <Header
-                  size={5}
+                  level={5}
                   classes={['add group']}
                   content={<span><i className="fa fa-users" />&nbsp;Create group</span>}
                 />
               </Segment>
               <Segment vertical>
-                <Header size={4} classes={['group name']} content="Group name" />
+                <Header level={4} classes={['group name']} content="Group name" />
               </Segment>
               <Segment vertical>
-                <Header size={4} classes={['group-list']} content={this.getAgentsHeader()} />
+                <Header level={4} classes={['group-list']} content={this.getAgentsHeader()} />
                 <List classes={['im', 'middle', 'aligned', 'selection', 'agent']}>
                   <Scrollable vertical>
                     {agents.map((agent) => this.renderAgent(agent))}

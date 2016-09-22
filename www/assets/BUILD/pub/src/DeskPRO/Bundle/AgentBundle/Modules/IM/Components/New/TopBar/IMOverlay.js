@@ -80,21 +80,21 @@ export default class IMOverlay extends React.Component {
         <div style={{ height: '355px' }}>
           <Scrollable vertical>
             <Header
-              size={4}
+              level={4}
               classes={['group-list']}
               content={<span>everyone<span className="agents-counter">({agents.size})</span></span>}
             />
             <EveryoneSegment agents={agents} onParticipantClick={onParticipantClick} />
             <div className="ui divider" />
-            <Header size={4} classes={['group-list']} content="im groups" />
+            <Header level={4} classes={['group-list']} content="im groups" />
             <Segment classes={['new-im-group']} raised vertical>
               <span onClick={() => createNewGroup()}>+ create new im group</span>
             </Segment>
             <div className="ui divider" />
-            <Header size={4} classes={['group-list']} content="department" />
+            <Header level={4} classes={['group-list']} content="department" />
             <DepartmentList agents={agents} departments={departments} me={me} onParticipantClick={onParticipantClick} />
             <div className="ui divider" />
-            <Header size={4} classes={['group-list']} content="teams" />
+            <Header level={4} classes={['group-list']} content="teams" />
             <AgentTeamList agents={agents} teams={teams} me={me} onParticipantClick={onParticipantClick} />
           </Scrollable>
         </div>

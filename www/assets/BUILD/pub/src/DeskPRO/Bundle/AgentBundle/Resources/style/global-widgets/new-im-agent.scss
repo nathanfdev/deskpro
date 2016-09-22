@@ -344,6 +344,14 @@
       position: relative;
       background-color: $dp-greyscale-50;
 
+      .empty {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        padding: 20px;
+        color: $dp-sonic-primary;
+      }
+
       .ui.segments {
         padding: 20px;
         border: 0;

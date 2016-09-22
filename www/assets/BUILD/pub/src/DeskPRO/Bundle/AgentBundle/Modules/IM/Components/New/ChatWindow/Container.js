@@ -61,11 +61,11 @@ class Container extends React.Component {
   }
 
   getDepartmentHeader(chat) {
-    return this.props.departments.getIn([chat.get('departments')[0], 'title']);
+    return this.props.departments.getIn([chat.getIn(['departments', 0]), 'title']);
   }
 
   getAgentTeamHeader(chat) {
-    return this.props.teams.getIn([chat.get('agent_teams')[0], 'name']);
+    return this.props.teams.getIn([chat.getIn(['agent_teams', 0]), 'name']);
   }
 
   getHeader() {

@@ -3,19 +3,19 @@ import classNames from 'classnames';
 
 class Header extends React.Component {
   static propTypes = {
-    size:    PropTypes.number.isRequired,
+    level:   PropTypes.number.isRequired,
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     classes: PropTypes.array
   };
 
   static defaultProps = {
     classes: [],
-    size:    3
+    level:   3
   };
 
   render() {
-    const { size, content, classes } = this.props;
-    const element = `h${size}`;
+    const { level, content, classes } = this.props;
+    const element = `h${level}`;
     return React.createElement(element, { className: classNames(['ui', 'header'], classes) }, content);
   }
 }
