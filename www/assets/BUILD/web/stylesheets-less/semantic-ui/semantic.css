@@ -2946,7 +2946,7 @@ Configuration file to allow overriding of semantic variables and styling
   text-align: center;
   text-decoration: none;
   border-radius: 2px;
-  box-shadow: 0px 2px 0px #3c82b4;
+  box-shadow: 0 2px 0 #3c82b4;
   user-select: none;
   transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
   will-change: '';
@@ -2961,7 +2961,7 @@ Configuration file to allow overriding of semantic variables and styling
 .ui.button:hover {
   background-color: #59a8e2;
   background-image: none;
-  box-shadow: 0px 2px 0px #3c82b4;
+  box-shadow: 0 2px 0 #3c82b4;
   color: #ffffff;
 }
 .ui.button:hover .icon {
@@ -3553,7 +3553,7 @@ Configuration file to allow overriding of semantic variables and styling
 .ui.basic.button:focus {
   background: #fdfeff !important;
   color: rgba(0, 0, 0, 0.8) !important;
-  box-shadow: 0px 1px 0px #4696dc;
+  box-shadow: 0px 1px 0px #c0c4c4;
 }
 .ui.basic.buttons .button:active,
 .ui.basic.button:active {
@@ -3719,13 +3719,13 @@ Configuration file to allow overriding of semantic variables and styling
 .ui.toggle.buttons .active.button,
 .ui.buttons .button.toggle.active,
 .ui.button.toggle.active {
-  background-color: #21BA45 !important;
+  background-color: #47bf61 !important;
   box-shadow: none !important;
   text-shadow: none;
   color: #FFFFFF !important;
 }
 .ui.button.toggle.active:hover {
-  background-color: #16ab39 !important;
+  background-color: #37b553 !important;
   text-shadow: none;
   color: #FFFFFF !important;
 }
@@ -5901,7 +5901,7 @@ Configuration file to allow overriding of semantic variables and styling
 /* Standard */
 .ui.positive.buttons .button,
 .ui.positive.button {
-  background-color: #21BA45;
+  background-color: #47bf61;
   color: #FFFFFF;
   text-shadow: none;
   background-image: none;
@@ -5911,19 +5911,19 @@ Configuration file to allow overriding of semantic variables and styling
 }
 .ui.positive.buttons .button:hover,
 .ui.positive.button:hover {
-  background-color: #16ab39;
+  background-color: #37b553;
   color: #FFFFFF;
   text-shadow: none;
 }
 .ui.positive.buttons .button:focus,
 .ui.positive.button:focus {
-  background-color: #0ea432;
+  background-color: #2eaf4a;
   color: #FFFFFF;
   text-shadow: none;
 }
 .ui.positive.buttons .button:active,
 .ui.positive.button:active {
-  background-color: #198f35;
+  background-color: #369d4d;
   color: #FFFFFF;
   text-shadow: none;
 }
@@ -5931,38 +5931,38 @@ Configuration file to allow overriding of semantic variables and styling
 .ui.positive.buttons .active.button:active,
 .ui.positive.active.button,
 .ui.positive.button .active.button:active {
-  background-color: #13ae38;
+  background-color: #34b851;
   color: #FFFFFF;
   text-shadow: none;
 }
 /* Basic */
 .ui.basic.positive.buttons .button,
 .ui.basic.positive.button {
-  box-shadow: 0px 0px 0px 1px #21BA45 inset !important;
-  color: #21BA45 !important;
+  box-shadow: 0px 0px 0px 1px #47bf61 inset !important;
+  color: #47bf61 !important;
 }
 .ui.basic.positive.buttons .button:hover,
 .ui.basic.positive.button:hover {
   background: transparent !important;
-  box-shadow: 0px 0px 0px 1px #16ab39 inset !important;
-  color: #16ab39 !important;
+  box-shadow: 0px 0px 0px 1px #37b553 inset !important;
+  color: #37b553 !important;
 }
 .ui.basic.positive.buttons .button:focus,
 .ui.basic.positive.button:focus {
   background: transparent !important;
-  box-shadow: 0px 0px 0px 1px #0ea432 inset !important;
-  color: #16ab39 !important;
+  box-shadow: 0px 0px 0px 1px #2eaf4a inset !important;
+  color: #37b553 !important;
 }
 .ui.basic.positive.buttons .active.button,
 .ui.basic.positive.active.button {
   background: transparent !important;
-  box-shadow: 0px 0px 0px 1px #13ae38 inset !important;
-  color: #198f35 !important;
+  box-shadow: 0px 0px 0px 1px #34b851 inset !important;
+  color: #369d4d !important;
 }
 .ui.basic.positive.buttons .button:active,
 .ui.basic.positive.button:active {
-  box-shadow: 0px 0px 0px 1px #198f35 inset !important;
-  color: #198f35 !important;
+  box-shadow: 0px 0px 0px 1px #369d4d inset !important;
+  color: #369d4d !important;
 }
 .ui.buttons:not(.vertical) > .basic.primary.button:not(:first-child) {
   margin-left: -1px;
@@ -6069,7 +6069,7 @@ Configuration file to allow overriding of semantic variables and styling
 }
 .ui.buttons > .ui.button:not(.basic):not(.inverted),
 .ui.buttons:not(.basic):not(.inverted) > .button {
-  box-shadow: 0px 2px 0px #3c82b4;
+  box-shadow: 0 2px 0 #3c82b4;
 }
 .ui.buttons .button:first-child {
   border-left: none;
@@ -6116,17 +6116,29 @@ Configuration file to allow overriding of semantic variables and styling
 .ui.basic.button {
   border: 1px solid #e3e3e3;
 }
+.ui.basic.buttons .button:focus,
+.ui.basic.button:focus {
+  border: 1px solid #cacece;
+}
 .ui.buttons.state-buttons > .ui.button.active:not(.basic):not(.inverted),
 .ui.buttons.state-buttons:not(.basic):not(.inverted) > .button.active {
-  box-shadow: 0px 2px 0px #aab0b1;
+  box-shadow: 0 2px 0 #aab0b1;
 }
 .ui.basic.buttons .button:hover,
-.ui.basic.button:hover,
+.ui.basic.button:hover {
+  border-color: #4696dc;
+  box-shadow: 0px 1px 0px #4696dc;
+}
 .ui.basic.buttons .button:active,
 .ui.basic.button:active,
 .ui.basic.buttons .active.button,
 .ui.basic.active.button {
   border-color: #4696dc;
+  box-shadow: 0px -1px 0px #4696dc;
+}
+.ui.positive.buttons .button,
+.ui.positive.button {
+  box-shadow: 0 2px 0 #459b51;
 }
 /*!
  * # Semantic UI - Container
@@ -9438,6 +9450,9 @@ i.flag.zimbabwe:before {
 /*******************************
          Site Overrides
 *******************************/
+i.flag.uk:before {
+  background-position: -36px -26px;
+}
 /*!
  * # Semantic UI - Header
  * http://github.com/semantic-org/semantic-ui/
@@ -16452,6 +16467,9 @@ input[type=search] i.icon.remove {
 }
 input[type=search]:invalid + i.icon.remove {
   display: none;
+}
+.ui.icon.input > i.icon {
+  font-size: 1.143em;
 }
 /*!
  * # Semantic UI - Label
@@ -46611,6 +46629,9 @@ select.ui.dropdown {
 /*******************************
         User Overrides
 *******************************/
+.ui.search.dropdown {
+  width: 100%;
+}
 /*!
  * # Semantic UI - Video
  * http://github.com/semantic-org/semantic-ui/

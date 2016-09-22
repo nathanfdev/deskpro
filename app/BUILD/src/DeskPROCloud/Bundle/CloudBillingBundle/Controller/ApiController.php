@@ -28,45 +28,40 @@
 
 namespace DeskPROCloud\Bundle\CloudBillingBundle\Controller;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\BadCredentialsFormException;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType;
-use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
+use Application\DeskPRO\HttpKernel\Controller\Controller;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Orb\Data\Countries;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiController extends BaseController
+/**
+ * Class ApiController.
+ *
+ * @ApiModes("all")
+ * @Rest\Route("/api")
+ */
+class ApiController extends Controller
 {
     /**
-     * @Route("api", name="api_index")
+     * @Rest\Get("/countries")
      *
      * @return Response
      */
-    public function indexAction()
+    public function getCountriesAction()
     {
-        return $this->render('CloudBillingBundle:DemoExpired:index.html.twig');
+        $countries = Countries::getCountryArray();
+
+        return new Response(json_encode($countries));
     }
-
-    public function loginAction(Request $request)
+    /**
+     * @Rest\Get("/states")
+     *
+     * @return Response
+     */
+    public function getStatesAction()
     {
-        $request_data = $request->request->all();
+        $states = Countries::getUsStates();
 
-        $form = $this->createForm(AuthenticationRequestType::class);
-        $form->submit($request_data);
-        if (!$form->isValid()) {
-            throw new InvalidFormException($form);
-        }
-
-        $form = $this->createForm(AuthenticationType::class);
-        $form->submit($request_data);
-        if (!$form->isValid()) {
-            throw new BadCredentialsFormException($form);
-        }
-
-        $data     = $form->getData();
-        $email    = $data['email'];
-        $password = $data['password'];
+        return new Response(json_encode($states));
     }
 }

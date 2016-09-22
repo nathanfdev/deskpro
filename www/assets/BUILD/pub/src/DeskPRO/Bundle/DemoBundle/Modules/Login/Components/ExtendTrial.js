@@ -4,7 +4,7 @@ import Isvg from 'react-inlinesvg';
 import { Segment, Segments } from 'DeskPRO/Component/Semantic/Segment';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Message } from 'DeskPRO/Component/Semantic/Message';
-import { Field, Form, Input, TextArea } from 'DeskPRO/Component/Semantic/Form';
+import { Field, Form, Input, Select, TextArea } from 'DeskPRO/Component/Semantic/Form';
 
 const messages = defineMessages({
   card_holder_placeholder: {
@@ -18,17 +18,81 @@ const messages = defineMessages({
   expiry_year: {
     id:             'cloud.demo_expired.expiry_year',
     defaultMessage: 'YY'
+  },
+  select_placeholder: {
+    id:             'cloud.demo_expired.please_select',
+    defaultMessage: 'Please select'
   }
 });
 
 class ExtendTrial extends React.Component {
   static propTypes = {
     intl:            intlShape.isRequired,
+    country:         PropTypes.string,
+    state:           PropTypes.string,
+    countries:       PropTypes.object,
+    states:          PropTypes.object,
+    onSelectCountry: PropTypes.func,
+    onChangeState:   PropTypes.func,
     onResumeTrial:   PropTypes.func
+  };
+
+  getState = () => {
+    const { formatMessage } = this.props.intl;
+    const { states, onChangeState } = this.props;
+
+    let input;
+    if (this.props.country === 'US') {
+      const statesOptions = [];
+      for (const code of Object.keys(states)) {
+        const label = states[code];
+        statesOptions.push({
+          value: code,
+          label
+        });
+      }
+
+
+      input = (
+        <Select
+          options={statesOptions}
+          name="state"
+          placeholder={formatMessage(messages.select_placeholder)}
+          onChange={onChangeState}
+          filter
+        />
+      );
+    } else {
+      input = <Input name="state" onChange={onChangeState} value={this.props.state} />;
+    }
+
+    return (
+      <Field>
+        <label htmlFor="state">
+          <FormattedMessage
+            id="cloud.demo_expired.state"
+            defaultMessage="State"
+          />
+        </label>
+        {input}
+      </Field>
+    );
   };
 
   render() {
     const { formatMessage } = this.props.intl;
+    const { countries } = this.props;
+
+    const countriesOptions = [];
+    for (const code of Object.keys(countries)) {
+      const label = countries[code];
+      countriesOptions.push({
+        value: code,
+        text:  label,
+        label: <span><i className={`flag ${code.toLowerCase()}`} /> {label}</span>
+      });
+    }
+
 
     return (
       <Segment className="extend-trial">
@@ -96,15 +160,7 @@ class ExtendTrial extends React.Component {
                 </label>
                 <Input id="zipcode" />
               </Field>
-              <Field>
-                <label htmlFor="state">
-                  <FormattedMessage
-                    id="cloud.demo_expired.state"
-                    defaultMessage="State"
-                  />
-                </label>
-                <Input id="state" />
-              </Field>
+              {this.getState()}
               <Field>
                 <label htmlFor="country">
                   <FormattedMessage
@@ -112,7 +168,12 @@ class ExtendTrial extends React.Component {
                     defaultMessage="Country"
                   />
                 </label>
-                <Input id="country" />
+                <Select
+                  options={countriesOptions}
+                  placeholder={formatMessage(messages.select_placeholder)}
+                  onChange={this.props.onSelectCountry}
+                  filter
+                />
               </Field>
             </Form>
           </Segment>

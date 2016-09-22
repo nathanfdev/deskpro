@@ -13,7 +13,8 @@ class Input extends React.Component {
     type:         PropTypes.string
   };
   static defaultProps = {
-    type: 'text'
+    type: 'text',
+    onChange() {}
   };
 
   getIcon = () => {
@@ -23,8 +24,12 @@ class Input extends React.Component {
     return null;
   };
 
+  handleChange = (event) => {
+    this.props.onChange(event.target.value);
+  };
+
   render() {
-    const { placeholder, onChange, icon, iconPosition, id, type, value } = this.props;
+    const { placeholder, icon, iconPosition, id, name, type, value } = this.props;
     return (
       <div className={classNames('ui', 'input', iconPosition, { icon: !!icon })}>
         <input
@@ -33,7 +38,7 @@ class Input extends React.Component {
           ref={(c) => { this.input = c; }}
           type={type}
           name={name}
-          onChange={onChange}
+          onChange={this.handleChange}
           placeholder={placeholder}
         />
         {this.getIcon()}

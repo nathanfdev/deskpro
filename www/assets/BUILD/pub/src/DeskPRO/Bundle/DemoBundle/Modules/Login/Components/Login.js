@@ -46,16 +46,16 @@ export class LoginContainer extends React.Component {
     this.mounted = false;
   }
 
-  onChangeEmail = event => {
+  onChangeEmail = (value) => {
     this.setState({
-      email:  event.target.value,
+      email:  value,
       errors: null
     });
   };
 
-  onChangePassword = event => {
+  onChangePassword = (value) => {
     this.setState({
-      password: event.target.value,
+      password: value,
       errors:   null
     });
   };
@@ -71,8 +71,8 @@ export class LoginContainer extends React.Component {
     });
 
     const promise = dispatch(actions.login({
-      email:    this.form.username.input.value,
-      password: this.form.password.input.value
+      email:    this.state.email,
+      password: this.state.password
     }));
 
     promise.then(
@@ -85,7 +85,7 @@ export class LoginContainer extends React.Component {
           this.context.router.push('/extend-trial');
         }
       },
-      response => {
+      (response) => {
         if (this.mounted) {
           this.setState({
             submit: false,
@@ -104,7 +104,6 @@ export class LoginContainer extends React.Component {
         onForgotPassword={this.onForgotPassword}
         onLogin={this.onLogin}
         {...this.state}
-        ref={(c) => { this.form = c; }}
       />
     );
   }
@@ -112,6 +111,8 @@ export class LoginContainer extends React.Component {
 
 export class Login extends React.Component {
   static propTypes = {
+    email:            PropTypes.string,
+    password:         PropTypes.string,
     submit:           PropTypes.bool,
     errors:           PropTypes.object,
     onChangeEmail:    PropTypes.func,
@@ -129,7 +130,7 @@ export class Login extends React.Component {
             defaultMessage="Your free trial has ended"
           />
         </h3>
-        <p>
+        <p className="description">
           <FormattedMessage
             id="cloud.demo_expired.login_desc"
             defaultMessage="Log in to find out how you can extend your DeskPRO trial by 7 days."
@@ -148,8 +149,8 @@ export class Login extends React.Component {
               icon="mail"
               iconPosition="left"
               errors={this.props.errors}
+              value={this.props.email}
               onChange={this.props.onChangeEmail}
-              ref={(c) => { this.username = c; }}
             />
           </Field>
           <Field field="password" errors={this.props.errors}>
@@ -165,8 +166,8 @@ export class Login extends React.Component {
               type="password"
               iconPosition="left"
               errors={this.props.errors}
+              value={this.props.password}
               onChange={this.props.onChangePassword}
-              ref={(c) => { this.password = c; }}
             />
           </Field>
         </Form>
@@ -177,7 +178,7 @@ export class Login extends React.Component {
           />
           {this.props.submit && <span> <i className="fa fa-spinner fa-pulse fa-fw margin-bottom" /></span>}
         </Button>
-        <p><a onClick={this.props.onForgotPassword}>
+        <p className="bottom-link"><a onClick={this.props.onForgotPassword}>
           <FormattedMessage
             id="cloud.demo_expired.forgot_password"
             defaultMessage="Forgot your password?"

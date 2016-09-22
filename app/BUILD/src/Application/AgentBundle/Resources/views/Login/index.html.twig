@@ -65,7 +65,7 @@
 				}
 
 				$('#lost_fields_submit').hide();
-				$('#lost_fields_laoding').show();
+				$('#lost_fields_loading').show();
 
 				$.ajax({
 					url: '{{ path(route_prefix~'_send_lost') }}',
@@ -352,7 +352,7 @@
 					<p><input class="full-width" type="submit" value="{{ phrase('agent.login.email_instructions') }}" /></p>
 					<p><a class="show-login-form-trigger" href="#">&larr; {{ phrase('agent.login.back_to_login') }}</a></p>
 				</div>
-				<div id="lost_fields_laoding" style="display: none;">
+				<div id="lost_fields_loading" style="display: none;">
 					<center>
 						<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" />
 					</center>

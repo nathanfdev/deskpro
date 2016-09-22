@@ -29,6 +29,13 @@ h4 {
     height: 50px;
   }
 }
+.ui.button {
+  font-family: $font-family;
+  font-size: 16px;
+}
+i.flag:not(.icon):before {
+  background-image: url('../img/flags.png');
+}
 form.form {
   text-align: left;
   margin-bottom: 40px;
@@ -57,6 +64,17 @@ a {
   width: 460px;
   margin: auto;
   padding: 50px;
+}
+.segment {
+  .bottom-link {
+    margin-top: 50px;
+  }
+  .description {
+    margin-bottom: 34px;
+  }
+  button {
+    min-width: 150px;
+  }
 }
 .segment.confirm-reset {
   padding: 40px 50px;
