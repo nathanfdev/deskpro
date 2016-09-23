@@ -199,7 +199,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrameSimple = new Orb.Class({
         url = url.substr(0, url.indexOf('#'));
       }
 
-      url += '#' + with_hash
+      url += '#' + with_hash;
     }
     this.frame.attr('src', url);
 
