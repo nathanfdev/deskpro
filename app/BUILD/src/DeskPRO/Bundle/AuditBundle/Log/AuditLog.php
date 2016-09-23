@@ -90,6 +90,9 @@ class AuditLog
      */
     protected $data;
 
+    /**
+     * AuditLog constructor.
+     */
     public function __construct()
     {
         $this->dateCreated = new \DateTime();
@@ -106,7 +109,7 @@ class AuditLog
     /**
      * @param int $id
      *
-     * @return $this
+     * @return LoggableInterface
      */
     public function setId($id)
     {
@@ -126,7 +129,7 @@ class AuditLog
     /**
      * @param \DateTime $dateCreated
      *
-     * @return $this
+     * @return LoggableInterface
      */
     public function setDateCreated($dateCreated)
     {
@@ -146,7 +149,7 @@ class AuditLog
     /**
      * @param string $action
      *
-     * @return $this
+     * @return LoggableInterface
      */
     public function setAction($action)
     {
@@ -166,7 +169,7 @@ class AuditLog
     /**
      * @param string $performerName
      *
-     * @return $this
+     * @return LoggableInterface
      */
     public function setPerformerName($performerName)
     {
@@ -186,7 +189,7 @@ class AuditLog
     /**
      * @param int $performerId
      *
-     * @return $this
+     * @return LoggableInterface
      */
     public function setPerformerId($performerId)
     {
@@ -206,7 +209,7 @@ class AuditLog
     /**
      * @param string $objectName
      *
-     * @return $this
+     * @return LoggableInterface
      */
     public function setObjectName($objectName)
     {
@@ -226,7 +229,7 @@ class AuditLog
     /**
      * @param string $objectType
      *
-     * @return $this
+     * @return LoggableInterface
      */
     public function setObjectType($objectType)
     {
@@ -246,7 +249,7 @@ class AuditLog
     /**
      * @param int $objectId
      *
-     * @return $this
+     * @return LoggableInterface
      */
     public function setObjectId($objectId)
     {
@@ -266,7 +269,7 @@ class AuditLog
     /**
      * @param string $description
      *
-     * @return $this
+     * @return LoggableInterface
      */
     public function setDescription($description)
     {
@@ -286,7 +289,7 @@ class AuditLog
     /**
      * @param int $apiKey
      *
-     * @return $this
+     * @return LoggableInterface
      */
     public function setApiKey($apiKey)
     {
@@ -306,7 +309,7 @@ class AuditLog
     /**
      * @param AuditLogData $data
      *
-     * @return $this
+     * @return LoggableInterface
      */
     public function setData(AuditLogData $data)
     {

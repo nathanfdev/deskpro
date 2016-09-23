@@ -26,42 +26,45 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AuditBundle\Storage;
+namespace DeskPRO\Bundle\AuditBundle\EventListener;
 
-use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
-use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
+use Application\DeskPRO\Entity\CustomDataAbstract;
+use Application\DeskPRO\Entity\Organization;
+use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
+use DeskPRO\Bundle\AuditBundle\Log\ObjectCollector;
 
 /**
- * Interface TransformerInterface.
+ * Class DecideListener.
  */
-interface TransformerInterface
+class CollectListener
 {
     /**
-     * @param AuditLog $log
-     *
-     * @return LoggableInterface
+     * @var ObjectCollector
      */
-    public function transform(AuditLog $log);
+    private $objectCollector;
 
     /**
-     * @param LoggableInterface $loggable
+     * WriteListener constructor.
      *
-     * @return AuditLog
+     * @param ObjectCollector $objectCollector
      */
-    public function reverseTransform(LoggableInterface $loggable);
+    public function __construct(ObjectCollector $objectCollector)
+    {
+        $this->objectCollector = $objectCollector;
+    }
 
     /**
-     * @param LoggableInterface[] $collection
-     *
-     * @return AuditLog
+     * @param LogEvent $event
      */
-    public function reverseTransformCollection(array $collection);
-
-    /**
-     * @param AuditLog          $log
-     * @param LoggableInterface $loggable
-     *
-     * @return LoggableInterface
-     */
-    public function updateLog(LoggableInterface $loggable, AuditLog $log);
+    public function onStartLog(LogEvent $event)
+    {
+        $entity = $event->getContext()->getEntity();
+        if ($entity instanceof CustomDataAbstract) {
+            $event->setShouldWrite(false);
+            $this->objectCollector->addPart($event);
+        }
+        if ($entity instanceof Organization) {
+            $this->objectCollector->addOwner($event);
+        }
+    }
 }

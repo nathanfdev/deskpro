@@ -42,7 +42,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Disables the audit log listener when we don't want it.
  */
-class DisableListenerListener implements EventSubscriberInterface
+class DisableListenerSubscriber implements EventSubscriberInterface
 {
     /**
      * @var ContainerInterface

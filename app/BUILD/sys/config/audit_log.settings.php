@@ -32,6 +32,9 @@ use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\BanEmail;
 use Application\DeskPRO\Entity\BanIp;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CustomDataOrganization;
+use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\DeskPRO\Entity\CustomDataProduct;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
@@ -66,6 +69,25 @@ use Application\DeskPRO\Entity\WhiteListedIp;
 use DeskPRO\Bundle\AuditBundle\EventListener\AuditListener;
 
 return [
+
+    CustomDataOrganization::class => [
+        AuditListener::INSERT => true,
+        AuditListener::REMOVE => true,
+        AuditListener::UPDATE => true,
+    ],
+
+    CustomDataPerson::class => [
+        AuditListener::INSERT => true,
+        AuditListener::REMOVE => true,
+        AuditListener::UPDATE => true,
+    ],
+
+    CustomDataProduct::class => [
+        AuditListener::INSERT => true,
+        AuditListener::REMOVE => true,
+        AuditListener::UPDATE => true,
+    ],
+
     AgentTeam::class => [
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
@@ -296,6 +318,7 @@ return [
                         'name',
                         'summary',
                         'parent',
+                        'custom_data',
                     ],
                 ],
             ],
@@ -319,6 +342,7 @@ return [
             'conditions' => [
                 [
                     'preconditions' => [
+                        'custom_data',
                         'password',
                         'picture_blob',
                         'organization',
@@ -410,7 +434,7 @@ return [
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
             'conditions' => [
-                ['preconditions' => ['title']],
+                ['preconditions' => ['title', 'custom_data']],
             ],
         ],
     ],
