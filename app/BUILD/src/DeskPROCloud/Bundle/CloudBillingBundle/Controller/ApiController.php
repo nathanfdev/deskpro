@@ -53,6 +53,7 @@ class ApiController extends Controller
 
         return new Response(json_encode($countries));
     }
+
     /**
      * @Rest\Get("/states")
      *
@@ -63,5 +64,15 @@ class ApiController extends Controller
         $states = Countries::getUsStates();
 
         return new Response(json_encode($states));
+    }
+
+    /**
+     * @Rest\Post("/submit_detail")
+     *
+     * @return Response
+     */
+    public function postExtendDetailsAction()
+    {
+        return new Response('OK');
     }
 }

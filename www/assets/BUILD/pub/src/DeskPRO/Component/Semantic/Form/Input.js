@@ -6,6 +6,7 @@ class Input extends React.Component {
     icon:         PropTypes.string,
     iconPosition: PropTypes.string,
     id:           PropTypes.string,
+    maxLength:    PropTypes.number,
     name:         PropTypes.string,
     placeholder:  PropTypes.string,
     value:        PropTypes.string,
@@ -29,7 +30,7 @@ class Input extends React.Component {
   };
 
   render() {
-    const { placeholder, icon, iconPosition, id, name, type, value } = this.props;
+    const { placeholder, icon, iconPosition, id, maxLength, name, type, value } = this.props;
     return (
       <div className={classNames('ui', 'input', iconPosition, { icon: !!icon })}>
         <input
@@ -38,6 +39,7 @@ class Input extends React.Component {
           ref={(c) => { this.input = c; }}
           type={type}
           name={name}
+          maxLength={maxLength}
           onChange={this.handleChange}
           placeholder={placeholder}
         />

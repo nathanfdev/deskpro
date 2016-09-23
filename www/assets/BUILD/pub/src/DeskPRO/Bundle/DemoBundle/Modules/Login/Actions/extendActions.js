@@ -11,3 +11,8 @@ export const getStates = createAction(
   () =>
     api.sendGet('/cloud/api/states', { dataType: 'json' })
 );
+export const extendTrial = createAction(
+  'EXTEND_SUBMIT',
+  params =>
+    api.sendPost('/cloud/api/submit_detail', params)
+);

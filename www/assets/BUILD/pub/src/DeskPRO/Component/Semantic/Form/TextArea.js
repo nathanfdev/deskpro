@@ -26,12 +26,11 @@ class TextArea extends React.Component {
           id={id}
           ref={(c) => { this.input = c; }}
           name={name}
+          value={value}
           onChange={this.handleChange}
           placeholder={placeholder}
           rows={rows}
-        >
-          {value}
-        </textarea>
+        />
       </div>
     );
   }

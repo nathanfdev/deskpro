@@ -148,7 +148,6 @@ export class Login extends React.Component {
               id="email"
               icon="mail"
               iconPosition="left"
-              errors={this.props.errors}
               value={this.props.email}
               onChange={this.props.onChangeEmail}
             />
@@ -165,7 +164,6 @@ export class Login extends React.Component {
               icon="lock"
               type="password"
               iconPosition="left"
-              errors={this.props.errors}
               value={this.props.password}
               onChange={this.props.onChangePassword}
             />

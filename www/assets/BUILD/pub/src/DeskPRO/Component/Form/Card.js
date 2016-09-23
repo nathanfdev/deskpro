@@ -1,13 +1,27 @@
+import valid from 'card-validator';
+
 export function isCardVisa(number) {
-  return number.match(/^4/);
+  const numberValidation = valid.number(number);
+  if (numberValidation.card) {
+    return numberValidation.card.type === 'visa';
+  }
+  return false;
 }
 
 export function isCardMasterCard(number) {
-  return number.match(/^5[0-5]/);
+  const numberValidation = valid.number(number);
+  if (numberValidation.card) {
+    return numberValidation.card.type === 'master-card';
+  }
+  return false;
 }
 
 export function isCardAmex(number) {
-  return number.match(/^3[4,7]/);
+  const numberValidation = valid.number(number);
+  if (numberValidation.card) {
+    return numberValidation.card.type === 'american-express';
+  }
+  return false;
 }
 
 export function formatCardNumber(value) {
@@ -16,14 +30,39 @@ export function formatCardNumber(value) {
   const match = (matches && matches[0]) || '';
   const parts = [];
 
-  const spaces = isCardAmex(value) ? [4, 10] : [4, 8, 12];
+  const numberValidation = valid.number(value);
+  let gaps = [];
+  if (numberValidation.card) {
+    gaps = numberValidation.card.gaps;
+  }
 
   for (let i = 0, len = match.length; i < len; i += 1) {
-    if (spaces.indexOf(i) !== -1) {
+    if (gaps.indexOf(i) !== -1) {
       parts.push(' ');
     }
     parts.push(match[i]);
   }
 
   return parts.join('');
+}
+
+export function validateCard(value) {
+  const numberValidation = valid.number(value);
+  return numberValidation.isPotentiallyValid || numberValidation.isValid;
+}
+
+export function validateMonth(value) {
+  return valid.expirationMonth(value).isPotentiallyValid;
+}
+
+export function validateYear(value) {
+  return valid.expirationYear(value).isPotentiallyValid;
+}
+
+export function ccvLength(value) {
+  const numberValidation = valid.number(value);
+  if (numberValidation.card) {
+    return numberValidation.card.code.size;
+  }
+  return 3;
 }
