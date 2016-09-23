@@ -26,7 +26,6 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
   initFrame: function() {
     this.frameWrap = $('<div/>', {
       id:    'overlay-frame-' + this.frameId,
-      class: 'overlay-frame-wrap',
       css:   {
         display:         'none',
         position:        'absolute',
@@ -38,6 +37,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
         backgroundColor: '#F5F7FA'
       }
     });
+    this.frameWrap.addClass('overlay-frame-wrap');
 
     this.frame = $('<iframe/>', {
       frameborder:  0,
