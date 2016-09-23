@@ -7,10 +7,10 @@ class Input extends React.Component {
     iconPosition: PropTypes.string,
     id:           PropTypes.string,
     name:         PropTypes.string,
-    onChange:     PropTypes.func,
     placeholder:  PropTypes.string,
     value:        PropTypes.string,
-    type:         PropTypes.string
+    type:         PropTypes.string,
+    onChange:     PropTypes.func
   };
   static defaultProps = {
     type: 'text',

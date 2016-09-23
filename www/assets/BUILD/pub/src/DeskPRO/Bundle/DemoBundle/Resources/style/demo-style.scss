@@ -113,9 +113,14 @@ a {
       font-style: normal;
     }
   }
-  .card-number svg {
-    height: 18px;
-    vertical-align: middle;
+  .card-number {
+    svg {
+      height: 18px;
+      vertical-align: middle;
+    }
+    .faded svg {
+      opacity: 0.4;
+    }
   }
   .expiry .ui.input,
   .security-code .ui.input {

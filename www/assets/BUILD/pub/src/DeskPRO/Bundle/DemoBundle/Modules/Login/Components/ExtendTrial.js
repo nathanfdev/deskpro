@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
 import { defineMessages, injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import Isvg from 'react-inlinesvg';
+import classNames from 'classnames';
 import { Segment, Segments } from 'DeskPRO/Component/Semantic/Segment';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Message } from 'DeskPRO/Component/Semantic/Message';
+import { isCardVisa, isCardMasterCard, isCardAmex, formatCardNumber } from 'DeskPRO/Component/Form/Card';
 import { Field, Form, Input, Select, TextArea } from 'DeskPRO/Component/Semantic/Form';
 
 const messages = defineMessages({
@@ -27,14 +29,34 @@ const messages = defineMessages({
 
 class ExtendTrial extends React.Component {
   static propTypes = {
-    intl:            intlShape.isRequired,
-    country:         PropTypes.string,
-    state:           PropTypes.string,
-    countries:       PropTypes.object,
-    states:          PropTypes.object,
-    onSelectCountry: PropTypes.func,
-    onChangeState:   PropTypes.func,
-    onResumeTrial:   PropTypes.func
+    intl:                 intlShape.isRequired,
+    address:              PropTypes.string,
+    city:                 PropTypes.string,
+    postCode:             PropTypes.string,
+    state:                PropTypes.string,
+    country:              PropTypes.string,
+    cardName:             PropTypes.string,
+    cardNumber:           PropTypes.string,
+    expiryMonth:          PropTypes.string,
+    expiryYear:           PropTypes.string,
+    securityCode:         PropTypes.string,
+    states:               PropTypes.object,
+    countries:            PropTypes.object,
+    onChangeAddress:      PropTypes.func,
+    onChangeCity:         PropTypes.func,
+    onChangePostCode:     PropTypes.func,
+    onChangeState:        PropTypes.func,
+    onChangeCountry:      PropTypes.func,
+    onChangeCardName:     PropTypes.func,
+    onChangeCardNumber:   PropTypes.func,
+    onChangeExpiryMonth:  PropTypes.func,
+    onChangeExpiryYear:   PropTypes.func,
+    onChangeSecurityCode: PropTypes.func,
+    onResumeTrial:        PropTypes.func,
+    onDeleteAccount:      PropTypes.func
+  };
+  static defaultProps = {
+    cardNumber: ''
   };
 
   getState = () => {
@@ -81,7 +103,7 @@ class ExtendTrial extends React.Component {
 
   render() {
     const { formatMessage } = this.props.intl;
-    const { countries } = this.props;
+    const { countries, cardNumber } = this.props;
 
     const countriesOptions = [];
     for (const code of Object.keys(countries)) {
@@ -140,7 +162,12 @@ class ExtendTrial extends React.Component {
                     defaultMessage="Address"
                   />
                 </label>
-                <TextArea id="address" rows={2} />
+                <TextArea
+                  id="address"
+                  onChange={this.props.onChangeAddress}
+                  value={this.props.address}
+                  rows={2}
+                />
               </Field>
               <Field>
                 <label htmlFor="city">
@@ -149,7 +176,11 @@ class ExtendTrial extends React.Component {
                     defaultMessage="City"
                   />
                 </label>
-                <Input id="city" />
+                <Input
+                  id="city"
+                  onChange={this.props.onChangeCity}
+                  value={this.props.city}
+                />
               </Field>
               <Field>
                 <label htmlFor="zipcode">
@@ -158,7 +189,11 @@ class ExtendTrial extends React.Component {
                     defaultMessage="Zip / Post Code"
                   />
                 </label>
-                <Input id="zipcode" />
+                <Input
+                  id="zipcode"
+                  onChange={this.props.onChangePostCode}
+                  value={this.props.postCode}
+                />
               </Field>
               {this.getState()}
               <Field>
@@ -171,7 +206,7 @@ class ExtendTrial extends React.Component {
                 <Select
                   options={countriesOptions}
                   placeholder={formatMessage(messages.select_placeholder)}
-                  onChange={this.props.onSelectCountry}
+                  onChange={this.props.onChangeCountry}
                   filter
                 />
               </Field>
@@ -195,6 +230,8 @@ class ExtendTrial extends React.Component {
                 </label>
                 <Input
                   id="card_holder"
+                  onChange={this.props.onChangeCardName}
+                  value={this.props.cardName}
                   placeholder={formatMessage(messages.card_holder_placeholder)}
                 />
               </Field>
@@ -205,27 +242,39 @@ class ExtendTrial extends React.Component {
                     defaultMessage="Card number"
                   />
                   <Isvg
+                    className={classNames({ faded: (isCardAmex(cardNumber) || isCardMasterCard(cardNumber)) })}
                     src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/visa.svg`}
                   />
                   <Isvg
+                    className={classNames({ faded: (isCardVisa(cardNumber) || isCardAmex(cardNumber)) })}
                     src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/mastercard.svg`}
                   />
                   <Isvg
+                    className={classNames({ faded: (isCardMasterCard(cardNumber) || isCardVisa(cardNumber)) })}
                     src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/amex.svg`}
                   />
                 </label>
-                <Input id="card_number" type="number" />
+                <Input
+                  id="card_number"
+                  onChange={this.props.onChangeCardNumber}
+                  value={formatCardNumber(this.props.cardNumber)}
+                  type="text"
+                />
               </Field>
               <Field className="expiry">
                 <label htmlFor="expiry_month">Expiry</label>
                 <Input
                   id="expiry_month"
+                  onChange={this.props.onChangeExpiryMonth}
+                  value={this.props.expiryMonth}
                   placeholder={formatMessage(messages.expiry_month)}
                   type="number"
                 />
                 <span> / </span>
                 <Input
                   id="expiry_year"
+                  onChange={this.props.onChangeExpiryYear}
+                  value={this.props.expiryYear}
                   placeholder={formatMessage(messages.expiry_year)}
                   type="number"
                 />
@@ -237,7 +286,12 @@ class ExtendTrial extends React.Component {
                     defaultMessage="Security code"
                   />
                 </label>
-                <Input id="security_code" type="number" />
+                <Input
+                  id="security_code"
+                  onChange={this.props.onChangeSecurityCode}
+                  value={this.props.securityCode}
+                  type="number"
+                />
                 <img
                   src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/backofcard.png`}
                   alt="Back of card"

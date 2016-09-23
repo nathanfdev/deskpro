@@ -50,6 +50,18 @@ class ExtendTrialContainer extends React.Component {
     );
   }
 
+  onChangeAddress = (value) => {
+    this.setState({
+      address: value
+    });
+  };
+
+  onChangeCardNumber = (value) => {
+    this.setState({
+      cardNumber: value
+    });
+  };
+
   onSelectCountry = (value) => {
     if (this.state.country === 'US' || value === 'US') {
       this.setState({
@@ -79,10 +91,12 @@ class ExtendTrialContainer extends React.Component {
   render() {
     return (
       <ExtendTrial
-        onDeleteAccount={this.onDeleteAccount}
+        onChangeAddress={this.onChangeAddress}
+        onChangeCardNumber={this.onChangeCardNumber}
         onSelectCountry={this.onSelectCountry}
         onChangeState={this.onChangeState}
         onResumeTrial={this.onResumeTrial}
+        onDeleteAccount={this.onDeleteAccount}
         {...this.state}
       />
     );
