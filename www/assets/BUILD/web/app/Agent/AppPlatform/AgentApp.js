@@ -1129,7 +1129,7 @@ define([
 
 
 	AgentApp.service('LabelDefinition', ['$http', '$q', function($http, $q){
-		return new DeskPRO_Service_LabelDefinition($q, $http.get('/agent/labels/definitions'));
+		return new DeskPRO_Service_LabelDefinition($q, $http.get('DP_URL/agent/labels/definitions'));
 	}]);
 	AgentApp.service('PersonService', DeskPRO_Service_Person);
 	AgentApp.service('AgentTeamService', DeskPRO_Service_AgentTeam);

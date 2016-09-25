@@ -439,6 +439,14 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName, Hiera
         return $this->title;
     }
 
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

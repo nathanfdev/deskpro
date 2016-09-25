@@ -125,7 +125,7 @@ class Importer
         $collection = new ImporterCollection();
         foreach ($this->entityHandlerRegistry->getModelClasses() as $type) {
             $this->printHeader("Export `$type` collection");
-            $collection->add($type, $this->parser->exportByType($context, $type));
+            $collection->addByType($type, $this->parser->exportByType($context, $type));
         }
 
         return $collection;
@@ -174,21 +174,24 @@ class Importer
     {
         // Validate the collection of entities
         foreach ($this->entityHandlerRegistry->getModelClasses() as $type) {
-            if ($collection->hasEntitiesByType($type)) {
-                foreach ($collection->getByType($type) as $model) {
-                    $errors = $this->validator->validate($model);
-                    if (count($errors)) {
-                        // Removing broken entities
-                        $collection->remove($model);
-                        $this->logger->alert(sprintf(
-                            'Validator failure for %s on record #%s: %s',
-                            get_class($model), $model->getOid(), $errors
-                        ));
+            $models = $collection->getByType($type);
+            if (!$models) {
+                continue;
+            }
 
-                        if ($model->getRawData()) {
-                            foreach (explode("\n", SystemErrorHandler::varToString($model->getRawData(), 2)) as $line) {
-                                $this->logger->info($line);
-                            }
+            foreach ($models as $model) {
+                $errors = $this->validator->validate($model);
+                if (count($errors)) {
+                    // Removing broken entities
+                    $collection->remove($model);
+                    $this->logger->alert(sprintf(
+                        'Validator failure for %s on record #%s: %s',
+                        get_class($model), $model->getOid(), $errors
+                    ));
+
+                    if ($model->getRawData()) {
+                        foreach (explode("\n", SystemErrorHandler::varToString($model->getRawData(), 2)) as $line) {
+                            $this->logger->info($line);
                         }
                     }
                 }
@@ -202,16 +205,18 @@ class Importer
      * @param ImporterCollection $collection
      * @param bool               $dryRun
      */
-    public function writeData(ImporterCollection $collection, $dryRun)
+    public function writeData(ImporterCollection $collection, $dryRun = false)
     {
         // Writes entities to a storage
         foreach ($this->entityHandlerRegistry->getModelClasses() as $type) {
-            if ($collection->hasEntitiesByType($type)) {
-                $this->printHeader("Write `$type` collection");
+            $models = $collection->getByType($type);
+            if (!$models) {
+                continue;
+            }
 
-                foreach ($collection->getByType($type) as $model) {
-                    $this->writer->writeData($model, $dryRun);
-                }
+            $this->printHeader("Write `$type` collection");
+            foreach ($collection->getByType($type) as $model) {
+                $this->writer->writeData($model, $dryRun);
             }
         }
     }

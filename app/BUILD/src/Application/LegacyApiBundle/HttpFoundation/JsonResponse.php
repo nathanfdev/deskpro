@@ -38,7 +38,11 @@ class JsonResponse extends Response
 
     public function __toString()
     {
-        return Util::jsonEncode($this->data);
+        if (false === $res = Util::jsonEncode($this->data)) {
+            throw new \Exception('Can\t encode to JSON: '.json_last_error_msg()."\n".print_r($this->data, 1));
+        }
+
+        return $res;
     }
 
     public function getData()

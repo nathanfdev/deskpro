@@ -94,16 +94,10 @@
 				<select
 						ng-show="!ServerAuditLogs.pagination.plain"
 						ng-model="ServerAuditLogs.pagination.current_page"
+						ng-change="ServerAuditLogs.updateFilter()"
 						ui-select2
-						style="width: 130px;"
-				>
-					<option
-							ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}"
-							ng-click="ServerAuditLogs.updateFilter()"
-					>
-						Page {{ ng_var('page') }}
-					</option>
-				</select>
+						ng-options="'Page '+ page for page in ServerAuditLogs.pagination.page_nums track by page"
+						style="width: 130px;" />
 				<span ng-show="ServerAuditLogs.pagination.plain">
 					Page
 				<input ng-model="ServerAuditLogs.pagination.virtual_current_page" />
@@ -182,16 +176,10 @@
 				<select
 						ng-show="!ServerAuditLogs.pagination.plain"
 						ng-model="ServerAuditLogs.pagination.current_page"
+						ng-change="ServerAuditLogs.updateFilter()"
 						ui-select2
-						style="width: 130px;"
-				>
-					<option
-							ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}"
-							ng-click="ServerAuditLogs.updateFilter()"
-					>
-						Page {{ ng_var('page') }}
-					</option>
-				</select>
+						ng-options="'Page '+ page for page in ServerAuditLogs.pagination.page_nums track by page"
+						style="width: 130px;" />
 				<span ng-show="ServerAuditLogs.pagination.plain">
 					Page
 				<input ng-model="ServerAuditLogs.pagination.virtual_current_page" />

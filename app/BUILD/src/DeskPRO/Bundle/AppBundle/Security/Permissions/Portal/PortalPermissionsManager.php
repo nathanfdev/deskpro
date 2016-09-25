@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
 use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
+use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -71,6 +72,11 @@ class PortalPermissionsManager
      * @var \Application\DeskPRO\Cache\ConvenientCache
      */
     private $cache;
+
+    /**
+     * @var array
+     */
+    private $permissionBagCache = [];
 
     /**
      * @var PortalUsergroupDecider
@@ -194,15 +200,28 @@ class PortalPermissionsManager
      */
     private function createPermissionBag(array $userGroups, array $permissions)
     {
-        return new PermissionsBag(
-            $permissions,
-            $this->permissionsLoader->getAllowedTicketDepartments($userGroups),
-            $this->permissionsLoader->getAllowedChatDepartments($userGroups),
-            $this->permissionsLoader->getAllowedFeedbackCategories($userGroups),
-            $this->permissionsLoader->getAllowedNewsCategories($userGroups),
-            $this->permissionsLoader->getAllowedArticleCategories($userGroups),
-            $this->permissionsLoader->getAllowedDownloadCategories($userGroups)
-        );
+        $cacheKey = md5(serialize([
+            array_map(function ($userGroup) {
+                return $userGroup instanceof Usergroup ? $userGroup->getId() : $userGroup;
+            }, $userGroups),
+            array_map(function ($permission) {
+                return $permission instanceof Permission ? $permission->getId() : $permission;
+            }, $permissions),
+        ]));
+
+        if (!isset($this->permissionBagCache[$cacheKey])) {
+            $this->permissionBagCache[$cacheKey] = new PermissionsBag(
+                $permissions,
+                $this->permissionsLoader->getAllowedTicketDepartments($userGroups),
+                $this->permissionsLoader->getAllowedChatDepartments($userGroups),
+                $this->permissionsLoader->getAllowedFeedbackCategories($userGroups),
+                $this->permissionsLoader->getAllowedNewsCategories($userGroups),
+                $this->permissionsLoader->getAllowedArticleCategories($userGroups),
+                $this->permissionsLoader->getAllowedDownloadCategories($userGroups)
+            );
+        }
+
+        return $this->permissionBagCache[$cacheKey];
     }
 
     /**

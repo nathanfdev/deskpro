@@ -26,45 +26,40 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace Application\ImportBundle\Validator;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Validator\ValidatorBuilder;
+
 /**
- * DeskPRO.
+ * Class ImporterValidatorFactory.
  */
-
-namespace Application\DeskPRO\Controller;
-
-use Application\DeskPRO\JIRA\WebhookHandler;
-use Application\DeskPRO\Service\JIRA;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-
-class JIRAWebhookController extends Controller
+class ImporterValidatorFactory
 {
     /**
-     * JIRA webhook endpoint.
+     * @param ContainerInterface $container
      *
-     * @param Request $request
-     *
-     * @return Response
+     * @return \Symfony\Component\Validator\ValidatorInterface
      */
-    public function handleAction(Request $request)
+    public static function getValidator(ContainerInterface $container)
     {
-        $response = new Response();
-        $content  = $request->getContent();
+        $validatorBuilder = $container->get('validator.builder');
 
-        /** @var JIRA $js */
-        $js = $this->get(JIRA::NAME);
-        if (!$js->isEnabled()) {
-            return $response;
+        // check if annotations are enabled
+        $reflection = new \ReflectionProperty(ValidatorBuilder::class, 'annotationReader');
+        $reflection->setAccessible(true);
+
+        // force enable annotations for the importer
+        if (!$reflection->getValue($validatorBuilder)) {
+            try {
+                $validatorBuilder->enableAnnotationMapping($container->get('annotation_reader'));
+
+                return $validatorBuilder->getValidator();
+            } finally {
+                $validatorBuilder->disableAnnotationMapping();
+            }
+        } else {
+            return $validatorBuilder->getValidator();
         }
-
-        if (!$json = json_decode($content, 1)) {
-            return $response;
-        }
-
-        $handler = new WebhookHandler($this->container);
-        $handler->handle($json);
-
-        return $response;
     }
 }

@@ -58,6 +58,9 @@ class SystemLoader implements LoaderInterface
      */
     protected $loaded_files = [];
 
+    /**
+     * {@inheritdoc}
+     */
     public function load($groups, $language, array $loaded_phrases = null)
     {
         $lang_packs = [];
@@ -76,13 +79,18 @@ class SystemLoader implements LoaderInterface
 
         foreach ($lang_packs as $path) {
             foreach ($groups as $group) {
-                $group_parts = explode('.', $group, 2);
+                $groupParts = explode('.', $group, 2);
 
-                if (isset(self::$groupFileMap[$group_parts[0]])) {
-                    $file         = $path.'/'.self::$groupFileMap[$group_parts[0]];
-                    $file_phrases = $this->loadFile($file);
-                    if ($file_phrases) {
-                        $phrases = array_merge($phrases, $file_phrases);
+                // prevent incorrect phrase names
+                if (count($groupParts) < 2) {
+                    continue;
+                }
+
+                if (isset(self::$groupFileMap[$groupParts[0]])) {
+                    $file        = $path.'/'.self::$groupFileMap[$groupParts[0]];
+                    $filePhrases = $this->loadFile($file);
+                    if ($filePhrases && isset($filePhrases[$groupParts[0]][$groupParts[1]])) {
+                        $phrases = array_merge($phrases, $filePhrases[$groupParts[0]][$groupParts[1]]);
                     }
                 }
             }
@@ -103,9 +111,13 @@ class SystemLoader implements LoaderInterface
         }
 
         if (is_file($file)) {
-            $file_phrases = include $file;
-            if ($file_phrases && is_array($file_phrases)) {
-                $this->loaded_files[$file] = $file_phrases;
+            $filePhrases = include $file;
+            if ($filePhrases && is_array($filePhrases)) {
+                foreach ($filePhrases as $phraseName => $phraseTranslation) {
+                    $groupParts = explode('.', $phraseName, 3);
+
+                    $this->loaded_files[$file][$groupParts[0]][$groupParts[1]][$phraseName] = $phraseTranslation;
+                }
             }
         }
 

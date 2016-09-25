@@ -4,6 +4,13 @@ services:
     class: Monolog\Logger
     arguments: ["importer"]
 
+  # validator annotations are disabled for most kernels
+  # force enable them for the importer
+  dp.importer_validator:
+    class: Symfony\Component\Validator\Validator\RecursiveValidator
+    factory: ['Application\ImportBundle\Validator\ImporterValidatorFactory', getValidator]
+    arguments: ['@service_container']
+
   dp.importer.parser_reader:
     class: Application\ImportBundle\Parser\Reader\JsonReader
 
@@ -23,7 +30,7 @@ services:
     class: Application\ImportBundle\Importer\Importer
     arguments:
       - "@dp.importer.parser"
-      - "@validator"
+      - "@dp.importer_validator"
       - "@dp.importer.writer"
       - "@serializer"
       - "@dp.importer.writer.entity_handler_registry"
@@ -34,6 +41,15 @@ services:
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@ticket_manager"
-      - "@validator"
+      - "@dp.importer_validator"
       - "@dp.importer.writer.mapper.import_map"
       - "@dp.importer_logger"
+
+  dp.importer.csv:
+    class: Application\ImportBundle\CsvImport\CsvImporter
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dp.importer"
+      - "@dp.importer.parser"
+      - "@mailer"
+      - "@deskpro.core.translate"

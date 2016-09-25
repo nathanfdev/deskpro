@@ -73,7 +73,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 			Api.sendPostJson('/apps/packages/deskpro_us_joomla/test-settings', postData).then(function(res) {
 				deferred.resolve({
 					log:        res.data.log || '',
-					error:     !res.data.is_valid,
+					error:      res.data.error,
 					error_code: res.data.error_code || false,
 					raw_data:   res.data.raw_data || null
 				});
@@ -102,6 +102,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 						$scope.has_results = true;
 						$scope.log         = results.log;
 						$scope.error       = results.error;
+						$scope.error_code  = results.error_code;
 						$scope.raw_data    = results.raw_data || null;
 					};
 
@@ -117,7 +118,8 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 					$scope.dismiss = function() { $modalInstance.dismiss(); }
 					$scope.doTest = function() {
 						$scope.loading = true;
-						runTest().then(function(results) {
+						var test = $scope.test || {};
+						runTest(test.username, test.password).then(function(results) {
 							setResults(results);
 						});
 					};

@@ -29,7 +29,6 @@
 namespace Application\ImportBundle\Parser;
 
 use Application\ImportBundle\Importer\ImporterContext;
-use Application\ImportBundle\Model\ImportModelCollection;
 use Application\ImportBundle\Model\PrimaryImportModelInterface;
 use Application\ImportBundle\Parser\Reader\JsonReader;
 use Application\ImportBundle\Parser\Reader\NotFoundException;
@@ -89,30 +88,52 @@ class Parser implements ParserInterface
      */
     public function exportByType(ImporterContext $context, $modelClass)
     {
-        $collection = new ImportModelCollection();
+        $models = [];
 
         try {
             $data = $this->reader->getData($context->getInputPath(), $modelClass, $context->getBatchConfig()->getId());
             foreach ($data as $oid => $rawData) {
-                try {
-                    $this->logger->debug("Export $modelClass#$oid");
-
-                    /** @var PrimaryImportModelInterface $model */
-                    $model = $this->serializer->deserialize($rawData, $modelClass, 'json');
-                    $model->setOid($oid);
-                    $model->setRawData($rawData);
-
-                    $collection->attach($model);
-                } catch (\Exception $e) {
-                    $this->logger->error('Unable to parse entity.');
-                    $this->logger->error($e->getMessage());
-                    $this->logger->error($rawData);
+                $model = $this->exportRawData($oid, $rawData, $modelClass);
+                if ($model) {
+                    $models[$oid] = $model;
                 }
             }
         } catch (NotFoundException $e) {
             $this->logger->info("$modelClass was not found.");
         }
 
-        return $collection;
+        return $models;
+    }
+
+    /**
+     * @param string $oid
+     * @param mixed  $rawData
+     * @param string $modelClass
+     *
+     * @return PrimaryImportModelInterface
+     */
+    public function exportRawData($oid, $rawData, $modelClass)
+    {
+        try {
+            $this->logger->debug("Export $modelClass#$oid");
+
+            if (is_array($rawData)) {
+                /** @var PrimaryImportModelInterface $model */
+                $model = $this->serializer->fromArray($rawData, $modelClass);
+            } else {
+                /** @var PrimaryImportModelInterface $model */
+                $model = $this->serializer->deserialize($rawData, $modelClass, 'json');
+            }
+
+            $model->setOid($oid);
+            $model->setRawData($rawData);
+
+            return $model;
+        } catch (\Exception $e) {
+            $this->logger->error('Unable to parse entity.');
+            $this->logger->error($e->getMessage());
+
+            return false;
+        }
     }
 }

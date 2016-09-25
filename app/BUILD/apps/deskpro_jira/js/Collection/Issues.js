@@ -123,7 +123,7 @@ define(function () {
         var d = $q.defer();
         issueId = issue ? issue.id : 0;
 
-        $http.post(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue/' + issueId + '/comments', msg)
+        $http.post(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue/' + issueId + '/comments', msg, {headers: {"Content-Type": "text/html"}})
           .success(function (data, status, headers, config) {
             if (!data) return d.resolve(data);
 

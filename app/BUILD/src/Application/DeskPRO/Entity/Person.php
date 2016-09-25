@@ -1830,7 +1830,7 @@ GroupSequenceProviderInterface
     /**
      * @param null $type
      *
-     * @return PersonContactData[]
+     * @return PersonContactData[]|ArrayCollection
      */
     public function getContactData($type = null)
     {
@@ -2907,7 +2907,7 @@ GroupSequenceProviderInterface
 
         $url = $this->primary_email ? $this->primary_email->getGravatarUrl($secure) : '';
         if ($size != 80) {
-            $url .= '&s='.$size;
+            $url .= '&s='.urlencode($size);
         }
 
         if ($this->organization && $this->organization->hasPicture()) {
@@ -3029,6 +3029,11 @@ GroupSequenceProviderInterface
         return $keys;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
     public function setName($name)
     {
         $name = preg_replace('# {2,}#', ' ', $name);
@@ -3041,6 +3046,11 @@ GroupSequenceProviderInterface
         return $this;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
     public function setFirstName($name)
     {
         $this->setModelField('first_name', $name);
@@ -3049,6 +3059,11 @@ GroupSequenceProviderInterface
         return $this;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
     public function setLastName($name)
     {
         $this->setModelField('last_name', $name);
@@ -3058,9 +3073,21 @@ GroupSequenceProviderInterface
     }
 
     /**
+     * @param string $title_prefix
+     *
+     * @return $this
+     */
+    public function setTitlePrefix($title_prefix)
+    {
+        $this->setModelField('title_prefix', $title_prefix ?: '');
+
+        return $this;
+    }
+
+    /**
      * Set the last time this usersource was used.
      *
-     * @param DateTime $time The time to set, or null to set now
+     * @param \DateTime $time The time to set, or null to set now
      */
     public function setLastLoginAt(\DateTime $time = null)
     {
@@ -4206,7 +4233,7 @@ GroupSequenceProviderInterface
                 'fieldName'    => 'organization',
                 'targetEntity' => Organization::class,
                 'mappedBy'     => null,
-                'inversedBy'   => 'employees',
+                'inversedBy'   => 'members',
                 'fetch'        => ClassMetadata::FETCH_EAGER,
                 'cascade'      => ['persist'],
                 'joinColumns'  => [
