@@ -29,6 +29,15 @@ export function css(jsx) {
   );
 }
 
+export function demoCss(jsx) {
+  return (
+    <div>
+      <link type="text/css" rel="stylesheet" href={`${assetsUrl}/DeskPRO_DemoBundle_style.css`} />
+      {jsx}
+    </div>
+  );
+}
+
 export function adminCss(jsx) {
   return (
     <div>

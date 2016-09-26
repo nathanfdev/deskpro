@@ -1,12 +1,49 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import { css } from 'Visual/decorators';
-import { SectionsPane, Section, SectionHeader, NestedList }
+import { SectionsPane, Section, NestedList }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
+import { css } from '../../../../../decorators';
+
+const flatItems = [{ id: 1, title: 'Music' }, { id: 2, title: 'Videos' }, { id: 3, title: 'Pictures' }];
+const itemsNoTitles = [{ id: 1 }, { id: 2, title: 'This one has title' }, { id: 3 }];
+const nestedItems = [
+  {
+    id:     1,
+    title:  'Music',
+    count:  10,
+    nested: [
+      { id: 11, title: 'Classical', count: 3 },
+      { id: 12, title: 'Electronic', count: 2 },
+      { id: 13, title: 'Jazz & Blues', count: 5 }
+    ]
+  },
+  {
+    id:     2,
+    title:  'Videos',
+    count:  15,
+    nested: [
+      { id: 22, title: 'Music Videos', count: 3 },
+      {
+        id:     21,
+        title:  'Movies',
+        count:  9,
+        nested: [
+          { id: 211, title: 'Comedy', count: 5 },
+          { id: 212, title: 'Western', count: 1 },
+          { id: 213, title: 'Horror', count: 1 },
+          { id: 214, title: 'Science Fiction', count: 2 }
+        ]
+      },
+      { id: 23, title: 'Lectures', count: 3 },
+      { id: 23, title: 'Misc', count: 0 }
+    ]
+  },
+  { id: 3, title: 'Pictures', count: 10787 }
+];
 
 storiesOf('Common-Nav: NestedList', module)
   .addDecorator(story => css(
-    <div style={{width: '250px'}}>
+    <div style={{ width: '250px' }}>
       <SectionsPane>
         <Section>
           {story()}
@@ -20,7 +57,7 @@ storiesOf('Common-Nav: NestedList', module)
   )
   .add(
     'always expanded + onClick',
-    () => <NestedList items={nestedItems} alwaysExpanded={true} onClick={action('onClick')} />
+    () => <NestedList items={nestedItems} alwaysExpanded onClick={action('onClick')} />
   )
   .add(
     'items w/o titles and counts',
@@ -39,40 +76,3 @@ storiesOf('Common-Nav: NestedList', module)
     () => <NestedList items={undefined} />
   )
 ;
-
-const flatItems = [{id: 1, title: 'Music'}, {id: 2, title: 'Videos'}, {id: 3, title: 'Pictures'}];
-const itemsNoTitles = [{id: 1}, {id: 2, title: 'This one has title'}, {id: 3}];
-const nestedItems = [
-  {
-    id: 1,
-    title: 'Music',
-    count: 10,
-    nested: [
-      {id: 11, title: 'Classical', count: 3},
-      {id: 12, title: 'Electronic', count: 2},
-      {id: 13, title: 'Jazz & Blues', count: 5}
-    ]
-  },
-  {
-    id: 2,
-    title: 'Videos',
-    count: 15,
-    nested: [
-      {id: 22, title: 'Music Videos', count: 3},
-      {
-        id: 21,
-        title: 'Movies',
-        count: 9,
-        nested: [
-          {id: 211, title: 'Comedy', count: 5},
-          {id: 212, title: 'Western', count: 1},
-          {id: 213, title: 'Horror', count: 1},
-          {id: 214, title: 'Science Fiction', count: 2}
-        ]
-      },
-      {id: 23, title: 'Lectures', count: 3},
-      {id: 23, title: 'Misc', count: 0}
-    ]
-  },
-  {id: 3, title: 'Pictures', count: 10787}
-];
