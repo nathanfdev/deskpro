@@ -56,12 +56,12 @@ class LogComposer
     /**
      * @var LogHelper
      */
-    protected $log_helper;
+    protected $logHelper;
 
     /**
      * @var DupeHelper
      */
-    protected $dupe_helper;
+    protected $dupeHelper;
 
     /**
      * @var EntityManager
@@ -71,27 +71,27 @@ class LogComposer
     /**
      * @var bool
      */
-    protected $request_processed;
+    protected $requestProcessed;
 
     /**
      * @param WriterInterface       $writer
-     * @param LogHelper             $log_helper
-     * @param DupeHelper            $dupe_helper
-     * @param TokenStorageInterface $token_storage
+     * @param LogHelper             $logHelper
+     * @param DupeHelper            $dupeHelper
+     * @param TokenStorageInterface $tokenStorage
      * @param EntityManager         $em
      */
     public function __construct(
         WriterInterface $writer,
-        LogHelper $log_helper,
-        DupeHelper $dupe_helper,
-        TokenStorageInterface $token_storage,
+        LogHelper $logHelper,
+        DupeHelper $dupeHelper,
+        TokenStorageInterface $tokenStorage,
         EntityManager $em
     ) {
-        $this->writer        = $writer;
-        $this->log_helper    = $log_helper;
-        $this->dupe_helper   = $dupe_helper;
-        $this->token_storage = $token_storage;
-        $this->em            = $em;
+        $this->writer       = $writer;
+        $this->logHelper    = $logHelper;
+        $this->dupeHelper   = $dupeHelper;
+        $this->tokenStorage = $tokenStorage;
+        $this->em           = $em;
     }
 
     /**
@@ -103,13 +103,13 @@ class LogComposer
     }
 
     /**
-     * @param bool $request_processed
+     * @param bool $requestProcessed
      *
      * @return $this
      */
-    public function setRequestProcessed($request_processed)
+    public function setRequestProcessed($requestProcessed)
     {
-        $this->request_processed = (bool) $request_processed;
+        $this->requestProcessed = (bool) $requestProcessed;
 
         return $this;
     }
@@ -119,7 +119,7 @@ class LogComposer
      */
     public function getLogHelper()
     {
-        return $this->log_helper;
+        return $this->logHelper;
     }
 
     /**
@@ -127,7 +127,7 @@ class LogComposer
      */
     public function getDupeHelper()
     {
-        return $this->dupe_helper;
+        return $this->dupeHelper;
     }
 
     /**
@@ -137,7 +137,7 @@ class LogComposer
      */
     public function getRequestId(Request $request)
     {
-        return $this->log_helper->getRequestId($request->headers);
+        return $this->logHelper->getRequestId($request->headers);
     }
 
     /**
@@ -161,8 +161,8 @@ class LogComposer
      */
     public function internalCreate(Request $request)
     {
-        $log          = new ApiLog();
-        $request_data = [
+        $log         = new ApiLog();
+        $requestData = [
             'headers' => $request->headers->all(),
             'body'    => $request->getContent(),
             'query'   => $request->query->all(),
@@ -170,12 +170,12 @@ class LogComposer
             'files'   => $request->files->all(),
             'server'  => $request->server->all(),
         ];
+        $this->setRequestData($log, $requestData);
 
         $log
             ->setStartTime(defined('DP_START_TIME') ? DP_START_TIME : time())
             ->setRequestedUri($request->getPathInfo())
             ->setMethod($request->getMethod())
-            ->setRequestData($request_data)
             ->setRequestId($this->getRequestId($request));
         $this->setApiLogAuthData($log);
 
@@ -196,12 +196,14 @@ class LogComposer
      */
     public function internalFinish(Response $response, ApiLog $log)
     {
-        $response_data = [
+        $responseData = [
             'headers' => $response->headers->all(),
             'body'    => $response->getContent(),
         ];
+
+        $this->setResponseData($log, $responseData);
+
         $log->setEndTime(time())
-            ->setResponseData($response_data)
             ->setStatus($response->getStatusCode());
     }
 
@@ -213,23 +215,23 @@ class LogComposer
      */
     public function write(Request $request, Response $response)
     {
-        $options = $this->dupe_helper->getRequestOptions($request->headers);
+        $options = $this->dupeHelper->getRequestOptions($request->headers);
 
-        $skip_failed_client_request = $this->getLogHelper()->isClientRequestedLog()
+        $skipFailedClientRequest = $this->getLogHelper()->isClientRequestedLog()
             && $options['failure_mode'] === LogHelper::FAILURE_MODE_SKIP && $options['eager'] !== LogHelper::EAGER_ON
             && !($response->isSuccessful() || $response->isRedirection());
 
         $should_save =
             (
-                $this->log_helper->isLoggingEnabled() ||
+                $this->logHelper->isLoggingEnabled() ||
                 (
                     $this->getLogHelper()->isClientRequestedLog()
                     && $this->getDupeHelper()->suitableMode($this->getLogHelper()->getMode())
                 )
             )
-            && !$this->request_processed;
+            && !$this->requestProcessed;
 
-        if ($skip_failed_client_request) {
+        if ($skipFailedClientRequest) {
             return false;
         } elseif ($should_save) {
             $this->saveLog();
@@ -279,6 +281,36 @@ class LogComposer
      */
     protected function getToken()
     {
-        return $this->token_storage->getToken();
+        return $this->tokenStorage->getToken();
+    }
+
+    /**
+     * @param ApiLog $log
+     * @param array  $requestData
+     */
+    protected function setRequestData(ApiLog $log, array $requestData)
+    {
+        /* we're going to reduce request_data */
+        $maxRequestBodyLength = $this->getLogHelper()->getMaxRequestBodyLength();
+        if (mb_strlen($requestData['body'], '8bit') > $maxRequestBodyLength) {
+            $requestData['body'] = substr($requestData['body'], 0, ceil(0.99 * $maxRequestBodyLength));
+            $log->setIsRequestTruncated(true);
+        }
+        $log->setRequestData($requestData);
+    }
+
+    /**
+     * @param ApiLog $log
+     * @param array  $responseData
+     */
+    protected function setResponseData(ApiLog $log, array $responseData)
+    {
+        /* we're going to reduce request_data */
+        $maxResponseBodyLength = $this->getLogHelper()->getMaxResponseBodyLength();
+        if (mb_strlen($responseData['body'], '8bit') > $maxResponseBodyLength) {
+            $responseData['body'] = substr($responseData['body'], 0, ceil(0.99 * $maxResponseBodyLength));
+            $log->setIsResponseTruncated(true);
+        }
+        $log->setResponseData($responseData);
     }
 }
