@@ -4,37 +4,44 @@ import ReactDOM from 'react-dom';
 import {
   chatLoadedSelector,
   messagesSelector,
-  lastMessageIdSelector,
-  muteSelector,
-  agentTypingDateSelector
+  muteSelector
 } from '../../../../Selectors/chat';
-import { widgetDimensionsSelector, widgetHeightSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
-import { peopleSelector } from '../../../../../Application/Selectors/peopleSelectors';
+import { widgetDimensionsSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
 import { MessageList } from './MessageList';
 import { MessageListSpinner } from './MessageListSpinner';
 import $ from 'jquery';
+import Immutable from 'immutable';
 
 @connect(state => ({
   chatLoaded:       chatLoadedSelector(state),
   messages:         messagesSelector(state),
-  lastMessageId:    lastMessageIdSelector(state),
   widgetDimensions: widgetDimensionsSelector(state),
-  widgetHeight:     widgetHeightSelector(state),
   mute:             muteSelector(state),
-  isBubble:         isBubbleSelector(state),
-  people:           peopleSelector(state),
-  agentTypingDate:  agentTypingDateSelector(state)
+  isBubble:         isBubbleSelector(state)
 }))
 export class MessageListContainer extends React.Component {
 
   static propTypes = {
-    chatLoaded:   PropTypes.bool,
-    isBubble:     PropTypes.bool,
-    widgetHeight: PropTypes.number
+    chatLoaded:       PropTypes.bool,
+    messages:         PropTypes.object,
+    widgetDimensions: PropTypes.object,
+    mute:             PropTypes.bool,
+    isBubble:         PropTypes.bool
   };
 
   componentDidMount() {
     this.reCalcHeight();
+  }
+
+  shouldComponentUpdate(props) {
+    const { chatLoaded, messages, widgetDimensions, mute, isBubble } = this.props;
+    const dimensionsChanged = !Immutable.is(widgetDimensions, props.widgetDimensions);
+
+    return props.chatLoaded !== chatLoaded
+      || !Immutable.is(messages, props.messages)
+      || dimensionsChanged
+      || props.mute !== mute
+      || props.isBubble !== isBubble;
   }
 
   componentDidUpdate() {
@@ -42,7 +49,7 @@ export class MessageListContainer extends React.Component {
   }
 
   reCalcHeight() {
-    const { widgetHeight } = this.props;
+    const widgetHeight = this.props.widgetDimensions.get('height');
     const node = ReactDOM.findDOMNode(this);
     const $document = $(window.widgetFrame.document);
 
@@ -67,8 +74,9 @@ export class MessageListContainer extends React.Component {
     }
 
     $(node).css('height', height);
+
     if (this.refs.list) {
-      this.refs.list.refresh();
+      this.refs.list.scrollBottom();
     }
   }
 

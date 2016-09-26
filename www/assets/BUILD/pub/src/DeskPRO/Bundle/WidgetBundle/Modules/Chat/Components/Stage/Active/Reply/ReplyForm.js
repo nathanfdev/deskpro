@@ -42,8 +42,18 @@ export class ReplyForm extends React.Component {
     this.state = { message };
   }
 
-  onChangeMessage = value => {
-    this.setState({ message: value });
+  shouldComponentUpdate(props, state) {
+    const { agentName, attachedImagesCount, isEnded, lostConnection, canReopen } = this.props;
+    return props.agentName !== agentName
+      || props.attachedImagesCount !== attachedImagesCount
+      || props.isEnded !== isEnded
+      || props.lostConnection !== lostConnection
+      || props.canReopen !== canReopen
+      || state.message === '';
+  }
+
+  onChangeMessage = message => {
+    this.setState({ message });
 
     if (!this.timeout) {
       const onUserTyping = () => {
