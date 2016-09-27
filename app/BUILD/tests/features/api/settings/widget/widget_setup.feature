@@ -53,7 +53,7 @@ Feature: Widget Setup
     """
 {
   "enabled_on_portal": false,
-  "settings" {
+  "settings": {
     "global": {
       "chat": {
         "enabled": true,
