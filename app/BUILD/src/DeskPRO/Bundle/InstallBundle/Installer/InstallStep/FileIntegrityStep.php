@@ -77,6 +77,7 @@ class FileIntegrityStep extends AbstractStep
             $this->writeln("The file was read from here: $map_path");
             $this->writeln('');
             $this->writeln('Please re-download the DeskPRO files and try again.');
+            $this->writeln('Alternatively, if you want to SKIP the file integrity check, re-run this command like this: bin/install --skip file_integrity');
             $this->markAsFailed();
 
             return;
