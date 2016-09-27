@@ -44,7 +44,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     return 'AgentTopBar';
   }
 
-  updateVolume(volume) {
+  static updateVolume(volume) {
     window.DeskPRO_Window.volume = volume;
 
     window.$('audio').each(function changeVolume() {
@@ -52,7 +52,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     });
   }
 
-  onSearch(searchQuery) {
+  static onSearch(searchQuery) {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox && searchQuery) {
       angularOmnibox.searchQuery = searchQuery;
@@ -61,15 +61,15 @@ export class AgentTopBarContainer extends SeparateComponent {
     }
   }
 
-  onSearchFocus() {
+  static onSearchFocus() {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
   }
 
-  onSearchBlur() {
+  static onSearchBlur() {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
   }
 
-  onRecent() {
+  static onRecent() {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox) {
       angularOmnibox.toggleMode('recent');
@@ -78,7 +78,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     }
   }
 
-  onNotification() {
+  static onNotification() {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox) {
       angularOmnibox.toggleMode('notif');
@@ -87,7 +87,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     }
   }
 
-  toggleViewMode() {
+  static toggleViewMode() {
     if (window.DeskPRO_Window.paneVis.tabs && window.DeskPRO_Window.paneVis.list) {
       window.DeskPRO_Window.$scope.oneColumnView();
     } else {
@@ -95,7 +95,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     }
   }
 
-  closeIframes() {
+  static closeIframes() {
     for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
       const iframe = window.DP_FRAME_OVERLAYS[key];
       if (iframe.opened) {
@@ -106,14 +106,14 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   render() {
     const props = { ...this.props,
-      updateVolume:      this.updateVolume,
-      onSearch:          this.onSearch,
-      onSearchFocus:     this.onSearchFocus,
-      onSearchBlur:      this.onSearchBlur,
-      toggleViewMode:    this.toggleViewMode,
-      onRecent:          this.onRecent,
-      onNotification:    this.onNotification,
-      closeIframes:      this.closeIframes,
+      updateVolume:      AgentTopBarContainer.updateVolume,
+      onSearch:          AgentTopBarContainer.onSearch,
+      onSearchFocus:     AgentTopBarContainer.onSearchFocus,
+      onSearchBlur:      AgentTopBarContainer.onSearchBlur,
+      toggleViewMode:    AgentTopBarContainer.toggleViewMode,
+      onRecent:          AgentTopBarContainer.onRecent,
+      onNotification:    AgentTopBarContainer.onNotification,
+      closeIframes:      AgentTopBarContainer.closeIframes,
       notificationCount: this.state.notificationCount
     };
     return <AgentTopBar {...props} />;
@@ -125,7 +125,6 @@ export class AgentTopBar extends React.Component {
     agents:            PropTypes.object.isRequired,
     chatDepartments:   PropTypes.object.isRequired,
     me:                PropTypes.object,
-    TopBar:            PropTypes.object,
     notificationCount: PropTypes.number,
     updateVolume:      PropTypes.func,
     onSearch:          PropTypes.func,
@@ -162,7 +161,7 @@ export class AgentTopBar extends React.Component {
     const { agents, chatDepartments, notificationCount } = this.props;
 
     return (<TopBar>
-      <TopBarItem classes={['search-box legacy-omnibox']}>
+      <TopBarItem className="search-box legacy-omnibox">
         <SearchBox
           onUserInput={this.props.onSearch}
           onFocus={this.props.onSearchFocus}
@@ -170,20 +169,20 @@ export class AgentTopBar extends React.Component {
           placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
         />
       </TopBarItem>
-      <TopBarItem classes={['legacy-omnibox recent']} onClick={this.props.onRecent}>
+      <TopBarItem className="legacy-omnibox recent" onClick={this.props.onRecent}>
         <Isvg src={recentSvg} />
       </TopBarItem>
-      {/* <TopBarItem classes={['z-index-stub']}>*/}
-        {/* <HeaderWidget />*/}
-        {/* <IMContainer />*/}
+      {/* <TopBarItem className='z-index-stub'>*/}
+      {/* <HeaderWidget />*/}
+      {/* <IMContainer />*/}
       {/* </TopBarItem>*/}
 
       <AddButton closeIframes={this.props.closeIframes} />
       <TopBarRightMenu>
-        <TopBarItem classes={['views']} onClick={this.props.toggleViewMode}>
+        <TopBarItem className="views" onClick={this.props.toggleViewMode}>
           <Isvg src={viewsSvg} />
         </TopBarItem>
-        <TopBarItem classes={['legacy-omnibox notifications']} onClick={this.props.onNotification}>
+        <TopBarItem className="legacy-omnibox notifications" onClick={this.props.onNotification}>
           <TopBarNotificationIcon
             elementId="notifications"
             svg={notificationsSvg}

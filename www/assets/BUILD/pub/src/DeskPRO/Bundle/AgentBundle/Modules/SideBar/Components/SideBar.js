@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import Isvg from 'react-inlinesvg';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import ticketsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tickets.svg';
 import chatSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/chat.svg';
@@ -20,14 +19,12 @@ import * as actions from '../Actions/sideBarActions';
 import * as onboardingActions from '../../Onboarding/Actions/onboardingActions';
 
 @connect(state => ({
-  me:             meSelector(state),
   currentSection: state.SideBar.sections.get('current'),
   logoCallback:   state.Onboarding.onboarding.get('logoCallback'),
   logoActive:     state.Onboarding.onboarding.get('logoActive')
 }))
 export class SideBarContainer extends SeparateComponent {
   static propTypes = {
-    me:             PropTypes.object.isRequired,
     currentSection: PropTypes.string.isRequired,
     logoCallback:   PropTypes.func,
     logoActive:     PropTypes.bool,
@@ -88,43 +85,50 @@ export class SideBarContainer extends SeparateComponent {
     return 'SideBarContainer';
   }
 
-  canUseTicket() {
+  static canUseTicket() {
     return window.DESKPRO_PERSON_PERMS['agent_tickets.use'];
   }
 
-  canUseChat() {
+  static canUseChat() {
     return window.DESKPRO_PERSON_PERMS['agent_chat.use'] && window.DESKPRO_APP_SETTINGS['core.apps_chat'];
   }
 
-  canUsePeople() {
+  static canUsePeople() {
     return window.DESKPRO_PERSON_PERMS['agent_people.use'];
   }
 
-  canUseFeedback() {
+  static canUseFeedback() {
     return window.DESKPRO_APP_SETTINGS['core.apps_feedback'];
   }
-  canUsePublish() {
+
+  static canUsePublish() {
     return window.DESKPRO_APP_SETTINGS['core.apps_kb']
       || window.DESKPRO_APP_SETTINGS['core.apps_news']
       || window.DESKPRO_APP_SETTINGS['core.apps_downloads'];
   }
-  canUseTasks() {
+
+  static canUseTasks() {
     return window.DESKPRO_APP_SETTINGS['core.apps_tasks']
       && window.DESKPRO_PERSON_PERMS['agent_tasks.use'];
   }
-  canUseReports() {
+
+  static canUseReports() {
     return window.DESKPRO_PERSON_PERMS['agent_reports.use'];
   }
-  canUseAdmin() {
+
+  static canUseAdmin() {
     return window.DESKPRO_PERSON_PERMS['agent_admin.use'];
   }
-  canUseBilling() {
+
+  static canUseBilling() {
     return window.DESKPRO_PERSON_PERMS['agent_admin.use'];
   }
-  canUsePortal() {
+
+  static canUsePortal() {
     return true;
   }
-  closeIframes() {
+
+  static closeIframes() {
     for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
       const iframe = window.DP_FRAME_OVERLAYS[key];
       if (iframe.opened) {
@@ -158,17 +162,17 @@ export class SideBarContainer extends SeparateComponent {
 
   render() {
     const props = {
-      canUseTicket:     this.canUseTicket(),
-      canUseChat:       this.canUseChat(),
-      canUsePeople:     this.canUsePeople(),
-      canUseFeedback:   this.canUseFeedback(),
-      canUsePublish:    this.canUsePublish(),
-      canUseTasks:      this.canUseTasks(),
-      canUseReports:    this.canUseReports(),
-      canUseAdmin:      this.canUseAdmin(),
-      canUseBilling:    this.canUseBilling(),
-      canUsePortal:     this.canUsePortal(),
-      closeIframes:     this.closeIframes,
+      canUseTicket:     SideBarContainer.canUseTicket,
+      canUseChat:       SideBarContainer.canUseChat,
+      canUsePeople:     SideBarContainer.canUsePeople,
+      canUseFeedback:   SideBarContainer.canUseFeedback,
+      canUsePublish:    SideBarContainer.canUsePublish,
+      canUseTasks:      SideBarContainer.canUseTasks,
+      canUseReports:    SideBarContainer.canUseReports,
+      canUseAdmin:      SideBarContainer.canUseAdmin,
+      canUseBilling:    SideBarContainer.canUseBilling,
+      canUsePortal:     SideBarContainer.canUsePortal,
+      closeIframes:     SideBarContainer.closeIframes,
       openAdmin:        this.openAdmin,
       openReports:      this.openReports,
       openBilling:      this.openBilling,
@@ -182,7 +186,6 @@ export class SideBarContainer extends SeparateComponent {
 
 export class SideBar extends React.Component {
   static propTypes = {
-    me:               PropTypes.object,
     canUseTicket:     PropTypes.bool.isRequired,
     canUseChat:       PropTypes.bool.isRequired,
     canUsePeople:     PropTypes.bool.isRequired,
@@ -204,6 +207,10 @@ export class SideBar extends React.Component {
     resumeOnboarding: PropTypes.func,
     sectionsBadges:   PropTypes.array
   };
+
+  static openDeskPro() {
+    window.open('http://deskpro.com', '_blank');
+  }
 
   getMenus = () => {
     const menus = [];
@@ -324,7 +331,7 @@ export class SideBar extends React.Component {
       menus.push(
         <MenuItem
           key={menuItem.key}
-          classes={classNames(menuItem.className, { active: currentSection === menuItem.key, badge })}
+          className={classNames(menuItem.className, { active: currentSection === menuItem.key, badge })}
           onClick={() => this.clickMenu(menuItem)}
         >
           <span className="menu-icon">
@@ -352,13 +359,9 @@ export class SideBar extends React.Component {
       this.props.logoCallback();
       this.props.resumeOnboarding();
     } else {
-      this.openDeskPro();
+      SideBar.openDeskPro();
     }
   };
-
-  openDeskPro() {
-    window.open('http://deskpro.com', '_blank');
-  }
 
   render() {
     const { logoActive } = this.props;

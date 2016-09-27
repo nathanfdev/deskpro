@@ -96,10 +96,6 @@ class AddButton extends React.Component {
     this.closePopup();
   };
 
-  addTweet() {
-    // TODO need implementation if used
-  }
-
   closePopup = () => {
     this.addPopup.closePopup();
     this.props.closeIframes();
@@ -119,7 +115,7 @@ class AddButton extends React.Component {
         zIndex={99999}
         content={this.getPopupContent()}
         ref={(c) => { this.addPopup = c; }}
-        classes={['add_menu_popup']}
+        className="add_menu_popup"
         autoOpen={false}
       >
         <button className="ui button">

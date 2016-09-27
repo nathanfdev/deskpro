@@ -37,7 +37,7 @@ class User extends React.Component {
     };
 
     if (!wrap.data('has-init')) {
-      wrap.find('.btn-menu').on('click', ev => {
+      wrap.find('.btn-menu').on('click', (ev) => {
         window.Orb.cancelEvent(ev);
         window.Orb.shimClickCallbackPop();
       });
@@ -73,7 +73,7 @@ class User extends React.Component {
           zIndex={99999}
           content={this.getPopupContent()}
           ref={(c) => { this.userPopup = c; }}
-          classes={['user_popup']}
+          className="user_popup"
           autoOpen={false}
         >
           <img className="ui circular image" src={src} alt="agent" />

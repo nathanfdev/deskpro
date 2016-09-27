@@ -13,7 +13,6 @@ class Chat extends React.Component {
     chatDepartments: PropTypes.array,
     onlineAgents:    PropTypes.array,
     volume:          PropTypes.number,
-    onToggleChat:    PropTypes.func,
     updateVolume:    PropTypes.func
   };
 
@@ -22,6 +21,21 @@ class Chat extends React.Component {
     onToggleChat() {},
     updateVolume() {}
   };
+
+  static getAgentsList(agents, key) {
+    return (<List key={`list${key}`} className="agents">
+      {
+        agents.map((agent) => {
+          let img = agent.get('avatar').get('default_url_pattern');
+          if (agent.get('avatar').get('url_pattern')) {
+            img = agent.get('avatar').get('url_pattern');
+          }
+          img = img.replace(/\{\{IMG_SIZE}}/, 15);
+          return <ListElement key={`agent${String(agent.get('id'))}`} label={agent.get('name')} image={img} />;
+        })
+      }
+    </List>);
+  }
 
   constructor(props) {
     super(props);
@@ -37,7 +51,7 @@ class Chat extends React.Component {
   componentDidMount() {
     const self = this;
     if (window.DeskPRO_Window) {
-      window.DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents-userchat', info => {
+      window.DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents-userchat', (info) => {
         self.setState({
           onlineAgents: info.online_agents
         });
@@ -71,29 +85,14 @@ class Chat extends React.Component {
         if (agents.length) {
           result.push(<h4 key={`dep${index}`}>{department.get('title')}</h4>);
           result.push(<hr key={`hr${index}`} />);
-          result.push(this.getAgentsList(agents, department.get('id')));
+          result.push(Chat.getAgentsList(agents, department.get('id')));
         }
         return true;
       });
     } else {
-      result = this.getAgentsList(onlineAgents, 0);
+      result = Chat.getAgentsList(onlineAgents, 0);
     }
     return result;
-  }
-
-  getAgentsList(agents, key) {
-    return (<List key={`list${key}`} classes={['agents']}>
-      {
-        agents.map((agent) => {
-          let img = agent.get('avatar').get('default_url_pattern');
-          if (agent.get('avatar').get('url_pattern')) {
-            img = agent.get('avatar').get('url_pattern');
-          }
-          img = img.replace(/\{\{IMG_SIZE}}/, 15);
-          return <ListElement key={`agent${String(agent.get('id'))}`} label={agent.get('name')} image={img} />;
-        })
-      }
-    </List>);
   }
 
   getPopupContent() {
@@ -102,10 +101,12 @@ class Chat extends React.Component {
     return (<div id="chat-menu">
       <div className="header">
         {agentPhrases.get('agent.general.chat')}&nbsp;
-        <span className="count">({agentPhrases.get('agent.tickets.count_agents', { count: onlineAgents.length })})</span>
+        <span className="count">
+          ({agentPhrases.get('agent.tickets.count_agents', { count: onlineAgents.length })})
+        </span>
       </div>
       <div className="description">
-        <Toggle active={activeChat} onChange={this.toggleChat} classes={['small']}>
+        <Toggle active={activeChat} onChange={this.toggleChat} className="small">
           {agentPhrases.get('agent.chat.online_for_chat')}
         </Toggle>
         <hr className="full" />
@@ -220,7 +221,7 @@ class Chat extends React.Component {
         zIndex={99999}
         autoOpen={false}
         ref={(c) => { this.chatPopup = c; }}
-        classes={['chat_popup']}
+        className="chat_popup"
         content={this.getPopupContent()}
       >
         <Isvg

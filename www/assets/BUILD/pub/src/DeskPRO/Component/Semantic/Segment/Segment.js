@@ -3,14 +3,14 @@ import classNames from 'classnames';
 
 class Segment extends React.Component {
   static propTypes = {
-    children: PropTypes.node,
-    classes:  PropTypes.string
+    children:  PropTypes.node,
+    className: PropTypes.string
   };
 
   render() {
-    const { classes, children } = this.props;
+    const { className, children } = this.props;
     return (
-      <div className={classNames('ui segment', classes)}>
+      <div className={classNames('ui segment', className)}>
         {children}
       </div>
     );

@@ -720,15 +720,15 @@ storiesOf('App: top bar', module)
     'Top bar',
     () => <div id="react_dp_agent_top_bar">
       <TopBar>
-        <TopBarItem classes={['search-box legacy-omnibox']}>
+        <TopBarItem className="search-box legacy-omnibox">
           <SearchBox onUserInput={action('Search')} placeholder="Search ..." />
         </TopBarItem>
-        <TopBarItem classes={['recent']}>
+        <TopBarItem className="recent">
           <Isvg src={recentSvg} />
         </TopBarItem>
         <AddButton />
         <TopBarRightMenu>
-          <TopBarItem classes={['views']}>
+          <TopBarItem className="views">
             <Isvg src={viewsSvg} />
           </TopBarItem>
           <TopBarItem>

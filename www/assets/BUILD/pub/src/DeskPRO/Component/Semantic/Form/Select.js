@@ -7,6 +7,7 @@ class Select extends React.Component {
   static propTypes = {
     filter:      PropTypes.bool,
     onChange:    PropTypes.func,
+    name:        PropTypes.string,
     placeholder: PropTypes.string,
     value:       PropTypes.string,
     options:     PropTypes.oneOfType([
@@ -45,6 +46,7 @@ class Select extends React.Component {
         className="search"
         autoComplete="off"
         ref={(c) => { this.filterInput = c; }}
+        value={this.state.inputValue}
         onChange={this.updateFilter}
         onFocus={this.openSelect}
       />);
@@ -55,7 +57,7 @@ class Select extends React.Component {
   filterOptions = () => {
     const { inputValue } = this.state;
     return this.props.options
-      .filter(option => {
+      .filter((option) => {
         if (inputValue) {
           if (option.text) {
             return option.text.toLowerCase().startsWith(inputValue.toLowerCase());
@@ -120,7 +122,7 @@ class Select extends React.Component {
     }
     if (!options.length) return;
     let focusedIndex = -1;
-    for (let i = 0; i < options.length; i++) {
+    for (let i = 0; i < options.length; i += 1) {
       if (focusedOption === options[i].option) {
         focusedIndex = i;
         break;
@@ -164,7 +166,8 @@ class Select extends React.Component {
 
   closeSelect = () => {
     this.setState({
-      isOpen: false
+      inputValue: '',
+      isOpen:     false
     });
   };
 
@@ -177,10 +180,11 @@ class Select extends React.Component {
   };
 
   selectValue = (value) => {
-    this.input.value = value.value;
+    this.props.onChange(value.value);
     this.setState({
       value,
-      isOpen: false
+      inputValue: '',
+      isOpen:     false
     });
   };
 
@@ -199,12 +203,12 @@ class Select extends React.Component {
       return (<MenuItem
         key={option.value}
         onClick={() => this.selectValue(option)}
-        ref={node => {
+        ref={(node) => {
           if (index === focusedIndex) {
             this.focusedOption = node;
           }
         }}
-        classes={classNames({ active, selected: index === focusedIndex })}
+        className={classNames({ active, selected: index === focusedIndex })}
       >
         {option.label}
       </MenuItem>);
@@ -213,7 +217,7 @@ class Select extends React.Component {
 
   render() {
     const { value, isOpen, inputValue } = this.state;
-    const { placeholder, filter } = this.props;
+    const { placeholder, filter, name } = this.props;
     const text = value ? value.label : placeholder;
     const options = this.visibleOptions = this.filterOptions();
     return (
@@ -223,7 +227,7 @@ class Select extends React.Component {
           onClick={this.openSelect}
           onKeyDown={this.handleKeyDown}
         >
-          <input ref={(c) => { this.input = c; }} type="hidden" name="gender" />
+          <input ref={(c) => { this.input = c; }} type="hidden" name={name} value={this.props.value} />
           <i className="dropdown icon" />
           {this.getInput()}
           <div className={classNames('text', { default: !value, filtered: inputValue })}>

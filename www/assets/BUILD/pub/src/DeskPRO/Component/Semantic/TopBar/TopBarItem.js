@@ -3,9 +3,9 @@ import classNames from 'classnames';
 
 class TopBarItem extends React.Component {
   static propTypes = {
-    onClick:  PropTypes.func,
-    children: PropTypes.node,
-    classes:  PropTypes.array
+    onClick:   PropTypes.func,
+    children:  PropTypes.node,
+    className: PropTypes.string
   };
   static defaultProps = {
     onClick() {}
@@ -16,8 +16,8 @@ class TopBarItem extends React.Component {
   };
 
   render() {
-    const { children, classes } = this.props;
-    return (<div className={classNames('item', classes)} onClick={this.handleClick}>
+    const { children, className } = this.props;
+    return (<div className={classNames('item', className)} onClick={this.handleClick}>
       <div>
         {children}
       </div>

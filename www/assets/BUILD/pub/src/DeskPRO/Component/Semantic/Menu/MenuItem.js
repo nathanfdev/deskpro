@@ -8,7 +8,7 @@ class MenuItem extends React.Component {
     subContent: PropTypes.object,
     onClick:    PropTypes.func,
     children:   PropTypes.node,
-    classes:    PropTypes.string
+    className:  PropTypes.string
   };
   static defaultProps = {
     onClick() {}
@@ -35,9 +35,9 @@ class MenuItem extends React.Component {
   };
 
   render() {
-    const { label, subContent, children, classes } = this.props;
+    const { label, subContent, children, className } = this.props;
     return (<a
-      className={classNames('ui', 'item', { dropdown: !!subContent }, classes)}
+      className={classNames('ui', 'item', { dropdown: !!subContent }, className)}
       onClick={this.handleClick}
       ref={(c) => { this.node = c; }}
     >

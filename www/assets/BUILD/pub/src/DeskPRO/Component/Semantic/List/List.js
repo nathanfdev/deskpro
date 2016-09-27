@@ -4,12 +4,9 @@ import ListElement from './ListElement';
 
 class List extends React.Component {
   static propTypes = {
-    elements: PropTypes.arrayOf(PropTypes.shape({
-      label: PropTypes.string,
-      icon:  PropTypes.string
-    })),
-    children: PropTypes.node,
-    classes:  PropTypes.array
+    elements:  PropTypes.array,
+    children:  PropTypes.node,
+    className: PropTypes.string
   };
 
   getItems() {
@@ -20,15 +17,16 @@ class List extends React.Component {
       return [];
     }
     for (const props of elements) {
-      props.key = String(i++);
+      props.key = String(i);
+      i += 1;
       items.push(<ListElement {...props} />);
     }
     return items;
   }
 
   render() {
-    const { children, classes } = this.props;
-    return (<div className={classNames('ui', 'list', classes)}>
+    const { children, className } = this.props;
+    return (<div className={classNames('ui', 'list', className)}>
       {this.getItems()}
       {children}
     </div>);

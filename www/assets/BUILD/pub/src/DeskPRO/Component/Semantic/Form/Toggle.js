@@ -7,7 +7,7 @@ class Toggle extends React.Component {
     onChange:  PropTypes.func,
     elementId: PropTypes.string,
     children:  PropTypes.node,
-    classes:   PropTypes.array
+    className: PropTypes.string
   };
   static defaultProps = {
     onChange() {
@@ -20,9 +20,9 @@ class Toggle extends React.Component {
   };
 
   render() {
-    const { children, elementId, active, classes } = this.props;
+    const { children, elementId, active, className } = this.props;
     return  (
-      <div className={classNames('ui', 'toggle', 'checkbox', classes)}>
+      <div className={classNames('ui', 'toggle', 'checkbox', className)}>
         <input
           type="checkbox"
           id={elementId}
@@ -30,7 +30,7 @@ class Toggle extends React.Component {
           onChange={() => {}}
           className="hidden right"
         />
-        <label onClick={this.onClick}>
+        <label onClick={this.onClick} htmlFor={elementId}>
           {children}
         </label>
       </div>

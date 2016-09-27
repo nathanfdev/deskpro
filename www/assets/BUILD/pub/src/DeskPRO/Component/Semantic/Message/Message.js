@@ -3,10 +3,10 @@ import classNames from 'classnames';
 
 class Message extends React.Component {
   static propTypes = {
-    children: PropTypes.node,
-    close:    PropTypes.bool,
-    header:   PropTypes.string,
-    classes:  PropTypes.string
+    children:  PropTypes.node,
+    close:     PropTypes.bool,
+    header:    PropTypes.string,
+    className: PropTypes.string
   };
 
   getHeader = () => {
@@ -28,9 +28,9 @@ class Message extends React.Component {
   };
 
   render() {
-    const { children, classes } = this.props;
+    const { children, className } = this.props;
     return (
-      <div className={classNames('ui message', classes)} >
+      <div className={classNames('ui message', className)} >
         {this.getCloseIcon()}
         {this.getHeader()}
         {children}
