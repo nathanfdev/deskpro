@@ -510,6 +510,12 @@
                                         ngclipboard-success="Growl.success('The code snippet was copied to your clipboard')">COPY</button>
                             </div>
                         </div>
+                        <div class="inline fields">
+                            <div class="ui toggle checkbox">
+                                <input type="checkbox" id="enabled_on_portal" ng-model="enabled_on_portal" class="hidden right">
+                                <label for="enabled_on_portal">Enable on the portal</label>
+                            </div>
+                        </div>
                         <div class="ui top attached tabular menu">
                             <a class="active item" dp-tab-btn="main.install.cms">Manually installing the widget</a>
                             <a class="item" dp-tab-btn="main.install.tickets">Install widget in a CMS</a>

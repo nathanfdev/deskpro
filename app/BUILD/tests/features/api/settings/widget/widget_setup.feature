@@ -52,58 +52,61 @@ Feature: Widget Setup
     When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/widget/setup" with body:
     """
 {
-  "global": {
-    "chat": {
-      "enabled": true,
-      "email_validation": true,
-      "require_login": true
-    }
-  },
-  "brand": {
-    "widget": {
-      "type": "bubble",
-      "position": "left",
-      "agent_polling_timeout": 400,
-      "enabled": true
+  "enabled_on_portal": false,
+  "settings" {
+    "global": {
+      "chat": {
+        "enabled": true,
+        "email_validation": true,
+        "require_login": true
+      }
     },
-    "button": {
-      "translations": [
-        {
-          "language": 1,
-          "name": "Help (edited)"
-        },
-        {
-          "language": 2,
-          "name": "Help (fr)"
-        }
-      ],
-      "size": "medium"
-    },
-    "chat": {
-      "begin_mode": "form",
-      "waiting_timeout": 40,
-      "popup": {
+    "brand": {
+      "widget": {
+        "type": "bubble",
+        "position": "left",
+        "agent_polling_timeout": 400,
+        "enabled": true
+      },
+      "button": {
         "translations": [
           {
             "language": 1,
-            "title": "Customer Support (edited)",
-            "message": "Need help? Just reply to start a live chat with one of our team. (edited)",
-            "heading": "Ask us a question! (edited)",
-            "subheading": "Our team are online and ready to help with your enquiries. Send us a message to get started. (edited)"
+            "name": "Help (edited)"
           },
           {
             "language": 2,
-            "title": "Customer Support (fr)",
-            "message": "Need help? Just reply to start a live chat with one of our team. (fr)",
-            "heading": "Ask us a question! (fr)",
-            "subheading": "Our team are online and ready to help with your enquiries. Send us a message to get started. (fr)"
+            "name": "Help (fr)"
           }
         ],
-        "style": "agent_text_input"
+        "size": "medium"
+      },
+      "chat": {
+        "begin_mode": "form",
+        "waiting_timeout": 40,
+        "popup": {
+          "translations": [
+            {
+              "language": 1,
+              "title": "Customer Support (edited)",
+              "message": "Need help? Just reply to start a live chat with one of our team. (edited)",
+              "heading": "Ask us a question! (edited)",
+              "subheading": "Our team are online and ready to help with your enquiries. Send us a message to get started. (edited)"
+            },
+            {
+              "language": 2,
+              "title": "Customer Support (fr)",
+              "message": "Need help? Just reply to start a live chat with one of our team. (fr)",
+              "heading": "Ask us a question! (fr)",
+              "subheading": "Our team are online and ready to help with your enquiries. Send us a message to get started. (fr)"
+            }
+          ],
+          "style": "agent_text_input"
+        }
+      },
+      "ticket": {
+        "select_department": "custom"
       }
-    },
-    "ticket": {
-      "select_department": "custom"
     }
   }
 }
@@ -144,51 +147,54 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "custom"
 
   Scenario: I apply chat widget to the portal
-    When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/widget/portal/apply" with body:
+    When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/widget/setup" with body:
     """
 {
-  "global": {
-    "chat": {
-      "enabled": false,
-      "email_validation": false,
-      "require_login": false
-    }
-  },
-  "brand": {
-    "widget": {
-      "type": "column",
-      "position": "right",
-      "agent_polling_timeout": 400,
-      "enabled": true
+  "enabled_on_portal": true,
+  "settings": {
+    "global": {
+      "chat": {
+        "enabled": false,
+        "email_validation": false,
+        "require_login": false
+      }
     },
-    "button": {
-      "translations": [
-        {
-          "language": 1,
-          "name": "Help (edited)"
-        }
-      ],
-      "size": "large"
-    },
-    "chat": {
-      "begin_mode": "conversation",
-      "waiting_timeout": 40,
-      "popup": {
+    "brand": {
+      "widget": {
+        "type": "column",
+        "position": "right",
+        "agent_polling_timeout": 400,
+        "enabled": true
+      },
+      "button": {
         "translations": [
           {
             "language": 1,
-            "title": "Customer Support (edited)",
-            "message": "Need help? Just reply to start a live chat with one of our team. (edited)",
-            "heading": "Ask us a question! (edited)",
-            "subheading": "Our team are online and ready to help with your enquiries. Send us a message to get started. (edited)"
+            "name": "Help (edited)"
           }
         ],
-        "style": "agent_text_input"
+        "size": "large"
+      },
+      "chat": {
+        "begin_mode": "conversation",
+        "waiting_timeout": 40,
+        "popup": {
+          "translations": [
+            {
+              "language": 1,
+              "title": "Customer Support (edited)",
+              "message": "Need help? Just reply to start a live chat with one of our team. (edited)",
+              "heading": "Ask us a question! (edited)",
+              "subheading": "Our team are online and ready to help with your enquiries. Send us a message to get started. (edited)"
+            }
+          ],
+          "style": "agent_text_input"
+        }
+      },
+      "ticket": {
+        "select_department": "default",
+        "default_department": 2
       }
-    },
-    "ticket": {
-      "select_department": "default",
-      "default_department": 2
     }
   }
 }
@@ -214,16 +220,3 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.chat.popup.style" should be equal to the string "agent_text_input"
     And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "default"
     And the JSON node "data.settings.brand.ticket.default_department" should be equal to 2
-
-  Scenario: I apply chat widget to the portal
-    When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/widget/portal/remove"
-    Then the response status code should be 204
-
-    When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/widget/setup"
-    Then the response should be in JSON
-    And the response status code should be 200
-    And the JSON node "data.enabled_on_portal" should be equal to 0
-
-  Scenario: I can change brand settings independently
-    Given I have several brands
-
