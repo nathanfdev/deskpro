@@ -254,8 +254,6 @@ abstract class AbstractIncident implements Incident
 
             if ($event instanceof SuccessEvent) {
                 ++$this->successEventsCount;
-                $this->firstFailureEvent = null;
-                $this->lastFailureEvent  = null;
             } else {
                 ++$this->failureEventsCount;
                 $this->firstFailureEvent or $this->firstFailureEvent = $event;
