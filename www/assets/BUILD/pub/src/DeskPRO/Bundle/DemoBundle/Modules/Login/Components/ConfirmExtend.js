@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
+import Isvg from 'react-inlinesvg';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
+import deleteSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/delete_reset.svg';
+import preserveSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/preserve.svg';
 
 export class ConfirmExtendContainer extends React.Component {
   static contextTypes = {
@@ -9,11 +12,11 @@ export class ConfirmExtendContainer extends React.Component {
 
   onDeleteData = () => {
     this.context.router.push('/confirm-reset');
-  }
+  };
 
   onPreserveData = () => {
 
-  }
+  };
 
   render() {
     return (
@@ -46,24 +49,28 @@ export class ConfirmExtend extends React.Component {
           Or, preserve your data from early in the trial and continue where your left off?"
           />
         </p>
-        <div onClick={this.props.onDeleteData}>
+        <button onClick={this.props.onDeleteData}>
+          <Isvg src={deleteSvg} />
           <FormattedMessage
             id="cloud.demo_expired.confirm_extend_delete"
             defaultMessage="Delete data & reset trial"
           />
+        </button>
+        <div className="or">
+          <div className="ui horizontal divider">
+            <FormattedMessage
+              id="cloud.demo_expired.or"
+              defaultMessage="Or"
+            />
+          </div>
         </div>
-        <div className="ui horizontal divider">
-          <FormattedMessage
-            id="cloud.demo_expired.or"
-            defaultMessage="Or"
-          />
-        </div>
-        <div onClick={this.props.onPreserveData}>
+        <button onClick={this.props.onPreserveData}>
+          <Isvg src={preserveSvg} />
           <FormattedMessage
             id="cloud.demo_expired.confirm_extend_preserve"
             defaultMessage="Preserve data and continue"
           />
-        </div>
+        </button>
       </Segment>
     );
   }

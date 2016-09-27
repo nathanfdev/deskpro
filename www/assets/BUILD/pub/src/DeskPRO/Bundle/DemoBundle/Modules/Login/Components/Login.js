@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
+import { classNames } from 'classnames';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Field, Form, Input } from 'DeskPRO/Component/Semantic/Form';
@@ -169,12 +170,11 @@ export class Login extends React.Component {
             />
           </Field>
         </Form>
-        <Button className="positive" onClick={this.props.onLogin}>
+        <Button className={classNames('positive', { loading: this.props.submit })} onClick={this.props.onLogin}>
           <FormattedMessage
             id="cloud.demo_expired.login_button"
             defaultMessage="Log in"
           />
-          {this.props.submit && <span> <i className="fa fa-spinner fa-pulse fa-fw margin-bottom" /></span>}
         </Button>
         <p className="bottom-link"><a onClick={this.props.onForgotPassword}>
           <FormattedMessage

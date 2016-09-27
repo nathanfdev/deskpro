@@ -301,12 +301,14 @@ class ExtendTrial extends React.Component {
                     alt="Back of card"
                   />
                 </Field>
-                <Button onClick={this.props.onResumeTrial} className="positive">
+                <Button
+                  onClick={this.props.onResumeTrial}
+                  className={classNames('positive', { loading: this.props.submit })}
+                >
                   <FormattedMessage
                     id="cloud.demo_expired.extend_trial_resume"
                     defaultMessage="Resume free trial"
                   />
-                  {this.props.submit && <span> <i className="fa fa-spinner fa-pulse fa-fw margin-bottom" /></span>}
                 </Button>
               </Form>
             </Segment>
@@ -319,6 +321,9 @@ class ExtendTrial extends React.Component {
                 id="cloud.demo_expired.offer_text"
                 defaultMessage="One plan and one price, with all features for everyone."
               />
+            </div>
+            <div className="trophy">
+              <i className="icon trophy" />
             </div>
             <div className="price">$30</div>
             <div className="unit">
@@ -335,7 +340,7 @@ class ExtendTrial extends React.Component {
               defaultMessage="Got questions? Just ask..."
             />
           </Button>
-          <Button className="delete primary" onClick={this.props.onDeleteAccount}>
+          <Button className="delete secondary" onClick={this.props.onDeleteAccount}>
             <FormattedMessage
               id="cloud.demo_expired.delete"
               defaultMessage="Delete your account"

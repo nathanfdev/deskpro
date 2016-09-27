@@ -32,6 +32,10 @@
 @basicActiveBoxShadow: 0px -1px 0px @dp-sonic-primary;
 @basicDownBoxShadow: 0px -1px 0px @dp-sonic-primary;
 
+@secondaryColor: @dp-greyscale-200;
+@secondaryTextColor: @dp-greyscale-750;
+@secondaryTextShadow: none;
+
 @fontWeight: 600;
 
 @large: 1.25rem;

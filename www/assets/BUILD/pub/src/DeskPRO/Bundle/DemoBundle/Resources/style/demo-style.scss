@@ -96,7 +96,7 @@ footer {
   padding: 50px;
 }
 .ui.horizontal.segments.extend-trial {
-  width: 1240px;
+  width: 1220px;
   margin: 80px auto 0;
   border: none;
   box-shadow: none;
@@ -121,6 +121,9 @@ footer {
       border: none;
       background: $dp-greyscale-100;
       padding: 30px;
+      form.form {
+        margin-bottom: 0;
+      }
     }
     .segment.credit-card {
       border: none;
@@ -153,7 +156,7 @@ footer {
   .segment.extend-trial-side-bar {
     background-color: $dp-greyscale-150;
     border: none;
-    width: 300px;
+    width: 280px;
     padding: 0 0 0 30px;
     .offer {
       padding: 30px;
@@ -168,9 +171,22 @@ footer {
         color: $dp-sonic-primary;
         line-height: 60px;
       }
+      .trophy {
+        line-height: 48px;
+        vertical-align: middle;
+        i.icon.trophy {
+          color: $dp-sonic-primary;
+          font-size: 36px;
+        }
+      }
     }
     button {
       margin-top: 30px;
+      width: 266px;
+      i.icon {
+        font-size: 12px;
+        color: $dp-greyscale-50;
+      }
     }
     button.delete {
       text-transform: uppercase;
@@ -193,6 +209,35 @@ footer {
   button.ui.button {
     margin: 20px auto 0;
     width: 150px;
+  }
+}
+.segment.confirm-extend {
+  text-align: center;
+  .or {
+    width: 70px;
+    display: inline-block;
+    .ui.horizontal.divider:before {
+      background-position: left 0.5em top 50%;
+      background-size: 60%;
+    }
+    .ui.horizontal.divider:after {
+      background-position: right 0.5em top 50%;
+      background-size: 60%;
+    }
+  }
+  button {
+    height: 126px;
+    width: 140px;
+    min-width: 140px;
+    background-color: $dp-greyscale-50;
+    padding: 10px;
+    border: 1px solid $dp-greyscale-200;
+    border-radius: 2px;
+    svg {
+      height: 30px;
+      display: block;
+      margin: 0 auto 10px;
+    }
   }
 }
 .delete-account-feedback {
