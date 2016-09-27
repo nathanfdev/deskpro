@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -79,10 +78,12 @@ class TriggeringProcess
     /**
      * @return int
      */
-    public function countIncidents()
+    public function countContinuingIncidents()
     {
-        return $this->em
-            ->createQuery(sprintf('SELECT COUNT(i.id) FROM %s i', AbstractIncident::class))->getSingleScalarResult();
+        $query = 'SELECT COUNT(id) FROM system_alerts_incidents WHERE raised = 1 AND resolved = 0 AND dismissed = 0';
+        $count = $this->em->getConnection()->executeQuery($query)->fetch(\PDO::FETCH_COLUMN);
+
+        return $count;
     }
 
     /**

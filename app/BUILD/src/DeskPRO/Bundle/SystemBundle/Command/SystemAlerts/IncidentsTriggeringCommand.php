@@ -103,7 +103,7 @@ class IncidentsTriggeringCommand extends ContainerAwareCommand
      */
     private function shouldTerminate()
     {
-        return $this->getTriggeringProcess()->countIncidents() > self::MAX_INCIDENTS;
+        return $this->getTriggeringProcess()->countContinuingIncidents() > self::MAX_INCIDENTS;
     }
 
     /**
@@ -112,7 +112,8 @@ class IncidentsTriggeringCommand extends ContainerAwareCommand
     private function logTerminated()
     {
         SystemErrorHandler::logException(new \Exception(
-            $message = 'System alerts log processing was terminated. Incidents number has reached the limit.'
+            $message = 'System alerts log processing was terminated because incidents number has reached '
+                      .'the limit. Resolve the existing incidents to continue log processing.'
         ));
         $this->output->writeln($message);
     }
