@@ -4420,7 +4420,7 @@ GroupSequenceProviderInterface
             [
                 'fieldName'    => 'chats',
                 'mappedBy'     => 'participants',
-                'dpApi'        => true,
+                'dpApi'        => false,
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation',
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
