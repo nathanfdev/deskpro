@@ -29,12 +29,12 @@
                                     </div>
                                 </div>
                                 <ul class="errors">
-                                    <li ng-repeat="error in formErrors.brand.fields.button.fields.translations.errors">
+                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.button.fields.translations.errors">
                                         {{ ng_var('error.message') }}
                                     </li>
                                 </ul>
                                 <ul class="errors" ng-repeat="translation in brand_settings.button.translations">
-                                    <li ng-repeat="error in formErrors.brand.fields.button.fields.translations.fields['translations_' + $index].fields.name.errors">
+                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.button.fields.translations.fields['translations_' + $index].fields.name.errors">
                                         {{ ng_var('error.message') }}
                                     </li>
                                 </ul>
@@ -469,12 +469,12 @@
                                         </div>
                                     </div>
                                     <ul class="errors">
-                                        <li ng-repeat="error in formErrors.brand.fields.ticket.fields.select_department.errors">
+                                        <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.select_department.errors">
                                             {{ ng_var('error.message') }}
                                         </li>
                                     </ul>
                                     <ul class="errors">
-                                        <li ng-repeat="error in formErrors.brand.fields.ticket.fields.default_department.errors">
+                                        <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.default_department.errors">
                                             {{ ng_var('error.message') }}
                                         </li>
                                     </ul>
