@@ -15,7 +15,7 @@ export class DeleteAccountFeedback extends React.Component {
 
   render() {
     return (
-      <Segment classes="delete-account-feedback">
+      <Segment className="delete-account-feedback">
         <h3>Sorry to see you go</h3>
         <p>
           Your data will be erased in the next 7 days.

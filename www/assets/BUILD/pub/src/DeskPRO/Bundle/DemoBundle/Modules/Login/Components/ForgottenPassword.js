@@ -16,7 +16,7 @@ export class ForgottenPassword extends React.Component {
 
   render() {
     return (
-      <Segment classes="forgotten-password">
+      <Segment className="forgotten-password">
         <h3>Forgotten your password?</h3>
         <p>
           Enter your email address to receive instructions on how to reset your password:

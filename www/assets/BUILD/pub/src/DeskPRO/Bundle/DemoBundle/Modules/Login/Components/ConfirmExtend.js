@@ -14,7 +14,7 @@ export class ConfirmExtend extends React.Component {
 
   render() {
     return (
-      <Segment classes="confirm-extend">
+      <Segment className="confirm-extend">
         <h3>Great, your trial has been extended!</h3>
         <p>
           Would you like to reset your trial and delete your previous data?

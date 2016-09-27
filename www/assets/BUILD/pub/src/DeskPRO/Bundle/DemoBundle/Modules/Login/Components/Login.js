@@ -16,7 +16,7 @@ export class Login extends React.Component {
 
   render() {
     return (
-      <Segment classes="login">
+      <Segment className="login">
         <h3>Your free trial has ended</h3>
         <p>Log in to find out how you can extend your DeskPRO trial by 7 days.</p>
         <Form>
@@ -29,7 +29,7 @@ export class Login extends React.Component {
             <Input id="password" icon="lock" iconPosition="left" />
           </Field>
         </Form>
-        <Button classes="positive" onClick={this.props.onLogin}>Log in</Button>
+        <Button className="positive" onClick={this.props.onLogin}>Log in</Button>
         <p><a onClick={this.props.onForgotPassword}>Forgot your password?</a></p>
 
       </Segment>

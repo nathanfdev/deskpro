@@ -23,14 +23,14 @@ export class ExtendTrial extends React.Component {
 
   render() {
     return (
-      <Segment classes="extend-trial">
+      <Segment className="extend-trial">
         <h3>Extend your trial</h3>
         <p>Get <span className="green">7 extra days</span> by entering your details below.</p>
-        <Message classes="positive">
+        <Message className="positive">
           You won't pay anything whilst in your trial and you can still cancel at any time.
         </Message>
-        <Segments classes="horizontal">
-          <Segment classes="address">
+        <Segments className="horizontal">
+          <Segment className="address">
             <Form>
               <h4>
                 <i className="icon home" />
@@ -58,7 +58,7 @@ export class ExtendTrial extends React.Component {
               </Field>
             </Form>
           </Segment>
-          <Segment classes="credit-card">
+          <Segment className="credit-card">
             <Form>
               <h4>
                 <i className="icon lock" />
@@ -68,7 +68,7 @@ export class ExtendTrial extends React.Component {
                 <label htmlFor="card_holder">Card holder name</label>
                 <Input id="card_holder" placeholder="As it appears on the card" />
               </Field>
-              <Field classes="card-number">
+              <Field className="card-number">
                 <label htmlFor="card_number">
                   Card number
                   <Isvg src={visaSvg} />
@@ -77,20 +77,20 @@ export class ExtendTrial extends React.Component {
                 </label>
                 <Input id="card_number" type="number" />
               </Field>
-              <Field classes="expiry">
+              <Field className="expiry">
                 <label htmlFor="expiry_month">Expiry</label>
                 <Input id="expiry_month" placeholder="MM" type="number" />
                 <span> / </span>
                 <Input id="expiry_year" placeholder="YY" type="number" />
               </Field>
-              <Field classes="security-code">
+              <Field className="security-code">
                 <label htmlFor="security_code">
                   Security code
                 </label>
                 <Input id="security_code" type="number" />
                 <img src={cardBackPng} alt="Back of card" />
               </Field>
-              <Button onClick={this.props.onResumeTrial} classes="positive">Resume free trial</Button>
+              <Button onClick={this.props.onResumeTrial} className="positive">Resume free trial</Button>
             </Form>
           </Segment>
         </Segments>

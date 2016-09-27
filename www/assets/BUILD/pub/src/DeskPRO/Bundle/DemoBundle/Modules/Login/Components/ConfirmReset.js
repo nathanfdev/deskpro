@@ -15,13 +15,13 @@ export class ConfirmReset extends React.Component {
 
   render() {
     return (
-      <Segment classes="confirm-reset">
+      <Segment className="confirm-reset">
         <h3>Confirm trial reset</h3>
         <p>
           This will erase all your data and you'll be starting a fresh trial.
         </p>
         <Button onClick={this.props.onReset}>Reset trial</Button><br />
-        <Button onClick={this.props.onCancelButton} classes="basic">Cancel</Button>
+        <Button onClick={this.props.onCancelButton} className="basic">Cancel</Button>
       </Segment>
     );
   }
