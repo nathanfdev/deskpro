@@ -19,23 +19,24 @@ class ExtendTrialContainer extends React.Component {
     super(props);
 
     this.state = {
-      address:      '',
-      city:         '',
-      postCode:     '',
-      state:        '',
-      country:      '',
-      vatId:        '',
-      schedule:     '',
-      cardName:     '',
-      cardNumber:   '',
-      expiryMonth:  '',
-      expiryYear:   '',
-      securityCode: '',
-      submit:       false,
-      errors:       null,
-      countries:    {},
-      euCountries:  [],
-      states:       {}
+      address:           '',
+      city:              '',
+      postCode:          '',
+      state:             '',
+      country:           '',
+      vatId:             '',
+      schedule:          '',
+      cardName:          '',
+      cardNumber:        '',
+      expiryMonth:       '',
+      expiryYear:        '',
+      securityCode:      '',
+      submit:            false,
+      errors:            null,
+      countries:         {},
+      euCountries:       [],
+      states:            {},
+      deleteConfirmOpen: false,
     };
   }
 
@@ -200,6 +201,18 @@ class ExtendTrialContainer extends React.Component {
     }
   };
 
+  onOpenDeleteConfirm = () => {
+    this.setState({
+      deleteConfirmOpen: true
+    });
+  };
+
+  onCloseDeleteConfirm = () => {
+    this.setState({
+      deleteConfirmOpen: false
+    });
+  };
+
   onDeleteAccount = () => {
     this.context.router.push('/delete-account');
   };
@@ -264,6 +277,8 @@ class ExtendTrialContainer extends React.Component {
         onChangeExpiryYear={this.onChangeExpiryYear}
         onChangeSecurityCode={this.onChangeSecurityCode}
         onResumeTrial={this.onResumeTrial}
+        onOpenDeleteConfirm={this.onOpenDeleteConfirm}
+        onCloseDeleteConfirm={this.onCloseDeleteConfirm}
         onDeleteAccount={this.onDeleteAccount}
         {...this.state}
       />

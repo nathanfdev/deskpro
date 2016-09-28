@@ -16,6 +16,11 @@ export const getEuCountries = createAction(
   () =>
     api.sendGet('/cloud/api/eu_countries', { dataType: 'json' })
 );
+export const forgotPassword = createAction(
+  'EXTEND_FORGOT_PASSWORD',
+  params =>
+    api.sendPost('/cloud/api/forgot_password', params)
+);
 export const extendTrial = createAction(
   'EXTEND_SUBMIT',
   params =>

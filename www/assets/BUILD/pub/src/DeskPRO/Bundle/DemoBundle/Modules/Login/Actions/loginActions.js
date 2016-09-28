@@ -11,8 +11,3 @@ export const checkToken = createAction(
   () =>
     api.sendGet('DP_API/me')
 );
-export const forgotPassword = createAction(
-  'LOGIN_FORGOT_PASSWORD',
-  params =>
-    api.sendPost('/login/reset-password/send.json', params)
-);

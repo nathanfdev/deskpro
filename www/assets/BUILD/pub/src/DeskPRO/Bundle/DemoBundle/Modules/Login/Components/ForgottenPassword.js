@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Field, Form, Input } from 'DeskPRO/Component/Semantic/Form';
-import * as actions from '../Actions/loginActions';
+import * as actions from '../Actions/extendActions';
 
 @connect()
 export class ForgottenPasswordContainer extends React.Component {

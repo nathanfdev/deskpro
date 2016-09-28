@@ -7,6 +7,7 @@ import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Message } from 'DeskPRO/Component/Semantic/Message';
 import * as card from 'DeskPRO/Component/Form/Card';
 import { Field, Form, Input, Select, TextArea } from 'DeskPRO/Component/Semantic/Form';
+import DeleteConfirm from './DeleteConfirm';
 
 const messages = defineMessages({
   card_holder_placeholder: {
@@ -48,6 +49,7 @@ class ExtendTrial extends React.Component {
     euCountries:          PropTypes.array,
     errors:               PropTypes.object,
     submit:               PropTypes.bool,
+    deleteConfirmOpen:    PropTypes.bool,
     onChangeAddress:      PropTypes.func,
     onChangeCity:         PropTypes.func,
     onChangePostCode:     PropTypes.func,
@@ -61,6 +63,8 @@ class ExtendTrial extends React.Component {
     onChangeExpiryYear:   PropTypes.func,
     onChangeSecurityCode: PropTypes.func,
     onResumeTrial:        PropTypes.func,
+    onOpenDeleteConfirm:  PropTypes.func,
+    onCloseDeleteConfirm: PropTypes.func,
     onDeleteAccount:      PropTypes.func
   };
   static defaultProps = {
@@ -311,7 +315,9 @@ class ExtendTrial extends React.Component {
                       defaultMessage="Card number"
                     />
                     <Isvg
-                      className={classNames({ faded: (card.isCardAmex(cardNumber) || card.isCardMasterCard(cardNumber)) })}
+                      className={classNames({
+                        faded: (card.isCardAmex(cardNumber) || card.isCardMasterCard(cardNumber))
+                      })}
                       src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/visa.svg`}
                     />
                     <Isvg
@@ -319,7 +325,9 @@ class ExtendTrial extends React.Component {
                       src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/mastercard.svg`}
                     />
                     <Isvg
-                      className={classNames({ faded: (card.isCardMasterCard(cardNumber) || card.isCardVisa(cardNumber)) })}
+                      className={classNames({
+                        faded: (card.isCardMasterCard(cardNumber) || card.isCardVisa(cardNumber))
+                      })}
                       src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/amex.svg`}
                     />
                   </label>
@@ -405,13 +413,18 @@ class ExtendTrial extends React.Component {
               defaultMessage="Got questions? Just ask..."
             />
           </Button>
-          <Button className="delete secondary" onClick={this.props.onDeleteAccount}>
+          <Button className="delete secondary" onClick={this.props.onOpenDeleteConfirm}>
             <FormattedMessage
               id="cloud.demo_expired.delete"
               defaultMessage="Delete your account"
             />
           </Button>
         </Segment>
+        <DeleteConfirm
+          deleteConfirmOpen={this.props.deleteConfirmOpen}
+          onCloseDeleteConfirm={this.props.onCloseDeleteConfirm}
+          onDeleteAccount={this.props.onDeleteAccount}
+        />
       </Segments>
     );
   }
