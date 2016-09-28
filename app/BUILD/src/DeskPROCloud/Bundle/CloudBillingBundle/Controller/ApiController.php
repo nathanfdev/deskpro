@@ -89,11 +89,41 @@ class ApiController extends Controller
     }
 
     /**
-     * @Rest\Get("/preserve_data")
+     * @Rest\Post("/preserve_data")
      *
      * @return Response
      */
-    public function getPreserveDataAction()
+    public function postPreserveDataAction()
+    {
+        return new Response('OK');
+    }
+
+    /**
+     * @Rest\Post("/delete_feedback")
+     *
+     * @return Response
+     */
+    public function postDeleteFeedbackAction()
+    {
+        return new Response('OK');
+    }
+
+    /**
+     * @Rest\Post("/question")
+     *
+     * @return Response
+     */
+    public function postQuestionAction()
+    {
+        return new Response('OK');
+    }
+
+    /**
+     * @Rest\Post("/reset_trial")
+     *
+     * @return Response
+     */
+    public function postResetTrialAction()
     {
         return new Response('OK');
     }

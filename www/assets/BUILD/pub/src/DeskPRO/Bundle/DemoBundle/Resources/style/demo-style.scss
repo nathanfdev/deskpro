@@ -23,8 +23,8 @@ h4 {
   margin-bottom: 30px;
 }
 .logo {
-  margin-top: 80px;
-  margin-bottom: 50px;
+  padding-top: 80px;
+  padding-bottom: 50px;
   svg {
     height: 50px;
   }
@@ -209,15 +209,13 @@ footer {
   background-color: rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
-.delete-confirm-popin {
+.delete-confirm-popin,
+.question-popin {
   left: calc(50% - 230px);
   top: 15%;
-  display: none;
   position: absolute;
-  &.visible {
-    display: block;
-  }
-  .delete-confirm {
+  .delete-confirm,
+  .question {
     background-color: $dp-greyscale-50;
     width: 460px;
     padding: 40px;

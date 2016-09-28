@@ -36,7 +36,10 @@ class ExtendTrialContainer extends React.Component {
       countries:         {},
       euCountries:       [],
       states:            {},
+      question:          '',
+      submitQuestion:    false,
       deleteConfirmOpen: false,
+      questionOpened:    false,
     };
   }
 
@@ -217,6 +220,51 @@ class ExtendTrialContainer extends React.Component {
     this.context.router.push('/delete-account');
   };
 
+  onChangeQuestion = (value) => {
+    this.setState({
+      question: value
+    });
+  };
+
+  onOpenQuestion = () => {
+    this.setState({
+      questionOpened: true
+    });
+  };
+
+  onCloseQuestion = () => {
+    this.setState({
+      questionOpened: false
+    });
+  };
+
+  onSubmitQuestion = () => {
+    const { dispatch } = this.props;
+    this.setState({
+      submitQuestion: true
+    });
+
+    const promise = dispatch(actions.submitQuestion({
+      question: this.state.question
+    }));
+
+    promise.then(
+      () => {
+        this.setState({
+          submitQuestion: false,
+        });
+      },
+      (response) => {
+        if (this.mounted) {
+          this.setState({
+            submitQuestion: false,
+            errors:         response.getData().errors
+          });
+        }
+      }
+    );
+  };
+
   onResumeTrial = () => {
     const { dispatch } = this.props;
     this.setState({
@@ -280,6 +328,10 @@ class ExtendTrialContainer extends React.Component {
         onOpenDeleteConfirm={this.onOpenDeleteConfirm}
         onCloseDeleteConfirm={this.onCloseDeleteConfirm}
         onDeleteAccount={this.onDeleteAccount}
+        onSubmitQuestion={this.onSubmitQuestion}
+        onOpenQuestion={this.onOpenQuestion}
+        onCloseQuestion={this.onCloseQuestion}
+        onChangeQuestion={this.onChangeQuestion}
         {...this.state}
       />
     );

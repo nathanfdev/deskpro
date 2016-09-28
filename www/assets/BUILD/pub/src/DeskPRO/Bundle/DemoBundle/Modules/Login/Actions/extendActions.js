@@ -31,3 +31,18 @@ export const preserveData = createAction(
   () =>
     api.sendPost('/cloud/api/preserve_data')
 );
+export const deleteFeedback = createAction(
+  'EXTEND_DELETE_FEEDBACK',
+  params =>
+    api.sendPost('/cloud/api/delete_feedback', params)
+);
+export const submitQuestion = createAction(
+  'EXTEND_SUBMIT_QUESTION',
+  params =>
+    api.sendPost('/cloud/api/question', params)
+);
+export const resetTrial = createAction(
+  'EXTEND_RESET_TRIAL',
+  () =>
+    api.sendPost('/cloud/api/reset_trial')
+);

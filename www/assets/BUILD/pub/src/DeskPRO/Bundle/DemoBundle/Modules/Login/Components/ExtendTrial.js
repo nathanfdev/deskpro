@@ -8,6 +8,7 @@ import { Message } from 'DeskPRO/Component/Semantic/Message';
 import * as card from 'DeskPRO/Component/Form/Card';
 import { Field, Form, Input, Select, TextArea } from 'DeskPRO/Component/Semantic/Form';
 import DeleteConfirm from './DeleteConfirm';
+import Question from './Question';
 
 const messages = defineMessages({
   card_holder_placeholder: {
@@ -65,7 +66,14 @@ class ExtendTrial extends React.Component {
     onResumeTrial:        PropTypes.func,
     onOpenDeleteConfirm:  PropTypes.func,
     onCloseDeleteConfirm: PropTypes.func,
-    onDeleteAccount:      PropTypes.func
+    onDeleteAccount:      PropTypes.func,
+    question:             PropTypes.string,
+    questionOpened:       PropTypes.bool,
+    submitQuestion:       PropTypes.bool,
+    onChangeQuestion:     PropTypes.func,
+    onOpenQuestion:       PropTypes.func,
+    onCloseQuestion:      PropTypes.func,
+    onSubmitQuestion:     PropTypes.func
   };
   static defaultProps = {
     cardNumber: ''
@@ -406,7 +414,7 @@ class ExtendTrial extends React.Component {
               />
             </div>
           </div>
-          <Button className="questions">
+          <Button className="questions" onClick={this.props.onOpenQuestion}>
             <i className="icon comments outline" />
             <FormattedMessage
               id="cloud.demo_expired.got_questions"
@@ -424,6 +432,14 @@ class ExtendTrial extends React.Component {
           deleteConfirmOpen={this.props.deleteConfirmOpen}
           onCloseDeleteConfirm={this.props.onCloseDeleteConfirm}
           onDeleteAccount={this.props.onDeleteAccount}
+        />
+        <Question
+          onChangeQuestion={this.props.onChangeQuestion}
+          onCloseQuestion={this.props.onCloseQuestion}
+          onSubmitQuestion={this.props.onSubmitQuestion}
+          question={this.props.question}
+          questionOpened={this.props.questionOpened}
+          submit={this.props.submitQuestion}
         />
       </Segments>
     );

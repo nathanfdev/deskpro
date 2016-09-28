@@ -26,9 +26,9 @@ export class ForgottenPasswordContainer extends React.Component {
     };
   }
 
-  onChangeEmail = (event) => {
+  onChangeEmail = (value) => {
     this.setState({
-      email:  event.target.value,
+      email:  value,
       errors: null
     });
   };
