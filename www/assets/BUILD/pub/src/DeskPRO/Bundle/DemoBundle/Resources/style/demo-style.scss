@@ -83,7 +83,13 @@ footer {
     display: inline-block;
   }
   svg {
+    width: 100px;
     height: 40px;
+    max-height: 25px;
+    max-width: 100px;
+    path {
+      fill: $dp-greyscale-750;
+    }
   }
 }
 .segment.login,
