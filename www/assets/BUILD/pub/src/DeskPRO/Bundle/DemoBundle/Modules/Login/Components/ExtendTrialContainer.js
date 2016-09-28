@@ -24,6 +24,8 @@ class ExtendTrialContainer extends React.Component {
       postCode:     '',
       state:        '',
       country:      '',
+      vatId:        '',
+      schedule:     '',
       cardName:     '',
       cardNumber:   '',
       expiryMonth:  '',
@@ -32,6 +34,7 @@ class ExtendTrialContainer extends React.Component {
       submit:       false,
       errors:       null,
       countries:    {},
+      euCountries:  [],
       states:       {}
     };
   }
@@ -54,6 +57,16 @@ class ExtendTrialContainer extends React.Component {
       (response) => {
         this.setState({
           states: response.getData()
+        });
+      }
+    );
+
+    const euCountriesPromise = dispatch(actions.getEuCountries());
+
+    euCountriesPromise.then(
+      (response) => {
+        this.setState({
+          euCountries: response.getData()
         });
       }
     );
@@ -99,6 +112,18 @@ class ExtendTrialContainer extends React.Component {
     }
     this.setState({
       country: value
+    });
+  };
+
+  onChangeVatId = (value) => {
+    this.setState({
+      vatId: value
+    });
+  };
+
+  onChangeSchedule = (value) => {
+    this.setState({
+      schedule: value
     });
   };
 
@@ -183,6 +208,8 @@ class ExtendTrialContainer extends React.Component {
       postCode:     this.state.postCode,
       state:        this.state.state,
       country:      this.state.country,
+      vatId:        this.state.vatId,
+      schedule:     this.state.schedule,
       cardName:     this.state.cardName,
       cardNumber:   this.state.cardNumber,
       expiryMonth:  this.state.expiryMonth,
@@ -221,6 +248,8 @@ class ExtendTrialContainer extends React.Component {
         onChangePostCode={this.onChangePostCode}
         onChangeState={this.onChangeState}
         onChangeCountry={this.onChangeCountry}
+        onChangeVatId={this.onChangeVatId}
+        onChangeSchedule={this.onChangeSchedule}
         onChangeCardName={this.onChangeCardName}
         onChangeCardNumber={this.onChangeCardNumber}
         onChangeExpiryMonth={this.onChangeExpiryMonth}

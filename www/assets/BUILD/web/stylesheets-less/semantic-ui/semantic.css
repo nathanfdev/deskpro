@@ -46141,7 +46141,7 @@ select.ui.dropdown {
 /* Selected Item */
 .ui.dropdown.selected,
 .ui.dropdown .menu .selected.item {
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(0, 0, 0, 0.1);
   color: rgba(0, 0, 0, 0.95);
 }
 /*--------------------

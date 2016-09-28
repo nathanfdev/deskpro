@@ -36,6 +36,8 @@ class ExtendTrial extends React.Component {
     postCode:             PropTypes.string,
     state:                PropTypes.string,
     country:              PropTypes.string,
+    vatId:                PropTypes.string,
+    schedule:             PropTypes.string,
     cardName:             PropTypes.string,
     cardNumber:           PropTypes.string,
     expiryMonth:          PropTypes.string,
@@ -43,7 +45,7 @@ class ExtendTrial extends React.Component {
     securityCode:         PropTypes.string,
     states:               PropTypes.object,
     countries:            PropTypes.object,
-    euCountries:          PropTypes.object,
+    euCountries:          PropTypes.array,
     errors:               PropTypes.object,
     submit:               PropTypes.bool,
     onChangeAddress:      PropTypes.func,
@@ -51,6 +53,8 @@ class ExtendTrial extends React.Component {
     onChangePostCode:     PropTypes.func,
     onChangeState:        PropTypes.func,
     onChangeCountry:      PropTypes.func,
+    onChangeVatId:        PropTypes.func,
+    onChangeSchedule:     PropTypes.func,
     onChangeCardName:     PropTypes.func,
     onChangeCardNumber:   PropTypes.func,
     onChangeExpiryMonth:  PropTypes.func,
@@ -65,10 +69,10 @@ class ExtendTrial extends React.Component {
 
   getState = () => {
     const { formatMessage } = this.props.intl;
-    const { states, onChangeState } = this.props;
+    const { states, country, onChangeState } = this.props;
 
     let input;
-    if (this.props.country === 'US') {
+    if (country === 'US') {
       const statesOptions = [];
       for (const code of Object.keys(states)) {
         const label = states[code];
@@ -83,13 +87,15 @@ class ExtendTrial extends React.Component {
         <Select
           options={statesOptions}
           name="state"
+          id="state"
           placeholder={formatMessage(messages.select_placeholder)}
           onChange={onChangeState}
+          value={this.props.state}
           filter
         />
       );
     } else {
-      input = <Input name="state" onChange={onChangeState} value={this.props.state} />;
+      input = <Input id="state" name="state" onChange={onChangeState} value={this.props.state} />;
     }
 
     return (
@@ -101,6 +107,24 @@ class ExtendTrial extends React.Component {
           />
         </label>
         {input}
+      </Field>
+    );
+  };
+
+  getVatId = () => {
+    const { euCountries, country, vatId, onChangeVatId } = this.props;
+    if (euCountries.indexOf(country) === -1) {
+      return null;
+    }
+    return (
+      <Field field="vat_id" errors={this.props.errors}>
+        <label htmlFor="vat_id">
+          <FormattedMessage
+            id="cloud.demo_expired.vat_id"
+            defaultMessage="VAT ID (optionnal)"
+          />
+        </label>
+        <Input name="vat_id" onChange={onChangeVatId} value={vatId} />
       </Field>
     );
   };
@@ -118,6 +142,17 @@ class ExtendTrial extends React.Component {
         label: <span><i className={`flag ${code.toLowerCase()}`} /> {label}</span>
       });
     }
+
+    const schedules = [
+      {
+        value: 'monthly',
+        label: 'Monthly'
+      },
+      {
+        value: 'yearly',
+        label: 'Yearly'
+      }
+    ];
 
 
     return (
@@ -213,9 +248,11 @@ class ExtendTrial extends React.Component {
                     options={countriesOptions}
                     placeholder={formatMessage(messages.select_placeholder)}
                     onChange={this.props.onChangeCountry}
+                    value={this.props.country}
                     filter
                   />
                 </Field>
+                {this.getVatId()}
               </Form>
             </Segment>
             <Segment className="credit-card">
@@ -227,6 +264,20 @@ class ExtendTrial extends React.Component {
                     defaultMessage="Credit card details"
                   />
                 </h4>
+                <Field field="schedule" errors={this.props.errors}>
+                  <label htmlFor="schedule">
+                    <FormattedMessage
+                      id="cloud.demo_expired.schedule"
+                      defaultMessage="Schedule"
+                    />
+                  </label>
+                  <Select
+                    options={schedules}
+                    placeholder={formatMessage(messages.select_placeholder)}
+                    onChange={this.props.onChangeSchedule}
+                    value={this.props.schedule}
+                  />
+                </Field>
                 <Field field="card_name" errors={this.props.errors}>
                   <label htmlFor="card_holder">
                     <FormattedMessage
