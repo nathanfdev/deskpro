@@ -21,10 +21,10 @@ window.DP_LANG = {
 
 class DemoApp {
   run = () => {
-    this.start();
+    DemoApp.start();
   };
 
-  start() {
+  static start() {
     /* global __DEV__ */
     window.DP_DEV_MODE = __DEV__;
     const store = DemoApp.createStore();

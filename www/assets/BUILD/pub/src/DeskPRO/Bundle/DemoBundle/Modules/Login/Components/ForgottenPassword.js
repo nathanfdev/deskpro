@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
@@ -71,6 +71,8 @@ export class ForgottenPasswordContainer extends React.Component {
     );
   }
 }
+
+@injectIntl
 export class ForgottenPassword extends React.Component {
   static propTypes = {
     email:               PropTypes.string,

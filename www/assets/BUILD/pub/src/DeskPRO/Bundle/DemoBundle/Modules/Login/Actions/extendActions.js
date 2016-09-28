@@ -11,8 +11,18 @@ export const getStates = createAction(
   () =>
     api.sendGet('/cloud/api/states', { dataType: 'json' })
 );
+export const getEuCountries = createAction(
+  'EXTEND_GET_STATES',
+  () =>
+    api.sendGet('/cloud/api/eu_countries', { dataType: 'json' })
+);
 export const extendTrial = createAction(
   'EXTEND_SUBMIT',
   params =>
     api.sendPost('/cloud/api/submit_detail', params)
+);
+export const preserveData = createAction(
+  'EXTEND_PRESERVE_DATA',
+  () =>
+    api.sendPost('/cloud/api/preserve_data')
 );

@@ -67,11 +67,33 @@ class ApiController extends Controller
     }
 
     /**
+     * @Rest\Get("/eu_countries")
+     *
+     * @return Response
+     */
+    public function getEuCountriesAction()
+    {
+        $countries = Countries::getEuCountries();
+
+        return new Response(json_encode($countries));
+    }
+
+    /**
      * @Rest\Post("/submit_detail")
      *
      * @return Response
      */
     public function postExtendDetailsAction()
+    {
+        return new Response('OK');
+    }
+
+    /**
+     * @Rest\Get("/preserve_data")
+     *
+     * @return Response
+     */
+    public function getPreserveDataAction()
     {
         return new Response('OK');
     }

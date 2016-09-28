@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { classNames } from 'classnames';
+import classNames from 'classnames';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Field, Form, Input } from 'DeskPRO/Component/Semantic/Form';
@@ -110,6 +110,7 @@ export class LoginContainer extends React.Component {
   }
 }
 
+@injectIntl
 export class Login extends React.Component {
   static propTypes = {
     email:            PropTypes.string,

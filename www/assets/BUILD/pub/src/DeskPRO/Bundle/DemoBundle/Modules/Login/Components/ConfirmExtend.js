@@ -1,21 +1,50 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import Isvg from 'react-inlinesvg';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import deleteSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/delete_reset.svg';
 import preserveSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/preserve.svg';
+import * as actions from '../Actions/extendActions';
 
+@connect()
 export class ConfirmExtendContainer extends React.Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+  };
+
   static contextTypes = {
     router: PropTypes.object.isRequired
   };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      submit: false,
+    };
+  }
 
   onDeleteData = () => {
     this.context.router.push('/confirm-reset');
   };
 
   onPreserveData = () => {
+    const { dispatch } = this.props;
+    this.setState({
+      submit: true
+    });
 
+    const promise = dispatch(actions.preserveData({}));
+
+    promise.then(
+      () => {
+
+      },
+      () => {
+
+      }
+    );
   };
 
   render() {

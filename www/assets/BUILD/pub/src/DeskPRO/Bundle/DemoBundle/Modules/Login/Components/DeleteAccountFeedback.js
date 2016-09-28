@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Form, TextArea } from 'DeskPRO/Component/Semantic/Form';
@@ -9,6 +9,8 @@ export class DeleteAccountFeedbackContainer extends React.Component {
     return <DeleteAccountFeedback />;
   }
 }
+
+@injectIntl
 export class DeleteAccountFeedback extends React.Component {
   static propTypes = {
     onSubmit: PropTypes.func

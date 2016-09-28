@@ -27,6 +27,7 @@ const messages = defineMessages({
   }
 });
 
+@injectIntl
 class ExtendTrial extends React.Component {
   static propTypes = {
     intl:                 intlShape.isRequired,
@@ -42,6 +43,7 @@ class ExtendTrial extends React.Component {
     securityCode:         PropTypes.string,
     states:               PropTypes.object,
     countries:            PropTypes.object,
+    euCountries:          PropTypes.object,
     errors:               PropTypes.object,
     submit:               PropTypes.bool,
     onChangeAddress:      PropTypes.func,
@@ -351,4 +353,4 @@ class ExtendTrial extends React.Component {
     );
   }
 }
-export default injectIntl(ExtendTrial);
+export default ExtendTrial;
