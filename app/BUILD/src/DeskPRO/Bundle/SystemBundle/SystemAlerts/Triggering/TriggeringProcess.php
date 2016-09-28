@@ -78,12 +78,12 @@ class TriggeringProcess
     /**
      * @return int
      */
-    public function countContinuingIncidents()
+    public function countIncidents()
     {
-        $query = 'SELECT COUNT(id) FROM system_alerts_incidents WHERE raised = 1 AND resolved = 0 AND dismissed = 0';
-        $count = $this->em->getConnection()->executeQuery($query)->fetch(\PDO::FETCH_COLUMN);
-
-        return $count;
+        return $this->em
+                    ->getConnection()
+                    ->executeQuery('SELECT COUNT(id) FROM system_alerts_incidents WHERE raised = 1')
+                    ->fetch(\PDO::FETCH_COLUMN);
     }
 
     /**
@@ -95,7 +95,7 @@ class TriggeringProcess
      */
     public function run($batchSize = 100)
     {
-        $this->provideContinuingIncidents();
+        $this->provideExistingIncidents();
 
         $newIncidents     = [];
         $updatedIncidents = [];
@@ -132,12 +132,12 @@ class TriggeringProcess
     /**
      * Provides triggers with continuing incidents from DB.
      */
-    private function provideContinuingIncidents()
+    private function provideExistingIncidents()
     {
         foreach ($this->triggers as $trigger) {
             if ($trigger instanceof StatefulIncidentTrigger) {
                 $repository = $this->em->getRepository($trigger->getIncidentClass());
-                $trigger->setContinuingIncidents($repository->findBy(['resolved' => false]));
+                $trigger->setContinuingIncidents($repository->findAll());
             }
         }
     }
