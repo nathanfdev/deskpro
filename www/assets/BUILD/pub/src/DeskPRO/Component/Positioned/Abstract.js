@@ -21,9 +21,9 @@ export class Abstract extends React.Component {
     collision:      PropTypes.string,
     onOpen:         PropTypes.func,
     onClose:        PropTypes.func,
-    children:       PropTypes.any,
+    children:       PropTypes.node,
     style:          PropTypes.object,
-    classes:        PropTypes.array
+    className:      PropTypes.string
   };
 
   constructor(props) {
@@ -40,12 +40,12 @@ export class Abstract extends React.Component {
     const { isOpen = false, positionCalc, positionTarget, positionMy, positionAt, collision, zIndex } = newProps;
     const position = positionCalc ? positionCalc() || {} : {};
     const placement = newProps.position ||
-    {
-      my:        positionMy || 'left top',
-      at:        positionAt || 'right bottom',
-      of:        null,
-      collision: collision || 'none'
-    };
+      {
+        my:        positionMy || 'left top',
+        at:        positionAt || 'right bottom',
+        of:        null,
+        collision: collision || 'none'
+      };
 
     if (positionTarget) {
       placement.of = positionTarget;

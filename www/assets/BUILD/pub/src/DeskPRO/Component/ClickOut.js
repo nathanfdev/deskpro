@@ -22,7 +22,8 @@ export class ClickOut extends React.Component {
     additionalNodes: PropTypes.any,
     children:        PropTypes.node,
     onClickOut:      PropTypes.func.isRequired,
-    onClick:         PropTypes.func
+    onClick:         PropTypes.func,
+    className:       PropTypes.string
   };
 
   componentDidMount() {
@@ -41,7 +42,7 @@ export class ClickOut extends React.Component {
     $(this.getContext()).off('click touchend', this.onClick);
   }
 
-  onClick = event => {
+  onClick = (event) => {
     // dont use stopImmediatePropagation here because there may be multiple
     // event listeners on the same context, and if we immediately stop propagation,
     // it stops all listeners, not just the bubble
@@ -52,7 +53,7 @@ export class ClickOut extends React.Component {
     if (ignoreNodes) {
       let skip = false;
 
-      ignoreNodes.forEach(ignored => {
+      ignoreNodes.forEach((ignored) => {
         let nodes;
         if (typeof ignored === 'string') {
           nodes = $.find(ignored);
@@ -60,7 +61,7 @@ export class ClickOut extends React.Component {
           nodes = [ignored];
         }
 
-        nodes.map(node => {
+        nodes.map((node) => {
           const domNode = node && node.node ? node.node : node;
           if (domNode) {
             // skip when clicking on a node itself
@@ -86,7 +87,7 @@ export class ClickOut extends React.Component {
     const nodes = Array.isArray(additionalNodes) ? [...additionalNodes] : [additionalNodes];
     nodes.push(this.container);
     let outside = true;
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       const $container = $(node);
       if ($container.is(event.target) || $container.has(event.target).length > 0) {
         outside = false;
@@ -123,7 +124,7 @@ export class ClickOut extends React.Component {
 
   render() {
     return (
-      <div ref={c => { this.container = c; }}>
+      <div className={this.props.className} ref={(c) => { this.container = c; }}>
         {this.props.children}
       </div>
     );

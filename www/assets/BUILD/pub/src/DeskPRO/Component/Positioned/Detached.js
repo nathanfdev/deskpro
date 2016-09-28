@@ -21,12 +21,12 @@ export class Detached extends Abstract {
 
   componentDidUpdate() {
     const { isOpen = false } = this.state;
-    const { onOpen, onClose, classes } = this.props;
+    const { onOpen, onClose, className } = this.props;
 
     if (isOpen) {
       if (!this.cont) {
         this.cont = document.createElement('div');
-        this.cont.className = classNames('positioned-element', classes);
+        this.cont.className = classNames('positioned-element', className);
         document.body.appendChild(this.cont);
       }
 

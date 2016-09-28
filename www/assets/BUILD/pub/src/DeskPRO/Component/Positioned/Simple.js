@@ -25,9 +25,9 @@ export class Simple extends Abstract {
    * @return {XML} The rendered element
    */
   render() {
-    const { isOpen, children, classes } = this.props;
+    const { isOpen, children, className } = this.props;
 
     // Render the component with react, or don't if the prop changes
-    return isOpen ? <div className={classNames('positioned-element', classes)}>{children}</div> : <div />;
+    return isOpen ? <div className={classNames('positioned-element', className)}>{children}</div> : <div />;
   }
 }
