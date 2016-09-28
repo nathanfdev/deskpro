@@ -202,51 +202,15 @@ class BrandsController extends CrudController
     }
 
     /**
-     * Get resource with provided id.
-     *
-     * @ApiDoc(
-     *      description="Get a brand by url",
-     *      requirements={
-     *          {
-     *              "name"="url",
-     *              "requirement"=".+",
-     *              "description"="The url of the brand",
-     *              "dataType"="string"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="We will return such status in case we found your entity",
-     *          404="Not Found error will returned in case we can't find entity with specified ID"
-     *      }
-     * )
-     * @Rest\Get("/url/{url}", requirements={"url"=".+"})
+     * @Rest\Post("/check_url")
      *
      * @param Request $request
-     * @param string  $url
      *
      * @return View
      */
-    public function getByUrlAction(Request $request, $url)
+    public function checkBrandUrlAction(Request $request)
     {
-        $url   = $this->get('url_host_checker')->simplifyUrl($url);
-        $brand = $this->getRepository(Brand::class)->findOneBy(['url' => $url]);
-        if (!$brand) {
-            throw $this->createNotFoundException();
-        }
-
-        return parent::getAction($request, $brand->getId());
-    }
-
-    /**
-     * @Rest\Get("/check_url/{url}", requirements={"url"=".+"})
-     *
-     * @param string $url
-     *
-     * @return View
-     */
-    public function checkBrandUrlAction($url)
-    {
-        $url   = $this->get('url_host_checker')->simplifyUrl($url);
+        $url   = $this->get('url_host_checker')->simplifyUrl($request->request->get('url'));
         $brand = $this->getRepository(Brand::class)->findOneBy(['url' => $url]);
 
         return new View($this->wrap([
