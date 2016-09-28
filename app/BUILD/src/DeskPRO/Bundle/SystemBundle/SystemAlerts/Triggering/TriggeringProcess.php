@@ -82,7 +82,7 @@ class TriggeringProcess
     {
         return $this->em
                     ->getConnection()
-                    ->executeQuery('SELECT COUNT(id) FROM system_alerts_incidents WHERE raised = 1')
+                    ->executeQuery('SELECT COUNT(id) FROM system_alerts_incidents')
                     ->fetch(\PDO::FETCH_COLUMN);
     }
 
