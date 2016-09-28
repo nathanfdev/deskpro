@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { defineMessages, injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Form, TextArea } from 'DeskPRO/Component/Semantic/Form';
@@ -10,13 +10,23 @@ export class DeleteAccountFeedbackContainer extends React.Component {
   }
 }
 
+const messages = defineMessages({
+  feedback_placeholder: {
+    id:             'cloud.demo_expired.delete_account_feedback_placeholder',
+    defaultMessage: 'Type feedback here...'
+  }
+});
+
 @injectIntl
 export class DeleteAccountFeedback extends React.Component {
   static propTypes = {
+    intl:     intlShape.isRequired,
     onSubmit: PropTypes.func
   };
 
   render() {
+    const { formatMessage } = this.props.intl;
+
     return (
       <Segment className="delete-account-feedback">
         <h3>
@@ -39,12 +49,7 @@ export class DeleteAccountFeedback extends React.Component {
         </p>
         <Form>
           <TextArea
-            placeholder={
-              <FormattedMessage
-                id="cloud.demo_expired.delete_account_feedback_placeholder"
-                defaultMessage="Type feedback here..."
-              />
-            }
+            placeholder={formatMessage(messages.feedback_placeholder)}
             rows={4}
           />
         </Form>

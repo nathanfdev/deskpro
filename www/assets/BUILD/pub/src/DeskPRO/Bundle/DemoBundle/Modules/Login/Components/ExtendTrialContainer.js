@@ -171,7 +171,15 @@ class ExtendTrialContainer extends React.Component {
       return;
     }
     let errors = this.state.errors;
-    if (card.validateYear(value)) {
+    if (this.state.expiryMonth) {
+      if (card.validateExpiry(`${this.state.expiryMonth}/${value}`)) {
+        if (hasErrors(errors, 'card_expiry')) {
+          delete errors.fields.card_expiry;
+        }
+      } else {
+        errors = Object.assign(errors || {}, { fields: { card_expiry: { errors: ['Invalid'] } } });
+      }
+    } else if (card.validateYear(value)) {
       if (hasErrors(errors, 'card_expiry')) {
         delete errors.fields.card_expiry;
       }

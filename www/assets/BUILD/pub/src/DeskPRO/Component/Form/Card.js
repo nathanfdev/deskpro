@@ -59,6 +59,10 @@ export function validateYear(value) {
   return valid.expirationYear(value).isPotentiallyValid;
 }
 
+export function validateExpiry(value) {
+  return valid.expirationDate(value).isPotentiallyValid;
+}
+
 export function ccvLength(value) {
   const numberValidation = valid.number(value);
   if (numberValidation.card) {

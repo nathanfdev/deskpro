@@ -129,6 +129,17 @@ class ExtendTrial extends React.Component {
     );
   };
 
+  getError = () => {
+    if (this.props.errors && this.props.errors.message) {
+      return (
+        <Message className="negative">
+          {this.props.errors.message}
+        </Message>
+      );
+    }
+    return null;
+  };
+
   render() {
     const { formatMessage } = this.props.intl;
     const { countries, cardNumber } = this.props;
@@ -185,6 +196,7 @@ class ExtendTrial extends React.Component {
               defaultMessage="You won't pay anything whilst in your trial and you can still cancel at any time."
             />
           </Message>
+          {this.getError()}
           <Segments className="horizontal">
             <Segment className="address">
               <Form>
