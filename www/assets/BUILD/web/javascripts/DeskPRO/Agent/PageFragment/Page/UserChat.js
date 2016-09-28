@@ -446,7 +446,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
 					html = html.replace(/^<p>/, '');
 					html = html.replace(/<\/p>$/, '');
-					messageTextarea.data('redactor').insertSnippetHtml(html);
+					messageTextarea.data('redactor').insertHtml(html);
 					messageTextarea.change();
 					window.setTimeout(function() {
 						var tmp = ed.height();
