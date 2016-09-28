@@ -3,7 +3,6 @@ import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import Isvg from 'react-inlinesvg';
 import logoSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/logo.svg';
-import tumblrLogoSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/tumblr.svg';
 import hmrcLogoSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/hmrc.svg';
 import microsoftLogoSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/microsoft.svg';
 import procterLogoSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/procter&gamble.svg';
@@ -32,7 +31,6 @@ class DpAppRouteContainer extends React.Component {
             defaultMessage="These great organisations rely on our helpdesk:"
           />
           <div className="logos">
-            <Isvg src={tumblrLogoSvg} />
             <Isvg src={hmrcLogoSvg} />
             <Isvg src={microsoftLogoSvg} />
             <Isvg src={procterLogoSvg} />
