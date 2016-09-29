@@ -33,21 +33,17 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
+use Application\DeskPRO\EntityRepository\TicketFilter as LegacyTicketFilterRepository;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\CheckedOptionsException;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Operations about ticket filters
  * Class TicketFiltersController.
- *
- * SWG\Resource(
- * 	resourcePath="/ticket_filters",
- * 	description="Operations about Ticket urgencies",
- * 	basePath="/api"
- * )
  *
  * @ApiModes("all")
  */
@@ -66,21 +62,13 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     //###################################################################################################################
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * SWG\Api(
-     * 	path="/ticket_filters",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get all defined filters",
-     * 		notes="",
-     *		type="array",
-     *  )
-     * )
+     * @return Response
      */
     public function listAction()
     {
-        $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getDefinedFilters();
+        /** @var LegacyTicketFilterRepository $legacyTicketFilterRepository */
+        $legacyTicketFilterRepository = $this->em->getRepository('DeskPRO:LegacyTicketFilter');
+        $filters                      = $legacyTicketFilterRepository->getDefinedFilters();
 
         $data = [];
 
@@ -111,26 +99,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     /**
      * @param $id
      *
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * SWG\Api(
-     * 	path="/ticket_filters/{id}",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get ticket filter by Id",
-     * 		notes="",
-     *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *				name="id",
-     *				description="ID of given filter",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
+     * @return Response
      */
     public function getAction($id)
     {
@@ -158,60 +127,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     /**
      * @param $id
      *
-     * @return \Symfony\Component\HttpFoundation\Response
-     *                                                    SWG\Api(
-     *                                                    path="/ticket_filters/{id}",
-     *                                                    SWG\Operation(
-     *                                                    method="POST",
-     *                                                    summary="Save ticket filter details",
-     *                                                    notes="",
-     *                                                    type="array",
-     *                                                    SWG\Parameters (
-     *                                                    SWG\Parameter(
-     *                                                    name="id",
-     *                                                    description="ticket id",
-     *                                                    paramType="path",
-     *                                                    required=true,
-     *                                                    type="integer",
-     *                                                    ),
-     *                                                    SWG\Parameter(
-     *                                                    name="filter.title",
-     *                                                    description="Title for this filter",
-     *                                                    paramType="query",
-     *                                                    required=false,
-     *                                                    type="string",
-     *                                                    ),
-     *                                                    SWG\Parameter(
-     *                                                    name="filter.is_global",
-     *                                                    description="ticket global flag",
-     *                                                    paramType="query",
-     *                                                    required=false,
-     *                                                    type="boolean",
-     *                                                    ),
-     *                                                    SWG\Parameter(
-     *                                                    name="filter.person_id",
-     *                                                    description="Added person identificator",
-     *                                                    paramType="query",
-     *                                                    required=false,
-     *                                                    type="integer",
-     *                                                    ),
-     *                                                    SWG\Parameter(
-     *                                                    name="filter.agent_team_id",
-     *                                                    description="Agent team identificator",
-     *                                                    paramType="query",
-     *                                                    required=false,
-     *                                                    type="integer",
-     *                                                    ),
-     *                                                    SWG\Parameter(
-     *                                                    name="filter.terms",
-     *                                                    description="",
-     *                                                    paramType="query",
-     *                                                    required=false,
-     *                                                    type="integer[]",
-     *                                                    ),
-     *                                                    )
-     *                                                    )
-     *                                                    )
+     * @return Response
      */
     public function saveAction($id)
     {
@@ -230,13 +146,13 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         $filter->is_global = $this->in->getBool('filter.is_global');
 
         $filter->person = null;
-        if ($this->in->getUint('filter.person_id')) {
-            $filter->person = $this->container->getAgentData()->get($this->in->getUint('filter.person_id'));
+        if ($this->in->getUInt('filter.person_id')) {
+            $filter->person = $this->container->getAgentData()->get($this->in->getUInt('filter.person_id'));
         }
 
         $filter->agent_team = null;
-        if ($this->in->getUint('filter.agent_team_id')) {
-            $filter->agent_team = $this->container->getAgentData()->getTeam($this->in->getUint('filter.agent_team_id'));
+        if ($this->in->getUInt('filter.agent_team_id')) {
+            $filter->agent_team = $this->container->getAgentData()->getTeam($this->in->getUInt('filter.agent_team_id'));
         }
 
         $crit = new FilterTerms();
@@ -273,26 +189,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     /**
      * @param $id
      *
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * SWG\Api(
-     * 	path="/ticket_filters/{id}",
-     * 	SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="Delete ticket filter by ID",
-     * 		notes="",
-     *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *				name="id",
-     *				description="ticket filter id",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
+     * @return Response
      */
     public function removeAction($id)
     {
@@ -315,31 +212,15 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     //###################################################################################################################
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * SWG\Api(
-     * 	path="/ticket_filters/display_order",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Rearrange order in which filters are following",
-     * 		notes="",
-     *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *				name="display_order",
-     *				description="",
-     *				paramType="path",
-     *				required=false,
-     *				type="int[]",
-     *			),
-     *      )
-     *  )
-     * )
+     * @return Response
      */
     public function saveDisplayOrderAction()
     {
-        $display_order = $this->in->getCleanValueArray('display_order', 'uint', 'discard');
-        $this->em->getRepository('DeskPRO:LegacyTicketFilter')->updateDisplayOrder($display_order);
+        $displayOrder = $this->in->getCleanValueArray('display_order', 'uint', 'discard');
+
+        /** @var LegacyTicketFilterRepository $legacyTicketFilterRepository */
+        $legacyTicketFilterRepository = $this->em->getRepository('DeskPRO:LegacyTicketFilter');
+        $legacyTicketFilterRepository->updateDisplayOrder($displayOrder);
 
         return $this->listAction();
     }
