@@ -138,17 +138,17 @@ export class SideBarContainer extends SeparateComponent {
   }
 
   openAdmin = () => {
-    this.closeIframes();
+    SideBarContainer.closeIframes();
     window.DP_FRAME_OVERLAYS.admin.open();
   };
 
   openReports = () => {
-    this.closeIframes();
+    SideBarContainer.closeIframes();
     window.DP_FRAME_OVERLAYS.reports.open();
   };
 
   openBilling = () => {
-    this.closeIframes();
+    SideBarContainer.closeIframes();
     window.DP_FRAME_OVERLAYS.admin.open('/license');
   };
 
@@ -186,16 +186,16 @@ export class SideBarContainer extends SeparateComponent {
 
 export class SideBar extends React.Component {
   static propTypes = {
-    canUseTicket:     PropTypes.bool.isRequired,
-    canUseChat:       PropTypes.bool.isRequired,
-    canUsePeople:     PropTypes.bool.isRequired,
-    canUseFeedback:   PropTypes.bool.isRequired,
-    canUsePublish:    PropTypes.bool.isRequired,
-    canUseTasks:      PropTypes.bool.isRequired,
-    canUseReports:    PropTypes.bool.isRequired,
-    canUseAdmin:      PropTypes.bool.isRequired,
-    canUseBilling:    PropTypes.bool.isRequired,
-    canUsePortal:     PropTypes.bool.isRequired,
+    canUseTicket:     PropTypes.func.isRequired,
+    canUseChat:       PropTypes.func.isRequired,
+    canUsePeople:     PropTypes.func.isRequired,
+    canUseFeedback:   PropTypes.func.isRequired,
+    canUsePublish:    PropTypes.func.isRequired,
+    canUseTasks:      PropTypes.func.isRequired,
+    canUseReports:    PropTypes.func.isRequired,
+    canUseAdmin:      PropTypes.func.isRequired,
+    canUseBilling:    PropTypes.func.isRequired,
+    canUsePortal:     PropTypes.func.isRequired,
     closeIframes:     PropTypes.func.isRequired,
     openAdmin:        PropTypes.func.isRequired,
     openReports:      PropTypes.func.isRequired,
@@ -214,7 +214,7 @@ export class SideBar extends React.Component {
 
   getMenus = () => {
     const menus = [];
-    if (this.props.canUseTicket) {
+    if (this.props.canUseTicket()) {
       menus.push({
         className: 'tickets',
         label:     'Tickets',
@@ -225,7 +225,7 @@ export class SideBar extends React.Component {
         }
       });
     }
-    if (this.props.canUseChat) {
+    if (this.props.canUseChat()) {
       menus.push({
         className: 'chats',
         label:     'Chats',
@@ -236,7 +236,7 @@ export class SideBar extends React.Component {
         }
       });
     }
-    if (this.props.canUsePeople) {
+    if (this.props.canUsePeople()) {
       menus.push({
         className: 'crm',
         label:     'CRM',
@@ -247,7 +247,7 @@ export class SideBar extends React.Component {
         }
       });
     }
-    if (this.props.canUseFeedback) {
+    if (this.props.canUseFeedback()) {
       menus.push({
         className: 'feedback',
         label:     'Feedback',
@@ -258,7 +258,7 @@ export class SideBar extends React.Component {
         }
       });
     }
-    if (this.props.canUsePublish) {
+    if (this.props.canUsePublish()) {
       menus.push({
         className: 'publish',
         label:     'Publish',
@@ -269,7 +269,7 @@ export class SideBar extends React.Component {
         }
       });
     }
-    if (this.props.canUseTasks) {
+    if (this.props.canUseTasks()) {
       menus.push({
         className: 'tasks',
         label:     'Tasks',
@@ -280,7 +280,7 @@ export class SideBar extends React.Component {
         }
       });
     }
-    if (this.props.canUseReports) {
+    if (this.props.canUseReports()) {
       menus.push({
         className: 'reports',
         label:     'Reports',
@@ -290,7 +290,7 @@ export class SideBar extends React.Component {
         }
       });
     }
-    if (this.props.canUseAdmin) {
+    if (this.props.canUseAdmin()) {
       menus.push({
         className: 'admin',
         label:     'Admin',
@@ -300,7 +300,7 @@ export class SideBar extends React.Component {
         }
       });
     }
-    if (this.props.canUseBilling) {
+    if (this.props.canUseBilling()) {
       menus.push({
         className: 'billing',
         label:     'Billing',
@@ -310,7 +310,7 @@ export class SideBar extends React.Component {
         }
       });
     }
-    if (this.props.canUsePortal) {
+    if (this.props.canUsePortal()) {
       menus.push({
         className: 'portal',
         label:     'Portal',
