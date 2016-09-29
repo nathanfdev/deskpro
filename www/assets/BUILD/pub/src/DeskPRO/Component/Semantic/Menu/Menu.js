@@ -7,7 +7,7 @@ class Menu extends React.Component {
     title:       PropTypes.string,
     withDivider: PropTypes.bool,
     filterText:  PropTypes.string,
-    classNames:  PropTypes.object,
+    className:   PropTypes.string,
     items:       PropTypes.arrayOf(
       PropTypes.object
     ),
@@ -23,7 +23,8 @@ class Menu extends React.Component {
     let i = 0;
     for (const props of items) {
       if (props.label.toLowerCase().indexOf(this.props.filterText.toLowerCase()) !== -1) {
-        props.key = String(i++);
+        props.key = String(i);
+        i += 1;
         menus.push(<MenuItem {...props} />);
       }
     }
@@ -39,8 +40,8 @@ class Menu extends React.Component {
   }
 
   render() {
-    const { withDivider, children } = this.props;
-    return (<div className={classNames('item', { 'with-divider': withDivider })}>
+    const { withDivider, children, className } = this.props;
+    return (<div className={classNames('item', className, { 'with-divider': withDivider })}>
       {this.getTitle()}
       <div className="menu">
         {this.getItems()}

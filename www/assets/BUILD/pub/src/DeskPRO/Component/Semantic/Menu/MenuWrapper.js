@@ -1,11 +1,14 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import Menu from './Menu';
 import SearchBox from '../SearchBox';
 
 class MenuWrapper extends React.Component {
   static propTypes = {
     searchBox: PropTypes.bool,
-    sections:  PropTypes.arrayOf(PropTypes.object)
+    sections:  PropTypes.arrayOf(PropTypes.object),
+    children:  PropTypes.node,
+    className: PropTypes.string
   };
 
   constructor(props) {
@@ -31,8 +34,12 @@ class MenuWrapper extends React.Component {
     const items = [];
     const { sections } = this.props;
     let i = 0;
+    if (!sections) {
+      return [];
+    }
     for (const section of sections) {
-      section.key = String(i++);
+      section.key = String(i);
+      i += 1;
       section.filterText = this.state.filterText;
       items.push(<Menu {...section} />);
     }
@@ -44,9 +51,11 @@ class MenuWrapper extends React.Component {
   }
 
   render() {
-    return (<div className="ui vertical menu">
+    const { children, className } = this.props;
+    return (<div className={classNames('ui vertical menu', className)}>
       {this.getSearchBox()}
       {this.getSections()}
+      {children}
     </div>);
   }
 }

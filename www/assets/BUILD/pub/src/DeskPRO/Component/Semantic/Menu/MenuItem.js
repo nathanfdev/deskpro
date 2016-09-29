@@ -3,12 +3,13 @@ import classNames from 'classnames';
 
 class MenuItem extends React.Component {
   static propTypes = {
-    label:      PropTypes.string,
-    icon:       PropTypes.string,
-    subContent: PropTypes.object,
-    onClick:    PropTypes.func,
-    children:   PropTypes.node,
-    className:  PropTypes.string
+    label:       PropTypes.string,
+    icon:        PropTypes.string,
+    subContent:  PropTypes.object,
+    onClick:     PropTypes.func,
+    onMouseOver: PropTypes.func,
+    children:    PropTypes.node,
+    className:   PropTypes.string
   };
   static defaultProps = {
     onClick() {}
@@ -34,11 +35,16 @@ class MenuItem extends React.Component {
     this.props.onClick(e);
   };
 
+  handleMouseOver = (e) => {
+    this.props.onMouseOver(e);
+  };
+
   render() {
     const { label, subContent, children, className } = this.props;
     return (<a
       className={classNames('ui', 'item', { dropdown: !!subContent }, className)}
       onClick={this.handleClick}
+      onMouseOver={this.handleMouseOver}
       ref={(c) => { this.node = c; }}
     >
       {this.getIcon()}
