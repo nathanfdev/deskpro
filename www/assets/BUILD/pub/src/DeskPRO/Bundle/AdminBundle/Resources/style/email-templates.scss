@@ -17,4 +17,8 @@
       color: $dp-sonic-primary !important;
     }
   }
+  .ui.vertical.menu a.item.template:hover {
+    background-color: $dp-morning-sky;
+    color: $dp-sonic-primary;
+  }
 }

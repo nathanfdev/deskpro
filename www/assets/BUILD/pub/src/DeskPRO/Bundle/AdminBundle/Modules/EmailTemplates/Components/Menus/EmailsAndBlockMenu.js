@@ -49,7 +49,7 @@ export class EmailsAndBlockMenu extends React.Component {
         label={email.get('title')}
         icon="folder open"
         subContent={email.get('subGroups')}
-        classes={classNames({ active: this.isActive(email) })}
+        className={classNames({ active: this.isActive(email) })}
         onClick={() => this.setActive(email)}
       />
     );
@@ -64,8 +64,10 @@ export class EmailsAndBlockMenu extends React.Component {
         key={`emailBlock${key}`}
         label={template.get('title')}
         icon="code"
-        classes="template"
+        className="template"
         onClick={() => this.props.selectTemplate(template)}
+        onMouseOver={e => this.templateToolTip(e, template)}
+        onMouseOut={this.cancelToolTip}
       />
     );
   };
@@ -80,8 +82,10 @@ export class EmailsAndBlockMenu extends React.Component {
         key={`primary${key}`}
         label={template.get('title')}
         icon="code"
-        classes="template"
+        className="template"
         onClick={() => this.props.selectTemplate(template)}
+        onMouseOver={e => this.templateToolTip(e, template)}
+        onMouseOut={this.cancelToolTip}
       />
     );
     const additionalTemplates = subGroups.valueSeq().map((subGroup) => {
@@ -93,8 +97,10 @@ export class EmailsAndBlockMenu extends React.Component {
           key={`${subGroup.get('subGroupId')}${key}`}
           label={template.get('title')}
           icon="code"
-          classes="template"
+          className="template"
           onClick={() => this.props.selectTemplate(template)}
+          onMouseOver={e => this.templateToolTip(e, template)}
+          onMouseOut={this.cancelToolTip}
         />);
       content = <Menu>{content}</Menu>;
       return (<AccordionPanel
@@ -108,7 +114,7 @@ export class EmailsAndBlockMenu extends React.Component {
       />);
     });
     return (
-      <MenuWrapper classes={classNames('right-panel')}>
+      <MenuWrapper className={classNames('right-panel')}>
         <Menu title={subGroups.get('primary').get('title')}>
           {primary}
         </Menu>
@@ -118,7 +124,19 @@ export class EmailsAndBlockMenu extends React.Component {
     );
   };
 
-  isActive = (item) => item === this.state.selectedLeft;
+  templateToolTip = (e, template) => {
+    this.toolTipTimeOutId = setTimeout(() => {
+      console.log(template.get('desc'));
+      console.log(e);
+    }, 500);
+  };
+
+  cancelToolTip = () => {
+    window.clearTimeout(this.toolTipTimeOutId);
+    this.toolTipTimeOutId = undefined;
+  };
+
+  isActive = item => item === this.state.selectedLeft;
 
   render() {
     return (
