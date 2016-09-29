@@ -2,13 +2,17 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import * as card from 'DeskPRO/Component/Form/Card';
 import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import * as actions from '../Actions/extendActions';
 import ExtendTrial from './ExtendTrial';
 
-@connect()
+@connect(state => ({
+  me: meSelector(state)
+}))
 class ExtendTrialContainer extends React.Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    me:       PropTypes.object,
+    dispatch: PropTypes.func.isRequired
   };
 
   static contextTypes = {
@@ -25,7 +29,7 @@ class ExtendTrialContainer extends React.Component {
       state:             '',
       country:           '',
       vatId:             '',
-      schedule:          '',
+      schedule:          'monthly',
       cardName:          '',
       cardNumber:        '',
       expiryMonth:       '',
@@ -74,11 +78,25 @@ class ExtendTrialContainer extends React.Component {
         });
       }
     );
+
+    if (this.props.me) {
+      this.setState({
+        cardName: this.props.me.get('Name')
+      });
+    }
   }
 
   componentDidMount() {
     this.mounted = true;
   }
+
+  componentWillReceiveProps = (newProps) => {
+    if (newProps.me) {
+      this.setState({
+        cardName: newProps.me.get('Name')
+      });
+    }
+  };
 
   componentWillUnmount() {
     this.mounted = false;

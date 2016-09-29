@@ -177,7 +177,6 @@ class ExtendTrial extends React.Component {
       }
     ];
 
-
     return (
       <Segments className="extend-trial horizontal">
         <Segment className="extend-trial-form">
@@ -196,7 +195,7 @@ class ExtendTrial extends React.Component {
                   <span className="green">
                     <FormattedMessage
                       id="cloud.demo_expired.extend_trial_period"
-                      defaultMessage="7 extra days"
+                      defaultMessage="14 extra days"
                     />
                   </span>
               }}

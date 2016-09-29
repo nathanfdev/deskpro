@@ -135,7 +135,7 @@ export class Login extends React.Component {
         <p className="description">
           <FormattedMessage
             id="cloud.demo_expired.login_desc"
-            defaultMessage="Log in to find out how you can extend your DeskPRO trial by 7 days."
+            defaultMessage="Log in to find out how you can extend your DeskPRO trial by 14 days."
           />
         </p>
         <Form onSubmit={this.props.onLogin}>
