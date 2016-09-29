@@ -1,18 +1,28 @@
 import React, { PropTypes } from 'react';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { defineMessages, injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { Message } from 'DeskPRO/Component/Semantic/Message';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Field, Form, Input } from 'DeskPRO/Component/Semantic/Form';
 import login from '../Actions/loginActions';
 
+const messages = defineMessages({
+  billing_credentials_error: {
+    id:             'cloud.demo_expired.billing_credentials_error',
+    defaultMessage: 'You need billing credentials to extend your demo'
+  }
+});
+
 @connect(state => ({
   me: meSelector(state)
 }))
+@injectIntl
 export class LoginContainer extends React.Component {
   static propTypes = {
+    intl:     intlShape.isRequired,
     me:       PropTypes.object,
     dispatch: PropTypes.func.isRequired
   };
@@ -72,6 +82,7 @@ export class LoginContainer extends React.Component {
 
   onLogin = () => {
     const { dispatch } = this.props;
+    const { formatMessage } = this.props.intl;
     this.setState({
       submit: true
     });
@@ -84,10 +95,17 @@ export class LoginContainer extends React.Component {
     promise.then(
       () => {
         if (this.mounted) {
-          this.setState({
-            submit: false,
-            errors: null
-          });
+          if (!this.props.me.get('can_billing')) {
+            this.setState({
+              submit: false,
+              errors: { message: formatMessage(messages.billing_credentials_error) }
+            });
+          } else {
+            this.setState({
+              submit: false,
+              errors: null
+            });
+          }
         }
       },
       (response) => {
@@ -127,6 +145,17 @@ export class Login extends React.Component {
     onLogin:          PropTypes.func
   };
 
+  getError = () => {
+    if (this.props.errors && this.props.errors.message) {
+      return (
+        <Message className="negative">
+          {this.props.errors.message}
+        </Message>
+      );
+    }
+    return null;
+  };
+
   render() {
     return (
       <Segment className="login">
@@ -142,6 +171,7 @@ export class Login extends React.Component {
             defaultMessage="Log in to find out how you can extend your DeskPRO trial by 14 days."
           />
         </p>
+        {this.getError()}
         <Form onSubmit={this.props.onLogin}>
           <Field field="email" errors={this.props.errors}>
             <label htmlFor="email">
