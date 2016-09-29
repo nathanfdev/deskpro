@@ -88,7 +88,10 @@ class HipChatAction extends AbstractContainerAwareAction implements ActionInterf
         $context->getLogger()->debug("[HipChatAction] Sending message to room: $room_id");
 
         try {
-            $api = new \HipChatApi($app->getSetting('api_token'));
+            $api = new \HipChatApi(
+                $app->getSetting('api_token'),
+                $app->getSetting('api_target', null) ?: \HipChatApi::DEFAULT_TARGET
+            );
             $api->message_room(
                 $room_id,
                 'DeskPRO',
