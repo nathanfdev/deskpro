@@ -48,6 +48,11 @@ class LogEvent extends Event
     private $shouldLog = false;
 
     /**
+     * @var bool
+     */
+    private $shouldWrite = true;
+
+    /**
      * @var AuditContext
      */
     private $context;
@@ -73,7 +78,7 @@ class LogEvent extends Event
     /**
      * @return bool
      */
-    public function isShouldLog()
+    public function shouldLog()
     {
         return $this->shouldLog;
     }
@@ -86,6 +91,26 @@ class LogEvent extends Event
     public function setShouldLog($shouldLog)
     {
         $this->shouldLog = $shouldLog;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldWrite()
+    {
+        return $this->shouldWrite;
+    }
+
+    /**
+     * @param mixed $shouldWrite
+     *
+     * @return $this
+     */
+    public function setShouldWrite($shouldWrite)
+    {
+        $this->shouldWrite = $shouldWrite;
 
         return $this;
     }

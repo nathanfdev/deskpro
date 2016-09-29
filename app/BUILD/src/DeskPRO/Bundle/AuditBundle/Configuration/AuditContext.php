@@ -67,7 +67,7 @@ class AuditContext
      */
     public function __construct($action, Performer $performer, $entity = null, array $changeSet = [])
     {
-        // entity is set and it's not and object OR it's neither EntityInterface neither DomainObject instance
+        // entity is set and it's not and object OR it's neither EntityInterface nor DomainObject instance
         if (
             $entity &&
             !(is_object($entity) && ($entity instanceof EntityInterface || $entity instanceof DomainObject))

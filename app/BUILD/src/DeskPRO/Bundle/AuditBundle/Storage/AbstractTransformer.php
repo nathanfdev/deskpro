@@ -112,4 +112,21 @@ abstract class AbstractTransformer implements TransformerInterface
      * @return AuditLogEntity
      */
     abstract protected function createAuditLog();
+
+    public function updateLog(LoggableInterface $loggable, AuditLog $log)
+    {
+        $loggable
+            ->setAction($log->getAction())
+            ->setApiKey($log->getApiKey())
+            ->setData($log->getData())
+            ->setDateCreated($log->getDateCreated())
+            ->setDescription($log->getDescription())
+            ->setObjectId($log->getObjectId())
+            ->setObjectName($log->getObjectName())
+            ->setObjectType($log->getObjectType())
+            ->setPerformerId($log->getPerformerId())
+            ->setPerformerName($log->getPerformerName());
+
+        return $loggable;
+    }
 }
