@@ -3,15 +3,18 @@ import { connect } from 'react-redux';
 import * as card from 'DeskPRO/Component/Form/Card';
 import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import geoIpSelector from '../../Application/Selectors/demoSelectors';
 import * as actions from '../Actions/extendActions';
 import ExtendTrial from './ExtendTrial';
 
 @connect(state => ({
-  me: meSelector(state)
+  me:    meSelector(state),
+  geoIp: geoIpSelector(state)
 }))
 class ExtendTrialContainer extends React.Component {
   static propTypes = {
     me:       PropTypes.object,
+    geoIp:    PropTypes.object,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -84,6 +87,12 @@ class ExtendTrialContainer extends React.Component {
         cardName: this.props.me.get('name')
       });
     }
+
+    if (this.props.geoIp) {
+      this.setState({
+        country: this.props.me.get('country_code')
+      });
+    }
   }
 
   componentDidMount() {
@@ -94,6 +103,11 @@ class ExtendTrialContainer extends React.Component {
     if (newProps.me) {
       this.setState({
         cardName: newProps.me.get('name')
+      });
+    }
+    if (newProps.geoIp) {
+      this.setState({
+        country: newProps.me.get('country_code')
       });
     }
   };

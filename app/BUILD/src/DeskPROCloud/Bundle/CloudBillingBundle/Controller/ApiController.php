@@ -30,6 +30,7 @@ namespace DeskPROCloud\Bundle\CloudBillingBundle\Controller;
 
 use Application\DeskPRO\HttpKernel\Controller\Controller;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Orb\Data\Countries;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,6 +77,21 @@ class ApiController extends Controller
         $countries = Countries::getEuCountries();
 
         return new Response(json_encode($countries));
+    }
+
+    /**
+     * @Rest\Get("/geo_ip")
+     *
+     * @return Response
+     */
+    public function getGeoIpAction()
+    {
+        /** @var EnvironmentService $env */
+        $env = $this->container->get('app.environment');
+
+        return $this->createJsonResponse([
+            'geoip' => $env->getGeoIp(),
+        ]);
     }
 
     /**
