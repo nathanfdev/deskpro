@@ -47,12 +47,15 @@ class AddButton extends React.Component {
           <i className="icon check circle outline" /> {agentPhrases.get('agent.general.task')}</MenuItem>);
       }
     }
-    return (<div id="add-menu">
-      <div className="header">Add</div>
-      <div className="description">
-        <div className="ui vertical menu">{items}</div>
-      </div>
-    </div>);
+    if (items.length) {
+      return (<div id="add-menu">
+        <div className="header">Add</div>
+        <div className="description">
+          <div className="ui vertical menu">{items}</div>
+        </div>
+      </div>);
+    }
+    return null;
   }
 
   addTicket = () => {
@@ -106,23 +109,27 @@ class AddButton extends React.Component {
   };
 
   render() {
-    return (<div className="item add" onClick={this.togglePopup}>
-      <PopUp
-        positionMy="center top"
-        positionAt="center bottom"
-        id={3}
-        elementId="add-menu-popup"
-        zIndex={99999}
-        content={this.getPopupContent()}
-        ref={(c) => { this.addPopup = c; }}
-        className="add_menu_popup"
-        autoOpen={false}
-      >
-        <button className="ui button">
-          <Isvg src={plusSvg} />
-        </button>
-      </PopUp>
-    </div>);
+    const content = this.getPopupContent();
+    if (content) {
+      return (<div className="item add" onClick={this.togglePopup}>
+        <PopUp
+          positionMy="center top"
+          positionAt="center bottom"
+          id={3}
+          elementId="add-menu-popup"
+          zIndex={99999}
+          content={content}
+          ref={(c) => { this.addPopup = c; }}
+          className="add_menu_popup"
+          autoOpen={false}
+        >
+          <button className="ui button">
+            <Isvg src={plusSvg} />
+          </button>
+        </PopUp>
+      </div>);
+    }
+    return null;
   }
 }
 export default AddButton;
