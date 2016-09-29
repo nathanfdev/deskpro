@@ -91,6 +91,11 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $portalModeStorage;
 
     /**
+     * @var string
+     */
+    private $basePath;
+
+    /**
      * Constructor.
      *
      * @param BrandAwareSettingsResolver $settingsResolver
@@ -100,6 +105,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @param TokenStorageInterface      $tokenStorage
      * @param PortalPermissionsManager   $permissionsManager
      * @param PortalModeStorage          $portalModeStorage
+     * @param string                     $basePath
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
@@ -108,7 +114,8 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         RouterInterface            $router,
         TokenStorageInterface      $tokenStorage,
         PortalPermissionsManager   $permissionsManager,
-        PortalModeStorage          $portalModeStorage
+        PortalModeStorage          $portalModeStorage,
+        $basePath
     ) {
         parent::__construct($settingsResolver);
 
@@ -117,6 +124,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         $this->tokenStorage       = $tokenStorage;
         $this->permissionsManager = $permissionsManager;
         $this->portalModeStorage  = $portalModeStorage;
+        $this->basePath           = $basePath;
 
         if ($router instanceof PortalRouter) {
             $this->router = $router->getBaseRouter();
@@ -183,6 +191,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getWidgetUrlSettings(Brand $brand)
     {
         $portalMode = $this->portalModeStorage->getMode();
+
         if ($portalMode && $portalMode->isBrand()) {
             $baseUrl     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
             $helpdeskUrl = rtrim($baseUrl, '/').'/brand-'.$brand->getId();
@@ -195,10 +204,10 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         $widgetUrl = $this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
 
         if (!preg_match('#^https?://#i', $loaderUrl)) {
-            $loaderUrl = rtrim($baseUrl, '/').$loaderUrl;
+            $loaderUrl = rtrim(str_replace($this->basePath, '', $baseUrl), '/').$loaderUrl;
         }
         if (!preg_match('#^https?://#i', $widgetUrl)) {
-            $widgetUrl = rtrim($baseUrl, '/').$widgetUrl;
+            $widgetUrl = rtrim(str_replace($this->basePath, '', $baseUrl), '/').$widgetUrl;
         }
 
         $model = new WidgetUrlSettings();
