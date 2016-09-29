@@ -8,11 +8,14 @@ class MenuItem extends React.Component {
     subContent:  PropTypes.object,
     onClick:     PropTypes.func,
     onMouseOver: PropTypes.func,
+    onMouseOut:  PropTypes.func,
     children:    PropTypes.node,
     className:   PropTypes.string
   };
   static defaultProps = {
-    onClick() {}
+    onClick() {},
+    onMouseOver() {},
+    onMouseOut() {}
   };
 
   getIcon() {
@@ -39,12 +42,17 @@ class MenuItem extends React.Component {
     this.props.onMouseOver(e);
   };
 
+  handleMouseOut = (e) => {
+    this.props.onMouseOut(e);
+  };
+
   render() {
     const { label, subContent, children, className } = this.props;
     return (<a
       className={classNames('ui', 'item', { dropdown: !!subContent }, className)}
       onClick={this.handleClick}
       onMouseOver={this.handleMouseOver}
+      onMouseOut={this.handleMouseOut}
       ref={(c) => { this.node = c; }}
     >
       {this.getIcon()}
