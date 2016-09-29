@@ -7,6 +7,7 @@ import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
 import { IntlProvider } from 'react-intl';
 import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
+import bootstrapDemo from './Modules/Application/Actions/bootstrapActions';
 import DpAppContainer from './Modules/Application/Components/DpAppContainer';
 import { repositoriesConfig } from './DAL/config';
 import AdminReducers from './DemoApp_Reducers';
@@ -28,6 +29,7 @@ class DemoApp {
     /* global __DEV__ */
     window.DP_DEV_MODE = __DEV__;
     const store = DemoApp.createStore();
+    store.dispatch(bootstrapDemo());
 
     ReactDOM.render(
       <div>

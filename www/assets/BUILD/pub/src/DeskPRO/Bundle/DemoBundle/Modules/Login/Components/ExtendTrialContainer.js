@@ -81,7 +81,7 @@ class ExtendTrialContainer extends React.Component {
 
     if (this.props.me) {
       this.setState({
-        cardName: this.props.me.get('Name')
+        cardName: this.props.me.get('name')
       });
     }
   }
@@ -93,7 +93,7 @@ class ExtendTrialContainer extends React.Component {
   componentWillReceiveProps = (newProps) => {
     if (newProps.me) {
       this.setState({
-        cardName: newProps.me.get('Name')
+        cardName: newProps.me.get('name')
       });
     }
   };
