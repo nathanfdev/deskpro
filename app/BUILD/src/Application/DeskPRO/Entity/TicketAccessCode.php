@@ -70,10 +70,53 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $auth;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $len        = Ticket::TAC_AUTHCODE_LEN;
         $this->auth = DpStrings::random($len, Strings::CHARS_KEY);
+    }
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function setTicket(Ticket $ticket)
+    {
+        $this->setModelField('ticket', $ticket);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
     }
 
     /**
