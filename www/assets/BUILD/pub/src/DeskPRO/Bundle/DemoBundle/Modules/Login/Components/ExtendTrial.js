@@ -390,6 +390,12 @@ class ExtendTrial extends React.Component {
                     defaultMessage="Resume free trial"
                   />
                 </Button>
+                <p className="reinsurance">
+                  <FormattedMessage
+                    id="cloud.demo_expired.extend_trial_reinsurance"
+                    defaultMessage="You won't be charged until date. You can cancel anytime time"
+                  />
+                </p>
               </Form>
             </Segment>
           </Segments>

@@ -29,6 +29,9 @@ h4 {
     height: 50px;
   }
 }
+.container {
+  padding-bottom: 160px;
+}
 .container.extend-trial .logo {
   position: fixed;
   padding: 0;
@@ -115,9 +118,13 @@ footer {
     .green {
       color: $dp-emerald-primary;
     }
+    form.form {
+      margin-bottom: 0;
+    }
     .ui.form .field > label {
       font-size: 14px;
       font-weight: 400;
+      margin-bottom: 6px;
     }
     .segments {
       border: none;
@@ -128,14 +135,18 @@ footer {
       border: none;
       background: $dp-greyscale-100;
       padding: 30px;
-      form.form {
-        margin-bottom: 0;
-      }
     }
     .segment.credit-card {
       border: none;
       background: $dp-greyscale-50;
       padding: 30px 40px;
+      p.reinsurance {
+        display: inline-block;
+        font-size: 10px;
+        width: 120px;
+        position: absolute;
+        margin: 0 10px;
+      }
     }
     .expiry input {
       @include placeholder {
