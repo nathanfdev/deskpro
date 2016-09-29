@@ -134,9 +134,7 @@ class TaskRunner
             ->setAllowedTypes('loop', 'React\EventLoop\LoopInterface')
         ;
 
-        $resolver->setDefaults(['loop' => function () {
-            return EventLoopFactory::create();
-        }]);
+        $resolver->setDefault('loop', EventLoopFactory::create());
     }
 
     /**

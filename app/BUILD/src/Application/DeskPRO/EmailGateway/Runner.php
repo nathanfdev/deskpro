@@ -722,7 +722,7 @@ BODY;
 
         $inserted_source_ids = [];
 
-        $only_collect = $only_collect || $DP_ENV->getConfig('adv_email_process');
+        $only_collect = $only_collect || $DP_ENV->getConfig('async_email_processing.process');
 
         if (!$only_collect) {
             $inserted_source_ids = App::getDb()->fetchAllCol("
@@ -835,7 +835,7 @@ BODY;
                 continue;
             }
 
-            if ($only_collect && $source->status !== 'error' && $DP_ENV->getConfig('adv_email_process')) {
+            if ($only_collect && $source->status !== 'error' && $DP_ENV->getConfig('async_email_processing.process')) {
                 /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
                 $proc = App::getContainer()->get('in_email.proc_queue');
                 try {

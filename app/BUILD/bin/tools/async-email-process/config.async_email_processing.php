@@ -26,30 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+$AEP_CONFIG = ['process' => [], 'collect' => []];
 
-namespace Application\EmailBundle\Incoming\ProcQueue;
+$AEP_CONFIG['process']['max_time']      = 600;
+$AEP_CONFIG['process']['max_processes'] = 8;
+$AEP_CONFIG['process']['redis_key']     = 'dp_incoming_email';
+$AEP_CONFIG['process']['redis_params']  = [
+    'scheme'             => 'tcp',
+    'host'               => '127.0.0.1',
+    'port'               => 32768,
+    'read_write_timeout' => 20,
+];
 
-use Symfony\Component\DependencyInjection\Container;
-
-class DeskproProcQueueFactory
-{
-    public static function create(Container $container)
-    {
-        /* @var \DpRun\DpEnv $DP_ENV */
-        global $DP_ENV;
-
-        if (!$DP_ENV->getConfig('async_email_processing.process')) {
-            return new NoopProcQueue();
-        } else {
-            $client = new \Predis\Client($DP_ENV->getConfig('async_email_processing.process.redis_params'));
-
-            return new RedisProcQueue(
-                $client,
-                $DP_ENV->getConfig('async_email_processing.process.redis_key')
-            );
-        }
-    }
-}
+$AEP_CONFIG['collect']['max_time']         = 600;
+$AEP_CONFIG['collect']['max_processes']    = 8;
+$AEP_CONFIG['collect']['connect_interval'] = 10;
