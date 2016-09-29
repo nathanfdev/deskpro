@@ -90,7 +90,7 @@ class ExtendTrialContainer extends React.Component {
 
     if (this.props.geoIp) {
       this.setState({
-        country: this.props.me.get('country_code')
+        country: this.props.geoIp.get('country_code')
       });
     }
   }
@@ -107,7 +107,7 @@ class ExtendTrialContainer extends React.Component {
     }
     if (newProps.geoIp) {
       this.setState({
-        country: newProps.me.get('country_code')
+        country: newProps.geoIp.get('country_code')
       });
     }
   };

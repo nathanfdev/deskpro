@@ -1,13 +1,16 @@
 import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import bootstrapDemo from 'DeskPRO/Bundle/DemoBundle/Modules/Application/Actions/bootstrapActions';
 
-export const login = createAction(
+const login = createAction(
   'LOGIN_SUBMIT_FORM',
-  params =>
+  params => dispatch => new Promise((resolve) => {
     api.sendPost('DP_API/get_session', params)
+      .then(() => {
+        dispatch(bootstrapDemo()).then(() => {
+          resolve();
+        });
+      });
+  })
 );
-export const checkToken = createAction(
-  'LOGIN_CHECK_TOKEN',
-  () =>
-    api.sendGet('DP_API/me')
-);
+export default login;

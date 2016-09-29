@@ -27,9 +27,9 @@ const bootstrapDemo = createAction(
     const batchComponents = {
       me: { endpoint: 'me' }
     };
-    const batch           = api.prepareParams(batchComponents);
+    const batch = api.prepareParams(batchComponents);
 
-    api.sendGet(batch)
+    const batchPromises = api.sendGet(batch)
       .success(({ responses }) => {
         const data = flattenBatchResponses(responses);
         dispatch(setCollection('Person', 'me', [data.me.person]));
@@ -39,12 +39,10 @@ const bootstrapDemo = createAction(
 
     const promises = [
       dispatch(loadGeoIp()),
+      batchPromises
     ];
 
-    Promise.all(promises);
-
-
-    return resolve();
+    Promise.all(promises).then(() => resolve(), () => resolve());
   })
 );
 export default bootstrapDemo;

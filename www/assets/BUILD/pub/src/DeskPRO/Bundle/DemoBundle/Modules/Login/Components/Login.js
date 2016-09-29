@@ -2,15 +2,19 @@ import React, { PropTypes } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Field, Form, Input } from 'DeskPRO/Component/Semantic/Form';
-import * as actions from '../Actions/loginActions';
+import login from '../Actions/loginActions';
 
-@connect()
+@connect(state => ({
+  me: meSelector(state)
+}))
 export class LoginContainer extends React.Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    me:       PropTypes.object,
+    dispatch: PropTypes.func.isRequired
   };
 
   static contextTypes = {
@@ -29,19 +33,20 @@ export class LoginContainer extends React.Component {
   }
 
   componentWillMount() {
-    const { dispatch } = this.props;
-    const promise = dispatch(actions.checkToken());
-
-    promise.then(
-      () => {
-        this.context.router.push('/extend-trial');
-      }
-    );
+    if (this.props.me && this.props.me.get('can_billing')) {
+      this.context.router.push('/extend-trial');
+    }
   }
 
   componentDidMount() {
     this.mounted = true;
   }
+
+  componentWillReceiveProps = (newProps) => {
+    if (newProps.me && newProps.me.get('can_billing')) {
+      this.context.router.push('/extend-trial');
+    }
+  };
 
   componentWillUnmount() {
     this.mounted = false;
@@ -71,7 +76,7 @@ export class LoginContainer extends React.Component {
       submit: true
     });
 
-    const promise = dispatch(actions.login({
+    const promise = dispatch(login({
       email:    this.state.email,
       password: this.state.password
     }));
@@ -83,7 +88,6 @@ export class LoginContainer extends React.Component {
             submit: false,
             errors: null
           });
-          this.context.router.push('/extend-trial');
         }
       },
       (response) => {

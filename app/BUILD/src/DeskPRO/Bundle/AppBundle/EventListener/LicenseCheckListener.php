@@ -188,7 +188,7 @@ final class LicenseCheckListener implements EventSubscriberInterface
 
         // Expired demos
         if ($lic->isDemo() && $lic->isPastExpireDate()) {
-            $event->setResponse($this->getCloudErrorPageResponse('cloud-error.demo-expired.html'));
+            $event->setResponse(new RedirectResponse($event->getRequest()->getUriForPath('/cloud/expired_demo')));
             $event->stopPropagation();
 
             return;

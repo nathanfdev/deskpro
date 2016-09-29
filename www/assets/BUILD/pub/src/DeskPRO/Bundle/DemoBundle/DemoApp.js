@@ -29,18 +29,18 @@ class DemoApp {
     /* global __DEV__ */
     window.DP_DEV_MODE = __DEV__;
     const store = DemoApp.createStore();
-    store.dispatch(bootstrapDemo());
-
-    ReactDOM.render(
-      <div>
-        <Provider store={store}>
-          <IntlProvider locale={window.DP_LOCALE} messages={window.DP_LANG}>
-            <DpAppContainer />
-          </IntlProvider>
-        </Provider>
-      </div>,
-      document.getElementById('app')
-    );
+    store.dispatch(bootstrapDemo()).then(() => {
+      ReactDOM.render(
+        <div>
+          <Provider store={store}>
+            <IntlProvider locale={window.DP_LOCALE} messages={window.DP_LANG}>
+              <DpAppContainer />
+            </IntlProvider>
+          </Provider>
+        </div>,
+        document.getElementById('app')
+      );
+    });
   }
 
   static createStore(initialState = {}) {
