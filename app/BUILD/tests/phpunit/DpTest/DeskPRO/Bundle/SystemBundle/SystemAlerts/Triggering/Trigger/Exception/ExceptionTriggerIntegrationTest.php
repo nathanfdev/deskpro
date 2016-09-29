@@ -121,15 +121,15 @@ class ExceptionTriggerIntegrationTest extends BaseIntegrationTest
     /**
      * @test
      */
-    public function it_should_create_a_new_incident_after_the_same_one_has_been_dismissed_and_new_exception_occurred()
+    public function it_should_update_a_dismissed_incident_when_new_exception_occurs()
     {
-        // Given a resolved incident
+        // Given a dismissed incident
         $this->event_logger->log($this->dummyException());
         $this->triggering_process->run();
         $incident = $this->findSingleIncident();
-        $this->assertEquals(1, $this->countRaisedIncidents());
+        $this->assertTrue($incident->isRaised());
         $this->assertCount(1, $incident->getEvents());
-        $incident->setResolved(true);
+        $incident->setDismissed(true);
         $this->em->persist($incident);
         $this->em->flush();
 
@@ -137,8 +137,9 @@ class ExceptionTriggerIntegrationTest extends BaseIntegrationTest
         $this->event_logger->log($this->dummyException());
         $this->triggering_process->run();
 
-        // Then there should be 2 incidents
-        $this->assertEquals(2, $this->countAllIncidents());
+        // Then
+        $this->assertEquals(1, $this->countAllIncidents());
+        $this->assertCount(2, $incident->getEvents());
     }
 
 //    /**

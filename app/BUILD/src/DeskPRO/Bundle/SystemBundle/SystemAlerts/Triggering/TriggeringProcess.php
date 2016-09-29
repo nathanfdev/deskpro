@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -82,7 +81,9 @@ class TriggeringProcess
     public function countIncidents()
     {
         return $this->em
-            ->createQuery(sprintf('SELECT COUNT(i.id) FROM %s i', AbstractIncident::class))->getSingleScalarResult();
+                    ->getConnection()
+                    ->executeQuery('SELECT COUNT(id) FROM system_alerts_incidents')
+                    ->fetch(\PDO::FETCH_COLUMN);
     }
 
     /**
@@ -94,7 +95,7 @@ class TriggeringProcess
      */
     public function run($batchSize = 100)
     {
-        $this->provideContinuingIncidents();
+        $this->provideExistingIncidents();
 
         $newIncidents     = [];
         $updatedIncidents = [];
@@ -131,12 +132,12 @@ class TriggeringProcess
     /**
      * Provides triggers with continuing incidents from DB.
      */
-    private function provideContinuingIncidents()
+    private function provideExistingIncidents()
     {
         foreach ($this->triggers as $trigger) {
             if ($trigger instanceof StatefulIncidentTrigger) {
                 $repository = $this->em->getRepository($trigger->getIncidentClass());
-                $trigger->setContinuingIncidents($repository->findBy(['resolved' => false]));
+                $trigger->setContinuingIncidents($repository->findAll());
             }
         }
     }
