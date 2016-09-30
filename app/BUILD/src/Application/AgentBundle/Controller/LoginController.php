@@ -220,6 +220,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                 'render_forgot_pw'  => $this->in->getString('forgot') ?: false,
                 'url_corrections'   => $url_corrections,
                 'is_to_admin'       => $is_to_admin,
+                'didReset'          => $this->in->getBool('did_reset'),
             ]
         );
     }
