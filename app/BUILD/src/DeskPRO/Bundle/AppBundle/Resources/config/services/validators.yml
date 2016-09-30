@@ -73,3 +73,9 @@ services:
       - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: validator.constraint_validator }
+
+  deskpro.validator.valid_recaptcha:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidRecaptcha2Validator
+    arguments: ["@brand_stack", "@request_stack"]
+    tags:
+      - { name: validator.constraint_validator }

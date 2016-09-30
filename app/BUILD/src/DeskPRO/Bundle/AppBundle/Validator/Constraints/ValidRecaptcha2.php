@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
@@ -36,12 +36,4 @@ use Symfony\Component\Validator\Constraint;
 class ValidRecaptcha2 extends Constraint
 {
     public $message = 'portal.forms.error_captcha';
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validatedBy()
-    {
-        return 'valid_recaptcha2';
-    }
 }
