@@ -204,6 +204,7 @@
 					{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 					{% if timeout %}<div class="error" style="display: block">{{ phrase('agent.login.session_timeout') }}</div>{% endif %}
 					{% if failed_to_login %}<div class="error">{{ phrase('agent.login.login_failed') }}</div>{% endif %}
+					{% if didReset %}<div class="success">{{ phrase('portal.account.reset-password-success') }}</div>{% endif %}
 					{% if lockout %}
 						{% set timeago = lockout %}
 						<div class="error">

@@ -207,7 +207,9 @@ class PasswordController extends AbstractController
                 return new RedirectResponse($redirect);
             }
 
-            return $this->redirectToRoute('portal_login');
+            return $person->isAgent()
+                ? $this->redirectToRoute('agent_login', ['did_reset' => 1])
+                : $this->redirectToRoute('portal_login');
         } elseif ($form->isSubmitted()) {
             $this->runAntiAbuseCheck($request);
         }
