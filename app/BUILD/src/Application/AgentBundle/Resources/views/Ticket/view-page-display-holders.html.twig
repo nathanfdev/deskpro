@@ -352,7 +352,7 @@
     </tbody>
 {% endfor %}
 
-{% if ticket.linked_chat and app.getSetting('core.apps_chat') and app.user.hasPerm('agent_chat.use') %}
+{% if ticket.linked_chat and isChatAvailable() and app.user.hasPerm('agent_chat.use') %}
 	<tbody>
 	<tr>
 		<th>

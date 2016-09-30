@@ -46,7 +46,7 @@ class AvailableTrigger
         if ($is_chat_available === null) {
             $is_chat_available = false;
 
-            if (!App::getSetting('core.apps_chat')) {
+            if (!App::get('brand_aware_settings_resolver')->isChatAvailable()) {
                 $agent_ids = [];
             } else {
                 $agent_ids = App::getDb()->fetchAllCol("

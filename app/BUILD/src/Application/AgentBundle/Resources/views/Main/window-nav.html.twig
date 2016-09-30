@@ -10,7 +10,7 @@
 				</li>
 			{% endif %}
 
-			{% if app.getSetting('core.apps_chat') and app.user.hasPerm('agent_chat.use') %}
+			{% if isChatAvailable() and app.user.hasPerm('agent_chat.use') %}
 				<li  id="chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.UserChat">
 					<span class="count-badge" style="display: none"><span></span></span>
 					<a title="{{ phrase('agent.chrome.nav_userchat') }}"><i class="app-icon app-icon-chat"></i></a>

@@ -178,6 +178,7 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFunction('ng_static_var', [$this, 'ngStaticVar'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('ng_tpl', [$this, 'ngIncTpl'], ['is_safe' => ['html'], 'needs_context' => true]),
             new \Twig_SimpleFunction('js_error_tracking', [$this, 'js_error_tracking'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('isChatAvailable', [$this->container->get('brand_aware_settings_resolver'), 'isChatAvailable']),
 
             // override so we can suppress errors where templates are out of date
             new \Twig_SimpleFunction('url', [$this, 'getUrl']),
