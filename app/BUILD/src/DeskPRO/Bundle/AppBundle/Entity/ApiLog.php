@@ -216,6 +216,28 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     private $isDupe = false;
 
     /**
+     * @ORM\Column(type="boolean", nullable=false, name="is_request_truncated")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     * @JMS\Groups({"details"})
+     *
+     * @var bool
+     */
+    private $isRequestTruncated = false;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false, name="is_response_truncated")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     * @JMS\Groups({"details"})
+     *
+     * @var bool
+     */
+    private $isResponseTruncated = false;
+
+    /**
      * @return int
      */
     public function getId()
@@ -440,7 +462,9 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     public function getDecodedResponseData()
     {
         $response_data         = $this->response_data;
-        $response_data['body'] = json_decode($response_data['body'], true);
+        $response_data['body'] = $this->isResponseTruncated()
+            ? $response_data['body']
+            : json_decode($response_data['body'], true);
 
         return $response_data;
     }
@@ -493,6 +517,46 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     public function setIsDupe($isDupe)
     {
         $this->isDupe = $isDupe;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequestTruncated()
+    {
+        return $this->isRequestTruncated;
+    }
+
+    /**
+     * @param bool $isRequestTruncated
+     *
+     * @return $this
+     */
+    public function setIsRequestTruncated($isRequestTruncated)
+    {
+        $this->isRequestTruncated = $isRequestTruncated;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isResponseTruncated()
+    {
+        return $this->isResponseTruncated;
+    }
+
+    /**
+     * @param bool $isResponseTruncated
+     *
+     * @return $this
+     */
+    public function setIsResponseTruncated($isResponseTruncated)
+    {
+        $this->isResponseTruncated = $isResponseTruncated;
 
         return $this;
     }

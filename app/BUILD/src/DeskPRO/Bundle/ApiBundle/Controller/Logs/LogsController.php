@@ -99,6 +99,8 @@ class LogsController extends BaseController
 
         $options = new OptionsModel(
             $this->get('settings_resolver')->getGlobalSettings()->getBool('api_log.enabled'),
+            $this->get('settings_resolver')->getGlobalSettings()->get('api_log.max_request_body_length'),
+            $this->get('settings_resolver')->getGlobalSettings()->get('api_log.max_response_body_length'),
             $this->container->get('api_log.helper')->getModes()
         );
 
@@ -114,7 +116,7 @@ class LogsController extends BaseController
      * @ApiDoc(
      *     section="Logs",
      *     resourceDescription="Operations about logs",
-     *     description="update loggin options",
+     *     description="update logging options",
      *     requirements={
      *         {
      *             "name"="enabled",
@@ -134,14 +136,18 @@ class LogsController extends BaseController
      *     }
      * )
      *
+     * @todo replace with form
+     *
      * @Rest\Put("/api_logs_options", name="api_logs_options_update")
      *
      * @return View
      */
     public function putOptionsAction(Request $request)
     {
-        $enabled = $request->request->getBoolean('enabled');
-        $modes   = $request->request->get('modes');
+        $enabled        = $request->request->getBoolean('enabled');
+        $modes          = $request->request->get('modes');
+        $requestLength  = $request->request->get('request_length');
+        $responseLength = $request->request->get('response_length');
 
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -162,8 +168,24 @@ class LogsController extends BaseController
         /* @var Setting $setting */
         $modesSetting->value = serialize($modes);
 
+        if (!$requestLengthSetting = $repo->findOneBy(['name' => 'api_log.max_request_body_length'])) {
+            $requestLengthSetting       = new Setting();
+            $requestLengthSetting->name = 'api_log.max_request_body_length';
+        }
+        /* @var Setting $setting */
+        $requestLengthSetting->value = $requestLength;
+
+        if (!$responseLengthSetting = $repo->findOneBy(['name' => 'api_log.max_response_body_length'])) {
+            $responseLengthSetting       = new Setting();
+            $responseLengthSetting->name = 'api_log.max_response_body_length';
+        }
+        /* @var Setting $setting */
+        $responseLengthSetting->value = $responseLength;
+
         $em->persist($setting);
         $em->persist($modesSetting);
+        $em->persist($requestLengthSetting);
+        $em->persist($responseLengthSetting);
         $em->flush();
 
         return View::create(

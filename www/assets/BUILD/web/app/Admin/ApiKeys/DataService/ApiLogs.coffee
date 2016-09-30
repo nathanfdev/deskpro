@@ -26,16 +26,17 @@ define [
       .success((data) =>
         deferred.resolve data.data
       )
-      .error( (data, status, headers, config) => deferred.reject() )
+      .error( => deferred.reject() )
 
       deferred.promise
 
     updateOptions: (options)->
+      deferred = @$q.defer()
       @Api2.sendPutJson('/api_logs_options', options)
       .success((data) =>
         deferred.resolve data.data
       )
-      .error( (data, status, headers, config) => deferred.reject() )
+      .error( => deferred.reject() )
 
     _doLoadList: () ->
       deferred = @$q.defer()
@@ -45,7 +46,7 @@ define [
         models = @mutateData(data)
         deferred.resolve models
       )
-      .error( (data, status, headers, config) => deferred.reject() )
+      .error( => deferred.reject() )
 
       return deferred.promise
 
@@ -57,7 +58,7 @@ define [
       }).success((data) =>
           models = @mutateData(data)
           deferred.resolve(models)
-      , (data, status, headers, config) ->
+      , ->
         deferred.reject()
       )
 
@@ -83,7 +84,7 @@ define [
         model = data.data
         model.start_date_time = moment.unix(model.start_time).format('YYYY-MM-DD[\u00A0]H:mm:ss')
         deferred.resolve(data.data)
-      , (data, status, headers, config) ->
+      , ->
         deferred.reject()
       )
 

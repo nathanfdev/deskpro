@@ -155,6 +155,8 @@ return [
     'adm.api_logs.start_time'                                                              => 'Start time (timestamp)',
     'adm.api_logs.time_taken'                                                              => 'Time taken (sec)',
     'adm.api_logs.title'                                                                   => 'API Logs',
+    'admin.api_logs.request_was_too_big'                                                   => 'Request body was too big and it was truncated. You can\'t reply this log',
+    'admin.api_logs.response_was_too_big'                                                  => 'Response body was too big and it was truncated',
     'adm.custom_fields.count_specific_org_fields'                                          => '{{count}} Per-Organization Custom Field|{{count}} Per-Organization Custom Fields',
     'adm.custom_fields.count_specific_user_fields'                                         => '{{count}} Per-User Custom Field|{{count}} Per-User Custom Fields',
     'adm.custom_fields.description_error'                                                  => 'You must enter a valid description',

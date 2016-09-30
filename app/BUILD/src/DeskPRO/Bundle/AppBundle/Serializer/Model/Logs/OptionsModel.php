@@ -45,6 +45,24 @@ class OptionsModel
     protected $enabled;
 
     /**
+     * Maximum request body size (in B).
+     *
+     * @JMS\Type("integer")
+     *
+     * @var bool
+     */
+    protected $requestLength;
+
+    /**
+     * Maximum response body size (in B).
+     *
+     * @JMS\Type("integer")
+     *
+     * @var bool
+     */
+    protected $responseLength;
+
+    /**
      * Which modes to log (if enabled).
      *
      * @JMS\Type("array<string>")
@@ -57,11 +75,15 @@ class OptionsModel
      * OptionsModel constructor.
      *
      * @param bool  $enabled
+     * @param int   $requestLength
+     * @param int   $responseLength
      * @param array $modes
      */
-    public function __construct($enabled, array $modes)
+    public function __construct($enabled, $requestLength, $responseLength, array $modes)
     {
-        $this->enabled = (bool) $enabled;
-        $this->modes   = $modes;
+        $this->enabled        = (bool) $enabled;
+        $this->modes          = $modes;
+        $this->requestLength  = $requestLength;
+        $this->responseLength = $responseLength;
     }
 }
