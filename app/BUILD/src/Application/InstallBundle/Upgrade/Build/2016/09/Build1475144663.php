@@ -26,38 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetBrandSettingsType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings\WidgetGlobalSettingsType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
-/**
- * Class WidgetOptionsType.
- */
-class WidgetOptionsType extends AbstractType
+class Build1475144663 extends AbstractBuild
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function run()
     {
-        $builder
-            ->add('global', WidgetGlobalSettingsType::class)
-            ->add('brand', WidgetBrandSettingsType::class)
-        ;
-    }
+        $this->out('Upgrade portal.widget.enabled');
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => WidgetOptions::class,
-        ]);
+        $connection = $this->getDbConnection('default');
+
+        $brands = $connection->fetchAllCol('select `id` from `brands`');
+
+        $sql = 'insert ignore into `settings_brand` (`brand_id`, `name`, `value`) values (:brand_id, "portal.widget.enabled", 1)';
+
+        $stmnt = $connection->prepare($sql);
+        foreach ($brands as $brand) {
+            $stmnt->execute(['brand_id' => $brand]);
+        }
     }
 }

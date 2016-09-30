@@ -28,17 +28,16 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetBrandSettingsType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings\WidgetGlobalSettingsType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class WidgetOptionsType.
+ * Class WidgetSettingsType.
  */
-class WidgetOptionsType extends AbstractType
+class WidgetSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -46,8 +45,10 @@ class WidgetOptionsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('global', WidgetGlobalSettingsType::class)
-            ->add('brand', WidgetBrandSettingsType::class)
+            ->add('settings', WidgetOptionsType::class)
+            ->add('enabled_on_portal', ApiBooleanType::class, [
+                'property_path' => 'enabledOnPortal',
+            ])
         ;
     }
 
@@ -57,7 +58,7 @@ class WidgetOptionsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetOptions::class,
+            'data_class' => WidgetSettings::class,
         ]);
     }
 }
