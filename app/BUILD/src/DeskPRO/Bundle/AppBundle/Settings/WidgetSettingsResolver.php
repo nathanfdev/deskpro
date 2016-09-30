@@ -56,7 +56,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
     const CHAT_REQUIRE_LOGIN    = 'portal.chat.require_login';
     const CHAT_EMAIL_VALIDATION = 'portal.chat.email_validation';
-    const CHAT_ENABLED          = 'portal.chat.enabled';
+    const CHAT_ENABLED          = 'core.apps_chat';
     const ENABLED_ON_PORTAL     = 'portal.widget.enabled';
     const ENABLED               = 'widget.enabled';
 
