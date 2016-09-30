@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType;

@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidRecaptcha2;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidRecaptcha2;
 use ReCaptchaSecureToken\ReCaptchaToken;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
