@@ -196,6 +196,13 @@ class EditEmailAccount
             return;
         }
 
+        $lastEmailAccountTrigger = $em->createQuery('
+            SELECT trigger
+            FROM DeskPRO:TicketTrigger trigger
+            WHERE trigger.email_account IS NOT NULL
+            ORDER BY trigger.run_order desc
+        ')->getOneOrNullResult();
+
         if (!$trigger) {
             $trigger                = new TicketTrigger();
             $trigger->is_enabled    = (bool) $em->getConnection()->fetchColumn('SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?', [$trigger->event_trigger]);
@@ -219,7 +226,7 @@ class EditEmailAccount
         ]);
 
         $trigger->title     = 'New Ticket';
-        $trigger->run_order = -100;
+        $trigger->run_order = $lastEmailAccountTrigger ? $lastEmailAccountTrigger->run_order : -100;
         $trigger->actions   = $actions;
         $trigger->terms     = $terms;
 
