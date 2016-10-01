@@ -66,8 +66,6 @@ class OpenID extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter imp
         $realm                                           = $this->container->get('brand_stack')->getActive()->getSetting('core.deskpro_url');
         $options[\Orb\Auth\Adapter\OpenId::OPTION_REALM] = $realm;
 
-//        $options['identity'] = 'https://me.yahoo.com/a/M8jHCYoVkoUib54qM0af7RjXhxVcQ2gOfWYkZSjJN0e1Epii1wKXq5TEuOmo';
-
         return new \Orb\Auth\Adapter\OpenId($options);
     }
 
