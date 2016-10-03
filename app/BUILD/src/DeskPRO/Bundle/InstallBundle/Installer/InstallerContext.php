@@ -164,7 +164,7 @@ class InstallerContext
         $this->mainKernel->boot();
 
         // we are going to disable audit listener explicitly here, becasue
-        // there are no command was called, so DisableListenerListener is not handling event here
+        // there are no command was called, so DisableListenerSubscriber is not handling event here
         $this->mainKernel->getContainer()->get('audit_log.doctrine_listener')->disableListener();
 
         return $this->mainKernel->getContainer();

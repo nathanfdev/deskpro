@@ -978,7 +978,7 @@ return [
   'src/DeskPRO/Bundle/AuditBundle/EventListener/DataListener.php',
   'src/DeskPRO/Bundle/AuditBundle/EventListener/DecideListener.php',
   'src/DeskPRO/Bundle/AuditBundle/EventListener/DescriptionListener.php',
-  'src/DeskPRO/Bundle/AuditBundle/EventListener/DisableListenerListener.php',
+  'src/DeskPRO/Bundle/AuditBundle/EventListener/DisableListenerSubscriber.php',
   'src/DeskPRO/Bundle/AuditBundle/EventListener/ObjectListener.php',
   'src/DeskPRO/Bundle/AuditBundle/EventListener/WriteListener.php',
   'src/DeskPRO/Bundle/AuditBundle/Log/AuditLogHelper.php',
