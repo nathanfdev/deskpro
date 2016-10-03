@@ -4,7 +4,7 @@
 	{{ nav.list() }}
 		{{ nav.list_item('Settings', ng_href('setup.settings'), 'setup.settings', 'fa-cog') }}
 		{% if app.isCloud() %}{{ nav.list_item('Domain / URL Setup', ng_href('setup.cloud_custom_domain'), 'setup.cloud_custom_domain', 'fa-link') }}{% endif %}
-		{% if not app.isCloud() %}{{ nav.list_item('Automatic Updater', ng_href('setup.updater'), 'setup.updater', 'fa-cog') }}{% endif %}
+		{% if not app.isCloud() and not app.getSetting('disable_admin_deskpro_updates') %}{{ nav.list_item('Automatic Updater', ng_href('setup.updater'), 'setup.updater', 'fa-cog') }}{% endif %}
 
 		{{ nav.list_item_group('Anti-Abuse', 'fa-th-large') }}
 			{{ nav.list_subitem('Rate Limiting', ng_href('setup.rate_limiting'), 'setup.rate_limiting', 'fa-clock-o') }}
