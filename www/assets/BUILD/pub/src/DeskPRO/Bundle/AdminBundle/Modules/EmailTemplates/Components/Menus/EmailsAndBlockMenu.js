@@ -3,6 +3,7 @@ import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { Accordion, AccordionPanel } from 'DeskPRO/Component/Semantic/Accordion';
 import classNames from 'classnames';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
+import EmailTemplateItem from './EmailTemplateItem';
 
 export class EmailsAndBlockMenuContainer extends React.Component {
 
@@ -60,14 +61,13 @@ export class EmailsAndBlockMenu extends React.Component {
       return null;
     }
     return this.props.emailBlocks.valueSeq().map((template, key) =>
-      <MenuItem
+      <EmailTemplateItem
         key={`emailBlock${key}`}
         label={template.get('title')}
         icon="code"
         className="template"
         onClick={() => this.props.selectTemplate(template)}
-        onMouseOver={e => this.templateToolTip(e, template)}
-        onMouseOut={this.cancelToolTip}
+        desc={template.get('desc')}
       />
     );
   };
@@ -78,14 +78,13 @@ export class EmailsAndBlockMenu extends React.Component {
     }
     const subGroups = this.state.selectedLeft.get('subGroups');
     const primary = subGroups.get('primary').get('templates').valueSeq().map((template, key) =>
-      <MenuItem
+      <EmailTemplateItem
         key={`primary${key}`}
         label={template.get('title')}
         icon="code"
         className="template"
         onClick={() => this.props.selectTemplate(template)}
-        onMouseOver={e => this.templateToolTip(e, template)}
-        onMouseOut={this.cancelToolTip}
+        desc={template.get('desc')}
       />
     );
     const additionalTemplates = subGroups.valueSeq().map((subGroup) => {
@@ -93,14 +92,13 @@ export class EmailsAndBlockMenu extends React.Component {
         return null;
       }
       let content = subGroup.get('templates').valueSeq().map((template, key) =>
-        <MenuItem
+        <EmailTemplateItem
           key={`${subGroup.get('subGroupId')}${key}`}
           label={template.get('title')}
           icon="code"
           className="template"
           onClick={() => this.props.selectTemplate(template)}
-          onMouseOver={e => this.templateToolTip(e, template)}
-          onMouseOut={this.cancelToolTip}
+          desc={template.get('desc')}
         />);
       content = <Menu>{content}</Menu>;
       return (<AccordionPanel
@@ -122,18 +120,6 @@ export class EmailsAndBlockMenu extends React.Component {
         <Accordion>{additionalTemplates}</Accordion>
       </MenuWrapper>
     );
-  };
-
-  templateToolTip = (e, template) => {
-    this.toolTipTimeOutId = setTimeout(() => {
-      console.log(template.get('desc'));
-      console.log(e);
-    }, 500);
-  };
-
-  cancelToolTip = () => {
-    window.clearTimeout(this.toolTipTimeOutId);
-    this.toolTipTimeOutId = undefined;
   };
 
   isActive = item => item === this.state.selectedLeft;

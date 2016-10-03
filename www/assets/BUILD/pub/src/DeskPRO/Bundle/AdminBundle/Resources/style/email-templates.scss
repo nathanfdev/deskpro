@@ -22,3 +22,19 @@
     color: $dp-sonic-primary;
   }
 }
+.template-item .ui.top.right.popup {
+  border-color: $dp-sonic-primary;
+  font-size: 12px;
+  font-weight: 400;
+  color: $dp-greyscale-850;
+  padding: 15px;
+  border-radius: 0 2px 2px 0;
+  &:before {
+    box-shadow: 1px 1px 0px 0px $dp-sonic-primary;
+    bottom: auto;
+    right: auto;
+    left: -4px;
+    top: 22px;
+    transform: rotate(135deg);
+  }
+}
