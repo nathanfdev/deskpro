@@ -66,6 +66,7 @@ use Application\DeskPRO\Entity\TicketWorkflow;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Entity\WhiteListedIp;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\AuditBundle\EventListener\AuditListener;
 
 return [
@@ -622,4 +623,15 @@ return [
     ],
 
     WhiteListedIp::class => [AuditListener::INSERT => true],
+    ThemeSetAsset::class => [
+        AuditListener::ALL => [
+            'naming' => [
+                'type' => 'service',
+                'id'   => 'audit_log.naming_strategy.theme_set_asset',
+            ],
+        ],
+        AuditListener::INSERT => true,
+        AuditListener::UPDATE => true,
+        AuditListener::REMOVE => true,
+    ],
 ];

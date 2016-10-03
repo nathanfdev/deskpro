@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Brand;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -65,9 +67,29 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
      */
     protected $options;
 
+    /**
+     * @var Brand
+     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Brand", mappedBy="theme_set")
+     */
+    protected $brand;
+
+    /**
+     * @var Brand
+     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Brand", mappedBy="edit_theme_set")
+     */
+    protected $brand2;
+
+    /**
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage", mappedBy="chat", cascade={"persist", "remove"})
+     *
+     * @var ArrayCollection
+     */
+    protected $assets;
+
     public function __construct()
     {
         $this->setOptions([]);
+        $this->assets = new ArrayCollection();
     }
 
     public function getId()
@@ -131,5 +153,45 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
     public function __toString()
     {
         return "#{$this->id}, theme_id: {$this->theme_id}, options: ".print_r($this->options);
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBrand2()
+    {
+        return $this->brand2;
+    }
+
+    /**
+     * @param mixed $brand2
+     *
+     * @return $this
+     */
+    public function setBrand2($brand2)
+    {
+        $this->brand2 = $brand2;
+
+        return $this;
     }
 }

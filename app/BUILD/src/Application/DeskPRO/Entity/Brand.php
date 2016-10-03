@@ -242,8 +242,8 @@ class Brand extends DomainObject
         $builder->mapId();
         $builder->mapString('name');
         $builder->mapString('url', 255, true, true);
-        $builder->createOneToOne('theme_set', ThemeSet::class)->cascadePersist()->build();
-        $builder->createOneToOne('edit_theme_set', ThemeSet::class)->build();
+        $builder->createOneToOne('theme_set', ThemeSet::class)->cascadePersist()->inversedBy('brand')->build();
+        $builder->createOneToOne('edit_theme_set', ThemeSet::class)->inversedBy('brand2')->build();
 
         $metadata->mapManyToMany(
             [
