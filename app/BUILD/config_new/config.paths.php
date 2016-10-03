@@ -75,8 +75,22 @@ $PATHS_CONFIG['mysql_path'] = '';
 # Override any of these values to change the paths   #
 # to DeskPRO's system directories.                   #
 ######################################################
+# Do NOT edit/change these unless you are sure you   #
+# want to change these paths from the default.       #
+# It is almost never necessary to change these.      #
+######################################################
 
 $PATHS_CONFIG['dp_paths'] = [
+    // Optionally specify a specific "user directory" where
+    // all instance files are written to. This is useful if you want to completely
+    // separate DeskPRO application app files from any instance-specific files that get written.
+    //
+    // Setting this directory will change all others by default:
+    //   - $user_dir/attachments will be used for attachments
+    //   - $user_dir/backups will be used for backups
+    //   - $user_dir/var will be used for var (which includes sub-dirs for logs, tmp, etc)
+    'user_dir' => null,
+
     // Change the path to the 'attachments' directory.
     // This is where uploads, ticket attachments, images,
     // and other binary data is stored.
@@ -88,13 +102,6 @@ $PATHS_CONFIG['dp_paths'] = [
     // that are made before an automatic upgrade.
     // Default: /path/to/deskpro/backups
     'backups' => null,
-
-    // Change the path to the 'var' directory.
-    // This will change all sub-directories as well:
-    // var/cache, var/debug, var/kernel_cache, var/logs, var/tmp
-    // (unless overridden again by other options below).
-    // Default: /path/to/deskpro/var
-    'user_dir' => null,
 
     // Change the path to the var/logs directory.
     // This is where DeskPRO writes all log files to.
