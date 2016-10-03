@@ -67,5 +67,5 @@ services:
       - { name: kernel.event_listener, event: audit_log.finish_log, method: onFinish }
       - { name: doctrine.event_listener, connection: default, event: postFlush, priority: -1 }
 
-  audit_log.naming_strategy.theme_set_asset:
-    class: DeskPRO\Bundle\AuditBundle\Entity\NamingStrategy\ThemeSetAssetNamingStrategy
+  audit_log.naming_strategy.theme:
+    class: DeskPRO\Bundle\AuditBundle\Entity\NamingStrategy\ThemeNamingStrategy

@@ -28,19 +28,33 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Entity\NamingStrategy;
 
+use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
 
-class ThemeSetAssetNamingStrategy implements NamingStrategyInterface
+/**
+ * Class ThemeNamingStrategy.
+ */
+class ThemeNamingStrategy implements NamingStrategyInterface
 {
+    /**
+     * @param          $object
+     * @param AuditLog $log
+     *
+     * @return string
+     */
     public function getName($object, AuditLog $log)
     {
         $name = '';
-        /** @var ThemeSetAsset $object */
-        if ($brand = $object->getThemeSet()->getBrand()) {
-            $name = $brand->getName().' (Brand) - '.$object->getThemeSet()->getThemeId();
-        } elseif ($brand2 = $object->getThemeSet()->getBrand2()) {
-            $name = $brand2->getName().' (Brand) - Preview '.$object->getThemeSet()->getThemeId();
+        switch (true) {
+            case $object instanceof ThemeSetAsset || $object instanceof Template:
+                /** @var ThemeSetAsset $object */
+                if ($brand = $object->getThemeSet()->getBrand()) {
+                    $name = $brand->getName().' (Brand) - '.$object->getThemeSet()->getThemeId();
+                } elseif ($brand2 = $object->getThemeSet()->getBrand2()) {
+                    $name = $brand2->getName().' (Brand) - Preview '.$object->getThemeSet()->getThemeId();
+                }
+                break;
         }
 
         return $name;

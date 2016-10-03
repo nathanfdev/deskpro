@@ -470,6 +470,12 @@ return [
     ],
 
     Template::class => [
+        AuditListener::ALL => [
+            'naming' => [
+                'type' => 'service',
+                'id'   => 'audit_log.naming_strategy.theme',
+            ],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -627,7 +633,7 @@ return [
         AuditListener::ALL => [
             'naming' => [
                 'type' => 'service',
-                'id'   => 'audit_log.naming_strategy.theme_set_asset',
+                'id'   => 'audit_log.naming_strategy.theme',
             ],
         ],
         AuditListener::INSERT => true,
