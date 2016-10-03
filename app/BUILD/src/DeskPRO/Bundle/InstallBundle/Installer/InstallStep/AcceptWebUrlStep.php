@@ -91,6 +91,9 @@ class AcceptWebUrlStep extends AbstractStep
             $url = $this->askQuestion($q, 'web_url');
 
             if ($this->validateUrl($url)) {
+                $this->writeln('');
+                $this->writeln('For help troubleshooting this, refer to this page:');
+                $this->writeln('https://support.deskpro.com/kb/articles/558');
                 break;
             }
 
