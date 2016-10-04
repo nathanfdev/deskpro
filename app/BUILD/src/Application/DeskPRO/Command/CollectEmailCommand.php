@@ -128,7 +128,7 @@ class CollectEmailCommand extends ContainerAwareCommand
             // Run the gateway collection
             //----------------------------------------
 
-            $output->setVerbosity(3);
+            $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
             $logger = new Logger();
             $logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));

@@ -742,7 +742,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 			// The initial fire of this is after opening a new edit window,
 			// so we're just setting the defaults but not syncing an empty value back to the lang-x elements
-			var html = inputSnippetEl.val();
+			var html = langSnippetEl.val();
 
       if ($(this).hasClass('initial')) {
 				inputTitleEl.val(langTitleEl.val());
@@ -750,7 +750,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 			} else if ($(this).hasClass('set-bound')) {
 				langTitleEl.val(inputTitleEl.val());
-				langSnippetEl.val(html);
+				langSnippetEl.val(inputSnippetEl.val());
 
 			// Else make sure theyre both the same
 			} else {
@@ -791,7 +791,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					}
 				}
 
-				if (!found) { 
+				if (!found) {
 					snippet.title.push({
 						language_id: langId,
 						value: value
@@ -808,7 +808,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					if (snippet.snippet[i].language_id == langId) {
 						snippet.snippet[i].value = value;
 						found = true;
-						break; 
+						break;
 					}
 				}
 
