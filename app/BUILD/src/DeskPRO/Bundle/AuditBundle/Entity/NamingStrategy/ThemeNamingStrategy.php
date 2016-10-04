@@ -64,32 +64,51 @@ class ThemeNamingStrategy implements NamingStrategyInterface
     public function getName($object, AuditLog $log)
     {
         $name = '';
-        if ($object instanceof ThemeSetAsset || $object instanceof Template) {
-            /** @var ThemeSetAsset $object */
-            if ($brand = $this->getBrand($object->getThemeSet())) {
-                $name = $brand->getName().' (Brand) - '.$object->getThemeSet()->getThemeId();
-            } elseif ($brand = $this->getBrand($object->getThemeSet(), true)) {
-                $name = $brand->getName().' (Brand) - Preview '.$object->getThemeSet()->getThemeId();
-            }
-
-            $tags = $object->getTags();
-            $name .= $tags ? ' ('.array_pop($tags).')' : '';
-        } elseif ($object instanceof ThemeSet) {
-            if ($brand = $this->getBrand($object)) {
-                $name = $brand->getName().' (Brand) - '.$object->getThemeId();
-            } elseif ($brand = $this->getBrand($object)) {
-                $name = $brand->getName().' (Brand) - Preview '.$object->getThemeId();
-            }
+        switch (true) {
+            case $object instanceof ThemeSetAsset:
+                $tags = $object->getTags();
+                $name = $this->getBrandThemeString($object->getThemeSet());
+                $name .= $tags ? ' ('.array_pop($tags).')' : '';
+                break;
+            case $object instanceof Template:
+                $name = $this->getBrandThemeString($object->getThemeSet());
+                $name .= " ({$object->getName()})";
+                break;
+            case $object instanceof ThemeSet:
+                $name = $this->getBrandThemeString($object);
         }
 
         return $name;
     }
 
+    /**
+     * @param ThemeSet $themeSet
+     * @param bool     $editTheme
+     *
+     * @return Brand
+     */
     private function getBrand(ThemeSet $themeSet, $editTheme = false)
     {
         $key             = $editTheme ? 'theme_set' : 'edit_theme_set';
         $brandRepository = $this->em->getRepository(Brand::class);
 
         return $brandRepository->findOneBy([$key => $themeSet]);
+    }
+
+    /**
+     * @param ThemeSet $themeSet
+     *
+     * @return string
+     */
+    private function getBrandThemeString(ThemeSet $themeSet)
+    {
+        $name = '';
+        if ($brand = $this->getBrand($themeSet)) {
+            $name = $brand->getName().' (Brand) - '.$themeSet->getThemeId();
+        } elseif ($brand = $this->getBrand($themeSet, true)) {
+            $name = $brand->getName().' (Brand) - Preview '.$themeSet->getThemeId();
+        }
+
+        return $name;
     }
 }
