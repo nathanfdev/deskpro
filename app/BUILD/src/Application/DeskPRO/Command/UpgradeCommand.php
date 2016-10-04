@@ -81,19 +81,19 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             try {
                 $validator->validatePhpPath($phpPath, $root);
             } catch (\Exception $e) {
-                $wrongPaths[] = $phpPath ?: 'php';
+                $wrongPaths[] = ($phpPath ?: 'php').': '.$e->getMessage();
             }
 
             try {
                 $validator->validateMysqlPath($mysqlPath);
             } catch (\Exception $e) {
-                $wrongPaths[] = $mysqlPath ?: 'mysql';
+                $wrongPaths[] = ($mysqlPath ?: 'mysql').': '.$e->getMessage();
             }
 
             try {
                 $validator->validateMysqldumpPath($mysqldumpPath);
             } catch (\Exception $e) {
-                $wrongPaths[] = $mysqldumpPath ?: 'mysqldump';
+                $wrongPaths[] = ($mysqldumpPath ?: 'mysqldump').': '.$e->getMessage();
             }
 
             if ($wrongPaths) {
