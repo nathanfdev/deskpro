@@ -69,18 +69,18 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var Brand
-     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Brand", mappedBy="theme_set")
+     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Brand", mappedBy="theme_set", cascade={"persist"})
      */
     protected $brand;
 
     /**
      * @var Brand
-     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Brand", mappedBy="edit_theme_set")
+     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Brand", mappedBy="edit_theme_set", cascade={"persist"})
      */
     protected $brand2;
 
     /**
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage", mappedBy="chat", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset", mappedBy="theme_set", cascade={"persist", "remove"})
      *
      * @var ArrayCollection
      */
