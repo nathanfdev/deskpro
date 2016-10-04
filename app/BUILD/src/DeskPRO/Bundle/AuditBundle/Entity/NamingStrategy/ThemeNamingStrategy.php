@@ -67,11 +67,11 @@ class ThemeNamingStrategy implements NamingStrategyInterface
         switch (true) {
             case $object instanceof ThemeSetAsset:
                 $tags = $object->getTags();
-                $name = $this->getBrandThemeString($object->getThemeSet());
+                $name .= $object->getThemeSet() ? $this->getBrandThemeString($object->getThemeSet()) : '';
                 $name .= $tags ? ' ('.array_pop($tags).')' : '';
                 break;
             case $object instanceof Template:
-                $name = $this->getBrandThemeString($object->getThemeSet());
+                $name .= $object->getThemeSet() ? $this->getBrandThemeString($object->getThemeSet()) : '';
                 $name .= " ({$object->getName()})";
                 break;
             case $object instanceof ThemeSet:
