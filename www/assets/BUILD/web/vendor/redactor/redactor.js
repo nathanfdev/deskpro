@@ -846,11 +846,9 @@ var RLANG = {
 					{
 						this.formatNewLine(e);
 					}
-				}
-
-				if (this.opts.convertLinks && ((key === 13 && !e.shiftKey && !e.ctrlKey && !e.metaKey) || key === 32)) {
-					this.$editor.linkify();
-					this.focusEnd();
+          if (this.opts.convertLinks) {
+            this.$editor.linkify();
+          }
 				}
 
 				this.syncCode();
