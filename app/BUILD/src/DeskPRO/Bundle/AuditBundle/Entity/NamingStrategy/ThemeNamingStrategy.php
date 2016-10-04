@@ -28,16 +28,33 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Entity\NamingStrategy;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class ThemeNamingStrategy.
  */
 class ThemeNamingStrategy implements NamingStrategyInterface
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * ThemeNamingStrategy constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @param          $object
      * @param AuditLog $log
@@ -49,22 +66,30 @@ class ThemeNamingStrategy implements NamingStrategyInterface
         $name = '';
         if ($object instanceof ThemeSetAsset || $object instanceof Template) {
             /** @var ThemeSetAsset $object */
-            if ($brand = $object->getThemeSet()->getBrand()) {
+            if ($brand = $this->getBrand($object->getThemeSet())) {
                 $name = $brand->getName().' (Brand) - '.$object->getThemeSet()->getThemeId();
-            } elseif ($brand2 = $object->getThemeSet()->getBrand2()) {
-                $name = $brand2->getName().' (Brand) - Preview '.$object->getThemeSet()->getThemeId();
+            } elseif ($brand = $this->getBrand($object->getThemeSet(), true)) {
+                $name = $brand->getName().' (Brand) - Preview '.$object->getThemeSet()->getThemeId();
             }
 
             $tags = $object->getTags();
             $name .= $tags ? ' ('.array_pop($tags).')' : '';
         } elseif ($object instanceof ThemeSet) {
-            if ($brand = $object->getBrand()) {
+            if ($brand = $this->getBrand($object)) {
                 $name = $brand->getName().' (Brand) - '.$object->getThemeId();
-            } elseif ($brand2 = $object->getBrand2()) {
-                $name = $brand2->getName().' (Brand) - Preview '.$object->getThemeId();
+            } elseif ($brand = $this->getBrand($object)) {
+                $name = $brand->getName().' (Brand) - Preview '.$object->getThemeId();
             }
         }
 
         return $name;
+    }
+
+    private function getBrand(ThemeSet $themeSet, $editTheme = false)
+    {
+        $key             = $editTheme ? 'theme_set' : 'edit_theme_set';
+        $brandRepository = $this->em->getRepository(Brand::class);
+
+        return $brandRepository->findOneBy([$key => $themeSet]);
     }
 }

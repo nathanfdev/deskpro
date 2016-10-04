@@ -69,3 +69,5 @@ services:
 
   audit_log.naming_strategy.theme:
     class: DeskPRO\Bundle\AuditBundle\Entity\NamingStrategy\ThemeNamingStrategy
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
