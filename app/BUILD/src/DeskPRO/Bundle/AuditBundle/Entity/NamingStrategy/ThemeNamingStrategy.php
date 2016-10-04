@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AuditBundle\Entity\NamingStrategy;
 
 use Application\DeskPRO\Entity\Template;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
 
@@ -46,15 +47,22 @@ class ThemeNamingStrategy implements NamingStrategyInterface
     public function getName($object, AuditLog $log)
     {
         $name = '';
-        switch (true) {
-            case $object instanceof ThemeSetAsset || $object instanceof Template:
-                /** @var ThemeSetAsset $object */
-                if ($brand = $object->getThemeSet()->getBrand()) {
-                    $name = $brand->getName().' (Brand) - '.$object->getThemeSet()->getThemeId();
-                } elseif ($brand2 = $object->getThemeSet()->getBrand2()) {
-                    $name = $brand2->getName().' (Brand) - Preview '.$object->getThemeSet()->getThemeId();
-                }
-                break;
+        if ($object instanceof ThemeSetAsset || $object instanceof Template) {
+            /** @var ThemeSetAsset $object */
+            if ($brand = $object->getThemeSet()->getBrand()) {
+                $name = $brand->getName().' (Brand) - '.$object->getThemeSet()->getThemeId();
+            } elseif ($brand2 = $object->getThemeSet()->getBrand2()) {
+                $name = $brand2->getName().' (Brand) - Preview '.$object->getThemeSet()->getThemeId();
+            }
+
+            $tags = $object->getTags();
+            $name .= $tags ? ' ('.array_pop($tags).')' : '';
+        } elseif ($object instanceof ThemeSet) {
+            if ($brand = $object->getBrand()) {
+                $name = $brand->getName().' (Brand) - '.$object->getThemeId();
+            } elseif ($brand2 = $object->getBrand2()) {
+                $name = $brand2->getName().' (Brand) - Preview '.$object->getThemeId();
+            }
         }
 
         return $name;
