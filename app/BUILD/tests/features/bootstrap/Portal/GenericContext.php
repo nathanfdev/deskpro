@@ -345,6 +345,13 @@ class GenericContext extends BasePortalContext
         return $matches[0];
     }
 
+    protected function getBodyOfLastEmail()
+    {
+        $email_data = $this->getLastEmailData();
+
+        return $email_data['body'];
+    }
+
     protected function getSubjectOfLastEmail()
     {
         $email_data = $this->getLastEmailData();

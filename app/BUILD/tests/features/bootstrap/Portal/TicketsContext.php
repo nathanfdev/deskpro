@@ -34,6 +34,7 @@ namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use DpBehat\Data\DataContext;
 
 class TicketsContext extends BasePortalContext
 {
@@ -87,6 +88,9 @@ class TicketsContext extends BasePortalContext
         $this->persistAndFlush($ticket);
 
         $this->last_ticket = $ticket;
+
+        DataContext::setReference('ticket', $ticket);
+        DataContext::setReference('ticket_message', $msg);
     }
 
     /**

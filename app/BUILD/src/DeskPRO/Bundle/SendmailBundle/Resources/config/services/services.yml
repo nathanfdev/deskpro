@@ -1,0 +1,12 @@
+services:
+
+  email.ticket_viewmodel_factory:
+    class: DeskPRO\Bundle\SendmailBundle\Factory\TicketViewModelFactory
+
+  email.email_renderer:
+    class: DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer
+    arguments: ["@serializer", "@templating"]
+
+  email.email_sender:
+    class: DeskPRO\Bundle\SendmailBundle\Sender\EmailSender
+    arguments: ["@email.email_renderer", "@mailer"]
