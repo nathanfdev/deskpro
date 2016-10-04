@@ -12,13 +12,9 @@ $PATHS_CONFIG = [];
 # On Linux PHP is often located at:                  #
 #    /usr/bin/php or /usr/local/bin/php              #
 #                                                    #
-# On Windows PHP maybe found at                      #
-#	 C:\Program Files\php\php-win.exe                #
-#                                                    #
-# If you are using windows please ensure you use the #
-# win-php.exe version of PHP and not the php.exe     #
-# version. This prevents a command line window being #
-# generated everytime PHP is run.                    #
+# On Windows, PHP if often found at:                 #
+#    C:\Program Files\PHP\v7.0\php.exe               #
+#    or C:\Program Files (x86)\PHP\v7.0\php.exe      #
 #                                                    #
 # Please note that it must be the CLI version of PHP #
 # and not, for example, a cgi-fcgi binary. You can   #
@@ -26,7 +22,7 @@ $PATHS_CONFIG = [];
 # on the command line and looking for the string     #
 # such as the one below. The cli part is required    #
 #                                                    #
-# PHP 5.6.14 (cli) (built: Oct  4 2015 09:23:10)     #
+# PHP 7.0.1 (cli) (built: Oct  4 2016 09:23:10)      #
 ######################################################
 
 $PATHS_CONFIG['php_path'] = '';
