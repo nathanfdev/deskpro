@@ -118,7 +118,11 @@ define [
             @form.in_exchange_account.archive_mailbox = @account.incoming_account.archive_mailbox
 
         if @form.incoming_type == 'gmail'
-          @form.in_gmail_account.password = @account.incoming_account.password
+          @form.in_gmail_account.password     = @account.incoming_account.password
+          @form.in_gmail_account.clientId     = @account.incoming_account.clientId
+          @form.in_gmail_account.clientSecret = @account.incoming_account.clientSecret
+          @form.in_gmail_account.token        = @account.incoming_account.token
+          @form.in_gmail_account.refreshToken = @account.incoming_account.refreshToken
 
         if @form.incoming_type == 'office365'
           @form.in_office365_account.password = @account.incoming_account.password

@@ -30,34 +30,20 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\IncomingAccount;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception;
 
-use Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\Mapping as ORM;
 
-class GmailAccountType extends AbstractType
+/**
+ * @ORM\Entity
+ */
+class OAuthExceptionEvent extends ExceptionEvent
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * {@inheritdoc}
+     */
+    public function getSubjectDescription()
     {
-        $builder->add('user', 'email', ['required' => false]);
-        $builder->add('password', 'dp_enc_password', ['required' => false]);
-        $builder->add('token', 'text', ['required' => true]);
-        $builder->add('refreshToken', 'text', ['required' => true]);
-        $builder->add('clientId', 'text', ['required' => true]);
-        $builder->add('clientSecret', 'text', ['required' => true]);
-    }
-
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => GmailConfig::class,
-        ]);
-    }
-
-    public function getName()
-    {
-        return 'in_gmail_account';
+        return "OAuth exception: \"{$this->message}\".";
     }
 }

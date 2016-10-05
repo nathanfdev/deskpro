@@ -190,8 +190,15 @@
 		{############}
 		{# Gmail    #}
 		{############}
-
-		<div class="ng-hide" ng-show="form.incoming_type == 'gmail'">
+		<div class="ng-hide" ng-show="form.incoming_type == 'gmail'" {% if gmail_token %}ng-init="
+				TicketAccountsEdit.deferredData.gmailIn = {
+					token: '{{ gmail_token.access_token }}',
+					refreshToken: '{{ gmail_token.refresh_token }}',
+					clientId: '{{ gmail_token.clientId }}',
+					clientSecret: '{{ gmail_token.clientSecret }}'
+				}
+			"{% endif %}
+		>
 			<div class="inner-group">
 				<table width="100%" class="inner-form-table">
 					<tr>
@@ -201,23 +208,59 @@
 							<span ng-hide="form.address">Enter your email address above</span>
 						</td>
 					</tr>
-					<tr>
-						<th>Password</th>
-						<td><input type="password" class="form-control" name="title" ng-model="form.in_gmail_account.password" style="width: 50%;" /></td>
+					<tr ng-if="!form.in_gmail_account.token">
+						<th>
+							Client ID
+						</th>
+						<td>
+							<input type="text" class="form-control" ng-model="form.in_gmail_account.clientId" style="width: 50%;" />
+						</td>
 					</tr>
-					<tr>
+					<tr ng-if="!form.in_gmail_account.token">
+						<th>
+							Client Secret
+						</th>
+						<td>
+							<input type="text" class="form-control" ng-model="form.in_gmail_account.clientSecret" style="width: 50%;" />
+						</td>
+					</tr>
+
+					{% if app.session.getFlash('gmail.oauth.error') %}
+						<tr>
+							<td colspan="2" class="text-danger">
+								An error occurred while retrieving access token
+							</td>
+						</tr>
+					{% endif %}
+
+					<tr ng-if="form.in_gmail_account.token">
+						<td></td>
+						<td>
+							<button class="btn btn-danger" ng-click="TicketAccountsEdit.resetToken('in_gmail_account')" type="button">
+								<i class="fa fa-bolt"></i> Reset Access Token
+							</button>
+						</td>
+					</tr>
+					<tr ng-if="!form.in_gmail_account.token && form.in_gmail_account.clientId && form.in_gmail_account.clientSecret">
 						<th>&nbsp;</th>
 						<td>
-							<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+							{% set replacements = {
+								_id_: 	  ng_var('form.in_gmail_account.clientId'),
+								_secret_: ng_var('form.in_gmail_account.clientSecret'),
+								_url_: 	  url('admin') ~ '%23' ~ ng_var('path')
+							} %}
+							<a ng-href="{{ path('gmail_token', {id: '_id_', secret: '_secret_', back_url: '_url_' })|replace(replacements)|raw }}" class="btn btn-info">
+								<i class="fa fa-bolt"></i> Get Access Token
+							</a>
 						</td>
 					</tr>
 				</table>
 			</div>
 		</div>
 
-		{#############}
-		{# Office365 #}
-		{#############}
+		{# ########### #}
+		{# Office365   #}
+		{# ########### #}
 
 		<div class="ng-hide" ng-show="form.incoming_type == 'office365'">
 			<div class="inner-group">
@@ -243,9 +286,9 @@
 			</div>
 		</div>
 
-		{###############}
-		{# MS Exchange #}
-		{###############}
+		{# ############# #}
+		{# MS Exchange   #}
+		{# ############# #}
 
 		<div class="ng-hide" ng-show="form.incoming_type == 'exchange'">
 			{% if server_capable('soap') %}
@@ -330,3 +373,13 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/ng-template" id="ticket-accounts-gmail-modal">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="dismiss()">&times;</button>
+		<h4 class="modal-title">Get Access Token</h4>
+	</div>
+	<div class="modal-body">
+		<iframe style="border: 0; width: 100%; height: 300px" ng-src="{{ ng_var('iframeSrc') }}"></iframe>
+	</div>
+</script>
