@@ -3,7 +3,7 @@
 {% block fullpane_content %}
 
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('server.audit_logs') }}">
+		<a href="{{ ng_href('agents.audit_logs') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
 
 			<h3>{{ phrase('admin.audit_logs.title') }}</h3>
@@ -12,7 +12,7 @@
 
 	<section class="dp-paneblock dp-listpane">
 		<header>
-			<h3>{{ phrase('admin.audit_logs.log_title') }}{{ ng_var('ServerAuditLogsView.log.id') }}</h3>
+			<h3>{{ phrase('admin.audit_logs.log_title') }}{{ ng_var('AuditLogsView.log.id') }}</h3>
 		</header>
 
 		{##################################################################################################}
@@ -25,7 +25,7 @@
 							<strong>{{ phrase('admin.audit_logs.date_created') }}</strong>
 						</div>
 						<div class="col-sm-10">
-							{{ ng_var('ServerAuditLogsView.log.date_created | date : "yyyy-MM-d H:mm:ss"') }}
+							{{ ng_var('AuditLogsView.log.date_created | date : "yyyy-MM-d H:mm:ss"') }}
 						</div>
 					</div>
 				</div>
@@ -35,8 +35,8 @@
                             <strong>{{ phrase('admin.audit_logs.performer') }}</strong>
                         </div>
                         <div class="col-sm-10">
-                            {{ ng_var('ServerAuditLogsView.log.performer_name') }}
-                            <span ng-show="ServerAuditLogsView.log.performer_id">(ID: {{ ng_var('ServerAuditLogsView.log.performer_id') }})</span>
+                            {{ ng_var('AuditLogsView.log.performer_name') }}
+                            <span ng-show="AuditLogsView.log.performer_id">(ID: {{ ng_var('AuditLogsView.log.performer_id') }})</span>
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                             <strong>{{ phrase('admin.audit_logs.action') }}</strong>
                         </div>
                         <div class="col-sm-10">
-                            {{ ng_var('ServerAuditLogsView.log.action') }}
+                            {{ ng_var('AuditLogsView.log.action') }}
                         </div>
                     </div>
                 </div>
@@ -56,19 +56,19 @@
                             <strong>{{ phrase('admin.audit_logs.description') }}</strong>
                         </div>
                         <div class="col-sm-10">
-                            {{ ng_var('ServerAuditLogsView.log.description') }}
+                            {{ ng_var('AuditLogsView.log.description') }}
                         </div>
                     </div>
                 </div>
-                <div class="panel-body" ng-show="ServerAuditLogsView.log.object_id">
+                <div class="panel-body" ng-show="AuditLogsView.log.object_id">
                     <div class="form-group">
                         <div class="col-sm-2">
                             <strong>{{ phrase('admin.audit_logs.object_description') }}</strong>
                         </div>
                         <div class="col-sm-10">
-                            {{ ng_var('ServerAuditLogsView.log.object_name') }}
-                            - {{ ng_var('ServerAuditLogsView.log.object_type') }}{#
-                            #}[{{ ng_var('ServerAuditLogsView.log.object_id') }}]
+                            {{ ng_var('AuditLogsView.log.object_name') }}
+                            - {{ ng_var('AuditLogsView.log.object_type') }}{#
+                            #}[{{ ng_var('AuditLogsView.log.object_id') }}]
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                         </div>
                         <div class="col-sm-10">
                             <pre>{#
-                                #}{{ ng_var('ServerAuditLogsView.getChangeSet()') }}
+                                #}{{ ng_var('AuditLogsView.getChangeSet()') }}
                             </pre>
                         </div>
                     </div>

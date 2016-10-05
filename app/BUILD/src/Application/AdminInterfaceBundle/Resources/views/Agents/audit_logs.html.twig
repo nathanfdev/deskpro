@@ -14,47 +14,47 @@
                         <tr>
                             <td width="80">{{ phrase('admin.audit_logs.performer_id') }}</td>
                             <td width="100">
-                                <input class="form-control" type="number" ng-model="ServerAuditLogs.filters.performer_id" />
+                                <input class="form-control" type="number" ng-model="AuditLogs.filters.performer_id" />
                             </td>
                             <td style="padding-left: 15px" width="115">{{ phrase('admin.audit_logs.performer_name') }}</td>
                             <td width="150">
-                                <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.performer_name" />
+                                <input class="form-control" type="text" ng-model="AuditLogs.filters.performer_name" />
                             </td>
                             <td style="padding-left: 15px" width="75">{{ phrase('admin.audit_logs.api_key_id') }}</td>
                             <td width="100">
-                                <input class="form-control" type="number" ng-model="ServerAuditLogs.filters.api_key" />
+                                <input class="form-control" type="number" ng-model="AuditLogs.filters.api_key" />
                             </td>
                         </tr>
                         <tr>
                             <td width="100">{{ phrase('admin.audit_logs.object_type_filter') }}</td>
                             <td width="100">
-                                <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.object_type" />
+                                <input class="form-control" type="text" ng-model="AuditLogs.filters.object_type" />
                             </td>
                             <td style="padding-left: 15px" width="95">Object id</td>
                             <td width="100">
-                                <input class="form-control" type="number" ng-model="ServerAuditLogs.filters.object_id" />
+                                <input class="form-control" type="number" ng-model="AuditLogs.filters.object_id" />
                             </td>
                             <td width="95" style="padding-left: 15px" >{{ phrase('admin.audit_logs.object_name_filter') }}</td>
                             <td width="100">
-                                <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.object_name" />
+                                <input class="form-control" type="text" ng-model="AuditLogs.filters.object_name" />
                             </td>
                         </tr>
                         <tr>
                             <td width="95"  >Action</td>
                             <td width="100">
-                                <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.action" />
+                                <input class="form-control" type="text" ng-model="AuditLogs.filters.action" />
                             </td>
                             <td width="150" style="padding-left: 15px">{{ phrase('admin.audit_logs.date_created_filter') }}</td>
                             <td colspan="3">
                                 <span>
                                     <input type="text" class="form-control" style="width: 140px; display: inline-block;"
-                                           ng-model="ServerAuditLogs.filters.date_created_from"
+                                           ng-model="AuditLogs.filters.date_created_from"
                                            dp-datetime-popup="DD MMMM YYYY"
                                     />
                                 </span>
                                 <span>
                                     <input type="text" class="form-control" style="width: 140px; display: inline-block;"
-                                           ng-model="ServerAuditLogs.filters.date_created_to"
+                                           ng-model="AuditLogs.filters.date_created_to"
                                            dp-datetime-popup="DD MMMM YYYY"
                                     />
                                 </span>
@@ -63,14 +63,14 @@
                         </tr>
                     </table>
                     <div class="text-center" style="border-top: 1px solid #aed7e0; padding-top: 8px; margin-top: 8px;">
-                        <button class="btn btn-primary" ng-click="ServerAuditLogs.newSearch()">{{ phrase('admin.audit_logs.filter') }}</button>
-                        <button class="btn btn-default" ng-click="ServerAuditLogs.clearFilter()">{{ phrase('admin.audit_logs.clear_filter') }}</button>
+                        <button class="btn btn-primary" ng-click="AuditLogs.newSearch()">{{ phrase('admin.audit_logs.filter') }}</button>
+                        <button class="btn btn-default" ng-click="AuditLogs.clearFilter()">{{ phrase('admin.audit_logs.clear_filter') }}</button>
                     </div>
                 </div>
             </div>
-			<div style="float: left" ng-show="ServerAuditLogs.logs.length">
+			<div style="float: left" ng-show="AuditLogs.logs.length">
 				Delete logs:
-				<select ng-model="ServerAuditLogs.purge"
+				<select ng-model="AuditLogs.purge"
 						ui-select2
 						style="width: 130px;"
 				>
@@ -82,40 +82,40 @@
 					<option value="year">{{ phrase('admin.audit_logs.purge_1_year') }}</option>
 					<option value="all">{{ phrase('admin.audit_logs.purge_all') }}</option>
 				</select>
-				<button class="btn btn-danger"  ng-click="ServerAuditLogs.purgeLogs()">Delete!</button>
+				<button class="btn btn-danger"  ng-click="AuditLogs.purgeLogs()">Delete!</button>
 			</div>
-			<div class="dp-btn-pagination" ng-show="ServerAuditLogs.logs.length">
-				<span dp-show-spinning="paginating_server_audit_logs">
+			<div class="dp-btn-pagination" ng-show="AuditLogs.logs.length">
+				<span dp-show-spinning="paginating_agent_audit_logs">
 					<i class="spinner-flat"></i>
 				</span>
-				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page != 1" ng-click="ServerAuditLogs.goPrevPage()">
+				<button class="btn" ng-show="AuditLogs.pagination.current_page != 1" ng-click="AuditLogs.goPrevPage()">
 					&lt; Prev
 				</button>
 				<select
-						ng-show="!ServerAuditLogs.pagination.plain"
-						ng-model="ServerAuditLogs.pagination.current_page"
-						ng-change="ServerAuditLogs.updateFilter()"
+						ng-show="!AuditLogs.pagination.plain"
+						ng-model="AuditLogs.pagination.current_page"
+						ng-change="AuditLogs.updateFilter()"
 						ui-select2
-						ng-options="'Page '+ page for page in ServerAuditLogs.pagination.page_nums track by page"
+						ng-options="'Page '+ page for page in AuditLogs.pagination.page_nums track by page"
 						style="width: 130px;" />
-				<span ng-show="ServerAuditLogs.pagination.plain">
+				<span ng-show="AuditLogs.pagination.plain">
 					Page
-				<input ng-model="ServerAuditLogs.pagination.virtual_current_page" />
+				<input ng-model="AuditLogs.pagination.virtual_current_page" />
 					of
-					{{ ng_var('ServerAuditLogs.pagination.total_pages') }}
-					<button class="btn" ng-click="ServerAuditLogs.goCurrentPage($event)">
+					{{ ng_var('AuditLogs.pagination.total_pages') }}
+					<button class="btn" ng-click="AuditLogs.goCurrentPage($event)">
 						Go
 					</button>
 				</span>
-				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page < ServerAuditLogs.pagination.total_pages"
-						ng-click="ServerAuditLogs.goNextPage()">
+				<button class="btn" ng-show="AuditLogs.pagination.current_page < AuditLogs.pagination.total_pages"
+						ng-click="AuditLogs.goNextPage()">
 					Next &gt;
 				</button>
 			</div>
-			<div style="padding: 80px; text-align: center;" ng-show="ServerAuditLogs.is_loading">
+			<div style="padding: 80px; text-align: center;" ng-show="AuditLogs.is_loading">
 				<i class="spinner-editor"></i>
 			</div>
-			<table class="table table-bordered" ng-if="!ServerAuditLogs.is_loading && ServerAuditLogs.logs.length">
+			<table class="table table-bordered" ng-if="!AuditLogs.is_loading && AuditLogs.logs.length">
 				<thead>
 					<tr>
 						<th nowrap="nowrap">
@@ -139,9 +139,9 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="log in ServerAuditLogs.logs">
+					<tr ng-repeat="log in AuditLogs.logs">
 						<td class="alt dp-id-col">
-							<a ng-href="{{ ng_href('server.audit_logs.view', '{id: log.id}') }}">{{ ng_var('log.id') }}</a>
+							<a ng-href="{{ ng_href('agents.audit_logs.view', '{id: log.id}') }}">{{ ng_var('log.id') }}</a>
 						</td>
 						<td>
 							<span ng-if="log.object_id" style="color: #888; font-size: 11px; padding-right: 3px;">ID: {{ ng_var('log.object_id') }}</span>
@@ -166,31 +166,31 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="dp-btn-pagination" ng-show="ServerAuditLogs.logs.length">
-				<span dp-show-spinning="paginating_server_audit_logs">
+			<div class="dp-btn-pagination" ng-show="AuditLogs.logs.length">
+				<span dp-show-spinning="paginating_agent_audit_logs">
 					<i class="spinner-flat"></i>
 				</span>
-				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page != 1" ng-click="ServerAuditLogs.goPrevPage()">
+				<button class="btn" ng-show="AuditLogs.pagination.current_page != 1" ng-click="AuditLogs.goPrevPage()">
 					&lt; Prev
 				</button>
 				<select
-						ng-show="!ServerAuditLogs.pagination.plain"
-						ng-model="ServerAuditLogs.pagination.current_page"
-						ng-change="ServerAuditLogs.updateFilter()"
+						ng-show="!AuditLogs.pagination.plain"
+						ng-model="AuditLogs.pagination.current_page"
+						ng-change="AuditLogs.updateFilter()"
 						ui-select2
-						ng-options="'Page '+ page for page in ServerAuditLogs.pagination.page_nums track by page"
+						ng-options="'Page '+ page for page in AuditLogs.pagination.page_nums track by page"
 						style="width: 130px;" />
-				<span ng-show="ServerAuditLogs.pagination.plain">
+				<span ng-show="AuditLogs.pagination.plain">
 					Page
-				<input ng-model="ServerAuditLogs.pagination.virtual_current_page" />
+				<input ng-model="AuditLogs.pagination.virtual_current_page" />
 					of
-					{{ ng_var('ServerAuditLogs.pagination.total_pages') }}
-					<button class="btn" ng-click="ServerAuditLogs.goCurrentPage($event)">
+					{{ ng_var('AuditLogs.pagination.total_pages') }}
+					<button class="btn" ng-click="AuditLogs.goCurrentPage($event)">
 						Go
 					</button>
 				</span>
-				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page < ServerAuditLogs.pagination.total_pages"
-						ng-click="ServerAuditLogs.goNextPage()">
+				<button class="btn" ng-show="AuditLogs.pagination.current_page < AuditLogs.pagination.total_pages"
+						ng-click="AuditLogs.goNextPage()">
 					Next &gt;
 				</button>
 			</div>
