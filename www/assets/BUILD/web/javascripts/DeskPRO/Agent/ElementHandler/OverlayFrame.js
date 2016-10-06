@@ -29,7 +29,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
       css:   {
         display:         'none',
         position:        'absolute',
-        top:             '50px',
+        top:             '51px',
         right:           0,
         bottom:          0,
         left:            '52px',
