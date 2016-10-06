@@ -63,7 +63,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     if (this.agentTopBar.searchBox.textInput.value) {
       window.$('.dp-omnibox-results').show();
     }
-  }
+  };
 
   static onSearchBlur() {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
