@@ -196,6 +196,7 @@ export class AgentTopBar extends React.Component {
             agents={agents.toArray()}
             chatDepartments={chatDepartments.toArray()}
             updateVolume={this.onChatVolumeUpdate}
+            me={this.props.me}
             volume={8}
           />
         </TopBarItem>
