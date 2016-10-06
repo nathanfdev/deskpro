@@ -7,9 +7,6 @@ import AddButton from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AddB
 import Chat from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/Chat';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
-import recentSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg';
-import viewsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg';
-import notificationsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg';
 import teleOperator from '../../../Resources/teleoperator.jpg';
 import { css } from '../../../decorators';
 
@@ -724,17 +721,17 @@ storiesOf('App: top bar', module)
           <SearchBox onUserInput={action('Search')} placeholder="Search ..." />
         </TopBarItem>
         <TopBarItem className="recent">
-          <Isvg src={recentSvg} />
+          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
         </TopBarItem>
         <AddButton />
         <TopBarRightMenu>
           <TopBarItem className="views">
-            <Isvg src={viewsSvg} />
+            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
           </TopBarItem>
           <TopBarItem>
             <TopBarNotificationIcon
               elementId="notifications"
-              svg={notificationsSvg}
+              svg={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg`}
               count="2"
             />
           </TopBarItem>

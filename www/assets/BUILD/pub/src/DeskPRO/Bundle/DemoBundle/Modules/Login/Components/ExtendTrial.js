@@ -4,10 +4,6 @@ import { Segment, Segments } from 'DeskPRO/Component/Semantic/Segment';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Message } from 'DeskPRO/Component/Semantic/Message';
 import { Field, Form, Input, TextArea } from 'DeskPRO/Component/Semantic/Form';
-import amexSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/amex.svg';
-import masterCardSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/mastercard.svg';
-import visaSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/visa.svg';
-import cardBackPng from 'DeskPRO/Bundle/DemoBundle/Resources/img/backofcard.png';
 
 export class ExtendTrialContainer extends React.Component {
   render() {
@@ -17,8 +13,7 @@ export class ExtendTrialContainer extends React.Component {
 
 export class ExtendTrial extends React.Component {
   static propTypes = {
-    onResumeTrial:   PropTypes.func,
-    onDeleteAccount: PropTypes.func
+    onResumeTrial: PropTypes.func
   };
 
   render() {
@@ -27,7 +22,7 @@ export class ExtendTrial extends React.Component {
         <h3>Extend your trial</h3>
         <p>Get <span className="green">7 extra days</span> by entering your details below.</p>
         <Message className="positive">
-          You won't pay anything whilst in your trial and you can still cancel at any time.
+          You won&apos;t pay anything whilst in your trial and you can still cancel at any time.
         </Message>
         <Segments className="horizontal">
           <Segment className="address">
@@ -71,9 +66,15 @@ export class ExtendTrial extends React.Component {
               <Field className="card-number">
                 <label htmlFor="card_number">
                   Card number
-                  <Isvg src={visaSvg} />
-                  <Isvg src={masterCardSvg} />
-                  <Isvg src={amexSvg} />
+                  <Isvg
+                    src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/visa.svg`}
+                  />
+                  <Isvg
+                    src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/mastercard.svg`}
+                  />
+                  <Isvg
+                    src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/amex.svg`}
+                  />
                 </label>
                 <Input id="card_number" type="number" />
               </Field>
@@ -88,7 +89,10 @@ export class ExtendTrial extends React.Component {
                   Security code
                 </label>
                 <Input id="security_code" type="number" />
-                <img src={cardBackPng} alt="Back of card" />
+                <img
+                  src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/backofcard.png`}
+                  alt="Back of card"
+                />
               </Field>
               <Button onClick={this.props.onResumeTrial} className="positive">Resume free trial</Button>
             </Form>

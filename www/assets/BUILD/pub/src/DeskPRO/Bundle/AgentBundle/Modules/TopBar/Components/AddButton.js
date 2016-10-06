@@ -3,7 +3,6 @@ import Isvg from 'react-inlinesvg';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import plusSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg';
 
 class AddButton extends React.Component {
   static propTypes = {
@@ -124,7 +123,7 @@ class AddButton extends React.Component {
           autoOpen={false}
         >
           <button className="ui button">
-            <Isvg src={plusSvg} />
+            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
           </button>
         </PopUp>
       </div>);

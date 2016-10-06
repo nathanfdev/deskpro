@@ -5,7 +5,6 @@ import $ from 'jquery';
 import moment from 'moment';
 import Isvg from 'react-inlinesvg';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import backArrowSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/back-arrow.svg';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/onboardingActions';
 import * as Tours from '../Tours';
@@ -233,7 +232,11 @@ export class AgentOnboarding extends React.Component {
         steps={this.state.steps}
         showSkipButton={false}
         locale={{
-          back:  (<Isvg src={backArrowSvg} />),
+          back: (
+            <Isvg
+              src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/back-arrow.svg`}
+            />
+           ),
           close: (<span>Close</span>),
           last:  (<span>Finish</span>),
           next:  (<span>Next</span>)

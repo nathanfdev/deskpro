@@ -3,16 +3,6 @@ import Isvg from 'react-inlinesvg';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
-import ticketsSvg from '../../../Resources/img/sidebar/tickets.svg';
-import chatSvg from '../../../Resources/img/sidebar/chat.svg';
-import crmSvg from '../../../Resources/img/sidebar/crm.svg';
-import feedbackSvg from '../../../Resources/img/sidebar/feedback.svg';
-import publishingSvg from '../../../Resources/img/sidebar/publishing.svg';
-import tasksSvg from '../../../Resources/img/sidebar/tasks.svg';
-import reportsSvg from '../../../Resources/img/sidebar/reports.svg';
-import settingsSvg from '../../../Resources/img/sidebar/settings.svg';
-import billingSvg from '../../../Resources/img/sidebar/billing.svg';
-import portalSvg from '../../../Resources/img/sidebar/portal.svg';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/sideBarActions';
 import * as onboardingActions from '../../Onboarding/Actions/onboardingActions';
@@ -219,7 +209,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'tickets',
         label:     'Tickets',
-        icon:      ticketsSvg,
+        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tickets.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('tickets_section');
           this.props.closeIframes();
@@ -230,7 +220,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'chats',
         label:     'Chats',
-        icon:      chatSvg,
+        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/chat.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('chat_section');
           this.props.closeIframes();
@@ -241,7 +231,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'crm',
         label:     'CRM',
-        icon:      crmSvg,
+        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/crm.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('people_section');
           this.props.closeIframes();
@@ -252,7 +242,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'feedback',
         label:     'Feedback',
-        icon:      feedbackSvg,
+        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/feedback.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('feedback_section');
           this.props.closeIframes();
@@ -263,7 +253,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'publish',
         label:     'Publish',
-        icon:      publishingSvg,
+        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/publishing.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('publish_section');
           this.props.closeIframes();
@@ -274,7 +264,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'tasks',
         label:     'Tasks',
-        icon:      tasksSvg,
+        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tasks.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('tasks_section');
           this.props.closeIframes();
@@ -285,7 +275,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'reports',
         label:     'Reports',
-        icon:      reportsSvg,
+        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
         callback:  () => {
           this.props.openReports();
         }
@@ -295,7 +285,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'admin',
         label:     'Admin',
-        icon:      settingsSvg,
+        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/settings.svg`,
         callback:  () => {
           this.props.openAdmin();
         }
@@ -305,7 +295,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'billing',
         label:     'Billing',
-        icon:      billingSvg,
+        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/billing.svg`,
         callback:  () => {
           this.props.openBilling();
         }
@@ -315,7 +305,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'portal',
         label:     'Portal',
-        icon:      portalSvg,
+        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/portal.svg`,
         href:      window.DESKPRO_PORTAL_HOME
       });
     }

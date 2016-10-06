@@ -7,9 +7,6 @@ import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'Des
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import recentSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg';
-import viewsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg';
-import notificationsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
@@ -170,7 +167,7 @@ export class AgentTopBar extends React.Component {
         />
       </TopBarItem>
       <TopBarItem className="legacy-omnibox recent" onClick={this.props.onRecent}>
-        <Isvg src={recentSvg} />
+        <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
       </TopBarItem>
       {/* <TopBarItem className='z-index-stub'>*/}
       {/* <HeaderWidget />*/}
@@ -180,12 +177,12 @@ export class AgentTopBar extends React.Component {
       <AddButton closeIframes={this.props.closeIframes} />
       <TopBarRightMenu>
         <TopBarItem className="views" onClick={this.props.toggleViewMode}>
-          <Isvg src={viewsSvg} />
+          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
         </TopBarItem>
         <TopBarItem className="legacy-omnibox notifications" onClick={this.props.onNotification}>
           <TopBarNotificationIcon
             elementId="notifications"
-            svg={notificationsSvg}
+            svg={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg`}
             count={notificationCount}
           />
         </TopBarItem>
