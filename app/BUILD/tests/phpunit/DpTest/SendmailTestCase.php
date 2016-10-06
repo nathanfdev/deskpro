@@ -26,20 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\SendmailBundle\ViewModel;
+namespace DpTest;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
-
-class TicketReplyByAgent extends EmailBaseType
+abstract class SendmailTestCase extends AbstractKernelAwareTestCase
 {
-    private $ticket;
-
-    private $reply;
-
-    public function __construct(Ticket $ticket, TicketMessage $reply)
+    /**
+     * @return \Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    protected function getContainer()
     {
-        $this->ticket = $ticket;
-        $this->reply  = $reply;
+        return $this->getApiKernel()->getContainer();
     }
 }

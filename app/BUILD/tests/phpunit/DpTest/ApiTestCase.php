@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTest;
 
 abstract class ApiTestCase extends AbstractKernelAwareTestCase

@@ -26,12 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\SendmailBundle\ViewModel;
+namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-abstract class EmailBaseType
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
+
+class TicketReplyByAgent extends EmailBaseType
 {
-    public function getInfo()
+    /**
+     * @var Ticket
+     */
+    private $ticket;
+
+    /**
+     * @var TicketMessage
+     */
+    private $reply;
+
+    public function __construct(Ticket $ticket, TicketMessage $reply)
     {
-        $attributes = get_class_vars($this);
+        $this->ticket = $ticket;
+        $this->reply  = $reply;
     }
 }

@@ -45,10 +45,10 @@ class EmailContext extends BaseContext implements KernelAwareContext
      */
     protected function getLastEmail()
     {
-        /** @var SendmailSourceRepository $ss_repo */
-        $ss_repo = $this->repository(SendmailSource::class);
+        /** @var SendmailSourceRepository $ssRepo */
+        $ssRepo = $this->repository(SendmailSource::class);
 
-        return $ss_repo->getLatest();
+        return $ssRepo->getLatest();
     }
 
     /**
@@ -58,38 +58,38 @@ class EmailContext extends BaseContext implements KernelAwareContext
      */
     protected function getLastEmailData()
     {
-        $last_email = $this->getLastEmail();
+        $lastEmail = $this->getLastEmail();
 
-        $blob = $last_email->getBlob();
+        $blob = $lastEmail->getBlob();
 
-        /** @var DeskproBlobStorage $blob_storage */
-        $blob_storage = $this->get('deskpro.blob_storage');
+        /** @var DeskproBlobStorage $blobStorage */
+        $blobStorage = $this->get('deskpro.blob_storage');
 
-        $email_body    = $blob_storage->copyBlobRecordToString($blob);
-        $email_subject = $last_email->getHeaderSubject();
+        $emailBody    = $blobStorage->copyBlobRecordToString($blob);
+        $emailSubject = $lastEmail->getHeaderSubject();
 
         $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
-        $reader->setRawSource($email_body);
-        $email_body = $reader->getBodyText()->getBodyUtf8();
+        $reader->setRawSource($emailBody);
+        $emailBody = $reader->getBodyText()->getBodyUtf8();
 
         return [
-            'body'    => $email_body,
-            'subject' => $email_subject,
+            'body'    => $emailBody,
+            'subject' => $emailSubject,
         ];
     }
 
     protected function getBodyOfLastEmail()
     {
-        $email_data = $this->getLastEmailData();
+        $emailData = $this->getLastEmailData();
 
-        return $email_data['body'];
+        return $emailData['body'];
     }
 
     protected function getSubjectOfLastEmail()
     {
-        $email_data = $this->getLastEmailData();
+        $emailData = $this->getLastEmailData();
 
-        return $email_data['subject'];
+        return $emailData['subject'];
     }
 
     /**
@@ -113,8 +113,7 @@ class EmailContext extends BaseContext implements KernelAwareContext
                 $message
             );
         $this->get('email.email_sender')
-            ->send('ticket_reply_byagent.html',
-                ['to' => 'foo@example.com'],
-                $viewModel);
+            ->send($viewModel,
+                ['to' => 'foo@example.com']);
     }
 }

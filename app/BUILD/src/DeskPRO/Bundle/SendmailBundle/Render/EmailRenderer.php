@@ -28,7 +28,9 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Render;
 
-use DeskPRO\Bundle\SendmailBundle\ViewModel\EmailBaseType;
+use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use JMS\Serializer\Serializer;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -46,15 +48,77 @@ class EmailRenderer
 
     public function __construct(Serializer $serializer, EngineInterface $engine)
     {
-        $this->serializer     = $serializer;
-        $this->templateEngine = $engine;
+        $this->setSerializer($serializer);
+        $this->setTemplateEngine($engine);
     }
 
+    /**
+     * @return Serializer
+     */
+    public function getSerializer()
+    {
+        return $this->serializer;
+    }
+
+    /**
+     * @param Serializer $serializer
+     *
+     * @return EmailRenderer
+     */
+    public function setSerializer($serializer)
+    {
+        $this->serializer = $serializer;
+
+        return $this;
+    }
+
+    /**
+     * @return EngineInterface
+     */
+    public function getTemplateEngine()
+    {
+        return $this->templateEngine;
+    }
+
+    /**
+     * @param EngineInterface $templateEngine
+     *
+     * @return EmailRenderer
+     */
+    public function setTemplateEngine($templateEngine)
+    {
+        $this->templateEngine = $templateEngine;
+
+        return $this;
+    }
+
+    /**
+     * @param string        $templateName
+     * @param EmailBaseType $model
+     *
+     * @return EmailTemplateCode
+     */
     public function render($templateName, EmailBaseType $model)
     {
-        $vars   = $this->serializer->toArray($model);
-        $result = $this->templateEngine->render($templateName, $vars);
+        $vars = $this->getSerializer()->toArray($model, new SideloadSerializationContext());
 
-        return ['subject' => $result['subject'], 'body' => $result['body']];
+        return new EmailTemplateCode($this->getTemplateEngine()->render($templateName, $vars));
+    }
+
+    /**
+     * @param EmailBaseType $model
+     *
+     * @return array
+     */
+    public function getStructure(EmailBaseType $model)
+    {
+        //        $metadataFactory = $this->getSerializer()->getMetadataFactory();
+//        $propertyNamingStrategy = new CamelCaseNamingStrategy();
+//        $docCommentExtractor = new DocCommentExtractor();
+//        $parser = new JmsMetadataParser($metadataFactory, $propertyNamingStrategy, $docCommentExtractor);
+//        return $parser->parse(['class' => get_class($model), 'groups' => []]);
+        $this->get('dp_api_doc.parser.jms_metadata_parser');
+
+        return $this->getSerializer()->toArray($model, new SideloadSerializationContext());
     }
 }

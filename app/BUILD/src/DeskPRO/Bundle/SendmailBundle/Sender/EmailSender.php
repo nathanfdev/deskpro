@@ -28,9 +28,11 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Sender;
 
+use Application\DeskPRO\Entity\Person;
 use Application\EmailBundle\SwiftMailer\Mailer;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
-use DeskPRO\Bundle\SendmailBundle\ViewModel\EmailBaseType;
+use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
+use Doctrine\ORM\EntityManager;
 
 class EmailSender
 {
@@ -45,28 +47,63 @@ class EmailSender
     private $mailer;
 
     /**
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
      * EmailSender constructor.
      *
      * @param EmailRenderer $emailRenderer
      * @param Mailer        $mailer
+     * @param EntityManager $container
      */
-    public function __construct(EmailRenderer $emailRenderer, Mailer $mailer)
+    public function __construct(EmailRenderer $emailRenderer, Mailer $mailer, EntityManager $container)
     {
-        $this->renderer = $emailRenderer;
-        $this->mailer   = $mailer;
+        $this->renderer      = $emailRenderer;
+        $this->mailer        = $mailer;
+        $this->entityManager = $container;
     }
 
     /**
-     * @param string        $templateName
-     * @param array         $args
-     * @param EmailBaseType $model
+     * @return EmailRenderer
      */
-    public function send($templateName, $args, EmailBaseType $model)
+    public function getRenderer()
     {
-        $emailBody = $this->renderer->render($templateName, $model);
-        $message   = $this->mailer->createMessage();
+        return $this->renderer;
+    }
+
+    /**
+     * @return Mailer
+     */
+    public function getMailer()
+    {
+        return $this->mailer;
+    }
+
+    /**
+     * @return EntityManager
+     */
+    public function getEntityManager()
+    {
+        return $this->entityManager;
+    }
+
+    /**
+     * @param EmailBaseType $model
+     * @param array         $args
+     */
+    public function send(EmailBaseType $model, $args)
+    {
+        $recipient = $this->getEntityManager()->getRepository(Person::class)->findOneByEmail($args['to']);
+        if ($recipient) {
+            $model->setRecipient($recipient);
+        }
+        $emailCode = $this->getRenderer()->render($model->getTemplate(), $model);
+        $message   = $this->getMailer()->createMessage();
         $message->setTo($args['to']);
-        $message->setBody($emailBody);
+        $message->setBody($emailCode->getBody());
+        $message->setSubject($emailCode->getSubject());
         $this->mailer->send($message);
     }
 }

@@ -56,8 +56,8 @@ abstract class AbstractModelTest extends ApiTestCase
      */
     public function setUp()
     {
-        $this->serializer = $this->getContainer()->get('serializer');
-        $this->validator  = $this->getContainer()->get('validator');
+        $this->serializer = $this->get('serializer');
+        $this->validator  = $this->get('validator');
     }
 
     /**
