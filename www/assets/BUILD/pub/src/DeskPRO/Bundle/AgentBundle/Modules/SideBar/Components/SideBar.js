@@ -13,7 +13,6 @@ import reportsSvg from '../../../Resources/img/sidebar/reports.svg';
 import settingsSvg from '../../../Resources/img/sidebar/settings.svg';
 import billingSvg from '../../../Resources/img/sidebar/billing.svg';
 import portalSvg from '../../../Resources/img/sidebar/portal.svg';
-import logoSvg from '../../../Resources/img/sidebar/logo.svg';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/sideBarActions';
 import * as onboardingActions from '../../Onboarding/Actions/onboardingActions';
@@ -372,7 +371,7 @@ export class SideBar extends React.Component {
         className={classNames('sidebar-menu', 'ui', 'vertical', 'menu')}
       >
         <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo}>
-          <Isvg src={logoSvg} />
+          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logo.svg`} />
         </div>
         {this.getMenuItems()}
       </div>
