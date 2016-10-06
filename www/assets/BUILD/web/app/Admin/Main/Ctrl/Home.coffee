@@ -54,11 +54,11 @@ define [
         @quick_stats    = result.data.quickStats
 
         problem_triggers = [
-          @cron_status.is_problem,
-          @error_status.error_count > 0,
-          @error_status.gateway_error_count > 0,
-          @error_status.sendmail_error_count > 0,
-          @apc_status.is_problem
+          @cron_status?.is_problem,
+          @error_status?.error_count > 0,
+          @error_status?.gateway_error_count > 0,
+          @error_status?.sendmail_error_count > 0,
+          @apc_status?.is_problem
         ]
         @is_server_problem = problem_triggers.filter((x) -> return !!x).length > 0
       )

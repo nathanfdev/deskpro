@@ -16,12 +16,12 @@ class SearchBox extends React.Component {
 
   handleChange = () => {
     this.props.onUserInput(
-      this.refs.textInput.value
+      this.textInput.value
     );
   };
 
   clearInput = () => {
-    this.refs.textInput.value = '';
+    this.textInput.value = '';
   };
 
   render() {
@@ -32,7 +32,7 @@ class SearchBox extends React.Component {
         <input
           type="search"
           placeholder={placeholder}
-          ref="textInput"
+          ref={(c) => { this.textInput = c; }}
           onChange={this.handleChange}
           onFocus={onFocus}
           onBlur={onBlur}
