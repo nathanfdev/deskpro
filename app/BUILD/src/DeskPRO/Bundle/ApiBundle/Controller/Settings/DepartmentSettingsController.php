@@ -37,11 +37,13 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\DefaultDepartmentSettingsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * API access to person settings.
@@ -89,17 +91,32 @@ class DepartmentSettingsController extends BaseController
         $form->submit($request->request->all());
         if ($form->isValid()) {
             $this->setSetting($form->getData());
+
+            return View::create(null, Response::HTTP_NO_CONTENT);
         }
+
+        throw new InvalidFormException($form);
     }
 
     private function setSetting(DefaultDepartmentSettings $settings)
     {
-        $em           = $this->get('doctrine.orm.default_entity_manager');
+        $department = $settings->getDepartment();
+        $em         = $this->get('doctrine.orm.default_entity_manager');
+
         $brandSetting = $em->getRepository(
             BrandSetting::class)->findOneBy([
                 'brand' => $settings->getBrand(),
                 'name'  => $settings->getName(),
         ]);
+
+        if (!$department) {
+            if ($brandSetting) {
+                $em->remove($brandSetting);
+                $em->flush();
+            }
+
+            return;
+        }
 
         if (!$brandSetting) {
             $brandSetting = new BrandSetting();
@@ -109,7 +126,7 @@ class DepartmentSettingsController extends BaseController
             ;
         }
 
-        $brandSetting->setValue($settings->getDepartment()->getId());
+        $brandSetting->setValue($department->getId());
         $em->persist($brandSetting);
         $em->flush();
     }
