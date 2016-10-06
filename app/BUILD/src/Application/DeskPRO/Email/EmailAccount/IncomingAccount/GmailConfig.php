@@ -71,17 +71,41 @@ class GmailConfig implements AccountConfigInterface
     public $refreshToken;
 
     /**
+     * 'read', 'delete', 'archive'.
+     *
+     * @var string
+     */
+    public $mode = 'read';
+
+    /**
+     * The mailbox to read from. Default blank means inbox.
+     *
+     * @var string
+     */
+    public $read_mailbox = null;
+
+    /**
+     * If using the 'archive' method, this is the mailbox name.
+     *
+     * @var string
+     */
+    public $archive_mailbox = null;
+
+    /**
      * {@inheritdoc}
      */
     public function serializeJsonArray()
     {
         return [
-            'user'         => $this->user,
-            'password'     => $this->password,
-            'clientId'     => $this->clientId,
-            'clientSecret' => $this->clientSecret,
-            'token'        => $this->token,
-            'refreshToken' => $this->refreshToken,
+            'user'            => $this->user,
+            'password'        => $this->password,
+            'clientId'        => $this->clientId,
+            'clientSecret'    => $this->clientSecret,
+            'token'           => $this->token,
+            'refreshToken'    => $this->refreshToken,
+            'mode'            => $this->mode,
+            'read_mailbox'    => $this->read_mailbox,
+            'archive_mailbox' => $this->archive_mailbox,
         ];
     }
 
@@ -116,5 +140,8 @@ class GmailConfig implements AccountConfigInterface
         $metadata->addPropertyConstraint('clientSecret', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('token', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('refreshToken', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('mode', new Constraints\Choice([
+            'choices' => ['read', 'delete', 'archive'],
+        ]));
     }
 }

@@ -47,6 +47,12 @@ class GmailAccountType extends AbstractType
         $builder->add('refreshToken', 'text', ['required' => true]);
         $builder->add('clientId', 'text', ['required' => true]);
         $builder->add('clientSecret', 'text', ['required' => true]);
+        $builder->add('mode', 'choice', [
+            'required' => true,
+            'choices'  => ['read' => 'read', 'delete' => 'delete', 'archive' => 'archive'],
+        ]);
+        $builder->add('read_mailbox', 'text', ['required' => false]);
+        $builder->add('archive_mailbox', 'text', ['required' => false]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
