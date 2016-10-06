@@ -233,6 +233,18 @@ class Strings
     }
 
     /**
+     * Detects all line breaks with a space character.
+     *
+     * @param string $string The string to work on
+     *
+     * @return int
+     */
+    public static function containsLineBreaks($string)
+    {
+        return preg_match('#\n|\r\n|\r#', $string);
+    }
+
+    /**
      * Replace all whitespace with a single space.
      *
      * @param string $string
@@ -1763,6 +1775,18 @@ class Strings
         $string = preg_replace('#[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+#S', '', $string);
 
         return $string;
+    }
+
+    /**
+     * Detects "invisible" characters in strings, except for legit ones like newlines and tabs.
+     *
+     * @param string $string
+     *
+     * @return int
+     */
+    public static function containsInvisibleCharacters($string)
+    {
+        return preg_match('#[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+#S', $string);
     }
 
     /**
