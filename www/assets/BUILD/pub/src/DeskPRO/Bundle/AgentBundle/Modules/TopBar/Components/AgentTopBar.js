@@ -58,9 +58,12 @@ export class AgentTopBarContainer extends SeparateComponent {
     }
   }
 
-  static onSearchFocus() {
+  onSearchFocus = () => {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
-  }
+    if (this.agentTopBar.searchBox.textInput.value) {
+      window.$('.dp-omnibox-results').show();
+    }
+  };
 
   static onSearchBlur() {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
@@ -105,7 +108,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     const props = { ...this.props,
       updateVolume:      AgentTopBarContainer.updateVolume,
       onSearch:          AgentTopBarContainer.onSearch,
-      onSearchFocus:     AgentTopBarContainer.onSearchFocus,
+      onSearchFocus:     this.onSearchFocus,
       onSearchBlur:      AgentTopBarContainer.onSearchBlur,
       toggleViewMode:    AgentTopBarContainer.toggleViewMode,
       onRecent:          AgentTopBarContainer.onRecent,
@@ -113,7 +116,7 @@ export class AgentTopBarContainer extends SeparateComponent {
       closeIframes:      AgentTopBarContainer.closeIframes,
       notificationCount: this.state.notificationCount
     };
-    return <AgentTopBar {...props} />;
+    return <AgentTopBar {...props} ref={(c) => { this.agentTopBar = c; }} />;
   }
 }
 export class AgentTopBar extends React.Component {
@@ -164,6 +167,7 @@ export class AgentTopBar extends React.Component {
           onFocus={this.props.onSearchFocus}
           onBlur={this.props.onSearchBlur}
           placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
+          ref={(c) => { this.searchBox = c; }}
         />
       </TopBarItem>
       <TopBarItem className="legacy-omnibox recent" onClick={this.props.onRecent}>
@@ -192,6 +196,7 @@ export class AgentTopBar extends React.Component {
             agents={agents.toArray()}
             chatDepartments={chatDepartments.toArray()}
             updateVolume={this.onChatVolumeUpdate}
+            me={this.props.me}
             volume={8}
           />
         </TopBarItem>

@@ -12,6 +12,7 @@ class Chat extends React.Component {
     chatDepartments: PropTypes.array,
     onlineAgents:    PropTypes.array,
     volume:          PropTypes.number,
+    me:              PropTypes.object,
     updateVolume:    PropTypes.func
   };
 
@@ -178,20 +179,25 @@ class Chat extends React.Component {
   toggleChat = (status) => {
     const postData = [];
     const url = `${window.BASE_URL}agent/misc/set-agent-status/available`;
-    this.setState({
-      activeChat: status
-    });
+    const onlineAgents = this.state.onlineAgents;
+
     if (status) {
+      onlineAgents.push(`${this.props.me.get('id')}`);
       postData.push({
         name:  'is_chat_available',
         value: 1
       });
     } else {
+      onlineAgents.splice(onlineAgents.indexOf(`${this.props.me.get('id')}`), 1);
       postData.push({
         name:  'is_chat_available',
         value: 0
       });
     }
+    this.setState({
+      activeChat: status,
+      onlineAgents
+    });
 
     const self = this;
     window.$.ajax({

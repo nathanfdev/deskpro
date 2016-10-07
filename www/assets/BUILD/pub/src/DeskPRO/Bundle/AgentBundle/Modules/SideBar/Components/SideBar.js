@@ -304,7 +304,7 @@ export class SideBar extends React.Component {
     if (this.props.canUsePortal()) {
       menus.push({
         className: 'portal',
-        label:     'Portal',
+        label:     <span>Portal <i className="icon external" /></span>,
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/portal.svg`,
         href:      window.DESKPRO_PORTAL_HOME
       });

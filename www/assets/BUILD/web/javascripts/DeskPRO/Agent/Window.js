@@ -3733,6 +3733,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				self.runPageRouteFromElement($(this), { event: ev });
 
+				if (window.DP_FRAME_OVERLAYS) {
+					for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
+						const iframe = window.DP_FRAME_OVERLAYS[key];
+						if (iframe.opened) {
+							iframe.close();
+						}
+					}
+				}
+
 				// If this was a list-pane and we have an open popover,
 				// we need to close the popover so the listpane can actually load
 				if ($(this).data('route').indexOf('listpane:') === 0) {
