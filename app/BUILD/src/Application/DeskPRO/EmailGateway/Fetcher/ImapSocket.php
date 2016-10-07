@@ -114,7 +114,7 @@ class ImapSocket extends AbstractFetcher
                 $options['host'] = 'imap.gmail.com';
                 $options['port'] = 993;
                 $options['user'] = $gmail_config->user;
-                $options['mode'] = self::MODE_DELETE; // delete in gmail just means archive
+                $options['mode'] = $gmail_config->mode ?: self::MODE_DELETE; // delete in gmail just means archive
 
                 $this->logger->log('Trying to refresh gmail access token', 'debug');
                 $client = new \Google_Client();
@@ -143,7 +143,7 @@ class ImapSocket extends AbstractFetcher
         $options['logger'] = $this->logger;
 
         $this->protocol = new Protocol\Imap($options['host'], $options['port'], 'ssl');
-        $this->oauth2Authenticate($this->protocol, $options['user'], $options['token']);
+        $this->oauth2Authenticate($options['user'], $options['token']);
         $this->storage = new Storage\Imap($this->protocol);
 
         if ($this->archive_mailbox === $this->storage->getCurrentFolder()) {
@@ -167,9 +167,9 @@ class ImapSocket extends AbstractFetcher
         }
 
         if ($this->mode == self::MODE_READ) {
-            $this->message_uids = $this->protocol->search([Storage::FLAG_UNSEEN]);
+            $this->message_uids = $this->protocol->search([Storage::FLAG_UNSEEN]) ?: [];
         } else {
-            $this->message_uids = $this->protocol->search(['ALL']);
+            $this->message_uids = $this->protocol->search(['ALL']) ?: [];
         }
 
         $this->logger->log('Read IDs: '.implode(', ', $this->message_uids), 'debug');
@@ -206,7 +206,7 @@ class ImapSocket extends AbstractFetcher
         $raw_message       = new RawMessage();
         $raw_message->id   = $message_uid;
         $raw_message->uid  = $message_uid;
-        $raw_message->size = $this->storage->getMessageSize($message_uid) ?: 0;
+        $raw_message->size = $this->storage->getSize($message_uid) ?: 0;
 
         $this->logger->log(sprintf('Message UID: %s', $raw_message->uid), 'debug');
         $this->logger->log(sprintf('Message size: %s bytes', $raw_message->size), 'debug');
@@ -214,11 +214,11 @@ class ImapSocket extends AbstractFetcher
         if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
-            $raw_message->content = $this->storage->getRawHeaders($message_uid)."\n\n";
+            $raw_message->content = $this->storage->getRawHeader($message_uid)."\n\n";
             $this->logger->log('Message too big, only fetching headers', 'debug');
         } else {
             // Otherwise store the whole message
-            $raw_message->content = $this->storage->getRawMessage($message_uid);
+            $raw_message->content = $this->storage->getRawContent($message_uid);
         }
 
         $headers = null;
@@ -255,12 +255,12 @@ class ImapSocket extends AbstractFetcher
                 break;
 
             case self::MODE_ARCHIVE:
-                $this->storage->moveMessageMailbox($id, $this->archive_mailbox);
+                $this->storage->moveMessage($id, $this->archive_mailbox);
                 $this->logger->log("Moved $id to {$this->archive_mailbox}", 'debug');
                 break;
 
             case self::MODE_DELETE:
-                $this->storage->deleteMessage($id);
+                $this->storage->removeMessage($id);
                 $this->logger->log("Deleted $id", 'debug');
                 break;
 
@@ -281,23 +281,22 @@ class ImapSocket extends AbstractFetcher
     }
 
     /**
-     * @param $protocol
      * @param $email
      * @param $accessToken
      *
      * @return bool
      */
-    protected function oauth2Authenticate($protocol, $email, $accessToken)
+    protected function oauth2Authenticate($email, $accessToken)
     {
         $authenticateParams = ['XOAUTH2', $this->constructAuthString($email, $accessToken)];
-        $protocol->sendRequest('AUTHENTICATE', $authenticateParams);
+        $this->protocol->sendRequest('AUTHENTICATE', $authenticateParams);
         while (true) {
             $response = '';
-            $is_plus  = $protocol->readLine($response, '+', true);
+            $is_plus  = $this->protocol->readLine($response, '+', true);
             if ($is_plus) {
                 // error_log("got an extra server challenge: $response");
                 // Send empty client response.
-                $protocol->sendRequest('');
+                $this->protocol->sendRequest('');
                 continue;
             }
 
