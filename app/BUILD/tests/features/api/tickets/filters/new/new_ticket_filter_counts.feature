@@ -114,13 +114,11 @@ Feature: /new/ticket_filters_counts endpoint
 
     And the JSON node "data.nested[0].nested[0].id" should be equal to 1
     And the JSON node "data.nested[0].nested[0].type" should be equal to "agent"
-    And the JSON node "data.nested[0].nested[0].title" should be equal to "Link Admin"
     And the JSON node "data.nested[0].nested[0].count" should be equal to 2
     And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
 
     And the JSON node "data.nested[0].nested[1].id" should be equal to 2
     And the JSON node "data.nested[0].nested[1].type" should be equal to "agent"
-    And the JSON node "data.nested[0].nested[1].title" should be equal to "Zelda Agent"
     And the JSON node "data.nested[0].nested[1].count" should be equal to 1
     And the JSON node "data.nested[0].nested[1].nested" should have 0 elements
 

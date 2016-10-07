@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,16 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Twig;
 
 use Application\DeskPRO\Twig\Loader\HybridLoader;
 
 class Environment extends \Twig_Environment
 {
-    /** @var bool  */
+    /** @var bool */
     protected $ext_dirty = false;
 
-    public function __construct(\Twig_LoaderInterface $loader = null, $options = array())
+    public function __construct(\Twig_LoaderInterface $loader = null, $options = [])
     {
         static $has_done = false;
 
@@ -81,8 +82,8 @@ class Environment extends \Twig_Environment
         if ($this->ext_dirty) {
             $this->ext_dirty = false;
 
-            $set_ext    = array();
-            $append_ext = array();
+            $set_ext    = [];
+            $append_ext = [];
 
             foreach ($this->extensions as $k => $ext) {
                 if ($ext instanceof \Application\DeskPRO\Twig\Extension\TemplatingExtension || $ext instanceof \Application\UserBundle\Twig\Extension\UserTemplatingExtension) {
@@ -124,7 +125,7 @@ class Environment extends \Twig_Environment
     private function doLoadTemplate($name, $index = null)
     {
         if (!isset($GLOBALS['DP_RENDERED_TEMPLATES'])) {
-            $GLOBALS['DP_RENDERED_TEMPLATES'] = array();
+            $GLOBALS['DP_RENDERED_TEMPLATES'] = [];
         }
 
         $GLOBALS['DP_RENDERED_TEMPLATES'][(string) $name] = true;
@@ -235,14 +236,14 @@ class Environment extends \Twig_Environment
      *
      * @return null|string
      */
-    public function renderStringTemplate($template_code, array $vars = array())
+    public function renderStringTemplate($template_code, array $vars = [])
     {
         $old_loader = $this->getLoader();
         $old_cache  = $this->getCache();
 
-        $arr_loader = new \Twig_Loader_Array(array(
+        $arr_loader = new \Twig_Loader_Array([
             'template' => $template_code,
-        ));
+        ]);
 
         $this->setLoader($arr_loader);
         $this->setCache(false);

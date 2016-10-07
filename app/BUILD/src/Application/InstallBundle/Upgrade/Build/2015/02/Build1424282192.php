@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1424282192 extends AbstractBuild
@@ -77,9 +78,9 @@ class Build1424282192 extends AbstractBuild
             return;
         }
 
-        $this->container->getDb()->delete('sendmail_queue', array('id' => $rec['id']));
+        $this->container->getDb()->delete('sendmail_queue', ['id' => $rec['id']]);
 
-        $blob = $this->container->getDb()->fetchAssoc('SELECT * FROM blobs WHERE id = ?', array($rec['blob_id']));
+        $blob = $this->container->getDb()->fetchAssoc('SELECT * FROM blobs WHERE id = ?', [$rec['blob_id']]);
         if (!$blob) {
             $rec['@error'] = 'missing blob';
             $this->_saveDataBackup($rec);

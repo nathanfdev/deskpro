@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Usersources
  */
+
 namespace Orb\HttpFoundation\Session;
 
 /**
@@ -107,7 +108,7 @@ class SessionNamespace implements SessionInterface
         $this->start();
 
         if (isset($this->session->data[$this->namespace])) {
-            $this->session->data[$this->namespace] = array();
+            $this->session->data[$this->namespace] = [];
         }
 
         $this->session->data[$this->namespace][$name] = $value;
@@ -123,7 +124,7 @@ class SessionNamespace implements SessionInterface
         $this->start();
 
         if (!isset($this->session->data[$this->namespace])) {
-            return array();
+            return [];
         }
 
         return $this->session->data[$this->namespace];
@@ -185,7 +186,7 @@ class SessionNamespace implements SessionInterface
         if (isset($this->session->data[$this->namespace])) {
             return new \ArrayIterator($this->session->data[$this->namespace]);
         } else {
-            return new \ArrayIterator(array());
+            return new \ArrayIterator([]);
         }
     }
 

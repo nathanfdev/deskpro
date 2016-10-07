@@ -62,9 +62,9 @@ class TwitterUserFollower extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $display_order = 0;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

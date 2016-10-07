@@ -85,9 +85,9 @@ class BanEmail extends DomainObject
         $this->setModelField('banned_email', $email);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -46,6 +46,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayou
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimelinePagerfantaAdapter;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketReplyType;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
@@ -143,7 +144,7 @@ class TicketsController extends AbstractController
      *
      * @return Response
      */
-    public function viewAction(Request $request, $ticket_ref = null, $auth = null, $visitor_id, $_route)
+    public function viewAction(Request $request, $ticket_ref = null, $auth = null, $visitor_id = null, $_route = null)
     {
         $ticket = $this->getTicketForViewPage($ticket_ref, $auth, $_route);
 
@@ -163,7 +164,7 @@ class TicketsController extends AbstractController
         $message->setVisitorId($visitor_id);
         $message->setIpAddress($request->getClientIp());
 
-        $form = $this->createForm('ticket_reply', $form_data, [
+        $form = $this->createForm(TicketReplyType::class, $form_data, [
             'ticket'         => $ticket,
             'ticket_message' => $message,
             'person'         => $this->getUser(),
@@ -772,7 +773,7 @@ class TicketsController extends AbstractController
                     WHERE ticket_id = ?
                     ORDER BY message_id DESC
                     LIMIT 1
-                ', array($ticket->getId()));
+                ', [$ticket->getId()]);
 
         if (!$last_message_id || $message->getId() >= $last_message_id) {
             $ticket->feedback_rating = $feedback->getRating();
@@ -826,12 +827,12 @@ class TicketsController extends AbstractController
      */
     protected function getTicketForViewPage($ticket_ref, $auth, $_route)
     {
-        //
+
         // If a ticket is being viewed with "auth" then it uses different security. Anyone that is authenticated
         // can view a ticket with the /ticket-view/$auth route.
-        //
+
         // If it is not the auth route, the normal security applies via the /tickets/$ticket_ref route.
-        //
+
         if ($_route === 'portal_tickets_guest_view') {
             if (!$ticket = $this->getTicketByAuthIfGrantedAccess($auth)) {
                 throw new NotFoundHttpException(sprintf('no ticket with auth "%s" found', $auth));

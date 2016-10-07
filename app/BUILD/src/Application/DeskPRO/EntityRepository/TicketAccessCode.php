@@ -70,7 +70,7 @@ class TicketAccessCode extends AbstractEntityRepository
             SELECT *
             FROM ticket_access_codes
             WHERE id = ? AND auth = ?
-        ', array($info['access_code_id'], $info['auth']));
+        ', [$info['access_code_id'], $info['auth']]);
 
         if (!$tac) {
             return;
@@ -90,7 +90,7 @@ class TicketAccessCode extends AbstractEntityRepository
                 SELECT tac
                 FROM DeskPRO:TicketAccessCode tac
                 WHERE tac.ticket = ?1 AND tac.person = ?2
-            ')->setParameters(array(1 => $ticket, 2 => $person))->setMaxResults(1)->getSingleResult();
+            ')->setParameters([1 => $ticket, 2 => $person])->setMaxResults(1)->getSingleResult();
 
             return $rec;
         } catch (\Doctrine\ORM\NoResultException $e) {

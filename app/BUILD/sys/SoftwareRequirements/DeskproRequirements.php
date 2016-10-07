@@ -57,7 +57,7 @@ class DeskproRequirements extends RequirementCollection
         );
 
         if (version_compare($installedPhpVersion, self::REQUIRED_PHP_VERSION, '>=')) {
-            $timezones = array();
+            $timezones = [];
             foreach (\DateTimeZone::listAbbreviations() as $abbreviations) {
                 foreach ($abbreviations as $abbreviation) {
                     $timezones[$abbreviation['timezone_id']] = true;
@@ -354,13 +354,13 @@ class DeskproRequirements extends RequirementCollection
             'Install and enable the <strong>GD</strong> extension.'
         );
 
-        $check_fn = array(
+        $check_fn = [
             'escapeshellarg',
             'exec',
             'passthru',
             'chdir',
             'proc_open',
-        );
+        ];
 
         foreach ($check_fn as $fn) {
             $this->addRequirement(
@@ -455,7 +455,7 @@ class DeskproRequirements extends RequirementCollection
         static $functions = null;
 
         if ($functions === null) {
-            $functions = array();
+            $functions = [];
             $list      = @ini_get('disable_functions').','.@ini_get('suhosin.executor.func.blacklist');
             $list      = explode(',', $list);
 

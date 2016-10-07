@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Orb\Util\Strings;
@@ -39,7 +40,7 @@ class Build1375958085 extends AbstractBuild
     {
         // A previous build has object_lang created with bad charset
         // This was fixed on the table, but its possible the fields need updating too
-        $show = $this->container->getDb()->fetchColumn('SHOW CREATE TABLE `object_lang`', array(), 1);
+        $show = $this->container->getDb()->fetchColumn('SHOW CREATE TABLE `object_lang`', [], 1);
         $show = str_replace('`', '', $show);
         $show = strtolower($show);
 

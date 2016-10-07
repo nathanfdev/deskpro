@@ -86,33 +86,33 @@ class Department extends AbstractCategoryRepository
     {
         $perms = App::getDb()->fetchAll(
             'SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?',
-            array($dep->id)
+            [$dep->id]
         );
 
-        $data = array(
-            'usergroups'  => array(),
-            'agentgroups' => array(),
-            'agents'      => array(),
-        );
+        $data = [
+            'usergroups'  => [],
+            'agentgroups' => [],
+            'agents'      => [],
+        ];
 
         foreach ($perms as $perm) {
             if ($perm['usergroup_id']) {
                 if (App::getContainer()->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
-                    $data['agentgroups'][] = array(
+                    $data['agentgroups'][] = [
                         'usergroup_id' => (int) $perm['usergroup_id'],
                         'perm_name'    => $perm['name'],
-                    );
+                    ];
                 } else {
-                    $data['usergroups'][] = array(
+                    $data['usergroups'][] = [
                         'usergroup_id' => (int) $perm['usergroup_id'],
                         'perm_name'    => $perm['name'],
-                    );
+                    ];
                 }
             } elseif ($perm['person_id']) {
-                $data['agents'][] = array(
+                $data['agents'][] = [
                     'agent_id'  => (int) $perm['person_id'],
                     'perm_name' => $perm['name'],
-                );
+                ];
             }
         }
 

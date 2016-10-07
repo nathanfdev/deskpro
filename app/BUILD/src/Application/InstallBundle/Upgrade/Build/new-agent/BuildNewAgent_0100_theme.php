@@ -36,9 +36,9 @@ class BuildNewAgent_0100_theme extends AbstractBuild
 
         $brands = $db->fetchAll('SELECT id, theme_set_id, edit_theme_set_id FROM brands LIMIT 1');
 
-        #----------------------------------------
-        # rename common tpls
-        #----------------------------------------
+        //----------------------------------------
+        // rename common tpls
+        //----------------------------------------
 
         $renames = [
             'UserBundle::custom-headinclude.html.twig' => 'Theme:Internal:custom-head-include.html.twig',
@@ -70,9 +70,9 @@ class BuildNewAgent_0100_theme extends AbstractBuild
             }
         }
 
-        #----------------------------------------
-        # backup/remove all others
-        #----------------------------------------
+        //----------------------------------------
+        // backup/remove all others
+        //----------------------------------------
 
         $backupTemplates = $db->fetchAll("
             SELECT id, name, template_code
@@ -95,13 +95,13 @@ class BuildNewAgent_0100_theme extends AbstractBuild
                     $tpl['template_code']
                 );
                 $this->out(sprintf('Backup %s to %s', $tpl['name'], $backupPath));
-                $this->container->getDb()->delete('templates', array('id' => $tpl['id']));
+                $this->container->getDb()->delete('templates', ['id' => $tpl['id']]);
             }
         }
 
-        #----------------------------------------
-        # copy logo blob
-        #----------------------------------------
+        //----------------------------------------
+        // copy logo blob
+        //----------------------------------------
 
         $blobId  = $this->readSetting('core.deskpro_logo_blob');
         $blobRow = $db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', [$blobId]);

@@ -238,9 +238,6 @@ class LogComposer
         return true;
     }
 
-    /**
-     *
-     */
     public function saveLog()
     {
         try {

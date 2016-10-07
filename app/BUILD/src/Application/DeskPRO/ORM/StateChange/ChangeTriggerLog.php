@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\ORM\StateChange;
 
 class ChangeTriggerLog implements ChangeInterface, NonStateTrackingInterface
@@ -83,11 +84,11 @@ class ChangeTriggerLog implements ChangeInterface, NonStateTrackingInterface
      */
     public function getNew()
     {
-        return array(
+        return [
             'field_id'      => $this->field_id,
             'trigger_id'    => $this->trigger_id,
             'trigger_title' => $this->trigger_title,
-        );
+        ];
     }
 
     /**

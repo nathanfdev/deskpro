@@ -26,13 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Hierarchy;
 
-use DeskPRO\Bundle\AppBundle\Form\ChoiceList\HierarchyChoiceList;
 use DeskPRO\Component\Hierarchy\Hierarchy as BaseHierarchy;
 use DeskPRO\Component\Hierarchy\HierarchyFormatterInterface;
 use DeskPRO\Component\Hierarchy\HierarchyNode as BaseNode;
@@ -99,39 +94,28 @@ class Hierarchy extends BaseHierarchy
     }
 
     /**
-     * @return HierarchyChoiceList
+     * @return HierarchyChoiceLoader
      */
-    public function getChoiceList()
+    public function getChoiceLoader()
     {
         $choices = [];
-        $labels  = [];
 
-        if (!$this->leaf_selections_only) {
+        if ($this->leaf_selections_only) {
+            /** @var HierarchyNode $node */
+            foreach ($this as $node) {
+                $choices[(string) $node] = $node;
+                foreach ($node->getChoices() as $id => $nid) {
+                    $choices[(string) $nid] = $nid;
+                }
+            }
+        } else {
             /** @var HierarchyNode $node */
             foreach ($this->getFlattened() as $node) {
-                $label = (string) $node;
-                $key   = $this->getNodeId($node);
-
-                $choices[$key] = $node;
-                $labels[$key]  = $label;
-            }
-
-            return new HierarchyChoiceList($choices, $labels);
-        }
-
-        /** @var HierarchyNode $node */
-        foreach ($this as $node) {
-            $choices[$this->getNodeId($node)] = $node;
-            $labels[$this->getNodeId($node)]  = (string) $node;
-            foreach ($node->getChoices() as $id => $nid) {
-                $choices[$id] = $nid;
-            }
-            foreach ($node->getLabels() as $id => $nl) {
-                $labels[$id] = $nl;
+                $choices[(string) $node] = $node;
             }
         }
 
-        return new HierarchyChoiceList($choices, $labels);
+        return new HierarchyChoiceLoader($choices);
     }
 
     public function markOnlyLeafSelections()

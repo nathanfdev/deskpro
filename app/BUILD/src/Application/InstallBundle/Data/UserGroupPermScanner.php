@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\People\UserPermissions\UserPermissions;
@@ -48,7 +49,7 @@ class UserGroupPermScanner
 
         $perms = new UserPermissions();
 
-        $set_perms = array();
+        $set_perms = [];
         foreach (UserPermissions::$prefix_map as $real_name => $coll_name) {
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {

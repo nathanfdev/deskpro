@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -60,7 +61,7 @@ class OrganizationEmailDomain extends AbstractEntityRepository
             SELECT domain
             FROM organization_email_domains
             WHERE organization_id = ?
-        ', array($org['id']));
+        ', [$org['id']]);
 
         return $domains;
     }
@@ -95,7 +96,7 @@ class OrganizationEmailDomain extends AbstractEntityRepository
     {
         if (!$domains) {
             if (is_array($domains)) {
-                return array();
+                return [];
             } else {
                 return 0;
             }
@@ -105,7 +106,7 @@ class OrganizationEmailDomain extends AbstractEntityRepository
 
         $single = false;
         if (!is_array($domains)) {
-            $domains = array($domains);
+            $domains = [$domains];
             $single  = true;
         }
 
@@ -129,7 +130,7 @@ class OrganizationEmailDomain extends AbstractEntityRepository
             JOIN people ON (people.id = people_emails.person_id)
             WHERE people_emails.email_domain IN (?) AND people.organization_id $op ?
             GROUP BY people_emails.email_domain
-        ", array($domains, $org_id), array(Connection::PARAM_STR_ARRAY, \PDO::PARAM_INT)));
+        ", [$domains, $org_id], [Connection::PARAM_STR_ARRAY, \PDO::PARAM_INT]));
 
         if ($single) {
             return array_pop($results);

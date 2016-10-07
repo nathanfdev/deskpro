@@ -61,7 +61,7 @@ class DpArrayType extends ArrayType
 
             return $val;
         } catch (ConversionException $e) {
-            return array();
+            return [];
         }
     }
 

@@ -31,11 +31,12 @@
  *
  * @category Entities
  */
+
 namespace deskpro_slack\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
-use GuzzleHttp\Client as GuzzleClient;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -61,7 +62,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      */
     public function checkRequirementsAction(ApiPackageRequestContext $context)
     {
-        return $context->createJsonResponse(array('curl_support' => function_exists('curl_init')));
+        return $context->createJsonResponse(['curl_support' => function_exists('curl_init')]);
     }
 
     /**
@@ -76,26 +77,26 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $error  = false;
         $client = null;
 
-        $log   = array();
+        $log   = [];
         $log[] = 'webhook url: '.$webhook_url;
 
         try {
-            $client = new GuzzleClient();
+            $client = new HttpClient();
             $res    = $client->request(
                 'POST',
                 $webhook_url,
-                array('form_params' => array('payload' => json_encode(array('text' => 'Link successful'))))
+                ['form_params' => ['payload' => json_encode(['text' => 'Link successful'])]]
             );
             $log[] = $res->getStatusCode().' '.$res->getBody();
         } catch (\Exception $e) {
-            $error = array($e->getCode(), $e->getMessage());
+            $error = [$e->getCode(), $e->getMessage()];
         }
 
-        $result_data = array(
+        $result_data = [
             'log'        => implode("\n", $log),
             'error'      => $error ? $error[1] : false,
             'error_code' => $error ? $error[0] : false,
-        );
+        ];
 
         return $context->createJsonResponse($result_data);
     }

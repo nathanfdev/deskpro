@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\InstallBundle\Command;
 
 use DeskPRO\Bundle\InstallBundle\FileIntegrity\Checker\IntegrityChecker;

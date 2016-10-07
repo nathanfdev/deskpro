@@ -99,7 +99,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_process;
 
-    #### Delivered
+    //### Delivered
     /**
      * @var \DateTime
      */
@@ -110,7 +110,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $reason_deliver;
 
-    #### Opened/Clicks
+    //### Opened/Clicks
     /**
      * @var \DateTime
      */
@@ -138,7 +138,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $count_click = 0;
 
-    #### Deferred
+    //### Deferred
     /**
      * @var \DateTime
      */
@@ -149,7 +149,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $reason_defer;
 
-    #### Bounced/Spam
+    //### Bounced/Spam
     /**
      * @var \DateTime
      */
@@ -223,16 +223,16 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $now   = date('Y-m-d H:i:s');
-        $batch = array();
+        $batch = [];
 
         $people_ids = App::getDb()->fetchAllKeyValue('
             SELECT email, person_id
             FROM people_emails
             WHERE email IN (?)
-        ', array($to_addresses));
+        ', [$to_addresses]);
 
         foreach ($to_addresses as $to) {
-            $batch[] = array(
+            $batch[] = [
                 'code'         => $code,
                 'to_address'   => $to,
                 'person_id'    => isset($people_ids[$to]) ? $people_ids[$to] : null,
@@ -240,7 +240,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
                 'subject'      => $subject,
                 'date_created' => $now,
                 'ticket_id'    => $ticket->getId(),
-            );
+            ];
         }
 
         App::getDb()->batchInsert('sendmail_logs', $batch);
@@ -270,16 +270,16 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $now   = date('Y-m-d H:i:s');
-        $batch = array();
+        $batch = [];
 
         $people_ids = App::getDb()->fetchAllKeyValue('
             SELECT email, person_id
             FROM people_emails
             WHERE email IN (?)
-        ', array($to_addresses));
+        ', [$to_addresses]);
 
         foreach ($to_addresses as $to) {
-            $batch[] = array(
+            $batch[] = [
                 'code'              => $code,
                 'to_address'        => $to,
                 'person_id'         => isset($people_ids[$to]) ? $people_ids[$to] : null,
@@ -288,7 +288,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
                 'date_created'      => $now,
                 'ticket_id'         => $ticket_message->ticket->getId(),
                 'ticket_message_id' => $ticket_message->getId(),
-            );
+            ];
         }
 
         App::getDb()->batchInsert('sendmail_logs', $batch);
@@ -317,23 +317,23 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $now   = date('Y-m-d H:i:s');
-        $batch = array();
+        $batch = [];
 
         $people_ids = App::getDb()->fetchAllKeyValue('
             SELECT email, person_id
             FROM people_emails
             WHERE email IN (?)
-        ', array($to_addresses));
+        ', [$to_addresses]);
 
         foreach ($to_addresses as $to) {
-            $batch[] = array(
+            $batch[] = [
                 'code'         => $code,
                 'to_address'   => $to,
                 'person_id'    => isset($people_ids[$to]) ? $people_ids[$to] : null,
                 'from_address' => $from_address,
                 'subject'      => $subject,
                 'date_created' => $now,
-            );
+            ];
         }
 
         App::getDb()->batchInsert('sendmail_logs', $batch);
@@ -341,9 +341,9 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
         return $code;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

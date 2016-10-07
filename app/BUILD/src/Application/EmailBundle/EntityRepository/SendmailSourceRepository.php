@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,8 +43,8 @@ class SendmailSourceRepository extends AbstractEntityRepository
     {
         return $this->getEntityManager()->getConnection()->executeQuery(
             sprintf('select id, ref from %s where ref in (?)', $this->getTableName()),
-            array($refs),
-            array(Connection::PARAM_STR_ARRAY)
+            [$refs],
+            [Connection::PARAM_STR_ARRAY]
         )->fetchAll();
     }
 
@@ -82,15 +82,15 @@ class SendmailSourceRepository extends AbstractEntityRepository
                   status IN ('complete', 'pending', 'processing', 'retry')
                   AND date_created > ?
                   AND date_status BETWEEN ? AND ?
-            ", array(
+            ", [
                 $start->format('Y-m-d H:i:s'),
                 $start->format('Y-m-d H:i:s'),
                 $end->format('Y-m-d H:i:s'),
-            ));
+            ]);
         } else {
             $in_accounts = array_map('intval', $in_accounts);
             if (!$in_accounts) {
-                $in_accounts = array(0);
+                $in_accounts = [0];
             }
             $in_accounts = implode(',', $in_accounts);
 
@@ -102,11 +102,11 @@ class SendmailSourceRepository extends AbstractEntityRepository
                   AND date_created > ?
                   AND date_status BETWEEN ? AND ?
                   AND account_id IN ($in_accounts)
-            ", array(
+            ", [
                 $start->format('Y-m-d H:i:s'),
                 $start->format('Y-m-d H:i:s'),
                 $end->format('Y-m-d H:i:s'),
-            ));
+            ]);
         }
     }
 }

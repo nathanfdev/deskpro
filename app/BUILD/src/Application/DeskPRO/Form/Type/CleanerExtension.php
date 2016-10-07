@@ -55,7 +55,7 @@ class CleanerExtension extends AbstractTypeExtension
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 128); // high priority
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], -1);
     }
 
     public function onPreSubmit(FormEvent $event)
@@ -112,15 +112,12 @@ class CleanerExtension extends AbstractTypeExtension
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefaults(
-            [
+        $resolver
+            ->setDefaults([
                 'filter_clean' => true,
-            ]
-        )->setAllowedTypes(
-            [
-                'filter_clean' => 'bool',
-            ]
-        );
+            ])
+            ->setAllowedTypes('filter_clean', 'bool')
+        ;
     }
 
     public function getExtendedType()

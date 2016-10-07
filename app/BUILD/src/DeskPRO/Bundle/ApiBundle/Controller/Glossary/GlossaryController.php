@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Glossary;
 
 use Application\DeskPRO\Entity\GlossaryWordDefinition;

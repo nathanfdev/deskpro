@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\People\PersonMerge\Property;
 
 use Application\DeskPRO\Entity\Person;
@@ -58,7 +59,7 @@ abstract class PropertyAbstract
     /**
      * @var array
      */
-    protected $strategy_options = array();
+    protected $strategy_options = [];
 
     const STRATEGY_LEFT    = 'left';
     const STRATEGY_RIGHT   = 'right';
@@ -80,7 +81,7 @@ abstract class PropertyAbstract
      *
      * @param string $strategy
      */
-    public function setStrategy($strategy, array $options = array())
+    public function setStrategy($strategy, array $options = [])
     {
         $this->strategy = $strategy;
         $this->options  = $options;

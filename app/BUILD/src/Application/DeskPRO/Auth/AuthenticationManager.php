@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\Entity\Usersource;
@@ -194,9 +195,9 @@ class AuthenticationManager
      */
     public function authenticateFormLogin($identifier, $password)
     {
-        #------------------------------
-        # Auth usersources that accept local input
-        #------------------------------
+        //------------------------------
+        // Auth usersources that accept local input
+        //------------------------------
 
         $usersources = $this->getFormLoginUsersources();
         foreach ($usersources as $us) {
@@ -204,10 +205,10 @@ class AuthenticationManager
 
             if ($adapter instanceof FormLoginInterface) {
                 $adapter->setFormData(
-                    array(
+                    [
                         'username' => $identifier,
                         'password' => $password,
-                    )
+                    ]
                 );
 
                 try {
@@ -223,7 +224,7 @@ class AuthenticationManager
                     $login_processor = new LoginProcessor($us, $result->getIdentity());
                     $person          = $login_processor->getPerson();
 
-                    $identity     = new Identity($person->id, array('person' => $person));
+                    $identity     = new Identity($person->id, ['person' => $person]);
                     $result       = new Result(Result::SUCCESS, $identity);
                     $this->authBy = $us->source_type;
 
@@ -368,13 +369,13 @@ class AuthenticationManager
         // if no usersource has a visible capability
         return count(
                 $this->usersourcesForInterface->withCapability(
-                    array(
+                    [
                         UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
                         UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN,
                         UsersourceInfo::CAPABILITY_FORM_LOGIN,
                         UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
                         UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB,
-                    )
+                    ]
 
                 )
             ) != 0

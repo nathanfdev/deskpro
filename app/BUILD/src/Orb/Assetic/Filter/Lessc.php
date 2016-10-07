@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Assetic\Filter;
 
 use Assetic\Asset\AssetInterface;
@@ -54,9 +55,9 @@ class Lessc implements FilterInterface
     public function filterLoad(AssetInterface $asset)
     {
         $tempDir   = realpath(sys_get_temp_dir());
-        $madefiles = array();
+        $madefiles = [];
 
-        $source_files = array();
+        $source_files = [];
         if ($asset instanceof \Assetic\Asset\FileAsset) {
             $source_files[] = $asset->getSourceRoot().'/'.$asset->getSourcePath();
         } elseif ($asset instanceof \Assetic\Asset\AssetCollection) {
@@ -97,7 +98,7 @@ class Lessc implements FilterInterface
             $madefiles[] = $output;
         }
 
-        $complete_file = array();
+        $complete_file = [];
         foreach ($madefiles as $f) {
             $complete_file[] = file_get_contents($f);
             unset($f);

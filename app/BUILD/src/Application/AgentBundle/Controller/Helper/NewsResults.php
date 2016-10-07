@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
@@ -47,7 +48,7 @@ class NewsResults
     /**
      * @var array
      */
-    protected $news_ids = array();
+    protected $news_ids = [];
 
     /**
      * @var array
@@ -70,7 +71,7 @@ class NewsResults
      *
      * @return \Application\AgentBundle\Controller\Helper\NewsResults
      */
-    public static function newFromRequest($controller, array $options = array())
+    public static function newFromRequest($controller, array $options = [])
     {
         $result_cache = false;
         if ($controller->in->getUint('cache_id')) {
@@ -80,9 +81,9 @@ class NewsResults
             }
         }
 
-        #------------------------------
-        # If there's no result set, we're running it for the first time
-        #------------------------------
+        //------------------------------
+        // If there's no result set, we're running it for the first time
+        //------------------------------
 
         if (!$result_cache) {
             $term_rules = RuleBuilder::newTermsBuilder();
@@ -90,16 +91,16 @@ class NewsResults
             // A category with this action is a shortcut for searching on the category,
             // and published
             if (isset($options['category'])) {
-                $terms = array(
-                    array('type' => 'category_specific', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
-                    array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
-                );
+                $terms = [
+                    ['type' => 'category_specific', 'op' => 'is', 'options' => ['category' => $options['category']['id']]],
+                    ['type' => 'agent_list', 'op' => 'is', 'options' => 1],
+                ];
 
             // "all" is published but no category term
             } elseif (isset($options['show_all'])) {
-                $terms = array(
-                    array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
-                );
+                $terms = [
+                    ['type' => 'agent_list', 'op' => 'is', 'options' => 1],
+                ];
 
             // Otherwise its a user filter with custom terms
             } else {
@@ -124,8 +125,8 @@ class NewsResults
 
             $result_cache                = new ResultCache();
             $result_cache['person']      = $controller->person;
-            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
-            $result_cache['extra']       = array('summary' => $searcher->getSummary());
+            $result_cache['criteria']    = ['terms' => $searcher->getTerms(), 'order_by' => $order_by];
+            $result_cache['extra']       = ['summary' => $searcher->getSummary()];
             $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
@@ -200,7 +201,7 @@ class NewsResults
         $news_raw      = App::getEntityRepository('DeskPRO:News')->getByResultIds($page_news_ids);
 
         // Real order that we got when executing the search
-        $news = array();
+        $news = [];
         foreach ($news_ids as $tid) {
             if (isset($news_raw[$tid])) {
                 $news[$tid] = $news_raw[$tid];

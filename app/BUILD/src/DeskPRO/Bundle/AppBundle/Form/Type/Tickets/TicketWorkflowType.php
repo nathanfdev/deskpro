@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\TicketWorkflow;
@@ -58,7 +54,7 @@ class TicketWorkflowType extends AbstractType
     {
         $resolver->setDefaults([
             'class'         => TicketWorkflow::class,
-            'property'      => 'title',
+            'choice_label'  => 'title',
             'empty_data'    => null,
             'required'      => true,
             'query_builder' => function (EntityRepository $repository) {

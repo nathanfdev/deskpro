@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\Hierarchy;
 
+use Application\DeskPRO\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 
 abstract class LazyPreloadedHierarchy
@@ -42,13 +43,24 @@ abstract class LazyPreloadedHierarchy
     protected $em;
 
     /**
+     * @var Connection
+     */
+    protected $connection;
+
+    /**
      * @var \Application\DeskPRO\Hierarchy\PreloadedHierarchy
      */
     protected $hierarchy;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
-        $this->em = $em;
+        $this->em         = $em;
+        $this->connection = $this->em->getConnection();
     }
 
     /**
@@ -89,7 +101,7 @@ abstract class LazyPreloadedHierarchy
         $this->hierarchy = null;
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     /**
      * @param int $id

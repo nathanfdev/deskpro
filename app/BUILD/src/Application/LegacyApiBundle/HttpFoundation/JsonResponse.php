@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,7 +38,11 @@ class JsonResponse extends Response
 
     public function __toString()
     {
-        return Util::jsonEncode($this->data);
+        if (false === $res = Util::jsonEncode($this->data)) {
+            throw new \Exception('Can\t encode to JSON: '.json_last_error_msg()."\n".print_r($this->data, 1));
+        }
+
+        return $res;
     }
 
     public function getData()

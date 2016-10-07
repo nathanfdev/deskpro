@@ -55,7 +55,7 @@ class TermEngineBehatContext extends BaseContext
     /**
      * @var CompositeTermInterface[]
      */
-    protected $composites = array();
+    protected $composites = [];
 
     /**
      * @var int
@@ -123,7 +123,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iCheckTicketsWithTheFollowingIds(TableNode $table)
     {
-        $expected_ids = array();
+        $expected_ids = [];
 
         foreach ($table->getRows() as $vals) {
             $expected_ids[] = current($vals);
@@ -131,7 +131,7 @@ class TermEngineBehatContext extends BaseContext
 
         $ticket_repo = $this->repository('DeskPRO:Ticket');
 
-        $this->engine_result = array();
+        $this->engine_result = [];
         foreach ($expected_ids as $id) {
             $ticket                = $ticket_repo->find($id);
             $this->engine_result[] = $this->engine_evaluation->isTicketMatch($ticket);
@@ -164,7 +164,7 @@ class TermEngineBehatContext extends BaseContext
     public function iEvaluateTheFilter($filter_name)
     {
         $filter = $this->repository('DeskPRO\Bundle\AppBundle\Entity\TicketFilter')->findOneBy(
-            array('title' => $filter_name)
+            ['title' => $filter_name]
         );
 
         $this->engine_evaluation = $this->engine
@@ -249,7 +249,7 @@ class TermEngineBehatContext extends BaseContext
     public function iShouldBeGivenTheCountOfAllTicketsInTheDb($status)
     {
         $status = constant(sprintf('Application\DeskPRO\Entity\Ticket::%s', $status));
-        $count  = count($this->repository('DeskPRO:Ticket')->findBy(array('status' => $status)));
+        $count  = count($this->repository('DeskPRO:Ticket')->findBy(['status' => $status]));
         expect($this->engine_result)->toBe($count);
     }
 
@@ -261,7 +261,7 @@ class TermEngineBehatContext extends BaseContext
         $rows = $table->getColumnsHash();
 
         foreach ($rows as $inc => $expected_data) {
-            $expected = array();
+            $expected = [];
             foreach ($expected_data as $key => $val) {
                 if ($val == 'null') {
                     $val = null;
@@ -278,7 +278,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iShouldHaveAnArrayWithTheFollowingIds(TableNode $table)
     {
-        $expected_ids = array();
+        $expected_ids = [];
 
         foreach ($table->getRows() as $vals) {
             $expected_ids[] = current($vals);
@@ -333,7 +333,7 @@ class TermEngineBehatContext extends BaseContext
         );
     }
 
-    protected $param_name_mapping = array();
+    protected $param_name_mapping = [];
 
     /**
      * @Then the WHERE clause should be like:
@@ -357,7 +357,7 @@ class TermEngineBehatContext extends BaseContext
     public function theParametersShouldBe(TableNode $table)
     {
         $expected_params = $this->filterTable($table);
-        $resolved_params = array();
+        $resolved_params = [];
         foreach ($expected_params as $param_name => $value) {
             $p                              = $this->param_name_mapping[':'.$param_name];
             $resolved_params[substr($p, 1)] = $value;
@@ -372,7 +372,7 @@ class TermEngineBehatContext extends BaseContext
 
     protected function convertTermEngineExpressionToString(array $params)
     {
-        $the_params = array();
+        $the_params = [];
 
         foreach ($params as $pname => $pval) {
             if (is_array($pval)) {
@@ -464,7 +464,7 @@ class TermEngineBehatContext extends BaseContext
     {
         // this is pretty terrible, but it did the trick. if problems, lets refactor it.
 
-        $output = array();
+        $output = [];
         $rows   = $table->getRows();
         array_shift($rows);
         foreach ($rows as $row) {
@@ -476,7 +476,7 @@ class TermEngineBehatContext extends BaseContext
                 $array = $matches[1];
 
                 $v  = explode(',', $array);
-                $nv = array();
+                $nv = [];
                 foreach ($v as $vv) {
                     $b = trim($vv);
                     if (is_numeric($b)) {
@@ -543,6 +543,6 @@ class TermEngineBehatContext extends BaseContext
         $where    = preg_replace($param_regex, '', $where);
         $expected = preg_replace($param_regex, '', $expected);
 
-        return array($where, $expected);
+        return [$where, $expected];
     }
 }

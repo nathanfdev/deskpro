@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\EmailBundle\Entity;
 
 use Doctrine\Common\NotifyPropertyChanged;
@@ -427,7 +428,7 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function getToEmails()
     {
-        return $this->to_emails ?: array();
+        return $this->to_emails ?: [];
     }
 
     /**
@@ -446,7 +447,7 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function getCcEmails()
     {
-        return $this->cc_emails ?: array();
+        return $this->cc_emails ?: [];
     }
 
     /**
@@ -465,7 +466,7 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function getBccEmails()
     {
-        return $this->bcc_emails ?: array();
+        return $this->bcc_emails ?: [];
     }
 
     /**
@@ -624,7 +625,7 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function getAllOptions()
     {
-        return $this->options ?: array();
+        return $this->options ?: [];
     }
 
     /**
@@ -660,7 +661,7 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function setOption($k, $v = null)
     {
-        $options = $this->options ?: array();
+        $options = $this->options ?: [];
 
         if ($v === null) {
             if (isset($options[$k])) {
@@ -679,7 +680,7 @@ class SendmailSource implements NotifyPropertyChanged
 
     public function toArray()
     {
-        $data = array();
+        $data = [];
 
         $data['id']             = $this->id;
         $data['ref']            = $this->ref;
@@ -695,7 +696,7 @@ class SendmailSource implements NotifyPropertyChanged
         $data['num_error']      = $this->num_error;
         $data['num_complete']   = $this->num_complete;
 
-        foreach (array('date_created', 'date_status', 'date_sent', 'date_next_attempt') as $date_field) {
+        foreach (['date_created', 'date_status', 'date_sent', 'date_next_attempt'] as $date_field) {
             if ($this->$date_field) {
                 $data[$date_field]        = $this->$date_field->format('Y-m-d H:i:s');
                 $data["{$date_field}_ts"] = $this->$date_field->getTimestamp();
@@ -706,12 +707,12 @@ class SendmailSource implements NotifyPropertyChanged
         }
 
         if ($this->email_account) {
-            $data['email_account'] = array(
+            $data['email_account'] = [
                 'id'                => $this->email_account->id,
                 'account_type'      => $this->email_account->account_type,
                 'address'           => $this->email_account->address,
                 'use_email_address' => $this->email_account->getUseEmailAddress(),
-            );
+            ];
         } else {
             $data['email_account'] = null;
         }
@@ -733,7 +734,7 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function toRecordArray()
     {
-        static $scalar_fields = array(
+        static $scalar_fields = [
             'id',
             'ref',
             'context_type',
@@ -747,28 +748,28 @@ class SendmailSource implements NotifyPropertyChanged
             'status',
             'error_code',
             'exec_count',
-        );
+        ];
 
-        static $simple_array_fields = array(
+        static $simple_array_fields = [
             'to_emails',
             'cc_emails',
             'bcc_emails',
-        );
+        ];
 
-        static $date_fields = array(
+        static $date_fields = [
             'date_status',
             'date_sent',
             'date_next_attempt',
             'date_created',
-        );
+        ];
 
-        static $obj_fields = array(
+        static $obj_fields = [
             'blob',
             'email_account',
             'log_blob',
-        );
+        ];
 
-        $data = array();
+        $data = [];
 
         foreach ($scalar_fields as $f) {
             $data[$f] = $this->$f;
@@ -811,9 +812,9 @@ class SendmailSource implements NotifyPropertyChanged
         $this->setModelField('num_pending', $count);
     }
 
-    ############################################################################
-    # Doctrine
-    ############################################################################
+    //###########################################################################
+    // Doctrine
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -824,209 +825,209 @@ class SendmailSource implements NotifyPropertyChanged
 
         $metadata->addLifecycleCallback('initTargetsCount', 'prePersist');
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'sendmail_sources',
-            'indexes' => array(
-                'status_idx'       => array('columns' => array('status')),
-                'date_created_idx' => array('columns' => array('date_created')),
-            ),
-            'uniqueConstraints' => array(
-                'ref_idx' => array('columns' => array('ref')),
-            ),
-        ));
+            'indexes' => [
+                'status_idx'       => ['columns' => ['status']],
+                'date_created_idx' => ['columns' => ['date_created']],
+            ],
+            'uniqueConstraints' => [
+                'ref_idx' => ['columns' => ['ref']],
+            ],
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'ref',
             'fieldName'  => 'ref',
             'type'       => 'string',
             'length'     => 100,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'context_type',
             'fieldName'  => 'context_type',
             'type'       => 'string',
             'length'     => 100,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'context_id',
             'fieldName'  => 'context_id',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'context_info',
             'columnName' => 'context_info',
             'type'       => 'json_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'headers',
             'fieldName'  => 'headers',
             'type'       => 'text',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'header_to',
             'fieldName'  => 'header_to',
             'type'       => 'text',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'header_from',
             'fieldName'  => 'header_from',
             'type'       => 'text',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'header_subject',
             'fieldName'  => 'header_subject',
             'type'       => 'text',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'from_email',
             'fieldName'  => 'from_email',
             'type'       => 'text',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'to_emails',
             'fieldName'  => 'to_emails',
             'type'       => 'simple_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'cc_emails',
             'fieldName'  => 'cc_emails',
             'type'       => 'simple_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'bcc_emails',
             'fieldName'  => 'bcc_emails',
             'type'       => 'simple_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'status',
             'fieldName'  => 'status',
             'type'       => 'string',
             'length'     => 80,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'options',
             'fieldName'  => 'options',
             'type'       => 'json_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_status',
             'columnName' => 'date_status',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_sent',
             'columnName' => 'date_sent',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_next_attempt',
             'columnName' => 'date_next_attempt',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'error_code',
             'fieldName'  => 'error_code',
             'type'       => 'string',
             'length'     => 80,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_created',
             'columnName' => 'date_created',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'exec_count',
             'fieldName'  => 'exec_count',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'num_targets',
             'fieldName'  => 'num_targets',
             'type'       => 'integer',
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'num_pending',
             'fieldName'  => 'num_pending',
             'type'       => 'integer',
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'num_error',
             'fieldName'  => 'num_error',
             'type'       => 'integer',
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'num_complete',
             'fieldName'  => 'num_complete',
             'type'       => 'integer',
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'blob',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
             'dpApi'        => true,
             'dpApiDeep'    => true,
-            'joinColumns'  => array(array(
+            'joinColumns'  => [[
                 'name'                 => 'blob_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            )),
-        ));
-        $metadata->mapManyToOne(array(
+            ]],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'email_account',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount',
             'dpApi'        => true,
-            'joinColumns'  => array(array(
+            'joinColumns'  => [[
                 'name'                 => 'email_account_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            )),
-        ));
-        $metadata->mapManyToOne(array(
+            ]],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'log_blob',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
             'dpApi'        => true,
             'dpApiDeep'    => true,
-            'joinColumns'  => array(array(
+            'joinColumns'  => [[
                 'name'                 => 'log_blob_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',
-            )),
-        ));
-        $metadata->mapOneToMany(array(
+            ]],
+        ]);
+        $metadata->mapOneToMany([
             'fieldName'    => 'statuses',
             'targetEntity' => 'Application\EmailBundle\Entity\SendmailSourceStatus',
             'mappedBy'     => 'source',
-        ));
+        ]);
     }
 
     public function __getPropValue__($k)
@@ -1043,7 +1044,7 @@ class SendmailSource implements NotifyPropertyChanged
     }
 
     /** @var PropertyChangedListener[] */
-    private $_listeners = array();
+    private $_listeners = [];
     public function addPropertyChangedListener(PropertyChangedListener $listener)
     {
         $this->setModelField('_listeners[]', $listener);

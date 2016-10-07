@@ -131,7 +131,7 @@ class AppInstance extends DomainObject
      */
     public function getSettings()
     {
-        return $this->settings ? $this->settings : array();
+        return $this->settings ? $this->settings : [];
     }
 
     /**
@@ -167,7 +167,7 @@ class AppInstance extends DomainObject
             return $this->settings;
         }
 
-        $native_only = array();
+        $native_only = [];
 
         foreach ($this->package->settings_def as $info) {
             if (isset($info['native_only']) && $info['native_only']) {
@@ -196,17 +196,17 @@ class AppInstance extends DomainObject
     {
         $trigger_events = $this->package->trigger_events;
         if (!$trigger_events || empty($trigger_events[$type])) {
-            return array();
+            return [];
         }
 
-        $events = array();
+        $events = [];
 
         foreach ($trigger_events[$type] as $name => $label) {
-            $events[] = array(
+            $events[] = [
                 'event_id' => $this->package->name.'.'.$this->id.'.'.$name,
                 'name'     => $name,
                 'label'    => $label,
-            );
+            ];
         }
 
         return $events;
@@ -215,9 +215,9 @@ class AppInstance extends DomainObject
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
-        $data = array();
+        $data = [];
 
         $data['id']              = $this->id;
         $data['package_name']    = $this->package->name;
@@ -225,7 +225,7 @@ class AppInstance extends DomainObject
         $data['perm_type']       = $this->perm_type;
         $data['secret_key']      = $this->secret_key;
         $data['auth_key']        = $this->auth_key;
-        $data['settings']        = $this->settings ?: array();
+        $data['settings']        = $this->settings ?: [];
         $data['date_created']    = $this->date_created->format('Y-m-d H:i:s');
         $data['date_created_ts'] = $this->date_created->getTimestamp();
 
@@ -236,9 +236,9 @@ class AppInstance extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

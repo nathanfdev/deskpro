@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -73,21 +73,21 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->url_generator->generate('portal_home'),
             Breadcrumbs::PORTAL,
-            array('phrase' => 'portal.general.nav-portal')
+            ['phrase' => 'portal.general.nav-portal']
         );
         $this->language_manager = $language_manager;
     }
 
-    #####################################################################################################################
-    # CHAT
-    #####################################################################################################################
+    //####################################################################################################################
+    // CHAT
+    //####################################################################################################################
 
     public function addChat()
     {
         $this->b->add(
             $this->url_generator->generate('portal_chats'),
             Breadcrumbs::CHAT,
-            array('phrase' => 'portal.general.nav-chat')
+            ['phrase' => 'portal.general.nav-chat']
         );
 
         return $this;
@@ -98,22 +98,22 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->object_router->getPortalPath($chat),
             Breadcrumbs::CHAT_VIEW,
-            array('phrase' => 'portal.general.nav-chatlog')
+            ['phrase' => 'portal.general.nav-chatlog']
         );
 
         return $this;
     }
 
-    #####################################################################################################################
-    # KB
-    #####################################################################################################################
+    //####################################################################################################################
+    // KB
+    //####################################################################################################################
 
     public function addKb()
     {
         $this->b->add(
             $this->url_generator->generate('portal_kb'),
             Breadcrumbs::KB,
-            array('phrase' => 'portal.general.nav-kb')
+            ['phrase' => 'portal.general.nav-kb']
         );
 
         return $this;
@@ -141,16 +141,16 @@ class BreadcrumbBuilder
         return $this;
     }
 
-    #####################################################################################################################
-    # News
-    #####################################################################################################################
+    //####################################################################################################################
+    // News
+    //####################################################################################################################
 
     public function addNews()
     {
         $this->b->add(
             $this->url_generator->generate('portal_news'),
             Breadcrumbs::NEWS,
-            array('phrase' => 'portal.general.nav-news')
+            ['phrase' => 'portal.general.nav-news']
         );
 
         return $this;
@@ -178,16 +178,16 @@ class BreadcrumbBuilder
         return $this;
     }
 
-    #####################################################################################################################
-    # Downloads
-    #####################################################################################################################
+    //####################################################################################################################
+    // Downloads
+    //####################################################################################################################
 
     public function addDownloads()
     {
         $this->b->add(
             $this->url_generator->generate('portal_downloads'),
             Breadcrumbs::DOWNLOADS,
-            array('phrase' => 'portal.general.nav-downloads')
+            ['phrase' => 'portal.general.nav-downloads']
         );
 
         return $this;
@@ -215,16 +215,16 @@ class BreadcrumbBuilder
         return $this;
     }
 
-    #####################################################################################################################
-    # Profile / Registration
-    #####################################################################################################################
+    //####################################################################################################################
+    // Profile / Registration
+    //####################################################################################################################
 
     public function addYourAccount()
     {
         $this->b->add(
             $this->url_generator->generate('portal_user_profile'),
             Breadcrumbs::PROFILE,
-            array('phrase' => 'portal.general.nav-your-account')
+            ['phrase' => 'portal.general.nav-your-account']
         );
 
         return $this;
@@ -235,7 +235,7 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->url_generator->generate('portal_user_profile'),
             Breadcrumbs::PROFILE,
-            array('phrase' => 'portal.general.nav-profile')
+            ['phrase' => 'portal.general.nav-profile']
         );
 
         return $this;
@@ -246,7 +246,7 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->url_generator->generate('portal_user_profile_emails'),
             Breadcrumbs::PROFILE_EMAILS,
-            array('phrase' => 'portal.general.nav-emails')
+            ['phrase' => 'portal.general.nav-emails']
         );
 
         return $this;
@@ -257,7 +257,7 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->url_generator->generate('portal_user_registration'),
             Breadcrumbs::REGISTER,
-            array('phrase' => 'portal.general.nav-register')
+            ['phrase' => 'portal.general.nav-register']
         );
 
         return $this;
@@ -268,7 +268,7 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->url_generator->generate('portal_login'),
             Breadcrumbs::LOGIN,
-            array('phrase' => 'portal.general.nav-login')
+            ['phrase' => 'portal.general.nav-login']
         );
 
         return $this;
@@ -279,7 +279,7 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->url_generator->generate('portal_reset_password'),
             Breadcrumbs::PASSWORD_RESET,
-            array('phrase' => 'portal.general.nav-reset-password')
+            ['phrase' => 'portal.general.nav-reset-password']
         );
 
         return $this;
@@ -290,28 +290,28 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->url_generator->generate('portal_set_password'),
             Breadcrumbs::PASSWORD_SET,
-            array('phrase' => 'portal.general.nav-set-password')
+            ['phrase' => 'portal.general.nav-set-password']
         );
 
         return $this;
     }
 
-    #####################################################################################################################
-    # Search
-    #####################################################################################################################
+    //####################################################################################################################
+    // Search
+    //####################################################################################################################
 
     public function addSearch($query)
     {
         $this->b->add(
-            $this->url_generator->generate('portal_search', array('q' => $query)),
+            $this->url_generator->generate('portal_search', ['q' => $query]),
             Breadcrumbs::SEARCH,
-            array('phrase' => 'portal.general.search-section-title')
+            ['phrase' => 'portal.general.search-section-title']
         );
 
         $this->b->add(
-            $this->url_generator->generate('portal_search', array('q' => $query)),
+            $this->url_generator->generate('portal_search', ['q' => $query]),
             Breadcrumbs::SEARCH,
-            array('name' => sprintf('"%s"', $query))
+            ['name' => sprintf('"%s"', $query)]
         );
 
         return $this;
@@ -320,16 +320,16 @@ class BreadcrumbBuilder
     public function addLabelSearch($type, $label)
     {
         $this->b->add(
-            $this->url_generator->generate('portal_search_labels', array('type' => $type, 'label' => $label)),
+            $this->url_generator->generate('portal_search_labels', ['type' => $type, 'label' => $label]),
             Breadcrumbs::SEARCH,
-            array('phrase' => 'portal.general.search-labels-section-title')
+            ['phrase' => 'portal.general.search-labels-section-title']
         );
 
         if ($label) {
             $this->b->add(
-                $this->url_generator->generate('portal_search_labels', array('type' => $type, 'label' => $label)),
+                $this->url_generator->generate('portal_search_labels', ['type' => $type, 'label' => $label]),
                 Breadcrumbs::SEARCH,
-                array('name' => sprintf('"%s"', $label))
+                ['name' => sprintf('"%s"', $label)]
             )
             ;
         }
@@ -337,16 +337,16 @@ class BreadcrumbBuilder
         return $this;
     }
 
-    #####################################################################################################################
-    # Feedback
-    #####################################################################################################################
+    //####################################################################################################################
+    // Feedback
+    //####################################################################################################################
 
     public function addFeedback()
     {
         $this->b->add(
             $this->url_generator->generate('portal_feedback'),
             Breadcrumbs::FEEDBACK,
-            array('phrase' => 'portal.general.nav-feedback')
+            ['phrase' => 'portal.general.nav-feedback']
         );
 
         return $this;
@@ -363,16 +363,16 @@ class BreadcrumbBuilder
         return $this;
     }
 
-    #####################################################################################################################
-    # Tickets
-    #####################################################################################################################
+    //####################################################################################################################
+    // Tickets
+    //####################################################################################################################
 
     public function addNewTicket()
     {
         $this->b->add(
             $this->url_generator->generate('portal_new_ticket'),
             Breadcrumbs::TICKETS_NEW,
-            array('phrase' => 'portal.general.nav-newticket')
+            ['phrase' => 'portal.general.nav-newticket']
         );
 
         return $this;
@@ -383,7 +383,7 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->url_generator->generate('portal_tickets'),
             Breadcrumbs::TICKETS,
-            array('phrase' => 'portal.general.nav-tickets')
+            ['phrase' => 'portal.general.nav-tickets']
         );
 
         return $this;

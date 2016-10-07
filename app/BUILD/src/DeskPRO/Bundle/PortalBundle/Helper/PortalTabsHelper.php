@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;

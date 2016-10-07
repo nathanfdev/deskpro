@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_magento\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
@@ -66,18 +67,18 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $error  = false;
         $client = null;
 
-        $log   = array();
+        $log   = [];
         $log[] = "url: $url";
         $log[] = "user: $user";
         $log[] = "key: $key";
 
-        $tests   = array();
+        $tests   = [];
         $tests[] = function () use (&$log) {
             $log[] = 'Verifying SoapClient is available...';
             if (!class_exists('\SoapClient')) {
                 $log[] = 'SOAP support is not enabled in PHP';
 
-                return array('missing_soap', 'SOAP support is not enabled in PHP');
+                return ['missing_soap', 'SOAP support is not enabled in PHP'];
             }
             $log[] = 'SoapClient is ok';
 
@@ -89,17 +90,26 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             if (!function_exists('curl_init')) {
                 $log[] = 'curl is not enabled in PHP';
 
-                return array('missing_soap', 'curl support is not enabled in PHP');
+                return ['missing_soap', 'curl support is not enabled in PHP'];
             }
             $log[] = 'curl is ok';
 
             return;
         };
 
-        $get_client = function ($url) {
+        $get_client = function ($url) use ($context) {
             $url .= '/api?wsdl';
             $handle = @curl_init($url);
             @curl_setopt($handle,  CURLOPT_RETURNTRANSFER, true);
+            $cainfo = $context->getContainer()->get('kernel.root_dir')
+                .DIRECTORY_SEPARATOR
+                .'Resources'
+                .DIRECTORY_SEPARATOR
+                .'cacert.pem';
+            if (file_exists($cainfo)) {
+                @curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, true);
+                @curl_setopt($handle, CURLOPT_CAINFO, $cainfo);
+            }
 
             $response = @curl_exec($handle);
             $httpCode = @curl_getinfo($handle, CURLINFO_HTTP_CODE);
@@ -128,13 +138,13 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
                 } else {
                     $log[] = 'Failed: Invalid URL or connection was refused';
 
-                    return array('failed_connection', 'Invalid URL or the service refused the connection');
+                    return ['failed_connection', 'Invalid URL or the service refused the connection'];
                 }
             } catch (\SoapFault $e) {
                 $log[] = 'Failed: Invalid URL or connection was refused';
                 $log[] = "(Exception: {$e->getCode()} {$e->getMessage()}";
 
-                return array('failed_connection', 'Invalid URL or the service refused the connection');
+                return ['failed_connection', 'Invalid URL or the service refused the connection'];
             }
         };
 
@@ -147,7 +157,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
                 $log[] = 'API user and/or key is incorrect';
                 $log[] = "(Exception: {$e->getCode()} {$e->getMessage()}";
 
-                return array('invalid_api_credentials', 'API user and/or key is incorrect');
+                return ['invalid_api_credentials', 'API user and/or key is incorrect'];
             }
         };
 
@@ -158,11 +168,11 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             }
         }
 
-        $result_data = array(
+        $result_data = [
             'log'        => implode("\n", $log),
             'error'      => $error ? $error[1] : false,
             'error_code' => $error ? $error[0] : false,
-        );
+        ];
 
         return $context->createJsonResponse($result_data);
     }

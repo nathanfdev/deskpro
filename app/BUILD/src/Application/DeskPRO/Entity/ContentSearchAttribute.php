@@ -62,9 +62,9 @@ class ContentSearchAttribute extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $content;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

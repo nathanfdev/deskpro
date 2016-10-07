@@ -41,12 +41,6 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider
     arguments: ["@brand_stack", "@security.authorization_checker", "@security.token_storage", "@request_stack", "@anti_abuse"]
 
-  deskpro.validator.valid_recaptcha:
-    class: DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidRecaptcha2Validator
-    arguments: ["@brand_stack", "@request_stack"]
-    tags:
-      - { name: validator.constraint_validator, alias: valid_recaptcha2 }
-
   form.api.chat.set_person_listener:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\SetPersonListener
     arguments: ["@email.email_account_manager", "@doctrine.orm.default_entity_manager"]
@@ -65,83 +59,61 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketReplyType
     arguments: ["@language_manager", "@doctrine.orm.default_entity_manager"]
     tags:
-      - { name: form.type, alias: ticket_reply }
+      - { name: form.type }
 
   form.person_registration:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonRegistrationType
     arguments: ["@custom_field_manager", "@language_manager", "@captcha_decider"]
     tags:
-      - { name: form.type, alias: person_registration }
+      - { name: form.type }
 
   form.person_profile:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType
     arguments: ["@custom_field_manager", "@language_manager", "@blob.storage", "@doctrine.orm.default_entity_manager"]
     tags:
-      - { name: form.type, alias: person_profile }
+      - { name: form.type }
 
   form.comment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CommentType
-    tags:
-      - { name: form.type, alias: comment }
     arguments:
       - "@captcha_decider"
       - "@language_manager"
+    tags:
+      - { name: form.type, alias: comment }
 
   form.new_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType
     arguments: ["@captcha_decider", "@language_manager", "@custom_field_manager", "@form_hierarchy_generator"]
     tags:
-      - { name: form.type, alias: new_feedback }
+      - { name: form.type }
 
   form.feedback_attachment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentType
     arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
     tags:
-      - { name: form.type, alias: feedback_attachment }
-
-  form.feedback_attachment_collection:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentCollectionType
-    tags:
-      - { name: form.type, alias: feedback_attachment_collection }
+      - { name: form.type }
 
   form.request_password_reset:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PasswordResetRequestType
-    tags:
-      - { name: form.type }
     arguments:
       - "@captcha_decider"
       - "@language_manager"
+    tags:
+      - { name: form.type }
 
   form.person_change_password:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType
-    tags:
-      - { name: form.type, alias: person_change_password }
     arguments:
       - "@captcha_decider"
       - "@deskpro.core.translate"
+    tags:
+      - { name: form.type }
 
   form.captcha:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CaptchaType
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType
     arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
     tags:
-      - { name: form.type, alias: deskpro_captcha }
-
-  form.recaptcha:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType
-    arguments: ["@brand_stack", "@language_manager"]
-    tags:
-      - { name: form.type, alias: deskpro_recaptcha }
-
-  form.blob:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\BlobType
-    arguments: ["@doctrine.orm.default_entity_manager", "@blob.storage", "@blob_repository"]
-    tags:
-      - { name: form.type, alias: deskpro_blob }
-
-  form.heirarchical_entity:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\HeirarchicalEntityType
-    tags:
-      - { name: form.type, alias: deskpro_heirarchical_entity }
+      - { name: form.type }
 
   form.api.chat_create:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType

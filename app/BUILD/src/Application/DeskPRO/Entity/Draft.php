@@ -62,16 +62,16 @@ class Draft extends \Application\DeskPRO\Domain\DomainObject
     /** @var string */
     protected $message_html;
     /** @var array */
-    protected $extras = array();
+    protected $extras = [];
 
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

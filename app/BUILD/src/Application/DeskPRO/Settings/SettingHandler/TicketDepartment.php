@@ -58,11 +58,11 @@ class TicketDepartment
      */
     public function getSettings()
     {
-        $settings = array(
+        $settings = [
             'core.default_ticket_dep'         => $this->settings->get('core.default_ticket_dep'),
             'core.phrase_department_singular' => $this->settings->get('core.phrase_department_singular'),
             'core.phrase_department_plural'   => $this->settings->get('core.phrase_department_plural'),
-        );
+        ];
 
         return $settings;
     }
@@ -78,7 +78,7 @@ class TicketDepartment
             $this->settings->setSetting('core.default_ticket_dep', $set_settings['core.default_ticket_dep']);
         }
 
-        $change_phrase = array();
+        $change_phrase = [];
         if (isset($set_settings['core.phrase_department_singular']) && $set_settings['core.phrase_department_singular'] != $this->settings->get('core.phrase_department_singular')) {
             $change_phrase['singular'] = $set_settings['core.phrase_department_singular'];
         }

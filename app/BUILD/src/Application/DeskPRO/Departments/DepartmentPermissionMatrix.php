@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Departments;
 
 use Application\DeskPRO\Entity\Department;
@@ -47,7 +48,7 @@ class DepartmentPermissionMatrix extends PermissionMatrix
      */
     public function getPermRecords(Department $department)
     {
-        $recs = array();
+        $recs = [];
         foreach ($this->getPermsArray() as $row) {
             $rec             = new DepartmentPermission();
             $rec->department = $department;
@@ -91,7 +92,7 @@ class DepartmentPermissionMatrix extends PermissionMatrix
      */
     public function getDiff(Department $department, EntityManager $em)
     {
-        $recs = array();
+        $recs = [];
         foreach ($this->getPermRecords($department) as $rec) {
             $recs[$rec->getPermissionSysId()] = $rec;
         }
@@ -116,7 +117,7 @@ class DepartmentPermissionMatrix extends PermissionMatrix
 
         $existing = array_merge($ticketsExisting, $chatsExisting);
 
-        $remove = array();
+        $remove = [];
 
         foreach ($existing as $rec) {
             // Already exists, so dont re-insert
@@ -131,10 +132,10 @@ class DepartmentPermissionMatrix extends PermissionMatrix
 
         $add = array_values($recs);
 
-        return array(
+        return [
             'create' => $add,
             'remove' => $remove,
-        );
+        ];
     }
 
     /**

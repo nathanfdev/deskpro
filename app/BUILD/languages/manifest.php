@@ -26,8 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
-    'default' => array(
+return [
+    'default' => [
         'id'         => 'default',
         'lang_code'  => 'eng',
         'title'      => 'English',
@@ -38,9 +38,9 @@ return array(
         'has_agent'  => true,
         'has_admin'  => true,
         'is_managed' => false,
-    ),
+    ],
 
-    'arabic' => array(
+    'arabic' => [
         'id'         => 'arabic',
         'lang_code'  => 'ara',
         'title'      => 'Arabic',
@@ -51,9 +51,9 @@ return array(
         'has_agent'  => true,
         'has_admin'  => true,
         'is_managed' => true,
-    ),
+    ],
 
-    'danish' => array(
+    'danish' => [
         'id'         => 'danish',
         'lang_code'  => 'dan',
         'title'      => 'Danish',
@@ -64,9 +64,9 @@ return array(
         'has_agent'  => false,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'dutch' => array(
+    'dutch' => [
         'id'         => 'dutch',
         'lang_code'  => 'dut',
         'title'      => 'Dutch',
@@ -77,9 +77,9 @@ return array(
         'has_agent'  => true,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'english_gb' => array(
+    'english_gb' => [
         'id'         => 'english_gb',
         'lang_code'  => 'eng',
         'title'      => 'English (UK)',
@@ -90,9 +90,9 @@ return array(
         'has_agent'  => true,
         'has_admin'  => true,
         'is_managed' => true,
-    ),
+    ],
 
-    'finnish' => array(
+    'finnish' => [
         'id'         => 'finnish',
         'lang_code'  => 'fin',
         'title'      => 'Finnish',
@@ -103,9 +103,9 @@ return array(
         'has_agent'  => false,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'french' => array(
+    'french' => [
         'id'         => 'french',
         'lang_code'  => 'fre',
         'title'      => 'French',
@@ -116,9 +116,9 @@ return array(
         'has_agent'  => true,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'german' => array(
+    'german' => [
         'id'         => 'german',
         'lang_code'  => 'ger',
         'title'      => 'German',
@@ -129,9 +129,9 @@ return array(
         'has_agent'  => true,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'hungarian' => array(
+    'hungarian' => [
         'id'         => 'hungarian',
         'lang_code'  => 'hun',
         'title'      => 'Hungarian',
@@ -139,12 +139,12 @@ return array(
         'flag_image' => 'hu.png',
         'is_rtl'     => false,
         'has_user'   => true,
-        'has_agent'  => false,
+        'has_agent'  => true,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'italian' => array(
+    'italian' => [
         'id'         => 'italian',
         'lang_code'  => 'ita',
         'title'      => 'Italian',
@@ -155,9 +155,9 @@ return array(
         'has_agent'  => true,
         'has_admin'  => true,
         'is_managed' => true,
-    ),
+    ],
 
-    'japanese' => array(
+    'japanese' => [
         'id'         => 'japanese',
         'lang_code'  => 'jpn',
         'title'      => 'Japanese',
@@ -168,9 +168,9 @@ return array(
         'has_agent'  => false,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'korean' => array(
+    'korean' => [
         'id'         => 'korean',
         'lang_code'  => 'kor',
         'title'      => 'Korean',
@@ -181,9 +181,9 @@ return array(
         'has_agent'  => false,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'norwegian' => array(
+    'norwegian' => [
         'id'         => 'norwegian',
         'lang_code'  => 'nor',
         'title'      => 'Norwegian',
@@ -194,9 +194,9 @@ return array(
         'has_agent'  => false,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'persian' => array(
+    'persian' => [
         'id'         => 'persian',
         'lang_code'  => 'per',
         'title'      => 'Persian',
@@ -207,9 +207,9 @@ return array(
         'has_agent'  => false,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'polish' => array(
+    'polish' => [
         'id'         => 'polish',
         'lang_code'  => 'pol',
         'title'      => 'Polish',
@@ -220,9 +220,9 @@ return array(
         'has_agent'  => true,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'portuguese' => array(
+    'portuguese' => [
         'id'         => 'portuguese',
         'lang_code'  => 'por',
         'title'      => 'Portuguese',
@@ -230,12 +230,12 @@ return array(
         'flag_image' => 'pt.png',
         'is_rtl'     => false,
         'has_user'   => true,
-        'has_agent'  => false,
+        'has_agent'  => true,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'romanian' => array(
+    'romanian' => [
         'id'         => 'romanian',
         'lang_code'  => 'rum',
         'title'      => 'Romanian',
@@ -246,9 +246,9 @@ return array(
         'has_agent'  => false,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'russian' => array(
+    'russian' => [
         'id'         => 'russian',
         'lang_code'  => 'rus',
         'title'      => 'Russian',
@@ -259,9 +259,9 @@ return array(
         'has_agent'  => true,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'slovak' => array(
+    'slovak' => [
         'id'         => 'slovak',
         'lang_code'  => 'slk',
         'title'      => 'Slovak',
@@ -272,9 +272,9 @@ return array(
         'has_agent'  => true,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'spanish' => array(
+    'spanish' => [
         'id'         => 'spanish',
         'lang_code'  => 'spa',
         'title'      => 'Spanish',
@@ -285,9 +285,9 @@ return array(
         'has_agent'  => true,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'swedish' => array(
+    'swedish' => [
         'id'         => 'swedish',
         'lang_code'  => 'swe',
         'title'      => 'Swedish',
@@ -298,9 +298,9 @@ return array(
         'has_agent'  => false,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
-    'turkish' => array(
+    'turkish' => [
         'id'         => 'turkish',
         'lang_code'  => 'tur',
         'title'      => 'Turkish',
@@ -311,7 +311,7 @@ return array(
         'has_agent'  => false,
         'has_admin'  => false,
         'is_managed' => true,
-    ),
+    ],
 
     // ensure an appropriate flag_image has been specified when adding a language
     // ensure that /app/languages/default/user/lang.php includes the language name
@@ -393,4 +393,4 @@ return array(
     ),
 
     */
-);
+];

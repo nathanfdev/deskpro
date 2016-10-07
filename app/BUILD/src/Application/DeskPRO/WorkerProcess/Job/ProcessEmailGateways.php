@@ -53,9 +53,9 @@ class ProcessEmailGateways extends AbstractJob
 
         @ini_set('memory_limit', DP_MAX_MEMSIZE);
 
-        #------------------------------
-        # Mark error sources
-        #------------------------------
+        //------------------------------
+        // Mark error sources
+        //------------------------------
 
         // If a source has been in the 'processing' state for more than 15 mintues,
         // then it means it's probably an error
@@ -66,7 +66,7 @@ class ProcessEmailGateways extends AbstractJob
             UPDATE email_sources
             SET status = 'retry', error_code = NULL
             WHERE status = 'processing' AND date_created < ? AND exec_count <= 2
-        ", array($d));
+        ", [$d]);
 
         if ($num) {
             $this->getLogger()->logNotice("$num email sources(s) marked as timeout and will be retried");
@@ -76,7 +76,7 @@ class ProcessEmailGateways extends AbstractJob
             UPDATE email_sources
             SET status = 'error', error_code = 'timeout'
             WHERE status = 'processing' AND date_created < ? AND exec_count >= 2
-        ", array($d));
+        ", [$d]);
 
         if ($num) {
             $e = new \Exception("$num email source(s) marked as timeout and will not be retried because they are over the retry threshold");
@@ -84,9 +84,9 @@ class ProcessEmailGateways extends AbstractJob
             $this->getLogger()->log("$num sources marked as timeout and will not be retried", 'ERR');
         }
 
-        #------------------------------
-        # Run the gateways
-        #------------------------------
+        //------------------------------
+        // Run the gateways
+        //------------------------------
 
         $logger = $this->getLogger();
 
@@ -118,7 +118,7 @@ class ProcessEmailGateways extends AbstractJob
                 return;
             }
 
-            $runner->setAccounts(array($account));
+            $runner->setAccounts([$account]);
             $runner->execute(300);
         } else {
             $runner->loadAccountsFromDb(false);

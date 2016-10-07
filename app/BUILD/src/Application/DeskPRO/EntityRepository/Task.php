@@ -622,15 +622,25 @@ class Task extends AbstractEntityRepository
         }
     }
 
+    /**
+     * @param TicketEntity $ticket
+     * @param PersonEntity $personContext
+     * @param bool         $all
+     *
+     * @return array
+     */
     public function findLinkedTicketTasks(TicketEntity $ticket, PersonEntity $personContext, $all = false)
     {
-        $personContext->loadHelper('Agent');
-        if (!$teamIds = $personContext->Agent->getTeamIds()) {
+        /** @var Connection $connection */
+        $connection = $this->_em->getConnection();
+
+        $teamIds = $connection->fetchAllCol('SELECT team_id FROM agent_team_members WHERE person_id = ?', [$personContext->getId()]);
+        if (!$teamIds) {
             $teamIds = [0];
         }
 
         if ($all) {
-            $taskIds = $this->getEntityManager()->getConnection()->fetchAllCol('
+            $taskIds = $connection->fetchAllCol('
                 SELECT tasks.id
                 FROM tasks
                 LEFT JOIN task_associations ON task_associations.task_id = tasks.id
@@ -650,7 +660,7 @@ class Task extends AbstractEntityRepository
                 \PDO::PARAM_INT,
             ]);
         } else {
-            $taskIds = $this->getEntityManager()->getConnection()->fetchAllCol('
+            $taskIds = $connection->fetchAllCol('
                 SELECT tasks.id
                 FROM tasks
                 LEFT JOIN task_associations ON task_associations.task_id = tasks.id

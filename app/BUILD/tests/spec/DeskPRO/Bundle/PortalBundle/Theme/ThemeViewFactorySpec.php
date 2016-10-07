@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -47,7 +48,7 @@ class ThemeViewFactorySpec extends ObjectBehavior
 
     public function it_creates_theme_view_objects_with_the_brand_stack_injected()
     {
-        $view = $this->createView($options = array('options' => 'here'));
+        $view = $this->createView($options = ['options' => 'here']);
 
         $view->shouldHaveType('DeskPRO\Bundle\PortalBundle\Theme\ThemeView');
     }

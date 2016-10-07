@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @property int           $id
@@ -100,24 +101,24 @@ class AppAsset extends DomainObject
      */
     public function getMetadata()
     {
-        return $this->metadata ? $this->metadata : array();
+        return $this->metadata ? $this->metadata : [];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
-        $data             = array();
+        $data             = [];
         $data['id']       = $this->id;
         $data['name']     = $this->name;
         $data['tag']      = $this->tag;
         $data['metadata'] = $this->metadata;
         $data['blob']     = $this->blob->toApiData(false, $deep);
 
-        if ($this->package->native_name && $this->tag && in_array($this->tag, array('js', 'css', 'html', 'res'))) {
-            $data['blob']['download_url'] = App::get('router')->generate('serve_blob_app_asset', array('app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name), true);
-            $data['blob']['relative_url'] = App::get('router')->generate('serve_blob_app_asset', array('app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name), true);
+        if ($this->package->native_name && $this->tag && in_array($this->tag, ['js', 'css', 'html', 'res'])) {
+            $data['blob']['download_url'] = App::get('router')->generate('serve_blob_app_asset', ['app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name], UrlGeneratorInterface::ABSOLUTE_URL);
+            $data['blob']['relative_url'] = App::get('router')->generate('serve_blob_app_asset', ['app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name], UrlGeneratorInterface::ABSOLUTE_URL);
         } else {
             $data['blob']['download_url'] = $this->blob->getDownloadUrl(true, false);
             $data['blob']['relative_url'] = $this->blob->getDownloadUrl(false, false);
@@ -130,9 +131,9 @@ class AppAsset extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

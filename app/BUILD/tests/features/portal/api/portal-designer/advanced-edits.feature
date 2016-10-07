@@ -3,7 +3,7 @@ Feature: Adding custom SCSS and javascript
   Background: Fresh database
     Given I install the fresh data set
     And I'm authenticated as admin
-    And I have default brand
+    And I have only default brand
 
   Scenario: I get current advanced edit data
     When I go to "/brand-{defaultBrandId}/portal/api/style/edit-theme-set/advanced-edits"

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Sms\Provider;
 
 use Orb\Service\Twilio\Twilio;
@@ -87,22 +88,22 @@ class TwilioSmsProvider implements SmsProviderInterface
             $message = $this->twilio->sendSms($toPhoneNumber, $textMessage, $fromPhoneNumber);
         } catch (\Services_Twilio_RestException $e) {
             $result = new SmsResult(
-                SmsResult::SMS_FAIL, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), array(
+                SmsResult::SMS_FAIL, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), [
                     'status'        => $e->getCode(),
                     'message'       => $e->getMessage(),
                     'twilio_status' => $e->getStatus(),
                     'twilio_info'   => $e->getInfo(),
-                )
+                ]
             );
             $result->setProviderMessage($e->getStatus().' - '.$e->getMessage().' ('.$e->getCode().')');
 
             return $result;
         } catch (\Exception $e) {
             $result = new SmsResult(
-                SmsResult::SMS_FAIL, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), array(
+                SmsResult::SMS_FAIL, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), [
                     'status'  => $e->getCode(),
                     'message' => $e->getMessage(),
-                )
+                ]
             );
             $result->setProviderMessage($e->getCode().' - '.$e->getMessage());
 
@@ -111,11 +112,11 @@ class TwilioSmsProvider implements SmsProviderInterface
 
         // we successfully sent a valid SMS to Twilio
         $result = new SmsResult(
-            SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), array(
+            SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), [
                 'sid'             => $message->sid, // this can later be used to find the status of the sms
                 'num_segments'    => $message->num_segments,
                 'provider_status' => $message->status,
-            )
+            ]
         );
 
         return $result;
@@ -130,12 +131,12 @@ class TwilioSmsProvider implements SmsProviderInterface
     public function getIncomingNumbers()
     {
         try {
-            $out = array();
+            $out = [];
 
             $numbers = $this->twilio->getIncomingNumbers();
             foreach ($numbers as $display => $number) {
                 $number = PhoneNumbers::toInternationalFormat($number);
-                $out[]  = array('display_name' => $display, 'number' => $number);
+                $out[]  = ['display_name' => $display, 'number' => $number];
             }
 
             return $out;
@@ -164,9 +165,9 @@ class TwilioSmsProvider implements SmsProviderInterface
      */
     public function getParams()
     {
-        return array(
+        return [
             'sid'        => $this->sid,
             'auth_token' => $this->auth_token,
-        );
+        ];
     }
 }

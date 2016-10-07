@@ -502,6 +502,11 @@ $collection->create('agent_team_list', [
     'controller' => 'AgentBundle:Person:listTeams',
     'condition'  => 'request.headers.get("X-Requested-With") == "XMLHttpRequest"',
 ]);
+$collection->create('agent_notifier_list', [
+    'path'       => '/people/agent_notifier_map.json',
+    'controller' => 'AgentBundle:Person:getNotifierMap',
+    'condition'  => 'request.headers.get("X-Requested-With") == "XMLHttpRequest"',
+]);
 
 $collection->create('agent_person_get_tickets', [
     'path'         => '/person/{person_id}/tickets',
@@ -798,6 +803,11 @@ $collection->create('agent_ticketsearch_runfilter', [
     'controller'   => 'AgentBundle:TicketSearch:runFilter',
     'requirements' => ['filter_id' => '\\d+'],
     'options'      => ['fragment_name' => 'filter', 'fragment_type' => 'list'],
+]);
+
+$collection->create('agent_ticketsearch_massactionoverlay', [
+    'path'       => '/ticket-search/mass-action-overlay',
+    'controller' => 'AgentBundle:TicketSearch:getTicketMassActionOverlay',
 ]);
 
 $collection->create('agent_ticketsearch_getsubgroupcounts', [

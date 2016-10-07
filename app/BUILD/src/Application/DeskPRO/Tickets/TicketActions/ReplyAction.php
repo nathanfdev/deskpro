@@ -47,7 +47,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     /** @var string|null */
     protected $reply_pos;
     /** @var array */
-    protected $attach_ids = array();
+    protected $attach_ids = [];
     /** @var Person */
     protected $person_context;
     /** @var bool */
@@ -55,7 +55,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     /** @var int|null */
     protected $person_id = null;
 
-    public function __construct($reply_text, array $attach_ids = array(), $reply_pos = null, $is_html = false, $person_id = null)
+    public function __construct($reply_text, array $attach_ids = [], $reply_pos = null, $is_html = false, $person_id = null)
     {
         $this->reply_text = $reply_text;
         $this->attach_ids = $attach_ids;
@@ -214,7 +214,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         $tr = App::getTranslator();
 
         if ($as_html) {
-            $flat = str_replace(array("\r\n", "\n"), ' ', $this->reply_text);
+            $flat = str_replace(["\r\n", "\n"], ' ', $this->reply_text);
             if (strlen($flat) > 80) {
                 $flat = substr($flat, 0, 80).'...';
             }
@@ -241,7 +241,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
                 return $ret;
             }
 
-            return $tr->phrase('agent.tickets.add_reply_x_action', array('desc' => $desc));
+            return $tr->phrase('agent.tickets.add_reply_x_action', ['desc' => $desc]);
         }
 
         return $tr->phrase('agent.tickets.add_reply_action');

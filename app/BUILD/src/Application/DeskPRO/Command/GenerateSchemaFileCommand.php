@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Commands
  */
+
 namespace Application\DeskPRO\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,9 +42,9 @@ class GenerateSchemaFileCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 {
     protected function configure()
     {
-        $this->setDefinition(array(
+        $this->setDefinition([
             new InputOption('save', 'w', InputOption::VALUE_NONE, 'Save to the InstallBundle directory instead of outputting'),
-        ))->setName('dp:generate-schema-file');
+        ])->setName('dp:generate-schema-file');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

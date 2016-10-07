@@ -125,9 +125,7 @@ class ChatCreateType extends AbstractType
                 'csrf_double_submit_protection' => false,
             ])
             ->setRequired('person')
-            ->setAllowedTypes([
-                'person' => ['null', Person::class],
-            ])
+            ->setAllowedTypes('person', ['null', Person::class])
         ;
     }
 

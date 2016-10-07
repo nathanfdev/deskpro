@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,16 +32,16 @@ use Orb\Util\Strings;
 
 abstract class PresenterValue implements \ArrayAccess
 {
-    private $value = array();
+    private $value = [];
 
-    private $id_normal_cache        = array();
-    private $id_getter_cache        = array();
-    private $id_target_getter_cache = array();
-    private $cache_field_names      = array();
-    private $cache_field_values     = array();
+    private $id_normal_cache        = [];
+    private $id_getter_cache        = [];
+    private $id_target_getter_cache = [];
+    private $cache_field_names      = [];
+    private $cache_field_values     = [];
 
-    private $passthrough_whitelist = array();
-    private $passthrough_blacklist = array();
+    private $passthrough_whitelist = [];
+    private $passthrough_blacklist = [];
 
     private $getter_passthrough = null;
     private $call_passthrough   = null;
@@ -73,7 +73,7 @@ abstract class PresenterValue implements \ArrayAccess
         $args = func_get_args();
         foreach ($args as $a) {
             if (!is_array($a)) {
-                $a = array($a);
+                $a = [$a];
             }
             foreach ($a as $id) {
                 $this->cache_field_names[$id] = true;
@@ -95,7 +95,7 @@ abstract class PresenterValue implements \ArrayAccess
         $args = func_get_args();
         foreach ($args as $a) {
             if (!is_array($a)) {
-                $a = array($a);
+                $a = [$a];
             }
             foreach ($a as $id) {
                 if ($id[0] == '!') {

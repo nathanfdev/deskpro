@@ -46,6 +46,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
+    /**
+     * Special exit code used to indicate bad paths.
+     */
+    const ERR_BAD_PATHS = 190;
+
     protected function configure()
     {
         $this->setName('dp:upgrade')
@@ -63,40 +68,43 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         set_time_limit(0);
 
         global $DP_ENV;
-        $validator  = new BinariesPathValidator();
-        $wrongPaths = [];
 
-        $root          = $DP_ENV->getDpRoot();
-        $phpPath       = $DP_ENV->getConfig('paths.php_path');
-        $mysqlPath     = $DP_ENV->getConfig('paths.mysql_path');
-        $mysqldumpPath = $DP_ENV->getConfig('paths.mysqldump_path');
+        if (!$DP_ENV->getConfig('env.skip_req_check')) {
+            $validator  = new BinariesPathValidator();
+            $wrongPaths = [];
 
-        try {
-            $validator->validatePhpPath($phpPath, $root);
-        } catch (\Exception $e) {
-            $wrongPaths[] = $phpPath ?: 'php';
-        }
+            $root          = $DP_ENV->getDpRoot();
+            $phpPath       = $DP_ENV->getConfig('paths.php_path');
+            $mysqlPath     = $DP_ENV->getConfig('paths.mysql_path');
+            $mysqldumpPath = $DP_ENV->getConfig('paths.mysqldump_path');
 
-        try {
-            $validator->validateMysqlPath($mysqlPath);
-        } catch (\Exception $e) {
-            $wrongPaths[] = $mysqlPath ?: 'mysql';
-        }
+            try {
+                $validator->validatePhpPath($phpPath, $root);
+            } catch (\Exception $e) {
+                $wrongPaths[] = ($phpPath ?: 'php').': '.$e->getMessage();
+            }
 
-        try {
-            $validator->validateMysqldumpPath($mysqldumpPath);
-        } catch (\Exception $e) {
-            $wrongPaths[] = $mysqldumpPath ?: 'mysqldump';
-        }
+            try {
+                $validator->validateMysqlPath($mysqlPath);
+            } catch (\Exception $e) {
+                $wrongPaths[] = ($mysqlPath ?: 'mysql').': '.$e->getMessage();
+            }
 
-        if ($wrongPaths) {
-            $output->writeln('<error>One or more paths to system binaries are incorrect</error>');
-            $output->writeln('The following paths are incorrect: '.implode(', ', $wrongPaths));
-            $output->writeln('');
-            $output->writeln('You need to edit your config.paths.php file and correct the paths. The full path to the config fileis:');
-            $output->writeln('<info>'.$root.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.paths.php</info>');
+            try {
+                $validator->validateMysqldumpPath($mysqldumpPath);
+            } catch (\Exception $e) {
+                $wrongPaths[] = ($mysqldumpPath ?: 'mysqldump').': '.$e->getMessage();
+            }
 
-            return 1;
+            if ($wrongPaths) {
+                $output->writeln('<error>One or more paths to system binaries are incorrect</error>');
+                $output->writeln('The following paths are incorrect: '.implode(', ', $wrongPaths));
+                $output->writeln('');
+                $output->writeln('You need to edit your config.paths.php file and correct the paths. The full path to the config fileis:');
+                $output->writeln('<info>'.$root.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.paths.php</info>');
+
+                return self::ERR_BAD_PATHS;
+            }
         }
 
         $doReset       = $input->getOption('reset');
@@ -193,9 +201,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $logger
         );
 
-        #------------------------------
-        # Info
-        #------------------------------
+        //------------------------------
+        // Info
+        //------------------------------
 
         if ($input->getOption('info')) {
             $next_id = $manager->getNextBuildId();
@@ -222,9 +230,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             return 0;
         }
 
-        #------------------------------
-        # Set build
-        #------------------------------
+        //------------------------------
+        // Set build
+        //------------------------------
 
         if ($input->getOption('setbuild')) {
             $num = time();
@@ -235,9 +243,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             return 0;
         }
 
-        #------------------------------
-        # Want to run post scripts only
-        #------------------------------
+        //------------------------------
+        // Want to run post scripts only
+        //------------------------------
 
         if ($input->getOption('runsync')) {
             $output->writeln('<info>Running post scripts</info>');
@@ -248,9 +256,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             return 0;
         }
 
-        #------------------------------
-        # Runs a build script
-        #------------------------------
+        //------------------------------
+        // Runs a build script
+        //------------------------------
 
         if (!$manager->getNextBuildId()) {
             $logger->info('All up to date');
@@ -262,9 +270,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             return 0;
         }
 
-        #------------------------------
-        # The main executor loop
-        #------------------------------
+        //------------------------------
+        // The main executor loop
+        //------------------------------
 
         chdir(DP_APP_DIR);
 
@@ -289,9 +297,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $manager->reset();
         }
 
-        #------------------------------
-        # Post Run
-        #------------------------------
+        //------------------------------
+        // Post Run
+        //------------------------------
 
         $logger->info('Running post scripts');
         $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:upgrade --runsync');

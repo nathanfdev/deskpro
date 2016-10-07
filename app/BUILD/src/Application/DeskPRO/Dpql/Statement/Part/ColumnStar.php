@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\App;
@@ -87,7 +88,7 @@ class ColumnStar extends AbstractPart
         // represents the repository of what we're joining from
         $repository = $statement->getFromEntityRepository();
 
-        $partsSoFar = array($table);
+        $partsSoFar = [$table];
 
         foreach ($parts as $partKey => $part) {
             $partsSoFar[] = $part;
@@ -154,7 +155,7 @@ class ColumnStar extends AbstractPart
                             // join details are on the other table
                             $joinColumns = $childAssociations[$association['mappedBy']]['joinColumns'];
                         } else {
-                            $joinColumns = array();
+                            $joinColumns = [];
                         }
                     }
 
@@ -179,7 +180,7 @@ class ColumnStar extends AbstractPart
                 continue;
             }
 
-            $column = new Column(array_merge($partsSoFar, array($key)));
+            $column = new Column(array_merge($partsSoFar, [$key]));
             $statement->addPreparedSelectField($column->prepare($statement, $section, $stack, $select, $result));
         }
         foreach ($repository->getAssociationMappings() as $association) {
@@ -191,7 +192,7 @@ class ColumnStar extends AbstractPart
 
             if ($association['type'] & ClassMetadataInfo::TO_ONE) {
                 try {
-                    $column = new Column(array_merge($partsSoFar, array($association['fieldName'])));
+                    $column = new Column(array_merge($partsSoFar, [$association['fieldName']]));
                     $statement->addPreparedSelectField($column->prepare($statement, $section, $stack, $select, $result));
                 } catch (Exception $e) {
                 }
@@ -207,7 +208,7 @@ class ColumnStar extends AbstractPart
 
                 if ($type) {
                     foreach (App::getApi('custom_fields.'.$type)->getFields() as $field) {
-                        $column = new Column(array_merge($partsSoFar, array($association['fieldName']."[$field->id]")));
+                        $column = new Column(array_merge($partsSoFar, [$association['fieldName']."[$field->id]"]));
                         $statement->addPreparedSelectField(
                             $column->prepare($statement, $section, $stack, $select, $result), $field->title
                         );

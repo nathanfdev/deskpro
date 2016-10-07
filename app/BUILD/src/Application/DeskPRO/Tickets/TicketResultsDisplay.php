@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -138,8 +139,12 @@ class TicketResultsDisplay implements PersonContextInterface
         $this->em = App::getOrm();
         $this->db = $this->em->getConnection();
 
-        $people_ids = array();
+        $people_ids = [];
         foreach ($tickets as $ticket) {
+            if (!$ticket->getPerson()) {
+                continue;
+            }
+
             $people_ids[] = $ticket->person->getId();
             if ($ticket->agent) {
                 $people_ids[] = $ticket->agent->getId();
@@ -177,7 +182,7 @@ class TicketResultsDisplay implements PersonContextInterface
         }
 
         if (!$this->ticket_count) {
-            $this->all_labels = array();
+            $this->all_labels = [];
 
             return $this->all_labels;
         }
@@ -188,7 +193,7 @@ class TicketResultsDisplay implements PersonContextInterface
             SELECT ticket_id, label
             FROM labels_tickets
             WHERE ticket_id IN ($ticket_ids)
-        ", array(), 'ticket_id', null, 'label');
+        ", [], 'ticket_id', null, 'label');
 
         return $this->all_labels;
     }
@@ -200,7 +205,7 @@ class TicketResultsDisplay implements PersonContextInterface
         }
 
         if (!$this->ticket_count) {
-            $this->all_problems = array();
+            $this->all_problems = [];
 
             return $this->all_problems;
         }
@@ -214,7 +219,7 @@ class TicketResultsDisplay implements PersonContextInterface
             JOIN problems p ON p.id = pt.problem_id
             WHERE pt.ticket_id IN ($ticket_ids)
         ",
-            array(),
+            [],
             'ticket_id',
             null,
             'title'
@@ -237,13 +242,13 @@ class TicketResultsDisplay implements PersonContextInterface
             LEFT JOIN d.field def
             LEFT JOIN d.root_field root_def
             WHERE d.person IN (?0)
-        ')->execute(array(array_values($this->people_ids)));
+        ')->execute([array_values($this->people_ids)]);
 
-        $this->all_user_field_data = array();
+        $this->all_user_field_data = [];
         foreach ($data as $d) {
             $tid = $d->person->getId();
             if (!isset($this->all_user_field_data[$tid])) {
-                $this->all_user_field_data[$tid] = array();
+                $this->all_user_field_data[$tid] = [];
             }
 
             $this->all_user_field_data[$tid][] = $d;
@@ -261,7 +266,7 @@ class TicketResultsDisplay implements PersonContextInterface
     {
         $this->getAllUserFieldData();
 
-        return isset($this->all_user_field_data[$person->getId()]) ? $this->all_user_field_data[$person->getId()] : array();
+        return isset($this->all_user_field_data[$person->getId()]) ? $this->all_user_field_data[$person->getId()] : [];
     }
 
     /**
@@ -278,13 +283,13 @@ class TicketResultsDisplay implements PersonContextInterface
             LEFT JOIN d.field def
             LEFT JOIN d.root_field root_def
             WHERE d.ticket IN (?0)
-        ')->execute(array(array_values($this->ticket_ids)));
+        ')->execute([array_values($this->ticket_ids)]);
 
-        $this->all_ticket_field_data = array();
+        $this->all_ticket_field_data = [];
         foreach ($data as $d) {
             $tid = $d->ticket->getId();
             if (!isset($this->all_ticket_field_data[$tid])) {
-                $this->all_ticket_field_data[$tid] = array();
+                $this->all_ticket_field_data[$tid] = [];
             }
 
             $this->all_ticket_field_data[$tid][] = $d;
@@ -302,7 +307,7 @@ class TicketResultsDisplay implements PersonContextInterface
     {
         $this->getAllTicketFieldData();
 
-        return isset($this->all_ticket_field_data[$ticket->id]) ? $this->all_ticket_field_data[$ticket->id] : array();
+        return isset($this->all_ticket_field_data[$ticket->id]) ? $this->all_ticket_field_data[$ticket->id] : [];
     }
 
     /**
@@ -316,14 +321,14 @@ class TicketResultsDisplay implements PersonContextInterface
     {
         $this->getAllLabels();
 
-        return empty($this->all_labels[$ticket->id]) ? array() : $this->all_labels[$ticket->id];
+        return empty($this->all_labels[$ticket->id]) ? [] : $this->all_labels[$ticket->id];
     }
 
     public function getTicketProblems(Ticket $ticket)
     {
         $this->getAllProblems();
 
-        return empty($this->all_problems[$ticket->id]) ? array() : $this->all_problems[$ticket->id];
+        return empty($this->all_problems[$ticket->id]) ? [] : $this->all_problems[$ticket->id];
     }
 
     /**
@@ -350,7 +355,7 @@ class TicketResultsDisplay implements PersonContextInterface
         }
 
         if (!$this->ticket_count) {
-            $this->all_ticket_slas = array();
+            $this->all_ticket_slas = [];
 
             return $this->all_ticket_slas;
         }
@@ -363,7 +368,7 @@ class TicketResultsDisplay implements PersonContextInterface
             INNER JOIN slas ON (ticket_slas.sla_id = slas.id)
             WHERE ticket_slas.ticket_id IN ($ticket_ids)
                 AND ticket_slas.is_completed = 0
-        ", array(), 'ticket_id', 'id');
+        ", [], 'ticket_id', 'id');
 
         return $this->all_ticket_slas;
     }
@@ -379,7 +384,7 @@ class TicketResultsDisplay implements PersonContextInterface
     {
         $this->getAllTicketSlas();
 
-        return empty($this->all_ticket_slas[$ticket->id]) ? array() : $this->all_ticket_slas[$ticket->id];
+        return empty($this->all_ticket_slas[$ticket->id]) ? [] : $this->all_ticket_slas[$ticket->id];
     }
 
     /**
@@ -398,7 +403,7 @@ class TicketResultsDisplay implements PersonContextInterface
 
     public function getNextSlaTriggerDate(array $ticket_sla)
     {
-        $times = array();
+        $times = [];
 
         if ($ticket_sla['sla_status'] == 'ok' && $ticket_sla['warn_date']) {
             $time = new \DateTime($ticket_sla['warn_date'], new \DateTimeZone('UTC'));
@@ -426,11 +431,9 @@ class TicketResultsDisplay implements PersonContextInterface
      */
     public function getPerson(Ticket $ticket)
     {
-        if (!$ticket->person) {
-            return;
-        }
+        $person = $ticket->getPerson();
 
-        return $this->people[$ticket->person->getId()];
+        return $person ? $this->people[$person->getId()] : null;
     }
 
     /**
@@ -440,11 +443,9 @@ class TicketResultsDisplay implements PersonContextInterface
      */
     public function getAgent(Ticket $ticket)
     {
-        if (!$ticket->agent) {
-            return;
-        }
+        $agent = $ticket->getAgent();
 
-        return $this->people[$ticket->agent->getId()];
+        return $agent ? $this->people[$agent->getId()] : null;
     }
 
     /**
@@ -477,7 +478,7 @@ class TicketResultsDisplay implements PersonContextInterface
         }
 
         if (!$this->ticket_ids) {
-            $this->all_previews = array();
+            $this->all_previews = [];
 
             return $this->all_previews;
         }
@@ -489,20 +490,16 @@ class TicketResultsDisplay implements PersonContextInterface
                 tickets_messages.is_agent_note
             FROM tickets_messages
             LEFT JOIN people ON (people.id = tickets_messages.person_id)
-            WHERE tickets_messages.ticket_id IN (?)
-            ORDER BY tickets_messages.id DESC
-        ', array($this->ticket_ids), 'id', array(Connection::PARAM_INT_ARRAY));
+            JOIN (SELECT MAX(id) AS id FROM tickets_messages WHERE ticket_id IN (?) GROUP by ticket_id) tickets_messages2
+            WHERE tickets_messages.id = tickets_messages2.id
+        ', [$this->ticket_ids], 'id', [Connection::PARAM_INT_ARRAY]);
 
-        $extra_people     = array();
-        $extra_people_ids = array();
-        $agent_data       = App::$container->getAgentData();
+        $extra_people     = [];
+        $extra_people_ids = [];
+
         foreach ($message_data as $m) {
             if (!isset($this->people[$m['person_id']])) {
-                if ($agent_data->has($m['person_id'])) {
-                    $extra_people[$m['person_id']] = $agent_data->get($m['person_id']);
-                } else {
-                    $extra_people_ids[] = $m['person_id'];
-                }
+                $extra_people_ids[] = $m['person_id'];
             }
         }
         if ($extra_people_ids) {
@@ -511,10 +508,10 @@ class TicketResultsDisplay implements PersonContextInterface
             }
         }
 
-        $this->all_previews = array();
+        $this->all_previews = [];
         foreach ($message_data as $m) {
             if (!isset($this->all_previews[$m['ticket_id']])) {
-                $this->all_previews[$m['ticket_id']] = array();
+                $this->all_previews[$m['ticket_id']] = [];
             }
 
             $m['status'] = $m['is_agent_note']
@@ -564,7 +561,7 @@ class TicketResultsDisplay implements PersonContextInterface
         }
 
         $message = Strings::standardEol($message);
-        $message = str_replace(array('<br/>', '<br>', '<br />', '<p>', '</p>'), "\n", $message);
+        $message = str_replace(['<br/>', '<br>', '<br />', '<p>', '</p>'], "\n", $message);
         $message = strip_tags($message);
         $message = Strings::decodeHtmlEntities($message);
         $message = preg_replace('#\s+#', ' ', $message);
@@ -594,7 +591,7 @@ class TicketResultsDisplay implements PersonContextInterface
             return $this->all_previews[$ticket->id];
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -612,7 +609,7 @@ class TicketResultsDisplay implements PersonContextInterface
             $this->person_flagged = App::getDb()->fetchAllKeyValue('
                 SELECT ticket_id, color
                 FROM tickets_flagged
-                WHERE person_id = ? AND ticket_id IN (?)', array($this->person_context->getId(), $this->ticket_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+                WHERE person_id = ? AND ticket_id IN (?)', [$this->person_context->getId(), $this->ticket_ids], [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
         }
 
         $ticket_id = is_object($ticket) ? $ticket->getId() : $ticket;

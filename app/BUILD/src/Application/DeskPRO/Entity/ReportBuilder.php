@@ -266,7 +266,7 @@ class ReportBuilder extends DomainObject
      *
      * @return mixed|string
      */
-    public function getTitle($type = 'raw', $params = array())
+    public function getTitle($type = 'raw', $params = [])
     {
         if ($type == 'raw') {
             return $this->title;
@@ -278,8 +278,8 @@ class ReportBuilder extends DomainObject
         $groupParams = $repository->getReportGroupParams();
 
         if (!is_array($params)) {
-            $newParams = array();
-            foreach ($params ? explode(',', $params) : array() as $k => $v) {
+            $newParams = [];
+            foreach ($params ? explode(',', $params) : [] as $k => $v) {
                 $newParams[$k + 1] = $v;
             }
             $params = $newParams;
@@ -463,7 +463,7 @@ class ReportBuilder extends DomainObject
      *
      * @var array
      */
-    protected $_is_favorited = array();
+    protected $_is_favorited = [];
 
     /**
      * Returns true if the specified person has favorited this.
@@ -477,9 +477,9 @@ class ReportBuilder extends DomainObject
         return false;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -113,7 +113,7 @@ class PortalPageDisplay extends PageDisplayAbstract
     /**
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     public function addData($key, $value)
     {
@@ -134,7 +134,7 @@ class PortalPageDisplay extends PageDisplayAbstract
         $cache_id = "d.portal.block.block.portal_{$this->section}_".str_replace('\\', '', get_class($this));
         App::getDb()->executeUpdate('
             DELETE FROM cache WHERE id LIKE ?
-        ', array("$cache_id%"));
+        ', ["$cache_id%"]);
     }
 
     /**
@@ -155,9 +155,9 @@ class PortalPageDisplay extends PageDisplayAbstract
         return $this->data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\ORM\StateChange;
 
 class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
@@ -97,7 +98,7 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
         $this->user_mode          = $user_mode;
         $this->to_name            = $to_name;
         $this->to_email           = $to_email;
-        $this->cc_emails          = $cc_emails ?: array();
+        $this->cc_emails          = $cc_emails ?: [];
         $this->from_name          = $from_name;
         $this->from_email         = $from_email;
         $this->template           = $template;
@@ -125,7 +126,7 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
      */
     public function getNew()
     {
-        return array(
+        return [
             'field_id'           => $this->field_id,
             'user_mode'          => $this->user_mode,
             'to_name'            => $this->to_name,
@@ -136,7 +137,7 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
             'template'           => $this->template,
             'sendmail_source_id' => $this->sendmail_source_id,
             'id_after'           => $this->sendmail_source_id,
-        );
+        ];
     }
 
     /**

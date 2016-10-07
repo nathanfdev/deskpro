@@ -72,3 +72,4 @@ if (0 !== $return_status) {
     exit($return_status);
 }
 echo PHP_EOL.PHP_EOL.'Well done. No code style changes necessary.' . PHP_EOL;
+exit(0);

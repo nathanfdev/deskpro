@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Usersource as UsersourceEntity;
@@ -68,7 +69,7 @@ class PersonUsersourceAssoc extends AbstractEntityRepository
             FROM DeskPRO:PersonUsersourceAssoc assoc
             LEFT JOIN assoc.usersource us
             WHERE assoc.person = ?0
-        ')->execute(array($person));
+        ')->execute([$person]);
 
         return $associations;
     }
@@ -80,7 +81,7 @@ class PersonUsersourceAssoc extends AbstractEntityRepository
             FROM DeskPRO:PersonUsersourceAssoc assoc
             WHERE assoc.person = ?0
             AND assoc.usersource = ?1
-        ')->execute(array($person, $usersource));
+        ')->execute([$person, $usersource]);
 
         if (count($association)) {
             return current($association);

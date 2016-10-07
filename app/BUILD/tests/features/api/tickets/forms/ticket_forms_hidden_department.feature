@@ -4,7 +4,7 @@ Feature: /ticket_forms endpoint
 
   Background:
     Given I'm authenticated as admin
-    And I have default brand
+    And I have only default brand
     And there are no Department records
     And the only default ticket layout exists with fields:
       | agent_layout |

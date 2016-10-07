@@ -51,7 +51,7 @@ class ValidTermEngineTermValidator extends ConstraintValidator
             $this->context->addViolationAt(
                 'op',
                 ValidTermEngineTerm::ERROR_OP_NOT_SUPPORTED,
-                array('op' => $op, 'ops' => implode(', ', $supported))
+                ['op' => $op, 'ops' => implode(', ', $supported)]
             );
         }
 

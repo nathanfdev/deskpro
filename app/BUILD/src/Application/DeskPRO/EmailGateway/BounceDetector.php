@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
@@ -170,7 +171,7 @@ class BounceDetector
             return $this->guessed_email_addresses;
         }
 
-        $this->guessed_email_addresses = array();
+        $this->guessed_email_addresses = [];
 
         // The actual From address should be tried too
         $this->guessed_email_addresses[] = $this->reader->getFromAddress()->getEmail();

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,35 +29,36 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 class MediaManagerController extends AbstractController
 {
-    ############################################################################
-    # window
-    ############################################################################
+    //###########################################################################
+    // window
+    //###########################################################################
 
     public function windowAction()
     {
-        return $this->render('AgentBundle:MediaManager:media-window.html.twig', array(
+        return $this->render('AgentBundle:MediaManager:media-window.html.twig', [
 
-        ));
+        ]);
     }
 
-    ############################################################################
-    # upload
-    ############################################################################
+    //###########################################################################
+    // upload
+    //###########################################################################
 
     public function uploadAction()
     {
-        return $this->render('AgentBundle:MediaManager:upload.html.twig', array(
+        return $this->render('AgentBundle:MediaManager:upload.html.twig', [
 
-        ));
+        ]);
     }
 
-    ############################################################################
-    # browse
-    ############################################################################
+    //###########################################################################
+    // browse
+    //###########################################################################
 
     public function browseAction()
     {
@@ -68,8 +69,8 @@ class MediaManagerController extends AbstractController
             ORDER BY b.id DESC
         ')->setMaxResults(150)->execute();
 
-        return $this->render('AgentBundle:MediaManager:browse.html.twig', array(
+        return $this->render('AgentBundle:MediaManager:browse.html.twig', [
             'blobs' => $blobs,
-        ));
+        ]);
     }
 }

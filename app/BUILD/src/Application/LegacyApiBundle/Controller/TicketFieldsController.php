@@ -71,9 +71,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $multi;
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     /**
      * @return JsonResponse;
@@ -90,7 +90,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      */
     public function listAction()
     {
-        $data = array();
+        $data = [];
 
         /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
         $field_manager = $this->container->getSystemService('ticket_fields_manager');
@@ -106,9 +106,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # get-custom-field
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-custom-field
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -146,15 +146,15 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             throw $this->createNotFoundException();
         }
 
-        $data          = array();
+        $data          = [];
         $data['field'] = $field->toApiData();
 
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # save-custom-field
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-custom-field
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -185,7 +185,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      *      )
      *  )
      * )
-     
+
      * SWG\Api(
      * 	path="/ticket_fields",
      * 	SWG\Operation(
@@ -214,20 +214,20 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         $helper->saveFormToField($field, $post);
 
         if ($id) {
-            return $this->createSuccessResponse(array(
+            return $this->createSuccessResponse([
                 'field_id' => $field->id,
-            ));
+            ]);
         } else {
-            return $this->createSuccessResponse(array(
+            return $this->createSuccessResponse([
                 'field_id' => $field->id,
-                $this->generateUrl('api_ticket_fields_get', array('id' => $field->id)),
-            ));
+                $this->generateUrl('api_ticket_fields_get', ['id' => $field->id]),
+            ]);
         }
     }
 
-    ####################################################################################################################
-    # delete-custom-field
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete-custom-field
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -271,9 +271,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $this->createApiDeleteResponse();
     }
 
-    ####################################################################################################################
-    # toggleField
-    ####################################################################################################################
+    //###################################################################################################################
+    // toggleField
+    //###################################################################################################################
 
     /**
      * @param $field_id
@@ -315,13 +315,13 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # list-categories
-    ####################################################################################################################
+    //###################################################################################################################
+    // list-categories
+    //###################################################################################################################
 
     public function listCategoriesAction()
     {
-        $data = array();
+        $data = [];
 
         /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
         $field_manager = $this->container->getSystemService('ticket_fields_manager');
@@ -329,7 +329,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         $ticket_cats = $this->container->getSystemService('ticket_categories');
         $flat_array  = $ticket_cats->getFlatArray();
 
-        $cats = array();
+        $cats = [];
         foreach ($flat_array as $row) {
             $cats[] = $row['object'];
         }
@@ -343,17 +343,17 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # save-categories
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-categories
+    //###################################################################################################################
 
     public function saveCategoriesAction()
     {
         $structure = $this->in->getArrayValue('categories');
 
-        #------------------------------
-        # Save structure
-        #------------------------------
+        //------------------------------
+        // Save structure
+        //------------------------------
 
         $proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketCategory');
         $recs = $proc->getRecords($structure);
@@ -366,9 +366,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             $this->settings->setSetting('core.use_ticket_category', '0');
         }
 
-        #------------------------------
-        # Save default
-        #------------------------------
+        //------------------------------
+        // Save default
+        //------------------------------
 
         $default_id = $this->in->getString('default_id');
 
@@ -382,9 +382,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
         $this->settings->setSetting('core.default_ticket_cat', $id);
 
-        #------------------------------
-        # Save validation settings
-        #------------------------------
+        //------------------------------
+        // Save validation settings
+        //------------------------------
 
         $this->settings->setSetting('core_tickets.field_validation_ticket_cat_user_required', $this->in->getBoolInt('user_required'));
         $this->settings->setSetting('core_tickets.field_validation_ticket_cat_agent_required', $this->in->getBoolInt('agent_required'));
@@ -392,13 +392,13 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # list-products
-    ####################################################################################################################
+    //###################################################################################################################
+    // list-products
+    //###################################################################################################################
 
     public function listProductsAction()
     {
-        $data = array();
+        $data = [];
 
         /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
         $field_manager = $this->container->getSystemService('ticket_fields_manager');
@@ -406,7 +406,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         $ticket_prods = $this->container->getSystemService('products');
         $flat_array   = $ticket_prods->getFlatArray();
 
-        $cats = array();
+        $cats = [];
         foreach ($flat_array as $row) {
             $cats[] = $row['object'];
         }
@@ -420,17 +420,17 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # save-products
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-products
+    //###################################################################################################################
 
     public function saveProductsAction()
     {
         $structure = $this->in->getArrayValue('products');
 
-        #------------------------------
-        # Save structure
-        #------------------------------
+        //------------------------------
+        // Save structure
+        //------------------------------
 
         $proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:Product');
         $recs = $proc->getRecords($structure);
@@ -443,9 +443,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             $this->settings->setSetting('core.use_product', '0');
         }
 
-        #------------------------------
-        # Save default
-        #------------------------------
+        //------------------------------
+        // Save default
+        //------------------------------
 
         $default_id = $this->in->getString('default_id');
 
@@ -459,9 +459,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
         $this->settings->setSetting('core.default_prod_id', $id);
 
-        #------------------------------
-        # Save validation settings
-        #------------------------------
+        //------------------------------
+        // Save validation settings
+        //------------------------------
 
         $this->settings->setSetting('core_tickets.field_validation_ticket_prod_user_required', $this->in->getBoolInt('user_required'));
         $this->settings->setSetting('core_tickets.field_validation_ticket_prod_agent_required', $this->in->getBoolInt('agent_required'));
@@ -469,13 +469,13 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # list-workflows
-    ####################################################################################################################
+    //###################################################################################################################
+    // list-workflows
+    //###################################################################################################################
 
     public function listWorkflowsAction()
     {
-        $data = array();
+        $data = [];
 
         /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
         $field_manager = $this->container->getSystemService('ticket_fields_manager');
@@ -491,17 +491,17 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # save-workflows
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-workflows
+    //###################################################################################################################
 
     public function saveWorkflowsAction()
     {
         $structure = $this->in->getArrayValue('workflows');
 
-        #------------------------------
-        # Save structure
-        #------------------------------
+        //------------------------------
+        // Save structure
+        //------------------------------
 
         $proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketWorkflow');
         $proc->disableHierarchy();
@@ -516,9 +516,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             $this->settings->setSetting('core.use_ticket_workflow', '0');
         }
 
-        #------------------------------
-        # Save default
-        #------------------------------
+        //------------------------------
+        // Save default
+        //------------------------------
 
         $default_id = $this->in->getString('default_id');
 
@@ -532,9 +532,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
         $this->settings->setSetting('core.default_ticket_work', $id);
 
-        #------------------------------
-        # Save validation settings
-        #------------------------------
+        //------------------------------
+        // Save validation settings
+        //------------------------------
 
         $this->settings->setSetting('core_tickets.field_validation_ticket_work_user_required', $this->in->getBoolInt('user_required'));
         $this->settings->setSetting('core_tickets.field_validation_ticket_work_agent_required', $this->in->getBoolInt('agent_required'));
@@ -542,13 +542,13 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # list-priorities
-    ####################################################################################################################
+    //###################################################################################################################
+    // list-priorities
+    //###################################################################################################################
 
     public function listPrioritiesAction()
     {
-        $data = array();
+        $data = [];
 
         /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
         $field_manager = $this->container->getSystemService('ticket_fields_manager');
@@ -564,19 +564,19 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # save-priorities
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-priorities
+    //###################################################################################################################
 
     public function savePrioritiesAction()
     {
         $structure = $this->in->getArrayValue('priorities');
 
-        #------------------------------
-        # Save structure
-        #------------------------------
+        //------------------------------
+        // Save structure
+        //------------------------------
 
-        $proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketPriority', array('priority'));
+        $proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketPriority', ['priority']);
         $proc->disableHierarchy();
 
         $recs = $proc->getRecords($structure);
@@ -589,9 +589,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             $this->settings->setSetting('core.use_ticket_priority', '0');
         }
 
-        #------------------------------
-        # Save default
-        #------------------------------
+        //------------------------------
+        // Save default
+        //------------------------------
 
         $default_id = $this->in->getString('default_id');
 
@@ -605,9 +605,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
         $this->settings->setSetting('core.default_ticket_pri', $id);
 
-        #------------------------------
-        # Save validation settings
-        #------------------------------
+        //------------------------------
+        // Save validation settings
+        //------------------------------
 
         $this->settings->setSetting('core_tickets.field_validation_ticket_pri_user_required', $this->in->getBoolInt('user_required'));
         $this->settings->setSetting('core_tickets.field_validation_ticket_pri_agent_required', $this->in->getBoolInt('agent_required'));
@@ -645,27 +645,27 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
                 throw new NotFoundHttpException();
         }
 
-        $short = array(
+        $short = [
             'category' => 'cat',
             'priority' => 'pri',
             'product'  => 'prod',
             'workflow' => 'work',
-        );
+        ];
         $singular = 'ies' === substr($type, -3) ? (substr($type, 0, -3).'y') : substr($type, 0, -1);
         $short    = $short[$singular];
         $default  = 'prod' === $short
             ? $this->settings->get('core.default_product_id')
             : $this->settings->get('core.default_ticket_'.$short);
 
-        $data = array(
+        $data = [
             'title'             => ucfirst($singular),
             'description'       => '',
             'is_enabled'        => true,
             'handler_class'     => 'Application\DeskPRO\CustomFields\Handler\Choice',
             'field_type'        => 'select',
             'default_value'     => $default ? "cb_$default" : null,
-            'choices_structure' => array(),
-        );
+            'choices_structure' => [],
+        ];
 
         if ($this->settings->get('core_tickets.field_validation_ticket_'.$short.'_user_required')) {
             $data['min_length']      = 1;
@@ -681,13 +681,13 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
          */
         foreach ($service->getFlatArray() as $entry) {
             $tree                        = $entry instanceof TicketCategory || $entry instanceof Product;
-            $data['choices_structure'][] = array(
+            $data['choices_structure'][] = [
                 'id'            => 'cb_'.$entry['object']['id'],
                 '@is_new'       => true,
                 'title'         => $entry['object']['title'],
                 'parent_id'     => $tree && $entry['object']['parent'] ? ('cb_'.$entry['object']['parent']['id']) : null,
                 'display_order' => $entry instanceof TicketPriority ? 0 : $entry['object']['display_order'],
-            );
+            ];
         }
 
         $field                = $this->container->getTicketFieldManager()->createNewDefEntity();
@@ -700,7 +700,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
          */
         foreach ($rep_layouts->findAll() as $ticket_layout) {
             /* @var $layout TicketLayout */
-            foreach (array('user', 'agent') as $type) {
+            foreach (['user', 'agent'] as $type) {
                 $layout = clone $ticket_layout->{$type.'_layout'};
                 if ($layout->has($singular)) {
                     $old_layout_field = $layout->get($singular)->exportToArray();
@@ -717,7 +717,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         /*
          * Migrate values
          */
-        $cb_map = array();
+        $cb_map = [];
         foreach ($field->children as $child) {
             if (!$cb = $child->getOption('cb')) {
                 continue;
@@ -743,9 +743,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
                 values (:tid, '.$child['id'].', '.$field['id'].', 1, "")
             ');
 
-            while ($rows = $conn->fetchAll(sprintf($q, $offset, $limit), array('cb' => $cb))) {
+            while ($rows = $conn->fetchAll(sprintf($q, $offset, $limit), ['cb' => $cb])) {
                 foreach ($rows as $row) {
-                    $stmt->execute(array('tid' => $row['id']));
+                    $stmt->execute(['tid' => $row['id']]);
                 }
                 $offset += $limit;
             }
@@ -771,17 +771,17 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
                         continue;
                     }
                     $term['type']    = 'ticket_field['.$field['id'].']';
-                    $term['options'] = array();
+                    $term['options'] = [];
                     foreach ($options as $val) {
                         if ($val = @$cb_map[$val]) {
                             $term['options']['custom_fields']['field_'.$field['id']][] = $val;
                         }
                     }
                 }
-                $conn->executeUpdate('update ticket_filters set terms = :terms where id = :id', array(
+                $conn->executeUpdate('update ticket_filters set terms = :terms where id = :id', [
                     'terms' => json_encode($terms),
                     'id'    => $row['id'],
-                ));
+                ]);
             }
             $offset += $limit;
         }
@@ -806,7 +806,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
                                 continue;
                             }
                             $term['type']    = 'CheckTicketField'.$field['id'];
-                            $term['options'] = array('field_id' => $field['id']);
+                            $term['options'] = ['field_id' => $field['id']];
                             foreach ($vals as $val) {
                                 if ($val = @$cb_map[$val]) {
                                     $term['options']['value'][] = $val;
@@ -814,10 +814,10 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
                             }
                         }
                     }
-                    $conn->executeUpdate('update ticket_triggers set terms = :terms where id = :id', array(
+                    $conn->executeUpdate('update ticket_triggers set terms = :terms where id = :id', [
                         'terms' => json_encode($terms),
                         'id'    => $row['id'],
-                    ));
+                    ]);
                 }
 
                 if ($actions = json_decode($row['actions'], 1)) {
@@ -829,12 +829,12 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
                             continue;
                         }
                         $action['type']    = 'SetTicketField'.$field['id'];
-                        $action['options'] = array('value' => $val, 'field_id' => $field['id']);
+                        $action['options'] = ['value' => $val, 'field_id' => $field['id']];
                     }
-                    $conn->executeUpdate('update ticket_triggers set actions = :actions where id = :id', array(
+                    $conn->executeUpdate('update ticket_triggers set actions = :actions where id = :id', [
                         'actions' => json_encode($actions),
                         'id'      => $row['id'],
-                    ));
+                    ]);
                 }
             }
             $offset += $limit;

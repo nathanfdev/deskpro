@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -61,7 +61,7 @@ class ServerCron
     {
         $jobs = $this->em->getRepository('DeskPRO:WorkerJob')->getAll();
 
-        $resData = array();
+        $resData = [];
 
         foreach ($jobs as $key => $job) {
             if ($job instanceof DomainObject) {
@@ -95,7 +95,7 @@ class ServerCron
 
         $time_since_run = time() - $last_run;
 
-        return array(
+        return [
             'last_run'                  => (int) $last_run,
             'last_run_ms'               => (int) $last_run * 1000,
             'time_since_run'            => (int) $time_since_run,
@@ -104,7 +104,7 @@ class ServerCron
             'last_start_ms'             => (int) $last_start * 1000,
             'time_since_start'          => (int) $time_since_start,
             'time_since_start_readable' => Dates::secsToReadable($time_since_start),
-        );
+        ];
     }
 
     /**
@@ -172,9 +172,9 @@ class ServerCron
             $priority = 10;
         }
 
-        return array(
+        return [
             'job_id'   => $job_id,
             'priority' => $priority,
-        );
+        ];
     }
 }

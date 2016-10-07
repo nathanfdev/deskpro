@@ -62,73 +62,73 @@ class TriggerData extends AbstractDefaultData
         $this->installTriggerRecords($exist_names);
     }
 
-    private function installTriggerRecords(array $ignore = array())
+    private function installTriggerRecords(array $ignore = [])
     {
         $ignore = array_fill_keys($ignore, true);
 
-        #-----
-        # Send agent notifications
-        #-----
+        //-----
+        // Send agent notifications
+        //-----
 
-        foreach (array(
+        foreach ([
             'newticket' => 'DeskPRO:emails_agent:ticket-new.html.twig',
             'newreply' => 'DeskPRO:emails_agent:ticket-reply.html.twig',
             'update' => 'DeskPRO:emails_agent:ticket-update.html.twig',
-        ) as $event_trigger => $template_name) {
+        ] as $event_trigger => $template_name) {
             $trigger                = new TicketTrigger();
             $trigger->event_trigger = $event_trigger;
-            $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
-            $trigger->by_agent_mode = array('api', 'email', 'web', 'mobile');
+            $trigger->by_user_mode  = ['api', 'email', 'form', 'portal', 'widget'];
+            $trigger->by_agent_mode = ['api', 'email', 'web', 'mobile'];
             $trigger->run_order     = 1000;
             $trigger->sys_name      = "default_{$event_trigger}_agentemail";
             $trigger->title         = 'Send agent notifications';
-            $trigger->actions->addAction(new SendAgentEmail(array(
+            $trigger->actions->addAction(new SendAgentEmail([
                 'template'  => $template_name,
-                'agent_ids' => array('notify_list'),
+                'agent_ids' => ['notify_list'],
                 'from_name' => 'performer',
-            )));
+            ]));
 
             if (!isset($ignore[$trigger->sys_name])) {
                 $this->getEm()->persist($trigger);
             }
         }
 
-        #-----
-        # newticket: Send user new ticket by agent
-        #-----
+        //-----
+        // newticket: Send user new ticket by agent
+        //-----
 
         $trigger                = new TicketTrigger();
         $trigger->event_trigger = 'newticket';
         $trigger->run_order     = 1000;
-        $trigger->by_agent_mode = array('api', 'email', 'web', 'mobile');
+        $trigger->by_agent_mode = ['api', 'email', 'web', 'mobile'];
         $trigger->is_enabled    = true;
         $trigger->sys_name      = 'default_newticket_byagent';
         $trigger->title         = 'Send user new ticket by agent';
 
         $set = new TriggerTermComposite();
-        $set->add(new CheckAgentMessage('isset', array('message' => '')));
+        $set->add(new CheckAgentMessage('isset', ['message' => '']));
         $set->add(new CheckUserIsEmailed('not'));
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SendUserEmail(array(
+        $trigger->actions->addAction(new SendUserEmail([
             'template'    => 'DeskPRO:emails_user:ticket-new-byagent.html.twig',
             'do_cc_users' => true,
             'from_name'   => 'performer',
-        )));
+        ]));
 
         if (!isset($ignore[$trigger->sys_name])) {
             $this->getEm()->persist($trigger);
         }
 
-        #-----
-        # newticket: Send user auto-reply
-        #-----
+        //-----
+        // newticket: Send user auto-reply
+        //-----
 
         $trigger                = new TicketTrigger();
         $trigger->event_trigger = 'newticket';
         $trigger->run_order     = 1000;
-        $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
+        $trigger->by_user_mode  = ['api', 'email', 'form', 'portal', 'widget'];
         $trigger->is_enabled    = false;
         $trigger->sys_name      = 'default_newticket_userautoreply';
         $trigger->title         = 'Send auto-reply confirmation to user';
@@ -138,24 +138,24 @@ class TriggerData extends AbstractDefaultData
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SendUserEmail(array(
+        $trigger->actions->addAction(new SendUserEmail([
             'template'    => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
             'do_cc_users' => true,
             'from_name'   => 'helpdesk_name',
-        )));
+        ]));
 
         if (!isset($ignore[$trigger->sys_name])) {
             $this->getEm()->persist($trigger);
         }
 
-        #-----
-        # newreply: Send user auto-reply
-        #-----
+        //-----
+        // newreply: Send user auto-reply
+        //-----
 
         $trigger                = new TicketTrigger();
         $trigger->event_trigger = 'newreply';
         $trigger->run_order     = 1000;
-        $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
+        $trigger->by_user_mode  = ['api', 'email', 'form', 'portal', 'widget'];
         $trigger->is_enabled    = false;
         $trigger->sys_name      = 'default_newreply_userautoreply';
         $trigger->title         = 'Send auto-reply confirmation to user';
@@ -165,24 +165,24 @@ class TriggerData extends AbstractDefaultData
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SendUserEmail(array(
+        $trigger->actions->addAction(new SendUserEmail([
             'template'    => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
             'do_cc_users' => true,
             'from_name'   => 'helpdesk_name',
-        )));
+        ]));
 
         if (!isset($ignore[$trigger->sys_name])) {
             $this->getEm()->persist($trigger);
         }
 
-        #-----
-        # newreply: Send user new reply from agent
-        #-----
+        //-----
+        // newreply: Send user new reply from agent
+        //-----
 
         $trigger                = new TicketTrigger();
         $trigger->event_trigger = 'newreply';
         $trigger->run_order     = 1000;
-        $trigger->by_agent_mode = array('api', 'email', 'web', 'mobile');
+        $trigger->by_agent_mode = ['api', 'email', 'web', 'mobile'];
         $trigger->is_enabled    = true;
         $trigger->sys_name      = 'default_newreply_fromagent';
         $trigger->title         = 'Send user new reply from agent';
@@ -192,35 +192,35 @@ class TriggerData extends AbstractDefaultData
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SendUserEmail(array(
+        $trigger->actions->addAction(new SendUserEmail([
             'template'    => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
             'do_cc_users' => true,
             'from_name'   => 'performer',
-        )));
+        ]));
 
         if (!isset($ignore[$trigger->sys_name])) {
             $this->getEm()->persist($trigger);
         }
 
-        #-----
-        # newreply: when agent replies via email, assign them if they havent set
-        #-----
+        //-----
+        // newreply: when agent replies via email, assign them if they havent set
+        //-----
 
         $trigger                = new TicketTrigger();
         $trigger->event_trigger = 'newreply';
         $trigger->run_order     = 1000;
-        $trigger->by_agent_mode = array('email');
+        $trigger->by_agent_mode = ['email'];
         $trigger->is_enabled    = true;
         $trigger->sys_name      = 'default_newreply_agent_assignself';
         $trigger->title         = 'Assign self when replying by email';
 
         $set = new TriggerTermComposite();
         $set->add(new CheckAgent('nottouched'));
-        $set->add(new CheckAgent('is', array('agent_ids' => array(0))));
+        $set->add(new CheckAgent('is', ['agent_ids' => [0]]));
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SetAgent(array('agent_id' => -1)));
+        $trigger->actions->addAction(new SetAgent(['agent_id' => -1]));
 
         if (!isset($ignore[$trigger->sys_name])) {
             $this->getEm()->persist($trigger);

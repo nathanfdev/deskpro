@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -87,7 +87,7 @@ class TicketMerge implements PersonContextInterface
     /**
      * @var array
      */
-    private $data_lost = array();
+    private $data_lost = [];
 
     /**
      * @param Person $person_performer
@@ -223,19 +223,19 @@ class TicketMerge implements PersonContextInterface
         $md('total_user_waiting', 'max');
 
         // merge waiting times
-        $map = array();
+        $map = [];
         foreach ($n->waiting_times as $time) {
-            $map[implode('|', array($time['type'], $time['start'], $time['end']))] = $time;
+            $map[implode('|', [$time['type'], $time['start'], $time['end']])] = $time;
         }
         foreach ($o->waiting_times as $time) {
-            $map[implode('|', array($time['type'], $time['start'], $time['end']))] = $time;
+            $map[implode('|', [$time['type'], $time['start'], $time['end']])] = $time;
         }
         $n->waiting_times = array_values($map);
 
         // non-merged fields that we want to log
-        $lost_log = array(
+        $lost_log = [
             'subject' => null,
-        );
+        ];
         foreach ($lost_log as $prop_name => $title_field) {
             if ($title_field) {
                 $this->data_lost[$prop_name] = $this->other_ticket[$prop_name]->$title_field;
@@ -244,7 +244,7 @@ class TicketMerge implements PersonContextInterface
             }
         }
 
-        $standard_prop_names = array(
+        $standard_prop_names = [
             'agent'         => 'name',
             'agent_team'    => 'name',
             'department'    => 'full_title',
@@ -254,7 +254,7 @@ class TicketMerge implements PersonContextInterface
             'workflow'      => 'title',
             'priority'      => 'title',
             'parent_ticket' => 'parent_ticket',
-        );
+        ];
         foreach ($standard_prop_names as $prop_name => $title_field) {
             if ($this->ticket[$prop_name] && $this->other_ticket[$prop_name]) {
                 $this->data_lost[$prop_name] = $this->other_ticket[$prop_name]->$title_field;
@@ -284,7 +284,7 @@ class TicketMerge implements PersonContextInterface
             $prop_field->merge();
 
             if ($prop_field->lost) {
-                $this->data_lost['fields'][$f->id] = array($f->title, $prop_field->lost);
+                $this->data_lost['fields'][$f->id] = [$f->title, $prop_field->lost];
             }
         }
 
@@ -320,8 +320,8 @@ class TicketMerge implements PersonContextInterface
         $this->em->detach($this->other_ticket);
         $this->other_ticket->id = null;
 
-        $this->db->delete('tickets', array('id' => $old_id));
-        $this->db->delete('tickets_search_active', array('id' => $old_id));
+        $this->db->delete('tickets', ['id' => $old_id]);
+        $this->db->delete('tickets_search_active', ['id' => $old_id]);
     }
 
     /**
@@ -346,7 +346,7 @@ class TicketMerge implements PersonContextInterface
             UPDATE tickets_logs
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ', array($this->ticket['id'], $this->other_ticket['id']));
+        ', [$this->ticket['id'], $this->other_ticket['id']]);
     }
 
     /**
@@ -369,53 +369,53 @@ class TicketMerge implements PersonContextInterface
             UPDATE IGNORE tickets_flagged
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ', array($this->ticket['id'], $this->other_ticket['id']));
-        $this->db->delete('tickets_flagged', array('ticket_id' => $this->other_ticket['id']));
+        ', [$this->ticket['id'], $this->other_ticket['id']]);
+        $this->db->delete('tickets_flagged', ['ticket_id' => $this->other_ticket['id']]);
 
         // Pending articles
         $this->db->executeUpdate('
             UPDATE IGNORE article_pending_create
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ', array($this->ticket['id'], $this->other_ticket['id']));
-        $this->db->delete('article_pending_create', array('ticket_id' => $this->other_ticket['id']));
+        ', [$this->ticket['id'], $this->other_ticket['id']]);
+        $this->db->delete('article_pending_create', ['ticket_id' => $this->other_ticket['id']]);
 
         // Labels
         $this->db->executeUpdate('
             UPDATE IGNORE labels_tickets
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ', array($this->ticket['id'], $this->other_ticket['id']));
-        $this->db->delete('labels_tickets', array('ticket_id' => $this->other_ticket['id']));
+        ', [$this->ticket['id'], $this->other_ticket['id']]);
+        $this->db->delete('labels_tickets', ['ticket_id' => $this->other_ticket['id']]);
 
         // Tasks
         $this->db->executeUpdate('
             UPDATE IGNORE task_associations
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ', array($this->ticket['id'], $this->other_ticket['id']));
+        ', [$this->ticket['id'], $this->other_ticket['id']]);
 
         // Billing
         $this->db->executeUpdate('
             UPDATE IGNORE ticket_charges
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ', array($this->ticket['id'], $this->other_ticket['id']));
+        ', [$this->ticket['id'], $this->other_ticket['id']]);
 
         // Feedback
         $this->db->executeUpdate('
             UPDATE IGNORE ticket_feedback
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ', array($this->ticket['id'], $this->other_ticket['id']));
+        ', [$this->ticket['id'], $this->other_ticket['id']]);
 
         // Delete SLAs from old ticket that already exist on new one
-        $sla_ids = $this->db->fetchAllCol('SELECT sla_id FROM ticket_slas WHERE ticket_id = ?', array($this->ticket['id']));
+        $sla_ids = $this->db->fetchAllCol('SELECT sla_id FROM ticket_slas WHERE ticket_id = ?', [$this->ticket['id']]);
         if ($sla_ids) {
             $this->db->executeQuery('
                 DELETE FROM ticket_slas
                 WHERE ticket_id = ? AND sla_id IN (?)
-            ', array($this->other_ticket['id'], $sla_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            ', [$this->other_ticket['id'], $sla_ids], [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
         }
 
         // ... and then move the rest of the SLAs over
@@ -423,20 +423,20 @@ class TicketMerge implements PersonContextInterface
             UPDATE IGNORE ticket_slas
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ', array($this->ticket['id'], $this->other_ticket['id']));
+        ', [$this->ticket['id'], $this->other_ticket['id']]);
 
         // Parent links
         $this->db->executeUpdate('
             UPDATE IGNORE tickets
             SET parent_ticket_id = ?
             WHERE parent_ticket_id = ?
-        ', array($this->ticket['id'], $this->other_ticket['id']));
+        ', [$this->ticket['id'], $this->other_ticket['id']]);
 
         // JIRA issues
         $this->db->executeUpdate('
             UPDATE IGNORE jira_issues
             SET ticket_id = ?
             WHERE ticket_id = ?
-        ', array($this->ticket['id'], $this->other_ticket['id']));
+        ', [$this->ticket['id'], $this->other_ticket['id']]);
     }
 }

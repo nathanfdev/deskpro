@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle;
 
 use Application\EmailBundle\DependencyInjection\Compiler\TwigEnvironmentPass;
@@ -48,13 +49,13 @@ class EmailBundle extends Bundle
      */
     public function registerCommands(Application $application)
     {
-        $commands = array(
+        $commands = [
             'Application\\EmailBundle\\Command\\SendSourceCommand',
             'Application\\EmailBundle\\Command\\GenTestEmailCommand',
             'Application\\EmailBundle\\Command\\ProcessQueueCommand',
             'Application\\EmailBundle\\Command\\QueueRawEmailCommand',
             'Application\\EmailBundle\\Command\\GenTestIncomingEmailCommand',
-        );
+        ];
 
         foreach ($commands as $cmd) {
             $application->add(new $cmd());

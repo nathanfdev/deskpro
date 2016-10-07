@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -51,7 +52,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property CustomFieldDefinition $parent
  * @property ArrayCollection $children
  */
-class CustomFieldDefinition extends DomainObject implements HasPhraseName
+class CustomFieldDefinition extends DomainObject implements HasPhraseName, Hierarchical
 {
     /**
      * The unique ID.
@@ -184,6 +185,14 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         $this->is_enabled      = true;
         $this->is_user_enabled = true;
         $this->is_agent_field  = false;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -403,12 +412,9 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param null      $property
-     * @param Translate $translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -422,12 +428,9 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param null      $property
-     * @param Translate $translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'description') {
             return $this->description;
@@ -436,9 +439,9 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         return $this->title;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -68,6 +68,5 @@ Feature: Quick Search
     Then the response status code should be 404
 
     When I send a GET request to "/api/v2/search?types=ticket,unknown&q={ticket}"
-    Then the response status code should be 200
-    And the JSON node "data.grouped_results" should have 1 element
-    And the JSON node "data.grouped_results[0].results[0].id" should be equal to "{ticket}"
+    Then the response status code should be 400
+    And the JSON node "message" should be equal to "Unknown types: unknown"

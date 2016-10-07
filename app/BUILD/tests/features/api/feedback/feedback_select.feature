@@ -1,3 +1,4 @@
+@new
 Feature: /feedback endpoint
   To obtain filtered list of feedback
   As an API user

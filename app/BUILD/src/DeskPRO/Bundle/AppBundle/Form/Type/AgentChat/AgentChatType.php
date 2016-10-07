@@ -106,9 +106,7 @@ class AgentChatType extends AbstractType
                 'mapped'     => false,
                 'data_class' => AgentChat::class,
             ])
-            ->setAllowedTypes([
-                'person' => Person::class,
-            ])
+            ->setAllowedTypes('person', Person::class)
         ;
     }
 

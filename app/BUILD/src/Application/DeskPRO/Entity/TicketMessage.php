@@ -837,7 +837,7 @@ class TicketMessage extends DomainObject
             $hashable_msg
         );
 
-        $hashes[] = sha1($hashable_msg.($this->person ? $this->person->getId() : 'noperson'));
+        $hashes[] = sha1($hashable_msg.($this->person ? $this->person->getEmailAddress() : 'noperson'));
 
         foreach ($this->attachments as $a) {
             $hashes[] = $a->blob['blob_hash'];
@@ -893,7 +893,7 @@ class TicketMessage extends DomainObject
     /**
      * A nice and easy way to retrieve all participants in the ticket. Mainly for display.
      *
-     * @return array the list of participants as an array of strings.
+     * @return array the list of participants as an array of strings
      */
     public function getCcedParticipants()
     {
@@ -942,9 +942,33 @@ class TicketMessage extends DomainObject
         $this->setModelField('ip_address', $ip_address);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @return TicketMessageTranslated
+     */
+    public function getPrimaryTranslation()
+    {
+        return $this->primary_translation;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgentNote()
+    {
+        return $this->is_agent_note;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

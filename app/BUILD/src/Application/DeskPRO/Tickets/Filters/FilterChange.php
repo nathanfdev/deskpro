@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,9 +31,9 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Filters;
 
-use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 
 /**
@@ -42,40 +42,40 @@ use Application\DeskPRO\Entity\Person;
 class FilterChange
 {
     /**
-     * @var \Application\DeskPRO\Entity\LegacyTicketFilter
+     * @var array
      */
     private $filter;
 
     /**
      * @var \Application\DeskPRO\Entity\Person[]
      */
-    private $added_for_agents = array();
+    private $added_for_agents = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Person[]
      */
-    private $removed_for_agents = array();
+    private $removed_for_agents = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Person[]
      */
-    private $orig_match_for_agents = array();
+    private $orig_match_for_agents = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Person[]
      */
-    private $new_match_for_agents = array();
+    private $new_match_for_agents = [];
 
     /**
-     * @param LegacyTicketFilter $filter
+     * @param array $filter
      */
-    public function __construct(LegacyTicketFilter $filter)
+    public function __construct(array $filter)
     {
         $this->filter = $filter;
     }
 
     /**
-     * @return LegacyTicketFilter
+     * @return array
      */
     public function getFilter()
     {
@@ -87,7 +87,7 @@ class FilterChange
      */
     public function addForAgent(Person $agent)
     {
-        $this->added_for_agents[$agent->id] = $agent;
+        $this->added_for_agents[$agent->getId()] = $agent;
     }
 
     /**
@@ -95,7 +95,7 @@ class FilterChange
      */
     public function removeForAgent(Person $agent)
     {
-        $this->removed_for_agents[$agent->id] = $agent;
+        $this->removed_for_agents[$agent->getId()] = $agent;
     }
 
     /**
@@ -103,7 +103,7 @@ class FilterChange
      */
     public function originalMatchForAgent(Person $agent)
     {
-        $this->orig_match_for_agents[$agent->id] = $agent;
+        $this->orig_match_for_agents[$agent->getId()] = $agent;
     }
 
     /**
@@ -111,7 +111,7 @@ class FilterChange
      */
     public function newMatchForAgent(Person $agent)
     {
-        $this->new_match_for_agents[$agent->id] = $agent;
+        $this->new_match_for_agents[$agent->getId()] = $agent;
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -88,10 +88,10 @@ class ApiRestControllerReader extends RestControllerReader
             $this->actionReader->setNamePrefix($annotation->value);
         }
 
-        $resource = array();
+        $resource = [];
         // read route-resource annotation
         if ($annotation = $this->readClassAnnotation($reflectionClass, 'RouteResource')) {
-            $resource = array($annotation->resource);
+            $resource = [$annotation->resource];
         } elseif ($reflectionClass->implementsInterface('FOS\RestBundle\Routing\ClassResourceInterface')) {
             $resource = preg_split(
                 '/([A-Z][^A-Z]*)Controller/', $reflectionClass->getShortName(), -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
@@ -113,7 +113,7 @@ class ApiRestControllerReader extends RestControllerReader
 
         $this->actionReader->setRoutePrefix(null);
         $this->actionReader->setNamePrefix(null);
-        $this->actionReader->setParents(array());
+        $this->actionReader->setParents([]);
 
         return $collection;
     }

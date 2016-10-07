@@ -29,8 +29,10 @@
 namespace DpBehat\Data;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\BrandSetting;
@@ -62,9 +64,13 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
+use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Product;
+use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
@@ -76,6 +82,7 @@ use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketWorkflow;
 use Application\DeskPRO\Entity\Usergroup;
+use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
@@ -225,6 +232,11 @@ class ObjectsManager
 
             if ($value === 'NULL') {
                 $value = null;
+            } elseif (preg_match('/^NOW\(\)(.*?)$/', $value, $matches)) {
+                $value = new \DateTime();
+                if (isset($matches[1])) {
+                    $value->modify($matches[1]);
+                }
             } elseif (($date = \DateTime::createFromFormat('Y-m-d G:i:s', $value)) !== false) {
                 $value = $date;
             } elseif (is_array($array = json_decode($value, true))) {
@@ -244,7 +256,8 @@ class ObjectsManager
             'AgentTeam'              => [Factory\CommonFactories::class, 'agentTeam'],
             'Article'                => [Factory\SimpleFactory::class, 'create', Article::class],
             'ArticleCategory'        => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
-            'Chat'                   => [Factory\SimpleFactory::class, 'create', ChatConversation::class],
+            'PendingArticle'         => [Factory\SimpleFactory::class, 'create', ArticlePendingCreate::class],
+            'Chat'                   => [Factory\CommonFactories::class, 'chat'],
             'AgentChat'              => [Factory\SimpleFactory::class, 'create', AgentChat::class],
             'AgentChatParticipant'   => [Factory\SimpleFactory::class, 'create', AgentChatParticipant::class],
             'AgentChatMessage'       => [Factory\SimpleFactory::class, 'create', AgentChatMessage::class],
@@ -303,6 +316,9 @@ class ObjectsManager
             'LabelTask'              => [Factory\SimpleFactory::class, 'create', LabelTask::class],
             'Brand'                  => [Factory\SimpleFactory::class, 'create', Brand::class],
             'BrandSetting'           => [Factory\SimpleFactory::class, 'create', BrandSetting::class],
+            'Usersource'             => [Factory\SimpleFactory::class, 'create', Usersource::class],
+            'UsersourceAssoc'        => [Factory\SimpleFactory::class, 'create', PersonUsersourceAssoc::class],
+            'PersonNote'             => [Factory\SimpleFactory::class, 'create', PersonNote::class],
         ];
     }
 
@@ -354,6 +370,7 @@ class ObjectsManager
             'TaskSubtask'            => [$this, 'find', TaskSubtask::class],
             'ProjectMember'          => [$this, 'find', ProjectMember::class],
             'Article'                => [$this, 'find', Article::class],
+            'PendingArticle'         => [$this, 'find', ArticlePendingCreate::class],
             'News'                   => [$this, 'find', News::class],
             'NewsCategory'           => [$this, 'find', NewsCategory::class],
             'Download'               => [$this, 'find', Download::class],
@@ -380,6 +397,12 @@ class ObjectsManager
             'Brand'                  => [$this, 'find', Brand::class],
             'BrandSetting'           => [$this, 'find', BrandSetting::class],
             'Usergroup'              => [$this, 'find', Usergroup::class],
+            'Session'                => [$this, 'find', Session::class],
+            'ApiToken'               => [$this, 'find', ApiToken::class],
+            'Usersource'             => [$this, 'find', Usersource::class],
+            'UsersourceAssoc'        => [$this, 'find', PersonUsersourceAssoc::class],
+            'PersonNote'             => [$this, 'find',  PersonNote::class],
+            'Permission'             => [$this, 'find',  Permission::class],
         ];
     }
 }

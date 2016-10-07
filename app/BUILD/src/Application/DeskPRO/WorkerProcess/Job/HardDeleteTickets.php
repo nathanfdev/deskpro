@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -53,9 +54,9 @@ class HardDeleteTickets extends AbstractJob
 
         $date_cut = date('Y-m-d H:i:s', time() - $secs);
 
-        #------------------------------
-        # find tickets to proc
-        #------------------------------
+        //------------------------------
+        // find tickets to proc
+        //------------------------------
 
         $ticket_ids = App::getDb()->fetchAllCol("
             SELECT tickets_deleted.ticket_id
@@ -65,7 +66,7 @@ class HardDeleteTickets extends AbstractJob
             AND tickets.id IS NOT NULL
             AND tickets.hidden_status = 'deleted'
             LIMIT 5000
-        ", array($date_cut));
+        ", [$date_cut]);
 
         foreach ($ticket_ids as $ticket_id) {
             App::getDb()->beginTransaction();
@@ -74,8 +75,8 @@ class HardDeleteTickets extends AbstractJob
                 TicketUtil::deleteTicketAttachments($ticket_id, App::getDb());
 
                 // Ticket log already has the deletion record, we're doing the physical delete of the actual rows here
-                App::getDb()->delete('tickets_search_active', array('id' => $ticket_id));
-                App::getDb()->delete('tickets', array('id' => $ticket_id));
+                App::getDb()->delete('tickets_search_active', ['id' => $ticket_id]);
+                App::getDb()->delete('tickets', ['id' => $ticket_id]);
                 App::getDb()->commit();
             } catch (\Exception $e) {
                 App::getDb()->rollback();

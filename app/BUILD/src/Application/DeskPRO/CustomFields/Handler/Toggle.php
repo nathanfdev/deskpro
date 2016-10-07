@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields\Handler;
 
 /**
@@ -57,12 +58,12 @@ class Toggle extends HandlerAbstract
         $name = $this->getFormFieldName();
 
         if (!empty($form_data[$name])) {
-            return array(
-                array($this->field_def['id'], 'value', 1),
-            );
+            return [
+                [$this->field_def['id'], 'value', 1],
+            ];
         }
 
-        return array();
+        return [];
     }
 
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
@@ -70,40 +71,40 @@ class Toggle extends HandlerAbstract
         $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
 
         if (!is_scalar($data)) {
-            return $this->makeErrorArray(array('invalid_input'));
+            return $this->makeErrorArray(['invalid_input']);
         }
 
-        #------------------------------
-        # Validate options
-        #------------------------------
+        //------------------------------
+        // Validate options
+        //------------------------------
 
         $opt_prefix = '';
         if ($context == self::CONTEXT_AGENT) {
             $opt_prefix = 'agent_';
         }
 
-        $options = array();
+        $options = [];
         if ('required' === $this->field_def->getOption($opt_prefix.'validation_type')) {
             $options['required'] = true;
         }
 
         if (@$options['required']) {
             if (!$data || $data != '1') {
-                return $this->makeErrorArray(array('required'));
+                return $this->makeErrorArray(['required']);
             }
         }
 
-        return array();
+        return [];
     }
 
     public function getSearchCapabilities()
     {
-        return array('is', 'not');
+        return ['is', 'not'];
     }
 
     public function getFilterCapabilities()
     {
-        return array('is', 'not');
+        return ['is', 'not'];
     }
 
     public function getSearchType()

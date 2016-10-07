@@ -69,13 +69,14 @@ class UpgradeRunner implements UpgradeRunnerInterface, LoggerAwareInterface
             $build->getAppPath().DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'console',
             'dp:upgrade',
         ]);
+        $builder->setTimeout(null);
 
         $proc = $builder->getProcess();
         $this->logger->info('[UpgradeRunner] command: '.$proc->getCommandLine());
         $logger = $this->logger;
 
         $buf = new LineBuffer(function ($out) use ($logger) {
-            $logger->debug($out, ['type' => 'commandOutput']);
+            $logger->info($out, ['type' => 'commandOutput']);
         });
         $proc->run(function ($t, $out) use ($buf) {
             $buf->append($out);
@@ -85,7 +86,7 @@ class UpgradeRunner implements UpgradeRunnerInterface, LoggerAwareInterface
         $this->logger->info('[UpgradeRunner] exit: '.$proc->getExitCode().' '.$proc->getExitCodeText());
 
         if (!$proc->isSuccessful()) {
-            throw new UpgradeRunnerException('Upgrade command failed with error status: '.$proc->getExitCode().' '.$proc->getExitCodeText());
+            throw new UpgradeRunnerException('Upgrade command failed with error status: '.$proc->getExitCode().' '.$proc->getExitCodeText(), $proc->getExitCode());
         }
     }
 }

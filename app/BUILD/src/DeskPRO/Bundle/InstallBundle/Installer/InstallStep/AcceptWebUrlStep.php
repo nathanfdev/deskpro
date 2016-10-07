@@ -91,6 +91,9 @@ class AcceptWebUrlStep extends AbstractStep
             $url = $this->askQuestion($q, 'web_url');
 
             if ($this->validateUrl($url)) {
+                $this->writeln('');
+                $this->writeln('For help troubleshooting this, refer to this page:');
+                $this->writeln('https://support.deskpro.com/kb/articles/558');
                 break;
             }
 
@@ -179,29 +182,6 @@ class AcceptWebUrlStep extends AbstractStep
         $this->writeln('  > <info>OK</info>');
 
         //------------------------------
-        // Verify the web root is ok
-        //------------------------------
-
-        $this->writeln('Verifying web root is safe...');
-
-        foreach ([
-            $url.'/app/run/test_ping.html',
-            $url.'/../app/run/test_ping.html',
-        ] as $test) {
-            $res = $this->loadUrl($test);
-            if (
-                $res['result']
-                && (strpos($res['result'], 'DESKPRO_PONG') !== false || strpos($res['result'], 'OK') !== 0)
-            ) {
-                $this->writeln('<error>It seems like you have put DeskPRO files within the web root. This is a major security issue. You must only put the www/ directory within the web root.</error>');
-
-                return false;
-            }
-        }
-
-        $this->writeln('  > <info>OK</info>');
-
-        //------------------------------
         // Verify the web deps
         //------------------------------
 
@@ -225,6 +205,26 @@ class AcceptWebUrlStep extends AbstractStep
             $this->writeln('');
 
             return false;
+        }
+
+        $this->writeln('  > <info>OK</info>');
+
+        //------------------------------
+        // Verify the web root is ok
+        //------------------------------
+
+        $this->writeln('Verifying web root is safe...');
+
+        foreach ([
+            $url.'/app/run/test_ping.html',
+            $url.'/../app/run/test_ping.html',
+        ] as $test) {
+            $res = $this->loadUrl($test);
+            if ($res['result'] && strpos($res['result'], 'DESKPRO_PONG') !== false) {
+                $this->writeln('<error>It seems like you have put DeskPRO files within the web root. This is a major security issue. You must only put the www/ directory within the web root.</error>');
+
+                return false;
+            }
         }
 
         $this->writeln('  > <info>OK</info>');
@@ -283,6 +283,12 @@ class AcceptWebUrlStep extends AbstractStep
                 CURLOPT_SSL_VERIFYPEER => false,
             ]
         );
+
+        if ($method === 'POST' || $method === 'PUT') {
+            curl_setopt($resource, CURLOPT_HTTPHEADER, [
+                'Content-Length: 0',
+            ]);
+        }
 
         curl_setopt($resource, CURLOPT_CUSTOMREQUEST, strtoupper($method));
 
@@ -352,7 +358,7 @@ class AcceptWebUrlStep extends AbstractStep
         $this->writeln('');
 
         $this->writeBoundary('Request', 'info');
-        $this->writeln(sprintf('<info>%s %s</info>', $res['method'], $res['url']));
+        $this->writeln(sprintf('<info>%s</info>', ($res['info']['request_header']) ?: ($res['method'].' '.$res['url'])));
         $this->writeln('');
 
         $this->writeBoundary('Response Headers', 'info');

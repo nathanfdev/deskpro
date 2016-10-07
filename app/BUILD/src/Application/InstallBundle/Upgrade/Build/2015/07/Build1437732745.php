@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1437732745 extends AbstractBuild
@@ -40,13 +41,13 @@ class Build1437732745 extends AbstractBuild
         $db        = $this->container->getDb();
         $agent_ids = $db->fetchAllCol('SELECT id FROM people WHERE is_agent = 1');
 
-        $batch = array();
+        $batch = [];
         foreach ($agent_ids as $aid) {
-            $batch[] = array(
+            $batch[] = [
                 'person_id' => $aid,
                 'name'      => 'agent.enable_plaintext_email',
                 'value_str' => '1',
-            );
+            ];
         }
 
         if ($batch) {

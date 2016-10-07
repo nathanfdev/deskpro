@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Orb\Service\Microsoft\Translate;
 
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 
 class Translate
 {
@@ -66,19 +68,19 @@ class Translate
     protected $access_token;
 
     /**
-     * @var \Guzzle\Http\Client
+     * @var Client
      */
     protected $oauth_http_client;
 
     /**
-     * @var \Guzzle\Http\Client
+     * @var Client
      */
     protected $service_http_client;
 
     /**
      * @param string      $client_id
      * @param string      $client_secret
-     * @param null|string $access_token  Optional existing access token to use. This prevents having to make the additional request to fetch a new one.
+     * @param null|string $access_token  Optional existing access token to use. This prevents having to make the additional request to fetch a new one
      */
     public function __construct($client_id, $client_secret, $access_token = null)
     {
@@ -110,15 +112,16 @@ class Translate
             return $this->access_token;
         }
 
-        $request = $this->getOauthHttpClient()->post()->addPostFields(array(
-            'grant_type'    => 'client_credentials',
-            'scope'         => self::OAUTH_SCOPE_URL,
-            'client_id'     => $this->client_id,
-            'client_secret' => $this->client_secret,
-        ));
+        $response = $this->getOauthHttpClient()->post('/', [
+            RequestOptions::FORM_PARAMS => [
+                'grant_type'    => 'client_credentials',
+                'scope'         => self::OAUTH_SCOPE_URL,
+                'client_id'     => $this->client_id,
+                'client_secret' => $this->client_secret,
+            ],
+        ]);
 
-        $response = $request->send();
-        $data     = $response->json();
+        $data = @\json_decode((string) $response->getBody(), 1);
 
         $this->access_token = $data['access_token'];
 
@@ -141,7 +144,7 @@ class Translate
         $to   = $this->getNearestTranslateLocale($to);
 
         if (is_array($text)) {
-            $post_body   = array();
+            $post_body   = [];
             $post_body[] = '<TranslateArrayRequest>';
             $post_body[] = "\t<AppId/>";
             if ($from) {
@@ -166,35 +169,30 @@ class Translate
             $post_body[] = '</TranslateArrayRequest>';
             $post_body   = implode("\n", $post_body);
 
-            $request = $this->getServiceHttpClient()->post(
-                'TranslateArray',
-                null,
-                $post_body
-            );
+            $response = $this->getServiceHttpClient()->post('TranslateArray', [
+                RequestOptions::BODY => $post_body,
+            ]);
 
-            $response = $request->send();
-
-            $raw_data = $response->xml();
-            $data     = array();
+            $raw_data = $this->xml($response->getBody());
+            $data     = [];
             foreach ($raw_data as $l) {
                 $data[] = (string) $l->TranslatedText;
             }
 
             return $data;
         } else {
-            $request = $this->getServiceHttpClient()->get(array('Translate{?text,from,to,contentType,category}', array(
-                'text'        => $text,
-                'from'        => $from ?: '',
-                'to'          => $to,
-                'contentType' => $content_type,
-                'category'    => $category,
-            )));
+            $response = $this->getServiceHttpClient()->get('Translate', [
+                RequestOptions::QUERY => [
+                    'text'        => $text,
+                    'from'        => $from ?: '',
+                    'to'          => $to,
+                    'contentType' => $content_type,
+                    'category'    => $category,
+                ],
+            ]);
 
-            $response = $request->send();
-
-            $raw_data = $response->xml();
-
-            $lang = (string) $raw_data;
+            $raw_data = $this->xml($response->getBody());
+            $lang     = (string) $raw_data;
 
             return $lang;
         }
@@ -215,17 +213,12 @@ class Translate
     public function detect($text)
     {
         if (is_array($text)) {
-            $request = $this->getServiceHttpClient()->post(
-                'DetectArray',
-                null,
-                $this->createArrayOfStringXmlBody($text)
-            );
+            $response = $this->getServiceHttpClient()->post('DetectArray', [
+                RequestOptions::BODY => $this->createArrayOfStringXmlBody($text),
+            ]);
 
-            $response = $request->send();
-
-            $raw_data = $response->xml();
-
-            $langs = array();
+            $raw_data = $this->xml($response->getBody());
+            $langs    = [];
 
             foreach ($raw_data->string as $l) {
                 $langs[] = (string) $l;
@@ -233,12 +226,11 @@ class Translate
 
             return $langs;
         } else {
-            $request  = $this->getServiceHttpClient()->get(array('Detect{?text}', array('text' => $text)));
-            $response = $request->send();
-
-            $raw_data = $response->xml();
-
-            $lang = (string) $raw_data;
+            $response = $this->getServiceHttpClient()->get('Detect', [
+                RequestOptions::QUERY => ['text' => $text],
+            ]);
+            $raw_data = $this->xml($response->getBody());
+            $lang     = (string) $raw_data;
 
             return $lang;
         }
@@ -249,8 +241,8 @@ class Translate
      *
      * @see http://msdn.microsoft.com/en-us/library/ff512420.aspx
      *
-     * @param string $text   A string containing a sentence or sentences of the specified language to be spoken for the wave stream. The size of the text to speak must not exceed 2000 characters.
-     * @param string $lang   A string representing the supported language code to speak the text in.
+     * @param string $text   A string containing a sentence or sentences of the specified language to be spoken for the wave stream. The size of the text to speak must not exceed 2000 characters
+     * @param string $lang   A string representing the supported language code to speak the text in
      * @param string $format A string specifying the content-type ID
      * @param string $opt    A string specifying the quality of the audio signals
      *
@@ -258,16 +250,16 @@ class Translate
      */
     public function speak($text, $lang, $format = self::FORMAT_WAV, $opt = self::OPT_MINSIZE)
     {
-        $request = $this->getServiceHttpClient()->get(array('Speak{?text,language,format,options}',
-            'text'     => $text,
-            'language' => $lang,
-            'format'   => $format,
-            'options'  => $opt,
-        ));
+        $response = $this->getServiceHttpClient()->get('Speak', [
+            RequestOptions::QUERY => [
+                'text'     => $text,
+                'language' => $lang,
+                'format'   => $format,
+                'options'  => $opt,
+            ],
+        ]);
 
-        $response = $request->send();
-
-        return $response->getBody(true);
+        return $response->getBody();
     }
 
     /**
@@ -288,12 +280,10 @@ class Translate
             }
         }
 
-        $request  = $this->getServiceHttpClient()->get('GetLanguagesForTranslate');
-        $response = $request->send();
+        $response = $this->getServiceHttpClient()->get('GetLanguagesForTranslate');
+        $raw_data = $this->xml($response->getBody());
 
-        $raw_data = $response->xml();
-
-        $data = array();
+        $data = [];
         foreach ($raw_data->string as $r) {
             $data[] = (string) $r;
         }
@@ -319,12 +309,10 @@ class Translate
             }
         }
 
-        $request  = $this->getServiceHttpClient()->get('GetLanguagesForSpeak');
-        $response = $request->send();
+        $response = $this->getServiceHttpClient()->get('GetLanguagesForSpeak');
+        $raw_data = $this->xml($response->getBody());
 
-        $raw_data = $response->xml();
-
-        $data = array();
+        $data = [];
         foreach ($raw_data->string as $r) {
             $data[] = (string) $r;
         }
@@ -352,7 +340,7 @@ class Translate
             if (file_exists($file)) {
                 $all_names = require $file;
 
-                $names = array();
+                $names = [];
                 foreach ($lang_codes as $code) {
                     if (isset($all_names[$code])) {
                         $names[$code] = $all_names[$code];
@@ -365,14 +353,14 @@ class Translate
             }
         }
 
-        $request = $this->getServiceHttpClient()->post(array('GetLanguageNames{?locale}', array('locale' => $locale)));
-        $request->setBody($this->createArrayOfStringXmlBody($lang_codes));
+        $body     = $this->createArrayOfStringXmlBody($lang_codes);
+        $response = $this->getServiceHttpClient()->post('GetLanguageNames', [
+            RequestOptions::QUERY => ['locale' => $locale],
+            RequestOptions::BODY  => $body,
+        ]);
+        $raw_data = $this->xml($response->getBody());
 
-        $response = $request->send();
-
-        $raw_data = $response->xml();
-
-        $data = array();
+        $data = [];
         foreach ($raw_data as $k => $r) {
             $data[$lang_codes[$k]] = (string) $r;
         }
@@ -391,7 +379,7 @@ class Translate
      */
     public function getSingleLanguageName($lang_code, $locale = 'en', $use_local = true)
     {
-        $names = $this->getLanguageNames(array($lang_code), $locale, $use_local);
+        $names = $this->getLanguageNames([$lang_code], $locale, $use_local);
 
         return array_pop($names);
     }
@@ -405,9 +393,10 @@ class Translate
             return $this->oauth_http_client;
         }
 
-        $this->oauth_http_client = new Client(self::OAUTH_AUTH, array(
-            'ssl.certificate_authority' => false,
-        ));
+        $this->oauth_http_client = new Client([
+            'base_uri'             => self::OAUTH_AUTH,
+            RequestOptions::VERIFY => false,
+        ]);
 
         return $this->oauth_http_client;
     }
@@ -421,13 +410,14 @@ class Translate
             return $this->service_http_client;
         }
 
-        $this->service_http_client = new Client(self::API_URL, array(
-            'ssl.certificate_authority' => false,
-        ));
-        $this->service_http_client->setDefaultHeaders(array(
-            'Authorization' => 'Bearer '.$this->getAccessToken(),
-            'Content-Type'  => 'text/xml',
-        ));
+        $this->service_http_client = new Client([
+            'base_uri'              => self::API_URL,
+            RequestOptions::VERIFY  => false,
+            RequestOptions::HEADERS => [
+                'Authorization' => 'Bearer '.$this->getAccessToken(),
+                'Content-Type'  => 'text/xml',
+            ],
+        ]);
 
         return $this->service_http_client;
     }
@@ -457,8 +447,8 @@ class Translate
     protected function escapeXml($str)
     {
         return str_replace(
-            array('&',     '<',    '>',    '"',      "'"),
-            array('&amp;', '&lt;', '&gt;', '&quot;', '&apos;'),
+            ['&',     '<',    '>',    '"',      "'"],
+            ['&amp;', '&lt;', '&gt;', '&quot;', '&apos;'],
             $str
         );
     }
@@ -495,5 +485,39 @@ class Translate
 
         // No matches, return original which will probably fail
         return $locale;
+    }
+
+    /**
+     * c/p from guzzle.
+     *
+     * @param $body
+     *
+     * @return \SimpleXMLElement
+     */
+    protected function xml($body)
+    {
+        $errorMessage    = null;
+        $internalErrors  = libxml_use_internal_errors(true);
+        $disableEntities = libxml_disable_entity_loader(true);
+        libxml_clear_errors();
+
+        try {
+            $xml = new \SimpleXMLElement((string) $body ?: '<root />', LIBXML_NONET);
+            if ($error = libxml_get_last_error()) {
+                $errorMessage = $error->message;
+            }
+        } catch (\Exception $e) {
+            $errorMessage = $e->getMessage();
+        }
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($internalErrors);
+        libxml_disable_entity_loader($disableEntities);
+
+        if ($errorMessage) {
+            throw new \RuntimeException('Unable to parse response body into XML: '.$errorMessage);
+        }
+
+        return $xml;
     }
 }

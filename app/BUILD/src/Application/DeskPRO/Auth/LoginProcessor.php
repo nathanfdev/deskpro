@@ -106,10 +106,10 @@ class LoginProcessor
             return $this->person;
         }
 
-        #------------------------------
-        # Figure if we have an existing Person mapped, or if its
-        # a new Person
-        #------------------------------
+        //------------------------------
+        // Figure if we have an existing Person mapped, or if its
+        // a new Person
+        //------------------------------
 
         $em = App::getOrm();
         /** @var \Application\DeskPRO\EntityRepository\PersonUsersourceAssoc $assoc_repos */
@@ -126,9 +126,9 @@ class LoginProcessor
         $mapped_fields = Arrays::removeEmptyString($mapped_fields);
         $mapped_fields = new OptionsArray($mapped_fields);
 
-        #------------------------------
-        # If we dont have one yet, we're have to create the assoc and maybe a new user too
-        #------------------------------
+        //------------------------------
+        // If we dont have one yet, we're have to create the assoc and maybe a new user too
+        //------------------------------
 
         if (!$this->assoc) {
             $this->person = null;
@@ -192,9 +192,9 @@ class LoginProcessor
             $this->persist($em, $this->assoc);
             $this->flush($em);
 
-        #------------------------------
-        # The assoc exists
-        #------------------------------
+        //------------------------------
+        // The assoc exists
+        //------------------------------
         } else {
             $this->person = $this->assoc['person'];
 
@@ -289,10 +289,10 @@ class LoginProcessor
                 $message->setToPerson($this->person);
                 $message->setTemplate(
                     'DeskPRO:emails_agent:agent-welcome-usersource.html.twig',
-                    array(
+                    [
                         'agent'      => $this->person,
                         'usersource' => $this->usersource,
-                    )
+                    ]
                 );
                 $attach = \Swift_Attachment::fromPath(
                     DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
@@ -310,7 +310,7 @@ class LoginProcessor
      */
     protected function updatePersonName($mapped_fields)
     {
-        foreach (array('first_name', 'last_name', 'name') as $k) {
+        foreach (['first_name', 'last_name', 'name'] as $k) {
             if ($mapped_fields->has($k)) {
                 $this->person[$k] = $mapped_fields->get($k);
             }
@@ -345,7 +345,7 @@ class LoginProcessor
                         is_verified = 1,
                         oauth_token = VALUES(oauth_token),
                         oauth_token_secret = VALUES(oauth_token_secret)
-                ', array($this->person->id, $twitter['user_id'], $twitter['screen_name'], $twitter['oauth_token'], $twitter['oauth_token_secret']));
+                ', [$this->person->id, $twitter['user_id'], $twitter['screen_name'], $twitter['oauth_token'], $twitter['oauth_token_secret']]);
 
             $has_account = false;
             foreach ($this->person->getContactData('twitter') as $twitter_details) {
@@ -384,11 +384,11 @@ class LoginProcessor
                 @fwrite($fp, $mapped_fields->get('picture_data'));
                 @fclose($fp);
 
-                $mime_map = array(
-                    IMAGETYPE_GIF  => array('gif', 'image/gif'),
-                    IMAGETYPE_JPEG => array('jpg', 'image/jpeg'),
-                    IMAGETYPE_PNG  => array('png', 'image/png'),
-                );
+                $mime_map = [
+                    IMAGETYPE_GIF  => ['gif', 'image/gif'],
+                    IMAGETYPE_JPEG => ['jpg', 'image/jpeg'],
+                    IMAGETYPE_PNG  => ['png', 'image/png'],
+                ];
                 $image_info = getimagesize($filename);
                 if ($image_info && $image_info[0] && $image_info[1] && isset($mime_map[$image_info[2]])) {
                     $mime = $mime_map[$image_info[2]];

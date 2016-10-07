@@ -70,9 +70,9 @@ class ApiDb extends AbstractDbSet
 
         $em = $this->getEm();
 
-        #------------------------------
-        # Init data
-        #------------------------------
+        //------------------------------
+        // Init data
+        //------------------------------
 
         $admin = $this->addUser(
             UserDetailsRepo::ADMIN_FIRST_NAME,
@@ -131,7 +131,7 @@ class ApiDb extends AbstractDbSet
 
         // Default language --------------------------------------------------------------------------------------------
         $this->getDb()->exec(
-            <<<SQL
+            <<<'SQL'
             INSERT INTO `languages`
                 (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`,
                  `has_agent`, `has_admin`)
@@ -713,7 +713,7 @@ SQL
 
         // Ticket filters test data ----------------------------------------------------------------------------------
         $this->getDb()->exec(
-            <<<SQL
+            <<<'SQL'
             INSERT INTO `custom_ticket_filters`
                 (`id`, `filter_set_id`,  `title`, `term`, `display_order`, `date_created`, `date_updated`)
             VALUES
@@ -753,7 +753,7 @@ SQL
 
         // Ticket macros test data ----------------------------------------------------------------------------------
         $this->getDb()->exec(
-            <<<SQL
+            <<<'SQL'
             INSERT INTO `ticket_macros`
                 (`id`, `person_id`, `title`, `is_enabled`, `is_global`, `actions`)
             VALUES
@@ -1027,7 +1027,7 @@ SQL
 
         // Snippets test data ------------------------------------------------------------------------------
         $this->getDb()->exec(
-            <<<SQL
+            <<<'SQL'
             INSERT INTO `text_snippet_categories` (`id`, `person_id`, `typename`, `is_global`)
             VALUES
                 (1, NULL, 'tickets', 1),
@@ -1120,7 +1120,7 @@ SQL
 
         // SLAs
         $this->getDb()->exec(
-            <<<SQL
+            <<<'SQL'
             INSERT INTO `slas` (`id`, `title`, `sla_type`,`active_time`, `work_start`, `work_end`, `work_days`, `apply_type`, `warn_time`, `warn_time_unit`, `fail_time`, `fail_time_unit`)
             VALUES
                 (1, 'First', 'first_response', 'default', 60 * 60 * 10, 60 * 60 * 18, '1,2,3,4,5,6', 'all', 1, 'hours', 1, 'hours'),
@@ -1132,7 +1132,7 @@ SQL
 
         // Task projects
         $this->getDb()->exec(
-            <<<SQL
+            <<<'SQL'
             INSERT INTO `task_projects` (`id`, `title`)
             VALUES
                 (1, 'First project'),

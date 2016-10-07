@@ -104,11 +104,9 @@ class TicketWorkflow extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param string $property
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -119,11 +117,9 @@ class TicketWorkflow extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param string $property
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         return $this->title;
     }
@@ -133,9 +129,9 @@ class TicketWorkflow extends DomainObject implements HasPhraseName
         return $this->title;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

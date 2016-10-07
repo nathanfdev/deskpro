@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 
 use PhpSpec\ObjectBehavior;
@@ -54,43 +55,43 @@ class PhpMethodSpec extends ObjectBehavior
 
     public function it_has_a_collection_or_arguemnts()
     {
-        $this->getArguments()->shouldBe(array());
+        $this->getArguments()->shouldBe([]);
 
         $this->addArgument('ticket', 'Application\DeskPRO\Entity\Ticket');
         $this->addArgument('string', null, 'def');
         $this->addArgument('array', 'array', 'array()');
 
         $this->getArguments()->shouldBe(
-            array(
-                'ticket' => array(
+            [
+                'ticket' => [
                     'name'    => 'ticket',
                     'type'    => 'Application\DeskPRO\Entity\Ticket',
                     'default' => null,
-                ),
-                'string' => array(
+                ],
+                'string' => [
                     'name'    => 'string',
                     'type'    => null,
                     'default' => 'def',
-                ),
-                'array' => array(
+                ],
+                'array' => [
                     'name'    => 'array',
                     'type'    => 'array',
                     'default' => 'array()',
-                ),
-            )
+                ],
+            ]
         );
 
         $this->removeArgument('ticket');
         $this->removeArgument('string');
 
         $this->getArguments()->shouldBe(
-            array(
-                'array' => array(
+            [
+                'array' => [
                     'name'    => 'array',
                     'type'    => 'array',
                     'default' => 'array()',
-                ),
-            )
+                ],
+            ]
         );
     }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Email\EmailSource;
 
 use Doctrine\ORM\EntityManager;
@@ -68,10 +69,10 @@ class Finder
         $count     = (int) $q->getQuery()->getSingleScalarResult();
         $num_pages = ceil($count / $this->filter->getPerPage());
 
-        return array(
+        return [
             'count'     => $count,
             'num_pages' => $num_pages,
-        );
+        ];
     }
 
     /**

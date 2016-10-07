@@ -44,10 +44,10 @@ class SnippetsFixture extends DeskProAbstractFixture implements OrderedFixtureIn
     const NUM_CATEGORIES = 10;
     const NUM_SNIPPETS   = 20;
 
-    /** @var  int[] */
+    /** @var int[] */
     private $categories;
 
-    /** @var  int[] */
+    /** @var int[] */
     private $snippets;
 
     public function getOrder()

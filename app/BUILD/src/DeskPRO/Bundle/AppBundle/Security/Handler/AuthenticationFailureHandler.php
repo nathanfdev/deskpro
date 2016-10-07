@@ -70,7 +70,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
      */
     private $anti_abuse;
 
-    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options = array(), LoggerInterface $logger = null, PortalEmailSender $portal_mailer, Connection $db, PersonRepository $person_repo, AntiAbuse $anti_abuse)
+    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options, LoggerInterface $logger = null, PortalEmailSender $portal_mailer, Connection $db, PersonRepository $person_repo, AntiAbuse $anti_abuse)
     {
         parent::__construct($httpKernel, $httpUtils, $options, $logger);
         $this->portal_mailer = $portal_mailer;
@@ -81,9 +81,9 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        //
+
         // run failed login routine from old controller
-        //
+
         $attempt_person = null;
         if ($token = $exception->getToken()) {
             // Send alert
@@ -98,7 +98,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
         // Save login log
         $ip = $request->getClientIp();
         if ($attempt_person) {
-            $this->db->insert('login_log', array(
+            $this->db->insert('login_log', [
                 'person_id'    => $attempt_person->getId(),
                 'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
                 'is_success'   => 0,
@@ -106,7 +106,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
                 'hostname'     => @gethostbyaddr($ip) ?: '',
                 'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                 'date_created' => date('Y-m-d H:i:s'),
-            ));
+            ]);
         }
 
         $check = new LoginAbuseCheck($attempt_person, $ip);

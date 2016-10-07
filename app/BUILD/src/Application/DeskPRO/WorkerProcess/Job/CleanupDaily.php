@@ -47,9 +47,9 @@ class CleanupDaily extends AbstractJob
 
     private function doRun()
     {
-        #------------------------------
-        # log_items
-        #------------------------------
+        //------------------------------
+        // log_items
+        //------------------------------
 
         $last_id = App::getDb()->fetchColumn('SELECT id FROM log_items ORDER BY id DESC LIMIT 1');
         if ($last_id) {
@@ -61,16 +61,16 @@ class CleanupDaily extends AbstractJob
             }
         }
 
-        #------------------------------
-        # Agent alerts
-        #------------------------------
+        //------------------------------
+        // Agent alerts
+        //------------------------------
 
         if ($maxage = App::getSetting('agent.alerts_cleanup_time_always')) {
             $datetime = date('Y-m-d H:i:s', time() - $maxage);
             $num      = App::getDb()->executeUpdate('
 				DELETE FROM agent_alerts
 				WHERE date_created < ?
-			', array($datetime));
+			', [$datetime]);
 
             if ($num) {
                 $this->logStatus("Cleaned up $num agent alerts");
@@ -82,60 +82,60 @@ class CleanupDaily extends AbstractJob
             $num      = App::getDb()->executeUpdate('
 				DELETE FROM agent_alerts
 				WHERE date_created < ? AND is_dismissed = 1
-			', array($datetime));
+			', [$datetime]);
 
             if ($num) {
                 $this->logStatus("Cleaned up $num dismissed agent alerts");
             }
         }
 
-        #------------------------------
-        # result caches
-        #------------------------------
+        //------------------------------
+        // result caches
+        //------------------------------
 
         $datecut = date('Y-m-d H:i:s', time() - 86400);
         $num     = App::getDb()->executeUpdate('
             DELETE FROM result_cache
             WHERE date_created < ?
-        ', array($datecut));
+        ', [$datecut]);
 
         if ($num) {
             $this->logStatus("Cleaned up $num old result caches");
         }
 
-        #------------------------------
-        # Task queue logs Items
-        #------------------------------
+        //------------------------------
+        // Task queue logs Items
+        //------------------------------
 
         $cutoff  = 86400 * 14; // 15 days
         $datecut = date('Y-m-d H:i:s', time() - $cutoff);
         $num     = App::getDb()->executeUpdate("
             DELETE FROM task_queue
             WHERE status = 'completed' AND date_completed < ?
-        ", array($datecut));
+        ", [$datecut]);
 
         if ($num) {
             $this->logStatus("Cleaned up $num task queue logs");
         }
 
-        #------------------------------
-        # ref_reserve
-        #------------------------------
+        //------------------------------
+        // ref_reserve
+        //------------------------------
 
         $cutoff  = 86400; // 1 day
         $datecut = date('Y-m-d H:i:s', time() - $cutoff);
         $num     = App::getDb()->executeUpdate('
             DELETE FROM ref_reserve
             WHERE date_created < ?
-        ', array($datecut));
+        ', [$datecut]);
 
         if ($num) {
             $this->logStatus("Cleaned up $num ref_reserve records");
         }
 
-        #------------------------------
-        # whitelisted IPs
-        #------------------------------
+        //------------------------------
+        // whitelisted IPs
+        //------------------------------
 
         if (App::getSetting('agent.ip_security.enabled')) {
             $cutoff  = App::getSetting('agent.ip_security.whitelist_lifetime');
@@ -143,23 +143,23 @@ class CleanupDaily extends AbstractJob
             $num     = App::getDb()->executeUpdate('
                 DELETE FROM white_listed_ips
                 WHERE date_created < ?
-            ', array($datecut));
+            ', [$datecut]);
 
             if ($num) {
                 $this->logStatus("Cleaned up $num white_listed_ips records");
             }
         }
 
-        #------------------------------
-        # try to fetch config.php
-        #------------------------------
+        //------------------------------
+        // try to fetch config.php
+        //------------------------------
 
         if (!defined('DPC_IS_CLOUD')) {
             $url    = rtrim(App::getContainer()->getBrandSetting('core.deskpro_url'), '/').'/config.php';
             $config = @file_get_contents(
                 $url,
                 false,
-                stream_context_create(array('http' => array('timeout' => 10)))
+                stream_context_create(['http' => ['timeout' => 10]])
             );
 
             if ($config
@@ -212,14 +212,14 @@ BODY;
             }
         }
 
-        #------------------------------
-        # Temp files
-        #------------------------------
+        //------------------------------
+        // Temp files
+        //------------------------------
 
         // 50 days, sanity check
         $min_time = time() - 4320000;
 
-        $cleanup_list = array();
+        $cleanup_list = [];
 
         $tmpdir       = dp_get_tmp_dir();
         $tmpdir_swift = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'swiftmailer-cache';
@@ -298,17 +298,17 @@ BODY;
             $this->logStatus("Cleaned up $x of ".count($cleanup_list).' old files');
         }
 
-        #------------------------------
-        # Clean old exports
-        #------------------------------
+        //------------------------------
+        // Clean old exports
+        //------------------------------
 
         $q = App::getOrm()->createQuery('
             SELECT t FROM DeskPRO:TmpData t
             WHERE t.name = :name and t.date_expire < :date
-        ')->setParameters(array(
+        ')->setParameters([
             'name' => 'csv_export.file',
             'date' => date('Y-m-d H:i:s'),
-        ));
+        ]);
         $num = 0;
 
         foreach ($q->getResult() as $entry) {
@@ -329,9 +329,9 @@ BODY;
             $this->logStatus("Cleaned up $num old exports");
         }
 
-        #------------------------------
-        # Truncate tables approaching max INT size
-        #------------------------------
+        //------------------------------
+        // Truncate tables approaching max INT size
+        //------------------------------
 
         // - These tables are continuously filled + cleaned up
         // but the IDs arent recycled.
@@ -342,10 +342,10 @@ BODY;
 
         $db = App::getDb();
 
-        $tables = array(
+        $tables = [
             'agent_alerts',
             'client_messages',
-        );
+        ];
 
         $threshold = 2145000000;
         foreach ($tables as $t) {
@@ -359,9 +359,9 @@ BODY;
             }
         }
 
-        #------------------------------
-        # Cleanup rate limit logs
-        #------------------------------
+        //------------------------------
+        // Cleanup rate limit logs
+        //------------------------------
         $db->executeQuery('DELETE FROM `rate_limit_log` WHERE `date_created` < (NOW() - INTERVAL 1 DAY)');
     }
 }

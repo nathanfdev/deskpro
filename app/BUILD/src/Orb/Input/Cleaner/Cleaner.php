@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Input
  */
+
 namespace Orb\Input\Cleaner;
 
 use Orb\Input\Cleaner\CleanerPlugin\CleanerPlugin;
@@ -45,12 +46,12 @@ class Cleaner
      *
      * @var array
      */
-    protected $cleaner_type_map = array();
+    protected $cleaner_type_map = [];
 
     /**
      * @var \Orb\Input\Cleaner\CleanerPlugin\CleanerPlugin[]
      */
-    protected $cleaners = array();
+    protected $cleaners = [];
 
     public function __construct()
     {
@@ -140,7 +141,7 @@ class Cleaner
     public function clean($value, $type = 'raw', $options = null)
     {
         if (!$options) {
-            $options = array();
+            $options = [];
         }
 
         if (!isset($this->cleaner_type_map[$type])) {
@@ -168,7 +169,7 @@ class Cleaner
             $array = (array) $array;
         }
 
-        $ret_array = array();
+        $ret_array = [];
 
         foreach ($array as $k => $v) {
             $k = $this->clean($k, $type_key, $options_key);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,16 +28,21 @@
 
 namespace Application\DeskPRO\JIRA;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\JiraIssue;
 use Application\DeskPRO\Service\JIRA;
+use Application\DeskPRO\Tickets\StateChangeRecorder;
+use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\JiraApiExceptionEvent;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WebhookHandler
 {
-    /** @var DeskproContainer  */
+    /** @var Container */
     protected $container;
 
-    public function __construct(DeskproContainer $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }
@@ -57,7 +62,7 @@ class WebhookHandler
             return false;
         }
 
-        $method = 'on'.DeskproContainer::camelize(str_replace('jira:', '', $data['webhookEvent']));
+        $method = 'on'.Container::camelize(str_replace('jira:', '', $data['webhookEvent']));
         if (!method_exists($this, $method)) {
             return false;
         }
@@ -67,7 +72,10 @@ class WebhookHandler
 
             return true;
         } catch (\Exception $e) {
-            // todo logs
+            /* @var EventLogger logger */
+            $logger = $this->container->get('dp_sys.alerts.event_logger');
+            $logger->log(new JiraApiExceptionEvent($e));
+
             return false;
         }
     }
@@ -79,17 +87,20 @@ class WebhookHandler
      */
     public function onIssueUpdated(array $data)
     {
-        if (!$app = $this->container->getAppManager()->getPackageApp('deskpro_jira')) {
+        if (!$app = $this->container->get('deskpro.apps.manager')->getPackageApp('deskpro_jira')) {
             throw new NotFoundHttpException();
         }
 
-        $manager = $this->container->getTicketManager();
-        $em      = $this->container->getEm();
-        $issues  = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
-        $meta    = $this->container->get(JIRA::NAME)->getMeta();
+        /** @var TicketManager $manager */
+        $manager = $this->container->get('ticket_manager');
+        $em      = $this->container->get('doctrine.orm.entity_manager');
+        $issues  = $em->getRepository('DeskPRO:JiraIssue')->findBy(['issue_id' => $data['issue']['id']]);
+        /** @var Meta $meta */
+        $meta = $this->container->get(JIRA::NAME)->getMeta();
 
         foreach ($issues as $issue) {
             /* @var $issue JiraIssue */
+            /** @var StateChangeRecorder $state */
             $state   = $issue->ticket->getStateChangeRecorder();
             $context = $manager->createAppExecutorContext($app, 'issue_update');
 
@@ -129,13 +140,14 @@ class WebhookHandler
      */
     public function onIssueDeleted(array $data)
     {
-        if (!$app = $this->container->getAppManager()->getPackageApp('deskpro_jira')) {
+        if (!$app = $this->container->get('deskpro.apps.manager')->getPackageApp('deskpro_jira')) {
             throw new NotFoundHttpException();
         }
 
-        $manager = $this->container->getTicketManager();
-        $em      = $this->container->getEm();
-        $issues  = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
+        /** @var TicketManager $manager */
+        $manager = $this->container->get('ticket_manager');
+        $em      = $this->container->get('doctrine.orm.entity_manager');
+        $issues  = $em->getRepository('DeskPRO:JiraIssue')->findBy(['issue_id' => $data['issue']['id']]);
 
         foreach ($issues as $issue) {
             $ticket = $issue->ticket;

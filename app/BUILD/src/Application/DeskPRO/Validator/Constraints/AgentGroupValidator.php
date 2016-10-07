@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Validator
  */
+
 namespace Application\DeskPRO\Validator\Constraints;
 
 use Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService;
@@ -61,7 +62,7 @@ class AgentGroupValidator extends ConstraintValidator
     {
         if (is_object($value)) {
             if (!($value instanceof Usergroup)) {
-                $this->context->addViolation($constraint->typeMessage, array('{{type}}' => get_class($value)));
+                $this->context->addViolation($constraint->typeMessage, ['{{type}}' => get_class($value)]);
             } else {
                 if ($constraint->checkRepos) {
                     if (!$value->id || !$this->usergroup_data->getAgentGroup($value->id)) {

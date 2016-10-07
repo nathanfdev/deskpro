@@ -221,9 +221,9 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
         return $x;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

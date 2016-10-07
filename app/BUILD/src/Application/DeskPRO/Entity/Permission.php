@@ -95,7 +95,7 @@ class Permission extends DomainObject
      * @JMS\Expose()
      * @JMS\Type("integer")
      *
-     * @var bool
+     * @var int
      */
     protected $value = null;
 
@@ -146,21 +146,23 @@ class Permission extends DomainObject
     /**
      * Combine an array of permissions into a superduper array of effective permissions.
      *
-     * @param \Application\DeskPRO\Entity\Permission[]|array $perms
+     * @param self[]|array $perms
+     * @param array        $mergeEffectivePermissions
      *
      * @return array
      */
-    public static function getEffectivePermissions(array $perms)
+    public static function getEffectivePermissions(array $perms, array $mergeEffectivePermissions = [])
     {
-        $effective_perms = [];
+        $effective_perms = $mergeEffectivePermissions;
 
         foreach ($perms as $perm) {
             if (is_array($perm)) {
                 $k = $perm['name'];
                 $v = $perm['value'];
             } else {
-                $k = $perm->name;
-                $v = $perm->value;
+                /** @var self $k */
+                $k = $perm->getName();
+                $v = $perm->getValue();
             }
 
             if (is_scalar($v)) {
@@ -177,11 +179,24 @@ class Permission extends DomainObject
         return $effective_perms;
     }
 
+    /**
+     * @param $value
+     *
+     * @return $this
+     */
     public function setValue($value)
     {
         $this->setModelField('value', $value);
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 
     /**
@@ -197,6 +212,14 @@ class Permission extends DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * @param Person $person
      *
      * @return Permission
@@ -207,9 +230,9 @@ class Permission extends DomainObject
 
         return $this;
     }
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

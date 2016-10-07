@@ -26,27 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
+/**
+ * Class SetCategoryAction.
+ */
 class SetCategoryAction extends AbstractAction implements ActionWithOptionsInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired('set_category');
         $resolver->setAllowedTypes('set_category', 'string');
-        $resolver->setAllowedValues(
-            'set_category',
-            function ($value) {
-                return !empty($value);
-            }
-        );
+        $resolver->setAllowedValues('set_category', function ($value) {
+            return !empty($value);
+        });
     }
 }

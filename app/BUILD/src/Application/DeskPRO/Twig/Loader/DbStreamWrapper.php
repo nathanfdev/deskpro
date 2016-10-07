@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Twig\Loader;
 
 use Application\DeskPRO\App;
@@ -51,8 +52,8 @@ class DbStreamWrapper
 
     public static function getTemplateInfo($name)
     {
-        static $templates = array();
-        static $not_set   = array();
+        static $templates = [];
+        static $not_set   = [];
 
         // Already loaded the template
         if (isset($templates[$name])) {
@@ -65,16 +66,16 @@ class DbStreamWrapper
             return;
         }
 
-        #------------------------------
-        # Fetch template info, and try to
-        # guess which other templates will be used as well
-        #------------------------------
+        //------------------------------
+        // Fetch template info, and try to
+        // guess which other templates will be used as well
+        //------------------------------
 
         $parts  = explode(':', $name, 3);
         $bundle = $parts[0];
         $subdir = $parts[1];
 
-        $params   = array($name);
+        $params   = [$name];
         $params[] = 'DeskPRO:%';
         $params[] = "$bundle:Common:%";
         $params[] = "$bundle:Main:%";
@@ -87,7 +88,7 @@ class DbStreamWrapper
             $params[] = "$bundle:$subdir:%";
         }
 
-        $where = array('name = ?');
+        $where = ['name = ?'];
         for ($i = 1, $c = count($params); $i < $c; ++$i) {
             $where[] = 'name LIKE ?';
         }
@@ -203,7 +204,7 @@ class DbStreamWrapper
     public function url_stat($path)
     {
         if ($path == 'dptpl://load') {
-            return array(
+            return [
                 'dev'     => 0,
                 'ino'     => 0,
                 'mode'    => 040777,
@@ -217,7 +218,7 @@ class DbStreamWrapper
                 'ctime'   => time(),
                 'blksize' => 0,
                 'blocks'  => -1,
-            );
+            ];
         }
 
         if (!preg_match('#/([^/]+)$#', $path, $m)) {
@@ -231,7 +232,7 @@ class DbStreamWrapper
             return false;
         }
 
-        return array(
+        return [
             'dev'     => 0,
             'ino'     => 0,
             'mode'    => 0100555,
@@ -245,12 +246,12 @@ class DbStreamWrapper
             'ctime'   => $info['date_updated'],
             'blksize' => 0,
             'blocks'  => -1,
-        );
+        ];
     }
 
     public function stream_stat()
     {
-        return array(
+        return [
             'dev'     => 0,
             'ino'     => 0,
             'mode'    => 0100555,
@@ -264,7 +265,7 @@ class DbStreamWrapper
             'ctime'   => $this->date_updated,
             'blksize' => 0,
             'blocks'  => -1,
-        );
+        ];
     }
 
     public function stream_metadata($path, $option, $var)

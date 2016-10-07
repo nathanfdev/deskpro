@@ -138,14 +138,8 @@ class TicketType extends AbstractType
                 'owner_property' => 'ticket',
             ])
             ->add('cc', TicketParticipantsType::class, [
-                'owner'    => $builder->getData(),
-                'is_agent' => false,
-                'required' => false,
-            ])
-            ->add('followers', TicketParticipantsType::class, [
-                'owner'    => $builder->getData(),
-                'is_agent' => true,
-                'required' => false,
+                'owner'           => $builder->getData(),
+                'agent_interface' => $options['agent_interface'],
             ])
             ->add('fields', CombinedType::class, [
                 'forms'          => $this->getCustomDataFields($builder, $options),
@@ -173,9 +167,7 @@ class TicketType extends AbstractType
                 'data_class'      => Ticket::class,
                 'agent_interface' => false,
             ])
-            ->setAllowedTypes([
-                'person' => Person::class,
-            ])
+            ->setAllowedTypes('person', Person::class)
         ;
     }
 
@@ -207,6 +199,11 @@ class TicketType extends AbstractType
         return $fields;
     }
 
+    /**
+     * @param FormBuilderInterface $builder
+     *
+     * @return Department|null
+     */
     private function getDefaultDepartment(FormBuilderInterface $builder)
     {
         $type = $builder->getOption('agent_interface')

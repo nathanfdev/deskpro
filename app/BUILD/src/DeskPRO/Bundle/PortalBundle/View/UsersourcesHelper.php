@@ -46,7 +46,7 @@ class UsersourcesHelper
 
     /**
      * @var array we only want to actually generate this array once per request, so we just store it here if we
-     *            have calculated it before.
+     *            have calculated it before
      */
     private static $cached = false;
 

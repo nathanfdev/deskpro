@@ -39,7 +39,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplyAssignAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
-    /** @var  array */
+    /** @var array */
     private $collection;
 
     /**

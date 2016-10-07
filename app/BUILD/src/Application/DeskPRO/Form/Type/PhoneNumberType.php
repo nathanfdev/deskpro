@@ -45,11 +45,10 @@ class PhoneNumberType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //
+
         // NOTE: this is a "hidden" field. You should instantiate "DeskPRO.UI.PhoneNumberInputs" on the client
         // and call "renderPhoneInputs()" after the form is drawn. It is safe to call that method any number of
         // times if you are using this in a collection type.
-        //
 
         $builder->add('number', 'hidden', [
             'required' => false,

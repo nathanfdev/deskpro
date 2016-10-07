@@ -177,7 +177,7 @@ class AdvancedEditsManager
             }
         }
 
-        $scss = <<<CODE
+        $scss = <<<'CODE'
 /*
     Use this template to add custom CSS to your site.
     

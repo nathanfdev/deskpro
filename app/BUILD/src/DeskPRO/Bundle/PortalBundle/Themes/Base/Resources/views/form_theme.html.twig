@@ -538,17 +538,13 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
     <div {{ block('widget_container_attributes') }}>
         <div class="{% if multiple %}dpx-checkbox-group{% endif %} dp-choice-widget-group with-dpx">
             {%- for child in form %}
-                {% if form.vars.choices[child.vars.value] is defined %}
-                    {% if form.vars.choices[child.vars.value].data|length == 0 %}
-                        {% if not multiple %}
-                            <div class="radio-button dpx-radio-button">
-                        {% endif %}
-                        {{- form_widget(child) -}}
-                        {{- form_label(child, null, { dp_no_validation_indicator: true, required: false }) -}}
-                        {% if not multiple %}
-                            </div>
-                        {% endif %}
-                    {% endif %}
+                {% if not multiple %}
+                    <div class="radio-button dpx-radio-button">
+                {% endif %}
+                {{- form_widget(child) -}}
+                {{- form_label(child, null, { dp_no_validation_indicator: true, required: false }) -}}
+                {% if not multiple %}
+                    </div>
                 {% endif %}
             {% endfor -%}
         </div>

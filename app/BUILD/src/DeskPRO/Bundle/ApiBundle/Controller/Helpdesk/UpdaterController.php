@@ -89,6 +89,10 @@ class UpdaterController extends BaseController
      */
     public function putAction(Request $request)
     {
+        if ($this->get('deskpro.app_env')->getConfig('settings.disable_admin_deskpro_updates')) {
+            throw $this->createAccessDeniedException('disable_admin_deskpro_updates is enabled');
+        }
+
         $model         = $this->get('updater_settings_resolver')->getUpdaterSettings();
         $type          = UpdaterSettingsType::class;
         $isModify      = true;
@@ -140,6 +144,10 @@ class UpdaterController extends BaseController
      */
     public function manualSheduleAction(Request $request)
     {
+        if ($this->get('deskpro.app_env')->getConfig('settings.disable_admin_deskpro_updates')) {
+            throw $this->createAccessDeniedException('disable_admin_deskpro_updates is enabled');
+        }
+
         $secs = (int) $request->request->get('delay', 60);
         if ($secs < 0) {
             $secs = 60;

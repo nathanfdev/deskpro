@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -164,7 +164,7 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         $this->onResponse($event);
     }
 
-    public function it_will_not_change_response_if_redirect_url_does_not_match_current_request_but_matches_brand_settings(
+    public function it_will_set_response_location_same_as_in_request_if_redirect_url_does_not_match_current_request_but_matches_brand_settings(
         UrlHostChecker $url_host_checker,
         Response $response,
         HeaderBag $response_headers,
@@ -187,6 +187,7 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         $location = 'http://check.com:8888/some/path';
         $response_headers->get('Location')->willReturn($location);
 
+        $request->getScheme()->willReturn('http');
         $request->getPort()->willReturn(80);
         $request_url = 'valid-site.com';
         $request->getHost()->willReturn($request_url);
@@ -197,7 +198,9 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         $brand_container->getSetting('core.deskpro_url', null)->willReturn($valid_settings_url);
         $url_host_checker->isMatchUrl($location, $valid_settings_url)->willReturn(true);
 
-        $event->setResponse(Argument::any())->shouldNotBeCalled();
+        $response_headers->set('Location', Argument::any())->shouldBeCalled();
+        $response->getContent()->shouldBeCalled();
+        $response->setContent(Argument::any())->shouldBeCalled();
 
         $this->onResponse($event);
     }

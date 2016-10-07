@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonRegistrationType;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -66,18 +67,16 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_home');
         }
 
-        //
         // Registration "intercept": to implement a registration intercept, don't use this
         // method of creating a person. Instead, make the form work with a PersonGuest,
         // and after the form is valid, use the PersonFactory to turn the guest into a
         // person. Please see NewTicketController to see how it does this exact process
         // to "intercept" new tickets.
-        //
 
         $person = $this->getPersonFactory()->createNewPerson();
 
         // FORM
-        $form = $this->createForm('person_registration', $person, [
+        $form = $this->createForm(PersonRegistrationType::class, $person, [
             'settings'              => $this->getBrandContainer()->getSettings(),
             'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
             'action'                => $this->generateUrl('portal_user_registration'),
@@ -188,9 +187,8 @@ class ProfileController extends AbstractController
     {
         $person = $this->getUser();
 
-        //
         // PROFILE
-        //
+
         $profileForm = $this->createForm(PersonEditProfileType::class, $person, [
             'settings' => $this->getBrandContainer()->getSettings(),
         ]);
@@ -203,9 +201,8 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_user_profile');
         }
 
-        //
         // PASSWORD
-        //
+
         $passwordForm = $this->createForm(PersonChangePasswordType::class, $person, [
             'settings' => $this->getBrandContainer()->getSettings(),
         ]);
@@ -231,9 +228,8 @@ class ProfileController extends AbstractController
             }
         }
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfile();
 
         return $this->renderThemeView(
@@ -351,9 +347,8 @@ class ProfileController extends AbstractController
             }
         }
 
-        //
         // BREADCRUMBS
-        //
+
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfileEmails();
 
         return $this->renderThemeView(

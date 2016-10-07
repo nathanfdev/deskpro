@@ -39,6 +39,7 @@ use Application\LegacyApiBundle\Request\RequestAuth;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -159,7 +160,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     /**
      * Always require a valid API key.
      */
-    public function preActionHandler($action, $arguments = null)
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         if (!$this->apikey && !$this->api_token) {
             $response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key or token', 401);
@@ -410,7 +411,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * @param ConstraintViolationList|ConstraintViolationList[] $errors A violation list, or an array of violation lists keyed by some prefix.
+     * @param ConstraintViolationList|ConstraintViolationList[] $errors A violation list, or an array of violation lists keyed by some prefix
      * @param array                                             $extra  Any other extra data you want to return
      * @param int                                               $status The HTTP status code to return
      *

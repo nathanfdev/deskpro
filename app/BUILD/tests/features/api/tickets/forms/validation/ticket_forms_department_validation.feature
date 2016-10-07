@@ -4,7 +4,7 @@ Feature: /ticket_forms validation
 
   Background:
     Given I'm authenticated as admin
-    And I have default brand
+    And I have only default brand
 
   Scenario: I try to create a ticket with no subject property in request
     When I send a POST request to "/api/v2/ticket_forms/agent"
@@ -62,10 +62,10 @@ Feature: /ticket_forms validation
       | d1 | Department 1 | [{defaultBrand}] | 1                  |
       | d2 | Department 2 | [{defaultBrand}] | 1                  |
     And no TicketLayout records exist
-    And the ticket layout exists for "d1" department with fields:
+    And the ticket layout exists for "{d1}" department with fields:
       | agent_layout       | user_layout        |
       | ticket_field_{ta1} | ticket_field_{tu1} |
-    And the ticket layout exists for "d2" department with fields:
+    And the ticket layout exists for "{d2}" department with fields:
       | agent_layout       | user_layout        |
       | ticket_field_{ta2} | ticket_field_{tu2} |
 

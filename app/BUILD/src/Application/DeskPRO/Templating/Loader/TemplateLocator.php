@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Templating\Loader;
 
 use Symfony\Bundle\FrameworkBundle\Templating\Loader\TemplateLocator as BaseTemplateLocator;
@@ -40,9 +41,9 @@ class TemplateLocator extends BaseTemplateLocator
     /** @var \Symfony\Component\Config\FileLocatorInterface */
     protected $locator;
     /** @var array */
-    protected $cache = array();
+    protected $cache = [];
     /** @var array */
-    protected $loaded_list = array();
+    protected $loaded_list = [];
 
     public function __construct(FileLocatorInterface $locator, $cacheDir = null)
     {
@@ -83,7 +84,7 @@ class TemplateLocator extends BaseTemplateLocator
 
                 $path = DP_ROOT.'/apps/'.$native_name.'/native/Resources/views/'.ltrim($file_name, '/');
                 if (file_exists($path)) {
-                    $this->cache[$key] = array('path' => $path);
+                    $this->cache[$key] = ['path' => $path];
 
                     return $path;
                 }
@@ -91,9 +92,9 @@ class TemplateLocator extends BaseTemplateLocator
         }
 
         try {
-            $this->cache[$key] = array(
+            $this->cache[$key] = [
                 'path' => $this->locator->locate($template->getPath(), $currentPath),
-            );
+            ];
             $this->logUsedTemplate($key, $this->cache[$key]['path']);
 
             return $this->cache[$key]['path'];
@@ -104,11 +105,11 @@ class TemplateLocator extends BaseTemplateLocator
 
     protected function logUsedTemplate($key, $path)
     {
-        $this->loaded_list[] = array(
+        $this->loaded_list[] = [
             'key'    => $key,
             'path'   => $path,
             'origin' => null,
-        );
+        ];
     }
 
     public function getLoadedTemplates()

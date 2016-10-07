@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateFirstAgentReply;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\TermCompiler\DbalTicketDateFirstAgentReplyTermCompiler;
@@ -60,7 +61,7 @@ class DbalTicketDateFirstAgentReplyTermCompilerTest extends AbstractDbalTicketFi
         $check2->setTimezone(new \DateTimeZone('UTC'));
         $check2 = $check2->format('Y-m-d H:i:s');
 
-        $ops = array(
+        $ops = [
             TermInterface::OP_IS        => 'ticket.date_first_agent_reply = :date',
             TermInterface::OP_NOT       => 'ticket.date_first_agent_reply != :date',
             TermInterface::OP_GT        => 'ticket.date_first_agent_reply > :date',
@@ -69,17 +70,17 @@ class DbalTicketDateFirstAgentReplyTermCompilerTest extends AbstractDbalTicketFi
             TermInterface::OP_LTE       => 'ticket.date_first_agent_reply <= :date',
             TermInterface::OP_RANGE     => 'ticket.date_first_agent_reply BETWEEN :date AND :date2',
             TermInterface::OP_NOT_RANGE => 'ticket.date_first_agent_reply NOT BETWEEN :date AND :date2',
-        );
+        ];
 
         foreach ($ops as $op => $where) {
             if (TermInterface::OP_RANGE === $op || TermInterface::OP_NOT_RANGE === $op) {
-                $term       = new TicketDateFirstAgentReplyTerm(array('date' => $date, 'date2' => $date2), $op);
+                $term       = new TicketDateFirstAgentReplyTerm(['date' => $date, 'date2' => $date2], $op);
                 $query_part = $this->term_compiler->compile($term);
-                $this->assertParameters($query_part, array('date' => $check1, 'date2' => $check2));
+                $this->assertParameters($query_part, ['date' => $check1, 'date2' => $check2]);
             } else {
-                $term       = new TicketDateFirstAgentReplyTerm(array('date' => $date), $op);
+                $term       = new TicketDateFirstAgentReplyTerm(['date' => $date], $op);
                 $query_part = $this->term_compiler->compile($term);
-                $this->assertParameters($query_part, array('date' => $check1));
+                $this->assertParameters($query_part, ['date' => $check1]);
             }
             $this->assertWhere($query_part, $where);
             $this->assertNoJoins($query_part);
@@ -98,7 +99,7 @@ class DbalTicketDateFirstAgentReplyTermCompilerTest extends AbstractDbalTicketFi
         $check2->setTimezone(new \DateTimeZone('UTC'));
         $check2 = $check2->format('Y-m-d H:i:s');
 
-        $ops = array(
+        $ops = [
             TermInterface::OP_IS        => 'ticket.date_first_agent_reply BETWEEN :date AND :date2',
             TermInterface::OP_NOT       => 'ticket.date_first_agent_reply NOT BETWEEN :date AND :date2',
             TermInterface::OP_GT        => 'ticket.date_first_agent_reply > :date',
@@ -107,16 +108,16 @@ class DbalTicketDateFirstAgentReplyTermCompilerTest extends AbstractDbalTicketFi
             TermInterface::OP_LTE       => 'ticket.date_first_agent_reply <= :date',
             TermInterface::OP_RANGE     => 'ticket.date_first_agent_reply BETWEEN :date AND :date2',
             TermInterface::OP_NOT_RANGE => 'ticket.date_first_agent_reply NOT BETWEEN :date AND :date2',
-        );
+        ];
 
         foreach ($ops as $op => $where) {
-            $term       = new TicketDateFirstAgentReplyTerm(array('date' => $date, 'ignore_time' => true), $op);
+            $term       = new TicketDateFirstAgentReplyTerm(['date' => $date, 'ignore_time' => true], $op);
             $query_part = $this->term_compiler->compile($term);
 
-            if (in_array($op, array(TermInterface::OP_RANGE, TermInterface::OP_NOT_RANGE, TermInterface::OP_IS, TermInterface::OP_NOT))) {
-                $this->assertParameters($query_part, array('date' => $check1, 'date2' => $check2));
+            if (in_array($op, [TermInterface::OP_RANGE, TermInterface::OP_NOT_RANGE, TermInterface::OP_IS, TermInterface::OP_NOT])) {
+                $this->assertParameters($query_part, ['date' => $check1, 'date2' => $check2]);
             } else {
-                $this->assertParameters($query_part, array('date' => $check1));
+                $this->assertParameters($query_part, ['date' => $check1]);
             }
 
             $this->assertWhere($query_part, $where);

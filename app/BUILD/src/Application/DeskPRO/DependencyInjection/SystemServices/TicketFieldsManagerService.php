@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\CustomFields\TicketFieldManager;
@@ -42,13 +43,13 @@ class TicketFieldsManagerService
     {
         $m = new TicketFieldManager(
             $container->get('doctrine.orm.entity_manager'),
-            array(
+            [
                 'settings_handler'  => $container->getSettingsHandler(),
                 'entity_class'      => 'Application\\DeskPRO\\Entity\\CustomDefTicket',
                 'entity_name'       => 'DeskPRO:CustomDefTicket',
                 'data_entity_class' => 'Application\\DeskPRO\\Entity\\CustomDataTicket',
                 'data_entity_name'  => 'DeskPRO:CustomDataTicket',
-            )
+            ]
         );
 
         return $m;

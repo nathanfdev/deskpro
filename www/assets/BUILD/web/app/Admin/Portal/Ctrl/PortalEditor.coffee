@@ -24,6 +24,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @welcome_box = angular.copy(@$scope.welcome_box)
 
       @$scope.values = {}
+      @$scope.errors = {
+        favicon: false
+        logo: false
+      }
+
       @values = angular.copy(@$scope.values)
 
       @advanced_tab = 'header'
@@ -335,15 +340,21 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @$upload
         .upload({url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/logo', file: files[0]})
         .then(
-          (response) => @custom_logo = response.data.data.url,
-          () => @error('Server error occurred. Unable to upload files.')
+          (response) =>
+            @$scope.errors.logo = false
+            @custom_logo = response.data.data.url
+          (response) =>
+            @$scope.errors.logo = response.data.fields.file.errors[0].message
         )
     uploadFavicon: (files) =>
       @$upload
         .upload({url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/favicon', file: files[0]})
         .then(
-          (response) => @custom_favicon = response.data.data.url,
-          () => @error('Server error occurred. Unable to upload files.')
+          (response) =>
+            @$scope.errors.favicon = false
+            @custom_favicon = response.data.data.url
+          (response) =>
+            @$scope.errors.favicon = response.data.fields.file.errors[0].message
         )
 
     copyUrl: (file) =>
@@ -390,6 +401,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @refreshPreviewUrl()
 
     promptEmail: =>
+      baseUrl = @$scope.baseUrl
+
       modalInstance = @$modal.open({
         templateUrl: @getTemplatePath('Portal/Editor/email-modal.html'),
         controller: ['$scope', '$modalInstance', '$http', 'preview_as', ($scope, $modalInstance, $http, preview_as) ->
@@ -398,7 +411,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           $scope.ok = () -> $modalInstance.close(@email)
           $scope.cancel = () -> $modalInstance.dismiss('cancel')
           $scope.loadEmails = (val) ->
-            $http.get(@$scope.baseUrl+'/portal/api/emails?term=' + val + '&target=' + preview_as)
+            $http.get(baseUrl+'/portal/api/emails?term=' + val + '&target=' + preview_as)
                  .then((response) => response.data)
         ],
         resolve: {

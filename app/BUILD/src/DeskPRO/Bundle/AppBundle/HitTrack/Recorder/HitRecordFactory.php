@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,7 +42,7 @@ class HitRecordFactory
      *
      * @return HitRecord
      */
-    public function fromRequest($page_type, $page_id = '', Request $request, $visitor_id = null)
+    public function fromRequest($page_type, $page_id, Request $request, $visitor_id = null)
     {
         switch ($request->getMethod()) {
             case 'POST':
@@ -87,7 +87,9 @@ class HitRecordFactory
             $meta = [];
         }
 
-        $meta = array_filter($meta, function ($v) { return is_scalar($v); });
+        $meta = array_filter($meta, function ($v) {
+            return is_scalar($v);
+        });
 
         // If we werent given a URL specifically,
         // maybe its a fallback image in which case we sholud use

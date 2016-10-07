@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -67,7 +68,7 @@ class CheckSlaStatus extends AbstractTriggerTerm
     {
         $options = $this->getTermOptions();
 
-        $map = array();
+        $map = [];
         foreach ($ticket->ticket_slas as $ticket_sla) {
             $map[$ticket_sla->sla->id] = $ticket_sla;
         }
@@ -88,7 +89,7 @@ class CheckSlaStatus extends AbstractTriggerTerm
 
             if ($check_status && $ticket_sla->sla_status == $check_status) {
                 $any_match_status = true;
-                }
+            }
             if ($ticket_sla->is_completed) {
                 $any_complete = true;
             }

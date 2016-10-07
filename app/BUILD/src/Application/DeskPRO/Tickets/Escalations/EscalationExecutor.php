@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Escalations;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -96,18 +97,18 @@ class EscalationExecutor
     {
         // Save log
         $d = $ticket->get($esc->getTicketTimeField()) ?: new \DateTime();
-        $this->db->insert('ticket_escalation_logs', array(
+        $this->db->insert('ticket_escalation_logs', [
             'ticket_id'     => $ticket->id,
             'escalation_id' => $esc->id,
             'date_ran'      => date('Y-m-d H:i:s'),
             'date_criteria' => $d->format('Y-m-d H:i:s'),
-        ));
+        ]);
 
         $this->ticket_manager->markAsManaged($ticket);
 
         $context = $this->ticket_manager->createSystemExecutorContext();
         $state   = $ticket->getStateChangeRecorder();
-        $state->setCurrentChangeMetadata(array('escalation' => $esc));
+        $state->setCurrentChangeMetadata(['escalation' => $esc]);
 
         $this->action_applicator->apply($esc->actions, $ticket, $context);
         $this->ticket_manager->saveTicket($ticket, $context);

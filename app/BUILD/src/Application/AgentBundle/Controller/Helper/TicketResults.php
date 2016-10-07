@@ -51,7 +51,7 @@ class TicketResults
     /**
      * @var array
      */
-    protected $ticket_ids = array();
+    protected $ticket_ids = [];
 
     /**
      * @var array
@@ -180,7 +180,7 @@ class TicketResults
             return $this->grouped_ticket_ids;
         }
         if ($this->group_field === null) {
-            return array();
+            return [];
         }
 
         $searcher = new TicketSearch();
@@ -262,7 +262,7 @@ class TicketResults
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.
         // - So we'll re-create the array here according to the order they're supposed to be in.
-        $tickets = array();
+        $tickets = [];
         foreach ($ticket_ids as $tid) {
             if (isset($tickets_raw[$tid])) {
                 $tickets[$tid] = $tickets_raw[$tid];
@@ -287,7 +287,7 @@ class TicketResults
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.
         // - So we'll re-create the array here according to the order they're supposed to be in.
-        $tickets = array();
+        $tickets = [];
         foreach ($ticket_ids as $tid) {
             if (isset($tickets_raw[$tid])) {
                 $tickets[$tid] = $tickets_raw[$tid];

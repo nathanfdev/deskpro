@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Orb\Util;
 
 use libphonenumber\NumberParseException;
@@ -44,12 +45,12 @@ use libphonenumber\PhoneNumberUtil;
  */
 class PhoneNumbers
 {
-    #########################################################
-    # Phone number TYPES
-    # - Provided by libphonenumber, we copy them here because we store this numeric value.
-    # its unlikely the lib would ever change these values, but just in case they ever did,
-    # we reference this class for numeric translation to text.
-    #########################################################
+    //########################################################
+    // Phone number TYPES
+    // - Provided by libphonenumber, we copy them here because we store this numeric value.
+    // its unlikely the lib would ever change these values, but just in case they ever did,
+    // we reference this class for numeric translation to text.
+    //########################################################
     const FIXED_LINE           = 0;
     const MOBILE               = 1;
     const FIXED_LINE_OR_MOBILE = 2;
@@ -100,7 +101,7 @@ class PhoneNumbers
      *
      * @param $phone_number
      *
-     * @throws NumberParseException Make sure to validate the number string before using this.
+     * @throws NumberParseException Make sure to validate the number string before using this
      *
      * @return string
      */
@@ -112,7 +113,7 @@ class PhoneNumbers
     /**
      * @param $phone_number
      *
-     * @throws NumberParseException Make sure to validate the number string before using this.
+     * @throws NumberParseException Make sure to validate the number string before using this
      *
      * @return int the number code that libphonenumber uses (one of the constants of this class)
      */
@@ -157,7 +158,7 @@ class PhoneNumbers
     /**
      * @param $phone_number
      *
-     * @throws NumberParseException Make sure to validate the number string before using this.
+     * @throws NumberParseException Make sure to validate the number string before using this
      */
     public static function guessType($phone_number)
     {
@@ -170,7 +171,7 @@ class PhoneNumbers
     /**
      * @param string $phone_number
      *
-     * @throws NumberParseException Make sure to validate the number string before using this.
+     * @throws NumberParseException Make sure to validate the number string before using this
      *
      * @return string The phone number in E.164 format
      */
@@ -185,7 +186,7 @@ class PhoneNumbers
     /**
      * @param string $phone_number
      *
-     * @throws NumberParseException Make sure to validate the number string before using this.
+     * @throws NumberParseException Make sure to validate the number string before using this
      *
      * @return string The phone number in International format
      */
@@ -200,7 +201,7 @@ class PhoneNumbers
     /**
      * @param string $phone_number
      *
-     * @throws NumberParseException Make sure to validate the number string before using this.
+     * @throws NumberParseException Make sure to validate the number string before using this
      *
      * @return string The phone number in National format
      */
@@ -218,7 +219,7 @@ class PhoneNumbers
      *
      * @param $phone_number
      *
-     * @throws NumberParseException Make sure to validate the number string before using this.
+     * @throws NumberParseException Make sure to validate the number string before using this
      *
      * @return null|string
      */

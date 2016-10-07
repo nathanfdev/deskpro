@@ -84,11 +84,10 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
             ->setDefined([
                 'context', 'allow_edit',
             ])
-            ->setAllowedTypes([
-                'owner'     => 'Application\DeskPRO\Domain\DomainObject',
-                'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
-                'context'   => ['null', 'Application\DeskPRO\Domain\DomainObject'],
-            ]);
+            ->setAllowedTypes('owner', 'Application\DeskPRO\Domain\DomainObject')
+            ->setAllowedTypes('persister', 'Application\DeskPRO\CustomFields\CustomDataPersister')
+            ->setAllowedTypes('context', ['null', 'Application\DeskPRO\Domain\DomainObject'])
+        ;
     }
 
     /**

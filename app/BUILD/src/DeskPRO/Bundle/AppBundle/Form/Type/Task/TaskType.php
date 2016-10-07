@@ -122,12 +122,12 @@ class TaskType extends AbstractType
                 'description' => 'the task position in a list',
             ])
             ->add('project', EntityType::class, [
-                'class'    => TaskProject::class,
-                'property' => 'title',
+                'class'        => TaskProject::class,
+                'choice_label' => 'title',
             ])
             ->add('list', EntityType::class, [
-                'class'    => TaskList::class,
-                'property' => 'title',
+                'class'        => TaskList::class,
+                'choice_label' => 'title',
             ])
             ->add('labels', LabelsCollectionType::class, [
                 'labels_class'   => LabelTask::class,
@@ -178,13 +178,11 @@ class TaskType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['person'])
+            ->setRequired('person')
             ->setDefaults([
                 'data_class' => Task::class,
             ])
-            ->setAllowedTypes([
-                'person' => Person::class,
-            ])
+            ->setAllowedTypes('person', Person::class)
         ;
     }
 

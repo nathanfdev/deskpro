@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -72,9 +73,9 @@ class TaskSearch extends SearcherAbstract
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-        #------------------------------
-        # Add joins
-        #------------------------------
+        //------------------------------
+        // Add joins
+        //------------------------------
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
@@ -90,9 +91,9 @@ class TaskSearch extends SearcherAbstract
             $sql .= " $order_join ";
         }
 
-        #------------------------------
-        # Add wheres
-        #------------------------------
+        //------------------------------
+        // Add wheres
+        //------------------------------
 
         if ($this->person && $this->person->is_agent) {
             $person_id = App::getDbRead('search.filter.tasks')->quote($this->person->id);
@@ -129,7 +130,7 @@ class TaskSearch extends SearcherAbstract
     {
         // Set a default if none
         if (!$this->order_by) {
-            $this->order_by = array('tasks.id', 'DESC');
+            $this->order_by = ['tasks.id', 'DESC'];
         }
 
         list($type, $dir) = $this->order_by;
@@ -197,8 +198,8 @@ class TaskSearch extends SearcherAbstract
 
         $tr = App::getTranslator();
 
-        $wheres = array();
-        $joins  = array();
+        $wheres = [];
+        $joins  = [];
 
         foreach ($this->terms as $info) {
             list($term, $op, $choice) = $info;
@@ -282,9 +283,9 @@ class TaskSearch extends SearcherAbstract
 
         $joins = array_unique($joins);
 
-        return array(
+        return [
             'joins'  => $joins,
             'wheres' => $wheres,
-        );
+        ];
     }
 }

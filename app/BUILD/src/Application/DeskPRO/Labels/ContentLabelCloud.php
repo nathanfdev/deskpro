@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category ORM
  */
+
 namespace Application\DeskPRO\Labels;
 
 use Application\DeskPRO\App;
@@ -47,14 +48,14 @@ class ContentLabelCloud
             return $this->cloud;
         }
 
-        $counts = array(
+        $counts = [
             'articles'  => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('articles', 25),
             'feedback'  => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('feedback', 25),
             'downloads' => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('downloads', 25),
             'news'      => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('news', 25),
-        );
+        ];
 
-        $label_counts = array();
+        $label_counts = [];
         foreach ($counts as $type_counts) {
             foreach ($type_counts as $label => $count) {
                 if (!isset($label_counts[$label])) {

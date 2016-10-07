@@ -49,7 +49,7 @@ class ProductionModeContext extends BaseContext
     {
         file_put_contents(
             DP_DIR.self::FLAG,
-<<<CONTENTS
+<<<'CONTENTS'
 This file is used by behat as a production environment flag, your testing environment should be configured to set
 prod/test mode depending on this file presence, your production environment should not take this file into account.
 CONTENTS

@@ -53,6 +53,7 @@ class QuickSearchContext
     const TYPE_NEWS              = 'news';
     const TYPE_TICKET            = 'ticket';
     const TYPE_PERSON            = 'person';
+    const TYPE_AGENT             = 'agent';
     const TYPE_ORGANIZATION      = 'organization';
     const TYPE_CHAT_CONVERSATION = 'chat_conversation';
 
@@ -109,7 +110,19 @@ class QuickSearchContext
      */
     public function getEntityName()
     {
-        return self::getDoctrineMapping()[$this->getType()];
+        $mappingName = self::getDoctrineMapping()[$this->getType()];
+
+        return is_array($mappingName) ? $mappingName[0] : $mappingName;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCriteriaOptions()
+    {
+        $mappingName = self::getDoctrineMapping()[$this->getType()];
+
+        return is_array($mappingName) ? $mappingName[1] : [];
     }
 
     /**
@@ -125,7 +138,7 @@ class QuickSearchContext
      */
     public function isTicket()
     {
-        return $this->getType() === self::TYPE_TICKET;
+        return $this->getEntityName() === Ticket::class;
     }
 
     /**
@@ -133,7 +146,7 @@ class QuickSearchContext
      */
     public function isPerson()
     {
-        return $this->getType() === self::TYPE_PERSON;
+        return $this->getEntityName() === Person::class;
     }
 
     /**
@@ -141,7 +154,7 @@ class QuickSearchContext
      */
     public function isOrganization()
     {
-        return $this->getType() === self::TYPE_ORGANIZATION;
+        return $this->getEntityName() === Organization::class;
     }
 
     /**
@@ -165,7 +178,9 @@ class QuickSearchContext
     public function getDeferredIds()
     {
         $all_ids    = $this->ids->toArray();
-        $loaded_ids = $this->entities->map(function ($entity) { return $entity->getId(); })->toArray();
+        $loaded_ids = $this->entities->map(function ($entity) {
+            return $entity->getId();
+        })->toArray();
 
         return array_diff($all_ids, $loaded_ids);
     }
@@ -277,6 +292,7 @@ class QuickSearchContext
             self::TYPE_NEWS              => News::class,
             self::TYPE_TICKET            => Ticket::class,
             self::TYPE_PERSON            => Person::class,
+            self::TYPE_AGENT             => [Person::class, ['is_agent' => true]],
             self::TYPE_ORGANIZATION      => Organization::class,
             self::TYPE_CHAT_CONVERSATION => ChatConversation::class,
         ];

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,15 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\JIRA\WebhookHandler;
 use Application\DeskPRO\Service\JIRA;
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class JIRAWebhookController extends AbstractController
+class JIRAWebhookController extends Controller
 {
     /**
      * JIRA webhook endpoint.

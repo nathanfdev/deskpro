@@ -36,7 +36,7 @@ chdir(__DIR__);
 
 register_shutdown_function('shutdown_function');
 
-$_SERVER['argv'] = array(basename(__FILE__), 'Parser.y');
+$_SERVER['argv'] = [basename(__FILE__), 'Parser.y'];
 $_SERVER['argc'] = 2;
 
 require_once 'PHP/ParserGenerator.php';

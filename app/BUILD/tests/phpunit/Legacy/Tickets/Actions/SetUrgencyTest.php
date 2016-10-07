@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,7 +41,7 @@ class SetUrgencyTest extends DeskProTestCase
         $ticket->urgency = 5;
         $exec            = new ExecutorContext();
 
-        $action = new SetUrgency(array('mode' => 'set', 'urgency' => 10));
+        $action = new SetUrgency(['mode' => 'set', 'urgency' => 10]);
 
         $action->applyAction($ticket, $exec);
 
@@ -54,7 +54,7 @@ class SetUrgencyTest extends DeskProTestCase
         $ticket->urgency = 5;
         $exec            = new ExecutorContext();
 
-        $action = new SetUrgency(array('mode' => 'raise', 'urgency' => 8));
+        $action = new SetUrgency(['mode' => 'raise', 'urgency' => 8]);
 
         $action->applyAction($ticket, $exec);
 
@@ -67,7 +67,7 @@ class SetUrgencyTest extends DeskProTestCase
         $ticket->urgency = 5;
         $exec            = new ExecutorContext();
 
-        $action = new SetUrgency(array('mode' => 'raise', 'urgency' => 4));
+        $action = new SetUrgency(['mode' => 'raise', 'urgency' => 4]);
 
         $action->applyAction($ticket, $exec);
 
@@ -80,7 +80,7 @@ class SetUrgencyTest extends DeskProTestCase
         $ticket->urgency = 5;
         $exec            = new ExecutorContext();
 
-        $action = new SetUrgency(array('mode' => 'lower', 'urgency' => 2));
+        $action = new SetUrgency(['mode' => 'lower', 'urgency' => 2]);
 
         $action->applyAction($ticket, $exec);
 
@@ -93,7 +93,7 @@ class SetUrgencyTest extends DeskProTestCase
         $ticket->urgency = 5;
         $exec            = new ExecutorContext();
 
-        $action = new SetUrgency(array('mode' => 'lower', 'urgency' => 6));
+        $action = new SetUrgency(['mode' => 'lower', 'urgency' => 6]);
 
         $action->applyAction($ticket, $exec);
 
@@ -106,7 +106,7 @@ class SetUrgencyTest extends DeskProTestCase
         $ticket->urgency = 5;
         $exec            = new ExecutorContext();
 
-        $action = new SetUrgency(array('mode' => 'add', 'urgency' => 2));
+        $action = new SetUrgency(['mode' => 'add', 'urgency' => 2]);
 
         $action->applyAction($ticket, $exec);
 
@@ -119,7 +119,7 @@ class SetUrgencyTest extends DeskProTestCase
         $ticket->urgency = 5;
         $exec            = new ExecutorContext();
 
-        $action = new SetUrgency(array('mode' => 'sub', 'urgency' => 2));
+        $action = new SetUrgency(['mode' => 'sub', 'urgency' => 2]);
 
         $action->applyAction($ticket, $exec);
 

@@ -37,8 +37,6 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ContentAbstract;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 
-/**
- */
 class ArticlesLinkGenerator extends AbstractContentLinkGenerator
 {
     /**

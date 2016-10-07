@@ -50,7 +50,7 @@ class ReportBuilderFavorite extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var array
      */
-    protected $params = array();
+    protected $params = [];
 
     /**
      * @var \Application\DeskPRO\Entity\ReportBuilder
@@ -62,9 +62,9 @@ class ReportBuilderFavorite extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $person = null;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

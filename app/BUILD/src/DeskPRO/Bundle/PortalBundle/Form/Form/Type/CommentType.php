@@ -26,17 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -52,23 +52,23 @@ class CommentType extends AbstractType
     /**
      * @var CaptchaDecider
      */
-    private $captcha_decider;
+    private $captchaDecider;
 
     /**
      * @var LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
     /**
      * Constructor.
      *
-     * @param CaptchaDecider  $captcha_decider
-     * @param LanguageManager $language_manager
+     * @param CaptchaDecider  $captchaDecider
+     * @param LanguageManager $languageManager
      */
-    public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager)
+    public function __construct(CaptchaDecider $captchaDecider, LanguageManager $languageManager)
     {
-        $this->captcha_decider  = $captcha_decider;
-        $this->language_manager = $language_manager;
+        $this->captchaDecider  = $captchaDecider;
+        $this->languageManager = $languageManager;
     }
 
     /**
@@ -76,8 +76,8 @@ class CommentType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('content_real', 'textarea', [
-            'label'       => $this->language_manager->phrase('portal.forms.label_comment'),
+        $builder->add('content_real', TextareaType::class, [
+            'label'       => $this->languageManager->phrase('portal.forms.label_comment'),
             'constraints' => [
                 new NotBlank(),
             ],
@@ -89,14 +89,14 @@ class CommentType extends AbstractType
 
             // if this is a guest, ask for more information
             if ($comment->getPerson() instanceof PersonGuest) {
-                $form->add('name', 'text', [
-                    'label'       => $this->language_manager->phrase('portal.forms.label_full_name'),
+                $form->add('name', TextType::class, [
+                    'label'       => $this->languageManager->phrase('portal.forms.label_full_name'),
                     'constraints' => [
                         new NotBlank(),
                     ],
                 ]);
-                $form->add('email', 'email', [
-                    'label'       => $this->language_manager->phrase('portal.forms.label_email'),
+                $form->add('email', EmailType::class, [
+                    'label'       => $this->languageManager->phrase('portal.forms.label_email'),
                     'constraints' => [
                         new NotBlank(),
                         new Email(),
@@ -104,8 +104,8 @@ class CommentType extends AbstractType
                 ]);
             }
 
-            if ($this->captcha_decider->shouldRequireCommentCaptchaForCurrentPerson()) {
-                $form->add('captcha', 'deskpro_captcha');
+            if ($this->captchaDecider->shouldRequireCommentCaptchaForCurrentPerson()) {
+                $form->add('captcha', DpCaptchaType::class);
             }
         });
     }
@@ -117,12 +117,10 @@ class CommentType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => 'Application\\DeskPRO\\Entity\\CommentAbstract',
+                'data_class' => CommentAbstract::class,
             ])
-            ->setRequired(['person'])
-            ->setAllowedTypes([
-                'person' => Person::class,
-            ])
+            ->setRequired('person')
+            ->setAllowedTypes('person', Person::class)
         ;
     }
 

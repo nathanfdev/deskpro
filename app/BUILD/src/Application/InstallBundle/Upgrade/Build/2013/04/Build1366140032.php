@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1366140032 extends AbstractBuild
@@ -40,16 +41,16 @@ class Build1366140032 extends AbstractBuild
         $sel = $this->container->getDb()->fetchAllGrouped("
             SELECT usergroup_id, name FROM permissions
             WHERE person_id IS NULL AND name IN ('agent_tickets.modify_own', 'agent_tickets.modify_followed', 'agent_tickets.modify_unassigned', 'agent_tickets.modify_others')
-        ", array(), 'usergroup_id', 'name', 'name');
+        ", [], 'usergroup_id', 'name', 'name');
 
         foreach ($sel as $ug_id => $names) {
             foreach ($names as $n) {
                 $n = preg_replace('#^agent_tickets.modify_#', '', $n);
-                $this->container->getDb()->replace('permissions', array(
+                $this->container->getDb()->replace('permissions', [
                     'usergroup_id' => $ug_id,
                     'name'         => "agent_tickets.modify_messages_$n",
                     'value'        => 1,
-                ));
+                ]);
             }
         }
     }

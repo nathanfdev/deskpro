@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Validator;
 
 /**
@@ -41,7 +42,7 @@ abstract class AbstractValidator implements ValidatorInterface
      *
      * @var array
      */
-    protected $errors = array();
+    protected $errors = [];
 
     /**
      * Sometimes an error might have additional information, such as a position or
@@ -50,16 +51,16 @@ abstract class AbstractValidator implements ValidatorInterface
      *
      * @var array
      */
-    protected $errors_info = array();
+    protected $errors_info = [];
 
     /**
      * Options for the validator.
      *
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
-    final public function __construct(array $options = array())
+    final public function __construct(array $options = [])
     {
         $this->options = $options;
         $this->init();
@@ -77,8 +78,8 @@ abstract class AbstractValidator implements ValidatorInterface
     public function isValid($value)
     {
         // Reset
-        $this->errors      = array();
-        $this->errors_info = array();
+        $this->errors      = [];
+        $this->errors_info = [];
 
         return $this->checkIsValid($value);
     }
@@ -110,7 +111,7 @@ abstract class AbstractValidator implements ValidatorInterface
     public function getErrors($keyed = false)
     {
         if (!$this->errors) {
-            return array();
+            return [];
         }
 
         if ($keyed) {
@@ -128,10 +129,10 @@ abstract class AbstractValidator implements ValidatorInterface
     public function getErrorsInfo()
     {
         if (!$this->errors) {
-            return array();
+            return [];
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($this->errors as $k) {
             $ret[$k] = isset($this->errors_info[$k]) ? $this->errors_info[$k] : null;
         }
@@ -152,10 +153,10 @@ abstract class AbstractValidator implements ValidatorInterface
     public function getErrorGroups($keyed = false)
     {
         if (!$this->errors) {
-            return array();
+            return [];
         }
 
-        $groups = array();
+        $groups = [];
 
         foreach ($this->getErrors() as $code) {
             if (strpos($code, '.') === false) {
@@ -186,7 +187,7 @@ abstract class AbstractValidator implements ValidatorInterface
      */
     public function getErrorsDebug()
     {
-        $ret = array();
+        $ret = [];
         foreach ($this->errors as $k => $errcode) {
             $line = $errcode;
             if (!empty($this->errors_info[$k])) {

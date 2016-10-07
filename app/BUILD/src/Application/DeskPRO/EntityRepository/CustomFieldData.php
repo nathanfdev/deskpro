@@ -56,14 +56,14 @@ class CustomFieldData extends AbstractEntityRepository
             ->innerJoin('da.definition', 'de')
             ->innerJoin('da.root_definition', 'rde')
             ->where('da.owner_id = :owner_id and de.owner_class = :owner_class and rde.is_enabled = 1')
-            ->setParameters(array(
+            ->setParameters([
                 'owner_id'    => (int) $owner['id'], // null -> 0
                 'owner_class' => ClassUtils::getClass($owner),
-            ));
+            ]);
 
         if ($layout) {
             if (!$in = $layout->getIdsOfFieldType('custom_field')) {
-                return array();
+                return [];
             }
             $qb
                 ->andWhere('rde.id in (:fields)')

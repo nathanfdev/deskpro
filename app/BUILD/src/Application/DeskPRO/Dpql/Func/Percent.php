@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\Dpql;
@@ -58,11 +59,11 @@ class Percent extends AbstractFunc
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
     ) {
-        if (!in_array($section, array('select', 'split', 'group', 'order'))) {
+        if (!in_array($section, ['select', 'split', 'group', 'order'])) {
             throw new Exception('PERCENT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
         }
 
-        if (!in_array(count($this->_arguments), array(1, 2))) {
+        if (!in_array(count($this->_arguments), [1, 2])) {
             throw new Exception('PERCENT() can only accept 1 or 2 arguments');
         }
 

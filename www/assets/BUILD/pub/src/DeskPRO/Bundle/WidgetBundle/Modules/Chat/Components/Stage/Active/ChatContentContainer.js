@@ -34,7 +34,7 @@ export class ChatContentContainer extends React.Component {
 
   render() {
     return (
-      <div className="dpdesignportal-chat-footer">
+      <div className="dpdesignportal-content">
         {this.props.children}
       </div>
     );

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\Dpql;
@@ -67,14 +68,14 @@ class BinaryComparison extends AbstractPart
      *
      * @var array
      */
-    protected static $_operatorMap = array(
+    protected static $_operatorMap = [
         Parser::T_OP_EQ   => '=',
         Parser::T_OP_NE   => '<>',
         Parser::T_OP_GT   => '>',
         Parser::T_OP_GTEQ => '>=',
         Parser::T_OP_LT   => '<',
         Parser::T_OP_LTEQ => '<=',
-    );
+    ];
 
     /**
      * This is used when a comparison needs to be flipped (for placeholders, for example).
@@ -83,14 +84,14 @@ class BinaryComparison extends AbstractPart
      *
      * @var array
      */
-    protected static $_operatorOrderFlipped = array(
+    protected static $_operatorOrderFlipped = [
         '='  => '=',
         '<>' => '<>',
         '>'  => '<',
         '>=' => '<=',
         '<'  => '>',
         '<=' => '>=',
-    );
+    ];
 
     /**
      * @param int                                                   $operator

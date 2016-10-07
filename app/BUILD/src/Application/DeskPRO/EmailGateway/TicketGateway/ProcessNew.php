@@ -64,6 +64,8 @@ class ProcessNew extends ProcessAbstract
     protected $cleaner;
 
     /**
+     * Constructor.
+     *
      * @param EmailAccount        $account
      * @param Person              $person
      * @param TicketIncomingEmail $ticket_email
@@ -88,9 +90,9 @@ class ProcessNew extends ProcessAbstract
     {
         $this->person = $this->person;
 
-        #------------------------------
-        # Read email body/subject
-        #------------------------------
+        //------------------------------
+        // Read email body/subject
+        //------------------------------
 
         $this->processBlobs();
         $inline_images = new InlineImageTokens($this->reader);
@@ -101,7 +103,7 @@ class ProcessNew extends ProcessAbstract
             $this->ticket_email,
             $this->cleaner,
             App::$container->getEmailAccountManager(),
-            array($this, 'replaceInlineAttachTokens'),
+            [$this, 'replaceInlineAttachTokens'],
             $this->getLogger()
         );
 
@@ -175,42 +177,44 @@ class ProcessNew extends ProcessAbstract
         $email_info->body = $this->cleaner->clean($email_info->body, 'html_email_postclean');
         $email_info->body = $this->replaceInlineAttachTokens($email_info->body, $inline_images);
 
-        #------------------------------
-        # Try to guess lang based off the email
-        #------------------------------
+        //------------------------------
+        // Try to guess lang based off the email
+        //------------------------------
 
         $use_lang = null;
 
         if (!App::getDataService('Language')->isLangSystemEnabled()) {
-            $this->logMessage('Helpdesk is in single-language mode');
+            $this->logMessage('[TicketGatewayProcessor] Helpdesk is in single-language mode');
         } elseif ($this->person->getRealLanguage()) {
-            $this->logMessage('Person has language set: '.$this->person->getRealLanguage()->id.' '.$this->person->getRealLanguage()->title);
+            $this->logMessage('[TicketGatewayProcessor] Person has language set: '.$this->person->getRealLanguage()->getId().' '.$this->person->getRealLanguage()->getTitle());
         } else {
-            $detect_body = strip_tags($email_info->body);
-            if (strlen($detect_body) < 300) {
-                $this->logMessage('Message too short to attempt lang detection');
-            } else {
-                /* @var $lang_detect \Application\DeskPRO\Languages\Detect */
-                /* TODO control by setting
-                $lang_detect = App::getSystemService('language_detect');
-                $this->logMessage('Detectable languages: '.implode(', ', $lang_detect->getDetectableLanguages()));
+            if (App::$container->get('settings_resolver')->getGlobalSettings()->get('core.lang_auto_detect')) {
+                $detect_body = strip_tags($email_info->body);
+                if (strlen($detect_body) < 300) {
+                    $this->logMessage('[TicketGatewayProcessor] Message too short to attempt lang detection');
+                } else {
+                    /* @var $lang_detect \Application\DeskPRO\Languages\Detect */
+                    $lang_detect = App::getSystemService('language_detect');
+                    $this->logMessage('Detectable languages: '.implode(', ', $lang_detect->getDetectableLanguages()));
 
-                $lang = $lang_detect->detectLanguage($detect_body);
-                if ($lang) {
-                    $this->logMessage("Detected language {$lang->title} (#{$lang->id})");
-                    $use_lang = $lang;
+                    $lang = $lang_detect->detectLanguage($detect_body);
+                    if ($lang) {
+                        $this->logMessage("[TicketGatewayProcessor] Detected language {$lang->getTitle()} (#{$lang->getId()})");
+                        $use_lang = $lang;
+                    }
                 }
-                */
-            }
 
-            if (!$use_lang) {
-                $this->logMessage('No language detected, no language will be set');
+                if (!$use_lang) {
+                    $this->logMessage('[TicketGatewayProcessor] No language detected, no language will be set');
+                }
+            } else {
+                $this->logMessage('[TicketGatewayProcessor] Language auto detect is disabled');
             }
         }
 
-        #------------------------------
-        # Create user account
-        #------------------------------
+        //------------------------------
+        // Create user account
+        //------------------------------
 
         if (!$this->person) {
             $this->person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->getEmail());
@@ -219,10 +223,10 @@ class ProcessNew extends ProcessAbstract
         // But we'll create them now if they dont
         if (!$this->person) {
             $this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
-            $person = Person::newContactPerson(array(
+            $person = Person::newContactPerson([
                 'email' => $this->reader->getFromAddress()->getEmail(),
                 'name'  => $this->reader->getFromAddress()->getNameUtf8() ?: '',
-            ));
+            ]);
 
             App::getDb()->beginTransaction();
             try {
@@ -235,12 +239,12 @@ class ProcessNew extends ProcessAbstract
             }
         }
 
-        #------------------------------
-        # Create the ticket
-        #------------------------------
+        //------------------------------
+        // Create the ticket
+        //------------------------------
 
         if ($email_info->is_no_subject) {
-            $subject = App::$container->getTranslator()->phrase('user.tickets.no_subject', array(), $use_lang);
+            $subject = App::$container->getTranslator()->phrase('user.tickets.no_subject', [], $use_lang);
         } else {
             $subject = $email_info->subject;
         }
@@ -258,7 +262,11 @@ class ProcessNew extends ProcessAbstract
         $ticket->creation_system = 'gateway.person';
 
         if ($use_lang) {
-            $ticket->language = $use_lang;
+            if ($this->person && !$this->person->getRealLanguage()) {
+                $this->person->setLanguage($use_lang);
+            }
+
+            $ticket->setLanguage($use_lang);
         }
 
         // Set the proper email address on the ticket from the users account
@@ -287,7 +295,7 @@ class ProcessNew extends ProcessAbstract
             $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
-            if (isset($this->inline_blobs[$blob->id])) {
+            if (isset($this->inline_blobs[$blob->getId()])) {
                 $attach->is_inline = true;
             }
 
@@ -297,9 +305,9 @@ class ProcessNew extends ProcessAbstract
             App::getOrm()->persist($blob);
         }
 
-        #------------------------------
-        # Check for dupe first
-        #------------------------------
+        //------------------------------
+        // Check for dupe first
+        //------------------------------
 
         $ticket_message->resetHashCode();
 
@@ -312,9 +320,9 @@ class ProcessNew extends ProcessAbstract
             }
         }
 
-        #------------------------------
-        # Reply actions
-        #------------------------------
+        //------------------------------
+        // Reply actions
+        //------------------------------
 
         if ($this->ticket_email->reply_actions) {
             $reply_actions_apply            = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
@@ -324,14 +332,14 @@ class ProcessNew extends ProcessAbstract
             $reply_actions_apply->apply($reply_actions_context);
         }
 
-        #------------------------------
-        # Process new ticket
-        #------------------------------
+        //------------------------------
+        // Process new ticket
+        //------------------------------
 
         // User is an agent and the ticket owner isn't the person who submitted
         // the email. Means the agent used the #user action code and is
         // creting a ticket on behalf of someone else
-        if ($this->person->is_agent && $ticket->person !== $this->person) {
+        if ($this->person->isAgent() && $ticket->getPerson() !== $this->person) {
             $executor_context = $this->getTicketManager()->createAgentExecutorContext(
                 $this->person,
                 'newticket',
@@ -371,11 +379,11 @@ class ProcessNew extends ProcessAbstract
             $this->getTicketManager()->saveTicket($ticket, $executor_context);
 
             if ($email_info->charset_error) {
-                App::getOrm()->getConnection()->insert('tickets_messages_raw', array(
-                    'message_id' => $ticket_message->id,
+                App::getOrm()->getConnection()->insert('tickets_messages_raw', [
+                    'message_id' => $ticket_message->getId(),
                     'raw'        => $email_info->body,
                     'charset'    => $this->charset_error,
-                ));
+                ]);
             }
 
             $this->logMessage('[TicketGatewayProcessor] Created ticket '.$ticket['id']);
@@ -386,9 +394,9 @@ class ProcessNew extends ProcessAbstract
             throw $e;
         }
 
-        return array(
+        return [
             'ticket'         => $ticket,
             'ticket_message' => $ticket_message,
-        );
+        ];
     }
 }

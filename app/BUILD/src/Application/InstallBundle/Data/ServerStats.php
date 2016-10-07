@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -47,11 +48,11 @@ class ServerStats
 
     public function getStats()
     {
-        $stats = array();
+        $stats = [];
 
-        #------------------------------
-        # PHP info
-        #------------------------------
+        //------------------------------
+        // PHP info
+        //------------------------------
 
         $stats['php_version']      = phpversion();
         $stats['php_memory_limit'] = \Orb\Util\Env::getMemoryLimit();
@@ -126,20 +127,20 @@ class ServerStats
             $stats['php_has_tokenizer'] = 0;
         }
 
-        #------------------------------
-        # MySQL info
-        #------------------------------
+        //------------------------------
+        // MySQL info
+        //------------------------------
 
         if ($this->db) {
             try {
-                $stats['mysql_version']                = $this->db->fetchColumn("SHOW VARIABLES LIKE 'version'", array(), 1);
-                $stats['mysql_read_buffer_size']       = $this->db->fetchColumn("SHOW VARIABLES LIKE 'read_buffer_size'", array(), 1);
-                $stats['mysql_default_storage_engine'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'default_storage_engine'", array(), 1);
-                $stats['mysql_join_buffer_size']       = $this->db->fetchColumn("SHOW VARIABLES LIKE 'join_buffer_size'", array(), 1);
-                $stats['mysql_key_buffer_size']        = $this->db->fetchColumn("SHOW VARIABLES LIKE 'key_buffer_size'", array(), 1);
-                $stats['mysql_max_allowed_packet']     = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_allowed_packet'", array(), 1);
-                $stats['mysql_max_tmp_tables']         = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_tmp_tables'", array(), 1);
-                $stats['mysql_max_user_connections']   = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_user_connections'", array(), 1);
+                $stats['mysql_version']                = $this->db->fetchColumn("SHOW VARIABLES LIKE 'version'", [], 1);
+                $stats['mysql_read_buffer_size']       = $this->db->fetchColumn("SHOW VARIABLES LIKE 'read_buffer_size'", [], 1);
+                $stats['mysql_default_storage_engine'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'default_storage_engine'", [], 1);
+                $stats['mysql_join_buffer_size']       = $this->db->fetchColumn("SHOW VARIABLES LIKE 'join_buffer_size'", [], 1);
+                $stats['mysql_key_buffer_size']        = $this->db->fetchColumn("SHOW VARIABLES LIKE 'key_buffer_size'", [], 1);
+                $stats['mysql_max_allowed_packet']     = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_allowed_packet'", [], 1);
+                $stats['mysql_max_tmp_tables']         = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_tmp_tables'", [], 1);
+                $stats['mysql_max_user_connections']   = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_user_connections'", [], 1);
                 foreach ($this->db->fetchAllKeyValue("SHOW VARIABLES LIKE '%innodb%'") as $k => $v) {
                     $stats["mysql_$k"] = $v;
                 }
@@ -147,9 +148,9 @@ class ServerStats
             }
         }
 
-        #------------------------------
-        # OS / Server info
-        #------------------------------
+        //------------------------------
+        // OS / Server info
+        //------------------------------
 
         if (strpos(strtoupper(PHP_OS), 'WIN') === 0) {
             $stats['server_os'] = 'win';
@@ -165,9 +166,9 @@ class ServerStats
 
         $stats['server_uname'] = php_uname('s').' '.php_uname('r').' '.php_uname('v').' '.php_uname('m');
 
-        #------------------------------
-        # Web server
-        #------------------------------
+        //------------------------------
+        // Web server
+        //------------------------------
 
         if (isset($_SERVER['SERVER_SOFTWARE'])) {
             if (strpos(strtoupper($_SERVER['SERVER_SOFTWARE']), 'APACHE') !== false) {

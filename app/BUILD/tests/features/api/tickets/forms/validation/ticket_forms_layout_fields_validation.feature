@@ -11,7 +11,7 @@ Feature: /ticket_forms validation
     And there are no TicketLayout records
 
   Scenario Outline: I check unexpected field on layout
-    Given the ticket layout exists for "d1" department with fields:
+    Given the ticket layout exists for "{d1}" department with fields:
       | agent_layout |
       | cc           |
 

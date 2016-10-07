@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Commands
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\InstallBundle\Data\DefaultDataProcessor;
@@ -47,10 +48,10 @@ class DefaultDataCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        $this->setDefinition(array(
+        $this->setDefinition([
             new InputArgument('action', InputArgument::REQUIRED, 'info, install, upgrade, sync or reset'),
             new InputArgument('classname', InputArgument::OPTIONAL, 'Specify the specific classname to run'),
-        ))->setName('dp:default-data');
+        ])->setName('dp:default-data');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -80,12 +81,12 @@ class DefaultDataCommand extends ContainerAwareCommand
                 $data_proc->runReset($classname);
                 break;
             case 'info':
-                $array = array();
+                $array = [];
                 foreach ($data_proc->getDataClasses() as $classname) {
-                    $array[] = array(Util::getBaseClassname($classname), $data_proc->isInstalled($classname) ? 'Yes' : 'No');
+                    $array[] = [Util::getBaseClassname($classname), $data_proc->isInstalled($classname) ? 'Yes' : 'No'];
                 }
 
-                echo Strings::asciiTable($array, array('Data Class', 'Is Installed'));
+                echo Strings::asciiTable($array, ['Data Class', 'Is Installed']);
                 break;
             default:
                 $output->writeln('<error>Invalid action. Please use: info, install, upgrade, sync or reset</error>');

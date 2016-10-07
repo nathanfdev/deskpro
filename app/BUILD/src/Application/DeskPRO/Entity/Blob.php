@@ -36,13 +36,13 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
-use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -404,12 +404,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get a thumbnail for this blob (if its an image).
      *
-     * @param int  $size
-     * @param bool $absolute
+     * @param int        $size
+     * @param int|string $absolute
      *
      * @return string
      */
-    public function getThumbnailUrl($size = 50, $absolute = false)
+    public function getThumbnailUrl($size = 50, $absolute = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         if (!$this->isImage()) {
             return;
@@ -425,15 +425,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getFilenameSafe()
     {
-        $filename_safe = Strings::utf8_accents_to_ascii($this->filename);
-        $filename_safe = RegexUtils::safePregReplace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
-        $filename_safe = RegexUtils::safePregReplace('#\-{2,}#', '-', $filename_safe);
-
-        if (!$filename_safe) {
-            return 'file';
-        }
-
-        return $filename_safe;
+        return Strings::getFilenameSafe($this->filename);
     }
 
     /**
@@ -549,6 +541,14 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getFilesize()
+    {
+        return $this->filesize;
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $is_image = $this->isImage();
@@ -605,9 +605,9 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         ];
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

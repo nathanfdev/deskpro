@@ -78,11 +78,9 @@ class TicketWithLayoutsManipulatorType extends AbstractType
     {
         $resolver
             ->setRequired(['field_resolver', 'field_renderer', 'layout_factory'])
-            ->setAllowedTypes([
-                'field_resolver' => AbstractFieldResolver::class,
-                'field_renderer' => FieldRendererInterface::class,
-                'layout_factory' => 'callable',
-            ])
+            ->setAllowedTypes('field_resolver', AbstractFieldResolver::class)
+            ->setAllowedTypes('field_renderer', FieldRendererInterface::class)
+            ->setAllowedTypes('layout_factory', 'callable')
         ;
     }
 
@@ -139,7 +137,7 @@ class TicketWithLayoutsManipulatorType extends AbstractType
     public function onPreSubmit(FormEvent $event)
     {
         $context   = TicketWithLayoutsContext::createOnPreSubmit($event);
-        $extracted = TicketLayoutHelper::getExtractedData($event->getData(), $context);
+        $extracted = TicketLayoutHelper::getExtractedData($event->getData() ?: [], $context);
 
         TicketLayoutHelper::renderFormFields($context, function (LayoutField $field) use ($extracted) {
             return $field->getCriteria()->isSubmittedDataMatch($extracted);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class ChatBlock extends AbstractEntityRepository
@@ -53,7 +54,7 @@ class ChatBlock extends AbstractEntityRepository
             SELECT b
             FROM DeskPRO:ChatBlock b
             WHERE b.ip_address = ?0 AND b.date_created > ?1
-        ')->setParameters(array($ip_address, $datecut))->setMaxResults(1)->getOneOrNullResult();
+        ')->setParameters([$ip_address, $datecut])->setMaxResults(1)->getOneOrNullResult();
 
         return $block;
     }
@@ -70,7 +71,7 @@ class ChatBlock extends AbstractEntityRepository
         $blocked = $this->_em->getConnection()->fetchColumn('
             SELECT id FROM chat_blocks
             WHERE (visitor_id = ? OR ip_address = ?) AND date_created > ?
-        ', array($visitor_id, $ip_address, $datecut->format('Y-m-d H:i:s')));
+        ', [$visitor_id, $ip_address, $datecut->format('Y-m-d H:i:s')]);
 
         return $blocked ? true : false;
     }
@@ -86,7 +87,7 @@ class ChatBlock extends AbstractEntityRepository
         $count   = $this->_em->getConnection()->executeUpdate('
             DELETE FROM chat_blocks
             WHERE date_created < ?
-        ', array($datecut->format('Y-m-d H:i:s')));
+        ', [$datecut->format('Y-m-d H:i:s')]);
 
         return $count;
     }

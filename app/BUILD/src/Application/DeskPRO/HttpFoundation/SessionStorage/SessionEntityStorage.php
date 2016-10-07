@@ -96,7 +96,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param null             $options
      * @param SettingsResolver $settings_resolver
      */
-    public function __construct(EntityManager $em, $options = null, SettingsResolver $settings_resolver)
+    public function __construct(EntityManager $em, $options, SettingsResolver $settings_resolver)
     {
         $this->em                = $em;
         $this->db                = $em->getConnection();
@@ -121,14 +121,14 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $cookieDefaults['secure'] = true;
         }
 
-        $this->options = array_merge(array(
+        $this->options = array_merge([
             'name'     => $cookie_name,
             'lifetime' => $cookieDefaults['lifetime'],
             'path'     => $cookieDefaults['path'],
             'domain'   => $cookieDefaults['domain'],
             'secure'   => $cookieDefaults['secure'],
             'httponly' => isset($cookieDefaults['httponly']) ? $cookieDefaults['httponly'] : false,
-        ), $options);
+        ], $options);
 
         session_name($this->options['name']);
 
@@ -145,12 +145,12 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         }
 
         session_set_save_handler(
-            array($this, 'open'),
-            array($this, 'close'),
-            array($this, 'read'),
-            array($this, 'write'),
-            array($this, 'destroy'),
-            array($this, 'gc')
+            [$this, 'open'],
+            [$this, 'close'],
+            [$this, 'read'],
+            [$this, 'write'],
+            [$this, 'destroy'],
+            [$this, 'gc']
         );
 
         // this is COOKIE liftime. We always want it to be a session cookie
@@ -259,7 +259,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
         if ($session && $session->getId()) {
             try {
-                $this->db->delete('sessions', array('id' => $session->getId()));
+                $this->db->delete('sessions', ['id' => $session->getId()]);
                 $this->em->detach($session);
             } catch (\Exception $e) {
             }
@@ -336,7 +336,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
         $this->last_save_hash = $save_hash;
 
-        $sess_rec              = array();
+        $sess_rec              = [];
         $sess_rec['data']      = $data;
         $sess_rec['date_last'] = isset($_SESSION['_sf2_attributes']['dplast']) ? date('Y-m-d H:i:s', $_SESSION['_sf2_attributes']['dplast']) : date('Y-m-d H:i:s', time());
 
@@ -399,7 +399,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $sess_rec['is_helpdesk'] = 1;
         }
 
-        $this->db->update('sessions', $sess_rec, array('id' => $id));
+        $this->db->update('sessions', $sess_rec, ['id' => $id]);
 
         return true;
     }
@@ -488,7 +488,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
     /**
      * Returns the session name.
      *
-     * @return mixed The session name.
+     * @return mixed The session name
      *
      * @api
      */
@@ -532,8 +532,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $session = new \Application\DeskPRO\Entity\Session();
 
             // hardcoded copy of old session params
-            $copyProps = array('interface', 'person', 'user_agent', 'ip_address', 'is_person', 'is_bot',
-                'is_helpdesk', 'active_status', 'is_chat_available', );
+            $copyProps = ['interface', 'person', 'user_agent', 'ip_address', 'is_person', 'is_bot',
+                'is_helpdesk', 'active_status', 'is_chat_available', ];
             foreach ($copyProps as $prop) {
                 $session[$prop] = $this->session[$prop];
             }
@@ -575,7 +575,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         }
 
         // clear out the session
-        $_SESSION = array();
+        $_SESSION = [];
 
         // reconnect the bags to the session
         $this->loadSession();
@@ -655,11 +655,11 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $session = &$_SESSION;
         }
 
-        $bags = array_merge($this->bags, array($this->metadataBag));
+        $bags = array_merge($this->bags, [$this->metadataBag]);
 
         foreach ($bags as $bag) {
             $key           = $bag->getStorageKey();
-            $session[$key] = isset($session[$key]) ? $session[$key] : array();
+            $session[$key] = isset($session[$key]) ? $session[$key] : [];
             $bag->initialize($session[$key]);
         }
     }
@@ -670,13 +670,13 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * For convenience we omit 'session.' from the beginning of the keys.
      * Explicitly ignores other ini keys.
      *
-     * @param array $options Session ini directives array(key => value).
+     * @param array $options Session ini directives array(key => value)
      *
      * @see http://php.net/session.configuration
      */
     public function setOptions(array $options)
     {
-        $validOptions = array_flip(array(
+        $validOptions = array_flip([
             'cache_limiter', 'cookie_domain', 'cookie_httponly',
             'cookie_lifetime', 'cookie_path', 'cookie_secure',
             'entropy_file', 'entropy_length', 'gc_divisor',
@@ -686,7 +686,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             'use_only_cookies', 'use_trans_sid', 'upload_progress.enabled',
             'upload_progress.cleanup', 'upload_progress.prefix', 'upload_progress.name',
             'upload_progress.freq', 'upload_progress.min-freq', 'url_rewriter.tags',
-        ));
+        ]);
 
         foreach ($options as $key => $value) {
             if (isset($validOptions[$key])) {

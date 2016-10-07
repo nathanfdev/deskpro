@@ -253,9 +253,9 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     /**
      * @deprecated use $props_translations instead

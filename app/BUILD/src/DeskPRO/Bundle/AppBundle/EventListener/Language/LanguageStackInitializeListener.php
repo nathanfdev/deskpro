@@ -79,9 +79,9 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('onRequest', 512), // very high priority
-        );
+        return [
+            KernelEvents::REQUEST => ['onRequest', 512], // very high priority
+        ];
     }
 
     public function onRequest(GetResponseEvent $event)
@@ -176,8 +176,8 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         if ($session_id = $request->cookies->get('dpsid-portal', null)) {
             $query = $this->em->getConnection()->executeQuery(
                 'SELECT person_id FROM sess_data WHERE sess_id = :sess_id',
-                array('sess_id' => $session_id),
-                array('sess_id' => \PDO::PARAM_STR)
+                ['sess_id' => $session_id],
+                ['sess_id' => \PDO::PARAM_STR]
             );
 
             if (!$sess_row = $query->fetch()) {
@@ -219,8 +219,8 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
 
             $query = $this->em->getConnection()->executeQuery(
                 'SELECT person_id FROM sessions WHERE id = :sess_id',
-                array('sess_id' => $sid),
-                array('sess_id' => \PDO::PARAM_STR)
+                ['sess_id' => $sid],
+                ['sess_id' => \PDO::PARAM_STR]
             );
 
             if (!$sess_row = $query->fetch()) {

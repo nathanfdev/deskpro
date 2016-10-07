@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Doctrine\ORM\Mapping\Builder;
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder as BaseBuilder;
@@ -43,13 +44,13 @@ class ClassMetadataBuilder extends BaseBuilder
     public function mapString($fieldName, $length = 256, $nullable = true, $unique = false)
     {
         $this->addField(
-            $fieldName, 'string', array('nullable' => $nullable, 'length' => $length, 'unique' => $unique)
+            $fieldName, 'string', ['nullable' => $nullable, 'length' => $length, 'unique' => $unique]
         );
     }
 
     public function mapText($fieldName, $nullable = true)
     {
-        $this->addField($fieldName, 'text', array('nullable' => $nullable));
+        $this->addField($fieldName, 'text', ['nullable' => $nullable]);
     }
 
     public function mapBoolean($fieldName)
@@ -62,18 +63,18 @@ class ClassMetadataBuilder extends BaseBuilder
         $this->addField(
             $fieldName,
             'integer',
-            array(
+            [
                 'precision' => $precision,
                 'scale'     => $scale,
                 'nullable'  => $nullable,
-            )
+            ]
         );
     }
 
     public function mapDateTime($fieldName, $nullable = true)
     {
         $this->addField(
-            $fieldName, 'datetime', array('nullable' => $nullable)
+            $fieldName, 'datetime', ['nullable' => $nullable]
         );
     }
 }

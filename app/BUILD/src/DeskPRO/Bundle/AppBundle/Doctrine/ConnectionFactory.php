@@ -38,7 +38,7 @@ class ConnectionFactory extends BaseConnectionFactory
     /**
      * {@inheritdoc}
      */
-    public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = array())
+    public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = [])
     {
         // This is used by some kernel cache warmer scrpts to allow building without a real db connection
         // TODO This is a bit of a hack and sholud be corrected so the warmers dont need it

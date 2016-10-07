@@ -4,7 +4,7 @@ Feature: Widget setup
 
   Background:
     Given I remove all Person records
-    And I'm authenticated as admin
+    And I'm authenticated as "admin"
 
   Scenario: I retrieve a list of real people
     Given "person_1@deskpro.dev" user exists

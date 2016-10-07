@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,12 +37,12 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$collection->create('email_callback', array(
+$collection->create('email_callback', [
     'path'         => '/callback{trailingSlash}',
     'controller'   => 'EmailBundle:Callback:handle',
-    'defaults'     => array('trailingSlash' => '/'),
-    'requirements' => array('trailingSlash' => '[/]{0,1}'),
-    'methods'      => array('POST'),
-));
+    'defaults'     => ['trailingSlash' => '/'],
+    'requirements' => ['trailingSlash' => '[/]{0,1}'],
+    'methods'      => ['POST'],
+]);
 
 return $collection;

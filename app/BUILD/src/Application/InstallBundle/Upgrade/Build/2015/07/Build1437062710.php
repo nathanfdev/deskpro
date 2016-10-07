@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1437062710 extends AbstractBuild
 {
     public function run()
     {
-        $this->container->getDb()->executeUpdate('REPLACE INTO settings SET `name` = ?, `value` = ?', array('core_tickets.email_reply_as_note', '0'));
-        $this->container->getDb()->executeUpdate('REPLACE INTO settings SET `name` = ?, `value` = ?', array('core_tickets.email_fwd_reply_as_note', '0'));
+        $this->container->getDb()->executeUpdate('REPLACE INTO settings SET `name` = ?, `value` = ?', ['core_tickets.email_reply_as_note', '0']);
+        $this->container->getDb()->executeUpdate('REPLACE INTO settings SET `name` = ?, `value` = ?', ['core_tickets.email_fwd_reply_as_note', '0']);
     }
 }

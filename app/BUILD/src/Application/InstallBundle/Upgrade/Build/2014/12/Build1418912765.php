@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\People\AgentPermissions\PermissionNamesLoader;
@@ -41,9 +42,9 @@ class Build1418912765 extends AbstractBuild
         $this->out('Remove extra override permissions');
         $db = $this->container->getDb();
 
-        #------------------------------
-        # Load up data
-        #------------------------------
+        //------------------------------
+        // Load up data
+        //------------------------------
 
         $agent_ids = $db->fetchAllCol('SELECT id FROM people WHERE is_agent = 1');
         $group_ids = $db->fetchAllCol('SELECT id FROM usergroups WHERE is_agent_group = 1');
@@ -53,21 +54,21 @@ class Build1418912765 extends AbstractBuild
             SELECT person_id, usergroup_id
             FROM person2usergroups
             WHERE person_id IN (?) AND usergroup_id IN (?)
-        ', array($agent_ids, $group_ids), 'person_id', 'usergroup_id', 'usergroup_id', array(Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY));
+        ', [$agent_ids, $group_ids], 'person_id', 'usergroup_id', 'usergroup_id', [Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY]);
 
         // agent_perms[agent_id][perm_name] = record id (used to delete)
         $agent_perms = $db->fetchAllGrouped('
           SELECT person_id, name, id
           FROM permissions
           WHERE person_id IN (?)
-        ', array($agent_ids), 'person_id', 'name', 'id', array(Connection::PARAM_INT_ARRAY));
+        ', [$agent_ids], 'person_id', 'name', 'id', [Connection::PARAM_INT_ARRAY]);
 
         // group_perms[usergroup_id][perm_name] = truthy
         $group_perms = $db->fetchAllGrouped('
           SELECT usergroup_id, name, id
           FROM permissions
           WHERE usergroup_id IN (?)
-        ', array($group_ids), 'usergroup_id', 'name', 'id', array(Connection::PARAM_INT_ARRAY));
+        ', [$group_ids], 'usergroup_id', 'name', 'id', [Connection::PARAM_INT_ARRAY]);
 
         $special_ids = $db->fetchAllKeyValue('SELECT sys_name, id FROM usergroups WHERE is_agent_group = 1 AND sys_name IS NOT NULL');
         $name_loader = new PermissionNamesLoader();
@@ -76,17 +77,17 @@ class Build1418912765 extends AbstractBuild
             if ($perms) {
                 $perms = array_fill_keys($perms, 1);
                 if (!isset($group_perms[$id])) {
-                    $group_perms[$id] = array();
+                    $group_perms[$id] = [];
                 }
                 $group_perms[$id] = array_merge($group_perms[$id], $perms);
             }
         }
 
-        #------------------------------
-        # Figure out superfluous recs
-        #------------------------------
+        //------------------------------
+        // Figure out superfluous recs
+        //------------------------------
 
-        $remove_ids = array();
+        $remove_ids = [];
 
         foreach ($agent_ids as $agent_id) {
             if (empty($agent_perms[$agent_id]) || empty($agent_to_group[$agent_id])) {

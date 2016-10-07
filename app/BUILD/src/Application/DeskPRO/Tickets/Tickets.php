@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -45,41 +42,37 @@ class Tickets
      */
     public function getTicketsFromIds(array $ids)
     {
-        return App::getOrm()
-            ->getRepository('DeskPRO:Ticket')
-            ->getTicketsFromIds($ids);
+        return App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ids);
     }
 
     /**
-     * @param Ticket $ticket
+     * @param Entity\Ticket $ticket
      *
      * @return TicketEdit
      */
     public function getTicketEditor(Entity\Ticket $ticket)
     {
-        $ticket_edit = new TicketEdit($ticket);
-
-        return $ticket_edit;
+        return new TicketEdit($ticket);
     }
 
     /**
      * Get an array of various options used on the new ticket page.
      *
-     * @param mixed $person The person we're fetching for. This will define the permissions/context.
+     * @param mixed $person The person we're fetching for. This will define the permissions/context
      *
      * @return array
      */
     public function getTicketOptions($person)
     {
-        $options = array();
+        $options = [];
 
         if ($person['is_agent']) {
-            $options['agents'] = App::getDataService('Person')->getAgentNames();
+            $options['agents'] = App::$container->get('agent_data')->getAgentNames();
 
             if (App::getSetting('core.use_agent_team')) {
                 $options['agent_teams'] = App::getDataService('AgentTeam')->getTeamNames();
             } else {
-                $options['agent_teams'] = array();
+                $options['agent_teams'] = [];
             }
         }
 
@@ -90,23 +83,23 @@ class Tickets
             $options['ticket_categories_full']      = App::getDataService('TicketCategory')->getFullNames(null, false);
             $options['ticket_categories']           = App::getDataService('TicketCategory')->getNames(null, false);
         } else {
-            $options['ticket_categories_hierarchy'] = array();
-            $options['ticket_categories_full']      = array();
-            $options['ticket_categories']           = array();
+            $options['ticket_categories_hierarchy'] = [];
+            $options['ticket_categories_full']      = [];
+            $options['ticket_categories']           = [];
         }
 
         if (App::getSetting('core.use_ticket_workflow')) {
             $options['ticket_workflows'] = App::getDataService('TicketWorkflow')->getNames();
         } else {
-            $options['ticket_workflows'] = array();
+            $options['ticket_workflows'] = [];
         }
 
         if (App::getSetting('core.use_product')) {
             $options['products']           = App::getDataService('Product')->getNames();
             $options['products_hierarchy'] = App::getDataService('Product')->getInHierarchy();
         } else {
-            $options['products']           = array();
-            $options['products_hierarchy'] = array();
+            $options['products']           = [];
+            $options['products_hierarchy'] = [];
         }
 
         $options['slas'] = App::getDataService('Sla')->getSlaTitles();
@@ -114,7 +107,7 @@ class Tickets
         if (App::getSetting('core.use_ticket_priority')) {
             $options['priorities'] = App::getDataService('TicketPriority')->getNames();
         } else {
-            $options['priorities'] = array();
+            $options['priorities'] = [];
         }
         $options['ticket_priorities'] = $options['priorities'];
 

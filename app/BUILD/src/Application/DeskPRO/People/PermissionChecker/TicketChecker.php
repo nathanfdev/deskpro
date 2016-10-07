@@ -36,11 +36,17 @@ namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\People\Helpers\AgentPermissions;
 
+/**
+ * Class TicketChecker.
+ */
 class TicketChecker extends AbstractChecker
 {
-    /** @var array */
-    public static $modify_ops = array(
+    /**
+     * @var array
+     */
+    public static $modify_ops = [
         'set_archived',
         'department',
         'fields',
@@ -61,7 +67,7 @@ class TicketChecker extends AbstractChecker
         'billing',
         'associate_problem',
         'disassociate_problem',
-    );
+    ];
 
     /**
      * @var \Application\DeskPRO\Entity\Person
@@ -90,16 +96,18 @@ class TicketChecker extends AbstractChecker
             return false;
         }
 
-        #------------------------------
-        # If the user is part of the ticket
-        # then we know right away they can view
-        #------------------------------
+        //------------------------------
+        // If the user is part of the ticket
+        // then we know right away they can view
+        //------------------------------
 
-        if ($ticket->agent && $ticket->agent->id == $this->person->id) {
+        $agent = $ticket->getAgent();
+        if ($agent && $agent === $this->person) {
             return true;
         }
 
-        if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person->id, $ticket->agent_team->id)) {
+        $agentTeam = $ticket->getAgentTeam();
+        if ($agentTeam && $this->agents->isAgentMemberOfTeam($this->person, $agentTeam)) {
             return true;
         }
 
@@ -107,28 +115,33 @@ class TicketChecker extends AbstractChecker
             return true;
         }
 
-        #------------------------------
-        # Can't view certain deps
-        #------------------------------
+        //------------------------------
+        // Can't view certain deps
+        //------------------------------
 
         $this->person->loadHelper('AgentPermissions');
-        if ($ticket->department && !$this->person->getHelper('AgentPermissions')->isDepartmentAllowed($ticket->department)) {
+
+        /** @var AgentPermissions $helper */
+        $helper     = $this->person->getHelper('AgentPermissions');
+        $department = $ticket->getDepartment();
+
+        if ($department && !$helper->isDepartmentAllowed($department)) {
             return false;
         }
 
-        #------------------------------
-        # Cant view unassigned
-        #------------------------------
+        //------------------------------
+        // Cant view unassigned
+        //------------------------------
 
-        if (!$ticket->agent && !$this->person->hasPerm('agent_tickets.view_unassigned')) {
+        if (!$agent && !$this->person->hasPerm('agent_tickets.view_unassigned')) {
             return false;
         }
 
-        #------------------------------
-        # Cant view others
-        #------------------------------
+        //------------------------------
+        // Cant view others
+        //------------------------------
 
-        if ($ticket->agent && !$this->person->hasPerm('agent_tickets.view_others')) {
+        if ($agent && !$this->person->hasPerm('agent_tickets.view_others')) {
             return false;
         }
 
@@ -147,9 +160,9 @@ class TicketChecker extends AbstractChecker
             return false;
         }
 
-        #------------------------------
-        # Can delete own
-        #------------------------------
+        //------------------------------
+        // Can delete own
+        //------------------------------
 
         if ($this->person->hasPerm('agent_tickets.delete_own')) {
             if ($ticket->agent && $ticket->agent->id == $this->person->id) {
@@ -161,41 +174,41 @@ class TicketChecker extends AbstractChecker
             }
         }
 
-        #------------------------------
-        # Can delete unassigned
-        #------------------------------
+        //------------------------------
+        // Can delete unassigned
+        //------------------------------
 
         if (!$ticket->agent && $this->person->hasPerm('agent_tickets.delete_unassigned')) {
             return true;
         }
 
-        #------------------------------
-        # Can delete others
-        #------------------------------
+        //------------------------------
+        // Can delete others
+        //------------------------------
 
         if ($ticket->agent && $this->person->hasPerm('agent_tickets.delete_assigned')) {
             return true;
         }
 
-        #------------------------------
-        # Can delete others
-        #------------------------------
+        //------------------------------
+        // Can delete others
+        //------------------------------
 
         if ($ticket->agent && $this->person->hasPerm('agent_tickets.delete_others')) {
             return true;
         }
 
-        #------------------------------
-        # Can delete followed
-        #------------------------------
+        //------------------------------
+        // Can delete followed
+        //------------------------------
 
         if ($ticket->hasParticipantPerson($this->person) && $this->person->hasPerm('agent_tickets.delete_followed')) {
             return true;
         }
 
-        #------------------------------
-        # Cant delete
-        #------------------------------
+        //------------------------------
+        // Cant delete
+        //------------------------------
 
         return false;
     }
@@ -219,51 +232,53 @@ class TicketChecker extends AbstractChecker
             return false;
         }
 
-        #------------------------------
-        # Can delete own
-        #------------------------------
+        $agent = $ticket->getAgent();
+
+        //------------------------------
+        // Can delete own
+        //------------------------------
 
         if ($this->person->hasPerm('agent_tickets.reply_own')) {
-            if ($ticket->agent && $ticket->agent->id == $this->person->id) {
+            if ($agent && $agent === $this->person) {
                 return true;
             }
 
-            if ($ticket->person && $ticket->person->id == $this->person->id) {
+            if ($ticket->getPerson() && $ticket->getPerson() === $this->person) {
                 return true;
             }
 
-            if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
+            if ($ticket->getAgentTeam() && $this->agents->isAgentMemberOfTeam($this->person, $ticket->getAgentTeam())) {
                 return true;
             }
         }
 
-        #------------------------------
-        # Can delete unassigned
-        #------------------------------
+        //------------------------------
+        // Can delete unassigned
+        //------------------------------
 
-        if (!$ticket->agent && $this->person->hasPerm('agent_tickets.reply_unassigned')) {
+        if (!$agent && $this->person->hasPerm('agent_tickets.reply_unassigned')) {
             return true;
         }
 
-        #------------------------------
-        # Can delete others
-        #------------------------------
+        //------------------------------
+        // Can delete others
+        //------------------------------
 
-        if ($ticket->agent && $this->person->hasPerm('agent_tickets.reply_others')) {
+        if ($agent && $this->person->hasPerm('agent_tickets.reply_others')) {
             return true;
         }
 
-        #------------------------------
-        # Can reply to followed
-        #------------------------------
+        //------------------------------
+        // Can reply to followed
+        //------------------------------
 
         if ($ticket->hasParticipantPerson($this->person) && $this->person->hasPerm('agent_tickets.reply_to_followed')) {
             return true;
         }
 
-        #------------------------------
-        # Cant delete
-        #------------------------------
+        //------------------------------
+        // Cant delete
+        //------------------------------
 
         return false;
     }
@@ -305,19 +320,22 @@ class TicketChecker extends AbstractChecker
             throw new \InvalidArgumentException("Invalid modify permission op: $op");
         }
 
-        #------------------------------
-        # Figure out which set of permissions
-        # the current ticket falls into
-        #------------------------------
+        //------------------------------
+        // Figure out which set of permissions
+        // the current ticket falls into
+        //------------------------------
+
+        $agent     = $ticket->getAgent();
+        $agentTeam = $ticket->getAgentTeam();
 
         // Own tickets
         if (
-            ($ticket->agent && $ticket->agent->id == $this->person->id)
-            || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))
+            ($agent && $agent === $this->person)
+            || ($agentTeam && $this->agents->isAgentMemberOfTeam($this->person, $agentTeam))
         ) {
             $setSuffix = 'own';
         // Unassigned tickets
-        } elseif (!$ticket->agent && !$ticket->agent_team) {
+        } elseif (!$agent && !$agentTeam) {
             $setSuffix = 'unassigned';
         // Other
         } else {
@@ -341,6 +359,8 @@ class TicketChecker extends AbstractChecker
      * Check if the user can modify (or delete) a message.
      *
      * @param Ticket $ticket
+     *
+     * @return bool
      */
     public function canEditMessages(Ticket $ticket)
     {
@@ -348,9 +368,9 @@ class TicketChecker extends AbstractChecker
             return false;
         }
 
-        #------------------------------
-        # Can modify messages own
-        #------------------------------
+        //------------------------------
+        // Can modify messages own
+        //------------------------------
 
         if ($this->person->hasPerm('agent_tickets.modify_messages_own')) {
             if ($ticket->agent && $ticket->agent->id == $this->person->id) {
@@ -362,41 +382,41 @@ class TicketChecker extends AbstractChecker
             }
         }
 
-        #------------------------------
-        # Can modify messages unassigned
-        #------------------------------
+        //------------------------------
+        // Can modify messages unassigned
+        //------------------------------
 
         if (!$ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_unassigned')) {
             return true;
         }
 
-        #------------------------------
-        # Can modify messages assigned
-        #------------------------------
+        //------------------------------
+        // Can modify messages assigned
+        //------------------------------
 
         if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_assigned')) {
             return true;
         }
 
-        #------------------------------
-        # Can modify messages others
-        #------------------------------
+        //------------------------------
+        // Can modify messages others
+        //------------------------------
 
         if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_others')) {
             return true;
         }
 
-        #------------------------------
-        # Can modify messages followed
-        #------------------------------
+        //------------------------------
+        // Can modify messages followed
+        //------------------------------
 
         if ($ticket->hasParticipantPerson($this->person) && $this->person->hasPerm('agent_tickets.modify_messages_followed')) {
             return true;
         }
 
-        #------------------------------
-        # Cant delete
-        #------------------------------
+        //------------------------------
+        // Cant delete
+        //------------------------------
 
         return false;
     }
@@ -411,7 +431,8 @@ class TicketChecker extends AbstractChecker
      */
     public function canMerge(Ticket $ticket1, Ticket $ticket2)
     {
-        foreach (array($ticket1, $ticket2) as $ticket) {
+        /** @var Ticket $ticket */
+        foreach ([$ticket1, $ticket2] as $ticket) {
             if (($ticket->agent && $ticket->agent->id == $this->person->id) || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))) {
                 $setSuffix = 'own';
             } elseif (!$ticket->agent && !$ticket->agent_team) {

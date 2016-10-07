@@ -1,11 +1,11 @@
+@new
 Feature: Ticket Form Widget
   To embed a ticket form into any web site
   As a DeskPRO admin
   I want an API to generate embeddable code
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as "admin"
 
   Scenario: I get the default code
     When I send a GET request to "/api/v2/ticket-form-widget/code"

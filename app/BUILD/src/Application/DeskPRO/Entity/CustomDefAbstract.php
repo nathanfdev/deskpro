@@ -590,7 +590,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public function getAllChildTitles()
     {
-        $titles = array();
+        $titles = [];
         foreach ($this->children as $child) {
             $titles[$child->getId()] = $child->getTitle();
         }
@@ -1117,6 +1117,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * @return bool
      */
+    public function isDisplayType()
+    {
+        return $this->handler_class === self::HANDLER_CLASS_DISPLAY;
+    }
+
+    /**
+     * @return bool
+     */
     public function getDateExpectedFormat()
     {
         switch ($this->handler_class) {
@@ -1146,9 +1154,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @param string $property
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseName($property, Translate $translate)
     {
@@ -1164,9 +1170,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @param string $property
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPhraseDefault($property, Translate $translate)
     {
@@ -1188,8 +1192,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         $data['type_name'] = $this->getTypeName();
 
         if ($data['type_name'] == 'choice') {
-            $data['choices'] = array();
-            $has_children    = $map    = array();
+            $data['choices'] = [];
+            $has_children    = $map    = [];
 
             foreach ($this->children as $c) {
                 $map[$c['id']] = $c;

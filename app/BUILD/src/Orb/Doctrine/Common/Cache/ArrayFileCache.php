@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Doctrine\Common\Cache;
 
 /**
@@ -161,7 +162,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 
         $has_reg = true;
 
-        register_shutdown_function(array($this, 'commitIfDirty'), true);
+        register_shutdown_function([$this, 'commitIfDirty'], true);
     }
 
     /**
@@ -170,7 +171,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     public function reloadData()
     {
         if ($this->data === null) {
-            $this->data = array();
+            $this->data = [];
         }
 
         if ($this->disabled) {
@@ -193,7 +194,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 
             // Invalid version, so we should clear it out
             if ($this->version_id && (empty($load_data['@META']['version_id']) || $load_data['@META']['version_id'] != $this->version_id)) {
-                $load_data = array();
+                $load_data = [];
             }
 
             //meta data isnt actually read in
@@ -279,21 +280,21 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         }
 
         if (is_scalar($data)) {
-            $this->data[$id] = array(
+            $this->data[$id] = [
                 'time'    => time(),
                 'die'     => ($lifeTime ? time() + $lifeTime : 0),
                 'data'    => $data,
                 'updated' => true,
-            );
+            ];
         } else {
-            $this->data[$id] = array(
+            $this->data[$id] = [
                 'time'       => time(),
                 'die'        => ($lifeTime ? time() + $lifeTime : 0),
                 'data'       => serialize($data),
                 'data_u'     => $data,
                 'serialized' => true,
                 'updated'    => true,
-            );
+            ];
         }
 
         $this->dirty = true;
@@ -314,12 +315,12 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
             $this->reloadData();
         }
 
-        $this->data[$id] = array(
+        $this->data[$id] = [
             'time'    => time(),
             'die'     => 0,
             'data'    => 0,
             'deleted' => true,
-        );
+        ];
 
         $this->dirty = true;
 
@@ -345,7 +346,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
             return;
         }
 
-        $result = array('@META' => array('write_time' => time()));
+        $result = ['@META' => ['write_time' => time()]];
         if ($this->version_id) {
             $result['@META']['version_id'] = $this->version_id;
         }
@@ -412,7 +413,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     {
         $this->dirty = false;
 
-        $this->data = array();
+        $this->data = [];
         $php        = '<?php return array(); ';
 
         return file_put_contents($this->cache_file, $php);
@@ -464,13 +465,11 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
             return false;
         }
 
-        register_shutdown_function(array($this, 'releaseSlam'));
+        register_shutdown_function([$this, 'releaseSlam']);
 
         return $this->slam_fp;
     }
 
-    /**
-     */
     public function releaseSlam()
     {
         if ($this->slam_fp) {

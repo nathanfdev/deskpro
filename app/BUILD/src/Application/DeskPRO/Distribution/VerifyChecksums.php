@@ -31,6 +31,7 @@
  *
  * @category File
  */
+
 namespace Application\DeskPRO\Distribution;
 
 use DeskPRO\Bundle\InstallBundle\FileIntegrity\FileHasher;
@@ -112,13 +113,13 @@ class VerifyChecksums
 
         foreach ($chunkHashes as $path => $checksum) {
             if (!isset($standardChunkHashes[$path])) {
-                $results['added'][] = $path;
+                $results['added'][] = $this->proj->getRealPath($path);
             } elseif ($checksum === null) {
-                $results['removed'][] = $path;
+                $results['removed'][] = $this->proj->getRealPath($path);
             } elseif ($checksum != $standardChunkHashes[$path]) {
-                $results['changed'][] = $path;
+                $results['changed'][] = $this->proj->getRealPath($path);
             } else {
-                $results['okay'][] = $path;
+                $results['okay'][] = $this->proj->getRealPath($path);
             }
         }
 
@@ -142,7 +143,7 @@ class VerifyChecksums
             $fileContents = substr($fileContents, 3);
         }
 
-        $fileContents = trim(str_replace(array("\r", "\n"), '', $fileContents));
+        $fileContents = trim(str_replace(["\r", "\n"], '', $fileContents));
 
         return $fileContents;
     }
@@ -157,7 +158,7 @@ class VerifyChecksums
     public function getStandardChunk($chunk)
     {
         if (!isset($this->standardHashes[$chunk])) {
-            return array();
+            return [];
         }
 
         return $this->standardHashes[$chunk];

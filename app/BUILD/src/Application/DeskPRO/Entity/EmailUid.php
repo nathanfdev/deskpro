@@ -62,9 +62,9 @@ class EmailUid extends \Application\DeskPRO\Domain\DomainObject
         $this->date_created = new \DateTime();
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -61,7 +61,7 @@ class DpObjectType extends ObjectType
 
             return $val;
         } catch (ConversionException $e) {
-            return array();
+            return [];
         }
     }
 

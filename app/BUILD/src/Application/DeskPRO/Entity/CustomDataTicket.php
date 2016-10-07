@@ -142,9 +142,9 @@ class CustomDataTicket extends CustomDataAbstract
         return $this->ticket;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

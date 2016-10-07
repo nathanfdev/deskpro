@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Apps
  */
+
 namespace deskpro_us_db\Usersource;
 
 use Application\DeskPRO\Entity\AppInstance;
@@ -59,8 +60,8 @@ class AppOptionsMapper
 
         $settings = new OptionsArray($settings);
 
-        $connection_options = array();
-        $options            = array();
+        $connection_options = [];
+        $options            = [];
 
         switch ($settings->get('db_type')) {
             case 'pdo_mysql':
@@ -133,11 +134,11 @@ class AppOptionsMapper
 
         $options['connection_options'] = $connection_options;
 
-        foreach (array('table', 'field_id', 'field_username', 'field_email', 'field_password', 'field_first_name', 'field_last_name', 'field_name') as $f) {
+        foreach (['table', 'field_id', 'field_username', 'field_email', 'field_password', 'field_first_name', 'field_last_name', 'field_name'] as $f) {
             $options[$f] = $settings->get($f, '');
         }
 
-        $options['password_php'] = $settings->get('php_code');
+        $options['password_php']    = $settings->get('php_code');
         $options['raw_info_filter'] = $settings->get('raw_info_filter');
 
         return $options;

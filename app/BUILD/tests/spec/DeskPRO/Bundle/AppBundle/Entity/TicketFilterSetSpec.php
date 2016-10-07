@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -47,7 +48,7 @@ class TicketFilterSetSpec extends ObjectBehavior
 
     public function it_starts_with_no_filters()
     {
-        $this->getFilters()->toArray()->shouldBeLike(array());
+        $this->getFilters()->toArray()->shouldBeLike([]);
     }
 
     public function it_lets_you_add_a_filter(TicketFilter $filter)
@@ -55,7 +56,7 @@ class TicketFilterSetSpec extends ObjectBehavior
         $this->addFilter($filter);
 
         $filter->setFilterSet($this)->shouldHaveBeenCalled();
-        $this->getFilters()->toArray()->shouldBeLike(array($filter));
+        $this->getFilters()->toArray()->shouldBeLike([$filter]);
     }
 
     public function it_has_a_title()
@@ -95,7 +96,7 @@ class TicketFilterSetSpec extends ObjectBehavior
     public function it_initialized_with_no_agents_and_shared()
     {
         $this->getPrivateAgent()->shouldBe(null);
-        $this->getSharedAgents()->toArray()->shouldBeLike(array());
+        $this->getSharedAgents()->toArray()->shouldBeLike([]);
 
         $this->isPrivate()->shouldBe(false);
     }
@@ -105,7 +106,7 @@ class TicketFilterSetSpec extends ObjectBehavior
         $this->setPrivateAgent($agent);
 
         $this->getPrivateAgent($agent);
-        $this->getSharedAgents()->toArray()->shouldBeLike(array());
+        $this->getSharedAgents()->toArray()->shouldBeLike([]);
         $this->isPrivate()->shouldBe(true);
     }
 
@@ -113,13 +114,13 @@ class TicketFilterSetSpec extends ObjectBehavior
     {
         $this->addSharedAgent($agent1);
 
-        $this->getSharedAgents()->toArray()->shouldBeLike(array($agent1));
+        $this->getSharedAgents()->toArray()->shouldBeLike([$agent1]);
         $this->getPrivateAgent()->shouldBe(null);
         $this->isPrivate()->shouldBe(false);
 
         $this->addSharedAgent($agent2);
 
-        $this->getSharedAgents()->toArray()->shouldBeLike(array($agent1, $agent2));
+        $this->getSharedAgents()->toArray()->shouldBeLike([$agent1, $agent2]);
         $this->getPrivateAgent()->shouldBe(null);
         $this->isPrivate()->shouldBe(false);
     }

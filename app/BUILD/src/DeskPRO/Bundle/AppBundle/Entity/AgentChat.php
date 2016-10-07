@@ -165,7 +165,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
 
     /**
      * @param string $type
-     * 
+     *
      * @return $this
      */
     public function setType($type)
@@ -241,7 +241,9 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      */
     public function getDepartments()
     {
-        return ListUtils::filterMap($this->participants, function (AgentChatParticipant $p) { return $p->getDepartment(); });
+        return ListUtils::filterMap($this->participants, function (AgentChatParticipant $p) {
+            return $p->getDepartment();
+        });
     }
 
     /**
@@ -254,7 +256,9 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      */
     public function getAgentTeams()
     {
-        return ListUtils::filterMap($this->participants, function (AgentChatParticipant $p) { return $p->getTeam(); });
+        return ListUtils::filterMap($this->participants, function (AgentChatParticipant $p) {
+            return $p->getTeam();
+        });
     }
 
     /**
@@ -267,7 +271,9 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      */
     public function getAgents()
     {
-        return ListUtils::filterMap($this->participants, function (AgentChatParticipant $p) { return $p->getPerson(); });
+        return ListUtils::filterMap($this->participants, function (AgentChatParticipant $p) {
+            return $p->getPerson();
+        });
     }
 
     /**

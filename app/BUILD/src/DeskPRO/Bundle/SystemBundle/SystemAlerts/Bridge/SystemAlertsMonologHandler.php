@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts\Bridge;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\PHP\ErrorEvent;
@@ -73,11 +74,11 @@ class SystemAlertsMonologHandler extends AbstractProcessingHandler
         if (!empty($record['context']['exception']) && $record['context']['exception'] instanceof \Exception) {
             $this->getEventLogger()->log($record['context']['exception']);
         } else {
-            $context = array_key_exists('context', $record)  ? $record['context']  : [];
-            $code    = array_key_exists('code', $context)    ? $context['code']    : null;
+            $context = array_key_exists('context', $record) ? $record['context'] : [];
+            $code    = array_key_exists('code', $context) ? $context['code'] : null;
             $message = array_key_exists('message', $context) ? $context['message'] : null;
-            $file    = array_key_exists('file', $context)    ? $context['file']    : null;
-            $line    = array_key_exists('line', $context)    ? $context['line']    : null;
+            $file    = array_key_exists('file', $context) ? $context['file'] : null;
+            $line    = array_key_exists('line', $context) ? $context['line'] : null;
 
             // To prevent Monolog from logging a PHP error with both error and fatal handlers
             // we compare record hash with hash of the previously logged one

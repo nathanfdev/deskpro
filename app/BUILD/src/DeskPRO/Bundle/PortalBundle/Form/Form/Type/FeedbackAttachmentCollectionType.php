@@ -26,28 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\FeedbackAttachment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class FeedbackAttachmentCollectionType.
+ */
 class FeedbackAttachmentCollectionType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $form = $event->getForm();
             $collection = $event->getData();
 
             // ensure there is a collection of attachments on the message (even if empty)
@@ -80,12 +82,15 @@ class FeedbackAttachmentCollectionType extends AbstractType
         });
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'type'    => 'feedback_attachment',
-                'options' => function (Options $options) {
+        $resolver
+            ->setDefaults([
+                'entry_type'    => FeedbackAttachmentType::class,
+                'entry_options' => function (Options $options) {
                     return [
                         'person' => $options['person'],
                         'label'  => false,
@@ -94,33 +99,24 @@ class FeedbackAttachmentCollectionType extends AbstractType
                 'allow_add'    => true,
                 'allow_delete' => true,
                 'label'        => false,
-            ]
-        );
-
-        $resolver->setRequired(
-            [
-                'person',
-            ]
-        );
-
-        $resolver->setAllowedTypes(
-            [
-                'person' => 'Application\\DeskPRO\\Entity\\Person',
-            ]
-        );
-    }
-
-    public function getParent()
-    {
-        return 'collection';
+            ])
+            ->setRequired('person')
+            ->setAllowedTypes('person', 'Application\\DeskPRO\\Entity\\Person')
+        ;
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
-    public function getName()
+    public function getParent()
+    {
+        return CollectionType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
     {
         return 'feedback_attachment_collection';
     }

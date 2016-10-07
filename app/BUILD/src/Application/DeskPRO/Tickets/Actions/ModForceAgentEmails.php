@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -59,11 +60,11 @@ class ModForceAgentEmails extends AbstractContainerAwareAction implements Action
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $force_list = $context->getVars()->get('agent_force_subscription_list', array());
+        $force_list = $context->getVars()->get('agent_force_subscription_list', []);
 
-        $agent_ids = $this->getActionOption('agent_ids', array());
+        $agent_ids = $this->getActionOption('agent_ids', []);
         if (!is_array($agent_ids)) {
-            $agent_ids = array($agent_ids);
+            $agent_ids = [$agent_ids];
         }
 
         $agent_data     = $this->getContainer()->getAgentData();
@@ -75,7 +76,9 @@ class ModForceAgentEmails extends AbstractContainerAwareAction implements Action
 
         $force_list = array_unique($force_list);
 
-        $ids = array_map(function ($a) { return $a->id; }, $force_list);
+        $ids = array_map(function ($a) {
+            return $a->id;
+        }, $force_list);
         $context->getLogger()->info('[ModForceAgents] Force list: '.implode(', ', $ids));
 
         $context->getVars()->set('agent_force_subscription_list', $force_list);

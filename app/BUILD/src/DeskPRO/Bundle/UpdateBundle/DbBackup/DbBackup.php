@@ -169,6 +169,7 @@ class DbBackup implements DbBackupInterface, LoggerAwareInterface
         });
 
         $process = new Process($cmd);
+        $process->setTimeout(null);
         $process->run(function ($type, $dat) use ($buf) {
             $buf->append($dat);
         });

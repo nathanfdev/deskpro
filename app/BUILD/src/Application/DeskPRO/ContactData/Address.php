@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
@@ -60,26 +61,26 @@ class Address extends AbstractContactData
      */
     public function getTemplateVars(ContactDataAbstract $contact_record)
     {
-        $segs = array(
+        $segs = [
             str_replace("\n", ', ', Strings::standardEol($contact_record->field_1)),
-            implode(', ', Arrays::removeFalsey(array(
+            implode(', ', Arrays::removeFalsey([
                 $contact_record->field_2,
                 $contact_record->field_3,
                 $contact_record->field_4,
-            ))),
+            ])),
             $contact_record->field_5,
-        );
+        ];
         $address_txt = Arrays::removeFalsey($segs);
         $address_txt = implode("\n", $address_txt);
 
-        $params = array(
+        $params = [
             'sensor' => 'false',
             'size'   => '200x200',
             'center' => str_replace("\n", ' ', Strings::standardEol($address_txt)),
-        );
+        ];
         $google_url = 'https://maps.googleapis.com/maps/api/staticmap?'.http_build_query($params, null, '&amp;');
 
-        return array(
+        return [
             'comment'      => $contact_record->comment,
             'address'      => $contact_record->field_1,
             'city'         => $contact_record->field_2,
@@ -88,7 +89,7 @@ class Address extends AbstractContactData
             'country'      => $contact_record->field_5,
             'address_html' => nl2br(htmlentities($address_txt)),
             'map_url'      => $google_url,
-        );
+        ];
     }
 
     /**
@@ -98,12 +99,12 @@ class Address extends AbstractContactData
      */
     public function getApiVars(ContactDataAbstract $contact_record)
     {
-        return array(
+        return [
             'address' => $contact_record->field_1,
             'city'    => $contact_record->field_2,
             'state'   => $contact_record->field_3,
             'zip'     => $contact_record->field_4,
             'country' => $contact_record->field_5,
-        );
+        ];
     }
 }

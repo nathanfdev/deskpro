@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Department;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DepartmentTerm;
@@ -51,9 +52,9 @@ class PhpDepartmentTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testCompileIs()
     {
         $term = new DepartmentTerm(
-            array(
-                'department_ids' => array(1, 2, 15),
-            )
+            [
+                'department_ids' => [1, 2, 15],
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -68,9 +69,9 @@ class PhpDepartmentTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testCompileIsNot()
     {
         $term = new DepartmentTerm(
-            array(
-                'department_ids' => array(1, 2, 15),
-            ),
+            [
+                'department_ids' => [1, 2, 15],
+            ],
             TermInterface::OP_NOT
         );
 

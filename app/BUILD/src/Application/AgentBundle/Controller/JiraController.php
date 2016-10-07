@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,13 +44,13 @@ class JiraController extends AbstractController
     /** @var JIRA */
     protected $service;
 
-    public function preActionHandler($action, $arguments = null)
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         if (!$this->service()->isEnabled()) {
             return $this->createPermissionErrorResponse('Service is disabled');
         }
 
-        return parent::preActionHandler($action, $arguments);
+        return parent::preActionHandler($request, $action, $arguments);
     }
 
     /**
@@ -76,7 +76,7 @@ class JiraController extends AbstractController
             $meta = null;
         }
 
-        return $this->createJsonResponse($meta ? $meta->toArray() : array());
+        return $this->createJsonResponse($meta ? $meta->toArray() : []);
     }
 
     /**
@@ -107,9 +107,9 @@ class JiraController extends AbstractController
             return $this->linkAction($ticketId, $issueData['id']);
         } catch (\Exception $e) {
             if ($e instanceof ApiErrorsException) {
-                return $this->createJsonResponse(array('errors' => $e->errors), 400);
+                return $this->createJsonResponse(['errors' => $e->errors], 400);
             } else {
-                return $this->createJsonResponse(array('errors' => (array) $e->getMessage()), $e->getCode());
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
             }
         }
     }
@@ -122,19 +122,19 @@ class JiraController extends AbstractController
      */
     public function updateIssueAction(Request $request, $issueId)
     {
-        if (!$issue = $this->em->getRepository('DeskPRO:JiraIssue')->findOneBy(array('issue_id' => $issueId))) {
+        if (!$issue = $this->em->getRepository('DeskPRO:JiraIssue')->findOneBy(['issue_id' => $issueId])) {
             throw new NotFoundHttpException();
         }
 
         try {
             $this->service()->updateIssueJson($issueId, $request->getContent());
 
-            return $this->createJsonResponse(array());
+            return $this->createJsonResponse([]);
         } catch (\Exception $e) {
             if ($e instanceof ApiErrorsException) {
-                return $this->createJsonResponse(array('errors' => $e->errors), 400);
+                return $this->createJsonResponse(['errors' => $e->errors], 400);
             } else {
-                return $this->createJsonResponse(array('errors' => (array) $e->getMessage()), $e->getCode());
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
             }
         }
     }

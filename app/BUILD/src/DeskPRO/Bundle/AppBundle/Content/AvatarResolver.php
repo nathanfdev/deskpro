@@ -26,14 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
 use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\EntityManager;
+use Orb\Util\Strings;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -48,17 +46,24 @@ class AvatarResolver
     private $router;
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * @var bool
      */
     private $use_gravatar;
 
     /**
      * @param RouterInterface $router
+     * @param EntityManager   $em
      * @param bool            $use_gravatar
      */
-    public function __construct(RouterInterface $router, $use_gravatar = true)
+    public function __construct(RouterInterface $router, EntityManager $em, $use_gravatar = true)
     {
         $this->router       = $router;
+        $this->em           = $em;
         $this->use_gravatar = $use_gravatar;
     }
 
@@ -68,6 +73,81 @@ class AvatarResolver
     public function setUseGravatar($use_gravatar)
     {
         $this->use_gravatar = $use_gravatar;
+    }
+
+    /**
+     * @param array $personIds
+     * @param int   $size
+     *
+     * @return array
+     */
+    public function getAvatars(array $personIds, $size = 80)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select(
+                'p.id as person_id',
+                'pe.email',
+                'COALESCE(pb.filename, ob.filename) as filename',
+                'COALESCE(pb.authcode, ob.authcode) as authcode',
+                '(CASE WHEN pb.filename IS NOT NULL THEN 1 ELSE 0 END) has_person_picture'
+            )
+            ->from(Person::class, 'p')
+            ->leftJoin('p.primary_email', 'pe')
+            ->leftJoin('p.picture_blob', 'pb')
+            ->leftJoin('p.organization', 'o')
+            ->leftJoin('p.picture_blob', 'ob')
+            ->where('p.id IN(:ids)')
+            ->setParameter('ids', $personIds)
+        ;
+
+        $gravatarUrl = 'https://secure.gravatar.com/avatar/';
+        $defaultUrl  = $this->router->generate(
+            'serve_default_picture',
+            [
+                's'        => $size,
+                'size-fit' => 1,
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        $blobs  = $qb->getQuery()->getResult();
+        $result = [];
+        foreach ($blobs as $blob) {
+            $blobUrl = null;
+            if ($blob['filename']) {
+                $blobUrl = $this->router->generate(
+                    'serve_blob_sizefit',
+                    [
+                        'blob_auth_id' => $blob['authcode'],
+                        'filename'     => Strings::getFilenameSafe($blob['filename']),
+                        's'            => $size,
+                    ],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            }
+
+            if ($blobUrl && $blob['has_person_picture']) {
+                // person picture
+                $url = $blobUrl;
+            } elseif ($this->use_gravatar && $blob['email']) {
+                // gravatar
+                if (!$blobUrl) {
+                    $blobUrl = 'mm';
+                }
+
+                $url = $gravatarUrl.strtolower(md5($blob['email'])).'?&s='.urlencode($size).'&d='.$blobUrl;
+            } elseif ($blobUrl) {
+                // org picture
+                $url = $blobUrl;
+            } else {
+                $url = $defaultUrl;
+            }
+
+            $result[$blob['person_id']] = $url;
+        }
+
+        return $result;
     }
 
     /**

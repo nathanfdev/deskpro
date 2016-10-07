@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\Attachments;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -61,7 +62,7 @@ class AcceptAttachment
     /**
      * @var \Application\DeskPRO\Attachments\RestrictionSet[]
      */
-    protected $restriction_sets = array();
+    protected $restriction_sets = [];
 
     public function __construct(EntityManager $em, DeskproBlobStorage $blobstorage)
     {
@@ -114,17 +115,17 @@ class AcceptAttachment
         if ($file === null) {
             // This means the file is too big and PHP basically rejected the whole request data
             if (!$is_email && isset($_SERVER['CONTENT_LENGTH']) && empty($_POST) && empty($_FILES)) {
-                return array('error_code' => self::ERR_SIZE, 'error_detail' => Numbers::filesizeDisplay($max_size));
+                return ['error_code' => self::ERR_SIZE, 'error_detail' => Numbers::filesizeDisplay($max_size)];
             }
 
-            return array('error_code' => self::ERR_NO_FILE, 'error_detail' => 'null_file');
+            return ['error_code' => self::ERR_NO_FILE, 'error_detail' => 'null_file'];
         }
 
         $log_error = false;
-        $error     = array(
+        $error     = [
             'error_code'   => null,
             'error_detail' => null,
-        );
+        ];
 
         if (!$file->isValid()) {
             switch ($file->getError()) {
@@ -190,14 +191,14 @@ class AcceptAttachment
 
         if ($log_error) {
             $info = "Upload of {$file->getClientOriginalName()} failed because {$error['error_code']}\n";
-            $info .= Arrays::implodeTemplate(array(
+            $info .= Arrays::implodeTemplate([
                 'error_code'    => $error['error_code'],
                 'error_detail'  => $error['error_detail'],
                 'filename'      => $file->getClientOriginalName(),
                 'type'          => $file->getClientMimeType(),
                 'size'          => $file->getClientSize(),
                 'file_err_code' => $file->getError(),
-            ), "{KEY}: {VAL}\n");
+            ], "{KEY}: {VAL}\n");
 
             $e = new \Exception($info, 0);
             SystemErrorHandler::logException($e, false);
@@ -241,7 +242,7 @@ class AcceptAttachment
             $file->getRealPath(),
             $filename,
             $mime_type,
-            array('is_temp' => $is_temp)
+            ['is_temp' => $is_temp]
         );
 
         return $blob;

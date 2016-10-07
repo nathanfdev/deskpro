@@ -235,34 +235,24 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         }
 
         /**
-         * Return a unique ID that we can use to look up translations for this object.
-         *
-         * @param string    $property  If supplied, the property on the object we want to translate.
-         * @param Translate $translate The translate object requesting
-         *
-         * @return string
+         * {@inheritdoc}
          */
-        public function getPhraseName($property = null, Translate $translate)
+        public function getPhraseName($property, Translate $translate)
         {
             return 'user.lang.lang_title_'.$this->sys_name;
         }
 
         /**
-         * Get the default value phrase for the object.
-         *
-         * @param string    $property  If supplied, the property on the object we want to translate.
-         * @param Translate $translate The translate object requesting
-         *
-         * @return string
+         * {@inheritdoc}
          */
-        public function getPhraseDefault($property = null, Translate $translate)
+        public function getPhraseDefault($property, Translate $translate)
         {
             return $this->title;
         }
 
-        ############################################################################
-        # Doctrine Metadata
-        ############################################################################
+        //###########################################################################
+        // Doctrine Metadata
+        //###########################################################################
 
         public static function loadMetadata(ClassMetadata $metadata)
         {

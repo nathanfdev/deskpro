@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Twig\Extension;
 
 use Symfony\Bridge\Twig\Extension\TranslationExtension as BaseTranslationExtension;
@@ -38,12 +39,12 @@ use Symfony\Bridge\Twig\Extension\TranslationExtension as BaseTranslationExtensi
  */
 class TranslationExtension extends BaseTranslationExtension
 {
-    public function trans($message, array $arguments = array(), $domain = 'messages', $locale = null)
+    public function trans($message, array $arguments = [], $domain = 'messages', $locale = null)
     {
         return $message;
     }
 
-    public function transchoice($message, $count, array $arguments = array(), $domain = 'messages', $locale = null)
+    public function transchoice($message, $count, array $arguments = [], $domain = 'messages', $locale = null)
     {
         return $message;
     }

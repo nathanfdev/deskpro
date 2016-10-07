@@ -192,10 +192,8 @@ class TicketMessageInlineAttachmentType extends AbstractType
                 'ticket_message',
                 'person',
             ])
-            ->setAllowedTypes([
-                'ticket_message' => TicketMessage::class,
-                'person'         => Person::class,
-            ])
+            ->setAllowedTypes('ticket_message', TicketMessage::class)
+            ->setAllowedTypes('person', Person::class)
         ;
     }
 }

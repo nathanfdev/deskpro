@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -68,12 +68,12 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
     protected function initOptions()
     {
         $this->options = new \Orb\Util\OptionsArray(
-            array(
+            [
                 'url'               => '',
                 'secret'            => '',
                 'algo'              => 'HS256',
                 'login_custom_text' => 'Login (JWT)',
-            )
+            ]
         );
     }
 
@@ -92,7 +92,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
         } catch (\Exception $e) {
             return new Result(
                 Result::FAILURE_EXCEPTION, null,
-                array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
+                ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]
             );
         }
     }
@@ -112,7 +112,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
         } catch (\Exception $e) {
             return new Result(
                 Result::FAILURE_EXCEPTION, null,
-                array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
+                ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]
             );
         }
     }
@@ -135,13 +135,13 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
             }
 
             // return a success result if we detect they are already logged in
-            $result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect));
+            $result = new Result(Result::REQUIRES_REDIRECT, null, [Result::MSG_REDIRECT => $redirect]);
 
             return $result;
         } catch (\Exception $e) {
             return new Result(
                 Result::FAILURE_EXCEPTION, null,
-                array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
+                ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]
             );
         }
     }
@@ -171,10 +171,10 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
      */
     public function getIframeTemplateParams($is_first_page_load)
     {
-        return array(
+        return [
             'iframe_url' => $this->getFullRedirectUrl(),
             'render'     => true,
-        );
+        ];
     }
 
     /**
@@ -197,7 +197,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
             $jwt           = $callback_data['jwt'];
             $secret        = $this->options->get('secret');
             \JWT::$leeway  = 60 * 15; // give 15 minutes of "leeway" around the token expiration
-            $payload       = \JWT::decode($jwt, $secret, array($this->options->get('algo', 'HS256')));
+            $payload       = \JWT::decode($jwt, $secret, [$this->options->get('algo', 'HS256')]);
             $payload_array = Arrays::fromStdClass($payload);
 
             if (empty($payload_array['email'])) {
@@ -230,7 +230,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
                     "Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR
                 );
             }
-            $exception_messages = array(Result::MSG_EXCEPTION => $e);
+            $exception_messages = [Result::MSG_EXCEPTION => $e];
             if ($e->getMessage() === 'Algorithm not allowed') {
                 $exception_messages['display_errors'] = 'You selected the decryption algorithm "'.$this->options->get('algo').'" but the incoming JWT token used a different algorithm. Please re-check the selected algorithm.';
             }
@@ -252,7 +252,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
     protected function getFullRedirectUrl()
     {
         $url = Url::createFromUrl($this->options->get('url'));
-        $url->getQuery()->modify(array('return' => $this->getCallbackUrl()));
+        $url->getQuery()->modify(['return' => $this->getCallbackUrl()]);
         $redirect = (string) $url;
 
         return $redirect;

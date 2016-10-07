@@ -61,12 +61,12 @@ class DeskproContainer extends Container
     /**
      * @var array
      */
-    protected $system_services = array();
+    protected $system_services = [];
 
     /**
      * @var array
      */
-    protected $db_read_conns = array();
+    protected $db_read_conns = [];
 
     /**
      * @var AgentAppPermissions
@@ -132,7 +132,7 @@ class DeskproContainer extends Container
         if (!class_exists($classname)) {
             if ($ent = \Orb\Util\Strings::extractRegexMatch('#^(.*?)Data$#', $id, 1)) {
                 $classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\BaseRepositoryService';
-                $options   = array('entity' => 'DeskPRO:'.ucfirst($ent));
+                $options   = ['entity' => 'DeskPRO:'.ucfirst($ent)];
             } else {
                 throw new \InvalidArgumentException("Invalid service `$id`, tried class `$classname`");
             }
@@ -182,7 +182,7 @@ class DeskproContainer extends Container
      *
      * @return mixed
      */
-    public function getSystemObject($id, array $options = array())
+    public function getSystemObject($id, array $options = [])
     {
         $classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\'.$this->camelize($id).'Factory';
 
@@ -305,7 +305,7 @@ class DeskproContainer extends Container
 
                 // Single config, cast to array
                 if (isset($read_configs['host']) || isset($read_configs['dbname'])) {
-                    $read_configs = array($read_configs);
+                    $read_configs = [$read_configs];
                 }
 
                 shuffle($read_configs);
@@ -352,7 +352,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * @deprecated Use getEm instead.
+     * @deprecated Use getEm instead
      */
     public function getOrm()
     {
@@ -781,6 +781,9 @@ class DeskproContainer extends Container
 
     /**
      * @return \Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService
+     *
+     * @deprecated Avoid using it as much as possible. It works really slow if we have many agents/usergroups/teams
+     * because it pre loads them ALL, even if we need something just for one agent.
      */
     public function getAgentData()
     {

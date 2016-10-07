@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,7 +46,7 @@ class ResultSet
      * @param array $results
      * @param int   $total
      */
-    public function __construct($results = array(), $total = null)
+    public function __construct($results = [], $total = null)
     {
         $this->results = $results;
 
@@ -78,7 +78,7 @@ class ResultSet
      */
     public function getTypedResults()
     {
-        $res = array();
+        $res = [];
 
         foreach ($this->results as $r) {
             if ($r instanceof Entity\Article) {
@@ -99,7 +99,7 @@ class ResultSet
                 $type = 'unknown';
             }
 
-            $res[] = array('type' => $type, 'object' => $r);
+            $res[] = ['type' => $type, 'object' => $r];
         }
 
         return $res;

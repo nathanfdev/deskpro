@@ -26,28 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
+/**
+ * Class SetTypeAction.
+ */
 class SetTypeAction extends AbstractAction implements ActionWithOptionsInterface
 {
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired('set_type');
         $resolver->setAllowedTypes('set_type', ['string', 'int']);
-        $resolver->setAllowedValues(
-            'set_type',
-            function ($value) {
-                return (is_int($value) && $value > 0) || ctype_digit($value);
-            }
-        );
+        $resolver->setAllowedValues('set_type', function ($value) {
+            return (is_int($value) && $value > 0) || ctype_digit($value);
+        });
     }
 }

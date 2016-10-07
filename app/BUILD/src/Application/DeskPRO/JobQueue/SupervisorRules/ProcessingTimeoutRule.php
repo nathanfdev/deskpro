@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\JobQueue\SupervisorRules;
 
 use Application\DeskPRO\Entity\Job;
@@ -54,14 +55,14 @@ class ProcessingTimeoutRule extends AbstractSupervisorRule
             WHERE status = :processing_state
             AND date_touch < :twenty_mins_ago
             ',
-            array(
+            [
                 'processing_state' => Job::STATUS_PROCESSING,
                 'twenty_mins_ago'  => $date,
-            ),
-            array(
+            ],
+            [
                 'processing_state' => 'string',
                 'twenty_mins_ago'  => 'datetime',
-            )
+            ]
         );
         $result = $query->fetch();
         if (is_array($result) and array_key_exists('total', $result)) {
@@ -88,14 +89,14 @@ class ProcessingTimeoutRule extends AbstractSupervisorRule
             WHERE status = :processing_state
             AND date_touch < :twenty_mins_ago
             ',
-            array(
+            [
                 'processing_state' => Job::STATUS_PROCESSING,
                 'twenty_mins_ago'  => $date,
-            ),
-            array(
+            ],
+            [
                 'processing_state' => 'string',
                 'twenty_mins_ago'  => 'datetime',
-            )
+            ]
         )
         ;
         $result = $query->fetchAll();
@@ -110,11 +111,11 @@ class ProcessingTimeoutRule extends AbstractSupervisorRule
 
         $this->connection->executeUpdate(
             'UPDATE jobs SET status = :aborted, status_code = :exhausted WHERE id IN (:job_ids)',
-            array(
+            [
                 'aborted'   => Job::STATUS_ABORTED,
                 'exhausted' => Job::STATUS_CODE_EXHAUSTED,
                 'job_ids'   => implode(', ', $ids),
-            )
+            ]
         )
         ;
 

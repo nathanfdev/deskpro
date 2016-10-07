@@ -70,9 +70,9 @@ class TermEngineDb extends AbstractDbSet
     {
         $em = $this->getEm();
 
-        #------------------------------
-        # Init data
-        #------------------------------
+        //------------------------------
+        // Init data
+        //------------------------------
 
         // users
         list($admin, $agent, $agent_chris, $user) = $this->addBasicUsers();

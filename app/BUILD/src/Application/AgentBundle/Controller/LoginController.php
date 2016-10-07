@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -41,6 +37,7 @@ use Application\DeskPRO\EntityRepository\ApiToken as ApiTokenRepository;
 use Application\DeskPRO\EntityRepository\TmpData as TmpDataRepository;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -61,7 +58,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
      */
     public function indexAction(Request $request)
     {
-        $return = LegacyRequestUtils::readReturnParam($this->request);
+        $return = LegacyRequestUtils::readReturnParam($request);
 
         if ($this->loginViaToken()) {
             if ($return) {
@@ -73,9 +70,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
         $has_logged_out = $this->in->checkIsset('o');
 
-        //
         // SSO Automatic Redirecting
-        //
+
         if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), $has_logged_out)) {
             return $res;
         }
@@ -199,7 +195,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $check->markAsCheckOnly();
         $this->container->get('anti_abuse')->check($check);
         if ($check->isCaptchaRecommended()) {
-            $captcha     = $this->createForm('deskpro_captcha');
+            $captcha     = $this->createForm(DpCaptchaType::class);
             $captchaView = $captcha->createView();
         }
 

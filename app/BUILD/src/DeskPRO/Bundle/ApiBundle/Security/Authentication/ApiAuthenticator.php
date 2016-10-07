@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiTokenSecurityToken;
+use DeskPRO\Bundle\ApiBundle\Security\Token\LegacyRememberMeSecurityToken;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,18 +65,30 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
     public function createToken(Request $request, $providerKey)
     {
         // agent session cookie
-        if (
-            ($session_id = $request->cookies->get('dpsid-agent'))
-            || ($session_id = $request->cookies->get('dpsid-admin'))
-        ) {
-            $agent_token = new AgentSessionSecurityToken('anon.', $session_id, $providerKey);
+        /** @var \Application\DeskPRO\EntityRepository\Session $sessionRepo */
+        $sessionRepo = $this->em->getRepository(Session::class);
 
-            // add app if possible
-            if ($app_id = $request->headers->get(self::APP_HEADER_NAME, null, true)) {
-                $agent_token->setAppId($app_id);
+        foreach (['dpsid-admin', 'dpsid-agent'] as $cookieName) {
+            $sessionId = $request->cookies->get($cookieName);
+            if (!$sessionId) {
+                continue;
             }
 
-            return $agent_token;
+            // check that session still exists
+            $session = $sessionRepo->getSessionFromCode($sessionId);
+            if (!$session) {
+                continue;
+            }
+
+            $agentToken = new AgentSessionSecurityToken('anon.', $sessionId, $providerKey);
+
+            // add app if possible
+            $appId = $request->headers->get(self::APP_HEADER_NAME, null, true);
+            if ($appId) {
+                $agentToken->setAppId($appId);
+            }
+
+            return $agentToken;
         }
 
         // Authorize header
@@ -99,6 +112,13 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             }
         }
 
+        if ($request->cookies->get('dpreme')) {
+            list($person_id, $cookie_code) = explode('-', $request->cookies->get('dpreme'), 2);
+            if ($person_id) {
+                return new LegacyRememberMeSecurityToken($person_id, $cookie_code, $providerKey);
+            }
+        }
+
         // if we are in apache we send a special error message, because apache removes the
         // Authorization header in some cgi cases:
         // http://stackoverflow.com/questions/17488656/zend-server-windows-authorization-header-is-not-passed-to-php-script
@@ -115,6 +135,10 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
     {
         if ($token instanceof AgentSessionSecurityToken) {
             return $this->authenticateAgentSession($token, $userProvider, $providerKey);
+        }
+
+        if ($token instanceof LegacyRememberMeSecurityToken) {
+            return $this->authenticateRememberMe($token, $userProvider, $providerKey);
         }
 
         if ($token instanceof ApiKeySecurityToken) {
@@ -136,6 +160,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $token instanceof AgentSessionSecurityToken
             || $token instanceof ApiKeySecurityToken
             || $token instanceof ApiTokenSecurityToken
+            || $token instanceof LegacyRememberMeSecurityToken
         ;
     }
 
@@ -246,6 +271,28 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         return $agent_token;
     }
 
+    private function authenticateRememberMe(
+        LegacyRememberMeSecurityToken $token,
+        UserProviderInterface $user_provider,
+        $providerKey
+    ) {
+        /** @var Person $person */
+        $person = $user_provider->loadUserByUsername($token->getUser());
+        if (
+            $person
+            && !$person->is_deleted
+            && !$person->is_disabled
+            && $person->validateRememberMeCookieCode($token->getCredentials())
+        ) {
+            return new LegacyRememberMeSecurityToken(
+                $person,
+                $token->getCredentials(),
+                $providerKey,
+                $this->generateApiRolesForPerson($person)
+            );
+        }
+    }
+
     /**
      * @param $msg
      */
@@ -256,9 +303,9 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
 
     private function extractDataFromSessionEntity(Session $session)
     {
-        //
+
         // due to the way sessions are stored in PHP, this looks rather ugly...
-        //
+
         $data = $session->getData();
         session_start(); // we dont use sessions in the API so this should always be ok
         session_decode($data); // this populates $_SESSION

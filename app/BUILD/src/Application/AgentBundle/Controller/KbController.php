@@ -50,6 +50,7 @@ use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -57,9 +58,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class KbController extends AbstractController
 {
-    ############################################################################
-    # Edit article
-    ############################################################################
+    //###########################################################################
+    // Edit article
+    //###########################################################################
 
     public function viewArticleAction($article_id)
     {
@@ -78,16 +79,16 @@ class KbController extends AbstractController
 
         $tpl = 'AgentBundle:Kb:view.html.twig';
 
-        #------------------------------
-        # Custom fields
-        #------------------------------
+        //------------------------------
+        // Custom fields
+        //------------------------------
 
         $field_manager = $this->container->getSystemService('article_fields_manager');
         $custom_fields = $field_manager->getDisplayArrayForObject($article);
 
-        #------------------------------
-        # Article props
-        #------------------------------
+        //------------------------------
+        // Article props
+        //------------------------------
 
         $article_comments = $this->em->getRepository(ArticleComment::class)->getComments($article);
 
@@ -666,9 +667,9 @@ class KbController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # Pending articles
-    ############################################################################
+    //###########################################################################
+    // Pending articles
+    //###########################################################################
 
     /**
      * List the articles.
@@ -821,9 +822,9 @@ class KbController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # Listings
-    ############################################################################
+    //###########################################################################
+    // Listings
+    //###########################################################################
 
     public function listAction($category_id = 0)
     {
@@ -955,9 +956,9 @@ class KbController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    ############################################################################
-    # Compare revisions
-    ############################################################################
+    //###########################################################################
+    // Compare revisions
+    //###########################################################################
 
     public function compareRevisionsAction($rev_old_id, $rev_new_id)
     {
@@ -969,9 +970,9 @@ class KbController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # New article
-    ############################################################################
+    //###########################################################################
+    // New article
+    //###########################################################################
 
     public function newArticleAction()
     {
@@ -990,7 +991,7 @@ class KbController extends AbstractController
         ]);
     }
 
-    public function newArticleSaveAction()
+    public function newArticleSaveAction(Request $request)
     {
         $newArticle = new \Application\AgentBundle\Form\Model\NewArticle($this->person);
 
@@ -999,8 +1000,8 @@ class KbController extends AbstractController
 
         $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newarticle' AND person_id = ?", [$this->person->id]);
 
-        if ($this->get('request')->getMethod() == 'POST') {
-            $form->handleRequest($this->get('request'));
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
             $form->isValid();
 
             $validator = new \Application\AgentBundle\Validator\NewArticleValidator();

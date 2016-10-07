@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
@@ -50,11 +51,11 @@ class DbalJoinedHelper extends AbstractDbalHelper
     {
         $fields = $field_name;
         if (!is_array($field_name)) {
-            $fields = array($field_name => $input);
+            $fields = [$field_name => $input];
         }
 
-        $where  = array();
-        $values = array();
+        $where  = [];
+        $values = [];
         $iter   = 0;
         foreach ($fields as $field => $value) {
             if ($field == '%OP') {
@@ -130,7 +131,7 @@ class DbalJoinedHelper extends AbstractDbalHelper
      * Join multiple query parts.
      *
      * @param array $joins       is an array of tablename => clause for the main join
-     * @param array $query_parts is an array of DbalQueryPart which will be merged into the join.
+     * @param array $query_parts is an array of DbalQueryPart which will be merged into the join
      *
      * @return DbalQueryPart
      */
@@ -146,8 +147,8 @@ class DbalJoinedHelper extends AbstractDbalHelper
             }
         }
 
-        $where  = array();
-        $values = array();
+        $where  = [];
+        $values = [];
         foreach ($query_parts as $query_part) {
             $where[] = $query_part->getWhereString();
             $values  = array_merge($values, $query_part->getParameters());

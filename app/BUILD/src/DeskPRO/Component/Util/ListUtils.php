@@ -434,7 +434,7 @@ class ListUtils
 
     /**
      * @param \Traversable|array $array
-     * @param callable|null      $fn    Optionally a function to filter the results by.
+     * @param callable|null      $fn    Optionally a function to filter the results by
      *
      * @return mixed
      */
@@ -470,7 +470,7 @@ class ListUtils
      * Get the last element of a list.
      *
      * @param \Traversable|array $array
-     * @param callable|null      $fn    Optionally a function to filter the results by.
+     * @param callable|null      $fn    Optionally a function to filter the results by
      *
      * @return mixed
      */

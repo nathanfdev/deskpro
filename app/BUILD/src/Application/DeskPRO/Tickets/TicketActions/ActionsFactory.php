@@ -82,10 +82,10 @@ class ActionsFactory
         }
 
         if (!is_array($value)) {
-            $value = array($name => $value);
+            $value = [$name => $value];
         }
 
-        $options = array();
+        $options = [];
         switch ($name) {
             case 'agent':
                 $options['agent'] = $value['agent'];
@@ -131,7 +131,7 @@ class ActionsFactory
                 $options['is_hold'] = $value['is_hold'];
                 break;
             case 'add_labels':
-                $options['add_labels'] = array();
+                $options['add_labels'] = [];
                 if (is_array($value['labels'])) {
                     $options['add_labels'] = $value['labels'];
                 } elseif (!empty($value['labels'])) {
@@ -139,7 +139,7 @@ class ActionsFactory
                 }
                 break;
             case 'remove_labels':
-                $options['remove_labels'] = array();
+                $options['remove_labels'] = [];
                 if (is_array($value['labels'])) {
                     $options['remove_labels'] = $value['labels'];
                 } elseif (!empty($value['labels'])) {
@@ -151,7 +151,7 @@ class ActionsFactory
                     return;
                 }
                 $options['reply_text'] = $value['reply_text'];
-                $options['attach_ids'] = !empty($value['attach_ids']) && is_array($value['attach_ids']) ? $value['attach_ids'] : array();
+                $options['attach_ids'] = !empty($value['attach_ids']) && is_array($value['attach_ids']) ? $value['attach_ids'] : [];
                 $options['reply_pos']  = !empty($value['reply_pos']) ? $value['reply_pos'] : 'prepend';
                 $options['person_id']  = !empty($value['person_id']) && $value['person_id'] ? $value['person_id'] : null;
                 break;
@@ -162,13 +162,13 @@ class ActionsFactory
                 }
                 break;
             case 'add_participants':
-                $options['add_participants'] = !empty($value['add_participants']) && is_array($value['add_participants']) ? $value['add_participants'] : array();
+                $options['add_participants'] = !empty($value['add_participants']) && is_array($value['add_participants']) ? $value['add_participants'] : [];
                 break;
             case 'add_cc':
                 $options['add_emails'] = !empty($value['add_emails']) ? $value['add_emails'] : '';
                 break;
             case 'remove_participants':
-                $options['remove_participants'] = !empty($value['remove_participants']) && is_array($value['remove_participants']) ? $value['remove_participantsq'] : array();
+                $options['remove_participants'] = !empty($value['remove_participants']) && is_array($value['remove_participants']) ? $value['remove_participantsq'] : [];
                 break;
             case 'ticket_field':
                 $field_manager = App::getSystemService('ticket_fields_manager');
@@ -226,64 +226,64 @@ class ActionsFactory
                 break;
 
             case 'new_ticket':
-                $options = array('mode' => isset($value['mode']) ? $value['mode'] : 'run');
+                $options = ['mode' => isset($value['mode']) ? $value['mode'] : 'run'];
                 break;
 
             case 'add_agent_notify':
-                $options = array('codes' => $value['codes']);
+                $options = ['codes' => $value['codes']];
                 break;
 
             case 'send_ticket_email':
-                $options = array('message' => $value['message']);
+                $options = ['message' => $value['message']];
                 break;
 
             case 'call_webhook':
-                $options = array('webhook_id' => $value['webhook_id']);
+                $options = ['webhook_id' => $value['webhook_id']];
                 break;
 
             case 'add_org_managers':
-                $options = array();
+                $options = [];
                 break;
 
             case 'send_org_managers_email':
-                $options = array('message' => $value['message']);
+                $options = ['message' => $value['message']];
                 break;
 
             case 'send_autoclose_warn_email':
-                $options = array('template_name' => $value['template_name']);
+                $options = ['template_name' => $value['template_name']];
                 break;
 
             case 'add_sla':
-                $options = array('sla_id' => $value['sla_id']);
+                $options = ['sla_id' => $value['sla_id']];
                 break;
 
             case 'remove_sla':
-                $options = array('sla_id' => $value['sla_id']);
+                $options = ['sla_id' => $value['sla_id']];
                 break;
 
             case 'set_sla_status':
-                $options = array('sla_status' => $value['sla_status'], 'sla_id' => $value['sla_id']);
+                $options = ['sla_status' => $value['sla_status'], 'sla_id' => $value['sla_id']];
                 break;
 
             case 'set_sla_complete':
-                $options = array('sla_complete' => $value['sla_complete'], 'sla_id' => $value['sla_id']);
+                $options = ['sla_complete' => $value['sla_complete'], 'sla_id' => $value['sla_id']];
                 break;
 
             case 'recalculate_sla_status':
-                $options = array();
+                $options = [];
                 break;
 
             case 'send_user_email':
-                $options = array('template' => $value['template_name']);
+                $options = ['template' => $value['template_name']];
                 break;
 
             case 'send_agent_email':
-                $options = array('template' => $value['template_name'], 'agents' => !empty($value['agents']) ? $value['agents'] : array());
+                $options = ['template' => $value['template_name'], 'agents' => !empty($value['agents']) ? $value['agents'] : []];
                 break;
 
             case 'delete':
                 $name    = 'Status';
-                $options = array('status' => 'hidden.deleted');
+                $options = ['status' => 'hidden.deleted'];
                 break;
 
             case 'set_user_email_template_newticket':
@@ -295,15 +295,15 @@ class ActionsFactory
             case 'set_agent_email_template_newreply_agent':
             case 'set_user_email_template_newreply_user':
             case 'set_agent_email_template_newreply_user':
-                $options = array('template' => $value['template_name']);
+                $options = ['template' => $value['template_name']];
                 break;
 
             default:
                 if (strpos($name, 'set_email_template_') !== false) {
-                    $options = array(
+                    $options = [
                         'tpl'      => $value['tpl'],
                         'tpl_type' => isset($value['tpl_type']) ? $value['tpl_type'] : '',
-                    );
+                    ];
                 } else {
                     $options = $value;
                 }

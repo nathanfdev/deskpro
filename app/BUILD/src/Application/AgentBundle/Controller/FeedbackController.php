@@ -63,6 +63,7 @@ use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -70,9 +71,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class FeedbackController extends AbstractController
 {
-    ############################################################################
-    # get-section-data
-    ############################################################################
+    //###########################################################################
+    // get-section-data
+    //###########################################################################
 
     /**
      * @return Response
@@ -127,9 +128,9 @@ class FeedbackController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    ############################################################################
-    # validating content actions
-    ############################################################################
+    //###########################################################################
+    // validating content actions
+    //###########################################################################
 
     /**
      * @return Response
@@ -182,9 +183,9 @@ class FeedbackController extends AbstractController
         );
     }
 
-    ############################################################################
-    # view
-    ############################################################################
+    //###########################################################################
+    // view
+    //###########################################################################
 
     /**
      * @param $feedback_id
@@ -625,9 +626,9 @@ class FeedbackController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    ############################################################################
-    # merge
-    ############################################################################
+    //###########################################################################
+    // merge
+    //###########################################################################
 
     /**
      * @param     $feedback_id
@@ -705,9 +706,9 @@ class FeedbackController extends AbstractController
         );
     }
 
-    ############################################################################
-    # filters
-    ############################################################################
+    //###########################################################################
+    // filters
+    //###########################################################################
 
     /**
      * Any general search. For example, status, category or label.
@@ -1114,9 +1115,9 @@ class FeedbackController extends AbstractController
         return $this->createJsonResponse(['success' => 1]);
     }
 
-    ############################################################################
-    # Compare revisions
-    ############################################################################
+    //###########################################################################
+    // Compare revisions
+    //###########################################################################
 
     /**
      * @param $rev_old_id
@@ -1137,9 +1138,9 @@ class FeedbackController extends AbstractController
         );
     }
 
-    ############################################################################
-    # newfeedback
-    ############################################################################
+    //###########################################################################
+    // newfeedback
+    //###########################################################################
 
     /**
      * @return Response
@@ -1171,17 +1172,19 @@ class FeedbackController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     *
      * @return Response
      */
-    public function newFeedbackSaveAction()
+    public function newFeedbackSaveAction(Request $request)
     {
         $newfeedback = new NewFeedback($this->person);
 
         $formType = new NewFeedbackTypeOld();
         $form     = $this->get('form.factory')->create($formType, $newfeedback);
 
-        if ($this->get('request')->getMethod() == 'POST') {
-            $form->handleRequest($this->get('request'));
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
             $form->isValid();
 
             $validator = new NewFeedbackValidator();

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -63,10 +63,10 @@ class Builder
      */
     public function getAll()
     {
-        return array(
+        return [
             'customReports'  => $this->repository->getCustomReports(),
             'builtInReports' => $this->repository->getBuiltInReports(),
-        );
+        ];
     }
 
     /**
@@ -219,23 +219,23 @@ class Builder
         $newType     = $this->in->getString('newType');
 
         if ($currentType == 'builder' && $newType == 'query') {
-            $results = array('query' => Display::getQueryStringFromParts($parts));
+            $results = ['query' => Display::getQueryStringFromParts($parts)];
         } elseif ($currentType == 'query' && $newType == 'builder') {
             if (!$query) {
-                $results = array('parts' => $this->getDpqlPartsForInput());
+                $results = ['parts' => $this->getDpqlPartsForInput()];
             } else {
                 try {
                     $compiler  = new Compiler();
                     $statement = $compiler->lexAndParse($query);
-                    $results   = array('parts' => $this->getDpqlPartsForInput($statement));
+                    $results   = ['parts' => $this->getDpqlPartsForInput($statement)];
                 } catch (DpqlException $e) {
-                    $results = array('error' => $e->getMessage());
+                    $results = ['error' => $e->getMessage()];
                 }
             }
         } else {
-            $results = array(
+            $results = [
                 'error' => 'Unknown conversion action.',
-            );
+            ];
         }
 
         return $results;
@@ -267,7 +267,7 @@ class Builder
      */
     public function getQueryParts($id, $with_params = true)
     {
-        $parts = array();
+        $parts = [];
 
         $report = $this->repository->find($id);
 
@@ -307,13 +307,13 @@ class Builder
         if (is_array($params)) {
             ksort($params);
         } elseif ($params) {
-            $newParams = array();
+            $newParams = [];
             foreach (explode(',', $params) as $k => $v) {
                 $newParams[$k + 1] = $v;
             }
             $params = $newParams;
         } else {
-            $params = array();
+            $params = [];
         }
 
         return $params;
@@ -327,32 +327,34 @@ class Builder
     protected function getDpqlPartsForInput(Display $statement = null)
     {
         if (!$statement) {
-            return array(
-                'display' => 'TABLE',
-                'select'  => '',
-                'from'    => '',
-                'where'   => '',
-                'splitBy' => '',
-                'groupBy' => '',
-                'orderBy' => '',
-                'limit'   => '',
-                'offset'  => '',
-            );
+            return [
+                'display'    => 'TABLE',
+                'select'     => '',
+                'from'       => '',
+                'where'      => '',
+                'splitBy'    => '',
+                'groupBy'    => '',
+                'withRollup' => '',
+                'orderBy'    => '',
+                'limit'      => '',
+                'offset'     => '',
+            ];
         }
 
         $parts = $statement->getDpqlParts();
 
-        return array(
-            'display' => $parts['DISPLAY'],
-            'select'  => $parts['SELECT'],
-            'from'    => $parts['FROM'],
-            'where'   => $parts['WHERE'],
-            'splitBy' => $parts['SPLIT'],
-            'groupBy' => $parts['GROUP'],
-            'orderBy' => $parts['ORDER'],
-            'limit'   => $parts['LIMIT'] ?: '',
-            'offset'  => $parts['OFFSET'] ?: '',
-        );
+        return [
+            'display'    => $parts['DISPLAY'],
+            'select'     => $parts['SELECT'],
+            'from'       => $parts['FROM'],
+            'where'      => $parts['WHERE'],
+            'splitBy'    => $parts['SPLIT'],
+            'groupBy'    => $parts['GROUP'],
+            'orderBy'    => $parts['ORDER'],
+            'withRollup' => $parts['WITH_ROLLUP'],
+            'limit'      => $parts['LIMIT'] ?: '',
+            'offset'     => $parts['OFFSET'] ?: '',
+        ];
     }
 
     /**
@@ -363,7 +365,7 @@ class Builder
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function getReportResponseForType($type, $query, $title, array $params = array())
+    protected function getReportResponseForType($type, $query, $title, array $params = [])
     {
         @set_time_limit(0);
 
@@ -391,7 +393,7 @@ class Builder
      *
      * @return bool|string
      */
-    protected function renderQuery($query, $renderer, &$error = false, array $params = array())
+    protected function renderQuery($query, $renderer, &$error = false, array $params = [])
     {
         return Display::renderQuery(
             $renderer,

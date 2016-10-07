@@ -1,6 +1,6 @@
 define ['DeskPRO/Util/Util'], (Util) ->
   class DpApi
-    constructor: ($http, api_url, api_token) ->
+    constructor: ($http, api_url, api_token, @Growl) ->
       @$http     = $http
       @api_token = api_token
       @api_url   = api_url.replace(/\/$/, '')
@@ -254,8 +254,10 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
       result
 
-    handleError: (data, status, headers, config) ->
-      if 403 == status and data.error_code != 'insufficient_rights'
+    handleError: (data, status, headers, config) =>
+      if 500 == status && @Growl
+        @Growl.error 'There was a problem processing your last request. Please try again.'
+      else if 403 == status and data.error_code != 'insufficient_rights'
         window.location.reload(true)
       else if console
-        console.error data
+        console.info data

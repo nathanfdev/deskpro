@@ -56,6 +56,9 @@ use Orb\Util\Strings;
 use Orb\Util\Util as OrbUtil;
 use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
+/**
+ * Class TicketManager.
+ */
 class TicketManager
 {
     /**
@@ -94,6 +97,8 @@ class TicketManager
     private $auto_vars = [];
 
     /**
+     * Constructor.
+     *
      * @param DeskproContainer $container
      */
     public function __construct(DeskproContainer $container)
@@ -103,15 +108,22 @@ class TicketManager
         $this->db           = $container->getDb();
         $this->blob_storage = $container->getBlobStorage();
 
+        /** @var \Application\DeskPRO\EntityRepository\Organization $organizationRepo */
+        $organizationRepo = $this->em->getRepository(Organization::class);
+        /** @var \Application\DeskPRO\EntityRepository\Brand $brandRepo */
+        $brandRepo = $this->em->getRepository(Brand::class);
+        /** @var \Application\DeskPRO\EntityRepository\TicketTrigger $ticketTriggerRepo */
+        $ticketTriggerRepo = $this->em->getRepository(TicketTrigger::class);
+
         $this->save_actions      = [];
         $this->post_save_actions = [];
 
         $this->save_actions[] = new TicketSaveActions\VerifyCreationSystem();
         $this->save_actions[] = new TicketSaveActions\VerifyRef($container->getRefGenerator());
-        $this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository(Organization::class));
-        $this->save_actions[] = new TicketSaveActions\VerifyAgent($container->getAgentData());
+        $this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($organizationRepo);
+        $this->save_actions[] = new TicketSaveActions\VerifyAgent();
         $this->save_actions[] = new TicketSaveActions\DetectAutoresponders(
-            $container->getEm(),
+            $this->em,
             $container->getSetting('core_email.antiflood_newtickets'),
             $container->getSetting('core_email.antiflood_newtickets_time'),
             $container->getSetting('core_email.antiflood_newreplies'),
@@ -119,9 +131,9 @@ class TicketManager
         );
 
         $this->post_save_actions[] = new TicketSaveActions\SaveContextualFields($container->getCustomFieldManager());
-        $this->post_save_actions[] = new TicketSaveActions\ExecTriggers($container->getEm()->getRepository(TicketTrigger::class), new ActionApplicator($container));
+        $this->post_save_actions[] = new TicketSaveActions\ExecTriggers($ticketTriggerRepo, new ActionApplicator($container));
         $this->post_save_actions[] = new TicketSaveActions\VerifyBrand(
-            $container->getEm()->getRepository(Brand::class),
+            $brandRepo,
             $container->getSetting('portal.default_brand')
         );
         $this->post_save_actions[] = new TicketSaveActions\VerifyDepartment(
@@ -129,11 +141,11 @@ class TicketManager
             $container->get('brand_form_helper')
         );
         $this->post_save_actions[] = new TicketSaveActions\SetActionTimes();
-        $this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository(Sla::class)->getAutoSlas(), $container->getEm(), new SlaClientMessageSender($container->getDb()));
-        $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($container->getEm(), new ActionApplicator($container));
-        $this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
+        $this->post_save_actions[] = new TicketSaveActions\ApplySlas($this->em->getRepository(Sla::class)->getAutoSlas(), $this->em, new SlaClientMessageSender($this->db));
+        $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($this->em, new ActionApplicator($container));
+        $this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($this->em);
         $this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container);
-        $this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb());
+        $this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($this->db);
 
         $this->setAutoContextVar('custom_field_manager', $container->getCustomFieldManager());
     }
@@ -289,6 +301,10 @@ class TicketManager
         return $ret;
     }
 
+    /**
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     */
     private function doSaveTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
         // Noop is sometimes used when we need to save a ticket and have appropriate client-messages
@@ -298,7 +314,7 @@ class TicketManager
         $is_trivial_change = $ticket->getStateChangeRecorder()->isTrivialChangeSet();
 
         $time_start = microtime(true);
-        $context->getLogger()->info(sprintf('########## START SAVE TICKET -- %s ##########', $ticket->id ? $ticket->id : 'newticket'));
+        $context->getLogger()->info(sprintf('########## START SAVE TICKET -- %s ##########', $ticket->getId() ? $ticket->getId() : 'newticket'));
 
         $context->getLogger()->debug(sprintf('EventType: %s', $context->getEventType()));
         $context->getLogger()->debug(sprintf('EventMethod: %s', $context->getEventMethod()));
@@ -310,12 +326,14 @@ class TicketManager
             $context->setEventType('noop');
             $is_noop = true;
         }
-        if ($context->getPersonContext()) {
+
+        $contextPerson = $context->getPersonContext();
+        if ($contextPerson) {
             $context->getLogger()->debug(sprintf(
                 'PersonContext: <Person:%d> %s %s',
-                $context->getPersonContext()->id,
-                $context->getPersonContext()->getDisplayName(),
-                $context->getPersonContext()->getPrimaryEmailAddress()
+                $contextPerson->getId(),
+                $contextPerson->getDisplayName(),
+                $contextPerson->getPrimaryEmailAddress()
             ));
         } else {
             $context->getLogger()->debug('PersonContext: NULL');
@@ -323,9 +341,9 @@ class TicketManager
 
         $this->em->persist($ticket);
 
-        #----------------------------------------
-        # Set the creation system
-        #----------------------------------------
+        //----------------------------------------
+        // Set the creation system
+        //----------------------------------------
 
         foreach ($this->save_actions as $action) {
             $context->getLogger()->info(sprintf('[TicketManager:saveaction] %s', OrbUtil::getBaseClassname($action)));
@@ -341,7 +359,7 @@ class TicketManager
             }
         }
 
-        if (!$is_noop && !$ticket->ticket_hash) {
+        if (!$is_noop && !$ticket->getTicketHash()) {
             $ticket->recomputeHash();
         }
 
@@ -397,15 +415,16 @@ class TicketManager
         }
 
         if ($ticket->getStateChangeRecorder()->hasChangedField('locked_by_agent')) {
+            $lockedByAgent = $ticket->getLockedByAgent();
             $this->db->insert('client_messages', [
                 'channel'      => 'agent-notification.tickets.locked-status',
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
                 'data'         => serialize([
                     'ticket_id'      => $ticket->getId(),
-                    'is_locked'      => (bool) $ticket->locked_by_agent,
-                    'locked_by'      => $ticket->locked_by_agent ? $ticket->locked_by_agent->id : null,
-                    'locked_by_name' => $ticket->locked_by_agent ? $ticket->locked_by_agent->getDisplayName() : null,
+                    'is_locked'      => (bool) $lockedByAgent,
+                    'locked_by'      => $lockedByAgent ? $lockedByAgent->getId() : null,
+                    'locked_by_name' => $lockedByAgent ? $lockedByAgent->getDisplayName() : null,
                     'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
                 ]),
             ]);
@@ -426,11 +445,11 @@ class TicketManager
 
         $this->em->flush();
 
-        #----------------------------------------
-        # Done
-        #----------------------------------------
+        //----------------------------------------
+        // Done
+        //----------------------------------------
 
-        $context->getLogger()->info(sprintf('########## END SAVE TICKET -- %s -- %.4fs ##########', $ticket->id ?: 0, microtime(true) - $time_start));
+        $context->getLogger()->info(sprintf('########## END SAVE TICKET -- %s -- %.4fs ##########', $ticket->getId() ?: 0, microtime(true) - $time_start));
 
         if (!$is_noop && $ticket->getStatusCode() != 'hidden.deleted' && $context->getLogger() instanceof DpLogger) {
             $log_text = $context->getLogger()->getSavedMessages();
@@ -450,8 +469,8 @@ class TicketManager
                 if ($blob) {
                     try {
                         $this->db->insert('ticket_proc_log', [
-                            'ticket_id'    => $ticket->id,
-                            'blob_id'      => $blob->id,
+                            'ticket_id'    => $ticket->getId(),
+                            'blob_id'      => $blob->getId(),
                             'date_created' => date('Y-m-d H:i:s'),
                         ]);
                     } catch (\Exception $e) {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Apps
  */
+
 namespace deskpro_us_vbulletin\Usersource;
 
 use Application\DeskPRO\Entity\AppInstance;
@@ -58,11 +59,11 @@ class AppOptionsMapper
 
         $settings = new OptionsArray($settings);
 
-        $options                 = array();
-        $options['db_dsn']       = $settings->get('db_dsn');
-        $options['db_username']  = $settings->get('db_username');
-        $options['db_password']  = $settings->get('db_password');
-        $options['table_prefix'] = $settings->get('table_prefix');
+        $options                    = [];
+        $options['db_dsn']          = $settings->get('db_dsn');
+        $options['db_username']     = $settings->get('db_username');
+        $options['db_password']     = $settings->get('db_password');
+        $options['table_prefix']    = $settings->get('table_prefix');
         $options['raw_info_filter'] = $settings->get('raw_info_filter');
 
         return $options;

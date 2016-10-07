@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,8 @@
 namespace Application\DeskPRO\JIRA;
 
 use Application\DeskPRO\Service\JIRA;
-use Guzzle\Http\Exception\ClientErrorResponseException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\RequestOptions;
 
 class Api
 {
@@ -62,40 +62,33 @@ class Api
      * @param array  $headers
      * @param array  $params
      *
-     * @throws \Exception
+     * @throws ApiCoreException
+     * @throws ApiErrorsException
+     *
+     * @return mixed
      */
-    public function call($endpoint, $method = 'GET', array $headers = array(), $params = array())
+    public function call($endpoint, $method = 'GET', array $headers = [], $params = [])
     {
         try {
-            return $this->getOAuth()->getClient()
-                ->{strtolower($method)}($endpoint, $headers, $params)
-                ->send()
-                ->json();
-        } catch (ClientErrorResponseException $e) {
-            $code = $e->getResponse()->getStatusCode();
-
-            if (404 === $code) {
-                throw new NotFoundHttpException($e->getResponse()->getReasonPhrase(), null, 404);
+            if ($headers) {
+                $params[RequestOptions::HEADERS] = $headers;
             }
+            $response = $this->getOAuth()->getClient()->request($method, $endpoint, $params);
 
-            // todo log error message
-            // $json['errorMessages']
-            try {
-                $json = $e->getResponse()->json();
-            } catch (\Exception $jsonParseException) {
-                // throw previous exception
-                throw new ApiGeneralException($e->getResponse()->getReasonPhrase(), $code);
-            }
+            return @\json_decode((string) $response->getBody(), 1);
+        } catch (ClientException $e) {
+            $response = (string) $e->getResponse()->getBody();
+            $json     = @\json_decode($response, 1);
 
             if (!empty($json['errors'])) {
-                throw new ApiErrorsException($json['errors']);
+                throw new ApiErrorsException($json['errors'], $e);
             }
 
             if (!empty($json['errorMessages'])) {
-                throw new ApiCoreException($json['errorMessages']);
+                throw new ApiCoreException($json['errorMessages'], $e);
             }
 
-            throw new \Exception($e->getResponse()->getReasonPhrase(), $code);
+            throw $e;
         }
     }
 
@@ -105,9 +98,9 @@ class Api
      *
      * @return mixed
      */
-    public function get($endpoint, array $params = array())
+    public function get($endpoint, array $params = [])
     {
-        return $this->call(self::API_BASE_PATH.$endpoint, 'GET', array(), array('query' => $params));
+        return $this->call(self::API_BASE_PATH.$endpoint, 'GET', [], [RequestOptions::QUERY => $params]);
     }
 
     /**
@@ -116,9 +109,14 @@ class Api
      *
      * @return mixed
      */
-    public function post($endpoint, array $params = array())
+    public function post($endpoint, array $params = [])
     {
-        return $this->call(self::API_BASE_PATH.$endpoint, 'POST', array('content-type' => 'application/json'), json_encode($params));
+        return $this->call(
+            self::API_BASE_PATH.$endpoint,
+            'POST',
+            [],
+            [RequestOptions::JSON => $params]
+        );
     }
 
     /**
@@ -127,9 +125,14 @@ class Api
      *
      * @return mixed
      */
-    public function put($endpoint, array $params = array())
+    public function put($endpoint, array $params = [])
     {
-        return $this->call(self::API_BASE_PATH.$endpoint, 'PUT', array('content-type' => 'application/json'), json_encode($params));
+        return $this->call(
+            self::API_BASE_PATH.$endpoint,
+            'PUT',
+            [],
+            [RequestOptions::JSON => $params]
+        );
     }
 
     /**
@@ -138,9 +141,9 @@ class Api
      *
      * @return mixed
      */
-    public function delete($endpoint, array $params = array())
+    public function delete($endpoint, array $params = [])
     {
-        return $this->call(self::API_BASE_PATH.$endpoint, 'DELETE', array(), $params);
+        return $this->call(self::API_BASE_PATH.$endpoint, 'DELETE', [], $params);
     }
 
     /**
@@ -156,14 +159,16 @@ class Api
     /**
      * @param $json
      *
-     * @throws ApiErrorsException
-     * @throws \Exception
-     *
-     * @return array
+     * @return mixed
      */
     public function createIssueJson($json)
     {
-        return $this->call(self::API_BASE_PATH.'/issue', 'POST', array('content-type' => 'application/json'), $json);
+        return $this->call(
+            self::API_BASE_PATH.'/issue',
+            'POST',
+            ['content-type'       => 'application/json'],
+            [RequestOptions::BODY => $json]
+        );
     }
 
     /**
@@ -181,38 +186,32 @@ class Api
      * @param $id
      * @param $json
      *
-     * @throws ApiCoreException
-     * @throws ApiErrorsException
-     * @throws \Exception
+     * @return mixed
      */
     public function updateIssueJson($id, $json)
     {
         return $this->call(
             sprintf('%s/issue/%d', self::API_BASE_PATH, $id),
             'PUT',
-            array('content-type' => 'application/json'),
-            $json
+            ['content-type'       => 'application/json'],
+            [RequestOptions::BODY => $json]
         );
     }
 
     /**
      * @param $jql
+     * @param array $fields
      *
      * @throws \Exception
      *
-     * @return array
+     * @return mixed
      */
     public function searchIssues($jql, array $fields)
     {
-        try {
-            return $this->post('/search', array(
-                'jql'    => $jql,
-                'fields' => $fields,
-                'expand' => array('renderedFields'),
-            ));
-        } catch (\Exception $e) {
-            // todo
-            throw $e;
-        }
+        return $this->post('/search', [
+            'jql'    => $jql,
+            'fields' => $fields,
+            'expand' => ['renderedFields'],
+        ]);
     }
 }

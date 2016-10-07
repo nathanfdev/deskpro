@@ -36,8 +36,6 @@ use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\News;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 
-/**
- */
 class NewsLinkGenerator extends AbstractContentLinkGenerator
 {
     /**

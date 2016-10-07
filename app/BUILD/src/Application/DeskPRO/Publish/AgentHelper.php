@@ -161,9 +161,9 @@ class AgentHelper implements PersonContextInterface
         return $cats_to_ugs;
     }
 
-    ############################################################################
-    # Glossary
-    ############################################################################
+    //###########################################################################
+    // Glossary
+    //###########################################################################
 
     /**
      * Get an array of glossary words, sorted into an alphabetically-indexed array.
@@ -180,9 +180,9 @@ class AgentHelper implements PersonContextInterface
         return $glossary_words;
     }
 
-    ############################################################################
-    # Validating Comments
-    ############################################################################
+    //###########################################################################
+    // Validating Comments
+    //###########################################################################
 
     /**
      * @param int    $limit
@@ -205,9 +205,9 @@ class AgentHelper implements PersonContextInterface
 
         $types = $this->getCommentTypeInfo();
 
-        #------------------------------
-        # Fetch from each comment table with a union
-        #------------------------------
+        //------------------------------
+        // Fetch from each comment table with a union
+        //------------------------------
 
         foreach ($this->enabled_types as $t) {
             $t_info      = $types[$t];
@@ -228,9 +228,9 @@ class AgentHelper implements PersonContextInterface
             return [];
         }
 
-        #------------------------------
-        # Fetch each comment in the result
-        #------------------------------
+        //------------------------------
+        // Fetch each comment in the result
+        //------------------------------
 
         $result_ids_typed = [];
 
@@ -249,10 +249,10 @@ class AgentHelper implements PersonContextInterface
             $results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
         }
 
-        #------------------------------
-        # Put back into original sort order
-        # as a combined array
-        #------------------------------
+        //------------------------------
+        // Put back into original sort order
+        // as a combined array
+        //------------------------------
 
         $results_ordered = [];
 
@@ -294,14 +294,14 @@ class AgentHelper implements PersonContextInterface
         return array_sum($results);
     }
 
-    ############################################################################
-    # All Comments
-    ############################################################################
+    //###########################################################################
+    // All Comments
+    //###########################################################################
 
     /**
-     * @param int    $limit
-     * @param int    $brandId
-     * @param string $order_dir
+     * @param int|array $limit
+     * @param int       $brandId
+     * @param string    $order_dir
      *
      * @return array
      */
@@ -320,9 +320,9 @@ class AgentHelper implements PersonContextInterface
 
         $types = $this->getCommentTypeInfo();
 
-        #------------------------------
-        # Fetch from each comment table with a union
-        #------------------------------
+        //------------------------------
+        // Fetch from each comment table with a union
+        //------------------------------
 
         foreach ($this->enabled_types as $t) {
             $t_info = $types[$t];
@@ -371,9 +371,9 @@ class AgentHelper implements PersonContextInterface
             return [];
         }
 
-        #------------------------------
-        # Fetch each comment in the result
-        #------------------------------
+        //------------------------------
+        // Fetch each comment in the result
+        //------------------------------
 
         $result_ids_typed = [];
 
@@ -392,10 +392,10 @@ class AgentHelper implements PersonContextInterface
             $results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
         }
 
-        #------------------------------
-        # Put back into original sort order
-        # as a combined array
-        #------------------------------
+        //------------------------------
+        // Put back into original sort order
+        // as a combined array
+        //------------------------------
 
         $results_ordered = [];
 
@@ -528,9 +528,9 @@ class AgentHelper implements PersonContextInterface
         return $types;
     }
 
-    ############################################################################
-    # Drafts
-    ############################################################################
+    //###########################################################################
+    // Drafts
+    //###########################################################################
 
     /**
      * Get an array of all drafts.
@@ -597,9 +597,9 @@ class AgentHelper implements PersonContextInterface
             ],
         ];
 
-        #------------------------------
-        # Fetch from each comment table with a union
-        #------------------------------
+        //------------------------------
+        // Fetch from each comment table with a union
+        //------------------------------
 
         $db = App::getDb();
         foreach ($this->enabled_types as $t) {
@@ -695,7 +695,7 @@ class AgentHelper implements PersonContextInterface
         return array_sum($results);
     }
 
-    ############################################################################
+    //###########################################################################
 
     /**
      * @param array $results
@@ -731,9 +731,9 @@ class AgentHelper implements PersonContextInterface
             ],
         ];
 
-        #------------------------------
-        # Fetch each comment in the result
-        #------------------------------
+        //------------------------------
+        // Fetch each comment in the result
+        //------------------------------
 
         $result_ids_typed = [];
 
@@ -752,10 +752,10 @@ class AgentHelper implements PersonContextInterface
             $results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
         }
 
-        #------------------------------
-        # Put back into original sort order
-        # as a combined array
-        #------------------------------
+        //------------------------------
+        // Put back into original sort order
+        // as a combined array
+        //------------------------------
 
         $results_ordered = [];
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity;
@@ -43,17 +44,17 @@ class TicketLog extends AbstractEntityRepository
      *
      * @return \Application\DeskPRO\Entity\TicketLog[]
      */
-    public function getLogsForTicket(Entity\Ticket $ticket, array $options = array())
+    public function getLogsForTicket(Entity\Ticket $ticket, array $options = [])
     {
-        #------------------------------
-        # Get logs
-        #------------------------------
+        //------------------------------
+        // Get logs
+        //------------------------------
 
         if (!isset($options['order_dir'])) {
             $options['order_dir'] = 'DESC';
         }
 
-        $params = array('ticket_id' => $ticket->getId());
+        $params = ['ticket_id' => $ticket->getId()];
 
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('log, p')
@@ -81,7 +82,7 @@ class TicketLog extends AbstractEntityRepository
         $query           = $qb->getQuery();
         $raw_ticket_logs = $query->execute($params);
 
-        $ticket_logs = array();
+        $ticket_logs = [];
         foreach ($raw_ticket_logs as $l) {
             $ticket_logs[$l->getId()] = $l;
         }
@@ -97,13 +98,13 @@ class TicketLog extends AbstractEntityRepository
      */
     public function groupTicketLogs($ticket_logs)
     {
-        #------------------------------
-        # Group them
-        #------------------------------
+        //------------------------------
+        // Group them
+        //------------------------------
 
         // Need another one to make sure all of the children are here as well
-        $pids = array(0);
-        $cids = array(0);
+        $pids = [0];
+        $cids = [0];
         foreach ($ticket_logs as $l) {
             if (!$l->parent) {
                 $pids[] = $l->getId();
@@ -113,7 +114,7 @@ class TicketLog extends AbstractEntityRepository
         }
 
         // And group children under their parent row
-        $return = array();
+        $return = [];
 
         foreach ($ticket_logs as $log) {
             if ($log->parent) {
@@ -144,23 +145,23 @@ class TicketLog extends AbstractEntityRepository
      */
     public function filterTicketLogs($ticket_logs, $filter_type)
     {
-        static $type_map = array(
-            'message'  => array('message_removed', 'message_edit', 'message_created'),
-            'note'     => array('message_note_created'),
-            'notif'    => array('agent_notify', 'user_notify'),
-            'assign'   => array('changed_agent', 'changed_agent_team', 'changed_person', 'participant_added', 'participant_removed'),
-            'slas'     => array('ticket_sla_added', 'ticket_sla_removed', 'ticket_sla_updated'),
-            'triggers' => array('executed_triggers'),
-            'status'   => array('status'),
-        );
+        static $type_map = [
+            'message'  => ['message_removed', 'message_edit', 'message_created'],
+            'note'     => ['message_note_created'],
+            'notif'    => ['agent_notify', 'user_notify'],
+            'assign'   => ['changed_agent', 'changed_agent_team', 'changed_person', 'participant_added', 'participant_removed'],
+            'slas'     => ['ticket_sla_added', 'ticket_sla_removed', 'ticket_sla_updated'],
+            'triggers' => ['executed_triggers'],
+            'status'   => ['status'],
+        ];
 
         if (!isset($type_map[$filter_type])) {
-            return array();
+            return [];
         }
 
         $types = $type_map[$filter_type];
 
-        $return = array();
+        $return = [];
 
         foreach ($ticket_logs as $log) {
             if (in_array($log->action_type, $types)) {
@@ -178,17 +179,17 @@ class TicketLog extends AbstractEntityRepository
      */
     public function countTicketLogTypes($ticket_logs)
     {
-        $counts = array('all' => 0);
+        $counts = ['all' => 0];
 
-        $type_map = array(
-            'message'  => array('message_removed', 'message_edit', 'message_created'),
-            'note'     => array('message_note_created'),
-            'notif'    => array('agent_notify', 'user_notify'),
-            'assign'   => array('changed_agent', 'changed_agent_team', 'changed_person', 'participant_added', 'participant_removed'),
-            'slas'     => array('ticket_sla_added', 'ticket_sla_removed', 'ticket_sla_updated'),
-            'triggers' => array('executed_triggers'),
-            'status'   => array('status'),
-        );
+        $type_map = [
+            'message'  => ['message_removed', 'message_edit', 'message_created'],
+            'note'     => ['message_note_created'],
+            'notif'    => ['agent_notify', 'user_notify'],
+            'assign'   => ['changed_agent', 'changed_agent_team', 'changed_person', 'participant_added', 'participant_removed'],
+            'slas'     => ['ticket_sla_added', 'ticket_sla_removed', 'ticket_sla_updated'],
+            'triggers' => ['executed_triggers'],
+            'status'   => ['status'],
+        ];
 
         foreach ($ticket_logs as $log) {
             ++$counts['all'];
@@ -206,7 +207,7 @@ class TicketLog extends AbstractEntityRepository
         return $counts;
     }
 
-    public function getLogsForAgent(Entity\Person $agent, array $options = array())
+    public function getLogsForAgent(Entity\Person $agent, array $options = [])
     {
         $qb = $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('log')
@@ -214,7 +215,7 @@ class TicketLog extends AbstractEntityRepository
             ->where('log.person = :person')
             ->orderBy('log.date_created', 'ASC');
 
-        $params           = array();
+        $params           = [];
         $params['person'] = $agent;
 
         if (!empty($options['types'])) {

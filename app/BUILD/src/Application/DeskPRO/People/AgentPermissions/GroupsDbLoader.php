@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category People
  */
+
 namespace Application\DeskPRO\People\AgentPermissions;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -68,7 +69,7 @@ class GroupsDbLoader
      */
     public function __construct(array $groups, EntityManager $em)
     {
-        $this->group_ids = array();
+        $this->group_ids = [];
 
         foreach ($groups as $g) {
             if (is_object($g)) {
@@ -110,10 +111,10 @@ class GroupsDbLoader
         if (isset($this->group_perms[$group_id])) {
             return $this->group_perms[$group_id];
         } else {
-            $this->group_perms[$group_id] = array();
+            $this->group_perms[$group_id] = [];
         }
 
-        $names_loader = new PermissionNamesLoader();//TODO inject
+        $names_loader = new PermissionNamesLoader(); //TODO inject
 
         switch ($group_id) {
             case $this->all_perms_group:
@@ -134,11 +135,11 @@ class GroupsDbLoader
                     FROM permissions
                     WHERE usergroup_id IN (?)
                         AND value = 1
-                ', array($this->group_ids), array(Connection::PARAM_INT_ARRAY));
+                ', [$this->group_ids], [Connection::PARAM_INT_ARRAY]);
 
                 foreach ($perm_recs as $rec) {
                     if (!isset($this->group_perms[$rec['usergroup_id']])) {
-                        $this->group_perms[$rec['usergroup_id']] = array();
+                        $this->group_perms[$rec['usergroup_id']] = [];
                     }
 
                     $this->group_perms[$rec['usergroup_id']][$rec['name']] = true;

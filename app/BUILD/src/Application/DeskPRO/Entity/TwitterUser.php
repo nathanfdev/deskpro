@@ -175,7 +175,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var array
      */
-    protected static $_stubs = array();
+    protected static $_stubs = [];
     /**
      * @var bool
      */
@@ -200,7 +200,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
      */
     public function isProtected()
     {
-        return (Boolean) $this->is_protected;
+        return (bool) $this->is_protected;
     }
 
     /**
@@ -208,7 +208,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
      */
     public function isVerified()
     {
-        return (Boolean) $this->is_verified;
+        return (bool) $this->is_verified;
     }
 
     /**
@@ -216,7 +216,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
      */
     public function isGeoEnabled()
     {
-        return (Boolean) $this->is_geo_enabled;
+        return (bool) $this->is_geo_enabled;
     }
 
     public function getProfileImageUrl($size = 'normal')
@@ -242,10 +242,10 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
                     // need to grab the first api we can get
                     $api = $account->getTwitterApi();
                     try {
-                        $response = $api->get_statusesUser_timeline(array(
+                        $response = $api->get_statusesUser_timeline([
                             'user_id' => $this->id,
                             'count'   => 100,
-                        ));
+                        ]);
                         $twitter_service = new \Application\DeskPRO\Service\Twitter();
                         foreach ($response as $status) {
                             $twitter_service->processStatus($api, $status, true, 1);
@@ -266,7 +266,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
     public function getMessages()
     {
-        $from_user_ids = array();
+        $from_user_ids = [];
         foreach (App::getOrm()->getRepository('DeskPRO:TwitterAccount')->getAllForPerson() as $account) {
             $from_user_ids[] = $account->user->id;
         }
@@ -276,7 +276,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
     public function getMentions()
     {
-        $from_user_ids = array();
+        $from_user_ids = [];
         foreach (App::getOrm()->getRepository('DeskPRO:TwitterAccount')->getAllForPerson() as $account) {
             $from_user_ids[] = $account->user->id;
         }
@@ -298,13 +298,13 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
     {
         $repo = App::getOrm()->getRepository('DeskPRO:TwitterStatus');
 
-        return $repo->countMessagesForUserId($this->id, array($account->user->id), true)
-            + $repo->countMentionsForUserId($this->id, array($account->user->id), true);
+        return $repo->countMessagesForUserId($this->id, [$account->user->id], true)
+            + $repo->countMentionsForUserId($this->id, [$account->user->id], true);
     }
 
     public function getVerifiedPeople()
     {
-        $output  = array();
+        $output  = [];
         $results = App::getOrm()->createQuery('
             SELECT tu, p
             FROM DeskPRO:PersonTwitterUser tu
@@ -312,7 +312,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
             WHERE tu.screen_name = ?0
                 AND tu.is_verified = true
             ORDER BY p.name
-        ')->execute(array($this->screen_name));
+        ')->execute([$this->screen_name]);
         foreach ($results as $result) {
             $output[] = $result->person;
         }
@@ -322,7 +322,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
     public function getPossiblePeople()
     {
-        $output  = array();
+        $output  = [];
         $results = App::getOrm()->createQuery('
             SELECT tu, p
             FROM DeskPRO:PersonTwitterUser tu
@@ -330,7 +330,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
             WHERE tu.screen_name = ?0
                 AND tu.is_verified = false
             ORDER BY p.name
-        ')->execute(array($this->screen_name));
+        ')->execute([$this->screen_name]);
         foreach ($results as $result) {
             $output[] = $result->person;
         }
@@ -340,7 +340,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
     public function getPossibleOrganizations()
     {
-        $output  = array();
+        $output  = [];
         $results = App::getOrm()->createQuery('
             SELECT tu, o
             FROM DeskPRO:OrganizationTwitterUser tu
@@ -348,7 +348,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
             WHERE tu.screen_name = ?0
                 AND tu.is_verified = false
             ORDER BY o.name
-        ')->execute(array($this->screen_name));
+        ')->execute([$this->screen_name]);
         foreach ($results as $result) {
             $output[] = $result->organization;
         }
@@ -359,13 +359,13 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var array
      */
-    protected static $_stub_read = array(
+    protected static $_stub_read = [
         'id'                   => true,
         'is_stub'              => true,
         'last_timeline_update' => true,
         'last_profile_update'  => true,
         'last_follow_update'   => true,
-    );
+    ];
 
     public function offsetGet($offset)
     {
@@ -392,9 +392,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
                 $id_sets = array_chunk(array_keys(self::$_stubs), 100);
                 foreach ($id_sets as $ids) {
                     try {
-                        $response = $api->post_usersLookup(array(
+                        $response = $api->post_usersLookup([
                             'user_id' => implode(',', $ids),
-                        ));
+                        ]);
                         foreach ($response as $user) {
                             if (isset(self::$_stubs[$user->id_str])) {
                                 $entity = self::$_stubs[$user->id_str];
@@ -428,7 +428,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
                 $em->flush();
             }
 
-            self::$_stubs            = array();
+            self::$_stubs            = [];
             self::$_processing_stubs = false;
         }
 
@@ -440,7 +440,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
         $account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->getFirst();
         if ($account) {
             try {
-                $response = $account->getTwitterApi()->get_usersShow(array('user_id' => $this->id));
+                $response = $account->getTwitterApi()->get_usersShow(['user_id' => $this->id]);
                 $this->updateFromJson($response);
             } catch (\EpiTwitterException $e) {
             } catch (\EpiOAuthException $e) {
@@ -457,13 +457,13 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
             return;
         }
 
-        $existing_users = array();
+        $existing_users = [];
 
         try {
-            $response = $account->getTwitterApi()->get_friendsIds(array(
+            $response = $account->getTwitterApi()->get_friendsIds([
                 'user_id'       => $this->id,
                 'stringify_ids' => true,
-            ));
+            ]);
             if (isset($response->ids)) {
                 $ids = array_slice($response->ids, 0, 100);
                 $existing_users += App::getOrm()->getRepository('DeskPRO:TwitterUser')->getByIds($ids);
@@ -503,10 +503,10 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
         }
 
         try {
-            $response = $account->getTwitterApi()->get_followersIds(array(
+            $response = $account->getTwitterApi()->get_followersIds([
                 'user_id'       => $this->id,
                 'stringify_ids' => true,
-            ));
+            ]);
             if (isset($response->ids)) {
                 $ids = array_slice($response->ids, 0, 100);
                 $existing_users += App::getOrm()->getRepository('DeskPRO:TwitterUser')->getByIds($ids);
@@ -638,9 +638,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

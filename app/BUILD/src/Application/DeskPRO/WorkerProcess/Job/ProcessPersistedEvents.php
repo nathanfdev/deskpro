@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use DeskPRO\Bundle\AppBundle\Entity\Event;
@@ -45,7 +46,7 @@ class ProcessPersistedEvents extends AbstractJob
     {
         $em   = $this->getContainer()->getEm();
         $repo = $em->getRepository('\DeskPRO\Bundle\AppBundle\Entity\Event');
-        /** @var Event[] $events*/
+        /** @var Event[] $events */
         $events = $repo->findBy(['processed' => false]);
 
         if ($events) {

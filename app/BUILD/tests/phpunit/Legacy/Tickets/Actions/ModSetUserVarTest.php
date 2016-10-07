@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,7 +40,7 @@ class ModSetUserVarTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $action = new ModSetUserVar(array('name' => 'testvar', 'value' => 'test123'));
+        $action = new ModSetUserVar(['name' => 'testvar', 'value' => 'test123']);
         $action->applyAction($ticket, $exec);
 
         $this->assertTrue($exec->getUserVars()->has('testvar'));
@@ -52,7 +52,7 @@ class ModSetUserVarTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $action = new ModSetUserVar(array('name' => 'xxx', 'value' => 'test123'));
+        $action = new ModSetUserVar(['name' => 'xxx', 'value' => 'test123']);
         $action->applyAction($ticket, $exec);
 
         $this->assertFalse($exec->getUserVars()->has('testvar'));

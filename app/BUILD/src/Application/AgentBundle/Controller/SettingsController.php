@@ -39,12 +39,13 @@ use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoa
 use Application\DeskPRO\People\PersonEditManager;
 use Application\DeskPRO\Tickets\Filters\TicketFilterCollection;
 use Application\DeskPRO\UI\RuleBuilder;
+use Symfony\Component\HttpFoundation\Request;
 
 class SettingsController extends AbstractController
 {
-    ############################################################################
-    # Profile
-    ############################################################################
+    //###########################################################################
+    // Profile
+    //###########################################################################
 
     public function profileAction()
     {
@@ -63,13 +64,18 @@ class SettingsController extends AbstractController
         ]);
     }
 
-    public function profileSaveAction()
+    /**
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function profileSaveAction(Request $request)
     {
         $edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person);
         $edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
         $form         = $this->get('form.factory')->create($edit_form, $edit_profile);
 
-        $form->handleRequest($this->get('request'));
+        $form->handleRequest($request);
         $edit_profile->new_emails    = $this->in->getCleanValueArray('new_emails', 'string', 'discard');
         $edit_profile->remove_emails = $this->in->getCleanValueArray('remove_emails', 'uint', 'discard');
 
@@ -257,9 +263,9 @@ class SettingsController extends AbstractController
         return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # Ticket Notifications
-    ############################################################################
+    //###########################################################################
+    // Ticket Notifications
+    //###########################################################################
 
     public function ticketNotificationsAction()
     {
@@ -327,9 +333,9 @@ class SettingsController extends AbstractController
         return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # General Notifications
-    ############################################################################
+    //###########################################################################
+    // General Notifications
+    //###########################################################################
 
     public function otherNotificationsAction()
     {
@@ -350,9 +356,9 @@ class SettingsController extends AbstractController
         return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # Ticket Filters
-    ############################################################################
+    //###########################################################################
+    // Ticket Filters
+    //###########################################################################
 
     /**
      * Just a list of filters.
@@ -454,9 +460,9 @@ class SettingsController extends AbstractController
         return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # Ticket Macros
-    ############################################################################
+    //###########################################################################
+    // Ticket Macros
+    //###########################################################################
 
     public function ticketMacrosAction()
     {
@@ -550,9 +556,9 @@ class SettingsController extends AbstractController
         return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # Ticket Slas
-    ############################################################################
+    //###########################################################################
+    // Ticket Slas
+    //###########################################################################
 
     /**
      * Just a list of filters.

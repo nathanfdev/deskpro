@@ -77,9 +77,9 @@ class SearchTermBoost extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $boosted_terms;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Templating\Templates;
 
 use Application\DeskPRO\Entity\Template as TemplateEntity;
@@ -206,12 +207,12 @@ class TemplateSet
      */
     public function exportTemplateToArray(Template $template, Translate $tr = null, $replace_phrases = false)
     {
-        $data                          = array();
+        $data                          = [];
         $data['name']                  = $template->getName();
         $data['base_name']             = $data['name'];
         $data['type']                  = $template->getType();
         $data['is_custom']             = $template->isCustom();
-        $data['template_code']         = array();
+        $data['template_code']         = [];
         $data['template_code']['code'] = $template->getTemplateCode()->getCode();
 
         if ($template->getType() == 'email') {
@@ -221,10 +222,10 @@ class TemplateSet
 
         if ($template->getOriginalName()) {
             $data['base_name'] = $template->getOriginalName();
-            $data['original']  = array(
+            $data['original']  = [
                 'name'          => $template->getOriginalName(),
-                'template_code' => array(),
-            );
+                'template_code' => [],
+            ];
 
             $data['original']['template_code']['code'] = $template->getTemplateCode()->getCode();
             if ($template->getType() == 'email') {
@@ -238,14 +239,14 @@ class TemplateSet
         if ($tr) {
             if (preg_match('#^DeskPRO:email#', $data['name']) && !preg_match('#^DeskPRO:emails_custom#', $data['name'])) {
                 $tpl_desc                    = new EmailTemplatesDesc();
-                $info                        = $tpl_desc->getTplDisplayInfo(array('name' => $data['name']), $tr);
+                $info                        = $tpl_desc->getTplDisplayInfo(['name' => $data['name']], $tr);
                 $data['display_title']       = $info['title'];
                 $data['display_description'] = $info['desc'];
             } else {
                 $name                        = Strings::extractRegexMatch('#^DeskPRO:.*?:(.*?).html.twig$#', $data['name'], 1).'.html';
-                $key                         = 'admin.emailtpl_desc.'.strtolower(str_replace(array(':', '.'), '_', $data['base_name']));
+                $key                         = 'admin.emailtpl_desc.'.strtolower(str_replace([':', '.'], '_', $data['base_name']));
                 $data['display_title']       = $tr->hasPhrase($key.'_title') ? $tr->phrase($key.'_title') : $name;
-                $data['display_description'] = $tr->hasPhrase($key.'_desc') ? $tr->phrase($key.'_desc')   : null;
+                $data['display_description'] = $tr->hasPhrase($key.'_desc') ? $tr->phrase($key.'_desc') : null;
             }
         }
 

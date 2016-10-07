@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -39,7 +40,7 @@ class Cache extends AbstractEntityRepository
 {
     public function load($id)
     {
-        $data = App::getDb()->fetchColumn('SELECT data FROM cache WHERE id = ?', array($id));
+        $data = App::getDb()->fetchColumn('SELECT data FROM cache WHERE id = ?', [$id]);
 
         if (!$data) {
             return false;
@@ -57,7 +58,7 @@ class Cache extends AbstractEntityRepository
     public function save($id, $data, $lifetime = null)
     {
         if (!is_array($data)) {
-            $data = array('VALUE' => $data);
+            $data = ['VALUE' => $data];
         }
 
         $data = serialize($data);
@@ -68,16 +69,16 @@ class Cache extends AbstractEntityRepository
         }
 
         App::getDb()->executeUpdate(
-            'REPLACE INTO cache SET id = ?, data = ?, date_expire = ?', array(
+            'REPLACE INTO cache SET id = ?, data = ?, date_expire = ?', [
             $id, $data, $expire,
-        ));
+        ]);
 
         return true;
     }
 
     public function delete($id)
     {
-        return App::getDb()->executeUpdate('DELETE FROM cache WHERE id LIKE ?', array($id.'%'));
+        return App::getDb()->executeUpdate('DELETE FROM cache WHERE id LIKE ?', [$id.'%']);
     }
 
     /**
@@ -85,6 +86,6 @@ class Cache extends AbstractEntityRepository
      */
     public function cleanExpired()
     {
-        return App::getDb()->executeUpdate('DELETE FROM cache WHERE date_expire < ?', array(date('Y-m-d H:i:s')));
+        return App::getDb()->executeUpdate('DELETE FROM cache WHERE date_expire < ?', [date('Y-m-d H:i:s')]);
     }
 }

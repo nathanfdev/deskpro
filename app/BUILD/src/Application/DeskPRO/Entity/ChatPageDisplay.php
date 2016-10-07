@@ -67,7 +67,7 @@ class ChatPageDisplay extends PageDisplayAbstract
     /**
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * Set the department id.
@@ -125,7 +125,7 @@ class ChatPageDisplay extends PageDisplayAbstract
 
     public function setData(array $data)
     {
-        $d = array();
+        $d = [];
 
         foreach ($data as $k => $item_data) {
             $m = null;
@@ -142,9 +142,9 @@ class ChatPageDisplay extends PageDisplayAbstract
         $this->setModelField('data', $d);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

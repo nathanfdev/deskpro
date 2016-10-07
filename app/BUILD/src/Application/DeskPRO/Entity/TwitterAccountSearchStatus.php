@@ -68,9 +68,9 @@ class TwitterAccountSearchStatus extends \Application\DeskPRO\Domain\DomainObjec
         $this->setModelField('date_created', $status->date_created);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

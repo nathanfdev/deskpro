@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastUserReply;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -41,11 +42,11 @@ class TicketDateLastUserReplyTerm extends AbstractTerm
     public static function configureOptions(TermOptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'date'        => null,
                 'date2'       => null,
                 'ignore_time' => false,
-            )
+            ]
         );
 
         $date_normalizer = function ($options, $date) {
@@ -61,31 +62,31 @@ class TicketDateLastUserReplyTerm extends AbstractTerm
         };
 
         $resolver->setNormalizers(
-            array(
+            [
                 'date'        => $date_normalizer,
                 'date2'       => $date_normalizer,
                 'ignore_time' => function ($options, $ignore_time) {
                     return (bool) $ignore_time;
                 },
-            )
+            ]
         );
 
         $resolver->setConstraints(
-            array(
-                'date' => array(
+            [
+                'date' => [
                     new Assert\NotNull(),
                     new Assert\DateTime(),
-                ),
-                'date2' => array(
+                ],
+                'date2' => [
                     new Assert\DateTime(),
-                ),
-            )
+                ],
+            ]
         );
     }
 
     public function getSupportedOps()
     {
-        return array(
+        return [
             TermInterface::OP_IS,
             TermInterface::OP_NOT,
             TermInterface::OP_GT,
@@ -94,7 +95,7 @@ class TicketDateLastUserReplyTerm extends AbstractTerm
             TermInterface::OP_LTE,
             TermInterface::OP_NOT_RANGE,
             TermInterface::OP_RANGE,
-        );
+        ];
     }
 
     public function getDefaultOp()

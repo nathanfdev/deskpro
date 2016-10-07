@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\DBAL\Logging;
 
 use Application\DeskPRO\App;
@@ -58,12 +59,12 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
     /**
      * @var array
      */
-    protected $_slowlog_rules = array();
+    protected $_slowlog_rules = [];
 
     /**
      * @var array
      */
-    protected $_queries = array();
+    protected $_queries = [];
     /**
      * @var int
      */
@@ -101,7 +102,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
      */
     public $tag = '';
 
-    public $ignore_triggers     = array();
+    public $ignore_triggers     = [];
     public $ignored_query_start = null;
 
     /**
@@ -153,7 +154,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 
         $trans_level = App::getDb()->getTransactionNestingLevel();
 
-        $this->_queries[$this->_last_query] = array(
+        $this->_queries[$this->_last_query] = [
             'trans_level'    => $trans_level,
             'tag'            => $this->tag,
             'sql'            => $sql,
@@ -164,7 +165,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
             'time_start'     => microtime(true),
             'time_end'       => 0,
             'time_taken'     => 0,
-        );
+        ];
     }
 
     public function stopQuery()
@@ -222,13 +223,13 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
                 $queryinfo['table'] = $table;
                 $queryinfo['trace'] = $trace;
 
-                $this->getLogger()->log("SQL log against $table", Logger::NOTICE, array('queryinfo' => $queryinfo));
+                $this->getLogger()->log("SQL log against $table", Logger::NOTICE, ['queryinfo' => $queryinfo]);
                 break;
             }
         }
 
         if (!$this->keep_queries) {
-            $this->_queries    = array();
+            $this->_queries    = [];
             $this->_last_query = -1;
         }
 
@@ -279,7 +280,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
      */
     public function addSlowLogRule($query_type, $max_time)
     {
-        $this->_slowlog_rules[] = array($query_type, $max_time);
+        $this->_slowlog_rules[] = [$query_type, $max_time];
     }
 
     /**

@@ -173,13 +173,9 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -191,13 +187,9 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
     }
 
     /**
-     * Get the default value phrase for the object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         return $this->title;
     }
@@ -212,27 +204,27 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
         return $this->title;
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('title', new NotBlank());
-        $metadata->addPropertyConstraint('title', new Length(array('min' => 2)));
+        $metadata->addPropertyConstraint('title', new Length(['min' => 2]));
         $metadata->addPropertyConstraint(
             'status_type',
             new Choice(
-                array(
-                    'choices' => array('active', 'closed'),
-                )
+                [
+                    'choices' => ['active', 'closed'],
+                ]
             )
         );
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

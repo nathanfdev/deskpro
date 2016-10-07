@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category ContentSearch
  */
+
 namespace Application\DeskPRO\ContentSearch;
 
 use Application\DeskPRO\App;
@@ -54,22 +55,22 @@ class IndexUpdater
     {
         App::getDb()->beginTransaction();
 
-        App::getDb()->delete('content_search', array('id' => $this->entity->getSearchId()));
-        App::getDb()->delete('content_search_attributes', array('id' => $this->entity->getSearchId()));
+        App::getDb()->delete('content_search', ['id' => $this->entity->getSearchId()]);
+        App::getDb()->delete('content_search_attributes', ['id' => $this->entity->getSearchId()]);
 
-        App::getDb()->insert('content_search', array(
+        App::getDb()->insert('content_search', [
             'id'      => $this->entity->getSearchId(),
             'content' => $this->entity->getSearchContent(),
-        ));
+        ]);
 
         $attr = $this->entity->getSearchAttributes();
         if ($attr) {
             foreach ($attr as $k => $v) {
-                App::getDb()->insert('content_search', array(
+                App::getDb()->insert('content_search', [
                     'search_id'    => $this->entity->getSearchId(),
                     'attribute_id' => $k,
                     'content'      => $v,
-                ));
+                ]);
             }
         }
 

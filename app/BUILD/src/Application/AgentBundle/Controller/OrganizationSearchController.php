@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,7 +47,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class OrganizationSearchController extends AbstractController
 {
-    protected function _getResponseForOrgs($type, $type_id, OrganizationResults $results_helper, array $vars = array())
+    protected function _getResponseForOrgs($type, $type_id, OrganizationResults $results_helper, array $vars = [])
     {
         $is_partial = false;
         $tpl        = 'AgentBundle:OrganizationSearch:filter.html.twig';
@@ -56,9 +56,9 @@ class OrganizationSearchController extends AbstractController
             $tpl        = 'AgentBundle:OrganizationSearch:filter-page.html.twig';
         }
 
-        #------------------------------
-        # Get the results to show
-        #------------------------------
+        //------------------------------
+        // Get the results to show
+        //------------------------------
 
         $page = $this->in->getUint('page');
         if (!$page) {
@@ -67,28 +67,28 @@ class OrganizationSearchController extends AbstractController
 
         $organizations = $results_helper->getOrgsForPage($page);
 
-        #------------------------------
-        # Send results
-        #------------------------------
+        //------------------------------
+        // Send results
+        //------------------------------
 
         $renderer       = new OrganizationListRenderer($this->container);
         $result_display = new \Application\DeskPRO\Organizations\OrgResultsDisplay($organizations);
-        $vars           = array_merge($vars, array(
+        $vars           = array_merge($vars, [
             'type'               => $type,
             'type_id'            => $type_id,
             'organizations'      => $organizations,
             'organizations_json' => $renderer->renderJson($result_display),
             'page'               => $page,
             'per_page'           => $results_helper->getPerPage(),
-        ));
+        ]);
 
         $html = $this->renderView($tpl, $vars);
 
         if ($is_partial) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'html' => $html,
                 'page' => $page,
-            ));
+            ]);
         } else {
             return $this->createResponse($html);
         }
@@ -109,7 +109,7 @@ class OrganizationSearchController extends AbstractController
         if ($pref_display_fields) {
             $vars['display_fields'] = $pref_display_fields;
         } else {
-            $vars['display_fields'] = array('members_count');
+            $vars['display_fields'] = ['members_count'];
         }
 
         $org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
@@ -127,17 +127,17 @@ class OrganizationSearchController extends AbstractController
 
         $result_display = new \Application\DeskPRO\Organizations\OrgResultsDisplay($organizations);
 
-        return $this->render("AgentBundle:OrganizationSearch:$tpl", array(
+        return $this->render("AgentBundle:OrganizationSearch:$tpl", [
             'organizations'  => $organizations,
             'display_fields' => $pref_display_fields,
             'org_field_defs' => $org_field_defs,
             'result_display' => $result_display,
-        ));
+        ]);
     }
 
-    ############################################################################
-    # search
-    ############################################################################
+    //###########################################################################
+    // search
+    //###########################################################################
 
     public function searchAction()
     {
@@ -151,20 +151,20 @@ class OrganizationSearchController extends AbstractController
 
         $order_by = $this->person->getPref('agent.ui.org-filter-order-by.0');
 
-        #------------------------------
-        # If there's no result set, we're running it for the first time
-        #------------------------------
+        //------------------------------
+        // If there's no result set, we're running it for the first time
+        //------------------------------
 
         if (!$result_cache) {
             $term_rules = RuleBuilder::newTermsBuilder();
             $terms      = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw', 'discard'));
 
-            $set_terms_map = array(
-                'org_name'          => array('op' => 'contains', 'options' => array()),
-                'org_label'         => array('op' => 'contains', 'options' => array()),
-                'org_email_domain'  => array('op' => 'contains', 'options' => array()),
-                'org_contact_phone' => array('op' => 'contains', 'options' => array()),
-            );
+            $set_terms_map = [
+                'org_name'          => ['op' => 'contains', 'options' => []],
+                'org_label'         => ['op' => 'contains', 'options' => []],
+                'org_email_domain'  => ['op' => 'contains', 'options' => []],
+                'org_contact_phone' => ['op' => 'contains', 'options' => []],
+            ];
             foreach ($set_terms_map as $name => $info) {
                 $in_val = $this->container->getIn()->getCleanValue('set_term.'.$name, 'raw');
                 if (is_string($in_val)) {
@@ -212,7 +212,7 @@ class OrganizationSearchController extends AbstractController
 
             $result_cache                = new Entity\ResultCache();
             $result_cache['person']      = $this->person;
-            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
+            $result_cache['criteria']    = ['terms' => $searcher->getTerms(), 'order_by' => $order_by];
             $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
@@ -220,9 +220,9 @@ class OrganizationSearchController extends AbstractController
             $this->em->flush();
         }
 
-        #------------------------------
-        # Re-do search if we changed order
-        #------------------------------
+        //------------------------------
+        // Re-do search if we changed order
+        //------------------------------
 
         // Prefs are saved into extra[]. Of order_by doesn't match
         // the order_by in criteria, that means the user changed it
@@ -246,24 +246,24 @@ class OrganizationSearchController extends AbstractController
             $this->em->flush();
         }
 
-        #------------------------------
-        # Serve results
-        #------------------------------
+        //------------------------------
+        // Serve results
+        //------------------------------
 
         $results_helper = Helper\OrganizationResults::newFromResultCache($this, $result_cache);
 
-        $vars = array(
+        $vars = [
             'cache'    => $result_cache,
             'cache_id' => $result_cache['id'],
             'org_ids'  => $result_cache['results'],
-        );
+        ];
 
         $pref_display_fields = $this->person->getPref('agent.ui.org-filter-display-fields.0');
         if ($pref_display_fields) {
             $vars['display_fields'] = $pref_display_fields;
         } else {
             // Default display fields based on the filter
-            $vars['display_fields'] = array('members_count');
+            $vars['display_fields'] = ['members_count'];
         }
 
         if ($this->in->getString('page_title')) {
@@ -293,7 +293,7 @@ class OrganizationSearchController extends AbstractController
                 FROM DeskPRO:Organization o
                 WHERE o.id IN (?0)
                 ORDER BY o.name ASC
-            ')->execute(array($ids));
+            ')->execute([$ids]);
         } elseif ($q) {
             $orgs_list = $this->em->createQuery('
                 SELECT o
@@ -309,15 +309,15 @@ class OrganizationSearchController extends AbstractController
             ')->setMaxResults($limit)->getResult();
         }
 
-        $json = array('results' => array(), 'exact' => false);
+        $json = ['results' => [], 'exact' => false];
 
         foreach ($orgs_list as $org) {
-            $json['results'][] = array(
+            $json['results'][] = [
                 'id'    => $org['id'],
                 'name'  => $org['name'],
                 'value' => $org['name'],
                 'label' => $org['name'],
-            );
+            ];
         }
 
         $org = $this->em->createQuery('
@@ -350,9 +350,9 @@ class OrganizationSearchController extends AbstractController
           ->getOneOrNullResult();
 
         if ($org) {
-            return $this->createJsonResponse(array('organization_id' => $org->id));
+            return $this->createJsonResponse(['organization_id' => $org->id]);
         } else {
-            return $this->createJsonResponse(array('invalid' => true));
+            return $this->createJsonResponse(['invalid' => true]);
         }
     }
 
@@ -368,7 +368,7 @@ class OrganizationSearchController extends AbstractController
 
         $q = $this->in->getString('q');
 
-        $ids = array($org->id);
+        $ids = [$org->id];
         // find root
         $root = $org;
         while ($root->parent) {
@@ -384,7 +384,7 @@ class OrganizationSearchController extends AbstractController
                 AND o.id != :id
                 ORDER BY o.name ASC
                 LIMIT %d
-            ', $limit), array('name' => "%$q%", 'id' => $id))->fetchAll();
+            ', $limit), ['name' => "%$q%", 'id' => $id])->fetchAll();
         } else {
             $orgs_list = $this->em->getConnection()->executeQuery(sprintf('
                 SELECT o.id, o.name, op.id as parent_id, op.name as parent_name
@@ -393,12 +393,12 @@ class OrganizationSearchController extends AbstractController
                 WHERE o.id != :id
                 ORDER BY o.name ASC
                 LIMIT %d
-            ', $limit), array('id' => $id))->fetchAll();
+            ', $limit), ['id' => $id])->fetchAll();
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'results' => $orgs_list,
             'root_id' => $root->id,
-        ));
+        ]);
     }
 }

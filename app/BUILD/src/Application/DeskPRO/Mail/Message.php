@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\App;
@@ -40,6 +36,9 @@ use Orb\Html\Html2Text;
 use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
+/**
+ * Class Message.
+ */
 class Message extends \Orb\Mail\Message
 {
     /**
@@ -75,12 +74,12 @@ class Message extends \Orb\Mail\Message
     /**
      * @var \Application\DeskPRO\Entity\Blob[]
      */
-    protected $attach_blobs = array();
+    protected $attach_blobs = [];
 
     /**
      * @var array
      */
-    protected $embed_only = array();
+    protected $embed_only = [];
 
     /**
      * Set a context about this message. The mailer might treat it differently.
@@ -106,7 +105,7 @@ class Message extends \Orb\Mail\Message
                 $this->template_vars['to_name']    = !empty($this->set_to['name']) ? $this->set_to['name'] : $this->set_to['email'];
                 $this->template_vars['to_contact'] = !empty($this->set_to['name']) ? $this->set_to['name'].' <'.$this->set_to['email'].'>' : $this->set_to['email'];
 
-                $skip_check = array(
+                $skip_check = [
                     // Agent email sent to an unknown email address for agent ticket replies
                     // ("your reply was not accepted because it was sent from an unknown address")
                     'DeskPRO:emails_agent:error-unknown-from.html.twig' => 1,
@@ -117,7 +116,7 @@ class Message extends \Orb\Mail\Message
                     'DeskPRO:emails_agent:agent-welcome-usersource.html.twig' => 1,
                     // Server / Test email can be sent to anyone
                     'DeskPRO:emails_agent:test-email.html.twig' => 1,
-                );
+                ];
 
                 if (strpos($this->template, ':emails_agent:') !== false && !isset($skip_check[$this->template])) {
                     $agent = App::getContainer()->getAgentData()->getByEmail($this->set_to['email']);
@@ -178,7 +177,7 @@ class Message extends \Orb\Mail\Message
                 // Try to clean up subject from whitespace
                 $subject = \Orb\Util\Strings::removeEmptyLines($subject);
                 $subject = \Orb\Util\Strings::trimLines($subject);
-                $subject = str_replace(array("\r\n", "\n"), ' ', $subject);
+                $subject = str_replace(["\r\n", "\n"], ' ', $subject);
                 $subject = trim($subject);
 
                 // Subjects from the template will be escaped due to auto-escaping in twig
@@ -199,8 +198,8 @@ class Message extends \Orb\Mail\Message
 
             if (
                 !$this->set_to_person
-                || ($this->set_to_person && !$this->set_to_person->is_agent)
-                || ($this->set_to_person && $this->set_to_person->is_agent && $this->set_to_person->getPref(
+                || ($this->set_to_person && !$this->set_to_person->isAgent())
+                || ($this->set_to_person && $this->set_to_person->isAgent() && $this->set_to_person->getPref(
                         'agent.enable_plaintext_email'
                     ))
             ) {
@@ -222,13 +221,13 @@ class Message extends \Orb\Mail\Message
                     try {
                         $h2t = new Html2Text();
                         $h2t->addElementProcessor('a', function ($node) {
-                                $classname = $node->getAttribute('class');
-                                if (strpos($classname, 'dp-reply-help-link') === false) {
-                                    return;
-                                }
+                            $classname = $node->getAttribute('class');
+                            if (strpos($classname, 'dp-reply-help-link') === false) {
+                                return;
+                            }
 
-                                return 'https://deskpro.com/go/reply';
-                            });
+                            return 'https://deskpro.com/go/reply';
+                        });
                         $plaintext = $h2t->convert($plaintext);
                     } catch (\Exception $e) {
                         $plaintext = null;
@@ -242,7 +241,7 @@ class Message extends \Orb\Mail\Message
             // fallback on just simple strip tags
             } else {
                 $plaintext = str_replace("\n", '', $plaintext);
-                $plaintext = str_replace(array('<br/>', '<br />', '<p>', '</p>', '<div>'), "\n", $plaintext);
+                $plaintext = str_replace(['<br/>', '<br />', '<p>', '</p>', '<div>'], "\n", $plaintext);
                 $plaintext = preg_replace(
                         '#<a[^>]+dp-reply-help-link[^>]+>[^<]+</a>#',
                         'deskpro.com/go/reply',
@@ -260,13 +259,7 @@ class Message extends \Orb\Mail\Message
                     $this->setBody($body, 'text/html');
                 }
             }
-
-        // These need to be unset so the message can be properly serialized
-        // if it needs to be inserted as a queued message
-        $this->template            = null;
-            $this->template_vars   = null;
-            $this->template_engine = null;
-            $this->set_to_person   = null;
+        }
 
         // Attach blobs
         foreach ($this->attach_blobs as $src => $blob) {
@@ -274,7 +267,7 @@ class Message extends \Orb\Mail\Message
                 continue;
             }
 
-            $type = $blob->content_type;
+            $type = $blob->getContentType();
 
             // Bug in attaching message/rfc822 messages
             // results in invalid emails.
@@ -283,20 +276,23 @@ class Message extends \Orb\Mail\Message
                 $type = 'application/octet-stream';
             }
 
-            $this->attach(
-                    \Swift_Attachment::newInstance(
+            $this->attach(\Swift_Attachment::newInstance(
                 App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob),
-                $blob->filename,
+                $blob->getFilename(),
                 $type
-                    )
-                )
-                ;
+            ));
         }
-            $this->attach_blobs = null;
-            $this->embed_only   = true;
 
-            $this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
-        }
+        // These need to be unset so the message can be properly serialized
+        // if it needs to be inserted as a queued message
+        $this->template        = null;
+        $this->template_vars   = null;
+        $this->template_engine = null;
+        $this->set_to_person   = null;
+        $this->attach_blobs    = null;
+        $this->embed_only      = true;
+
+        $this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
     }
 
     /**
@@ -310,7 +306,7 @@ class Message extends \Orb\Mail\Message
     {
         $self = $this;
 
-        $embed_map = array();
+        $embed_map = [];
         foreach ($this->attach_blobs as $src => $blob) {
             if (is_int($src)) {
                 continue;
@@ -322,8 +318,8 @@ class Message extends \Orb\Mail\Message
                     // in case the src is referenced twice
                     $embed_map[$src] = $self->embed(\Swift_Image::newInstance(
                         App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob),
-                        $blob->filename,
-                        $blob->content_type
+                        $blob->getFilename(),
+                        $blob->getContentType()
                     ));
                 }
 
@@ -376,7 +372,7 @@ class Message extends \Orb\Mail\Message
     }
 
     /**
-     * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
+     * @param EngineInterface $template_engine
      */
     public function setTemplateEngine(EngineInterface $template_engine)
     {
@@ -389,7 +385,7 @@ class Message extends \Orb\Mail\Message
      * @param $name
      * @param array $vars
      */
-    public function setTemplate($name, array $vars = array())
+    public function setTemplate($name, array $vars = [])
     {
         $this->template      = $name;
         $this->template_vars = $vars;
@@ -416,15 +412,15 @@ class Message extends \Orb\Mail\Message
     {
         if (is_array($addresses)) {
             reset($addresses);
-            $this->set_to = array(
+            $this->set_to = [
                 'email' => \Orb\Util\Arrays::getFirstKey($addresses),
                 'name'  => \Orb\Util\Arrays::getFirstItem($addresses),
-            );
+            ];
         } else {
-            $this->set_to = array(
+            $this->set_to = [
                 'name'  => $name,
                 'email' => $addresses,
-            );
+            ];
         }
 
         return parent::setTo($addresses, $name);

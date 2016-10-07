@@ -76,15 +76,16 @@ class EmailCollectionCommand extends Command
         $max_tasks    = $input->getOption('max-processes') ?: 999;
 
         if ($input->getOption('load-config')) {
-            global $AEP_CONFIG;
-            if (!$input->getOption('max-time') && isset($AEP_CONFIG['collect']['max_time'])) {
-                $stop_time = (int) $AEP_CONFIG['collect']['max_time'];
+            $config = $this->dpEnv->getConfig('async_email_processing');
+
+            if (!$input->getOption('max-time') && isset($config['collect']['max_time'])) {
+                $stop_time = (int) $config['collect']['max_time'];
             }
-            if (!$input->getOption('max-processes') && isset($AEP_CONFIG['process']['max_processes'])) {
-                $max_tasks = (int) $AEP_CONFIG['collect']['max_processes'];
+            if (!$input->getOption('max-processes') && isset($config['collect']['max_processes'])) {
+                $max_tasks = (int) $config['collect']['max_processes'];
             }
-            if (!$input->getOption('connect-interval') && isset($AEP_CONFIG['collect']['connect_interval'])) {
-                $interval = (int) $AEP_CONFIG['collect']['connect_interval'];
+            if (!$input->getOption('connect-interval') && isset($config['collect']['connect_interval'])) {
+                $interval = (int) $config['collect']['connect_interval'];
             }
         }
 
@@ -112,7 +113,7 @@ class EmailCollectionCommand extends Command
 
         $processor = new AccountProcessor($logger);
 
-        $options = array(
+        $options = [
             'task_timeout'    => $task_timeout,
             'max_tasks'       => $max_tasks,
             'stop_after_time' => $stop_time,
@@ -120,12 +121,12 @@ class EmailCollectionCommand extends Command
             'reader'          => $reader,
             'processor'       => $processor,
             'logger'          => $logger,
-        );
+        ];
 
         if ($stop_time) {
             //TODO - accounts staying marked as active when they shouldnt
             $db = Database::getDbIfClosed($this->dpEnv->getConfig('database'));
-            $db->update('email_accounts', array('is_read_active' => 0), array('is_read_active' => 1));
+            $db->update('email_accounts', ['is_read_active' => 0], ['is_read_active' => 1]);
         }
 
         $runner = new TaskRunner($options);

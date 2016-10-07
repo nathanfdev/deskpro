@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -65,9 +66,9 @@ class TicketLogText extends AbstractAction implements ActionInterface
         $value = $this->getActionOption('message', '');
 
         if ($this->getActionOption('is_html')) {
-            $data = array('message_html' => $value);
+            $data = ['message_html' => $value];
         } else {
-            $data = array('message' => $value);
+            $data = ['message' => $value];
         }
 
         $ticket->getStateChangeRecorder()->recordData('free', $data);

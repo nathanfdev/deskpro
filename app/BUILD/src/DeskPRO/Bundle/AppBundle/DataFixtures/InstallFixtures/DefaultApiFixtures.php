@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;

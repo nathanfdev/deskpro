@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Incoming\ProcQueue;
 
 use Symfony\Component\DependencyInjection\Container;
@@ -40,14 +41,14 @@ class DeskproProcQueueFactory
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
 
-        if (!$DP_ENV->getConfig('adv_email_process')) {
+        if (!$DP_ENV->getConfig('async_email_processing.process')) {
             return new NoopProcQueue();
         } else {
-            $client = new \Predis\Client($DP_ENV->getConfig('adv_email_process.redis_params'));
+            $client = new \Predis\Client($DP_ENV->getConfig('async_email_processing.process.redis_params'));
 
             return new RedisProcQueue(
                 $client,
-                $DP_ENV->getConfig('adv_email_process.redis_key')
+                $DP_ENV->getConfig('async_email_processing.process.redis_key')
             );
         }
     }

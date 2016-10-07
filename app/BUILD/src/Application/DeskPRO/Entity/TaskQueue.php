@@ -49,7 +49,7 @@ class TaskQueue extends \Application\DeskPRO\Domain\DomainObject
     /** @var string */
     protected $runner_class;
     /** @var array */
-    protected $task_data = array();
+    protected $task_data = [];
     /** @var \DateTime */
     protected $date_runnable;
     /** @var string */
@@ -119,9 +119,9 @@ class TaskQueue extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

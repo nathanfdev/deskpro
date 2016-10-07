@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Input
  */
+
 namespace Orb\Input\Reader;
 
 use Orb\Input\Cleaner\Cleaner;
@@ -48,14 +49,14 @@ class Reader
      *
      * @var array
      */
-    protected $sources = array();
+    protected $sources = [];
 
     /**
      * Other names to refer to a source.
      *
      * @var array
      */
-    protected $source_aliases = array();
+    protected $source_aliases = [];
 
     /**
      * The default source to use when none provided.
@@ -70,7 +71,7 @@ class Reader
      *
      * @var array
      */
-    protected $call_cache = array();
+    protected $call_cache = [];
 
     /**
      * The cleaner object.
@@ -90,7 +91,7 @@ class Reader
     /**
      * Create the reader.
      *
-     * @param Cleaner $cleaner A cleaner object.
+     * @param Cleaner $cleaner A cleaner object
      */
     public function __construct(Cleaner $cleaner = null)
     {
@@ -125,7 +126,7 @@ class Reader
         if (method_exists($source, 'getAll')) {
             return $source->getAll();
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -237,7 +238,7 @@ class Reader
             $names = $name;
             $name  = $names[0];
         } else {
-            $names = array($name);
+            $names = [$name];
         }
 
         $this->sources[$name] = $source;
@@ -335,11 +336,11 @@ class Reader
         $from    = null;
         $options = null;
 
-        #----------------------------------------
-        # We cache method names so we dont run regex
-        # and string mutations all the time. If its set,
-        # then we can get info from the cache
-        #----------------------------------------
+        //----------------------------------------
+        // We cache method names so we dont run regex
+        // and string mutations all the time. If its set,
+        // then we can get info from the cache
+        //----------------------------------------
 
         if (isset($this->call_cache[$method_name])) {
             $call_info = $this->call_cache[$method_name];
@@ -365,13 +366,13 @@ class Reader
                 }
             }
 
-        #----------------------------------------
-        # First time calling this method
-        #----------------------------------------
+        //----------------------------------------
+        // First time calling this method
+        //----------------------------------------
         } else {
-            #----------------------------------------
-            # getTypeFromSource(name, options);
-            #----------------------------------------
+            //----------------------------------------
+            // getTypeFromSource(name, options);
+            //----------------------------------------
 
             if (preg_match('#^get(.*?)From(.*?)$#', $method_name, $match)) {
                 $name = $method_args[0];
@@ -386,15 +387,15 @@ class Reader
                     $options = $method_args[1];
                 }
 
-                $this->call_cache[$method_name] = array(
+                $this->call_cache[$method_name] = [
                     'call_type' => 'getTypeFromSource',
                     'type'      => $type,
                     'from'      => $from,
-                );
+                ];
 
-            #----------------------------------------
-            # getType(name, source, options);
-            #----------------------------------------
+            //----------------------------------------
+            // getType(name, source, options);
+            //----------------------------------------
             } elseif (preg_match('#^get(.*?)$#', $method_name, $match)) {
                 $name = $method_args[0];
 
@@ -410,14 +411,14 @@ class Reader
                     $options = $method_args[2];
                 }
 
-                $this->call_cache[$method_name] = array(
+                $this->call_cache[$method_name] = [
                     'call_type' => 'getType',
                     'type'      => $type,
-                );
+                ];
 
-            #----------------------------------------
-            # Invalid
-            #----------------------------------------
+            //----------------------------------------
+            // Invalid
+            //----------------------------------------
             } else {
                 throw new \BadMethodCallException("Unknown method $method_name");
             }

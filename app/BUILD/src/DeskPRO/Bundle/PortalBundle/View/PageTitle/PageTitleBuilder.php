@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\View\PageTitle;
 
 class PageTitleBuilder
@@ -37,7 +38,7 @@ class PageTitleBuilder
     protected $section_sep;
     protected $section_parts;
 
-    public function __construct(array $section_parts = array(), $default_sep = ' - ', $section_sep = ' / ')
+    public function __construct(array $section_parts = [], $default_sep = ' - ', $section_sep = ' / ')
     {
         $this->section_parts = $section_parts;
         $this->default_sep   = $default_sep;
@@ -46,7 +47,7 @@ class PageTitleBuilder
 
     public function __toString()
     {
-        $sections = array();
+        $sections = [];
 
         foreach ($this->section_parts as $section) {
             if (!is_array($section)) {
@@ -76,7 +77,7 @@ class PageTitleBuilder
     {
         if (!is_array($section)) {
             if (!empty($section)) {
-                $section = array($section);
+                $section = [$section];
             }
         }
 

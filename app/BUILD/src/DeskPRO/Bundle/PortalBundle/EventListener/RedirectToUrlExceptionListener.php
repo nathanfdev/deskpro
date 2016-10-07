@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,11 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -49,9 +48,28 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
      */
     private $logger;
 
-    public function __construct(LoggerInterface $logger)
+    /**
+     * @var SettingsResolver
+     */
+    private $resolver;
+
+    /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
+     * Constructor.
+     *
+     * @param LoggerInterface  $logger
+     * @param SettingsResolver $resolver
+     * @param BrandStack       $brandStack
+     */
+    public function __construct(LoggerInterface $logger, SettingsResolver $resolver = null, BrandStack $brandStack = null)
     {
-        $this->logger = $logger;
+        $this->logger     = $logger;
+        $this->resolver   = $resolver;
+        $this->brandStack = $brandStack;
     }
 
     /**
@@ -64,6 +82,11 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @internal
+     *
+     * @param GetResponseForExceptionEvent $event
+     */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $e = $event->getException();
@@ -74,7 +97,16 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
             return;
         }
 
-        $url = $e->getUrl();
+        if (!$this->resolver || !$this->brandStack) {
+            return;
+        }
+
+        $url      = $e->getUrl();
+        $brand    = $this->brandStack->getActive()->getBrand();
+        $brandUrl = $this->resolver->getBrandSettings($brand)->get('core.deskpro_url', '');
+
+        $url = rtrim($brandUrl, '/').'/'.ltrim($url, '/');
+
         $this->logger->info('RedirectToUrlException caught: 302 redirecting to "'.$url.'"');
 
         $event->setResponse(new RedirectResponse($url, Response::HTTP_FOUND));

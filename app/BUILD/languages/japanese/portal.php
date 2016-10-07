@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.change-password'                      => 'パスワード変更',
     'portal.account.email-btn-resend-validation'          => '承認のためのEメールを再送',
     'portal.account.login-register-btn'                   => '登録',
@@ -431,4 +431,4 @@ return array(
     'user.time.time_x_second'                             => '{0} 秒',
     'user.time.time_x_week'                               => '{0} 週',
     'user.time.time_x_year'                               => '{0} 年',
-);
+];

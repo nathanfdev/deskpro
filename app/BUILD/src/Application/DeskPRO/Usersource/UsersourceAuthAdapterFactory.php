@@ -121,22 +121,22 @@ class UsersourceAuthAdapterFactory
 
             if ($adapter instanceof SamlAdapterInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type.'_login_authenticate', array('usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND),
+                    $route_type.'_login_authenticate', ['usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND],
                     RouterInterface::ABSOLUTE_URL
                 );
             } elseif ($adapter instanceof SamlAdapterInterface && $displayContext == SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type.'_login_usersource_sso', array('usersource_id' => $usersource['id']),
+                    $route_type.'_login_usersource_sso', ['usersource_id' => $usersource['id']],
                     RouterInterface::ABSOLUTE_URL
                 );
             } elseif ($adapter instanceof SsoCapableInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type.'_login_usersource_sso', array('usersource_id' => $usersource['id']),
+                    $route_type.'_login_usersource_sso', ['usersource_id' => $usersource['id']],
                     RouterInterface::ABSOLUTE_URL
                 );
             } else {
                 $url = $this->router->generate(
-                    $route_type.'_login_callback', array('usersource_id' => $usersource['id']),
+                    $route_type.'_login_callback', ['usersource_id' => $usersource['id']],
                     RouterInterface::ABSOLUTE_URL
                 );
             }
@@ -164,11 +164,11 @@ class UsersourceAuthAdapterFactory
         if ($adapter instanceof SamlAdapterInterface) {
             $adapter->setMetadataXmlUrl(
                 $this->router->generate(
-                    'user_saml_metadata', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL
+                    'user_saml_metadata', ['usersource_id' => $usersource->id], RouterInterface::ABSOLUTE_URL
                 ));
             $adapter->setSingleLogoutServiceUrl(
                 $this->router->generate(
-                    'user_saml_sls', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL
+                    'user_saml_sls', ['usersource_id' => $usersource->id], RouterInterface::ABSOLUTE_URL
                 )
             );
         }

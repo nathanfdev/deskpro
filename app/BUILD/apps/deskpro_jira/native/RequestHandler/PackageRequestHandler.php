@@ -37,10 +37,11 @@ namespace deskpro_jira\RequestHandler;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\JIRA\ApiCoreException;
+use Application\DeskPRO\JIRA\ApiErrorsException;
 use Application\DeskPRO\JIRA\OAuthWrapper;
 use Application\DeskPRO\Service\JIRA;
-use Guzzle\Http\Exception\BadResponseException;
-use Guzzle\Http\Exception\CurlException;
+use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
@@ -82,19 +83,10 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
                 'message' => $e->getMessage(),
             ];
 
-            if ($e instanceof CurlException) {
-                $error = [
-                    'type'    => 'curl',
-                    'code'    => $e->getErrorNo(),
-                    'message' => $e->getError(),
-                ];
-            } elseif ($e instanceof BadResponseException) {
-                $error = [
-                    'type'       => 'jira',
-                    'code'       => $e->getResponse()->getStatusCode(),
-                    'message'    => $e->getResponse()->getReasonPhrase(),
-                    'additional' => $e->getResponse()->getBody(1),
-                ];
+            if ($e instanceof ClientException) {
+                $error['type'] = 'curl';
+            } elseif ($e instanceof ApiCoreException || $e instanceof ApiErrorsException) {
+                $error['type'] = 'jira';
             } elseif ($e->getCode() >= 1000) {
                 $error['type'] = 'app';
             }
@@ -115,7 +107,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     public function getMetaAction(ApiPackageRequestContext $context)
     {
         if ($error = $this->checkErrors($context->getContainer())) {
-            return $context->createJsonResponse(array('error' => $error));
+            return $context->createJsonResponse(['error' => $error]);
         }
 
         /** @var JIRA $js */

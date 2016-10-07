@@ -51,7 +51,7 @@ class LayoutFieldCriteria implements \Serializable, \Countable
     /**
      * @var \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[]
      */
-    private $terms = array();
+    private $terms = [];
 
     /**
      * @param \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[] $terms
@@ -164,7 +164,7 @@ class LayoutFieldCriteria implements \Serializable, \Countable
 
         $js = "(function () {\n";
         $js .= "\tvar checkFn = [\n";
-        $fn_bits = array();
+        $fn_bits = [];
         foreach ($this->terms as $t) {
             $t_js      = $t->compileJsCheck();
             $t_js      = trim(Strings::modifyLines($t_js, "\t\t"));
@@ -199,18 +199,18 @@ class LayoutFieldCriteria implements \Serializable, \Countable
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
         $data['version'] = 1;
         $data['mode']    = $this->mode;
-        $data['terms']   = array();
+        $data['terms']   = [];
 
         foreach ($this->terms as $t) {
-            $data['terms'][] = array(
+            $data['terms'][] = [
                 'type'    => $t->getTermType(),
                 'op'      => $t->getTermOperator(),
                 'options' => $t->getTermOptions(),
-            );
+            ];
         }
 
         return $data;

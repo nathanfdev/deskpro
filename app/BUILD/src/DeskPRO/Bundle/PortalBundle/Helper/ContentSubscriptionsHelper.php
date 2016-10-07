@@ -211,7 +211,7 @@ class ContentSubscriptionsHelper
     /**
      * @param        $contentType
      * @param Person $person
-     * 
+     *
      * @return bool
      */
     public function unsubscribeFromAll($contentType, Person $person)

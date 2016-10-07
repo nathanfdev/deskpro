@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -58,7 +59,7 @@ class CheckDayOfWeek extends AbstractTriggerTerm
         $options->addRequiredNames('days', 'tz');
         $options->addValidNames('var', 'test_date');
         $options->addCallbackCheckedOption('var', function ($v) {
-            return ($v == 'now' || $v == 'date_created' || !$v);
+            return $v == 'now' || $v == 'date_created' || !$v;
         });
 
         return $options;
@@ -99,9 +100,11 @@ class CheckDayOfWeek extends AbstractTriggerTerm
 
         $days = $options->get('days');
         if (!is_array($days)) {
-            $days = array($days);
+            $days = [$days];
         }
-        $days = array_map(function ($d) { return (int) $d; }, $days);
+        $days = array_map(function ($d) {
+            return (int) $d;
+        }, $days);
 
         $is_match = in_array((int) $now->format('N'), $days);
 

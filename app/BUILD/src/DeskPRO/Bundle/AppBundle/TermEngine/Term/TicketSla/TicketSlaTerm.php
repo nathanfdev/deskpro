@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSla;
 
 use Application\DeskPRO\Entity\TicketSla;
@@ -42,32 +43,32 @@ class TicketSlaTerm extends AbstractTerm
     public static function configureOptions(TermOptionsResolver $resolver)
     {
         $resolver->setConstraints(
-            array(
-                'sla' => array(
+            [
+                'sla' => [
                     new Assert\Type('array'),
-                    new Assert\All(array(
+                    new Assert\All([
                         new Assert\NotBlank(),
                         new Assert\Type('integer'),
-                    )),
-                ),
-                'status' => array(
+                    ]),
+                ],
+                'status' => [
                     new Assert\Type('array'),
-                    new Assert\All(array(
+                    new Assert\All([
                         new Assert\NotBlank(),
-                        new Assert\Choice(array(
+                        new Assert\Choice([
                             TicketSla::STATUS_OK,
                             TicketSla::STATUS_WARNING,
                             TicketSla::STATUS_FAIL,
-                        )),
-                    )),
-                ),
-            )
+                        ]),
+                    ]),
+                ],
+            ]
         );
     }
 
     public function getSupportedOps()
     {
-        return array(TermInterface::OP_HAS, TermInterface::OP_NOT_HAS);
+        return [TermInterface::OP_HAS, TermInterface::OP_NOT_HAS];
     }
 
     public function getDefaultOp()

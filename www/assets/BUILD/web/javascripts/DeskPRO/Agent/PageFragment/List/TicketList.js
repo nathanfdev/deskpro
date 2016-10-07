@@ -1228,7 +1228,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.openMassActions = function() {
 			if (!self.massActions) {
 				self.massActions = new DeskPRO.Agent.PageFragment.List.TicketList.MassActions({
-					templateElement: self.wrapper.find('.mass-actions-overlay-tpl'),
 					"$scope": self.$scope,
 					onPostApply: function(inst, data, info) {
 						$scope.$safeApply(function() {
@@ -1865,12 +1864,6 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 	initialize: function(options)  {
 		this.options = {
 			/**
-			 * The HTML element with the actual controls etc we'll use for this
-			 * Defaults to 'wrapper .mass-actions-overlay'
-			 */
-			templateElement: null,
-
-			/**
 			 * Scope of the list
 			 */
 			$scope: null
@@ -1887,16 +1880,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		}
 
 		this.$scope.massActionsOpen = true;
-
-		this.wrapperEl = this.options.templateElement;
-		if(!this.wrapperEl.length) {
-			return;
-		}
-
 		this._formUpdatedDebounce = _.debounce(this._formUpdated, 500);
-
-		this._resetWrapper();
-
 		this.backdropEls = null;
 	},
 
@@ -1906,34 +1890,38 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		}
 	},
 
-	_resetWrapper: function() {
+	_resetWrapper: function(callback) {
 		if (this.wrapper) {
 			this.wrapper.remove();
 		}
 
-		if (!this.wrapperEl.is('script')) {
-			this.wrapper = $('<div/>').addClass('mass-actions-overlay-container mass-actions').data('base-id', this.wrapperEl.data('base-id')).data('upload-url', this.wrapperEl.data('upload-url'));
-			var wrapperHtml = this.wrapperEl.html();
-			this.wrapper.html(wrapperHtml);
-		} else {
-			var wrapperHtml = DeskPRO_Window.util.getPlainTpl(this.wrapperEl);
-			this.wrapper = $(wrapperHtml);
-			this.wrapper.detach().appendTo('body');
-		}
+		var self = this;
+		var _renderTemplate = function(template) {
+			self.wrapper = $(template);
+			self.wrapper.detach().appendTo('body');
+			self.wrapper.find('.with-scroll-handler, .scroll-setup, .scroll-draw').removeClass('with-scroll-handler scroll-setup scroll-draw');
+			self.countEl = $('.selected-tickets-count', self.wrapper);
+			DP.select($('select.macro', self.wrapper));
 
-		this.wrapper.find('.with-scroll-handler, .scroll-setup, .scroll-draw').removeClass('with-scroll-handler scroll-setup scroll-draw');
+			DeskPRO_Window.initInterfaceLayerEvents(self.wrapper);
+			var scrollEl = $('.with-scrollbar', self.wrapper).first();
+			if (scrollEl.length) {
+				self.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
+					showEvent: 'show',
+					hideEvent: 'hide'
+				});
+			}
 
-		this.countEl = $('.selected-tickets-count', this.wrapper);
-		DP.select($('select.macro', this.wrapper));
+			callback();
+		};
 
-		DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
-		var scrollEl = $('.with-scrollbar', this.wrapper).first();
-		if (scrollEl.length) {
-			this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
-				showEvent: 'show',
-				hideEvent: 'hide'
-			});
-		}
+		$.ajax({
+			method: 'GET',
+			url: DP_BASE_URL+'agent/ticket-search/mass-action-overlay'
+		}).then(function(data) {
+			self.cachedTemplate = data;
+			_renderTemplate(data);
+		});
 	},
 
 	/**
@@ -1943,13 +1931,13 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		var wasopen = this.isOpen();
 		this.close();
 
-		this._resetWrapper();
+		this._resetWrapper(function() {
+			this._hasInit = false;
 
-		this._hasInit = false;
-
-		if (wasopen) {
-			this.open();
-		}
+			if (wasopen) {
+				this.open();
+			}
+		});
 	},
 
 
@@ -2236,7 +2224,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
 					html = html.replace(/^<p>/, '');
 					html = html.replace(/<\/p>$/, '');
-					textarea.data('redactor').insertSnippetHtml(html);
+					textarea.data('redactor').insertHtml(html);
 				} else {
 					self.page.insertTextInReply(result);
 				}
@@ -2643,20 +2631,23 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 	 * Open this overlay
 	 */
 	open: function() {
-		if (!this.wrapper || !this.wrapper[0]) {
-			this._resetWrapper();
+		var self = this;
+		var _open = function () {
+			self._initOverlay();
+			self.updatePositions();
+			DeskPRO_Window.layout.addEvent('resized', self.updatePositions, self);
+			self.wrapper.addClass('open');
+			self.backdropEls.show();
+
+			self.wrapper.addClass('open').show();
+			self.updatePositions();
 		}
 
-		this._initOverlay();
-
-		this.updatePositions();
-		DeskPRO_Window.layout.addEvent('resized', this.updatePositions, this);
-		this.wrapper.addClass('open');
-		this.backdropEls.show();
-
-		this.wrapper.addClass('open').show();
-
-		this.updatePositions();
+		if (!this.wrapper || !this.wrapper[0]) {
+			this._resetWrapper(_open);
+		} else {
+			_open();
+		}
 	},
 
 

@@ -75,7 +75,7 @@ class LanguageContext extends BaseContext implements RebootableContextInterface
      */
     public function theFollowingLanguagesAreEnabled(TableNode $table)
     {
-        $langs = array();
+        $langs = [];
         foreach ($table->getRows() as $row) {
             $langs[] = $row[0];
         }

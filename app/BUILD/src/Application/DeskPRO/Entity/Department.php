@@ -31,6 +31,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
@@ -56,7 +57,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property Department[]|ArrayCollection $children
  * @property Brand[]|ArrayCollection      $brands
  */
-class Department extends DomainObject implements HasPhraseName, PersonList, AvatarOwner
+class Department extends DomainObject implements HasPhraseName, PersonList, AvatarOwner, Hierarchical
 {
     /**
      * @var int
@@ -440,14 +441,9 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string    $property  If supplied, the property on the object we want to translate.
-     * @param Translate $translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -466,14 +462,9 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     }
 
     /**
-     * Get the default value phrase for the object.
-     *
-     * @param string    $property  If supplied, the property on the object we want to translate.
-     * @param Translate $translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'full') {
             return $this->getRealTitle();
@@ -613,9 +604,9 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
         return $this;
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public function _validateParent(ExecutionContextInterface $context)
     {
@@ -683,9 +674,9 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
         return $this->avatar->getThumbnailUrl($size);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

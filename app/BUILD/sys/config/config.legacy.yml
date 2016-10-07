@@ -21,10 +21,10 @@ services:
       - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
 
   form.captcha:
-      class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CaptchaType
+      class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType
       arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
       tags:
-        - { name: form.type, alias: deskpro_captcha }
+        - { name: form.type }
 
   portal_support_extension.twig:
         class: DeskPRO\Bundle\PortalBundle\Twig\PortalSupportExtension

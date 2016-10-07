@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use Application\DeskPRO\Entity\Organization;
@@ -227,6 +223,12 @@ class DoctrineSearchListener implements EventSubscriberInterface
             ;
         }
 
+        $options = $context->getCriteriaOptions();
+        if (isset($options['is_agent'])) {
+            $qb->andWhere('p.is_agent = :is_agent');
+            $qb->setParameter('is_agent', $options['is_agent']);
+        }
+
         /** @var \Application\DeskPRO\Entity\Person[] $people */
         $people = $qb->getQuery()->getResult();
         foreach ($people as $person) {
@@ -267,6 +269,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
             QuickSearchContext::TYPE_NEWS,
             QuickSearchContext::TYPE_ORGANIZATION,
             QuickSearchContext::TYPE_PERSON,
+            QuickSearchContext::TYPE_AGENT,
             QuickSearchContext::TYPE_TICKET,
         ];
 
@@ -298,6 +301,10 @@ class DoctrineSearchListener implements EventSubscriberInterface
                     "t.hidden_status NOT IN('spam', 'deleted')",
                     't.hidden_status is null'
                 ));
+                break;
+            case QuickSearchContext::TYPE_AGENT:
+                $qb->andWhere('t.is_agent = :is_agent');
+                $qb->setParameter('is_agent', true);
                 break;
             default:
                 break;

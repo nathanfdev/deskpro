@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -91,13 +91,13 @@ class UseSectionVoterSpec extends ObjectBehavior
         $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(false);
 
         $this->verifyDeniedVote(
-            array(
+            [
                 UseSectionVoter::USE_ARTICLES,
                 UseSectionVoter::USE_FEEDBACK,
                 UseSectionVoter::USE_CHAT,
                 UseSectionVoter::USE_DOWNLOADS,
                 UseSectionVoter::USE_NEWS,
-            ),
+            ],
             $token
         );
     }
@@ -231,7 +231,7 @@ class UseSectionVoterSpec extends ObjectBehavior
     public function verifyGrantedVote($attribute, $token)
     {
         if (!is_array($attribute)) {
-            $attribute = array($attribute);
+            $attribute = [$attribute];
         }
 
         $this->vote($token, null, $attribute)
@@ -241,7 +241,7 @@ class UseSectionVoterSpec extends ObjectBehavior
     public function verifyDeniedVote($attribute, $token)
     {
         if (!is_array($attribute)) {
-            $attribute = array($attribute);
+            $attribute = [$attribute];
         }
 
         $this->vote($token, null, $attribute)
@@ -251,7 +251,7 @@ class UseSectionVoterSpec extends ObjectBehavior
     public function verifyAbstainVote($attribute, $token)
     {
         if (!is_array($attribute)) {
-            $attribute = array($attribute);
+            $attribute = [$attribute];
         }
 
         $this->vote($token, null, $attribute)

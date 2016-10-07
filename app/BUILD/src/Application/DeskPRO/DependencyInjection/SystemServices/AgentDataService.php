@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -38,6 +35,12 @@ use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
+/**
+ * Class AgentDataService.
+ *
+ * @deprecated Avoid using it as much as possible. It works really slow if we have many agents/usergroups/teams
+ * because it pre loads them ALL, even if we need something just for one agent.
+ */
 class AgentDataService
 {
     /**
@@ -53,27 +56,27 @@ class AgentDataService
     /**
      * @var \Application\DeskPRO\Entity\Person[]
      */
-    public $agents = array();
+    public $agents = [];
 
     /**
      * @var array
      */
-    private $agent_teams = array();
+    private $agent_teams = [];
 
     /**
      * @var array
      */
-    private $agent_to_teams = array();
+    private $agent_to_teams = [];
 
     /**
      * @var array
      */
-    private $team_to_agents = array();
+    private $team_to_agents = [];
 
     /**
      * @var array
      */
-    private $agent_to_groups = array();
+    private $agent_to_groups = [];
 
     /**
      * @var array
@@ -83,7 +86,12 @@ class AgentDataService
     /**
      * @var int[]
      */
-    public $ids = array();
+    public $ids = [];
+
+    /**
+     * @var array
+     */
+    private $emails = [];
 
     /**
      * @var
@@ -127,8 +135,15 @@ class AgentDataService
         $this->has_init = true;
 
         $this->agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
-        foreach ($this->agents as $a) {
-            $this->ids[] = $a->getId();
+        $this->ids    = array_keys($this->agents);
+
+        $emails = $this->em->getConnection()->executeQuery(
+            'SELECT person_id, email FROM people_emails WHERE person_id IN (?)',
+            [$this->ids], [Connection::PARAM_INT_ARRAY]
+        )->fetchAll();
+
+        foreach ($emails as $email) {
+            $this->emails[strtolower($email['email'])] = $this->agents[$email['person_id']];
         }
 
         $this->agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
@@ -143,29 +158,29 @@ class AgentDataService
         }
         $this->has_init_teammap = true;
 
-        // needed to preload $this->ids
-        $this->preload();
-
         $this->team_to_agents = $this->db->fetchAllGrouped('
             SELECT team_id, person_id
             FROM agent_team_members
-        ', array(), 'team_id', null, 'person_id');
+        ', [], 'team_id', null, 'person_id');
 
         $this->agent_to_teams = Arrays::reverseLookupArray($this->team_to_agents, true, true);
 
-        if ($this->ids) {
+        $ids = $this->db->fetchAllCol('SELECT id FROM people WHERE is_agent = 1 AND is_disabled = 0 AND is_deleted = 0');
+        if ($ids) {
             $this->agent_to_groups = $this->db->fetchAllGrouped('
                 SELECT person_id, usergroup_id
                 FROM person2usergroups
                 WHERE person_id IN (?)
-            ', array($this->ids), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
+            ', [$ids], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
         } else {
-            $this->agent_to_groups = array();
+            $this->agent_to_groups = [];
         }
     }
 
     /**
      * @return \Application\DeskPRO\Entity\Person[]
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getAgents()
     {
@@ -176,6 +191,8 @@ class AgentDataService
 
     /**
      * @return \Application\DeskPRO\Entity\AgentTeam[]
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getAgentTeams()
     {
@@ -185,13 +202,25 @@ class AgentDataService
     }
 
     /**
+     * @return array
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     */
+    public function getAgentToTeams()
+    {
+        return $this->agent_to_teams;
+    }
+
+    /**
      * @param array $for_ids
      *
      * @return string[]
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getNames(array $for_ids = null)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($this->getAgents() as $agent) {
             if ($for_ids === null || in_array($agent->getId(), $for_ids)) {
@@ -204,6 +233,8 @@ class AgentDataService
 
     /**
      * @return int[]
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getIds()
     {
@@ -214,6 +245,8 @@ class AgentDataService
 
     /**
      * @return int[]
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getTeamIds()
     {
@@ -226,6 +259,8 @@ class AgentDataService
      * @param int $id
      *
      * @return \Application\DeskPRO\Entity\Person|null
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function get($id)
     {
@@ -242,6 +277,8 @@ class AgentDataService
      * @param int $id
      *
      * @return bool
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function has($id)
     {
@@ -256,12 +293,14 @@ class AgentDataService
      * @param array $ids
      *
      * @return array
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getByIds($ids)
     {
         $this->preload();
 
-        $agents = array();
+        $agents = [];
 
         foreach ($ids as $id) {
             $id = (int) $id;
@@ -281,14 +320,16 @@ class AgentDataService
      * @param null  $invalid_ids
      *
      * @return array
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function confirmAgentIds(array $ids, &$invalid_ids = null)
     {
         $this->preload();
 
-        $valid_ids = array();
+        $valid_ids = [];
         if (!isset($invalid_ids) || !$invalid_ids) {
-            $invalid_ids = array();
+            $invalid_ids = [];
         }
 
         foreach ($ids as $id) {
@@ -306,22 +347,24 @@ class AgentDataService
      * @param string $email
      *
      * @return \Application\DeskPRO\Entity\Person
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getByEmail($email)
     {
-        foreach ($this->getAgents() as $agent) {
-            if ($agent->hasEmailAddress($email)) {
-                return $agent;
-            }
-        }
+        $this->preload();
 
-        return;
+        $email = strtolower($email);
+
+        return isset($this->emails[$email]) ? $this->emails[$email] : null;
     }
 
     /**
      * Get an array of agents who are online now (have active sessions).
      *
      * @return int[]
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getOnlineAgentIds()
     {
@@ -335,19 +378,21 @@ class AgentDataService
             FROM sessions s
             INNER JOIN people p ON (s.person_id = p.id)
             WHERE p.is_agent = 1 AND p.is_deleted = 0 AND s.date_last > ?
-        ', array($cutoff), array(), 0, 0);
+        ', [$cutoff], [], 0, 0);
 
         return $this->online_agent_ids;
     }
 
     /**
      * @return array
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getOnlineAgents()
     {
         $this->getOnlineAgentIds();
 
-        $agents = array();
+        $agents = [];
         foreach ($this->online_agent_ids as $id) {
             $agents[$id] = $this->get($id);
         }
@@ -361,6 +406,8 @@ class AgentDataService
      * @param int|Person $id_or_agent
      *
      * @return bool
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function isAgentOnline($id_or_agent)
     {
@@ -374,6 +421,8 @@ class AgentDataService
      * Count how many agents are currently online.
      *
      * @return int
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function countOnlineAgents()
     {
@@ -384,6 +433,8 @@ class AgentDataService
      * @param int $id
      *
      * @return \Application\DeskPRO\Entity\AgentTeam|null
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getTeam($id)
     {
@@ -400,6 +451,8 @@ class AgentDataService
      * @param int $id
      *
      * @return bool
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function hasTeam($id)
     {
@@ -414,12 +467,14 @@ class AgentDataService
      * @param array $ids
      *
      * @return array
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getTeamsByIds($ids)
     {
         $this->preload();
 
-        $teams = array();
+        $teams = [];
 
         foreach ($ids as $id) {
             $id = (int) $id;
@@ -437,25 +492,27 @@ class AgentDataService
      * @throws \InvalidArgumentException
      *
      * @return \Application\DeskPRO\Entity\AgentTeam[]
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getTeamsForAgent($agent)
     {
         $this->preload();
         $this->preloadTeamMap();
 
-        $aid   = is_object($agent) ? $agent->id : $agent;
+        $aid   = is_object($agent) ? $agent->getId() : $agent;
         $agent = $this->get($aid);
 
         if (!$agent) {
             throw new \InvalidArgumentException();
         }
 
-        if (empty($this->agent_to_teams[$agent->id])) {
-            return array();
+        if (empty($this->agent_to_teams[$agent->getId()])) {
+            return [];
         }
 
-        $teams = array();
-        foreach ($this->agent_to_teams[$agent->id] as $tid) {
+        $teams = [];
+        foreach ($this->agent_to_teams[$agent->getId()] as $tid) {
             $t = $this->getTeam($tid);
             if ($t) {
                 $teams[] = $t;
@@ -470,32 +527,34 @@ class AgentDataService
      * @param int|\Application\DeskPRO\Entity\AgentTeam $team
      *
      * @return bool
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function isAgentMemberOfTeam($agent, $team)
     {
         if (is_object($agent)) {
-            $agent_id = $agent->id;
+            $agent_id = $agent->getId();
         } else {
             try {
                 $agent = $this->get($agent);
                 if (!$agent) {
                     return false;
                 }
-                $agent_id = $agent->id;
+                $agent_id = $agent->getId();
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
         }
 
         if (is_object($team)) {
-            $team_id = $team->id;
+            $team_id = $team->getId();
         } else {
             try {
                 $team = $this->getTeam($team);
                 if (!$team) {
                     return false;
                 }
-                $team_id = $team->id;
+                $team_id = $team->getId();
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
@@ -508,28 +567,40 @@ class AgentDataService
 
     /**
      * @param int|\Application\DeskPRO\Entity\Person $agent
+     * @param bool                                   $forceAgentData
      *
      * @throws \InvalidArgumentException
      *
      * @return \Application\DeskPRO\Entity\AgentTeam[]
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
-    public function getGroupIdsForAgent($agent)
+    public function getGroupIdsForAgent($agent, $forceAgentData = false)
     {
-        $this->preload();
-        $this->preloadTeamMap();
+        $aid = is_object($agent) ? $agent->getId() : $agent;
 
-        $aid   = is_object($agent) ? $agent->id : $agent;
-        $agent = $this->get($aid);
+        if ($forceAgentData) {
+            return $this->db->fetchAllCol('
+                SELECT usergroup_id
+                FROM person2usergroups
+                WHERE person_id = ?
+            ', [$aid]);
+        } else {
+            $this->preload();
+            $this->preloadTeamMap();
 
-        if (!$agent) {
-            throw new \InvalidArgumentException();
+            $agent = $this->get($aid);
+
+            if (!$agent) {
+                throw new \InvalidArgumentException();
+            }
+
+            if (empty($this->agent_to_groups[$agent->getId()])) {
+                return [];
+            }
+
+            return $this->agent_to_groups[$agent->getId()];
         }
-
-        if (empty($this->agent_to_groups[$agent->id])) {
-            return array();
-        }
-
-        return $this->agent_to_groups[$agent->id];
     }
 
     /**
@@ -538,25 +609,27 @@ class AgentDataService
      * @throws \InvalidArgumentException
      *
      * @return \Application\DeskPRO\Entity\Person[]
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function getAgentsForTeam($team)
     {
         $this->preload();
         $this->preloadTeamMap();
 
-        $tid  = is_object($team) ? $team->id : $team;
+        $tid  = is_object($team) ? $team->getId() : $team;
         $team = $this->getTeam($tid);
 
         if (!$team) {
             throw new \InvalidArgumentException();
         }
 
-        if (empty($this->team_to_agents[$team->id])) {
-            return array();
+        if (empty($this->team_to_agents[$team->getId()])) {
+            return [];
         }
 
-        $agents = array();
-        foreach ($this->team_to_agents[$team->id] as $tid) {
+        $agents = [];
+        foreach ($this->team_to_agents[$team->getId()] as $tid) {
             $t = $this->get($tid);
             if ($t) {
                 $agents[] = $t;
@@ -585,10 +658,12 @@ class AgentDataService
      * @param Ticket $ticket_context Current ticket context
      *
      * @return array
+     *
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
      */
     public function selectAgents($selector, Person $person_context = null, Ticket $ticket_context = null)
     {
-        $return = array();
+        $return = [];
 
         // Legacy terms
         switch ($selector) {
@@ -612,15 +687,15 @@ class AgentDataService
         switch ($type) {
             // Ticket agent
             case 'ticket_agent':
-                if ($ticket_context && $ticket_context->agent) {
-                    $return[] = $ticket_context->agent;
+                if ($ticket_context && $ticket_context->getAgent()) {
+                    $return[] = $ticket_context->getAgent();
                 }
                 break;
 
             // Teams of assigned agent
             case 'ticket_agent_teams':
-                if ($ticket_context && $ticket_context->agent) {
-                    $teams = $this->getTeamsForAgent($ticket_context->agent);
+                if ($ticket_context && $ticket_context->getAgent()) {
+                    $teams = $this->getTeamsForAgent($ticket_context->getAgent());
                     foreach ($teams as $t) {
                         $return = array_merge($return, $this->getAgentsForTeam($t));
                     }
@@ -629,8 +704,8 @@ class AgentDataService
 
             // Agents of assigned team
             case 'ticket_team':
-                if ($ticket_context && $ticket_context->agent_team) {
-                    $return = $this->getAgentsForTeam($ticket_context->agent_team);
+                if ($ticket_context && $ticket_context->getAgentTeam()) {
+                    $return = $this->getAgentsForTeam($ticket_context->getAgentTeam());
                 }
                 break;
 
@@ -658,14 +733,14 @@ class AgentDataService
 
             // Current person
             case 'person':
-                if ($person_context && $person_context->is_agent) {
+                if ($person_context && $person_context->isAgent()) {
                     $return[] = $person_context;
                 }
                 break;
 
             // Teams of current person
             case 'person_teams':
-                if ($person_context && $person_context->is_agent) {
+                if ($person_context && $person_context->isAgent()) {
                     $teams = $this->getTeamsForAgent($person_context);
                     foreach ($teams as $t) {
                         $return = array_merge($return, $this->getAgentsForTeam($t));

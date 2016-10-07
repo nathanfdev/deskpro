@@ -119,9 +119,9 @@ class CustomDataPerson extends CustomDataAbstract
         return $this->person;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

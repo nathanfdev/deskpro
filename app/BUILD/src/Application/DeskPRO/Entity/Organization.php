@@ -45,12 +45,13 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Numbers;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * An organization is a grouping we put similar people into (eg companies).
  */
-class Organization extends DomainObject implements HighlightableModelInterface, AvatarOwner, Entity\Labels\LabelsOwner
+class Organization extends DomainObject implements HighlightableModelInterface, AvatarOwner, Entity\Labels\LabelsOwner, Entity\Hierarchy\Hierarchical
 {
     /**
      * The unique ID.
@@ -347,7 +348,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
             return $this->contact_data;
         }
 
-        $ret = array();
+        $ret = [];
 
         foreach ($this->contact_data as $cd) {
             if ($cd->contact_type == $type) {
@@ -470,7 +471,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     {
         $f_def = App::getEntityRepository('DeskPRO:CustomDefOrganization')->find($field_id);
 
-        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, array($f_def));
+        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, [$f_def]);
 
         $value    = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
         $rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
@@ -511,7 +512,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         }
 
         $org_field_defs      = App::getApi('custom_fields.organizations')->getEnabledFields();
-        $org_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array($data), $org_field_defs);
+        $org_data_structured = App::getApi('custom_fields.util')->createDataHierarchy([$data], $org_field_defs);
 
         $custom_fields = App::getApi('custom_fields.organizations')->getFieldsDisplayArray(
             $org_field_defs,
@@ -606,23 +607,23 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         if ($this->picture_blob) {
             $url = App::get('router')->generate(
                 'serve_blob_sizefit',
-                array(
+                [
                     'blob_auth_id' => $this->picture_blob->getAuthId(),
                     'filename'     => $this->picture_blob->getFilenameSafe(),
                     's'            => $size,
-                ),
-                true
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
             );
         }
 
         if (!$url) {
             $url = App::get('router')->generate(
                 'serve_org_picture_default',
-                array(
+                [
                     's'        => $size,
                     'size-fit' => 1,
-                ),
-                true
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
             );
         }
 
@@ -763,21 +764,29 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         return $this->date_created;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
     public function __toString()
     {
         return $this->name;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
-            $data['labels'] = array();
+            $data['labels'] = [];
             foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
 
-            $data['email_domains'] = array();
+            $data['email_domains'] = [];
             foreach ($this->email_domains as $domain) {
                 $data['email_domains'][] = $domain->domain;
             }
@@ -849,9 +858,9 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         return $this->tickets->count();
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

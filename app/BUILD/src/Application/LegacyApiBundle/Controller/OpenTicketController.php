@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,13 +37,17 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @ApiModes("all")
  */
 class OpenTicketController extends AbstractController
 {
-    public function preActionHandler($action, $arguments = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         return;
     }
@@ -73,10 +77,10 @@ class OpenTicketController extends AbstractController
 
             $person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
             if (!$person) {
-                $person = Person::newContactPerson(array(
+                $person = Person::newContactPerson([
                     'email' => $this->in->getString('email'),
                     'name'  => $this->in->getString('name'),
-                ));
+                ]);
                 $this->em->persist($person);
             }
 
@@ -85,19 +89,19 @@ class OpenTicketController extends AbstractController
             // Not allowed to create new tickets using this service
             if (!$this->apikey && !$this->api_token) {
                 $response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key or token', 401);
-                $response->headers->add(array(
+                $response->headers->add([
                     'WWW-Authenticate' => 'Basic realm="API"',
-                ));
+                ]);
 
                 return $response;
             }
 
             $person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
             if (!$person) {
-                $person = Person::newContactPerson(array(
+                $person = Person::newContactPerson([
                     'email' => $this->in->getString('email'),
                     'name'  => $this->in->getString('name'),
-                ));
+                ]);
                 $this->em->persist($person);
             }
 
@@ -136,9 +140,9 @@ class OpenTicketController extends AbstractController
 
         $this->em->flush();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
             'tac'     => $ticket->getAccessCode(),
-        ));
+        ]);
     }
 }

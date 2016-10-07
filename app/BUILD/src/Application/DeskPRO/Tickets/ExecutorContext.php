@@ -81,7 +81,7 @@ class ExecutorContext implements ExecutorContextInterface
     /**
      * @var array
      */
-    private $event_method_options = array();
+    private $event_method_options = [];
 
     /**
      * @var null
@@ -97,7 +97,7 @@ class ExecutorContext implements ExecutorContextInterface
     {
         if (!$logger) {
             // Null logger
-            $logger = new Logger('ticket', array(new NullHandler()));
+            $logger = new Logger('ticket', [new NullHandler()]);
         }
 
         $this->vars      = new OptionsArray();
@@ -213,7 +213,7 @@ class ExecutorContext implements ExecutorContextInterface
      * @param string $event_method         Event method (email, api, or web)
      * @param array  $event_method_options Event options (eg a URL etc)
      */
-    public function setEventMethod($event_method, array $event_method_options = array())
+    public function setEventMethod($event_method, array $event_method_options = [])
     {
         $this->event_method         = $event_method;
         $this->event_method_options = $event_method_options;

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SourceMapper;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -97,7 +98,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
      */
     public function getSource($source_id)
     {
-        return $this->db->fetchAssoc('SELECT * FROM sendmail_sources WHERE id = ?', array($source_id));
+        return $this->db->fetchAssoc('SELECT * FROM sendmail_sources WHERE id = ?', [$source_id]);
     }
 
     /**
@@ -121,14 +122,14 @@ class DatabaseSourceMapper implements SourceMapperInterface
     public function createSourceForMessage(\Swift_Mime_Message $message, $status, \DateTime $queue_date = null)
     {
         $header_to_raw = $message->getTo();
-        $header_to     = array();
+        $header_to     = [];
 
         $header_cc_raw  = $message->getCc();
         $header_bcc_raw = $message->getBcc();
 
-        $tos  = array();
-        $ccs  = array();
-        $bccs = array();
+        $tos  = [];
+        $ccs  = [];
+        $bccs = [];
 
         if ($header_to_raw) {
             foreach ($header_to_raw as $email => $name) {
@@ -148,7 +149,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
             }
         }
         if ($header_bcc_raw && is_array($header_bcc_raw)) {
-            foreach ($header_bcc_raw as $email) {
+            foreach (array_keys($header_bcc_raw) as $email) {
                 $bccs[] = $email;
             }
         }
@@ -156,7 +157,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
         $header_subject = $message->getSubject() ?: '';
 
         $header_from_raw   = $message->getFrom();
-        $header_from       = array();
+        $header_from       = [];
         $header_from_email = '';
 
         $account_id = null;
@@ -229,9 +230,10 @@ class DatabaseSourceMapper implements SourceMapperInterface
             $message->setId($ref.'@deskpro-message');
         }
 
+        $message->setBcc([]);
         $blob = $this->bs->createBlobRowFromString($message->toString(), 'out_email.eml', 'message/rfc822');
 
-        $record = array(
+        $record = [
             'blob_id'          => $blob['id'],
             'ref'              => $ref,
             'email_account_id' => $account_id,
@@ -249,7 +251,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'exec_count'       => 0,
             'num_targets'      => count($tos) + count($ccs) + count($bccs),
             'num_pending'      => count($tos) + count($ccs) + count($bccs),
-        );
+        ];
 
         if ($message instanceof MessageOptionsInterface && ($opts = $message->getMessageOptions()->all())) {
             $record['options'] = json_encode($opts);
@@ -461,7 +463,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
         $old_log_blob = null;
         if (isset($source['log_blob_id'])) {
             try {
-                $old_log_blob = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', array($source['log_blob_id']));
+                $old_log_blob = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', [$source['log_blob_id']]);
                 if ($old_log_blob) {
                     $exist_log = $this->bs->copyBlobRowToString($old_log_blob);
                 } else {
@@ -476,7 +478,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
         }
 
         try {
-            $new_log_blob = $this->bs->createBlobRowFromString($log_text, 'log.txt', 'text/plain', array('tag' => 'logs.sendmail_source_log'));
+            $new_log_blob = $this->bs->createBlobRowFromString($log_text, 'log.txt', 'text/plain', ['tag' => 'logs.sendmail_source_log']);
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
 
@@ -498,9 +500,9 @@ class DatabaseSourceMapper implements SourceMapperInterface
      */
     private function updateSourceRow(array $orig, array $new)
     {
-        $diff = array();
+        $diff = [];
 
-        static $valid_keys = array(
+        static $valid_keys = [
             'id'                => true,
             'blob_id'           => true,
             'email_account_id'  => true,
@@ -528,9 +530,9 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'num_pending'       => true,
             'num_error'         => true,
             'num_complete'      => true,
-        );
+        ];
 
-        static $always_save = array(
+        static $always_save = [
             'log_blob_id'       => true,
             'status'            => true,
             'date_status'       => true,
@@ -538,7 +540,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'date_next_attempt' => true,
             'error_code'        => true,
             'exec_count'        => true,
-        );
+        ];
 
         foreach ($new as $k => $v) {
             if (!isset($valid_keys[$k])) {
@@ -552,7 +554,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
         }
 
         if ($diff) {
-            $this->db->update('sendmail_sources', $diff, array('id' => $orig['id']));
+            $this->db->update('sendmail_sources', $diff, ['id' => $orig['id']]);
         }
     }
 }

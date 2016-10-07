@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ContentRevision;
 
 use Application\DeskPRO\App;
@@ -59,7 +60,7 @@ class Util
             FROM $entity r
             WHERE r.$field = ?1
             ORDER BY r.id DESC
-        ")->setMaxResults(1)->setParameters(array(1 => $content))->getOneOrNullResult();
+        ")->setMaxResults(1)->setParameters([1 => $content])->getOneOrNullResult();
 
         $has_field = false;
         if ($rev) {
@@ -95,7 +96,7 @@ class Util
         $rev_new = App::findEntity($entity, $rev_new_id);
 
         if (!$rev_old || !$rev_new) {
-            return array('rendered_content_diff' => '', 'rendered_title_diff' => '');
+            return ['rendered_content_diff' => '', 'rendered_title_diff' => ''];
         }
 
         $old_data = $rev_old->toArray();
@@ -112,7 +113,7 @@ class Util
                     FROM $entity r
                     WHERE r.$field = ?1 AND r.id < ?2 AND r.content != ''
                     ORDER BY r.id DESC
-                ")->setMaxResults(1)->setParameters(array(1 => $rev_new[$field], 2 => $rev_old_id))->getOneOrNullResult();
+                ")->setMaxResults(1)->setParameters([1 => $rev_new[$field], 2 => $rev_old_id])->getOneOrNullResult();
                 if ($r['content']) {
                     $old_data['content'] = $r['content'];
                 } else {
@@ -139,7 +140,7 @@ class Util
                     FROM $entity r
                     WHERE r.$field = ?1 AND r.id < ?2 AND r.title != ''
                     ORDER BY r.id DESC
-                ")->setMaxResults(1)->setParameters(array(1 => $rev_new[$field], 2 => $rev_old_id))->getOneOrNullResult();
+                ")->setMaxResults(1)->setParameters([1 => $rev_new[$field], 2 => $rev_old_id])->getOneOrNullResult();
                 if ($r['title']) {
                     $old_data['title'] = $r['title'];
                 } else {
@@ -167,7 +168,7 @@ class Util
                     FROM $entity r
                     WHERE r.$field = ?1 AND r.id < ?2 AND r.blob IS NOT NULL
                     ORDER BY r.id DESC
-                ")->setMaxResults(1)->setParameters(array(1 => $rev_new[$field], 2 => $rev_old_id))->getOneOrNullResult();
+                ")->setMaxResults(1)->setParameters([1 => $rev_new[$field], 2 => $rev_old_id])->getOneOrNullResult();
             }
 
             if ($r['blob']) {
@@ -177,10 +178,10 @@ class Util
             }
         }
 
-        $ret = array(
+        $ret = [
             'rendered_content_diff' => $rendered_content_diff,
             'rendered_title_diff'   => $rendered_title_diff,
-        );
+        ];
 
         if ($use_blob) {
             $ret['old_blob'] = $old_data['blob'];

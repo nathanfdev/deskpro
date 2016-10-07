@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1355915880 extends AbstractBuild
@@ -73,21 +74,21 @@ class Build1355915880 extends AbstractBuild
             SELECT *
             FROM email_transports
             WHERE id = ?
-        ', array($first_id));
+        ', [$first_id]);
         unset($trans_info['id']);
 
         foreach ($missing_gateway_ids as $gid) {
             if ($trans_info['match_type'] == 'all') {
                 $trans_info['match_type']    = 'exact';
-                $trans_info['match_pattern'] = $this->container->getDb()->fetchColumn('SELECT match_pattern FROM email_gateway_addresses WHERE email_gateway_id = ?', array($gid));
+                $trans_info['match_pattern'] = $this->container->getDb()->fetchColumn('SELECT match_pattern FROM email_gateway_addresses WHERE email_gateway_id = ?', [$gid]);
             }
 
             $this->container->getDb()->insert('email_transports', $trans_info);
             $new_id = $this->container->getDb()->lastInsertId();
 
-            $this->container->getDb()->update('email_gateways', array(
+            $this->container->getDb()->update('email_gateways', [
                 'linked_transport_id' => $new_id,
-            ), array('id' => $gid));
+            ], ['id' => $gid]);
         }
     }
 }

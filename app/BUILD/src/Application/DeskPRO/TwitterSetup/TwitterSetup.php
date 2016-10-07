@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\TwitterSetup;
 
 class TwitterSetup
@@ -75,16 +76,16 @@ class TwitterSetup
      */
     public function toArray()
     {
-        $export_settings = array();
+        $export_settings = [];
 
         foreach (
-            array(
+            [
                 'twitter_agent_consumer_key',
                 'twitter_agent_consumer_secret',
                 'twitter_user_consumer_key',
                 'twitter_user_consumer_secret',
                 'twitter_auto_remove_time',
-            ) as $s) {
+            ] as $s) {
             $export_settings[$s] = $this->$s;
         }
 

@@ -171,19 +171,19 @@ class FeedbackFilterUriHelper
         $parts = explode('-', $segment);
 
         if (count($parts) === 2) {
-            if (!in_array($parts[1], array(
+            if (!in_array($parts[1], [
                 FeedbackFilter::SORT_DIRECTION_DESC,
                 FeedbackFilter::SORT_DIRECTION_ASC,
-            ))) {
-                return array($parts[0].'-'.$parts[1]);
+            ])) {
+                return [$parts[0].'-'.$parts[1]];
             }
         }
 
         if (count($parts) > 2) {
-            $parts = array(
+            $parts = [
                 $parts[0].'-'.$parts[1],
                 $parts[2],
-            );
+            ];
 
             return $parts;
         }

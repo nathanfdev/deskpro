@@ -31,5 +31,6 @@ define ->
       p.success( (data) ->
         if data.request_token
           window.DP_REQUEST_TOKEN = data.request_token
+          window.DP_SESSION_ID = data.session_id
       )
       return p

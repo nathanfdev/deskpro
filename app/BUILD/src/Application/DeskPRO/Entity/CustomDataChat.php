@@ -94,9 +94,9 @@ class CustomDataChat extends CustomDataAbstract
         return $this->conversation;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

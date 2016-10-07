@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,7 +40,6 @@ use Application\DeskPRO\NewSettings\Loader\DbGlobalSettingsTableLoader;
 use Application\DeskPRO\NewSettings\Loader\GlobalsArrayLoader;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use DpTestSrc\TestBundle\NewSettings\TestSettingsResolver;
 
 class SettingsResolverService
 {
@@ -53,26 +52,19 @@ class SettingsResolverService
         $simple_array_cache = $container->get('cache.simple_array');
 
         // loaders, in proper order. first loader is treated as the default settings.
-        $loaders = array(
+        $loaders = [
             $container->getSystemService('default_settings_loader'),
             new DbGlobalSettingsTableLoader($container->getEm()->getConnection(), $simple_array_cache),
             new GlobalsArrayLoader($container->get('deskpro.app_env'), $simple_array_cache),
-        );
+        ];
 
         // brand settings loader is a special loader, injected directly
-        if ($env === 'test') {
-            $resolver = new TestSettingsResolver(
-                $loaders,
-                $simple_array_cache,
-                new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
-            );
-        } else {
-            $resolver = new SettingsResolver(
-                $loaders,
-                $simple_array_cache,
-                new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
-            );
-        }
+        $resolver = new SettingsResolver(
+            $loaders,
+            $simple_array_cache,
+            new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
+        );
+
         $resolver->setVirtual(
             'default_timezone', function ($settings) {
                 $settings = new SettingsBag($settings);

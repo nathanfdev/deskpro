@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\UI;
 
 use Orb\Util\Arrays;
@@ -39,7 +40,7 @@ use Orb\Util\Arrays;
 class TagCloud
 {
     /** @var array */
-    protected $_tag_counts = array();
+    protected $_tag_counts = [];
     /** @var int */
     protected $_min_count = 0;
     /** @var int */
@@ -70,7 +71,7 @@ class TagCloud
 
     public function getCloud()
     {
-        $cloud = array();
+        $cloud = [];
 
         foreach ($this->_tag_counts as $tag => $count) {
             $size       = round(1 + (($count - $this->_min_count) * (($this->_max_count - 1) / $this->_spread)));

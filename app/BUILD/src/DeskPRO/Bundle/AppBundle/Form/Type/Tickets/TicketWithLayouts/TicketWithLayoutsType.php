@@ -106,21 +106,17 @@ class TicketWithLayoutsType extends AbstractType
                 'ticket_visibility',
                 'ticket_view_context',
             ])
-            ->addAllowedValues([
-                'ticket_visibility' => [
-                    TicketWithLayoutsContext::VISIBILITY_NEW,
-                    TicketWithLayoutsContext::VISIBILITY_EDIT,
-                    TicketWithLayoutsContext::VISIBILITY_VIEW,
-                ],
-                'ticket_view_context' => [
-                    TicketWithLayoutsContext::VIEW_USER,
-                    TicketWithLayoutsContext::VIEW_AGENT,
-                ],
+            ->setAllowedValues('ticket_visibility', [
+                TicketWithLayoutsContext::VISIBILITY_NEW,
+                TicketWithLayoutsContext::VISIBILITY_EDIT,
+                TicketWithLayoutsContext::VISIBILITY_VIEW,
             ])
-            ->setAllowedTypes([
-                'person'        => Person::class,
-                'department_id' => ['null', 'integer'],
+            ->setAllowedValues('ticket_view_context', [
+                TicketWithLayoutsContext::VIEW_USER,
+                TicketWithLayoutsContext::VIEW_AGENT,
             ])
+            ->setAllowedTypes('person', Person::class)
+            ->setAllowedTypes('department_id', ['null', 'integer'])
         ;
     }
 
@@ -160,10 +156,10 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         if ($config->getOption('department_id')) {
-            $hierarchy  = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($config->getOption('person'));
-            $choiceList = $hierarchy->getChoiceList();
+            $hierarchy    = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($config->getOption('person'));
+            $choiceLoader = $hierarchy->getChoiceLoader();
 
-            $choice = current($choiceList->getChoicesForValues([$config->getOption('department_id')]));
+            $choice = current($choiceLoader->loadChoicesForValues([$config->getOption('department_id')]));
             if ($choice) {
                 $data->setDepartment($choice->getData());
             }

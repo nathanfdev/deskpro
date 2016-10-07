@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Email\EmailAccount;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\FetcherStorageFactory;
@@ -79,14 +80,14 @@ class EmailAccountManager
      *
      * @var \Swift_Transport[]
      */
-    private $loaded_transports = array();
+    private $loaded_transports = [];
 
     /**
      * Array of fetcher storages keyed by email account.
      *
      * @var \Application\DeskPRO\EmailGateway\FetcherStorage\FetcherStorageInterface[]
      */
-    private $loaded_fetcher_storages = array();
+    private $loaded_fetcher_storages = [];
 
     /**
      * @var \Application\DeskPRO\Entity\EmailAccount
@@ -111,9 +112,9 @@ class EmailAccountManager
         $this->enc                     = $enc;
     }
 
-    ####################################################################################################################
-    # Working with EmailAccounts
-    ####################################################################################################################
+    //###################################################################################################################
+    // Working with EmailAccounts
+    //###################################################################################################################
 
     /**
      * @param int $id
@@ -275,7 +276,9 @@ class EmailAccountManager
 
         $self = $this;
 
-        return array_filter($accounts, function ($a) use ($self, $criteria) { return $self->checkAccountCriteriaMatch($a, $criteria); });
+        return array_filter($accounts, function ($a) use ($self, $criteria) {
+            return $self->checkAccountCriteriaMatch($a, $criteria);
+        });
     }
 
     /**
@@ -322,13 +325,13 @@ class EmailAccountManager
      */
     private function buildEmailAddressMap()
     {
-        $map = array();
+        $map = [];
 
         foreach ($this->getAllAccounts() as $acc) {
             $addr = strtolower($acc->address);
 
             if (!isset($map[$addr])) {
-                $map[$addr] = array();
+                $map[$addr] = [];
             }
 
             $map[$addr][] = $acc;
@@ -336,7 +339,7 @@ class EmailAccountManager
             foreach ($acc->other_addresses as $address) {
                 $addr = strtolower($address);
                 if (!isset($map[$addr])) {
-                    $map[$addr] = array();
+                    $map[$addr] = [];
                 }
                 $map[$addr][] = $acc;
             }
@@ -399,10 +402,9 @@ class EmailAccountManager
         return count($this->getAllActiveAccounts('with_transport'));
     }
 
-    ####################################################################################################################
-    # Working with Transports
-    ####################################################################################################################
-
+    //###################################################################################################################
+    // Working with Transports
+    //###################################################################################################################
 
     /**
      * @param EmailAccount $default
@@ -540,22 +542,22 @@ class EmailAccountManager
      */
     public function closeAllTransports(&$collect_exceptions = null)
     {
-        $collect_exceptions = array();
+        $collect_exceptions = [];
 
         foreach ($this->loaded_transports as $tr) {
             try {
                 $tr->stop();
             } catch (\Exception $e) {
-                $collect_exceptions = array('exception' => $e, 'transport' => $tr);
+                $collect_exceptions = ['exception' => $e, 'transport' => $tr];
             }
         }
 
-        $this->loaded_transports = array();
+        $this->loaded_transports = [];
     }
 
-    ####################################################################################################################
-    # Working with Fetchers
-    ####################################################################################################################
+    //###################################################################################################################
+    // Working with Fetchers
+    //###################################################################################################################
 
     /**
      * @return FetcherStorageFactory
@@ -636,22 +638,22 @@ class EmailAccountManager
      */
     public function closeAllFetcherStorages(&$collect_exceptions = null)
     {
-        $collect_exceptions = array();
+        $collect_exceptions = [];
 
         foreach ($this->loaded_fetcher_storages as $fetcher) {
             try {
                 $fetcher->closeStorage();
             } catch (\Exception $e) {
-                $collect_exceptions = array('exception' => $e, 'fetcher_storage' => $fetcher);
+                $collect_exceptions = ['exception' => $e, 'fetcher_storage' => $fetcher];
             }
         }
 
-        $this->loaded_fetcher_storages = array();
+        $this->loaded_fetcher_storages = [];
     }
 
-    ####################################################################################################################
-    # Working with processors
-    ####################################################################################################################
+    //###################################################################################################################
+    // Working with processors
+    //###################################################################################################################
 
     /**
      * @param EmailAccount   $account
@@ -660,7 +662,7 @@ class EmailAccountManager
      *
      * @return TicketGatewayProcessor|null
      */
-    public function getEmailProcessor(EmailAccount $account, AbstractReader $reader, array $options = array())
+    public function getEmailProcessor(EmailAccount $account, AbstractReader $reader, array $options = [])
     {
         if ($account->account_type != 'tickets') {
             return;
@@ -671,7 +673,7 @@ class EmailAccountManager
         return $proc;
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     /**
      * @param $acc

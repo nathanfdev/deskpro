@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity;
@@ -53,6 +54,6 @@ class TicketMacro extends AbstractEntityRepository
             FROM DeskPRO:TicketMacro m
             WHERE (m.person = ?0 OR m.is_global = 1) AND m.is_enabled = true
             ORDER BY m.title ASC
-        ')->execute(array($person));
+        ')->execute([$person]);
     }
 }

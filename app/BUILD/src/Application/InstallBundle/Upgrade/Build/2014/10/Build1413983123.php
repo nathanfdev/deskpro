@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1413983123 extends AbstractBuild
@@ -80,7 +81,7 @@ class Build1413983123 extends AbstractBuild
             $val = @json_decode($val, true);
             if ($val) {
                 $val = serialize($val);
-                $this->container->getDb()->executeQuery('UPDATE ticket_macros SET actions = ? WHERE id = ?', array($val, $id));
+                $this->container->getDb()->executeQuery('UPDATE ticket_macros SET actions = ? WHERE id = ?', [$val, $id]);
             }
         }
 

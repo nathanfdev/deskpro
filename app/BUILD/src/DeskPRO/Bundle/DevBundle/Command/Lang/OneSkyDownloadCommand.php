@@ -117,9 +117,9 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
 
         $onesky = $this->getContainer()->get('dpdev.onesky');
 
-        #----------------------------------------
-        # Read all files from OneSky
-        #----------------------------------------
+        //----------------------------------------
+        // Read all files from OneSky
+        //----------------------------------------
 
         $output->writeln('******************** Building file list ********************');
 
@@ -140,9 +140,9 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
             $output->writeln(sprintf('- %s: %d files', $projectName, count($projectFiles[$projectName])));
         }
 
-        #----------------------------------------
-        # Read phrases from OneSky for each lang
-        #----------------------------------------
+        //----------------------------------------
+        // Read phrases from OneSky for each lang
+        //----------------------------------------
 
         $langFileCompiler = new LangPhpFileCompiler();
 

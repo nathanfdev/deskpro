@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
@@ -75,7 +76,7 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
             }
         }
 
-        $titles = array();
+        $titles = [];
 
         foreach (TimeTitles::$time_phrases as $time => $phrase) {
             if ($time > $largest) {
@@ -97,7 +98,7 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
             return;
         }
 
-        $collect = array();
+        $collect = [];
         foreach ($this->getValues() as $sub_groups) {
             foreach ($sub_groups as $group_id => $count) {
                 $collect[$group_id] = $group_id;
@@ -139,13 +140,13 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 
             $this->logger->startTimer('TicketsResponseTime.collecting');
 
-            $this->values = array();
+            $this->values = [];
             while ($row = $q->fetch(\PDO::FETCH_NUM)) {
                 $group_id   = $row[0];
                 $time_group = $row[1];
                 $count      = $row[2];
                 if (!isset($this->values[$time_group])) {
-                    $this->values[$time_group] = array();
+                    $this->values[$time_group] = [];
                 }
 
                 if (!isset($this->values[$time_group][$group_id])) {

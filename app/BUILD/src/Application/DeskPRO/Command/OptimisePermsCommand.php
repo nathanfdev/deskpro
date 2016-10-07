@@ -61,11 +61,11 @@ class OptimisePermsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
             $ag_perms_cache     = null;
             $ag_dep_perms_cache = null;
         } else {
-            $ag_perms_cache     = $db->fetchAllGrouped('SELECT usergroup_id, name FROM permissions', array(), 'usergroup_id', null, 'name');
-            $ag_dep_perms_cache = array(
-                'full'   => $db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'full'", array(), 'usergroup_id', null, 'department_id'),
-                'assign' => $db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'assign'", array(), 'usergroup_id', null, 'department_id'),
-            );
+            $ag_perms_cache     = $db->fetchAllGrouped('SELECT usergroup_id, name FROM permissions', [], 'usergroup_id', null, 'name');
+            $ag_dep_perms_cache = [
+                'full'   => $db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'full'", [], 'usergroup_id', null, 'department_id'),
+                'assign' => $db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'assign'", [], 'usergroup_id', null, 'department_id'),
+            ];
         }
 
         foreach ($agents as $a) {
@@ -98,10 +98,10 @@ class OptimisePermsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
     {
         $db = App::getDb();
 
-        $counts = array(
+        $counts = [
             'perms'     => $db->fetchColumn('SELECT COUNT(*) FROM permissions WHERE is_active = 1'),
             'dep_perms' => $db->fetchColumn('SELECT COUNT(*) FROM department_permissions WHERE is_active = 1'),
-        );
+        ];
 
         $counts['all'] = $counts['perms'] + $counts['dep_perms'];
 

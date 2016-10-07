@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -24,10 +24,6 @@
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
  * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
@@ -93,6 +89,7 @@ class TagOptionsListener implements EventSubscriberInterface, SkipLowRequestInte
             if (!$tag_request->attributes->has('tag_request')) {
                 return;
             }
+
             $request_backup = $tag_request;
             $tag_request    = $tag_request->attributes->get('tag_request');
         }
@@ -101,24 +98,26 @@ class TagOptionsListener implements EventSubscriberInterface, SkipLowRequestInte
         $object    = new \ReflectionClass($className);
         $method    = $object->getMethod($controller[1]);
 
-        $annotations = $this->reader->getMethodAnnotations($method);
+        $annotations     = $this->reader->getMethodAnnotations($method);
+        $optionsResolver = $tag_request->getOptionsResolver();
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof TagOptions) {
                 if (count($annotation->defaults)) {
-                    $tag_request->getOptionsResolver()->setDefaults($annotation->defaults);
+                    $optionsResolver->setDefaults($annotation->defaults);
                 }
-
                 if (count($annotation->required)) {
-                    $tag_request->getOptionsResolver()->setRequired($annotation->required);
+                    $optionsResolver->setRequired($annotation->required);
                 }
-
                 if (count($annotation->allowed_types)) {
-                    $tag_request->getOptionsResolver()->setAllowedTypes($annotation->allowed_types);
+                    foreach ($annotation->allowed_types as $name => $types) {
+                        $optionsResolver->setAllowedTypes($name, $types);
+                    }
                 }
-
                 if (count($annotation->allowed_values)) {
-                    $tag_request->getOptionsResolver()->setAllowedValues($annotation->allowed_values);
+                    foreach ($annotation->allowed_values as $name => $values) {
+                        $optionsResolver->setAllowedValues($name, $values);
+                    }
                 }
 
                 $resolved_tag_options = $tag_request->getTagOptions($annotation->inherit_from);

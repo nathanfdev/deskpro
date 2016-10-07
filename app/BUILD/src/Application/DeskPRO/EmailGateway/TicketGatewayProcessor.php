@@ -92,9 +92,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
      */
     public function run()
     {
-        #-------------------------
-        # Run detectors to see if its a reply
-        #-------------------------
+        //-------------------------
+        // Run detectors to see if its a reply
+        //-------------------------
 
         $ticket       = null;
         $person       = null;
@@ -139,9 +139,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
         }
 
-        #-------------------------
-        # Check TACs
-        #-------------------------
+        //-------------------------
+        // Check TACs
+        //-------------------------
 
         // If this was a reply via a TAC, then the person detected via address and the person who owns the TAC
         // should be the sames. Otherwise, *probably* means the agent used a different email address.
@@ -180,9 +180,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
         }
 
-        #-------------------------
-        # Rate limit
-        #-------------------------
+        //-------------------------
+        // Rate limit
+        //-------------------------
 
         $rate_limit    = $this->container->getSetting('core.emails.rate_count', EmailAccountsSettings::DEFAULT_RATE_COUNT);
         $rate_time     = $this->container->getSetting('core.emails.rate_time', EmailAccountsSettings::DEFAULT_RATE_TIME);
@@ -201,7 +201,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $this->logMessage('Rate limited -- this is the first message over the threshold');
 
                 $message = App::getMailer()->createMessage();
-                $message->setTemplate('DeskPRO:emails_user:rate-limit-notice.html.twig', array(
+                $message->setTemplate('DeskPRO:emails_user:rate-limit-notice.html.twig', [
                     'ticket'        => $ticket,
                     'subject'       => $this->reader->getSubject()->getSubjectUtf8(),
                     'name'          => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
@@ -209,7 +209,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                     'time_limit'    => Dates::secsToReadable($rate_time),
                     'time_lock'     => Dates::secsToReadable($rate_locktime),
                     'date_lock_end' => date($this->container->getSetting('core.date_time'), time() + $rate_locktime),
-                ));
+                ]);
                 $message->setTo($this->reader->getFromAddress()->getEmail());
 
                 $lang = $person ? $person->getLanguage() : null;
@@ -233,9 +233,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
         }
 
-        #-------------------------
-        # Check if we should create a new user on the ticket
-        #-------------------------
+        //-------------------------
+        // Check if we should create a new user on the ticket
+        //-------------------------
 
         if ($ticket and !$person and $can_add_new_person) {
             $this->logMessage(sprintf('[TicketGatewayProcessor] Could not find user on ticket, adding user with email %s', $this->reader->getFromAddress()->getEmail()));
@@ -257,9 +257,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
         }
 
-        #-------------------------
-        # Reject agent bounces
-        #-------------------------
+        //-------------------------
+        // Reject agent bounces
+        //-------------------------
 
         if ($person && $person->is_agent && $is_bounce) {
             $this->logMessage('[TicketGatewayProcessor] Is an agent message and is detected as bounced. Rejecting message.');
@@ -269,9 +269,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             return;
         }
 
-        #-------------------------
-        # Reject new tickets by disabled users
-        #-------------------------
+        //-------------------------
+        // Reject new tickets by disabled users
+        //-------------------------
 
         if ($person && ($person->is_disabled || $person->is_deleted)) {
             $this->logMessage('[TicketGatewayProcessor] User is disabeld, rejecting message');
@@ -281,20 +281,20 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             return;
         }
 
-        #-------------------------
-        # Reject new replies by disabled users
-        #-------------------------
+        //-------------------------
+        // Reject new replies by disabled users
+        //-------------------------
 
         if ($person && (!$person->is_agent && $person->is_disabled)) {
             // user is disabled so can't create/reply to tickets
 
             if (!$this->reader->isFromRobot() && !$is_bounce) {
                 $message = App::getMailer()->createMessage();
-                $message->setTemplate('DeskPRO:emails_user:account-disabled.html.twig', array(
+                $message->setTemplate('DeskPRO:emails_user:account-disabled.html.twig', [
                     'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                    'ticket'  => array('subject' => $this->reader->getSubject()->getSubjectUtf8()),
+                    'ticket'  => ['subject' => $this->reader->getSubject()->getSubjectUtf8()],
                     'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                ));
+                ]);
                 $message->setTo($this->reader->getFromAddress()->getEmail());
 
                 App::$container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
@@ -307,9 +307,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             return;
         }
 
-        #-------------------------
-        # Handle reply to resolved tickets
-        #-------------------------
+        //-------------------------
+        // Handle reply to resolved tickets
+        //-------------------------
 
         $reply_as_new = false;
 
@@ -334,13 +334,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 // user is disabled so can't create/reply to tickets
                 if (!$this->reader->isFromRobot() && !$is_bounce) {
                     $message = $this->container->getMailer()->createMessage();
-                    $message->setTemplate('DeskPRO:emails_user:new-reply-reject-resolved.html.twig', array(
+                    $message->setTemplate('DeskPRO:emails_user:new-reply-reject-resolved.html.twig', [
                         'subject'  => $this->reader->getSubject()->getSubjectUtf8(),
                         'name'     => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
                         'ticket'   => $ticket,
                         'person'   => $person,
                         'email_to' => $email_to,
-                    ));
+                    ]);
                     $message->setTo($this->reader->getFromAddress()->getEmail());
                     $message->setFrom($from_address);
                     $message->attach(\Swift_Attachment::newInstance(
@@ -363,9 +363,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
         }
 
-        #-------------------------
-        # Detect agent reply codes
-        #-------------------------
+        //-------------------------
+        // Detect agent reply codes
+        //-------------------------
 
         $reply_actions   = null;
         $email_body_html = $this->reader->getBodyHtml()->getBodyUtf8();
@@ -408,18 +408,18 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
         }
 
-        #-------------------------
-        # Unset ticket if its an agent fwd
-        #-------------------------
+        //-------------------------
+        // Unset ticket if its an agent fwd
+        //-------------------------
 
         if ($ticket and App::getSetting('core_tickets.process_agent_fwd') and $person['is_agent'] and ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
             $this->logMessage(sprintf('Found a ticket match #%d but this is an agent fwd so unsetting', $ticket->getId()));
             $ticket = null;
         }
 
-        #-------------------------
-        # Create ticket email obj
-        #-------------------------
+        //-------------------------
+        // Create ticket email obj
+        //-------------------------
 
         $ticket_email                  = new TicketIncomingEmail($this);
         $ticket_email->reader          = $this->reader;
@@ -534,10 +534,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         } else {
             $this->created_object_type = 'ticket_message';
             $this->created_object_id   = $obj->id;
-            $this->created_object_info = array(
+            $this->created_object_info = [
                 'ticket_id'         => $obj->ticket->id,
                 'ticket_message_id' => $obj->id,
-            );
+            ];
         }
 
         return $obj;
@@ -577,11 +577,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
             if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$account_manager->findAccountForEmailAddress($user_email)) {
                 $message = $this->container->getMailer()->createMessage();
-                $message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', array(
+                $message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', [
                     'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                    'ticket'  => array('subject' => $this->reader->getSubject()->getSubjectUtf8()),
+                    'ticket'  => ['subject' => $this->reader->getSubject()->getSubjectUtf8()],
                     'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                ));
+                ]);
                 $message->setTo($this->reader->getFromAddress()->getEmail());
                 $this->container->getMailer()->send($message);
             }
@@ -589,9 +589,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             return;
         }
 
-        #-------------------------
-        # Handle validation
-        #-------------------------
+        //-------------------------
+        // Handle validation
+        //-------------------------
 
         if ($person && !$person->isConfirmed() && App::$container->getSetting('core_tickets.email_require_validation')) {
             $this->logMessage('User is not confirmed, message is rejected');
@@ -677,10 +677,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
             $this->created_object_type = 'ticket';
             $this->created_object_id   = $created['ticket']->id;
-            $this->created_object_info = array(
+            $this->created_object_info = [
                 'ticket_id'         => $created['ticket']->id,
                 'ticket_message_id' => $created['ticket_message']->id,
-            );
+            ];
 
             return $created['ticket'];
         } else {
@@ -704,10 +704,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
             $this->created_object_type = 'ticket';
             $this->created_object_id   = $created['ticket']->id;
-            $this->created_object_info = array(
+            $this->created_object_info = [
                 'ticket_id'         => $created['ticket']->id,
                 'ticket_message_id' => $created['ticket_message']->id,
-            );
+            ];
 
             return $created['ticket'];
         }
@@ -773,9 +773,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     public function getSourceInfo()
     {
         if ($this->source_info) {
-            $messages = is_array($this->source_info) ? $this->source_info : array($this->source_info);
+            $messages = is_array($this->source_info) ? $this->source_info : [$this->source_info];
         } else {
-            $messages = array();
+            $messages = [];
         }
 
         return $messages;

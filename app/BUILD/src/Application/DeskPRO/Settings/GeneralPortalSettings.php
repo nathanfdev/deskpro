@@ -35,7 +35,7 @@ namespace Application\DeskPRO\Settings;
 /**
  * Class GeneralPortalSettings.
  *
- * @deprecated Please use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings instead 
+ * @deprecated Please use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings instead
  */
 class GeneralPortalSettings
 {

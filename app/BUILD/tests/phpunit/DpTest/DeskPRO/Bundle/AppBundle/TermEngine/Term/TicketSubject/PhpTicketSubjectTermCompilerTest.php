@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubject;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubject\PhpTicketSubjectTermCompiler;
@@ -51,9 +52,9 @@ class PhpTicketSubjectTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testCompileIs()
     {
         $term = new TicketSubjectTerm(
-            array(
-                'subject' => array('this is the subject'),
-            )
+            [
+                'subject' => ['this is the subject'],
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -70,10 +71,10 @@ class PhpTicketSubjectTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testCompileHas()
     {
         $term = new TicketSubjectTerm(
-            array(
-                'subject'          => array('foobar -'),
+            [
+                'subject'          => ['foobar -'],
                 'wildcard_postfix' => true,
-            )
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -89,10 +90,10 @@ class PhpTicketSubjectTermCompilerTest extends AbstractPhpTermCompilerTest
         //// Opposite
 
         $term = new TicketSubjectTerm(
-            array(
-                'subject'         => array('- foobar'),
+            [
+                'subject'         => ['- foobar'],
                 'wildcard_prefix' => true,
-            )
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -109,9 +110,9 @@ class PhpTicketSubjectTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testCompileIsNot()
     {
         $term = new TicketSubjectTerm(
-            array(
-                'subject' => array('This is the subject'),
-            ),
+            [
+                'subject' => ['This is the subject'],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -129,10 +130,10 @@ class PhpTicketSubjectTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testCompileHasNot()
     {
         $term = new TicketSubjectTerm(
-            array(
-                'subject'          => array('foobar -'),
+            [
+                'subject'          => ['foobar -'],
                 'wildcard_postfix' => true,
-            ),
+            ],
             TermInterface::OP_NOT
         );
 
@@ -149,10 +150,10 @@ class PhpTicketSubjectTermCompilerTest extends AbstractPhpTermCompilerTest
         //// Opposite
 
         $term = new TicketSubjectTerm(
-            array(
-                'subject'         => array('- foobar'),
+            [
+                'subject'         => ['- foobar'],
                 'wildcard_prefix' => true,
-            ),
+            ],
             TermInterface::OP_NOT
         );
 

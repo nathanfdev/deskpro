@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
 /**
@@ -194,7 +195,7 @@ class Util
             return $alphabet[0];
         }
 
-        $arr  = array();
+        $arr  = [];
         $base = strlen($alphabet);
 
         while ($num) {
@@ -377,7 +378,7 @@ class Util
     /**
      * Generate a random security token using some secret.
      *
-     * @param string $secret  A secret to encode the token with.
+     * @param string $secret  A secret to encode the token with
      * @param int    $timeout How long (seconds) is the token valid for? 0 disables
      *
      * @return string
@@ -583,12 +584,12 @@ class Util
         // Then repeat. This works because the signifier digit (the first C)
         // is always 1 digit long, which allows for 26-digit numbers (huge!).
 
-        $enc_numbers = array();
+        $enc_numbers = [];
         foreach ($parts as $num) {
             $enc_numbers[] = self::baseEncode($num, $alphabet);
         }
 
-        $enc_string = array();
+        $enc_string = [];
         foreach ($enc_numbers as $enc_num) {
             $len          = strlen($enc_num);
             $len_enc      = self::baseEncode($len, $alphabet);
@@ -611,10 +612,10 @@ class Util
 
         // Must be A-Z only
         if (!preg_match('#^[a-z0-9]+$#', $encoded_string)) {
-            return array();
+            return [];
         }
 
-        $parts    = array();
+        $parts    = [];
         $len      = strlen($encoded_string);
         $pos      = 0;
         $state    = 0; // 0=sig, 1=num
@@ -631,7 +632,7 @@ class Util
                     $read .= $encoded_string[$pos];
                     ++$pos;
                     if ($pos > $len) {
-                        return array();
+                        return [];
                     } // invalid
                 }
 
@@ -661,7 +662,7 @@ class Util
      */
     public static function getFunctionParamsFromArray(\ReflectionFunctionAbstract $func_refl, array $options)
     {
-        $ret = array();
+        $ret = [];
 
         $params = $func_refl->getParameters();
         foreach ($params as $param) {
@@ -715,7 +716,7 @@ class Util
                 return str_repeat("\t", $d).'['.get_class($var).']';
             }
         } elseif (is_array($var)) {
-            $str   = array();
+            $str   = [];
             $str[] = str_repeat("\t", $d).'array(';
             foreach ($var as $k => $v) {
                 $str[] = str_repeat("\t", $d + 1)."$k: ".self::debugVar($v, $d + 1);
@@ -753,7 +754,7 @@ class Util
     {
         if ($val !== null) {
             if (is_array($val) || $val instanceof \Traversable) {
-                $ret = array();
+                $ret = [];
                 foreach ($val as $v) {
                     $ret[] = self::flatMap($v, $fn);
                 }

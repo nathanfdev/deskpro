@@ -176,9 +176,9 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data.department" should be equal to 3
     And the JSON node "data.category" should be equal to 1
     And the JSON node "data.language" should be equal to 1
-    And the JSON node "data.followers" should have 2 elements
-    And the JSON node "data.followers[0]" should be equal to 1
-    And the JSON node "data.followers[1]" should be equal to 2
+    And the JSON node "data.cc" should have 2 elements
+    And the JSON node "data.cc[0]" should be equal to 1
+    And the JSON node "data.cc[1]" should be equal to 2
 
   Scenario: I apply unassign followers on ticket with ID=1
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
@@ -205,7 +205,7 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data.department" should be equal to 3
     And the JSON node "data.category" should be equal to 1
     And the JSON node "data.language" should be equal to 1
-    And the JSON node "data.followers" should have 0 element
+    And the JSON node "data.cc" should have 0 element
 
   Scenario: I apply unassign action on ticket with ID=1
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:

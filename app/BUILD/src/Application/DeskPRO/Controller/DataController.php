@@ -44,13 +44,13 @@ class DataController extends AbstractController
 
     public function logJsErrorAction()
     {
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'logged' => true,
-        ));
+        ]);
     }
 
     public function sendErrorReportAction()
     {
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1348573081 extends AbstractBuild
@@ -53,39 +54,39 @@ class Build1348573081 extends AbstractBuild
                 SELECT *
                 FROM people_emails
                 WHERE email = ?
-            ', array($email_address));
+            ', [$email_address]);
 
             if ($email_exist) {
                 continue;
             }
 
-            $this->container->getDb()->insert('people_emails', array(
+            $this->container->getDb()->insert('people_emails', [
                 'person_id'      => $valid['person_id'],
                 'email'          => $email_address,
                 'email_domain'   => \Orb\Util\Strings::extractRegexMatch('#@(.*?)$#', $email_address),
                 'is_validated'   => true,
                 'date_created'   => date('Y-m-d H:i:s'),
                 'date_validated' => date('Y-m-d H:i:s'),
-            ));
+            ]);
 
             $email_id = $this->container->getDb()->lastInsertId();
 
             if (!$valid['person_primary_email_id']) {
-                $this->container->getDb()->insert('people', array(
+                $this->container->getDb()->insert('people', [
                     'primary_email_id' => $email_id,
-                ));
+                ]);
             }
 
             $this->container->getDb()->executeUpdate('
                 UPDATE tickets
                 SET person_email_validating_id = NULL
                 WHERE person_email_validating_id = ?
-            ', array($valid['validating_id']));
+            ', [$valid['validating_id']]);
 
             $this->container->getDb()->executeUpdate('
                 DELETE FROM people_emails_validating
                 WHERE id = ?
-            ', array($valid['validating_id']));
+            ', [$valid['validating_id']]);
         }
     }
 }

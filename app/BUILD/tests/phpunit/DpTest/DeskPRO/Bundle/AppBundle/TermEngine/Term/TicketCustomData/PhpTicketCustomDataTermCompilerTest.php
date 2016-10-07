@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketCustomDataTermCompiler;
@@ -51,10 +52,10 @@ class PhpTicketCustomDataTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testISwhenCustomDataFieldNotOnTicket()
     {
         $term = new TicketCustomDataTerm(
-            array(
+            [
                 'field_id' => 3,
-                'values'   => array(6),
-            )
+                'values'   => [6],
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -69,10 +70,10 @@ class PhpTicketCustomDataTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testNOTWhenCustomDataFieldNotOnTicket()
     {
         $term = new TicketCustomDataTerm(
-            array(
+            [
                 'field_id' => 3,
-                'values'   => array(6),
-            ),
+                'values'   => [6],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -88,10 +89,10 @@ class PhpTicketCustomDataTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testIScustomFieldValue()
     {
         $term = new TicketCustomDataTerm(
-            array(
+            [
                 'field_id' => 3,
-                'values'   => array(6),
-            )
+                'values'   => [6],
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -110,10 +111,10 @@ class PhpTicketCustomDataTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testNOTCustomFieldValue()
     {
         $term = new TicketCustomDataTerm(
-            array(
+            [
                 'field_id' => 3,
-                'values'   => array(6),
-            ),
+                'values'   => [6],
+            ],
             TermInterface::OP_NOT
         );
 
@@ -133,10 +134,10 @@ class PhpTicketCustomDataTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testIScustomFieldValues()
     {
         $term = new TicketCustomDataTerm(
-            array(
+            [
                 'field_id' => 3,
-                'values'   => array(10, 6),
-            )
+                'values'   => [10, 6],
+            ]
         );
 
         $php_check = $this->term_compiler->compile($term);
@@ -155,10 +156,10 @@ class PhpTicketCustomDataTermCompilerTest extends AbstractPhpTermCompilerTest
     public function testNOTCustomFieldValues()
     {
         $term = new TicketCustomDataTerm(
-            array(
+            [
                 'field_id' => 3,
-                'values'   => array(10, 6),
-            ),
+                'values'   => [10, 6],
+            ],
             TermInterface::OP_NOT
         );
 

@@ -35,7 +35,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplySetLanguageAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
-    /** @var  Language */
+    /** @var Language */
     private $language;
 
     public function init()

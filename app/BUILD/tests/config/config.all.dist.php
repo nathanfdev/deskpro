@@ -26,19 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-# Test Config
-#
-# The tests need this config file to run.
-#
-# To run the tests, you need to do the following:
-#
-# 1. rename this file to "config.all.php"
-# 2. ensure the database config below are correct
-# 3. ensure the DP_E2E_BASE_URL is correct (used in e2e tests)
-# 4. Remember that the test db will be deleted and
-#    reconstructed on every test run. Make sure it
-#    is NOT set to your dev database.
-#
+// Test Config
+
+// The tests need this config file to run.
+
+// To run the tests, you need to do the following:
+
+// 1. rename this file to "config.all.php"
+// 2. ensure the database config below are correct
+// 3. ensure the DP_E2E_BASE_URL is correct (used in e2e tests)
+// 4. Remember that the test db will be deleted and
+//    reconstructed on every test run. Make sure it
+//    is NOT set to your dev database.
 
 defined('DP_BYPASS_TOKEN_AUTH') || define('DP_BYPASS_TOKEN_AUTH', 'test_bypass_token');
 

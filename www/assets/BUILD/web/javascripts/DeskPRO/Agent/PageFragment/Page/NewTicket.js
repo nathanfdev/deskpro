@@ -1525,7 +1525,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		DeskPRO_Window.initAgentNotifierForRte(
 			this,
 			textarea,
-			this.meta.agentMap ? this.meta.agentMap : false,
 			false,
 			function(agentId) {
 				return true;
@@ -1619,7 +1618,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					html = html.replace(/<\/p>$/, '');
 
 					redactor.restoreSelection();
-					redactor.insertSnippetHtml(html);
+					redactor.insertHtml(html);
 				} else {
 					self.insertMessageText(result);
 				}

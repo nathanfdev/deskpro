@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
 /**
@@ -226,7 +227,7 @@ class Env
         $phpinfo1 = $cleaner($phpinfo1);
         $phpinfo2 = $cleaner($phpinfo2);
 
-        $mutated = array(0 => $phpinfo1, 1 => $phpinfo2);
+        $mutated = [0 => $phpinfo1, 1 => $phpinfo2];
 
         return $phpinfo1 == $phpinfo2;
     }
@@ -279,7 +280,7 @@ class Env
         static $functions = null;
 
         if ($functions === null) {
-            $functions = array();
+            $functions = [];
             $list      = @ini_get('disable_functions').','.@ini_get('suhosin.executor.func.blacklist');
             $list      = explode(',', $list);
 
@@ -305,7 +306,7 @@ class Env
         static $classes = null;
 
         if ($classes === null) {
-            $classes = array();
+            $classes = [];
             $list    = @ini_get('disable_classes');
             $list    = explode(',', $list);
 
@@ -332,11 +333,11 @@ class Env
      */
     public static function getMaxPostVars()
     {
-        $vals = array(
+        $vals = [
             (int) ini_get('max_input_vars'),
             (int) ini_get('suhosin.post.max_vars'),
             (int) ini_get('suhosin.request.max_vars'),
-        );
+        ];
 
         $min = null;
         foreach ($vals as $v) {
@@ -363,11 +364,11 @@ class Env
      */
     public static function getMaxGetVars()
     {
-        $vals = array(
+        $vals = [
             (int) ini_get('max_input_vars'),
             (int) ini_get('suhosin.get.max_vars'),
             (int) ini_get('suhosin.request.max_vars'),
-        );
+        ];
 
         $min = null;
         foreach ($vals as $v) {

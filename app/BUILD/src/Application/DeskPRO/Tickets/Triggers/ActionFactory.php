@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\Triggers;
 
 use Application\DeskPRO\Tickets\Actions\AbstractAction;
@@ -40,9 +41,9 @@ class ActionFactory
     public function createFromArray(array $action_info)
     {
         if (isset($action_info['type_class'])) {
-            $construct_options = array(
+            $construct_options = [
                 'type' => $action_info['type'],
-            );
+            ];
 
             return $this->create("@{$action_info['type_class']}", $action_info['options'], $construct_options);
         } else {

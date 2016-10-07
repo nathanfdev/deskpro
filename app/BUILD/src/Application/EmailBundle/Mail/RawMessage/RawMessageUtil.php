@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Mail\RawMessage;
 
 class RawMessageUtil
@@ -37,9 +38,9 @@ class RawMessageUtil
      * Applies a RawMessage to a standard Swift_Message.
      *
      * @param RawMessage     $raw_message
-     * @param \Swift_Message $message     The message to apply to. If none specified, an default instance will be created via the standard newInstance() factory.
+     * @param \Swift_Message $message     The message to apply to. If none specified, an default instance will be created via the standard newInstance() factory
      * @param array          $send_to     Array of email addresses the message should send to. If none specified, the tos and ccs will be added.
-     *                                    Note: If there are BCC'd addresses, you must supply this array yourself because RawMessage has no concept of BCCs.
+     *                                    Note: If there are BCC'd addresses, you must supply this array yourself because RawMessage has no concept of BCCs
      *
      * @return \Swift_Message
      */
@@ -50,7 +51,7 @@ class RawMessageUtil
         }
 
         if ($send_tos === null) {
-            $send_tos = array();
+            $send_tos = [];
             foreach ($raw_message->getTos() as $to) {
                 $send_tos[] = $to['email'];
             }
@@ -59,26 +60,26 @@ class RawMessageUtil
             }
         }
 
-        #------------------------------
-        # From
-        #------------------------------
+        //------------------------------
+        // From
+        //------------------------------
 
         $from = $raw_message->getFrom();
         if ($from) {
             $message->setFrom($from['email'], $from['name']);
         }
 
-        #------------------------------
-        # Subject
-        #------------------------------
+        //------------------------------
+        // Subject
+        //------------------------------
 
         $message->setSubject($raw_message->getSubject());
 
-        #------------------------------
-        # Recipients
-        #------------------------------
+        //------------------------------
+        // Recipients
+        //------------------------------
 
-        $included_tos = array();
+        $included_tos = [];
 
         foreach ($raw_message->getTos() as $to) {
             $message->addTo($to['email'], $to['name']);
@@ -96,9 +97,9 @@ class RawMessageUtil
             }
         }
 
-        #------------------------------
-        # Message
-        #------------------------------
+        //------------------------------
+        // Message
+        //------------------------------
 
         $text_body = $raw_message->getTextPart();
         $html_body = $raw_message->getHtmlPart();
@@ -119,9 +120,9 @@ class RawMessageUtil
             }
         }
 
-        #------------------------------
-        # Attachments
-        #------------------------------
+        //------------------------------
+        // Attachments
+        //------------------------------
 
         foreach ($raw_message->getAttachments() as $attach) {
             $a = \Swift_Attachment::newInstance();
@@ -143,9 +144,9 @@ class RawMessageUtil
             $message->attach($a);
         }
 
-        #------------------------------
-        # Headers
-        #------------------------------
+        //------------------------------
+        // Headers
+        //------------------------------
 
         $headers = $message->getHeaders();
         foreach ($raw_message->getHeaders() as $header_name => $header_values) {
@@ -165,7 +166,7 @@ class RawMessageUtil
 
                     case 'DKIM-Signature':
                     case 'DomainKey-Signature':
-                    case (strpos($header_name, 'X-') === 0):
+                    case strpos($header_name, 'X-') === 0:
                         $headers->removeAll($header_name);
                         foreach ($header_values as $v) {
                             $headers->addTextHeader($header_name, $v);
@@ -176,9 +177,9 @@ class RawMessageUtil
             }
         }
 
-        #------------------------------
-        # Done
-        #------------------------------
+        //------------------------------
+        // Done
+        //------------------------------
 
         return $message;
     }

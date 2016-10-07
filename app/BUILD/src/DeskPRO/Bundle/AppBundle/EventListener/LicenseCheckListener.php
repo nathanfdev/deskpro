@@ -76,9 +76,9 @@ final class LicenseCheckListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::RESPONSE => array('onResponse', -100),
-        );
+        return [
+            KernelEvents::RESPONSE => ['onResponse', -100],
+        ];
     }
 
     /**

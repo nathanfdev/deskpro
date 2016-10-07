@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 
 use Application\DeskPRO\Tickets\Actions;
@@ -44,7 +45,7 @@ class TriggerActionConverter
      */
     private $mappings;
 
-    public function __construct(array $mappings = array())
+    public function __construct(array $mappings = [])
     {
         $this->mappings = $mappings;
     }
@@ -85,7 +86,7 @@ class TriggerActionConverter
         $emails = explode(',', $emails);
         $emails = Arrays::func($emails, 'trim');
 
-        return new Actions\SetCcs(array('add_emails' => $emails));
+        return new Actions\SetCcs(['add_emails' => $emails]);
     }
 
     private function upgradeAction_add_labels($type, OptionsArray $options)
@@ -93,9 +94,9 @@ class TriggerActionConverter
         if ($options->get('label')) {
             $labels = explode(',', $options->get('label', ''));
         } else {
-            $labels = $options->get('labels', array());
+            $labels = $options->get('labels', []);
             if (!is_array($labels)) {
-                $labels = array($labels);
+                $labels = [$labels];
             }
         }
 
@@ -106,37 +107,37 @@ class TriggerActionConverter
             return;
         }
 
-        return new Actions\SetLabels(array('add_labels' => $labels));
+        return new Actions\SetLabels(['add_labels' => $labels]);
     }
 
     private function upgradeAction_add_org_managers($type, OptionsArray $options)
     {
-        return new Actions\SetCcs(array('add_org_managers' => true));
+        return new Actions\SetCcs(['add_org_managers' => true]);
     }
 
     private function upgradeAction_add_participants($type, OptionsArray $options)
     {
-        return new Actions\SetAgentFollowers(array('add_agent_ids' => $options->get('add_participants', array())));
+        return new Actions\SetAgentFollowers(['add_agent_ids' => $options->get('add_participants', [])]);
     }
 
     private function upgradeAction_add_sla($type, OptionsArray $options)
     {
-        return new Actions\SetSlas(array('add_sla_ids' => array($options->get('sla_id', 0))));
+        return new Actions\SetSlas(['add_sla_ids' => [$options->get('sla_id', 0)]]);
     }
 
     private function upgradeAction_agent($type, OptionsArray $options)
     {
-        return new Actions\SetAgent(array('agent_id' => $options->get('agent')));
+        return new Actions\SetAgent(['agent_id' => $options->get('agent')]);
     }
 
     private function upgradeAction_agent_team($type, OptionsArray $options)
     {
-        return new Actions\SetAgentTeam(array('agent_team_id' => $options->get('agent_team')));
+        return new Actions\SetAgentTeam(['agent_team_id' => $options->get('agent_team')]);
     }
 
     private function upgradeAction_category($type, OptionsArray $options)
     {
-        return new Actions\SetCategory(array('category_id' => $options->get('category')));
+        return new Actions\SetCategory(['category_id' => $options->get('category')]);
     }
 
     private function upgradeAction_delete($type, OptionsArray $options)
@@ -146,7 +147,7 @@ class TriggerActionConverter
 
     private function upgradeAction_department($type, OptionsArray $options)
     {
-        return new Actions\SetDepartment(array('department_id' => $options->get('department')));
+        return new Actions\SetDepartment(['department_id' => $options->get('department')]);
     }
 
     private function upgradeAction_disable_agent_notifications($type, OptionsArray $options)
@@ -156,10 +157,10 @@ class TriggerActionConverter
 
     private function upgradeAction_disable_notifications($type, OptionsArray $options)
     {
-        return array(
+        return [
             new Actions\ModMuteAgentEmails(),
             new Actions\ModMuteUserEmails(),
-        );
+        ];
     }
 
     private function upgradeAction_disable_user_notifications($type, OptionsArray $options)
@@ -169,55 +170,55 @@ class TriggerActionConverter
 
     private function upgradeAction_enable_new_ticket_confirmation($type, OptionsArray $options)
     {
-        return new Actions\SendUserEmail(array(
+        return new Actions\SendUserEmail([
             'template'    => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
             'do_cc_users' => true,
             'from_name'   => 'helpdesk_name',
-        ));
+        ]);
     }
 
     private function upgradeAction_enable_user_notification_new_reply_user($type, OptionsArray $options)
     {
-        return new Actions\SendUserEmail(array(
+        return new Actions\SendUserEmail([
             'template'    => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
             'do_cc_users' => true,
             'from_name'   => 'helpdesk_name',
-        ));
+        ]);
     }
 
     private function upgradeAction_flag($type, OptionsArray $options)
     {
-        return new Actions\SetFlag(array('color' => $options->get('flag', 'red')));
+        return new Actions\SetFlag(['color' => $options->get('flag', 'red')]);
     }
 
     private function upgradeAction_force_email_validation($type, OptionsArray $options)
     {
-        return new Actions\ModSetEmailValidation(array('enable_validation' => true));
+        return new Actions\ModSetEmailValidation(['enable_validation' => true]);
     }
 
     private function upgradeAction_hipchat_message($type, OptionsArray $options)
     {
-        return new \deskpro_hipchat\Ticket\Actions\HipChatAction(array('room' => $options->get('room', 0)));
+        return new \deskpro_hipchat\Ticket\Actions\HipChatAction(['room' => $options->get('room', 0)]);
     }
 
     private function upgradeAction_hold($type, OptionsArray $options)
     {
-        return new Actions\SetHold(array('is_hold' => (bool) $options->get('is_hold')));
+        return new Actions\SetHold(['is_hold' => (bool) $options->get('is_hold')]);
     }
 
     private function upgradeAction_language($type, OptionsArray $options)
     {
-        return new Actions\SetLanguage(array('language_id' => $options->get('language', 0)));
+        return new Actions\SetLanguage(['language_id' => $options->get('language', 0)]);
     }
 
     private function upgradeAction_priority($type, OptionsArray $options)
     {
-        return new Actions\SetPriority(array('priority_id' => $options->get('priority')));
+        return new Actions\SetPriority(['priority_id' => $options->get('priority')]);
     }
 
     private function upgradeAction_product($type, OptionsArray $options)
     {
-        return new Actions\SetProduct(array('product_id' => $options->get('product')));
+        return new Actions\SetProduct(['product_id' => $options->get('product')]);
     }
 
     private function upgradeAction_recalculate_sla_status($type, OptionsArray $options)
@@ -231,9 +232,9 @@ class TriggerActionConverter
         if ($options->get('label')) {
             $labels = explode(',', $options->get('label', ''));
         } else {
-            $labels = $options->get('labels', array());
+            $labels = $options->get('labels', []);
             if (!is_array($labels)) {
-                $labels = array($labels);
+                $labels = [$labels];
             }
         }
 
@@ -244,44 +245,44 @@ class TriggerActionConverter
             return;
         }
 
-        return new Actions\SetLabels(array('remove_labels' => $labels));
+        return new Actions\SetLabels(['remove_labels' => $labels]);
     }
 
     private function upgradeAction_remove_sla($type, OptionsArray $options)
     {
-        return new Actions\SetSlas(array('remove_sla_ids' => array($options->get('sla_id', 0))));
+        return new Actions\SetSlas(['remove_sla_ids' => [$options->get('sla_id', 0)]]);
     }
 
     private function upgradeAction_reply($type, OptionsArray $options)
     {
-        return new Actions\AddAgentReply(array(
+        return new Actions\AddAgentReply([
             'reply_text'        => $options->get('reply_text'),
             'by_assigned_agent' => true,
             'by_agent_id'       => 1,
             'no_formatter'      => false,
-        ));
+        ]);
     }
 
     private function upgradeAction_send_agent_email($type, OptionsArray $options)
     {
-        return new Actions\SendAgentEmail(array(
-            'agent_ids' => $options->get('agents', array()),
+        return new Actions\SendAgentEmail([
+            'agent_ids' => $options->get('agents', []),
             'template'  => $this->getNewTemplateName($options->get('template_name')),
-        ));
+        ]);
     }
 
     private function upgradeAction_send_autoclose_warn_email($type, OptionsArray $options)
     {
-        return new Actions\SendUserEmail(array(
+        return new Actions\SendUserEmail([
             'template' => $this->getNewTemplateName('DeskPRO:emails_user:ticket-autoclose-warn.html.twig'),
-        ));
+        ]);
     }
 
     private function upgradeAction_send_feedback_email($type, OptionsArray $options)
     {
-        return new Actions\SendUserEmail(array(
+        return new Actions\SendUserEmail([
             'template' => 'DeskPRO:emails_user:ticket-rate.html.twig',
-        ));
+        ]);
     }
 
     private function upgradeAction_send_org_managers_email($type, OptionsArray $options)
@@ -292,9 +293,9 @@ class TriggerActionConverter
 
     private function upgradeAction_send_user_email($type, OptionsArray $options)
     {
-        return new Actions\SendUserEmail(array(
+        return new Actions\SendUserEmail([
             'template' => $this->getNewTemplateName($options->get('template_name')),
-        ));
+        ]);
     }
 
     private function upgradeAction_set_agent_email_template_newticket($type, OptionsArray $options)
@@ -342,7 +343,7 @@ class TriggerActionConverter
 
         $id = $this->mappings['gateway_address_to_email_account'][$address_id];
 
-        return new Actions\SetEmailAccount(array('email_account_id' => $id));
+        return new Actions\SetEmailAccount(['email_account_id' => $id]);
     }
 
     private function upgradeAction_set_initial_from_name($type, OptionsArray $options)
@@ -354,21 +355,21 @@ class TriggerActionConverter
     private function upgradeAction_set_sla_complete($type, OptionsArray $options)
     {
         if ($options->get('sla_complete')) {
-            return new Actions\SetSlasComplete(array(
-                'sla_ids'    => array($options->get('sla_id')),
+            return new Actions\SetSlasComplete([
+                'sla_ids'    => [$options->get('sla_id')],
                 'sla_status' => 'nochange',
-            ));
+            ]);
         } else {
-            return new Actions\SetSlaReset(array('sla_ids' => array($options->get('sla_id'))));
+            return new Actions\SetSlaReset(['sla_ids' => [$options->get('sla_id')]]);
         }
     }
 
     private function upgradeAction_set_sla_status($type, OptionsArray $options)
     {
-        return new Actions\SetSlasComplete(array(
-            'sla_ids'    => array($options->get('sla_id')),
+        return new Actions\SetSlasComplete([
+            'sla_ids'    => [$options->get('sla_id')],
             'sla_status' => $options->get('sla_status'),
-        ));
+        ]);
     }
 
     private function upgradeAction_set_user_email_template_newreply_agent($type, OptionsArray $options)
@@ -385,7 +386,7 @@ class TriggerActionConverter
 
     private function upgradeAction_status($type, OptionsArray $options)
     {
-        return new Actions\SetStatus(array('status' => $options->get('status')));
+        return new Actions\SetStatus(['status' => $options->get('status')]);
     }
 
     private function upgradeAction_stop_actions($type, OptionsArray $options)
@@ -395,7 +396,7 @@ class TriggerActionConverter
 
     private function upgradeAction_subject($type, OptionsArray $options)
     {
-        return new Actions\SetSubject(array('subject' => $options->get('subject')));
+        return new Actions\SetSubject(['subject' => $options->get('subject')]);
     }
 
     private function upgradeAction_ticket_field($type, OptionsArray $options)
@@ -407,10 +408,10 @@ class TriggerActionConverter
 
         $value = Arrays::getValue($options->all(), 'custom_fields.field_'.$field_id);
 
-        return new Actions\SetTicketField(array(
+        return new Actions\SetTicketField([
             'field_id' => $field_id,
             'value'    => $value,
-        ));
+        ]);
     }
 
     private function upgradeAction_urgency($type, OptionsArray $options)
@@ -423,32 +424,32 @@ class TriggerActionConverter
             $mode = Actions\SetUrgency::MODE_SUB;
         }
 
-        return new Actions\SetUrgency(array(
+        return new Actions\SetUrgency([
             'urgency' => $num,
             'mode'    => $mode,
-        ));
+        ]);
     }
 
     private function upgradeAction_urgency_set($type, OptionsArray $options)
     {
-        return new Actions\SetUrgency(array(
+        return new Actions\SetUrgency([
             'urgency' => $options->get('num'),
             'mode'    => $options->get('allow_lower') ? Actions\SetUrgency::MODE_RAISE : Actions\SetUrgency::MODE_SET,
-        ));
+        ]);
     }
 
     private function upgradeAction_workflow($type, OptionsArray $options)
     {
-        return new Actions\SetWorkflow(array('workflow_id' => $options->get('workflow')));
+        return new Actions\SetWorkflow(['workflow_id' => $options->get('workflow')]);
     }
 
     private function getNewTemplateName($name)
     {
-        static $map = array(
+        static $map = [
             'DeskPRO:emails_user:new-reply-agent.html.twig' => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
             'DeskPRO:emails_user:new-reply-user.html.twig'  => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
             'DeskPRO:emails_user:new-ticket.html.twig'      => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
-        );
+        ];
 
         if (isset($map[$name])) {
             return $map[$name];

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Input;
 
 use Orb\Input\Reader\Reader as BaseReader;
@@ -45,13 +46,13 @@ class Reader extends BaseReader
     const REQUEST = 'req';
     const COOKIE  = 'cookie';
 
-    protected $do_not_clean = array(
+    protected $do_not_clean = [
         'password'         => 1,
         'password2'        => 1,
         'new_password'     => 1,
         'new_password2'    => 1,
         'current_password' => 1,
-    );
+    ];
 
     /**
      * Gets a string.

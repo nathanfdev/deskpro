@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
@@ -59,7 +60,7 @@ class BlobsController extends AbstractApiController
 
         foreach ($request->files->get('files') as $file) {
             $blobs[] = $accept->accept($file);
-        };
+        }
 
         return new View($this->wrap($blobs));
     }

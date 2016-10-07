@@ -32,6 +32,7 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
+use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
@@ -98,7 +99,7 @@ class CaptchaEventListenerTest extends PortalTestCase
             $settingName = AntiAbuse::KEY.'.'.$type.'.response';
         }
 
-        $this->get('settings_resolver')->setSetting($settingName, RateLimitGroup::RESPONSE_CAPTCHA);
+        $this->getEntityManager()->getRepository(Setting::class)->updateSetting($settingName, RateLimitGroup::RESPONSE_CAPTCHA);
 
         $lessThanMaxAttempts = $this->getRateLimitMaxAttempts($type);
         for ($i = 0; $i < $lessThanMaxAttempts; ++$i) {
@@ -130,7 +131,7 @@ class CaptchaEventListenerTest extends PortalTestCase
         $this->get('test_factory.person')->createNewInvalidUser($person_email, 'Foo Bar', 'password123');
 
         // this IP will be whitelisted in settings
-        $this->get('settings_resolver')->setSetting(AntiAbuse::SETTING_IP_WHITELIST, json_encode([
+        $this->getEntityManager()->getRepository(Setting::class)->updateSetting(AntiAbuse::SETTING_IP_WHITELIST, json_encode([
             $ip,
         ]));
 

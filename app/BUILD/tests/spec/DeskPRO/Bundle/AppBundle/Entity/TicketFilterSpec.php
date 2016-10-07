@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\Entity;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference;
@@ -73,22 +74,22 @@ class TicketFilterSpec extends ObjectBehavior
 
     public function it_can_be_associated_with_views(TicketFilterView $view1, TicketFilterView $view2)
     {
-        $this->getFilterViews()->toArray()->shouldBeLike(array());
+        $this->getFilterViews()->toArray()->shouldBeLike([]);
 
         $this->addFilterView($view1);
         $this->addFilterView($view2);
 
-        $this->getFilterViews()->toArray()->shouldBeLike(array($view1, $view2));
+        $this->getFilterViews()->toArray()->shouldBeLike([$view1, $view2]);
     }
 
     public function it_can_be_associated_with_preferences(TicketFilterPreference $pref1, TicketFilterPreference $pref2)
     {
-        $this->getFilterPreferences()->toArray()->shouldBeLike(array());
+        $this->getFilterPreferences()->toArray()->shouldBeLike([]);
 
         $this->addFilterPreference($pref1);
         $this->addFilterPreference($pref2);
 
-        $this->getFilterPreferences()->toArray()->shouldBeLike(array($pref1, $pref2));
+        $this->getFilterPreferences()->toArray()->shouldBeLike([$pref1, $pref2]);
     }
 
     public function it_has_a_title()

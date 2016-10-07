@@ -88,9 +88,9 @@ class GetMsgScript extends LowScriptAbstract
             }
             $is_initial_pool = !empty($_REQUEST['is_initial_poll']);
 
-            #------------------------------
-            # Dismissed client messages
-            #------------------------------
+            //------------------------------
+            // Dismissed client messages
+            //------------------------------
             if (isset($_REQUEST['dismissed'])) {
                 $notifications = [];
 
@@ -109,9 +109,9 @@ class GetMsgScript extends LowScriptAbstract
                 return true;
             }
 
-            #------------------------------
-            # Standard client messages
-            #------------------------------
+            //------------------------------
+            // Standard client messages
+            //------------------------------
 
             $data = $this->getMessageData(
                 $agent_session['person_id'],
@@ -132,9 +132,9 @@ class GetMsgScript extends LowScriptAbstract
             // unset ref to $item so it isnt overwritten
             unset($item);
 
-            #------------------------------
-            # Poll requests
-            #------------------------------
+            //------------------------------
+            // Poll requests
+            //------------------------------
 
             $dos = (isset($_REQUEST['do']) ? (array) $_REQUEST['do'] : []);
 
@@ -286,9 +286,9 @@ class GetMsgScript extends LowScriptAbstract
                 ]);
             }
 
-            #------------------------------
-            # Dismiss messages
-            #------------------------------
+            //------------------------------
+            // Dismiss messages
+            //------------------------------
 
             if (!empty($_REQUEST['dismiss_alerts']) && is_array($_REQUEST['dismiss_alerts'])) {
                 $ids = $_REQUEST['dismiss_alerts'];
@@ -585,9 +585,9 @@ class GetMsgScript extends LowScriptAbstract
         return $q->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    ############################################################################
-    # getFilterCounts
-    ############################################################################
+    //###########################################################################
+    // getFilterCounts
+    //###########################################################################
 
     public function getSysFiltersDataMessage()
     {
@@ -674,9 +674,9 @@ class GetMsgScript extends LowScriptAbstract
         return [[null, 'filters.filter_data', $filter_data]];
     }
 
-    ############################################################################
-    # getFlaggedCounts
-    ############################################################################
+    //###########################################################################
+    // getFlaggedCounts
+    //###########################################################################
 
     public function getFlaggedCountsMessage()
     {
@@ -687,9 +687,9 @@ class GetMsgScript extends LowScriptAbstract
         return [[null, 'filter-flagged.counts', [$all_counts]]];
     }
 
-    ############################################################################
-    # getCheckTickets
-    ############################################################################
+    //###########################################################################
+    // getCheckTickets
+    //###########################################################################
 
     public function checkTicketsMessage()
     {
@@ -711,9 +711,9 @@ class GetMsgScript extends LowScriptAbstract
         return $messages;
     }
 
-    ############################################################################
-    # getOnlineVisitors
-    ############################################################################
+    //###########################################################################
+    // getOnlineVisitors
+    //###########################################################################
 
     public function getOnlineVisitorsMessage()
     {
@@ -722,9 +722,9 @@ class GetMsgScript extends LowScriptAbstract
         ];
     }
 
-    ############################################################################
-    # getOnlineAgents
-    ############################################################################
+    //###########################################################################
+    // getOnlineAgents
+    //###########################################################################
 
     public function getOnlineAgentsMessage()
     {

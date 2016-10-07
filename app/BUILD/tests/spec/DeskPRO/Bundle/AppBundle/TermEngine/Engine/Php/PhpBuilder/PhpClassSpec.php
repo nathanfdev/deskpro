@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpMethod;
@@ -51,44 +52,44 @@ class PhpClassSpec extends ObjectBehavior
 
     public function it_has_a_collection_of_properties()
     {
-        $this->getProperties()->shouldBe(array());
+        $this->getProperties()->shouldBe([]);
 
         $this->addProperty('ticket');
         $this->addProperty('em', 'protected', 'null');
 
         $this->getProperties()->shouldBe(
-            array(
-                'ticket' => array(
+            [
+                'ticket' => [
                     'name'       => 'ticket',
                     'visibility' => 'public',
                     'default'    => null,
-                ),
-                'em' => array(
+                ],
+                'em' => [
                     'name'       => 'em',
                     'visibility' => 'protected',
                     'default'    => 'null',
-                ),
-            )
+                ],
+            ]
         );
 
         $this->removeProperty('ticket');
 
         $this->getProperties()->shouldBe(
-            array(
-                'em' => array(
+            [
+                'em' => [
                     'name'       => 'em',
                     'visibility' => 'protected',
                     'default'    => 'null',
-                ),
-            )
+                ],
+            ]
         );
 
         $this->getProperty('em')->shouldBe(
-            array(
+            [
                 'name'       => 'em',
                 'visibility' => 'protected',
                 'default'    => 'null',
-            )
+            ]
         );
     }
 
@@ -99,11 +100,11 @@ class PhpClassSpec extends ObjectBehavior
         $method1->getName()->willReturn('m1');
         $method2->getName()->willReturn('m2');
 
-        $this->getMethods()->shouldBe(array());
+        $this->getMethods()->shouldBe([]);
         $this->addMethod($method1);
         $this->addMethod($method2);
 
-        $this->getMethods()->shouldBe(array('m1' => $method1, 'm2' => $method2));
+        $this->getMethods()->shouldBe(['m1' => $method1, 'm2' => $method2]);
 
         $this->getMethod('m1')->shouldBe($method1);
         $this->getMethod('m2')->shouldBe($method2);
@@ -127,27 +128,27 @@ class PhpClassSpec extends ObjectBehavior
         $method1->getName()->willReturn('m1');
         $method2->getName()->willReturn('m1');
 
-        $this->getMethods()->shouldBe(array());
+        $this->getMethods()->shouldBe([]);
         $this->addMethod($method1);
 
         $this->shouldThrow('\InvalidArgumentException')->during(
             'addMethod',
-            array($method2)
+            [$method2]
         );
 
-        $this->getMethods()->shouldBe(array('m1' => $method1));
+        $this->getMethods()->shouldBe(['m1' => $method1]);
     }
 
     public function it_can_implement_or_extend()
     {
-        $this->getImplements()->shouldBe(array());
+        $this->getImplements()->shouldBe([]);
         $this->getExtends()->shouldBe(null);
 
         $this->addImplement('\StdClass');
         $this->addImplement('\IteratorAggregate');
         $this->setExtends('\DeskPRO\Bundle\AppBundle\SomeClass');
 
-        $this->getImplements()->shouldBe(array('\StdClass', '\IteratorAggregate'));
+        $this->getImplements()->shouldBe(['\StdClass', '\IteratorAggregate']);
         $this->getExtends()->shouldBe('\DeskPRO\Bundle\AppBundle\SomeClass');
     }
 
@@ -250,26 +251,26 @@ protected function verify(Ticket $ticket)
         $this->addDependencyInjection('context', '\DeskPRO\Bundle\AppBundle\TermEngine\TermEngineContext');
 
         $this->getProperties()->shouldBe(
-            array(
-                'context' => array(
+            [
+                'context' => [
                     'name'       => 'context',
                     'visibility' => 'protected',
                     'default'    => null,
-                ),
-            )
+                ],
+            ]
         );
 
         $method = $this->getMethod('__construct');
 
         $method->getName()->shouldBe('__construct');
         $method->getArguments()->shouldBe(
-            array(
-                'context' => array(
+            [
+                'context' => [
                     'name'    => 'context',
                     'type'    => '\DeskPRO\Bundle\AppBundle\TermEngine\TermEngineContext',
                     'default' => null,
-                ),
-            )
+                ],
+            ]
         );
 
         $this->setName('my_class');

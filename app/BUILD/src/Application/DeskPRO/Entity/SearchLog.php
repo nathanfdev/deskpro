@@ -140,9 +140,9 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
         $this['query'] = $query;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

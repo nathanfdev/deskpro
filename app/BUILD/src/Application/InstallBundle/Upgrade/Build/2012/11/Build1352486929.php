@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -53,12 +54,12 @@ class Build1352486929 extends AbstractBuild
                 UPDATE tickets
                 SET department_id = ?
                 WHERE department_id IN (?)
-            ', array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            ', [$default_department, $chat_deps], [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
             $this->container->getDb()->executeUpdate('
                 UPDATE tickets_search_active
                 SET department_id = ?
                 WHERE department_id IN (?)
-            ', array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            ', [$default_department, $chat_deps], [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
         }
     }
 }

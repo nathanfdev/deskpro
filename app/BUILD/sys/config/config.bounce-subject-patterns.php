@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,14 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
 
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # This file should not be edited directly. If you want
-    # to add custom patterns, create a new file named
-    # config.bounce-subject-patterns.php in the same directory
-    # as your config.php file.
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // This file should not be edited directly. If you want
+    // to add custom patterns, create a new file named
+    // config.bounce-subject-patterns.php in the same directory
+    // as your config.php file.
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     '#^Delivery Status Notification (?P<subject>.*?)$#',
     '#^Undeliverable: (?P<subject>.*?)$#',
@@ -41,4 +41,4 @@ return array(
     '#^Automatic reply: (?P<subject>.*?)$#i',
     '#^Out of Office AutoReply: (?P<subject>.*?)$#i',
     '#^Autosvar:\s*(?P<subject>.*?)$#i',
-);
+];

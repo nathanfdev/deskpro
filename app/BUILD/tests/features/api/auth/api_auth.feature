@@ -1,10 +1,11 @@
+@new
 Feature: API Authentication
   In order to interact with the API
   As anyone
   I must authenticate and be able to see /api/v2/me
 
   Background:
-    Given I install the api data set
+    Given there are no "Session" records
 
   Scenario: I do not submit any auth credentials
     When I send a GET request to "/api/v2/me"
@@ -50,26 +51,29 @@ Feature: API Authentication
     Then the JSON node "code" should be equal to "invalid_api_key"
     And the JSON node "message" should be equal to "Invalid API key."
 
-  Scenario: I have a valid agent session ID (user "agent" id=2 in the "api" data set)
-    Given the agent session auth "HJKLOP" is valid for agent
-    When I add cookie named "dpsid-agent" equal to "1-HJKLOP"
+  Scenario: I have a valid agent session ID
+    Given "smith@deskpro.dev" agent exists
+    And the agent session auth "HJKLOP" is valid for "smith@deskpro.dev" and referenced as "smithSession"
+    When I add session cookie named "dpsid-agent" for session "smithSession"
     And I send a GET request to "/api/v2/me"
     Then the response status code should be 200
     And the JSON node "data.auth_method" should be equal to "agent_session"
-    And the JSON node "data.person_id" should be equal to 2
+    And the JSON node "data.person_id" should be equal to "{smith@deskpro.dev}"
     And I should have an authenticated token with the role ROLE_API
 
   Scenario: I have a valid agent session ID and it's an app request via X-DeskPRO-App-ID header
-    Given the agent session auth "HJKLOP" is valid for agent
-    When I add cookie named "dpsid-agent" equal to "1-HJKLOP"
+    Given "smith@deskpro.dev" agent exists
+    And the agent session auth "HJKLOP" is valid for "smith@deskpro.dev" and referenced as "smithSession"
+    When I add session cookie named "dpsid-agent" for session "smithSession"
     And I add "X-DeskPRO-App-ID" header equal to "12"
     And I send a GET request to "/api/v2/me"
     Then the response status code should be 200
-    And the JSON node "data.app_id" should be equal to 12
+    And the JSON node "data.app_id" should be equal to "12"
 
   Scenario: I have a valid session ID but I am NOT an agent
-    Given the agent session auth "UZER" is valid for user
-    When I add cookie named "dpsid-agent" equal to "1-UZER"
+    Given "user@deskpro.dev" user exists
+    And the agent session auth "UZER" is valid for "user@deskpro.dev" and referenced as "userSession"
+    When I add session cookie named "dpsid-agent" for session "userSession"
     And I send a GET request to "/api/v2/me"
     And the response status code should be 401
     And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
@@ -93,12 +97,14 @@ Feature: API Authentication
     And I should have an authenticated token with the role ROLE_API
 
   Scenario: I have a valid api token (user "agent" id=2 in the "api" data set)
-    Given a valid api token exists with the code "SECRETCODE" and id 1 for agent
-    When I add Authorization header equal to "token 1:SECRETCODE"
+    Given "smith@deskpro.dev" agent exists
+    And there are no "ApiToken" records
+    And a valid api token with the code "SECRETCODE" for "smith@deskpro.dev" and referenced as "token" exists
+    When I add Authorization header equal to "token {token}:SECRETCODE"
     And I send a GET request to "/api/v2/me"
     Then the response status code should be 200
     And the JSON node "data.auth_method" should be equal to "api_token"
-    And the JSON node "data.person_id" should be equal to 2
+    And the JSON node "data.person_id" should be equal to "{smith@deskpro.dev}"
     And I should have an authenticated token with the role ROLE_API
 
   Scenario: I have an invalid api token

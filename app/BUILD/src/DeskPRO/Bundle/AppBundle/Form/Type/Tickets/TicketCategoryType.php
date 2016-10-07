@@ -52,11 +52,11 @@ class TicketCategoryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'choice_list' => function (Options $options) {
-                /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchy_generator */
-                $hierarchy_generator = $options['hierarchy_generator'];
+            'choice_loader' => function (Options $options) {
+                /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchyGenerator */
+                $hierarchyGenerator = $options['hierarchy_generator'];
 
-                return $hierarchy_generator->generateTicketCategoriesHierarchy()->getChoiceList();
+                return $hierarchyGenerator->generateTicketCategoriesHierarchy()->getChoiceLoader();
             },
         ]);
     }

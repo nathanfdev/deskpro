@@ -79,12 +79,12 @@ class EmailProcessCommand extends Command
 
         if ($input->getOption('redis')) {
             $urlinfo = parse_url($input->getOption('redis'));
-            $redis   = array(
+            $redis   = [
                 'scheme'             => $urlinfo['scheme'],
                 'host'               => $urlinfo['host'],
                 'port'               => $urlinfo['port'],
                 'read_write_timeout' => '20',
-            );
+            ];
         } else {
             $redis = null;
         }
@@ -130,16 +130,16 @@ class EmailProcessCommand extends Command
             $logger->pushHandler($h);
         }
 
-        $reader = new RedisReader(array(
+        $reader = new RedisReader([
             'task_factory' => new JsonTaskFactory(),
             'redis_params' => $redis,
             'redis_key'    => $redis_key,
             'logger'       => $logger,
-        ));
+        ]);
 
         $processor = new EmailTaskProcessor($logger);
 
-        $options = array(
+        $options = [
             'task_timeout'    => $task_timeout,
             'max_tasks'       => $max_tasks,
             'stop_after_time' => $stop_time,
@@ -147,7 +147,7 @@ class EmailProcessCommand extends Command
             'reader'          => $reader,
             'processor'       => $processor,
             'logger'          => $logger,
-        );
+        ];
 
         $runner = new TaskRunner($options);
         $output->writeln('Running ...');

@@ -4,7 +4,7 @@ Feature: /ticket_forms endpoint
 
   Background:
     Given I'm authenticated as admin
-    And I have default brand
+    And I have only default brand
     And a user with "user_1@deskpro.dev" email exists
     And a user with "user_2@deskpro.dev" email exists
     And only the following Department records exist:
@@ -80,7 +80,7 @@ Feature: /ticket_forms endpoint
     Given the only default ticket layout exists with fields:
       | agent_layout | agent_layout_options   |
       | cc           | {"on_editticket": true} |
-    And the ticket layout exists for "d2" department with fields:
+    And the ticket layout exists for "{d2}" department with fields:
       | agent_layout | agent_layout_options    |
       | cc           | {"on_editticket": false} |
     And only the following Ticket records exist:

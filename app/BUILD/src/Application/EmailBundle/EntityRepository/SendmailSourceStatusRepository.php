@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\EmailBundle\EntityRepository;
 
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
@@ -39,11 +40,11 @@ class SendmailSourceStatusRepository extends AbstractEntityRepository
 {
     const LIMIT = 100;
 
-    protected $queries = array();
+    protected $queries = [];
 
-    protected $params = array();
+    protected $params = [];
 
-    protected $refs = array();
+    protected $refs = [];
 
     /**
      * preparing queries.
@@ -110,7 +111,7 @@ class SendmailSourceStatusRepository extends AbstractEntityRepository
     {
         /** @var SendmailSourceRepository $ss */
         $ss    = $this->getEntityManager()->getRepository('EmailBundle:SendmailSource');
-        $found = array();
+        $found = [];
         foreach ($ss->getIdsByRefs(array_keys($this->refs)) as $row) {
             $found[$row['ref']] = 1;
             if (!@$this->refs[$row['ref']]) {
@@ -170,7 +171,7 @@ class SendmailSourceStatusRepository extends AbstractEntityRepository
 
         $query         = implode("\n", $this->queries);
         $params        = $this->params;
-        $this->queries = $this->params = $this->refs = array();
+        $this->queries = $this->params = $this->refs = [];
 
         try {
             $conn->executeQuery($query, $params);

@@ -216,9 +216,9 @@ class SearchController extends AbstractController
             $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
         }
 
-        #------------------------------
-        # Make combined search cloud
-        #------------------------------
+        //------------------------------
+        // Make combined search cloud
+        //------------------------------
 
         $content_cloud = new ContentLabelCloud();
         $cloud         = $content_cloud->getCloud();
@@ -458,12 +458,12 @@ class SearchController extends AbstractController
 
         $limitTypesArray = array_filter($limitTypesArray,
             function ($value) use ($allowedSearchTypes, $appSettings, $brandSettingsResolver) {
-            if (!isset($appSettings[$value])) {
-                return true;
-            }
+                if (!isset($appSettings[$value])) {
+                    return true;
+                }
 
-            return $brandSettingsResolver->getSetting($appSettings[$value]);
-        });
+                return $brandSettingsResolver->getSetting($appSettings[$value]);
+            });
 
         $contextFactory = new SearchContextFactory($this->getContainer());
         $context        = $contextFactory->createUserSearchContext($person);

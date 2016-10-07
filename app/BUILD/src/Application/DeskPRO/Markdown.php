@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO;
 
 use Orb\Util\Strings;
@@ -40,7 +41,7 @@ use Orb\Util\Util as OrbUtil;
 class Markdown extends \Markdown_Parser
 {
     /** @var array */
-    protected $attach_tokens = array();
+    protected $attach_tokens = [];
 
     /**
      * Format the supplied markdown string to HTML.
@@ -60,7 +61,7 @@ class Markdown extends \Markdown_Parser
 
     public function transform($text)
     {
-        $this->attach_tokens = array();
+        $this->attach_tokens = [];
 
         // Get rid of more tokens, they'd've been handled elsewhere
         $text = str_replace('![more]', '', $text);
@@ -79,7 +80,7 @@ class Markdown extends \Markdown_Parser
             $text = $this->processAttachTokens($text, $this->attach_tokens);
         }
 
-        $this->attach_tokens = array();
+        $this->attach_tokens = [];
 
         return $text;
     }

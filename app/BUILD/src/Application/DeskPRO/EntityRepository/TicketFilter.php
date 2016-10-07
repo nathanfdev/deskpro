@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -75,7 +76,7 @@ class TicketFilter extends AbstractEntityRepository
                 UPDATE ticket_filters
                 SET display_order = ?
                 WHERE id = ?
-            ', array($x, $fid));
+            ', [$x, $fid]);
         }
     }
 
@@ -83,7 +84,7 @@ class TicketFilter extends AbstractEntityRepository
     {
         $online_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents(true);
         if (!$online_agents) {
-            return array();
+            return [];
         }
 
         return $this->getAllForAgents($online_agents);
@@ -114,7 +115,7 @@ class TicketFilter extends AbstractEntityRepository
 
     public function getAllForAgents($agents)
     {
-        $agent_ids = array();
+        $agent_ids = [];
         foreach ($agents as $a) {
             if (is_object($a)) {
                 $agent_ids[] = $a['id'];
@@ -124,12 +125,12 @@ class TicketFilter extends AbstractEntityRepository
         }
 
         if (!$agent_ids) {
-            return array();
+            return [];
         }
 
         $teams = App::getEntityRepository('DeskPRO:AgentTeam')->getAllTeamIdsForAgents($agents);
         if (!$teams) {
-            $teams = array(0);
+            $teams = [0];
         }
 
         $agent_ids = implode(',', $agent_ids);
@@ -154,7 +155,7 @@ class TicketFilter extends AbstractEntityRepository
             FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
             WHERE q.person = ?0
             ORDER BY q.title ASC
-        ')->execute(array($agent));
+        ')->execute([$agent]);
 
         return $filters;
     }
@@ -164,7 +165,7 @@ class TicketFilter extends AbstractEntityRepository
         try {
             $teams = $agent_data = App::$container->getAgentData()->getTeamsForAgent($agent);
         } catch (\InvalidArgumentException $e) {
-            return array();
+            return [];
         }
 
         if ($teams) {
@@ -174,14 +175,14 @@ class TicketFilter extends AbstractEntityRepository
                 FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
                 WHERE (q.person IS NULL OR q.person != ?0) AND (q.is_global = true OR q.agent_team IN (?1)) AND q.sys_name IS NULL
                 ORDER BY q.title ASC
-            ')->execute(array($agent, $teams));
+            ')->execute([$agent, $teams]);
         } else {
             $filters = $this->getEntityManager()->createQuery('
                 SELECT q
                 FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
                 WHERE (q.person IS NULL OR q.person != ?0) AND q.is_global = true AND q.sys_name IS NULL
                 ORDER BY q.title ASC
-            ')->execute(array($agent));
+            ')->execute([$agent]);
         }
 
         return $filters;
@@ -223,13 +224,13 @@ class TicketFilter extends AbstractEntityRepository
             ORDER BY at.name ASC, q.title ASC
         ')->execute();
 
-        $grouped_filters = array();
+        $grouped_filters = [];
 
         foreach ($filters as $filter) {
             $team_id = $filter->agent_team['id'];
 
             if (!isset($grouped_filters[$team_id])) {
-                $grouped_filters[$team_id] = array('team' => $filter->agent_team, 'filters' => array());
+                $grouped_filters[$team_id] = ['team' => $filter->agent_team, 'filters' => []];
             }
 
             $grouped_filters[$team_id]['filters'][] = $filter;
@@ -255,13 +256,13 @@ class TicketFilter extends AbstractEntityRepository
             ORDER BY p.name ASC, q.title ASC
         ')->execute();
 
-        $grouped_filters = array();
+        $grouped_filters = [];
 
         foreach ($filters as $filter) {
             $agent_id = $filter->person['id'];
 
             if (!isset($grouped_filters[$agent_id])) {
-                $grouped_filters[$agent_id] = array('person' => $filter->person, 'filters' => array());
+                $grouped_filters[$agent_id] = ['person' => $filter->person, 'filters' => []];
             }
 
             $grouped_filters[$agent_id]['filters'][] = $filter;
@@ -327,7 +328,7 @@ class TicketFilter extends AbstractEntityRepository
 
         $person_id = $person->getId();
 
-        $team_ids = array();
+        $team_ids = [];
         if ($person->is_agent) {
             $person->loadHelper('Agent');
             $team_ids = $person->getHelper('Agent')->getTeamIds();
@@ -376,7 +377,7 @@ class TicketFilter extends AbstractEntityRepository
         if (is_int($var) or ctype_digit($var)) {
             $ticket_filter_id = (int) $var;
         } elseif (is_string($var)) {
-            return $this->findOneBy(array('sys_name' => $var));
+            return $this->findOneBy(['sys_name' => $var]);
         } elseif (\is_object($var)) {
             if ($var instanceof Entity\LegacyTicketFilter) {
                 return $var;

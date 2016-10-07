@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -83,7 +84,7 @@ class TicketFeedback extends AbstractEntityRepository
         ')->setParameter(1, $ticket)->execute();
 
         if (!$res) {
-            return array();
+            return [];
         }
 
         $res = Arrays::keyFromData($res, 'message_id');
@@ -146,7 +147,7 @@ class TicketFeedback extends AbstractEntityRepository
             ON tf.ticket_id = tm.id
             WHERE tm.person_id = ?
             AND tf.date_created BETWEEN ? AND ?
-        ', array($agent['id'], $date_range['start'], $date_range['end']));
+        ', [$agent['id'], $date_range['start'], $date_range['end']]);
 
         return $result;
     }

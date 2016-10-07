@@ -55,7 +55,7 @@ class IndexController extends AbstractController
             WHERE name LIKE 'inhelp.%'
         ");
 
-        $inhelp_states = array();
+        $inhelp_states = [];
         foreach ($help_states as $k => $v) {
             $k                 = preg_replace('#^inhelp\.#', '', $k);
             $inhelp_states[$k] = $v;
@@ -73,7 +73,7 @@ class IndexController extends AbstractController
             $this->settings->setSetting('admin_has_loaded', 1);
         }
 
-        return $this->render('AdminInterfaceBundle:Index:interface.html.twig', array(
+        return $this->render('AdminInterfaceBundle:Index:interface.html.twig', [
             'api_token'             => $token,
             'session'               => $this->session->getEntity(),
             'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
@@ -82,6 +82,6 @@ class IndexController extends AbstractController
             'redirect_license'      => defined('DP_BILLING_ERROR'),
             'license_server'        => rtrim(License::getSecureLicServer(), '/'),
             'is_first_load'         => $is_first_load,
-        ));
+        ]);
     }
 }

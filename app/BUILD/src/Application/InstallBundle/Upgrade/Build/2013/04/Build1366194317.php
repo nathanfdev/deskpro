@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1366194317 extends AbstractBuild
@@ -44,11 +45,11 @@ class Build1366194317 extends AbstractBuild
             LIMIT 1
         ");
 
-        $this->container->getDb()->delete('ticket_triggers', array('sys_name' => 'newticket_confirm.web_agent'));
+        $this->container->getDb()->delete('ticket_triggers', ['sys_name' => 'newticket_confirm.web_agent']);
 
-        $this->container->getDb()->replace('settings', array(
+        $this->container->getDb()->replace('settings', [
             'name'  => 'core_tickets.new_default_send_user_notify',
             'value' => $is_enabled ? 1 : 0,
-        ));
+        ]);
     }
 }

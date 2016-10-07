@@ -26,14 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Groups;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\Permission;
+use Application\DeskPRO\Entity\Usergroup;
 
+/**
+ * Class PermissionsLoader.
+ */
 class PermissionsLoader
 {
     /**
@@ -50,6 +51,11 @@ class PermissionsLoader
      * @var array
      */
     private $agent_override_perms;
+
+    /**
+     * @var array
+     */
+    private $effectivePermissions = [];
 
     /**
      * @param Connection $db
@@ -72,23 +78,24 @@ class PermissionsLoader
             SELECT usergroup_id, name, value
             FROM permissions
             WHERE person_id IS NULL
-        ', array(), 'usergroup_id');
+        ', [], 'usergroup_id');
 
         return $this->ug_perms;
     }
 
     /**
-     * @param array $ug_ids
+     * @param array $usergroupIds
      *
      * @return array
      */
-    public function getUsergroupPermissions(array $ug_ids)
+    public function getUsergroupPermissions(array $usergroupIds)
     {
-        $ug_ids = array_fill_keys($ug_ids, true);
+        $usergroupIds   = array_fill_keys($usergroupIds, true);
+        $allPermissions = $this->getAllPermissions();
 
-        $ret = array();
-        foreach ($this->getAllPermissions() as $ugid => $p) {
-            if (isset($ug_ids[$ugid])) {
+        $ret = [];
+        foreach ($allPermissions as $ugid => $p) {
+            if (isset($usergroupIds[$ugid])) {
                 $ret[$ugid] = $p;
             }
         }
@@ -109,7 +116,7 @@ class PermissionsLoader
             SELECT person_id, name, value
             FROM permissions
             WHERE person_id IS NOT NULL AND is_active = 1
-        ', array(), 'person_id');
+        ', [], 'person_id');
 
         return $this->agent_override_perms;
     }
@@ -123,9 +130,32 @@ class PermissionsLoader
     {
         $this->getAllAgentOverridePermissions();
         if (!isset($this->agent_override_perms[$agent_id])) {
-            return array();
+            return [];
         }
 
         return $this->agent_override_perms[$agent_id];
+    }
+
+    /**
+     * @param array $uIds
+     *
+     * @return array
+     */
+    public function getEffectivePermissionsForUsergroups(array $uIds)
+    {
+        $uKey = Usergroup::generateUsergroupSetKey($uIds);
+        if (!isset($this->effectivePermissions[$uKey])) {
+            $permissions = $this->getUsergroupPermissions($uIds);
+            $permResult  = [];
+            foreach ($permissions as $permissionGroup) {
+                foreach ($permissionGroup as $p) {
+                    $permResult[] = $p;
+                }
+            }
+
+            $this->effectivePermissions[$uKey] = Permission::getEffectivePermissions($permResult);
+        }
+
+        return $this->effectivePermissions[$uKey];
     }
 }

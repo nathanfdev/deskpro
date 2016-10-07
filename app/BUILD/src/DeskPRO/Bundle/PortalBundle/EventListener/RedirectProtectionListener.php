@@ -96,6 +96,24 @@ class RedirectProtectionListener implements EventSubscriberInterface, SkipLowReq
                 $deskpro_url_setting
                 && $this->url_host_checker->isMatchUrl($location, $deskpro_url_setting)
             ) {
+                // we need to use request's scheme, host and port for redirection instead of brand ones
+
+                $newLocation    = $request->getScheme().'://'.$request->getHost();
+                $parsedLocation = parse_url($location);
+
+                // sometimes we get relative location here, so need to use brand port until fixed
+                if (parse_url($deskpro_url_setting, PHP_URL_PORT)) {
+                    $newLocation .= ':'.$request->getPort();
+                }
+
+                $newLocation .= @$parsedLocation['path'];
+                if (@$parsedLocation['query']) {
+                    $newLocation .= '?'.$parsedLocation['query'];
+                }
+
+                $response->setContent(str_replace($location, $newLocation, $response->getContent()));
+                $response->headers->set('Location', $newLocation);
+
                 return; // matches brand settings
             }
 

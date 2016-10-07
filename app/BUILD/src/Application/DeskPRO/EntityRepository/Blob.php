@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -68,26 +69,26 @@ class Blob extends AbstractEntityRepository
             SELECT b
             FROM DeskPRO:Blob b
             WHERE b.authcode = ?0
-        ')->setParameters(array($auth_code))->getOneOrNullResult();
+        ')->setParameters([$auth_code])->getOneOrNullResult();
     }
 
     public function getByAuthCodes($auth_codes)
     {
         $auth_codes = (array) $auth_codes;
         if (!$auth_codes) {
-            return array();
+            return [];
         }
 
         return $this->getEntityManager()->createQuery('
             SELECT b
             FROM DeskPRO:Blob b INDEX BY b.id
             WHERE b.authcode IN(?0)
-        ')->execute(array($auth_codes));
+        ')->execute([$auth_codes]);
     }
 
     public function getSystemBlob($sys_name)
     {
-        return $this->findOneBy(array('sys_name' => $sys_name));
+        return $this->findOneBy(['sys_name' => $sys_name]);
     }
 
     /**

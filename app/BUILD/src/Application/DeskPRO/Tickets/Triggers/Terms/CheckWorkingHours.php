@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\App;
@@ -94,9 +95,9 @@ class CheckWorkingHours extends AbstractTriggerTerm
         $wh            = new WorkHoursSet(
             $working_hours->get('start_hour', 9) * 3600 + $working_hours->get('start_min', 0) * 60,
             $working_hours->get('end_hour', 18) * 3600 + $working_hours->get('end_min', 0) * 60,
-            $working_hours->get('work_days', array(1, 2, 3, 4, 5)),
+            $working_hours->get('work_days', [1, 2, 3, 4, 5]),
             $working_hours->get('timezone', $working_hours->get('timezone', 'UTC')),
-            $working_hours->get('holidays', array())
+            $working_hours->get('holidays', [])
         );
 
         $context->getLogger()->debug('[CheckWorkingHours] Config: '.Arrays::implodeTemplate($working_hours->all(), '{KEY}: {VAL}, '));

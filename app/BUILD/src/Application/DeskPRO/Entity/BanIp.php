@@ -120,9 +120,9 @@ class BanIp extends DomainObject
         $this->setModelField('banned_ip', $humanReadable);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

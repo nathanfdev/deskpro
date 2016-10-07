@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Form\DataTransformer\CustomDefHierarchyNodeTransfor
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\StringToIntegerArrayTransformer;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\LazyChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -77,7 +78,10 @@ class CustomFieldChoiceType extends AbstractType
             }
         }
 
-        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list']), true);
+        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer(
+            new LazyChoiceList($options['choice_loader'])),
+            true
+        );
     }
 
     /**
@@ -95,19 +99,16 @@ class CustomFieldChoiceType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'empty_data'  => null,
-                'choice_list' => function (Options $options) {
-                    return $this->hierarchyGenerator->generateForCustomFormField($options['custom_field'])->getChoiceList();
+                'empty_data'        => null,
+                'choices_as_values' => true,
+                'choice_loader'     => function (Options $options) {
+                    return $this->hierarchyGenerator->generateForCustomFormField($options['custom_field'])->getChoiceLoader();
                 },
                 'placeholder' => '',
                 'help'        => '',
             ])
-            ->setRequired([
-                'custom_field',
-            ])
-            ->setAllowedTypes([
-                'custom_field' => CustomDefAbstract::class,
-            ])
+            ->setRequired('custom_field')
+            ->setAllowedTypes('custom_field', CustomDefAbstract::class)
         ;
     }
 
@@ -132,7 +133,7 @@ class CustomFieldChoiceType extends AbstractType
         $form   = $event->getForm();
         $config = $form->getConfig();
 
-        $transformer = new CustomDefHierarchyNodeTransformer($config->getOption('choice_list'));
+        $transformer = new CustomDefHierarchyNodeTransformer(new LazyChoiceList($config->getOption('choice_loader')));
         $event->setData($transformer->transform($event->getData()));
     }
 }

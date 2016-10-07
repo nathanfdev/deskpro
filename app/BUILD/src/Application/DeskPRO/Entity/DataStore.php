@@ -69,7 +69,7 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * @param string $type
@@ -77,7 +77,7 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
      *
      * @return \Application\DeskPRO\Entity\TmpData
      */
-    public static function create($type, array $data = array())
+    public static function create($type, array $data = [])
     {
         $ds = new self();
         $ds->setType($type);
@@ -196,15 +196,15 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
 
         $parts[0] = Util::baseDecode($parts[0], Util::LETTERS_ALPHABET);
 
-        return array(
+        return [
             'id'   => $parts[0],
             'auth' => $parts[1],
-        );
+        ];
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -155,7 +155,7 @@ class DbalQueryPart
     /**
      * Establish all the query parameters to use in a WHERE/JOIN string at once.
      *
-     * @param array $params is the list of parameters in the key => value pair form.
+     * @param array $params is the list of parameters in the key => value pair form
      */
     public function setParameters(array $params)
     {

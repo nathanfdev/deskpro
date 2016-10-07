@@ -103,7 +103,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
      */
     protected function checkArray(array $type)
     {
-        return isset($type['name']) && in_array($type['name'], array('array', 'ArrayCollection'));
+        return isset($type['name']) && in_array($type['name'], ['array', 'ArrayCollection']);
     }
 
     /**

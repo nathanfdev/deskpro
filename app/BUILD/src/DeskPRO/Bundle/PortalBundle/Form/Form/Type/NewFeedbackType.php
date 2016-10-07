@@ -155,14 +155,10 @@ class NewFeedbackType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             if ($this->captchaDecider->shouldRequireFeedbackCaptchaForCurrentPerson()) {
-                $event->getForm()->add(
-                    'captcha',
-                    'deskpro_captcha',
-                    [
-                        'mapped'         => false,
-                        'error_bubbling' => false,
-                    ]
-                );
+                $event->getForm()->add('captcha', DpCaptchaType::class, [
+                    'mapped'         => false,
+                    'error_bubbling' => false,
+                ]);
             }
         });
     }
@@ -173,12 +169,8 @@ class NewFeedbackType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([
-                'person',
-            ])
-            ->setAllowedTypes([
-                'person' => Person::class,
-            ])
+            ->setRequired('person')
+            ->setAllowedTypes('person', Person::class)
             ->setDefaults([
                 'data_class' => Feedback::class,
             ])
@@ -188,7 +180,7 @@ class NewFeedbackType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'new_feedback';
     }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\HttpKernel\Config;
 
 use Symfony\Component\Config\FileLocator as BaseFileLocator;
@@ -39,10 +40,10 @@ class FileLocator extends BaseFileLocator
     /** @var \Symfony\Component\HttpKernel\KernelInterface */
     private $kernel;
 
-    /** @var null we don't use this, but it's in the base class, so it might be useful later  */
+    /** @var null we don't use this, but it's in the base class, so it might be useful later */
     private $path;
 
-    public function __construct(KernelInterface $kernel, $path = null, array $paths = array())
+    public function __construct(KernelInterface $kernel, $path = null, array $paths = [])
     {
         $this->kernel = $kernel;
         if (null !== $path) {

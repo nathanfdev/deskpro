@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\TicketEscalation;
@@ -53,25 +54,25 @@ class Build1400056734 extends AbstractBuild
         $db = $this->container->getDb();
         $db->executeUpdate('DELETE FROM ticket_escalations');
 
-        #------------------------------
-        # Init helpers
-        #------------------------------
+        //------------------------------
+        // Init helpers
+        //------------------------------
 
-        $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
+        $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: [];
 
-        $mappings = array(
+        $mappings = [
             'gateway_address_to_email_account' => $gateway_addr_map,
-        );
+        ];
 
         $this->action_converter = new TriggerActionConverter($mappings);
 
-        #------------------------------
-        # Process old escalations
-        #------------------------------
+        //------------------------------
+        // Process old escalations
+        //------------------------------
 
-        $old_escalations = $this->getUpgradeData('201404', 'ticket_triggers') ?: array();
+        $old_escalations = $this->getUpgradeData('201404', 'ticket_triggers') ?: [];
 
-        $id_map = array();
+        $id_map = [];
 
         foreach ($old_escalations as $esc) {
             // We only care about escalations
@@ -109,10 +110,10 @@ class Build1400056734 extends AbstractBuild
             return;
         }
 
-        $old_esc['event_trigger_options'] = @unserialize($old_esc['event_trigger_options']) ?: array();
-        $old_esc['terms']                 = @unserialize($old_esc['terms']) ?: array();
-        $old_esc['terms_any']             = @unserialize($old_esc['terms_any']) ?: array();
-        $old_esc['actions']               = @unserialize($old_esc['actions']) ?: array();
+        $old_esc['event_trigger_options'] = @unserialize($old_esc['event_trigger_options']) ?: [];
+        $old_esc['terms']                 = @unserialize($old_esc['terms']) ?: [];
+        $old_esc['terms_any']             = @unserialize($old_esc['terms_any']) ?: [];
+        $old_esc['actions']               = @unserialize($old_esc['actions']) ?: [];
 
         if (!$old_esc['event_trigger_options'] || empty($old_esc['event_trigger_options']['time'])) {
             $this->out('-- No or bad time option');
@@ -120,9 +121,9 @@ class Build1400056734 extends AbstractBuild
             return;
         }
 
-        #------------------------------
-        # Update actions
-        #------------------------------
+        //------------------------------
+        // Update actions
+        //------------------------------
 
         $is_incomplete = false;
 
@@ -150,9 +151,9 @@ class Build1400056734 extends AbstractBuild
             return;
         }
 
-        #------------------------------
-        # Create trigger object
-        #------------------------------
+        //------------------------------
+        // Create trigger object
+        //------------------------------
 
         $esc                     = new TicketEscalation();
         $esc->event_trigger      = $old_esc['event_trigger'];

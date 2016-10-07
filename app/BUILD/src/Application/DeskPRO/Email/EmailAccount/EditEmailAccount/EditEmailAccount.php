@@ -129,7 +129,7 @@ class EditEmailAccount
         $this->is_enabled      = $account->is_enabled;
         $this->address         = $account->address;
         $this->account_type    = $account->account_type;
-        $this->other_addresses = implode(', ', $account->other_addresses ?: array());
+        $this->other_addresses = implode(', ', $account->other_addresses ?: []);
         $this->incoming_type   = $account->incoming_account ? $account->incoming_account->getType() : '';
         $this->outgoing_type   = $account->outgoing_account ? $account->outgoing_account->getType() : '';
     }
@@ -147,7 +147,7 @@ class EditEmailAccount
         $this->account->account_type = strtolower($this->account_type);
 
         if ($this->other_addresses) {
-            $emails_arr = array();
+            $emails_arr = [];
             $emails     = explode(',', $this->other_addresses);
             foreach ($emails as $email) {
                 $email = trim(strtolower($email));
@@ -185,7 +185,7 @@ class EditEmailAccount
             SELECT trigger
             FROM DeskPRO:TicketTrigger trigger
             WHERE trigger.email_account = ?0
-        ')->setParameters(array($this->account))->getOneOrNullResult();
+        ')->setParameters([$this->account])->getOneOrNullResult();
 
         if (!$trigger_actions || $this->account->account_type != 'tickets') {
             if ($trigger) {
@@ -196,30 +196,37 @@ class EditEmailAccount
             return;
         }
 
+        $lastEmailAccountTrigger = $em->createQuery('
+            SELECT trigger
+            FROM DeskPRO:TicketTrigger trigger
+            WHERE trigger.email_account IS NOT NULL
+            ORDER BY trigger.run_order desc
+        ')->getOneOrNullResult();
+
         if (!$trigger) {
             $trigger                = new TicketTrigger();
-            $trigger->is_enabled    = (bool) $em->getConnection()->fetchColumn('SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?', array($trigger->event_trigger));
+            $trigger->is_enabled    = (bool) $em->getConnection()->fetchColumn('SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?', [$trigger->event_trigger]);
             $trigger->email_account = $this->account;
             $trigger->event_trigger = 'newticket';
-            $trigger->by_agent_mode = array('email');
-            $trigger->by_user_mode  = array('email');
+            $trigger->by_agent_mode = ['email'];
+            $trigger->by_user_mode  = ['email'];
         }
 
         $actions = new TriggerActions();
         try {
-            $actions->importFromArray(array('actions' => $trigger_actions));
+            $actions->importFromArray(['actions' => $trigger_actions]);
         } catch (\Exception $e) {
         }
 
         $terms = new TriggerTerms();
-        $terms->addTermFromArray(array(
+        $terms->addTermFromArray([
             'type'    => 'CheckEmailAccount',
             'op'      => 'is',
-            'options' => array('email_account_ids' => array($this->account->id)),
-        ));
+            'options' => ['email_account_ids' => [$this->account->id]],
+        ]);
 
         $trigger->title     = 'New Ticket';
-        $trigger->run_order = -100;
+        $trigger->run_order = $lastEmailAccountTrigger ? $lastEmailAccountTrigger->run_order : -100;
         $trigger->actions   = $actions;
         $trigger->terms     = $terms;
 
@@ -299,7 +306,7 @@ class EditEmailAccount
             case 'exchange':
                 return $this->out_exchange_account;
 
-            default;
+            default:
 
                 return;
         }

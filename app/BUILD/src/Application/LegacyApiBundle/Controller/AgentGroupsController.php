@@ -105,7 +105,9 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         });
 
         $data['groups'] = $this->getApiData($ugs);
-        $ids            = array_map(function ($g) { return $g['id']; }, $data['groups']);
+        $ids            = array_map(function ($g) {
+            return $g['id'];
+        }, $data['groups']);
 
         if ($this->in->getBool('with_perms')) {
             $loader = new GroupsDbLoader($ids, $this->em);
@@ -154,15 +156,15 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $loader = new GroupsDbLoader(array($group), $this->em);
+        $loader = new GroupsDbLoader([$group], $this->em);
 
         $data            = $group->toApiData();
-        $data['members'] = array();
+        $data['members'] = [];
         $data['perms']   = $loader->getGroupPermissions($group->id)->toArray();
 
         $this->enablePermsForGroupOnArray($group, $data['perms']);
 
-        $member_ids = $this->db->fetchAllCol('SELECT person_id FROM person2usergroups WHERE usergroup_id = ?', array($group->id));
+        $member_ids = $this->db->fetchAllCol('SELECT person_id FROM person2usergroups WHERE usergroup_id = ?', [$group->id]);
         if ($member_ids) {
             foreach ($member_ids as $pid) {
                 $agent = $this->container->getAgentData()->get($pid);
@@ -172,7 +174,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
             }
         }
 
-        return $this->createApiResponse(array('group' => $data));
+        return $this->createApiResponse(['group' => $data]);
     }
 
     /**
@@ -203,9 +205,9 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 
         $group->title = $this->in->getString('group.title');
 
-        #------------------------------
-        # Save team
-        #------------------------------
+        //------------------------------
+        // Save team
+        //------------------------------
 
         $errors = $this->container->getValidator()->validate($group);
         if (count($errors)) {
@@ -215,9 +217,9 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         $this->em->persist($group);
         $this->em->flush();
 
-        #------------------------------
-        # Save perms
-        #------------------------------
+        //------------------------------
+        // Save perms
+        //------------------------------
 
         $perms = new AgentPermissions();
         $perms->fromArray($this->in->getArrayValue('group.perms'));
@@ -225,14 +227,14 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         $persister = new GroupDbPersister($this->em);
         $persister->savePerms($group, $perms);
 
-        #------------------------------
-        # Save members
-        #------------------------------
+        //------------------------------
+        // Save members
+        //------------------------------
 
         if ($is_new) {
-            $current_members = array();
+            $current_members = [];
         } else {
-            $current_members = $this->db->fetchAllCol('SELECT person_id FROM person2usergroups WHERE usergroup_id = ?', array($group->id));
+            $current_members = $this->db->fetchAllCol('SELECT person_id FROM person2usergroups WHERE usergroup_id = ?', [$group->id]);
         }
 
         $new_members = $this->in->getArrayOfUInts('group.person_ids');
@@ -252,22 +254,22 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
             $this->db->deleteIn('person2usergroups', $del_members, 'person_id', false, "usergroup_id = {$group->id}");
         }
         if ($new_members) {
-            $ins = array();
+            $ins = [];
             foreach ($new_members as $pid) {
-                $ins[] = array('usergroup_id' => $group->id, 'person_id' => $pid);
+                $ins[] = ['usergroup_id' => $group->id, 'person_id' => $pid];
             }
             $this->db->batchInsert('person2usergroups', $ins, true);
         }
 
-        #------------------------------
-        # Save department perms
-        #------------------------------
+        //------------------------------
+        // Save department perms
+        //------------------------------
 
         if ($this->in->checkIsset('dep_perms')) {
             $ticket_deps = $this->container->getTicketDepartments();
             $chat_deps   = $this->container->getChatDepartments();
 
-            $set_perms = array();
+            $set_perms = [];
             foreach ($this->in->getArrayValue('dep_perms.tickets') as $did => $p) {
                 if (!$ticket_deps->getById($did)) {
                     continue;
@@ -287,23 +289,23 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
                 }
             }
 
-            $this->db->executeUpdate('DELETE FROM department_permissions WHERE usergroup_id = ?', array($group->id));
+            $this->db->executeUpdate('DELETE FROM department_permissions WHERE usergroup_id = ?', [$group->id]);
             if ($set_perms) {
                 $this->db->batchInsert('department_permissions', $set_perms, true);
             }
         }
 
-        #------------------------------
-        # Clear permission cache
-        #------------------------------
+        //------------------------------
+        // Clear permission cache
+        //------------------------------
 
         $this->db->executeUpdate('DELETE FROM permissions_cache');
 
-        $ag_perms_cache     = $this->db->fetchAllGrouped('SELECT usergroup_id, name FROM permissions', array(), 'usergroup_id', null, 'name');
-        $ag_dep_perms_cache = array(
-            'full'   => $this->db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'full'", array(), 'usergroup_id', null, 'department_id'),
-            'assign' => $this->db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'assign'", array(), 'usergroup_id', null, 'department_id'),
-        );
+        $ag_perms_cache     = $this->db->fetchAllGrouped('SELECT usergroup_id, name FROM permissions', [], 'usergroup_id', null, 'name');
+        $ag_dep_perms_cache = [
+            'full'   => $this->db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'full'", [], 'usergroup_id', null, 'department_id'),
+            'assign' => $this->db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'assign'", [], 'usergroup_id', null, 'department_id'),
+        ];
 
         foreach ($new_members as $pid) {
             $a = $this->container->getAgentData()->get($pid);
@@ -312,19 +314,19 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
             }
         }
 
-        #------------------------------
-        # Return
-        #------------------------------
+        //------------------------------
+        // Return
+        //------------------------------
 
         if ($is_new) {
             return $this->createApiCreateResponse(
-                array('group_id' => $group->id),
-                $this->generateUrl('api_agentgroups_get', array('id' => $group->id))
+                ['group_id' => $group->id],
+                $this->generateUrl('api_agentgroups_get', ['id' => $group->id])
             );
         } else {
-            return $this->createApiSuccessResponse(array(
+            return $this->createApiSuccessResponse([
                 'group_id' => $group->id,
-            ));
+            ]);
         }
     }
 
@@ -369,12 +371,12 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         $this->em->remove($group);
         $this->em->flush();
 
-        return $this->createApiDeleteResponse(array('old_group_id' => $old_id));
+        return $this->createApiDeleteResponse(['old_group_id' => $old_id]);
     }
 
-    ####################################################################################################################
-    # get-all-perms
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-all-perms
+    //###################################################################################################################
 
     public function getAllPermsAction()
     {
@@ -387,18 +389,18 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 
         $loader = new GroupsDbLoader($ugs, $this->em);
 
-        $group_data = array();
+        $group_data = [];
 
         foreach ($ugs as $ug) {
             $perms = $loader->getGroupPermissions($ug->id)->toArray();
             $this->enablePermsForGroupOnArray($ug, $perms);
-            $group_data[] = array(
-                'group' => array('id' => $ug->id, 'title' => $ug->title),
+            $group_data[] = [
+                'group' => ['id' => $ug->id, 'title' => $ug->title],
                 'perms' => $perms,
-            );
+            ];
         }
 
-        return $this->createApiResponse(array('groups' => $group_data));
+        return $this->createApiResponse(['groups' => $group_data]);
     }
 
     /**
@@ -420,9 +422,9 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         }
     }
 
-    ####################################################################################################################
-    # toggle-group
-    ####################################################################################################################
+    //###################################################################################################################
+    // toggle-group
+    //###################################################################################################################
 
     public function toggleGroupAction($id, $is_enabled)
     {

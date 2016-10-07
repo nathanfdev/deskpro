@@ -67,7 +67,7 @@ class HiddenEntityType extends AbstractType
      */
     public function getParent()
     {
-        return HiddenType::class;
+        return DpHiddenType::class;
     }
 
     /**
@@ -77,9 +77,7 @@ class HiddenEntityType extends AbstractType
     {
         $resolver
             ->setRequired('entity_class')
-            ->setAllowedTypes([
-                'entity_class' => 'string',
-            ])
+            ->setAllowedTypes('entity_class', 'string')
         ;
     }
 }

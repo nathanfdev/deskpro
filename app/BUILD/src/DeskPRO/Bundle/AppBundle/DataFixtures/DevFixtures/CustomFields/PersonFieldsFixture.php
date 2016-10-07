@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields;
 
 use Application\DeskPRO\Entity\CustomDefPerson;
@@ -56,9 +57,9 @@ class PersonFieldsFixture extends AbstractCustomDefFixture
     {
         $this->manager = $manager;
 
-        #------------------------------
-        # Default
-        #------------------------------
+        //------------------------------
+        // Default
+        //------------------------------
         $fields   = [];
         $fields[] = $this->createField(
             'radio',
@@ -68,9 +69,9 @@ class PersonFieldsFixture extends AbstractCustomDefFixture
 
         self::$fields['default'] = $fields;
 
-        #------------------------------
-        # Widgets
-        #------------------------------
+        //------------------------------
+        // Widgets
+        //------------------------------
         $fields   = [];
         $fields[] = $this->createField('text', 'Widget Type');
         $fields[] = $this->createField('textarea', 'Widget Description');
@@ -79,9 +80,9 @@ class PersonFieldsFixture extends AbstractCustomDefFixture
 
         self::$fields['widgets'] = $fields;
 
-        #------------------------------
-        # Regulation and Control of Magical Creatures [both]
-        #------------------------------
+        //------------------------------
+        // Regulation and Control of Magical Creatures [both]
+        //------------------------------
         $fields   = [];
         $fields[] = $this->createField(
             'select',
@@ -98,9 +99,9 @@ class PersonFieldsFixture extends AbstractCustomDefFixture
         self::$fields['regulation'] = $fields;
         self::$fields['control']    = $fields;
 
-        #------------------------------
-        # Music
-        #------------------------------
+        //------------------------------
+        // Music
+        //------------------------------
         $fields   = [];
         $fields[] = $this->createField(
             'select',

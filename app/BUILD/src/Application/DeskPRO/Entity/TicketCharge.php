@@ -238,7 +238,7 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
     {
         $f_def = App::getEntityRepository('DeskPRO:CustomDefBilling')->find($field_id);
 
-        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, array($f_def));
+        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, [$f_def]);
 
         $value    = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
         $rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
@@ -285,7 +285,7 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $field_defs      = App::getApi('custom_fields.billing')->getEnabledFields();
-        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array($data), $field_defs);
+        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy([$data], $field_defs);
 
         $custom_fields = App::getApi('custom_fields.billing')->getFieldsDisplayArray(
             $field_defs,
@@ -297,7 +297,7 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
         return $custom_fields;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
@@ -314,9 +314,9 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

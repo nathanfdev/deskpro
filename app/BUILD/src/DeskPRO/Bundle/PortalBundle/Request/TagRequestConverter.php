@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Request;
 
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -76,12 +77,12 @@ class TagRequestConverter implements ParamConverterInterface
         $tag         = $theme->resolveTag($tag_name);
 
         $current_request = $request;
-        $tag_options     = array_merge($tag->getDefaultOptions(), $current_request->query->get('tag_options', array()));
-        $query           = array_merge($current_request->query->all(), array('tag_options' => $tag_options));
+        $tag_options     = array_merge($tag->getDefaultOptions(), $current_request->query->get('tag_options', []));
+        $query           = array_merge($current_request->query->all(), ['tag_options' => $tag_options]);
 
-        $attrs = array_merge($current_request->attributes->all(), array('_tag_name' => $tag_name));
+        $attrs = array_merge($current_request->attributes->all(), ['_tag_name' => $tag_name]);
 
-        $tag_request = new TagRequest($query, array(), $attrs);
+        $tag_request = new TagRequest($query, [], $attrs);
         $tag_request->attributes->set('_controller', $tag->getControllerName());
         $tag_request->setOptionsResolver(new OptionsResolver());
         if ($session = $request->getSession()) {
@@ -101,22 +102,21 @@ class TagRequestConverter implements ParamConverterInterface
         //$slug_attribute_name = $param_options['slug_route_param'];
         //$slug_route_param = $request->attributes->get($slug_attribute_name);
         //$slug_col         = $param_options['slug_col'];
-        //
+
         //$repo = $this->em->getRepository($param_class);
         //if ($obj = $repo->findOneBy(array($slug_col => $slug_route_param))) {
         //    $request->attributes->set($param_name, $obj);
-        //
+
         //    return;
         //}
-        //
-        //
+
         //$id = substr($slug_route_param, 0, strpos($slug_route_param, '-'));
         //if ($obj = $repo->find($id)) {
         //    // it exists and we are on the old url at the moment, lets flag a 301 response
         //    $new_slug_attribute = array(
         //        $slug_attribute_name => $obj->slug
         //    );
-        //
+
         //    throw new PermanentRedirectException(
         //        $request->attributes->get('_route'),
         //        array_merge(
@@ -125,7 +125,7 @@ class TagRequestConverter implements ParamConverterInterface
         //        )
         //    );
         //}
-        //
+
         //throw new NotFoundHttpException(sprintf('could not find a "%s" for the slug value found in the route variable "%s" (value: %s)', $param_class, $slug_attribute_name, $slug_route_param));
     }
 

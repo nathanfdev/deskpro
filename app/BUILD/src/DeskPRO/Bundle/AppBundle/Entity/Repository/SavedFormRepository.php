@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -48,10 +48,10 @@ class SavedFormRepository extends EntityRepository
         $parsed = SavedForm::parseExternalCode($external_code);
 
         return $this->findOneBy(
-            array(
+            [
                 'id'        => $parsed['id'],
                 'auth_code' => $parsed['auth_code'],
-            )
+            ]
         );
     }
 
@@ -82,8 +82,8 @@ class SavedFormRepository extends EntityRepository
      */
     public function getForPerson(Person $person, array $external_codes)
     {
-        $auth_verification = array();
-        $auth_codes        = array();
+        $auth_verification = [];
+        $auth_codes        = [];
 
         foreach ($external_codes as $external_code) {
             $parsed                           = SavedForm::parseExternalCode($external_code);
@@ -101,7 +101,7 @@ class SavedFormRepository extends EntityRepository
         $result = $query->getResult();
 
         // need to verify that the ID-AUTH_CODE external codes are valid
-        $saved_forms = array();
+        $saved_forms = [];
         /** @var SavedForm $saved_form */
         foreach ($result as $saved_form) {
             if ($saved_form->getPerson() === $person) {

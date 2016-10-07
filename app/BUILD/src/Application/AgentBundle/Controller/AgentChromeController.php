@@ -28,6 +28,8 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class AgentChromeController extends AbstractController
 {
     public function requireRequestToken($action, $arguments = null)
@@ -51,14 +53,14 @@ class AgentChromeController extends AbstractController
 
     public function loadSessionAction()
     {
-        $data = array(
+        $data = [
 
-        );
+        ];
 
         return $this->createJsonResponse($data);
     }
 
-    public function preActionHandler($action, $arguments = null)
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
     }
 }

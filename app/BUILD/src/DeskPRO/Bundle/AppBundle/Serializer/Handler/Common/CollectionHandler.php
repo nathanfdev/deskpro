@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Common;
 
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;

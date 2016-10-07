@@ -1,0 +1,5 @@
+services:
+
+  dpdev.mass_loader:
+    class: DeskPRO\Bundle\DevBundle\MassLoader\MassLoader
+    arguments: ["@doctrine.orm.entity_manager"]

@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\ImageType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,6 +57,12 @@ class BrandController extends AbstractApiController
      */
     public function uploadLogoAction(Request $request)
     {
+        $form = $this->createForm(ImageType::class);
+        $form->submit($request->files);
+        if (!$form->isValid()) {
+            return $this->generateFormErrorsResponse($form);
+        }
+
         return $this->wrap(
             $this->getAssetsManager()->uploadBlob($request->files->get('file'), AssetsManager::CUSTOM_LOGO_TAG)
         );
@@ -71,6 +78,12 @@ class BrandController extends AbstractApiController
      */
     public function uploadFaviconAction(Request $request)
     {
+        $form = $this->createForm(ImageType::class);
+        $form->submit($request->files);
+        if (!$form->isValid()) {
+            return $this->generateFormErrorsResponse($form);
+        }
+
         return $this->wrap(
             $this->getAssetsManager()->uploadBlob($request->files->get('file'), AssetsManager::CUSTOM_FAVICON_TAG)
         );
@@ -104,9 +117,10 @@ class BrandController extends AbstractApiController
      */
     public function deleteEditThemeSetLogoAssetAction()
     {
-        return $this->wrap($this->getAssetsManager()->deleteEditThemeSetAsset(
-            $this->getAssetsManager()->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_LOGO_TAG)
-        ));
+        $assetsManager = $this->getAssetsManager();
+        $assetsManager->deleteEditThemeSetAsset($assetsManager->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_LOGO_TAG));
+
+        return $this->wrap(null);
     }
 
     /**
@@ -117,9 +131,11 @@ class BrandController extends AbstractApiController
      */
     public function deleteEditThemeSetFaviconAssetAction()
     {
-        return $this->wrap($this->getAssetsManager()->deleteEditThemeSetAsset(
-            $this->getAssetsManager()->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG)
-        ));
+        $assetsManager = $this->getAssetsManager();
+        $assetsManager->deleteEditThemeSetAsset($assetsManager->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG));
+        $assetsManager->deleteEditThemeSetAsset($assetsManager->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_FALLBACK));
+
+        return $this->wrap(null);
     }
 
     /**
@@ -147,7 +163,7 @@ class BrandController extends AbstractApiController
     {
         $data = json_decode($request->getContent(), true);
 
-        $title    = @$data['title']   ?: '';
+        $title    = @$data['title'] ?: '';
         $message  = @$data['message'] ?: '';
         $themeSet = $this->getEditThemeSet();
 

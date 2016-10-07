@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -40,14 +41,14 @@ class Build1400056714 extends AbstractBuild
         $db = $this->container->getDb();
 
         $this->out('Set tickets.email_account_id');
-        $valid_account_ids = $db->fetchAllKeyValue('SELECT id FROM email_accounts', array(), array(), 0, 0);
+        $valid_account_ids = $db->fetchAllKeyValue('SELECT id FROM email_accounts', [], [], 0, 0);
 
         if ($valid_account_ids) {
             $db->executeUpdate('
                 UPDATE tickets
                 SET email_account_id = email_gateway_id
                 WHERE email_gateway_id IN (?)
-            ', array($valid_account_ids), array(Connection::PARAM_INT_ARRAY));
+            ', [$valid_account_ids], [Connection::PARAM_INT_ARRAY]);
         }
     }
 }

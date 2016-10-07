@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use Application\DeskPRO\Entity\Person;
@@ -72,9 +73,9 @@ class SegmentTrackingListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::RESPONSE => array('onResponse', -10),
-        );
+        return [
+            KernelEvents::RESPONSE => ['onResponse', -10],
+        ];
     }
 
     /**
@@ -121,12 +122,12 @@ class SegmentTrackingListener implements EventSubscriberInterface
         $track_ident = '';
 
         if ($person) {
-            $data = json_encode(array(
+            $data = json_encode([
                 'name'     => $person->getDisplayName(false),
                 'email'    => $person->getEmailAddress(),
                 'isAgent'  => $person->is_agent,
                 'canAdmin' => $person->can_admin,
-            ));
+            ]);
             $track_ident .= "analytics.identify('{$person->getAccountTrackingId()}', $data);";
         }
 

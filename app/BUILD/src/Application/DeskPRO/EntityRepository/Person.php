@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -42,6 +43,7 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
 use Application\DeskPRO\EntityRepository\Helper\IdentityHelper;
 use Doctrine\DBAL\LockMode;
+use Orb\Util\Strings;
 
 class Person extends AbstractEntityRepository
 {
@@ -81,6 +83,9 @@ class Person extends AbstractEntityRepository
         return $this->identity_helper;
     }
 
+    /**
+     * @return \Application\DeskPRO\Entity\Person[]
+     */
     public function getAgents()
     {
         if (($agents = $this->getIdentityHelper()->getCollection('agents')) === null) {
@@ -189,28 +194,61 @@ class Person extends AbstractEntityRepository
     /**
      * Get agent names.
      *
-     * @param null $for_ids
+     * @param null $forIds
      *
-     * @return mixed
+     * @return array
      */
-    public function getAgentNames($for_ids = null)
+    public function getAgentNames($forIds = null)
     {
-        $names = [];
-
-        if ($for_ids && !is_array($for_ids)) {
-            $for_ids = [$for_ids];
+        if ($forIds && !is_array($forIds)) {
+            $forIds = [$forIds];
         }
 
         // No names to return
-        if (is_array($for_ids) && !$for_ids) {
+        if (is_array($forIds) && !$forIds) {
             return [];
         }
 
-        foreach ($this->getAgents() as $agent) {
-            if ($for_ids && !in_array($agent->id, $for_ids)) {
-                continue;
+        $qb = $this->_em->createQueryBuilder();
+        $qb
+            ->select(
+                'p.id',
+                "(CASE
+                    WHEN (p.first_name IS NOT NULL AND p.last_name IS NOT NULL) THEN CONCAT(p.first_name, ' ', p.last_name)
+                    WHEN p.name IS NOT NULL THEN p.name
+                    WHEN p.last_name IS NOT NULL THEN p.last_name
+                    WHEN p.first_name IS NOT NULL THEN p.first_name
+                    ELSE ''
+                END) as name
+                ",
+                'pe.email'
+            )
+            ->from(PersonEntity::class, 'p')
+            ->leftJoin('p.primary_email', 'pe')
+            ->where(
+                'p.is_agent = 1',
+                'p.is_disabled = 0',
+                'p.is_deleted = 0'
+            )
+        ;
+
+        if ($forIds) {
+            $qb->andWhere('p.id IN (:ids)');
+            $qb->setParameter('ids', $forIds);
+        }
+
+        $agents = $qb->getQuery()->getResult();
+        $names  = [];
+        foreach ($agents as $agent) {
+            if ($agent['name']) {
+                $name = $agent['name'];
+            } elseif ($agent['email']) {
+                $name = Strings::getNameFromEmail($agent['email']);
+            } else {
+                $name = 'ID-'.$agent['id'];
             }
-            $names[$agent->getId()] = $agent->getDisplayName();
+
+            $names[$agent['id']] = $name;
         }
 
         return $names;
@@ -486,8 +524,6 @@ class Person extends AbstractEntityRepository
         ', [$ug->id]);
     }
 
-    /**
-     */
     public function getChatAgentRoundRobin()
     {
         $active_agents_ids = App::getEntityRepository('DeskPRO:Session')->getAvailableAgentIds();

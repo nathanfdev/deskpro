@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -83,17 +84,17 @@ class SendUserEmail extends AbstractEmailAction
             return;
         }
 
-        #-------------------------
-        # Vars
-        #-------------------------
+        //-------------------------
+        // Vars
+        //-------------------------
 
-        $default_vars = $this->getStandardEmailVars($ticket, $context, 'user');
+        $defaultVars = $this->getStandardEmailVars($ticket, $context, 'user');
 
-        #-------------------------
-        # Send emails
-        #-------------------------
+        //-------------------------
+        // Send emails
+        //-------------------------
 
-        $build = TicketEmailBuilder::createFromContainer($this->getContainer())
+        $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer())
             ->setTicket($ticket)
             ->setToPerson($ticket->person)
             ->setUserMode()
@@ -101,17 +102,17 @@ class SendUserEmail extends AbstractEmailAction
             ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
             ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
             ->setLogger($context->getLogger())
-            ->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
+            ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
             ->setFromEmailAccount($from_account);
 
         if ($this->getActionOption('do_cc_users')) {
-            $build->enableUserCc();
+            $emailBuilder->enableUserCc();
         }
 
         // If this is from a user reply, then mark the email as auto and handle disable auto setting
         if ($context->getEventPerformer() == 'user' && $ticket->getStateChangeRecorder()->hasNewReply()) {
             $context->getLogger()->info('[SendUserEmail] Identified as an automatic email');
-            $build->setIsAuto();
+            $emailBuilder->setIsAuto();
 
             if ($context->getVars()->has('ticket_email')) {
                 /** @var \Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail $ticket_email */
@@ -138,15 +139,17 @@ class SendUserEmail extends AbstractEmailAction
             }
         }
 
-        $ticket_email = $build->buildTicketEmail();
+        $defaultVars = array_merge($defaultVars, $emailBuilder->getCommonVars(false));
+
+        $ticket_email = $emailBuilder->buildTicketEmail();
 
         try {
-            $ticket_email->send($default_vars);
+            $ticket_email->send($defaultVars);
             $this->recordEmailTicketLog($ticket_email, $ticket, $context);
         } catch (\Exception $e) {
             $context->getLogger()->error(
                 sprintf('Exception: [%s] %s', $e->getCode(), $e->getMessage()),
-                array('exception' => $e)
+                ['exception' => $e]
             );
 
             throw $e;

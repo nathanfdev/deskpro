@@ -44,9 +44,9 @@ class Decode extends \Zend\Mime\Decode
         // check for valid header at first line
         $firstline = strtok($message, "\n");
         if (!preg_match('%^[^\s]+[^:]*:%', $firstline)) {
-            $headers = array();
+            $headers = [];
             // TODO: we're ignoring \r for now - is this function fast enough and is it safe to assume noone needs \r?
-            $body = str_replace(array("\r", "\n"), array('', $EOL), $message);
+            $body = str_replace(["\r", "\n"], ['', $EOL], $message);
 
             return;
         }

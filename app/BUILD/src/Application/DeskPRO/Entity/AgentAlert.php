@@ -66,7 +66,7 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * @var bool
@@ -120,7 +120,7 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
     public function addTargetMap($target, array $keys)
     {
         if (!isset($this->data['@target_maps'])) {
-            $this->data['@target_maps'] = array();
+            $this->data['@target_maps'] = [];
         }
 
         $this->data['@target_maps'][$target] = $keys;
@@ -151,6 +151,30 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param Person $person
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->person = $person;
+    }
+
+    /**
+     * @param string $typename
+     */
+    public function setTypename($typename)
+    {
+        $this->typename = $typename;
+    }
+
+    /**
+     * @param array $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
      * @return bool
      */
     public function isDismissed()
@@ -158,9 +182,9 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
         return $this->is_dismissed;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

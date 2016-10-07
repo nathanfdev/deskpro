@@ -52,14 +52,14 @@
                 <td>
                     {% if chat.agent %}
                         <a class="overflow" href="{{ portal_path(chat) }}">
-                            <span style="background: url({{ avatar_url(chat.agent) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ chat.agent.name }}
+                            <span style="background: url({{ avatar_url(chat.agent) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ chat.agent.display_name_user }}
                         </a>
                     {% endif %}
                 </td>
                 {% if type == 'organization' %}
                     <td>
                         <a class="overflow" href="{{ portal_path(chat) }}">
-                            <span style="background: url({{ avatar_url(chat.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ chat.person.name }}
+                            <span style="background: url({{ avatar_url(chat.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ chat.person.display_name_user }}
                         </a>
                     </td>
                 {% endif %}

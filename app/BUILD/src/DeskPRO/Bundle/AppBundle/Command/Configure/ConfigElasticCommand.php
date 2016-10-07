@@ -79,7 +79,17 @@ class ConfigElasticCommand extends ContainerAwareCommand
             $parts['port'] = $parts['scheme'] === 'https' ? '443' : '80';
         }
 
-        $elasticUrl = $parts['scheme'].'://'.$parts['host'].':'.$parts['port'].$parts['path'];
+        if (!empty($parts['user'])) {
+            $userPart = $parts['user'];
+            if (!empty($parts['pass'])) {
+                $userPart .= ':'.$parts['pass'];
+            }
+            $userPart .= '@';
+        } else {
+            $userPart = '';
+        }
+
+        $elasticUrl = $parts['scheme'].'://'.$userPart.$parts['host'].':'.$parts['port'].$parts['path'];
 
         $this->setSetting('elastica.enabled', '1');
         $this->setSetting('elastica.clients.default.url', $elasticUrl);

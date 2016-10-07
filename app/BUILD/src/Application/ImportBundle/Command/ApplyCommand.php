@@ -29,6 +29,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Importer\ImporterContext;
 use Application\ImportBundle\Model\BatchConfig;
@@ -121,6 +122,8 @@ class ApplyCommand extends AbstractImporterCommand
             $command->run($input, $output);
         }
 
+        $em->getRepository(Ticket::class)->fillSearchTable();
+
         unset($GLOBALS['DP_IS_IMPORTING']);
         $GLOBALS['DP_NOSQL_LOG'] = false;
 
@@ -135,7 +138,9 @@ class ApplyCommand extends AbstractImporterCommand
      */
     protected function executeUnattendedRun(InputInterface $input, OutputInterface $output)
     {
-        $arguments = array_map(function ($argument) { return escapeshellarg($argument); }, $_SERVER['argv']);
+        $arguments = array_map(function ($argument) {
+            return escapeshellarg($argument);
+        }, $_SERVER['argv']);
         $arguments[] = '-b';
 
         // todo always verbose mode by now

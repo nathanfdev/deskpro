@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Util\RandUtils;
 use Orb\Auth\Adapter\SamlAdapterInterface;
@@ -123,10 +124,10 @@ class PortalController extends AbstractController
         }
 
         return $this->renderThemeView('Theme:Portal:home.html.twig',
-            array(
+            [
                 'page_title'    => $this->createPageTitle()->homepage(),
                 'feedbackTypes' => $allowedFeedbackTypes,
-            )
+            ]
         );
     }
 
@@ -172,7 +173,7 @@ class PortalController extends AbstractController
         $abuse_check->markAsCheckOnly();
         $this->getAntiAbuseService()->check($abuse_check);
         if ($abuse_check->isCaptchaRecommended()) {
-            $captcha_form = $this->createForm('deskpro_captcha');
+            $captcha_form = $this->createForm(DpCaptchaType::class);
         }
         $usersources_view = $this->get('usersources_view_helper')->createUsersourceViewList();
 
@@ -189,7 +190,7 @@ class PortalController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Portal:User/login.html.twig',
-            array(
+            [
                 'auth_manager'         => $this->get('dp_authentication_manager.user'),
                 'login_captcha_failed' => $request->get('retry') == 'captcha',
                 'login_error'          => $request->get('retry') == 'auth',
@@ -205,7 +206,7 @@ class PortalController extends AbstractController
                 'page_title'           => $this->createPageTitle()->loginPage(),
                 'usersources_view'     => $usersources_view,
                 'destination'          => $destination,
-            )
+            ]
         );
     }
 
@@ -216,7 +217,7 @@ class PortalController extends AbstractController
      *
      * @return RedirectResponse
      */
-    public function legacyLogoutLinkAction($auth)
+    public function legacyLogoutLinkAction($auth, Request $request)
     {
         $appSecret = $this->get('settings_resolver')->getGlobalSettings()->get('core.app_secret', '');
 
@@ -224,7 +225,12 @@ class PortalController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return new RedirectResponse($this->get('security.logout_url_generator')->getLogoutUrl('portal'));
+        $url = $this->get('security.logout_url_generator')->getLogoutUrl('portal');
+        if ($request->get('to')) {
+            $url .= '&to='.$request->get('to');
+        }
+
+        return new RedirectResponse($url);
     }
 
     /**
@@ -313,13 +319,9 @@ class PortalController extends AbstractController
             }
         }
 
-        //$form = $this->createFormBuilder()->add('captcha', 'deskpro_captcha')->getForm();
-
-        return new JsonResponse(
-            [
-                'captcha_required' => true,
-            ]
-        );
+        return new JsonResponse([
+            'captcha_required' => true,
+        ]);
     }
 
     /**

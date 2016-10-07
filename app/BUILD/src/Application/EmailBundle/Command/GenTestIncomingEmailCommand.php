@@ -82,7 +82,7 @@ class GenTestIncomingEmailCommand extends ContainerAwareCommand
         $message = $mailer->createMessage();
         $message->setTo($to);
         $message->setFrom($from);
-        $message->setCc(array($faker->email, $faker->email));
+        $message->setCc([$faker->email, $faker->email]);
         $message->setSubject($faker->sentence().' - '.$date);
         $message->setBody($faker->paragraph());
 
@@ -102,11 +102,11 @@ class GenTestIncomingEmailCommand extends ContainerAwareCommand
         $reader->setRawSource($raw_source);
 
         $source = new EmailSource();
-        $source->fromArray(array(
+        $source->fromArray([
             'email_account' => $account,
             'headers'       => $raw_headers,
             'status'        => 'inserted',
-        ));
+        ]);
 
         // Rough matching, just for info purposes when browsing a list
         $source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_headers) ?: '';

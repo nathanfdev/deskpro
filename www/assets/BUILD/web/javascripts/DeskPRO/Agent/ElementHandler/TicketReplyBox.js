@@ -527,7 +527,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			var current = el.val() || '';
 			var newval = current.length ? current + ',' + snippetId : snippetId+'';
 			el.val(newval);
-		}
+		};
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			driver: DeskPRO_Window.ticketSnippetDriver,
@@ -535,7 +535,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			onBeforeOpen: function() {
 				if (isWysiwyg && textarea.data('redactor')) {
 					try {
-						textarea.data('redactor').saveSelection();
+						// this saves a begining of the reply as current position when the redactor is not in focus
+						// textarea.data('redactor').saveSelection();
 					} catch (e) {}
 				}
 			},
@@ -624,7 +625,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
 					html = html.replace(/^<p>/, '');
 					html = html.replace(/<\/p>$/, '');
-					textarea.data('redactor').insertSnippetHtml(html);
+					textarea.data('redactor').insertHtml(html);
 				} else {
 					self.page.insertTextInReply(result);
 				}
@@ -1195,7 +1196,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		DeskPRO_Window.initAgentNotifierForRte(
 			this,
 			textarea,
-			this.page && this.page.meta.agentMap ? this.page.meta.agentMap : false,
 			false,
 			function(agentId) {
 				agentId = parseInt(agentId);

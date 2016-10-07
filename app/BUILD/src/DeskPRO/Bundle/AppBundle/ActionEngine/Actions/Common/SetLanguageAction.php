@@ -26,27 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
+/**
+ * Class SetLanguageAction.
+ */
 class SetLanguageAction extends AbstractAction implements ActionWithOptionsInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired('set_language');
         $resolver->setAllowedTypes('set_language', ['string', 'int']);
-        $resolver->setAllowedValues(
-            'set_language',
-            function ($value) {
-                return (is_int($value) && $value > 0) || ctype_digit($value);
-            }
-        );
+        $resolver->setAllowedValues('set_language', function ($value) {
+            return (is_int($value) && $value > 0) || ctype_digit($value);
+        });
     }
 }

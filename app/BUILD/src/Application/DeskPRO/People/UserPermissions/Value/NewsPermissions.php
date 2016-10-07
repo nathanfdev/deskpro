@@ -31,6 +31,7 @@
  *
  * @category People
  */
+
 namespace Application\DeskPRO\People\UserPermissions\Value;
 
 class NewsPermissions implements PermissionValueInterface

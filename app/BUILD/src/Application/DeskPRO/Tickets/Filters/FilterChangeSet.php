@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,15 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Ticket;
 
+/**
+ * Class FilterChangeSet.
+ */
 class FilterChangeSet
 {
     /**
@@ -51,18 +55,27 @@ class FilterChangeSet
     /**
      * @var \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
-    private $affected_filters = array();
+    private $affected_filters = [];
 
     /**
      * @var FilterChange[]
      */
-    private $changed_filters = array();
+    private $changed_filters = [];
 
     /**
      * @var array
      */
-    private $field_versions = array();
+    private $field_versions = [];
 
+    /**
+     * Constructor.
+     *
+     * @param Ticket $ticket
+     * @param int    $state_id
+     * @param array  $affected_filters
+     * @param array  $changed_filters
+     * @param array  $field_versions
+     */
     public function __construct(Ticket $ticket, $state_id, array $affected_filters, array $changed_filters, array $field_versions)
     {
         $this->ticket           = $ticket;
@@ -115,42 +128,58 @@ class FilterChangeSet
     /**
      * Get an array of client messages to send to clients about lists updating.
      *
+     * @param array $onlineAgentsIds
+     *
      * @return \Application\DeskPRO\Entity\ClientMessage[]
      */
-    public function getListUpdateClientMessages()
+    public function getListUpdateClientMessages(array $onlineAgentsIds)
     {
-        $messages = array();
+        $messages = [];
 
-        #------------------------------
-        # CMs for filters
-        #------------------------------
+        //------------------------------
+        // CMs for filters
+        //------------------------------
 
         foreach ($this->changed_filters as $filter_change) {
             $filter = $filter_change->getFilter();
 
+            $ticketId = $this->ticket->getId();
+            $filterId = $filter['id'];
+
             foreach ($filter_change->getAgentsAdded() as $agent) {
-                $cm          = new ClientMessage();
-                $cm->channel = 'agent.filter-update';
-                $cm->data    = array(
-                    'ticket_id' => $this->ticket->id,
-                    'filter_id' => $filter->id,
+                if (!in_array($agent->getId(), $onlineAgentsIds)) {
+                    continue;
+                }
+
+                $cm = new ClientMessage();
+                $cm->setChannel('agent.filter-update');
+                $cm->setData([
+                    'ticket_id' => $ticketId,
+                    'filter_id' => $filterId,
                     'op'        => 'add',
-                );
-                $cm->for_person        = $agent;
-                $cm->created_by_client = 'sys';
-                $messages[]            = $cm;
+                ]);
+                $cm->setForPerson($agent);
+                $cm->setCreatedByClient('sys');
+
+                $messages[] = $cm;
             }
+
             foreach ($filter_change->getAgentsRemoved() as $agent) {
-                $cm          = new ClientMessage();
-                $cm->channel = 'agent.filter-update';
-                $cm->data    = array(
-                    'ticket_id' => $this->ticket->id,
-                    'filter_id' => $filter->id,
+                if (!in_array($agent->getId(), $onlineAgentsIds)) {
+                    continue;
+                }
+
+                $cm = new ClientMessage();
+                $cm->setChannel('agent.filter-update');
+                $cm->setData([
+                    'ticket_id' => $ticketId,
+                    'filter_id' => $filterId,
                     'op'        => 'del',
-                );
-                $cm->for_person        = $agent;
-                $cm->created_by_client = 'sys';
-                $messages[]            = $cm;
+                ]);
+                $cm->setForPerson($agent);
+                $cm->setCreatedByClient('sys');
+
+                $messages[] = $cm;
             }
         }
 

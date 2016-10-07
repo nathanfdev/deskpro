@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -65,7 +65,7 @@ class SetDepartmentTest extends ApiTestCase
         $ticket->department = $this->getMockContainer()->getTicketDepartments()->getById(1);
         $exec               = new ExecutorContext();
 
-        $action = new SetDepartment(array('department_id' => 55));
+        $action = new SetDepartment(['department_id' => 55]);
         $action->setContainer($this->getMockContainer());
 
         $action->applyAction($ticket, $exec);
@@ -80,7 +80,7 @@ class SetDepartmentTest extends ApiTestCase
         $ticket->department = $this->getMockContainer()->getTicketDepartments()->getById(1);
         $exec               = new ExecutorContext();
 
-        $action = new SetDepartment(array('department_id' => 0));
+        $action = new SetDepartment(['department_id' => 0]);
         $action->setContainer($this->getMockContainer());
 
         $action->applyAction($ticket, $exec);
@@ -96,7 +96,7 @@ class SetDepartmentTest extends ApiTestCase
 
         $exec = new ExecutorContext();
 
-        $action = new SetDepartment(array('department_id' => 55));
+        $action = new SetDepartment(['department_id' => 55]);
         $action->setContainer($this->container);
 
         $this->assertTrue($action->isNoop($ticket, $exec));
@@ -107,7 +107,7 @@ class SetDepartmentTest extends ApiTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $action = new SetDepartment(array('department_id' => 200));
+        $action = new SetDepartment(['department_id' => 200]);
         $action->setContainer($this->getMockContainer());
         $action->applyAction($ticket, $exec);
 

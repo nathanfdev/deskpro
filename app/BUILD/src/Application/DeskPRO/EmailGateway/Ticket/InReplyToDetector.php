@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -57,11 +58,11 @@ class InReplyToDetector implements TicketDetectorInterface
     {
         $this->_found_person = null;
 
-        #------------------------------
-        # Fetch message Ids from headers
-        #------------------------------
+        //------------------------------
+        // Fetch message Ids from headers
+        //------------------------------
 
-        $search_text = array();
+        $search_text = [];
 
         // In-Reply-To should have the direct message
         // being replied to
@@ -83,9 +84,9 @@ class InReplyToDetector implements TicketDetectorInterface
 
         $search_text = implode(' ', $search_text);
 
-        #------------------------------
-        # Try to find TAC
-        #------------------------------
+        //------------------------------
+        // Try to find TAC
+        //------------------------------
 
         $authcode_min_len = Ticket::TAC_AUTHCODE_LEN + 1;
         $authcode_max_len = Ticket::TAC_AUTHCODE_LEN_MAX;
@@ -107,9 +108,9 @@ class InReplyToDetector implements TicketDetectorInterface
             }
         }
 
-        #------------------------------
-        # Try to find PTAC
-        #------------------------------
+        //------------------------------
+        // Try to find PTAC
+        //------------------------------
 
         $matches = null;
         if (preg_match_all('#(?:PTAC|TICKET)\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {

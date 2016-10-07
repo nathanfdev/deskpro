@@ -28,26 +28,33 @@
 
 namespace DpBehat\Api;
 
+use Application\DeskPRO\Entity\Session;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 use DpBehat\Data\DataContext;
+use Orb\Util\Util;
 use Sanpi\Behatch\Context\BaseContext;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 class RestContext extends BaseContext
 {
-    protected $server_params = array();
+    protected $server_params = [];
 
     /**
      * Add an header element in a request.
      *
      * @Then I add :name header equal to :value
      */
-    public function iAddHeaderEqualTo($name, $value)
+    public function iAddHeaderEqualTo($name, $value, $isJson = false)
     {
         // we need to pass them as $_SERVER...
         $name = str_replace('-', '_', strtoupper(trim($name)));
         $name = 'HTTP_'.$name;
+
+        if (!$isJson) {
+            $value = DataContext::replace($value);
+        }
 
         $this->server_params[$name] = trim($value);
     }
@@ -68,7 +75,20 @@ class RestContext extends BaseContext
      */
     public function iAddACookie($name, $value)
     {
-        $this->getSession()->getDriver()->setCookie($name, $value);
+        $this->getSession()->getDriver()->setCookie($name, DataContext::replace($value));
+    }
+
+    /**
+     * Add a session cookie.
+     *
+     * @Then I add session cookie named :name for session :session
+     */
+    public function iAddASessionCookie($name, $session)
+    {
+        /** @var Session $session */
+        $session   = DataContext::getReference($session);
+        $sessionId = Util::baseEncode($session->getId(), 'base36');
+        $this->getSession()->getDriver()->setCookie($name, implode('-', [$sessionId, $session->getAuth()]));
     }
 
     /**
@@ -86,7 +106,7 @@ class RestContext extends BaseContext
         // intercept redirection
         $client->followRedirects(false);
 
-        $client->request($method, $this->locatePath($url), array(), array(), $this->server_params);
+        $client->request($method, $this->locatePath($url), [], [], $this->server_params);
         $client->followRedirects(true);
 
         $page = $this->getSession()->getPage();
@@ -112,7 +132,7 @@ class RestContext extends BaseContext
         // intercept redirection
         $client->followRedirects(false);
 
-        $parameters = array();
+        $parameters = [];
         foreach ($datas->getHash() as $row) {
             if (!isset($row['key']) || !isset($row['value'])) {
                 throw new \Exception("You must provide a 'key' and 'value' column in your table node.");
@@ -127,7 +147,7 @@ class RestContext extends BaseContext
 
         parse_str(implode('&', $parameters), $parameters);
 
-        $client->request($method, $this->locatePath($url), $parameters, array(), $this->server_params);
+        $client->request($method, $this->locatePath($url), $parameters, [], $this->server_params);
         $client->followRedirects(true);
 
         $page = $this->getSession()->getPage();

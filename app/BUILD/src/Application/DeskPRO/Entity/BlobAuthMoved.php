@@ -115,9 +115,9 @@ class BlobAuthMoved extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('filename', $filename);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

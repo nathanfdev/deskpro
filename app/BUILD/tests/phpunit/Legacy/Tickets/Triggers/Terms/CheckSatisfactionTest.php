@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,7 +45,7 @@ class CheckSatisfactionTest extends DeskProTestCase
         $ticket->date_feedback_rating = new \DateTime();
         $ticket->feedback_rating      = 1;
 
-        $check = new CheckSatisfaction('is', array('rating' => 1));
+        $check = new CheckSatisfaction('is', ['rating' => 1]);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
     }
 
@@ -57,7 +57,7 @@ class CheckSatisfactionTest extends DeskProTestCase
         $ticket->date_feedback_rating = new \DateTime();
         $ticket->feedback_rating      = -1;
 
-        $check = new CheckSatisfaction('is', array('rating' => -1));
+        $check = new CheckSatisfaction('is', ['rating' => -1]);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
     }
 
@@ -69,7 +69,7 @@ class CheckSatisfactionTest extends DeskProTestCase
         $ticket->date_feedback_rating = new \DateTime();
         $ticket->feedback_rating      = 0;
 
-        $check = new CheckSatisfaction('is', array('rating' => 0));
+        $check = new CheckSatisfaction('is', ['rating' => 0]);
         $this->assertTrue($check->isTriggerMatch($ticket, $exec));
     }
 

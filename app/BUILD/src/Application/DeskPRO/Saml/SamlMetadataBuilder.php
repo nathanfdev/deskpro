@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -51,7 +51,7 @@ class SamlMetadataBuilder extends \OneLogin_Saml2_Metadata
      *
      * @return string SAML Metadata XML
      */
-    public static function builder($sp, $authnsign = false, $wsign = false, $validUntil = null, $cacheDuration = null, $contacts = array(), $organization = array(), $attributes = array(), $custom_xml = '')
+    public static function builder($sp, $authnsign = false, $wsign = false, $validUntil = null, $cacheDuration = null, $contacts = [], $organization = [], $attributes = [], $custom_xml = '')
     {
         if (!isset($validUntil)) {
             $validUntil = time() + self::TIME_VALID;
@@ -86,7 +86,7 @@ SLS_TEMPLATE;
 
         $strOrganization = '';
         if (!empty($organization)) {
-            $organizationInfo = array();
+            $organizationInfo = [];
             foreach ($organization as $lang => $info) {
                 $organizationInfo[] = <<<ORGANIZATION
 
@@ -102,7 +102,7 @@ ORGANIZATION;
 
         $strContacts = '';
         if (!empty($contacts)) {
-            $contactsInfo = array();
+            $contactsInfo = [];
             foreach ($contacts as $type => $info) {
                 $contactsInfo[] = <<<CONTACT
     <md:ContactPerson contactType="{$type}">

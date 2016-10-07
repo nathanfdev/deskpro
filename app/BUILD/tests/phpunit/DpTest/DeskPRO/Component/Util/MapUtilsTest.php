@@ -40,57 +40,57 @@ class MapUtilsTest extends DeskProTestCase
     public function testFilterOutFalsey()
     {
         $this->assertEquals(
-            array(1 => 1, 2 => 2, 4 => 3),
-            MapUtils::filterOutFalsey(array(false, 1, 2, null, 3))
+            [1 => 1, 2 => 2, 4 => 3],
+            MapUtils::filterOutFalsey([false, 1, 2, null, 3])
         );
 
         $this->assertEquals(
-            array(55 => 1, 'b' => 2, 'c' => 3),
-            MapUtils::filterOutFalsey(array('a' => false, 55 => 1, 'b' => 2, 0 => null, 0, 'c' => 3))
+            [55 => 1, 'b' => 2, 'c' => 3],
+            MapUtils::filterOutFalsey(['a' => false, 55 => 1, 'b' => 2, 0 => null, 0, 'c' => 3])
         );
 
         $this->assertEquals(
-            array(),
-            MapUtils::filterOutFalsey(array(false, null, 0, ''))
+            [],
+            MapUtils::filterOutFalsey([false, null, 0, ''])
         );
     }
 
     public function testFilterOutValues()
     {
         $this->assertEquals(
-            array('a' => false, 'c' => 2, 'd' => null, 'e' => 3),
-            MapUtils::filterOutValues(array('a' => false, 'b' => 1, 'c' => 2, 'd' => null, 'e' => 3), 1)
+            ['a' => false, 'c' => 2, 'd' => null, 'e' => 3],
+            MapUtils::filterOutValues(['a' => false, 'b' => 1, 'c' => 2, 'd' => null, 'e' => 3], 1)
         );
 
         $this->assertEquals(
-            array('b' => 1, 'c' => 2, 'd' => null, 'e' => 3),
-            MapUtils::filterOutValues(array('a' => false, 'b' => 1, 'c' => 2, 'd' => null, 'e' => 3), false)
+            ['b' => 1, 'c' => 2, 'd' => null, 'e' => 3],
+            MapUtils::filterOutValues(['a' => false, 'b' => 1, 'c' => 2, 'd' => null, 'e' => 3], false)
         );
 
         $this->assertEquals(
-            array('b' => 1, 'c' => 2, 'e' => 3),
-            MapUtils::filterOutValues(array('a' => false, 'b' => 1, 'c' => 2, 'd' => null, 'e' => 3), false, false)
+            ['b' => 1, 'c' => 2, 'e' => 3],
+            MapUtils::filterOutValues(['a' => false, 'b' => 1, 'c' => 2, 'd' => null, 'e' => 3], false, false)
         );
     }
 
     public function testPrependItem()
     {
         $this->assertEquals(
-            array('a' => 1, 'b' => 2, 'c' => 3),
-            MapUtils::prependItem(array('b' => 2, 'c' => 3), 'a', 1)
+            ['a' => 1, 'b' => 2, 'c' => 3],
+            MapUtils::prependItem(['b' => 2, 'c' => 3], 'a', 1)
         );
 
         $this->assertEquals(
-            array('a' => 1, 'b' => 2, 'c' => 3),
-            MapUtils::prependItem(array('b' => 2, 'c' => 3, 'a' => 'XXX'), 'a', 1)
+            ['a' => 1, 'b' => 2, 'c' => 3],
+            MapUtils::prependItem(['b' => 2, 'c' => 3, 'a' => 'XXX'], 'a', 1)
         );
     }
 
     public function testRekeyByFn()
     {
         $this->assertEquals(
-            array('a' => 1, 'b' => 2, 'c' => 3),
-            MapUtils::rekeyByFn(array(1, 2, 3), function ($v, $k) {
+            ['a' => 1, 'b' => 2, 'c' => 3],
+            MapUtils::rekeyByFn([1, 2, 3], function ($v, $k) {
                 $keys = 'abc';
 
                 return $keys[$v - 1];
@@ -98,8 +98,8 @@ class MapUtilsTest extends DeskProTestCase
         );
 
         $this->assertEquals(
-            array('a' => 1, 'b' => 2, 'c' => 3),
-            MapUtils::rekeyByFn(array(1, 2, 3), function ($v, $k) {
+            ['a' => 1, 'b' => 2, 'c' => 3],
+            MapUtils::rekeyByFn([1, 2, 3], function ($v, $k) {
                 $keys = 'abc';
 
                 return $keys[$k];
@@ -110,12 +110,12 @@ class MapUtilsTest extends DeskProTestCase
     public function testRekeyByKey()
     {
         $this->assertEquals(
-            array('a' => array('a', 1), 'b' => array('b', 2), 'c' => array('c', 3)),
-            MapUtils::rekeyByFn(array(
-                array('a', 1),
-                array('b', 2),
-                array('c', 3),
-            ), function ($v, $k) {
+            ['a' => ['a', 1], 'b' => ['b', 2], 'c' => ['c', 3]],
+            MapUtils::rekeyByFn([
+                ['a', 1],
+                ['b', 2],
+                ['c', 3],
+            ], function ($v, $k) {
                 return $v[0];
             })
         );

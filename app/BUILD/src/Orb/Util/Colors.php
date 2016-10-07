@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Orb\Util;
 
 class Colors
@@ -49,7 +50,7 @@ class Colors
         $count = count($keys);
         $step  = 1.0 / $count;
 
-        $segs = array();
+        $segs = [];
         $tmp  = 0;
         for ($x = 0; $x < $count; ++$x) {
             $tmp += $step;
@@ -58,7 +59,7 @@ class Colors
         }
         shuffle($segs);
 
-        $group_keys = array();
+        $group_keys = [];
         foreach ($keys as $k) {
             $group_keys[$k] = array_pop($segs);
         }
@@ -86,20 +87,20 @@ class Colors
         $light = 100 * $value;
 
         if ($value <= 0.25) {
-            $i = array($light, $sat, round($sat * ($value) / $a));
+            $i = [$light, $sat, round($sat * ($value) / $a)];
         } elseif ($value <= 0.5) {
-            $i = array(round($sat - $sat * ($value - 0.25) / $a), $light, $sat);
+            $i = [round($sat - $sat * ($value - 0.25) / $a), $light, $sat];
         } elseif ($value <= 0.75) {
-            $i = array($sat, round($sat * ($value - 0.5) / $a), $light);
+            $i = [$sat, round($sat * ($value - 0.5) / $a), $light];
         } else {
-            $i = array($sat, round($sat - $sat * ($value - 0.75) / $a), $light);
+            $i = [$sat, round($sat - $sat * ($value - 0.75) / $a), $light];
         }
 
-        $rgb = array(
+        $rgb = [
             'red'   => abs($i[0]),
             'green' => abs($i[1]),
             'blue'  => abs($i[2]),
-        );
+        ];
 
         return $rgb;
     }
@@ -138,7 +139,7 @@ class Colors
     public static function hex2rgb($hex)
     {
         $hex = preg_replace('/[^0-9A-Fa-f]/', '', $hex);
-        $rgb = array();
+        $rgb = [];
         if (strlen($hex) == 6) {
             $color_val    = hexdec($hex);
             $rgb['red']   = 0xFF & ($color_val >> 0x10);

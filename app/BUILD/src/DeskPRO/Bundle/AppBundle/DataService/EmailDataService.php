@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,10 +47,10 @@ class EmailDataService extends AbstractDataService
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getEmail',
                 $person_email,
-            ),
+            ],
             function () use ($that, $person_email) {
                 if (!$person_email) { // we need some input
                     return;
@@ -74,7 +74,7 @@ class EmailDataService extends AbstractDataService
     {
         return;
         //$that = $this;
-        //
+
         //return $this->generateAndCache(
         //    array(
         //        'getValidatingEmail',
@@ -84,11 +84,11 @@ class EmailDataService extends AbstractDataService
         //        if (!$validating_email_or_id) { // we need some input
         //            return;
         //        }
-        //
+
         //        if ($validating_email_or_id instanceof PersonEmailValidating) { // already have what you seek
         //            return $validating_email_or_id;
         //        }
-        //
+
         //        return $that->getPersonEmailValidatingRepo()->find($validating_email_or_id);
         //    }
         //);
@@ -105,7 +105,7 @@ class EmailDataService extends AbstractDataService
     {
         return [];
         //$that = $this;
-        //
+
         //return $this->generateAndCache(
         //    array(
         //        'getValidatingEmails',

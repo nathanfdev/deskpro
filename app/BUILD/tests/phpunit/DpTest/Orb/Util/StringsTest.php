@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,7 +36,7 @@ class StringsTest extends DeskProTestCase
     public function testNullClase()
     {
         $this->assertEquals(
-            array(),
+            [],
             Strings::splitStringIntoArray(
                 null,
                 12
@@ -44,7 +44,7 @@ class StringsTest extends DeskProTestCase
         );
 
         $this->assertEquals(
-            array(),
+            [],
             Strings::splitStringIntoArray(
                 '',
                 12
@@ -55,11 +55,11 @@ class StringsTest extends DeskProTestCase
     public function testStringSplitMaxLength()
     {
         $this->assertEquals(
-            array(
+            [
                 'hello there',
                 'how are you',
                 'doing today?',
-            ),
+            ],
             Strings::splitStringIntoArray(
                 'hello there how are you doing today?',
                 12
@@ -70,12 +70,12 @@ class StringsTest extends DeskProTestCase
     public function testCaseWhereLineStartsOrEndsWithWhitespace()
     {
         $this->assertEquals(
-            array(
+            [
                 'hello there',
                 'how are you',
                 'doing today',
                 '?',
-            ),
+            ],
             Strings::splitStringIntoArray(
                 ' hello there how are you doing today ? ',
                 12

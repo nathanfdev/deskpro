@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -53,10 +54,10 @@ class Heartbeat extends AbstractJob
 
         if ($ret_data && ($ret_data = @json_decode($ret_data, true))) {
             if (!empty($ret_data['replace_license_code'])) {
-                App::getDb()->replace('settings', array(
+                App::getDb()->replace('settings', [
                     'name'  => 'core.license',
                     'value' => $ret_data['replace_license_code'],
-                ));
+                ]);
                 $this->logStatus('Updated license code');
             }
         }

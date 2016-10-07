@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -62,7 +62,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
 
     public function quickSearch($q)
     {
-        $type_to_ent = array(
+        $type_to_ent = [
             'article'           => 'DeskPRO:Article',
             'download'          => 'DeskPRO:Download',
             'feedback'          => 'DeskPRO:Feedback',
@@ -71,34 +71,34 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
             'person'            => 'DeskPRO:Person',
             'organization'      => 'DeskPRO:Organization',
             'chat_conversation' => 'DeskPRO:ChatConversation',
-        );
+        ];
 
-        $results = array(
-            'article'           => array(),
-            'download'          => array(),
-            'feedback'          => array(),
-            'news'              => array(),
-            'ticket'            => array(),
-            'person'            => array(),
-            'organization'      => array(),
-            'chat_conversation' => array(),
-        );
+        $results = [
+            'article'           => [],
+            'download'          => [],
+            'feedback'          => [],
+            'news'              => [],
+            'ticket'            => [],
+            'person'            => [],
+            'organization'      => [],
+            'chat_conversation' => [],
+        ];
 
         if (!$this->person->hasPerm('agent_people.use')) {
             unset($type_to_ent['person']);
             unset($type_to_ent['organization']);
         }
 
-        $result_meta = array();
+        $result_meta = [];
         $people_top  = false;
 
         if (!$q) {
             return false;
         }
 
-        #------------------------------
-        # ID based
-        #------------------------------
+        //------------------------------
+        // ID based
+        //------------------------------
 
         $is_label = false;
 
@@ -152,13 +152,13 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
         if ($words) {
             $db = $this->container->getDbRead();
 
-            #------------------------------
-            # Ticket Subject
-            #------------------------------
+            //------------------------------
+            // Ticket Subject
+            //------------------------------
 
-            $where = array();
+            $where = [];
             foreach ($words as $w) {
-                $where[] = '(subject LIKE '.$db->quote('%'.str_replace(array('%', '_'), array('\\%', '\\_'), $w).'%').')';
+                $where[] = '(subject LIKE '.$db->quote('%'.str_replace(['%', '_'], ['\\%', '\\_'], $w).'%').')';
             }
 
             $where[] = "(id > $after_id)";
@@ -182,23 +182,23 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                 }
             }
 
-            #------------------------------
-            # Titles
-            #------------------------------
+            //------------------------------
+            // Titles
+            //------------------------------
 
-            $where = array();
+            $where = [];
             foreach ($words as $w) {
-                $where[] = '(title LIKE '.$db->quote('%'.str_replace(array('%', '_'), array('\\%', '\\_'), $w).'%').')';
+                $where[] = '(title LIKE '.$db->quote('%'.str_replace(['%', '_'], ['\\%', '\\_'], $w).'%').')';
             }
             $where[] = "(status != 'hidden')";
             $where   = implode(' AND ', $where);
 
-            foreach (array(
-                         'article' => 'articles',
+            foreach ([
+                         'article'  => 'articles',
                          'download' => 'downloads',
                          'feedback' => 'feedback',
-                         'news' => 'news',
-                     ) as $type => $table) {
+                         'news'     => 'news',
+                     ] as $type => $table) {
                 $ids = $this->container->getDbRead()->fetchAllCol("
                     SELECT id
                     FROM $table
@@ -234,25 +234,25 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
         } else {
             if ($this->person->hasPerm('agent_people.use')) {
                 if (!$is_label) {
-                    #------------------------------
-                    # Email address: Full or partial
-                    #------------------------------
+                    //------------------------------
+                    // Email address: Full or partial
+                    //------------------------------
 
                     if (preg_match('#^\S*@\S*$#', $q)) {
                         $people_top = true;
-                        $people     = array();
+                        $people     = [];
 
                         // Complete email address
                         if (\Orb\Validator\StringEmail::isValueValid($q)) {
                             $p      = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
-                            $people = array();
+                            $people = [];
                             if ($p) {
                                 $people[] = $p;
                             }
                         } else {
                             if (strpos($q, '@') === 0) {
                                 $email = substr($q, 1);
-                                $email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email).'%';
+                                $email = str_replace(['%', '_'], ['\\\\%', '\\\\_'], $email).'%';
 
                                 if ($this->settings->get('core_tablecounts.people') < 150000) {
                                     $people_ids = $this->container->getDbRead()->fetchAllCol('
@@ -262,7 +262,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                                         WHERE people_emails.email_domain LIKE ?
                                         ORDER BY people.id DESC
                                         LIMIT 15
-                                    ', array($email));
+                                    ', [$email]);
                                 } else {
                                     $people_ids = $this->container->getDbRead()->fetchAllCol('
                                         SELECT people.id
@@ -274,10 +274,10 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                                             AND people_emails.email_domain LIKE ?
                                         ORDER BY tickets.id DESC
                                         LIMIT 15
-                                    ', array($after_id, $email));
+                                    ', [$after_id, $email]);
                                 }
                             } else {
-                                $email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q).'%';
+                                $email = str_replace(['%', '_'], ['\\\\%', '\\\\_'], $q).'%';
 
                                 if ($this->settings->get('core_tablecounts.people') < 150000) {
                                     $people_ids = $this->container->getDbRead()->fetchAllCol('
@@ -287,7 +287,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                                         WHERE people_emails.email LIKE ?
                                         ORDER BY people.id DESC
                                         LIMIT 15
-                                    ', array($email));
+                                    ', [$email]);
                                 } else {
                                     $people_ids = $this->container->getDbRead()->fetchAllCol('
                                         SELECT people.id
@@ -299,7 +299,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                                             AND people_emails.email LIKE ?
                                         ORDER BY tickets.id DESC
                                         LIMIT 15
-                                    ', array($after_id, $email));
+                                    ', [$after_id, $email]);
                                 }
                             }
 
@@ -316,14 +316,14 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                             }
                         }
 
-                        #------------------------------
-                        # Search for string match in name or email
-                        #------------------------------
+                        //------------------------------
+                        // Search for string match in name or email
+                        //------------------------------
                     } else {
-                        $people = array();
+                        $people = [];
 
                         $q        = preg_replace('#\s+#', ' ', $q);
-                        $q_search = '%'.str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q).'%';
+                        $q_search = '%'.str_replace(['%', '_'], ['\\\\%', '\\\\_'], $q).'%';
 
                         if ($this->settings->get('core_tablecounts.people') < 150000) {
                             $people_ids = $this->container->getDbRead()->fetchAllCol("
@@ -338,7 +338,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                                     OR CONCAT_WS(' ' , people.first_name, people.last_name) LIKE ?
                                 ORDER BY people.id DESC
                                 LIMIT 15
-                            ", array($q_search, $q_search, $q_search, $q_search, $q_search));
+                            ", [$q_search, $q_search, $q_search, $q_search, $q_search]);
                         } else {
                             $people_ids = $this->container->getDbRead()->fetchAllCol("
                                 SELECT people.id
@@ -357,7 +357,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                                     )
                                 ORDER BY tickets.id DESC
                                 LIMIT 15
-                            ", array($after_id, $after_id, $q_search, $q_search, $q_search, $q_search, $q_search));
+                            ", [$after_id, $after_id, $q_search, $q_search, $q_search, $q_search, $q_search]);
                         }
 
                         if ($people_ids) {
@@ -374,7 +374,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
 
                         // Organizations
                         $orgs = $this->em->getRepository('DeskPRO:Organization')->search($q, 25);
-                        $oids = array();
+                        $oids = [];
                         foreach ($orgs as $o) {
                             $results['organization'][$o->id] = $o;
                             $oids[]                          = $o->getId();
@@ -387,7 +387,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                                 FROM DeskPRO:Person p
                                 WHERE p.organization IN (?0)
                                 ORDER BY p.date_last_login DESC, p.id DESC
-                            ')->setMaxResults(100)->execute(array($oids));
+                            ')->setMaxResults(100)->execute([$oids]);
                             foreach ($people as $p) {
                                 $results['person'][$p->id] = $p;
                             }
@@ -396,13 +396,13 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                 } // is label
             } // agent_people.use perm
 
-            #------------------------------
-            # Labels
-            #------------------------------
+            //------------------------------
+            // Labels
+            //------------------------------
 
             $label_search = new \Application\DeskPRO\Labels\LabelSearch($this->em);
 
-            $search_types = array('article', 'download', 'feedback', 'news', 'ticket');
+            $search_types = ['article', 'download', 'feedback', 'news', 'ticket'];
 
             if ($this->person->hasPerm('agent_people.use')) {
                 $search_types[] = 'organization';
@@ -424,7 +424,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
             }
         }
 
-        return array($results, $result_meta, $people_top);
+        return [$results, $result_meta, $people_top];
     }
 
     public function setPersonContext($person)

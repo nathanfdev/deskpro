@@ -63,11 +63,27 @@
                         </tr>
                     </table>
                     <div class="text-center" style="border-top: 1px solid #aed7e0; padding-top: 8px; margin-top: 8px;">
-                        <button class="btn btn-primary" ng-click="ServerAuditLogs.updateFilter()">{{ phrase('admin.audit_logs.filter') }}</button>
+                        <button class="btn btn-primary" ng-click="ServerAuditLogs.newSearch()">{{ phrase('admin.audit_logs.filter') }}</button>
                         <button class="btn btn-default" ng-click="ServerAuditLogs.clearFilter()">{{ phrase('admin.audit_logs.clear_filter') }}</button>
                     </div>
                 </div>
             </div>
+			<div style="float: left" ng-show="ServerAuditLogs.logs.length">
+				Delete logs:
+				<select ng-model="ServerAuditLogs.purge"
+						ui-select2
+						style="width: 130px;"
+				>
+					<option value="day">{{ phrase('admin.audit_logs.purge_1_day') }}</option>
+					<option value="week">{{ phrase('admin.audit_logs.purge_1_week') }}</option>
+					<option value="month">{{ phrase('admin.audit_logs.purge_1_month') }}</option>
+					<option value="3_months">{{ phrase('admin.audit_logs.purge_3_month') }}</option>
+					<option value="6_months">{{ phrase('admin.audit_logs.purge_6_months') }}</option>
+					<option value="year">{{ phrase('admin.audit_logs.purge_1_year') }}</option>
+					<option value="all">{{ phrase('admin.audit_logs.purge_all') }}</option>
+				</select>
+				<button class="btn btn-danger"  ng-click="ServerAuditLogs.purgeLogs()">Delete!</button>
+			</div>
 			<div class="dp-btn-pagination" ng-show="ServerAuditLogs.logs.length">
 				<span dp-show-spinning="paginating_server_audit_logs">
 					<i class="spinner-flat"></i>
@@ -76,14 +92,21 @@
 					&lt; Prev
 				</button>
 				<select
+						ng-show="!ServerAuditLogs.pagination.plain"
 						ng-model="ServerAuditLogs.pagination.current_page"
+						ng-change="ServerAuditLogs.updateFilter()"
 						ui-select2
-						style="width: 130px;"
-				>
-					<option ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}">
-						Page {{ ng_var('page') }}
-					</option>
-				</select>
+						ng-options="'Page '+ page for page in ServerAuditLogs.pagination.page_nums track by page"
+						style="width: 130px;" />
+				<span ng-show="ServerAuditLogs.pagination.plain">
+					Page
+				<input ng-model="ServerAuditLogs.pagination.virtual_current_page" />
+					of
+					{{ ng_var('ServerAuditLogs.pagination.total_pages') }}
+					<button class="btn" ng-click="ServerAuditLogs.goCurrentPage($event)">
+						Go
+					</button>
+				</span>
 				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page < ServerAuditLogs.pagination.total_pages"
 						ng-click="ServerAuditLogs.goNextPage()">
 					Next &gt;
@@ -151,14 +174,21 @@
 					&lt; Prev
 				</button>
 				<select
+						ng-show="!ServerAuditLogs.pagination.plain"
 						ng-model="ServerAuditLogs.pagination.current_page"
+						ng-change="ServerAuditLogs.updateFilter()"
 						ui-select2
-						style="width: 130px;"
-				>
-					<option ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}">
-						Page {{ ng_var('page') }}
-					</option>
-				</select>
+						ng-options="'Page '+ page for page in ServerAuditLogs.pagination.page_nums track by page"
+						style="width: 130px;" />
+				<span ng-show="ServerAuditLogs.pagination.plain">
+					Page
+				<input ng-model="ServerAuditLogs.pagination.virtual_current_page" />
+					of
+					{{ ng_var('ServerAuditLogs.pagination.total_pages') }}
+					<button class="btn" ng-click="ServerAuditLogs.goCurrentPage($event)">
+						Go
+					</button>
+				</span>
 				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page < ServerAuditLogs.pagination.total_pages"
 						ng-click="ServerAuditLogs.goNextPage()">
 					Next &gt;

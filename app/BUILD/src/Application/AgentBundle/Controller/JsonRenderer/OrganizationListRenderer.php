@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller\JsonRenderer;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -69,14 +70,14 @@ class OrganizationListRenderer
     public function renderArray(OrgResultsDisplay $display, $fn_visitor = null)
     {
         if (!$display->getCount()) {
-            return array();
+            return [];
         }
 
-        #------------------------------
-        # Generate data array
-        #------------------------------
+        //------------------------------
+        // Generate data array
+        //------------------------------
 
-        $json_array = array();
+        $json_array = [];
 
         foreach ($display->getOrganizations() as $org) {
             $data = $this->renderOrganization($org, $display);
@@ -107,7 +108,7 @@ class OrganizationListRenderer
 
     private function renderOrganization(Organization $entity, OrgResultsDisplay $display)
     {
-        $data = array();
+        $data = [];
 
         $data['id']             = $entity['id'];
         $data['name']           = $entity['name'];
@@ -121,10 +122,10 @@ class OrganizationListRenderer
 
             $rendered_data = $field_manager->getRenderedToText($field_manager->createFieldDataFromArray($custom_data));
             foreach ($rendered_data as $fid => $v) {
-                $data['organization_fields['.$fid.']'] = array(
+                $data['organization_fields['.$fid.']'] = [
                     'title' => $v['title'],
                     'value' => $v['rendered'],
-                );
+                ];
             }
         }
 

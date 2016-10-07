@@ -54,12 +54,12 @@ class LanguageType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['view_context'])
-            ->setAllowedValues(['view_context' => ['user', 'agent', 'admin']])
+            ->setRequired('view_context')
+            ->setAllowedValues('view_context', ['user', 'agent', 'admin'])
             ->setDefaults([
                 'property_path' => 'language',
                 'class'         => Language::class,
-                'property'      => 'title',
+                'choice_label'  => 'title',
                 'empty_data'    => null,
                 'query_builder' => function (Options $options) {
                     return function (EntityRepository $repo) use ($options) {

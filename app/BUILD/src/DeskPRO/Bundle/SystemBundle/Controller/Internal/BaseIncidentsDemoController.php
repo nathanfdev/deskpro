@@ -55,7 +55,9 @@ abstract class BaseIncidentsDemoController extends BaseController
     {
         $this->checkConfirmation($request);
 
-        $array = call_user_func(function () { return []; });
+        $array = call_user_func(function () {
+            return [];
+        });
         $array['undefined_index'];
 
         return $this->createResponse('This action produced a PHP notice');
@@ -68,7 +70,9 @@ abstract class BaseIncidentsDemoController extends BaseController
     {
         $this->checkConfirmation($request);
 
-        $null = call_user_func(function () { return; });
+        $null = call_user_func(function () {
+            return;
+        });
         new $null('This is a Fatal Error');
 
         return $this->createResponse('A PHP fatal error should have happened');

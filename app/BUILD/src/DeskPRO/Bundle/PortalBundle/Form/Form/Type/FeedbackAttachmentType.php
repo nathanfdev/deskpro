@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
@@ -37,6 +33,9 @@ use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\FeedbackAttachment;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepo;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -45,30 +44,43 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class FeedbackAttachmentType.
+ */
 class FeedbackAttachmentType extends AbstractType
 {
     /**
      * @var \Application\DeskPRO\BlobStorage\DeskproBlobStorage
      */
-    private $blob_storage;
+    private $blobStorage;
 
     /**
      * @var BlobRepo
      */
-    private $blob_repo;
+    private $blobRepo;
 
     /**
      * @var AcceptAttachment
      */
-    private $attachment_accepter;
+    private $attachmentAccepter;
 
-    public function __construct(DeskproBlobStorage $blob_storage, BlobRepo $blob_repo, AcceptAttachment $attachment_accepter)
+    /**
+     * Constructor.
+     *
+     * @param DeskproBlobStorage $blobStorage
+     * @param BlobRepo           $blobRepo
+     * @param AcceptAttachment   $attachmentAccepter
+     */
+    public function __construct(DeskproBlobStorage $blobStorage, BlobRepo $blobRepo, AcceptAttachment $attachmentAccepter)
     {
-        $this->blob_storage        = $blob_storage;
-        $this->blob_repo           = $blob_repo;
-        $this->attachment_accepter = $attachment_accepter;
+        $this->blobStorage        = $blobStorage;
+        $this->blobRepo           = $blobRepo;
+        $this->attachmentAccepter = $attachmentAccepter;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -79,8 +91,8 @@ class FeedbackAttachmentType extends AbstractType
             if (!$attachment->getBlob()) {
                 $this->addUpload($form);
             } else {
-                $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
-                $form->add('delete', 'checkbox', ['mapped' => false, 'required' => false]);
+                $form->add('blob_auth', HiddenType::class, ['property_path' => 'blob.authcode']);
+                $form->add('delete', CheckboxType::class, ['mapped' => false, 'required' => false]);
             }
         });
 
@@ -88,31 +100,35 @@ class FeedbackAttachmentType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'preSubmit']);
     }
 
+    /**
+     * @param FormInterface $form
+     */
     public function addUpload(FormInterface $form)
     {
-        $form->add(
-            'upload',
-            'file',
-            [
-                'mapped'      => false,
-                'required'    => false,
-                'label'       => false,
-                'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\File(
-                        [
-                            'uploadErrorMessage'         => 'portal.forms.error_upload_general',
-                            'uploadFormSizeErrorMessage' => 'portal.forms.error_upload_html_size',
-                            'uploadIniSizeErrorMessage'  => 'portal.forms.error_upload_ini_size',
-                            'notFoundMessage'            => 'portal.forms.error_upload_general',
-                            'notReadableMessage'         => 'portal.forms.error_upload_general',
-                            'disallowEmptyMessage'       => 'portal.forms.error_upload_empty',
-                        ]
-                    ),
-                ],
-            ]
-        );
+        $form->add('upload', FileType::class, [
+            'mapped'      => false,
+            'required'    => false,
+            'label'       => false,
+            'constraints' => [
+                new \Symfony\Component\Validator\Constraints\File(
+                    [
+                        'uploadErrorMessage'         => 'portal.forms.error_upload_general',
+                        'uploadFormSizeErrorMessage' => 'portal.forms.error_upload_html_size',
+                        'uploadIniSizeErrorMessage'  => 'portal.forms.error_upload_ini_size',
+                        'notFoundMessage'            => 'portal.forms.error_upload_general',
+                        'notReadableMessage'         => 'portal.forms.error_upload_general',
+                        'disallowEmptyMessage'       => 'portal.forms.error_upload_empty',
+                    ]
+                ),
+            ],
+        ]);
     }
 
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
     public function preSubmit(FormEvent $event)
     {
         $form          = $event->getForm();
@@ -122,14 +138,14 @@ class FeedbackAttachmentType extends AbstractType
                 $attachment = new FeedbackAttachment();
                 $form->setData($attachment);
             }
-            $form->getData()->setBlob($this->blob_repo->getByAuthCode($submittedData['blob_auth']));
+            $form->getData()->setBlob($this->blobRepo->getByAuthCode($submittedData['blob_auth']));
 
             // delete?
             if (array_key_exists('delete', $submittedData)) {
                 if ($submittedData['delete'] != 0) {
                     $attachment = $form->getData();
                     if ($blob = $attachment->getBlob()) {
-                        $this->blob_storage->deleteBlobRecord($blob);
+                        $this->blobStorage->deleteBlobRecord($blob);
                     }
                     $form->setData(null);
                     $form->remove('blob_auth');
@@ -141,12 +157,19 @@ class FeedbackAttachmentType extends AbstractType
                     $form->remove('upload');
                 }
                 if (!$form->has('blob_auth')) {
-                    $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
+                    $form->add('blob_auth', HiddenType::class, [
+                        'property_path' => 'blob.authcode',
+                    ]);
                 }
             }
         }
     }
 
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
     public function postSubmit(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
@@ -158,7 +181,7 @@ class FeedbackAttachmentType extends AbstractType
             $file = $form->get('upload')->getData();
 
             if ($file instanceof File) {
-                $error = $this->attachment_accepter->getError($file, 'user');
+                $error = $this->attachmentAccepter->getError($file, 'user');
                 if ($error) {
                     $error_code = $error['error_code'];
                     $params     = [];
@@ -175,7 +198,7 @@ class FeedbackAttachmentType extends AbstractType
             }
 
             if ($file instanceof File && empty($error) && $file->getRealPath()) {
-                $blob = $this->blob_storage->createBlobRecordFromFile(
+                $blob = $this->blobStorage->createBlobRecordFromFile(
                     $file->getRealPath(),
                     $file->getClientOriginalName(),
                     $file->getClientMimeType()
@@ -185,12 +208,14 @@ class FeedbackAttachmentType extends AbstractType
                 $attachment->setPerson($person);
 
                 $form->remove('upload');
-                $form->add('delete', 'checkbox', ['mapped' => false, 'required' => false]);
-                $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
+                $form->add('delete', CheckboxType::class, ['mapped' => false, 'required' => false]);
+                $form->add('blob_auth', HiddenType::class, ['property_path' => 'blob.authcode']);
             }
         } else {
             if (!$form->has('blob_auth')) {
-                $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
+                $form->add('blob_auth', HiddenType::class, [
+                    'property_path' => 'blob.authcode',
+                ]);
             }
         }
 
@@ -200,29 +225,25 @@ class FeedbackAttachmentType extends AbstractType
         $form->setData($attachment);
     }
 
-    public function getName()
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
     {
         return 'feedback_attachment';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
+        $resolver
+            ->setDefaults([
                 'data_class' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment',
-            ]
-        );
-
-        $resolver->setRequired(
-            [
-                'person',
-            ]
-        );
-
-        $resolver->setAllowedTypes(
-            [
-                'person' => 'Application\\DeskPRO\\Entity\\Person',
-            ]
-        );
+            ])
+            ->setRequired('person')
+            ->setAllowedTypes('person', 'Application\\DeskPRO\\Entity\\Person')
+        ;
     }
 }

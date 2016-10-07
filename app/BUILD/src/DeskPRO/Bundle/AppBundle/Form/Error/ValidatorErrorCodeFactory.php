@@ -84,6 +84,7 @@ class ValidatorErrorCodeFactory
         Assert\GreaterThanOrEqual::TOO_LOW_ERROR => ErrorsCodes::TOO_LOW,
         Assert\IsTrue::NOT_TRUE_ERROR            => ErrorsCodes::NOT_CHECKED,
         Assert\Regex::REGEX_FAILED_ERROR         => ErrorsCodes::REGEX,
+        Assert\Image::INVALID_MIME_TYPE_ERROR    => ErrorsCodes::NOT_AN_IMAGE,
     ];
 
     /**

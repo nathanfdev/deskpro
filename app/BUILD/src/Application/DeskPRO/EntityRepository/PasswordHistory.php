@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -44,14 +45,14 @@ class PasswordHistory extends AbstractEntityRepository
             SELECT password, password_scheme
             FROM password_history
             WHERE person_id = ?
-        ', array($person->id));
+        ', [$person->id]);
 
         if (!$recs) {
             return false;
         }
 
         foreach ($recs as $rec) {
-            $scheme = App::getSystemObject('password_scheme', array('scheme' => $rec['password_scheme'] ?: 'deskpro4original'));
+            $scheme = App::getSystemObject('password_scheme', ['scheme' => $rec['password_scheme'] ?: 'deskpro4original']);
             if ($scheme->checkInput($password, $rec['password'])) {
                 return true;
             }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -116,7 +117,8 @@ class ElasticSearchListener implements EventSubscriberInterface
                 $sort = $request->getSort();
             }
 
-            $result = $repository->find($query, null, ['sort_type' => $sort]);
+            $options = array_merge($context->getCriteriaOptions(), ['sort_type' => $sort]);
+            $result  = $repository->find($query, null, $options);
             foreach ($result as $entity) {
                 $context->addEntity($entity);
             }

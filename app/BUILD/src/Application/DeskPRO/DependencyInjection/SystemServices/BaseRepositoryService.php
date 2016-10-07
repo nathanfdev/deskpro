@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -64,7 +65,7 @@ class BaseRepositoryService
     /**
      * @var array
      */
-    protected $call_result = array();
+    protected $call_result = [];
 
     /**
      * @var \Orb\Util\OptionsArray
@@ -116,12 +117,12 @@ class BaseRepositoryService
      */
     public function reset()
     {
-        $this->call_result = array();
+        $this->call_result = [];
     }
 
-    public function __call($method, array $args = array())
+    public function __call($method, array $args = [])
     {
-        $hash_seg = array($method);
+        $hash_seg = [$method];
 
         if ($args) {
             foreach ($args as $k => $a) {
@@ -129,7 +130,7 @@ class BaseRepositoryService
                     $hash_seg[] = $k.':';
                     $hash_seg[] = (string) $a;
                 } else {
-                    return call_user_func_array(array($this->repos, $method), $args);
+                    return call_user_func_array([$this->repos, $method], $args);
                 }
             }
         }
@@ -139,7 +140,7 @@ class BaseRepositoryService
             return $this->call_result[$hash];
         }
 
-        $this->call_result[$hash] = call_user_func_array(array($this->repos, $method), $args);
+        $this->call_result[$hash] = call_user_func_array([$this->repos, $method], $args);
 
         return $this->call_result[$hash];
     }

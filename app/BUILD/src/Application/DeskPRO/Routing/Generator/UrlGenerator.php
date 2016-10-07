@@ -76,7 +76,7 @@ class UrlGenerator extends BaseUrlGenerator
         $this->context = $context;
     }
 
-    public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
+    public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH)
     {
         if ($this->getDpEnv()->isDebug()) {
             return parent::generate($name, $parameters, $referenceType);
@@ -91,7 +91,7 @@ class UrlGenerator extends BaseUrlGenerator
         }
     }
 
-    public function generateUrl($name, $parameters = array())
+    public function generateUrl($name, $parameters = [])
     {
         $url = $this->generatePath($name, $parameters, false);
 
@@ -109,7 +109,7 @@ class UrlGenerator extends BaseUrlGenerator
      * @param array $parameters
      * @param bool  $absolute
      */
-    public function generatePath($name, $parameters = array(), $absolute = false)
+    public function generatePath($name, $parameters = [], $absolute = false)
     {
         $url = $this->generate($name, $parameters, $absolute);
 
@@ -136,7 +136,7 @@ class UrlGenerator extends BaseUrlGenerator
         return $url;
     }
 
-    protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, array $requiredSchemes = array())
+    protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, array $requiredSchemes = [])
     {
         $url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, $requiredSchemes);
 
@@ -164,7 +164,7 @@ class UrlGenerator extends BaseUrlGenerator
         return $this->object_url_generator;
     }
 
-    public function generateObjectUrl($object, array $params = array(), $context = null)
+    public function generateObjectUrl($object, array $params = [], $context = null)
     {
         return $this->getObjectUrlGenerator()->generateObjectUrl($object, $params, $context);
     }

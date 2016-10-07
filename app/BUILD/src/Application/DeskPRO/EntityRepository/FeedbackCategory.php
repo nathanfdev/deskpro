@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -99,7 +100,7 @@ class FeedbackCategory extends AbstractCategoryRepository
             SELECT id, parent_id title
             FROM feedback_categories
             ORDER BY display_order DESC
-        ', array(), 'id');
+        ', [], 'id');
 
         return $this->all_cats;
     }
@@ -157,9 +158,9 @@ class FeedbackCategory extends AbstractCategoryRepository
 
     public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal')
     {
-        $counts = array(0 => array('popular' => 0, 'new' => 0, 'active' => 0, 'closed' => 0));
+        $counts = [0 => ['popular' => 0, 'new' => 0, 'active' => 0, 'closed' => 0]];
         foreach ($this->children() as $c) {
-            $cat_counts = array();
+            $cat_counts = [];
 
             $searcher = new FeedbackSearch();
             $searcher->setPersonContext($person_context);
@@ -185,9 +186,9 @@ class FeedbackCategory extends AbstractCategoryRepository
 
             // 0 is sum of all root nodes
             if (!$c['depth']) {
-                $counts[0]['new']     += $counts[$c['id']]['new'];
-                $counts[0]['active']  += $counts[$c['id']]['active'];
-                $counts[0]['closed']  += $counts[$c['id']]['closed'];
+                $counts[0]['new'] += $counts[$c['id']]['new'];
+                $counts[0]['active'] += $counts[$c['id']]['active'];
+                $counts[0]['closed'] += $counts[$c['id']]['closed'];
             }
         }
 

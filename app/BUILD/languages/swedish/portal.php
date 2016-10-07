@@ -26,9 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.change-password'                 => 'Ändra Lösenord',
+    'portal.account.change-password-btn'             => 'Uppdatera Lösenord',
+    'portal.account.email-add'                       => 'Lägg till mailadress',
+    'portal.account.email-btn-make-primary'          => 'Gör till primär',
     'portal.account.email-btn-resend-validation'     => 'Skicka valideringsmailet igen',
+    'portal.account.email-btn-usersource-set'        => 'Lägg till mailadress',
     'portal.account.login-register-btn'              => 'Registrera',
     'portal.account.login-register-header'           => 'Registrera',
     'portal.account.register-btn'                    => 'Registrera',
@@ -414,4 +418,4 @@ return array(
     'user.time.time_x_second'                        => '{0} sekunder',
     'user.time.time_x_week'                          => '{0} veckor',
     'user.time.time_x_year'                          => '{0} år',
-);
+];

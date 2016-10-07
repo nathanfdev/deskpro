@@ -66,19 +66,19 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
         $this['sort'] = 0;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         //		$data = parent::toApiData($primary, $deep, $visited);
-        $data = array(
+        $data = [
             'id' => $this->agent ? $this->agent['id'] : null,
-        );
+        ];
 
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

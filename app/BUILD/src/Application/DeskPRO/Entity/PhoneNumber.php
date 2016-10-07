@@ -236,9 +236,9 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('region', $region);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter;
 
 interface LinkConfigRepoInterface
@@ -41,7 +42,7 @@ interface LinkConfigRepoInterface
      * ].
      *
      * @param object $object  the entity/object itself
-     * @param string $context the area: "portal", "agent".
+     * @param string $context the area: "portal", "agent"
      * @param string $type    a specifier, since multiple routes can be configured
      *
      * @return array|string an array with the format above or the string "custom"

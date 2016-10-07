@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\AgentAlert;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -38,6 +34,9 @@ use Application\DeskPRO\Entity\ClientMessage;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class AlertSender.
+ */
 class AlertSender
 {
     /**
@@ -52,6 +51,11 @@ class AlertSender
 
     protected $resolver;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em       = $em;
@@ -81,16 +85,16 @@ class AlertSender
 
             $cm = new ClientMessage();
             $cm->fromArray(
-                array(
+                [
                     'channel' => 'agent-notify.tickets',
-                    'data'    => array(
+                    'data'    => [
                         'type'     => $type,
                         'alert_id' => $alert->getId(),
                         'row'      => $tpl_line,
-                    ),
+                    ],
                     'for_person'        => $agent,
                     'created_by_client' => 'sys',
-                )
+                ]
             );
             $this->em->persist($cm);
             $this->em->flush($cm);
@@ -108,47 +112,16 @@ class AlertSender
      */
     public function createAlert($agent, $type, array $data)
     {
-        $alert           = new AgentAlert();
-        $alert->person   = $agent;
-        $alert->typename = $type;
-        $alert->data     = $data;
+        $alert = new AgentAlert();
+        $alert->setPerson($agent);
+        $alert->setTypename($type);
+        $alert->setData($data);
 
         if (isset($data['browser_rendered'])) {
-            $alert->addTargetMap(AgentAlert::TARGET_BROWSER, array('browser_rendered'));
+            $alert->addTargetMap(AgentAlert::TARGET_BROWSER, ['browser_rendered']);
         }
 
         return $alert;
-    }
-
-    /**
-     * @param            $agent
-     * @param            $type
-     * @param array      $data
-     * @param AgentAlert $alert
-     */
-    public function createClientMessage($agent, $type, array $data, AgentAlert $alert = null)
-    {
-        if (!isset($data['browser_rendered'])) {
-            return;
-        }
-
-        $tpl_line = $data['browser_rendered'];
-
-        $cm = new ClientMessage();
-        $cm->fromArray(
-            array(
-                'channel' => 'agent-notify.tickets',
-                'data'    => array(
-                    'type'     => $type,
-                    'alert_id' => $alert ? $alert->id : null,
-                    'row'      => $tpl_line,
-                ),
-                'for_person'        => $agent,
-                'created_by_client' => 'sys',
-            )
-        );
-        $this->em->persist($cm);
-        $this->em->flush($cm);
     }
 
     /**

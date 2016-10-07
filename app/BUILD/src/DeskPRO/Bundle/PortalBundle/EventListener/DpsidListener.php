@@ -155,7 +155,7 @@ class DpsidListener implements EventSubscriberInterface
      *
      * But we need to reset request session to prevent storing 'portal api' token in the 'portal' session.
      *
-     * @see ContextListener::onKernelResponse.
+     * @see ContextListener::onKernelResponse
      *
      * @param Session $session
      * @param Request $request

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
@@ -76,7 +77,7 @@ class InstanceUninstaller
     public function uninstall(DeskproContainer $container)
     {
         $handler = $this->createInstallHandler();
-        $context = $this->createInstallContext($this->app->package, $this->app, array(), $container);
+        $context = $this->createInstallContext($this->app->package, $this->app, [], $container);
 
         $handler->uninstall($context);
 

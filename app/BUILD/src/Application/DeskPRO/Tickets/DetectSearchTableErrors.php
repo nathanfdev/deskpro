@@ -109,11 +109,11 @@ class DetectSearchTableErrors
         @set_time_limit(0);
         @ini_set('memory_limit', -1);
 
-        $errors = array();
+        $errors = [];
 
-        #------------------------------
-        # Select data
-        #------------------------------
+        //------------------------------
+        // Select data
+        //------------------------------
 
         $select_fields = '
             `id`,
@@ -143,7 +143,7 @@ class DetectSearchTableErrors
             `total_to_first_reply`
         ';
 
-        $search_tickets = array();
+        $search_tickets = [];
         $q              = $this->db->executeQuery("
             SELECT $select_fields
             FROM tickets_search_active
@@ -155,7 +155,7 @@ class DetectSearchTableErrors
         }
         $q->closeCursor();
 
-        $real_tickets = array();
+        $real_tickets = [];
         $q            = $this->db->executeQuery("
             SELECT $select_fields
             FROM tickets
@@ -168,46 +168,46 @@ class DetectSearchTableErrors
         }
         $q->closeCursor();
 
-        #------------------------------
-        # Check for bad tickets
-        #------------------------------
+        //------------------------------
+        // Check for bad tickets
+        //------------------------------
 
         foreach ($search_tickets as $tid => $info) {
             if (!isset($real_tickets[$tid])) {
-                $errors[] = array(
+                $errors[] = [
                     'type'      => 'missing_real_id',
                     'ticket_id' => $tid,
                     'msg'       => 'in search but not real',
-                );
+                ];
             } else {
-                $mismatch = array();
+                $mismatch = [];
                 foreach ($info as $k => $v) {
                     if ($real_tickets[$tid][$k] != $v) {
-                        $mismatch[$k] = array(
+                        $mismatch[$k] = [
                             'real'   => $real_tickets[$tid][$k],
                             'search' => $v,
-                        );
+                        ];
                     }
                 }
 
                 if ($mismatch) {
-                    $errors[] = array(
+                    $errors[] = [
                         'type'      => 'data_mismatch',
                         'ticket_id' => $tid,
                         'msg'       => 'contains different data in search and real',
                         'mismatch'  => $mismatch,
-                    );
+                    ];
                 }
             }
         }
 
         foreach ($real_tickets as $tid => $info) {
             if (!isset($search_tickets[$tid])) {
-                $errors[] = array(
+                $errors[] = [
                     'type'      => 'missing_search_id',
                     'ticket_id' => $tid,
                     'msg'       => 'in real but not search',
-                );
+                ];
             }
         }
 

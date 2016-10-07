@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -91,7 +92,7 @@ class NewsCategory extends AbstractCategoryRepository
             SELECT id, title
             FROM news_categories
             ORDER BY id DESC
-        ', array(), 'id');
+        ', [], 'id');
 
         return $this->all_cats;
     }
@@ -117,7 +118,7 @@ class NewsCategory extends AbstractCategoryRepository
 
     public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal')
     {
-        $counts = array('0' => 0, '0_total' => 0);
+        $counts = ['0' => 0, '0_total' => 0];
 
         foreach ($this->children() as $c) {
             $searcher = new NewsSearch();

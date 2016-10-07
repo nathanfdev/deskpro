@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\Entity\ResultCache;
@@ -46,7 +47,7 @@ class FeedbackResults
     /**
      * @var array
      */
-    protected $feedback_ids = array();
+    protected $feedback_ids = [];
 
     /**
      * @var array
@@ -69,7 +70,7 @@ class FeedbackResults
      *
      * @return \Application\AgentBundle\Controller\Helper\FeedbackResults
      */
-    public static function newFromRequest($controller, array $options = array())
+    public static function newFromRequest($controller, array $options = [])
     {
         $result_cache = false;
         if ($controller->in->getUint('cache_id')) {
@@ -79,9 +80,9 @@ class FeedbackResults
             }
         }
 
-        #------------------------------
-        # If there's no result set, we're running it for the first time
-        #------------------------------
+        //------------------------------
+        // If there's no result set, we're running it for the first time
+        //------------------------------
 
         if (!$result_cache) {
             $term_rules = RuleBuilder::newTermsBuilder();
@@ -121,7 +122,7 @@ class FeedbackResults
 
             $result_cache                = new ResultCache();
             $result_cache['person']      = $controller->person;
-            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
+            $result_cache['criteria']    = ['terms' => $searcher->getTerms(), 'order_by' => $order_by];
             $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
@@ -137,7 +138,7 @@ class FeedbackResults
              * adds terms dynamically. But when we want a static form and just want
              * to plug values back in, we do it this way.
              */
-            $result_cache['extra'] = array();
+            $result_cache['extra'] = [];
 
             $em = $controller->em;
             $em->persist($result_cache);
@@ -219,7 +220,7 @@ class FeedbackResults
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.
         // - So we'll re-create the array here according to the order they're supposed to be in.
-        $feedback = array();
+        $feedback = [];
         foreach ($feedback_ids as $tid) {
             if (isset($feedback_raw[$tid])) {
                 $feedback[$tid] = $feedback_raw[$tid];

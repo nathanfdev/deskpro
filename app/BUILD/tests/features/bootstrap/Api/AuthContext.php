@@ -33,7 +33,6 @@ use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\TmpData;
-use Behat\Behat\Hook\Scope\BeforeFeatureScope;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
@@ -41,7 +40,6 @@ use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
 use DpBehat\Data\PeopleContext as PeopleDataContext;
-use DpBehat\DataSetContext;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
 /**
@@ -55,59 +53,9 @@ class AuthContext extends BaseContext
     private $restContext;
 
     /**
-     * @var DataSetContext
-     */
-    private $dataSetContext;
-
-    /**
      * @var PeopleDataContext
      */
     private $peopleDataContext;
-
-    /**
-     * @var bool DB will be cleaned up before feature if this is set to true
-     */
-    private static $needCleanup = false;
-
-    /**
-     * @var bool
-     */
-    private static $isFirstFeatureScenario = false;
-
-    /**
-     * @var bool
-     */
-    private static $isTheFirstSuiteScenario = true;
-
-    /**
-     * @var bool
-     */
-    private static $isNew = false;
-
-    /**
-     * Schedule DB cleanup before next login.
-     *
-     * @BeforeFeature
-     */
-    public static function scheduleCleanup()
-    {
-        self::$needCleanup = true;
-    }
-
-    /**
-     * @BeforeFeature
-     *
-     * @param BeforeFeatureScope $scope
-     */
-    public static function initFirstFeatureScenarioFlag(BeforeFeatureScope $scope)
-    {
-        self::$isFirstFeatureScenario = true;
-
-        // prevent api db set install for new features
-        if ($scope->getFeature()->hasTag('new')) {
-            self::$isNew = true;
-        }
-    }
 
     /**
      * @BeforeScenario
@@ -119,26 +67,7 @@ class AuthContext extends BaseContext
         $environment = $scope->getEnvironment();
 
         $this->restContext       = $environment->getContext('DpBehat\Api\RestContext');
-        $this->dataSetContext    = $environment->getContext('DpBehat\DataSetContext');
         $this->peopleDataContext = $environment->getContext('DpBehat\Data\PeopleContext');
-    }
-
-    /**
-     * Clean up DB.
-     */
-    public function cleanup()
-    {
-        $this->em()->getConnection()->executeQuery('
-            DELETE FROM permissions_cache;
-            DELETE FROM permissions;
-            DELETE FROM task_attachments;
-            DELETE FROM custom_def_ticket;
-            DELETE FROM department_permissions;
-            DELETE FROM people;
-            DELETE FROM usergroups;
-        ');
-        $this->em()->clear();
-        DataContext::clear();
     }
 
     /**
@@ -148,28 +77,6 @@ class AuthContext extends BaseContext
      */
     public function iAmAuthenticatedAs($role)
     {
-        // Install DB on @BeforeSuite ----------------------------------------------------------------------------------
-        if (self::$isTheFirstSuiteScenario) {
-            if (self::$isNew) {
-                $statement = $this->em()->getConnection()->executeQuery('SHOW TABLES LIKE "people"');
-                $statement->execute();
-                if (!$statement->rowCount()) {
-                    $this->dataSetContext->iInstallDataSet('api');
-                }
-            } else {
-                $this->dataSetContext->iInstallDataSet('api');
-            }
-
-            self::$isTheFirstSuiteScenario = false;
-        }
-
-        // Cleanup on @BeforeFeature if needed -------------------------------------------------------------------------
-        if (self::$needCleanup && self::$isFirstFeatureScenario) {
-            $this->cleanup();
-            self::$needCleanup = false;
-        }
-        self::$isFirstFeatureScenario = false;
-
         // Log in ------------------------------------------------------------------------------------------------------
         $person = $this->peopleDataContext->personByRoleExists($role);
         DataContext::setReference($role, $person);
@@ -181,20 +88,20 @@ class AuthContext extends BaseContext
     }
 
     /**
-     * @Given a valid api token exists with the code :token and id :id for :who
+     * @Given a valid api token with the code :token for :who and referenced as :ref exists
      */
-    public function aValidApiTokenExistsWithTheCodeAndIdForAgent($token, $id, $who)
+    public function aValidApiTokenExistsWithTheCodeAndIdForAgent($token, $who, $ref)
     {
-        $api_token         = new ApiToken();
-        $api_token->token  = $token;
-        $api_token->person = $this->getUserDetails()->getWho($who);
-        $api_token->scope  = ApiToken::SCOPE_CLIENT;
+        $apiToken        = new ApiToken();
+        $apiToken->token = $token;
+        $person          = DataContext::hasReference($who)
+            ? DataContext::getReference($who)
+            : $this->getUserDetails()->getWho($who);
+        $apiToken->person = $person;
+        $apiToken->scope  = ApiToken::SCOPE_CLIENT;
 
-        $this->persistAndFlush($api_token);
-
-        if ($api_token->id != $id) {
-            throw new \Exception('expected api token id ('.$id.') is not correct. please check database.');
-        }
+        $this->persistAndFlush($apiToken);
+        DataContext::setReference($ref, $apiToken);
     }
 
     /**
@@ -202,16 +109,19 @@ class AuthContext extends BaseContext
      */
     public function aValidApiKeyExistsWithTheCodeForUser($code, $who)
     {
-        $person = $this->getUserDetails()->getWho($who);
+        $person = $this->peopleDataContext->personByRoleExists($who);
         $this->ensureApiKey($person, $code);
     }
 
     /**
-     * @Given the agent session auth :session_id is valid for :who
+     * @Given the agent session auth :session_id is valid for :who and referenced as :ref
      */
-    public function theAgentSessionIsValidForPerson($session_id, $who)
+    public function theAgentSessionIsValidForPerson($session_id, $who, $ref)
     {
-        $user = $this->getUserDetails()->getWho($who);
+        $user =
+            DataContext::hasReference($who)
+            ? DataContext::getReference($who, false)
+            : $this->getUserDetails()->getWho($who);
 
         session_start();
         $_SESSION['_sf2_attributes'] = ['auth_person_id' => $user->getId()];
@@ -225,6 +135,8 @@ class AuthContext extends BaseContext
         $session->setPerson($user);
 
         $this->persistAndFlush($session);
+
+        DataContext::setReference($ref, $session);
     }
 
     /**
@@ -268,9 +180,7 @@ class AuthContext extends BaseContext
      */
     public function myRequestIsAuthenticatedTo($who)
     {
-        if (!$person = $this->getUserDetails()->getWho($who)) {
-            throw new \Exception("$who user is missing");
-        }
+        $person = $this->peopleDataContext->personByRoleExists($who);
         $this->authenticateAs($person);
     }
 

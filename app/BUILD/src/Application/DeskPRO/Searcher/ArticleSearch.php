@@ -144,9 +144,9 @@ class ArticleSearch extends SearcherAbstract
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-        #------------------------------
-        # Add joins
-        #------------------------------
+        //------------------------------
+        // Add joins
+        //------------------------------
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
@@ -162,9 +162,9 @@ class ArticleSearch extends SearcherAbstract
             $sql .= " $order_join ";
         }
 
-        #------------------------------
-        # Add wheres
-        #------------------------------
+        //------------------------------
+        // Add wheres
+        //------------------------------
 
         $sql .= 'WHERE ';
         if (!$this->findTerm(self::TERM_AGENT_LIST)) {
@@ -210,9 +210,9 @@ class ArticleSearch extends SearcherAbstract
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-        #------------------------------
-        # Add joins
-        #------------------------------
+        //------------------------------
+        // Add joins
+        //------------------------------
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
@@ -228,9 +228,9 @@ class ArticleSearch extends SearcherAbstract
             $sql .= " $order_join ";
         }
 
-        #------------------------------
-        # Add wheres
-        #------------------------------
+        //------------------------------
+        // Add wheres
+        //------------------------------
 
         $sql .= 'WHERE ';
 
@@ -543,10 +543,10 @@ class ArticleSearch extends SearcherAbstract
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
                     }
-                    break;// end labels
+                    break; // end labels
 
                 case self::TERM_BRAND:
-                    $brand_id = $choice['brand'];
+                    $brand_id = ((is_array($choice) && isset($choice['brand'])) ? $choice['brand'] : $choice);
 
                     $joins[] = [
                         'article_to_categories',

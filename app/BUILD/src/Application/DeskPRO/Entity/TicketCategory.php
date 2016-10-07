@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -48,7 +49,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @JMS\ExclusionPolicy("all")
  */
-class TicketCategory extends DomainObject implements HasPhraseName
+class TicketCategory extends DomainObject implements HasPhraseName, Hierarchical
 {
     /**
      * The unique ID.
@@ -228,13 +229,9 @@ class TicketCategory extends DomainObject implements HasPhraseName
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -245,13 +242,9 @@ class TicketCategory extends DomainObject implements HasPhraseName
     }
 
     /**
-     * Get the default value phrase for the object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'full') {
             return $this->getFullTitle();
@@ -268,7 +261,7 @@ class TicketCategory extends DomainObject implements HasPhraseName
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
@@ -281,9 +274,9 @@ class TicketCategory extends DomainObject implements HasPhraseName
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

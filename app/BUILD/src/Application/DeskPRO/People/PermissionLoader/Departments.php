@@ -31,9 +31,11 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\People\PersonContextInterface;
 
 /**
@@ -50,7 +52,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
      *
      * @var array
      */
-    protected $allowed_cats = array('tickets' => array(), 'chat' => array());
+    protected $allowed_cats = ['tickets' => [], 'chat' => []];
 
     /**
      * @var bool
@@ -73,13 +75,15 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
         $in = implode(',', $this->getUsergroupIds());
 
-        if (DP_INTERFACE == 'agent' || ($this->person->is_agent && DP_INTERFACE != 'user')) {
+        if (DP_INTERFACE == 'agent' || ($this->person->isAgent() && DP_INTERFACE != 'user')) {
             $agent_groups = App::$container->getAgentGroups();
             $allow_all    = false;
             foreach ($this->usergroup_ids as $ugid) {
                 if ($agent_groups->groupExists($ugid)) {
-                    $g = $agent_groups->getGroup($ugid);
-                    if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
+                    $usergroup = $agent_groups->getGroup($ugid);
+                    $sysName   = $usergroup->getSysName();
+
+                    if ($sysName === Usergroup::AGENT_ALL_PERM || $sysName === Usergroup::AGENT_ALL_SAFE_PERM) {
                         $allow_all = true;
                         break;
                     }
@@ -87,20 +91,13 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
             }
 
             if ($allow_all) {
-                $res = array();
-                foreach (array(App::$container->getTicketDepartments()->getAll(), App::$container->getChatDepartments()->getAll()) as $coll) {
-                    foreach ($coll as $d) {
-                        $res[] = array(
-                            'department_id' => $d->id,
-                            'app'           => $d->is_tickets_enabled ? 'tickets' : 'chat',
-                            'name'          => 'full',
-                            'value'         => 1,
-                        );
-                    }
-                }
+                $ticketDeps = App::$container->getTicketDepartments()->getAllAllowedList();
+                $chatDeps   = App::$container->getChatDepartments()->getAllAllowedList();
+
+                $res = array_merge($ticketDeps, $chatDeps);
             } else {
                 $agent_ugs     = App::getDataService('Usergroup')->getAgentUsergroups();
-                $has_agent_ugs = array();
+                $has_agent_ugs = [];
 
                 foreach ($this->usergroup_ids as $ugid) {
                     if (isset($agent_ugs[$ugid])) {
@@ -124,30 +121,30 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
             ");
         }
 
-        $parent_with_allowed_child = array(
-            'tickets' => array(),
-            'chat'    => array(),
-        );
+        $parent_with_allowed_child = [
+            'tickets' => [],
+            'chat'    => [],
+        ];
 
-        foreach ($res as $d) {
-            if (!empty($d['person_id'])) {
+        foreach ($res as $department) {
+            if (!empty($department['person_id'])) {
                 $this->with_overrides = true;
             }
 
-            $dep = App::getDataService('Department')->get($d['department_id']);
+            $dep = App::getDataService('Department')->get($department['department_id']);
 
-            $check = 'is_'.$d['app'].'_enabled';
+            $check = 'is_'.$department['app'].'_enabled';
             if (!isset($dep[$check]) || !$dep[$check]) {
                 continue;
             }
 
-            $this->allowed_cats[$d['app']][$d['department_id']][$d['name']] = $d['value'];
+            $this->allowed_cats[$department['app']][$department['department_id']][$department['name']] = $department['value'];
 
             // With departments, if a child is allowed, then the parent is too since its just a wrapper
             if ($dep && $dep->parent) {
-                $parent_with_allowed_child[$d['app']][$dep->parent->getId()] = true;
+                $parent_with_allowed_child[$department['app']][$dep->parent->getId()] = true;
 
-                $this->allowed_cats[$d['app']][$dep->parent->getId()][$d['name']] = 1;
+                $this->allowed_cats[$department['app']][$dep->parent->getId()][$department['name']] = 1;
             }
         }
 
@@ -174,7 +171,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
         if (!empty($this->allowed_cats[$app][$id]['full'])) {
             return true;
-        };
+        }
 
         return !empty($this->allowed_cats[$app][$id][$permission]);
     }
@@ -195,7 +192,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
     {
         $this->_init();
 
-        $ids = array();
+        $ids = [];
         foreach ($this->allowed_cats[$app] as $id => $perms) {
             if (!empty($perms[$permission]) || !empty($perms['full'])) {
                 $ids[$id] = $id;
@@ -216,10 +213,10 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         $this->_init();
 
         if (empty($this->allowed_cats[$app])) {
-            return array();
+            return [];
         }
 
-        $ids = array();
+        $ids = [];
 
         foreach ($this->allowed_cats[$app] as $id => $perms) {
             if (isset($perms[$permission]) && $perms[$permission]) {
@@ -239,9 +236,9 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
     {
         $this->_init();
 
-        return array(
+        return [
             'allowed_cats' => $this->allowed_cats,
-        );
+        ];
     }
 
     /**

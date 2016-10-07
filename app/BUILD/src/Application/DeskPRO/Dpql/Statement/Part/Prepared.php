@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 /**
@@ -108,7 +109,7 @@ class Prepared
      */
     public function hasValue()
     {
-        return ($this->_sqlExpr !== '' && $this->_sqlExpr !== null && $this->_sqlExpr !== false);
+        return $this->_sqlExpr !== '' && $this->_sqlExpr !== null && $this->_sqlExpr !== false;
     }
 
     /**
@@ -142,7 +143,7 @@ class Prepared
      */
     public function printed()
     {
-        return ($this->_sqlExprPrint !== false ? $this->_sqlExprPrint : $this->_sqlExpr);
+        return $this->_sqlExprPrint !== false ? $this->_sqlExprPrint : $this->_sqlExpr;
     }
 
     /**
@@ -160,7 +161,7 @@ class Prepared
      */
     public function ordered()
     {
-        return ($this->_sqlExprOrder !== false ? $this->_sqlExprOrder : $this->printed());
+        return $this->_sqlExprOrder !== false ? $this->_sqlExprOrder : $this->printed();
     }
 
     /**

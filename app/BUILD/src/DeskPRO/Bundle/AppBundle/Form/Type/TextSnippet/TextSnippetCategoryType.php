@@ -77,14 +77,10 @@ class TextSnippetCategoryType extends AbstractType
                 ],
             ])
             ->setRequired(['type', 'person'])
-            ->setAllowedTypes([
-                'person' => Person::class,
-            ])
-            ->setAllowedValues([
-                'type' => [
-                    TextSnippetCategory::TYPE_TICKET,
-                    TextSnippetCategory::TYPE_CHAT,
-                ],
+            ->setAllowedTypes('person', Person::class)
+            ->setAllowedValues('type', [
+                TextSnippetCategory::TYPE_TICKET,
+                TextSnippetCategory::TYPE_CHAT,
             ])
         ;
     }

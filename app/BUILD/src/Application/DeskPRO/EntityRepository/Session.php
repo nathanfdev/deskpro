@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -52,7 +53,7 @@ class Session extends AbstractEntityRepository
             FROM sessions
             WHERE date_last >= ? AND active_status = ? AND is_person = 1 '.($for_chat ? ' AND is_chat_available = 1 ' : '').'
             LIMIT 1
-        ', array($datecut, 'available'));
+        ', [$datecut, 'available']);
 
         return $check;
     }
@@ -71,7 +72,7 @@ class Session extends AbstractEntityRepository
             FROM sessions
             LEFT JOIN people ON (people.id = sessions.person_id)
             WHERE sessions.date_last >= ? AND sessions.is_chat_available = 1 AND people.is_agent = 1
-        ', array($datecut));
+        ', [$datecut]);
 
         if (App::getCurrentPerson() && App::getCurrentPerson()->is_agent) {
             \Orb\Util\Arrays::pushUnique($ids, App::getCurrentPerson()->getId());
@@ -134,6 +135,6 @@ class Session extends AbstractEntityRepository
             FROM sessions
             LEFT JOIN people ON (people.id = sessions.person_id)
             WHERE sessions.date_last > ? AND sessions.is_helpdesk = 1 AND (people.id IS NULL OR people.is_agent = 0) AND sessions.is_bot = 0
-        ', array(date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
+        ', [date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))]);
     }
 }

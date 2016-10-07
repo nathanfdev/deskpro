@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\Tree;
 
 use Application\DeskPRO\Translate\HasPhraseName;
@@ -37,27 +34,17 @@ use Application\DeskPRO\Translate\Translate;
 class TreeProxyHasPhraseName extends TreeProxy implements HasPhraseName
 {
     /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string    $property  If supplied, the property on the object we want to translate.
-     * @param Translate $translate The translate object requesting
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         return $this->__obj->getPhraseName($property, $translate);
     }
 
     /**
-     * Get the default value phrase for the object.
-     *
-     * @param string    $property  If supplied, the property on the object we want to translate.
-     * @param Translate $translate The translate object requesting
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         return $this->__obj->getPhraseDefault($property, $translate);
     }

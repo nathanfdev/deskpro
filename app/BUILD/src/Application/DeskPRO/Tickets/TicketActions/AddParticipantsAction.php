@@ -103,8 +103,8 @@ class AddParticipantsAction extends AbstractAction
      */
     public function getDescription($as_html = true)
     {
-        $agents = array();
-        $users  = array();
+        $agents = [];
+        $users  = [];
 
         $people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
 
@@ -117,7 +117,7 @@ class AddParticipantsAction extends AbstractAction
             }
         }
 
-        $parts = array();
+        $parts = [];
         if ($agents) {
             $parts[] = 'Add agent followers: '.implode(', ', $agents);
         }

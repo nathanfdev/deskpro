@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
@@ -84,7 +85,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         if ('unset' === $this->getActionOption('op')) {
             $value = null;
         }
-        $form_array = array("field_{$field_id}" => $value);
+        $form_array = ["field_{$field_id}" => $value];
 
         $fm->saveFormToObject($form_array, $obj, true);
     }
@@ -95,10 +96,10 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-            return array('fields');
+            return ['fields'];
         }
 
-        return array();
+        return [];
     }
 
     /**

@@ -123,7 +123,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             $login_processor = new LoginProcessor($usersource, $authResult->getIdentity());
             $person          = $login_processor->getPerson();
 
-            $authenticatedToken = new DpFormLoginToken($person, $person->getPassword(), array_merge(array('ROLE_USER'), $person->getRoles()));
+            $authenticatedToken = new DpFormLoginToken($person, $person->getPassword(), array_merge(['ROLE_USER'], $person->getRoles()));
             $authenticatedToken->setAttributes($token->getAttributes());
 
             return $authenticatedToken;
@@ -157,10 +157,10 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
 
             if ($adapter instanceof FormLoginInterface) {
                 $adapter->setFormData(
-                    array(
+                    [
                         'username' => $token->getUsername(),
                         'password' => $token->getCredentials(),
-                    )
+                    ]
                 );
 
                 try {
@@ -173,13 +173,13 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 }
 
                 if ($authResult->isValid()) {
-                    return array($authResult, $us);
+                    return [$authResult, $us];
                 }
             }
         }
 
         $failedResult = new Result(Result::FAILURE_INVALID_CREDS);
 
-        return array($failedResult, $us);
+        return [$failedResult, $us];
     }
 }

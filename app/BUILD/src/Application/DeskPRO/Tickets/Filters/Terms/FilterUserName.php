@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
@@ -80,7 +81,7 @@ class FilterUserName extends AbstractFilterTerm
 
         $query = new FilterQuery();
 
-        foreach (array('name', 'first_name', 'last_name') as $k => $field_name) {
+        foreach (['name', 'first_name', 'last_name'] as $k => $field_name) {
             switch ($this->getTermOperator()) {
                 case self::OP_IS:
                 case self::OP_NOT:

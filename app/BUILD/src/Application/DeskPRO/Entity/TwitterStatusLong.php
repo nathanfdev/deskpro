@@ -131,7 +131,7 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
      */
     public function isPublic()
     {
-        return (Boolean) $this->is_public;
+        return (bool) $this->is_public;
     }
 
     /**
@@ -139,12 +139,12 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
      */
     public function isRead()
     {
-        return (Boolean) $this->is_read;
+        return (bool) $this->is_read;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -57,9 +57,9 @@ class ApiKeyRateLimit extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('reset_stamp', $this->created_stamp + 3600);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

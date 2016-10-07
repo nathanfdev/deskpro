@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder;
 
 class PhpClass
@@ -41,9 +42,9 @@ class PhpClass
 
     public function __construct()
     {
-        $this->properties = array();
-        $this->methods    = array();
-        $this->implements = array();
+        $this->properties = [];
+        $this->methods    = [];
+        $this->implements = [];
     }
 
     public function __toString()
@@ -86,7 +87,7 @@ PHPCODE;
 
     protected function generateMethodsString()
     {
-        $return = array();
+        $return = [];
 
         foreach ($this->getMethods() as $method) {
             $return[] = (string) $method;
@@ -97,14 +98,14 @@ PHPCODE;
 
     protected function generatePropertiesString()
     {
-        $return = array();
+        $return = [];
         foreach ($this->properties as $property_info) {
             $string = $property_info['visibility'].' $'.$property_info['name'];
             if ($default = $property_info['default']) {
                 $string .= ' = ';
                 if (is_int($default) || is_float($default) || in_array(
                         $default,
-                        array('null', 'array()', 'true', 'false')
+                        ['null', 'array()', 'true', 'false']
                     )
                 ) {
                     $string .= $default;
@@ -148,11 +149,11 @@ PHPCODE;
         if (null === $visibility) {
             $visibility = 'public';
         }
-        $this->properties[$name] = array(
+        $this->properties[$name] = [
             'name'       => $name,
             'visibility' => $visibility,
             'default'    => $default,
-        );
+        ];
     }
 
     public function removeProperty($name)

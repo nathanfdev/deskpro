@@ -45,6 +45,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -1112,7 +1113,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
                         's'        => $size,
                         'size-fit' => 1,
                     ],
-                    true
+                    UrlGeneratorInterface::ABSOLUTE_URL
                 );
             }
         }
@@ -1405,9 +1406,9 @@ class ChatConversation extends DomainObject implements LabelsOwner
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

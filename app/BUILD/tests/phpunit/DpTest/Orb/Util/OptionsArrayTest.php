@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,22 +37,22 @@ class OptionsArrayTest extends DeskProTestCase
     public function testOptions()
     {
         $options = new OptionsArray(
-            array(
+            [
                 'a' => 1,
                 'b' => 2,
                 'c' => 3,
                 'd' => 4,
-            )
+            ]
         );
 
         $this->assertTrue($options->has('a'));
         $this->assertFalse($options->has('z'));
 
-        $this->assertTrue($options->hasAny(array('z', 'x', 'a')));
-        $this->assertFalse($options->hasAny(array('z', 'x', 'y')));
+        $this->assertTrue($options->hasAny(['z', 'x', 'a']));
+        $this->assertFalse($options->hasAny(['z', 'x', 'y']));
 
-        $this->assertTrue($options->hasAll(array('a', 'b', 'c')));
-        $this->assertFalse($options->hasAll(array('a', 'b', 'z')));
+        $this->assertTrue($options->hasAll(['a', 'b', 'c']));
+        $this->assertFalse($options->hasAll(['a', 'b', 'z']));
 
         $this->assertTrue(isset($options['c']));
         $this->assertFalse(isset($options['z']));
@@ -78,17 +78,17 @@ class OptionsArrayTest extends DeskProTestCase
         $options->setDefault('c', 1000);
         $this->assertEquals(300, $options->get('c'));
 
-        $options->setArray(array('n' => 100));
+        $options->setArray(['n' => 100]);
         $this->assertEquals(5, count($options));
 
-        $options->setArray(array('a' => 100));
+        $options->setArray(['a' => 100]);
         $this->assertEquals(100, $options->get('a'));
 
-        $options->setArrayDefault(array('b' => 200));
+        $options->setArrayDefault(['b' => 200]);
         $this->assertEquals(2, $options->get('b'));
 
-        $options->setAll(array('z' => 1, 'x' => 2));
-        $this->assertEquals(array('z' => 1, 'x' => 2), $options->all());
+        $options->setAll(['z' => 1, 'x' => 2]);
+        $this->assertEquals(['z' => 1, 'x' => 2], $options->all());
     }
 
     /***
@@ -133,13 +133,13 @@ class OptionsArrayTest extends DeskProTestCase
     {
         $options = $this->getCheckedOptions();
         $options->setAll(
-            array(
+            [
                 'a' => 1,
                 'b' => 2,
                 'c' => 3,
                 'd' => new \DateTime(),
                 'e' => 100,
-            )
+            ]
         );
 
         $options->ensureRequired();

@@ -34,7 +34,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\HiddenType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageInlineAttachmentCollectionType;
@@ -90,7 +90,7 @@ class TicketMessageType extends AbstractType
         ]);
 
         if ($options['format']) {
-            $builder->add('format', HiddenType::class, [
+            $builder->add('format', DpHiddenType::class, [
                 'empty_data' => 'hidden',
                 'mapped'     => false,
             ]);
@@ -181,14 +181,10 @@ class TicketMessageType extends AbstractType
                 'ticket',
                 'person',
             ])
-            ->setAllowedTypes([
-                'person'         => Person::class,
-                'ticket'         => Ticket::class,
-                'ticket_message' => ['null', TicketMessage::class],
-            ])
-            ->setAllowedValues([
-                'format' => ['', 'html', 'text'],
-            ])
+            ->setAllowedTypes('person', Person::class)
+            ->setAllowedTypes('ticket', Ticket::class)
+            ->setAllowedTypes('ticket_message', ['null', TicketMessage::class])
+            ->setAllowedValues('format', ['', 'html', 'text'])
         ;
     }
 

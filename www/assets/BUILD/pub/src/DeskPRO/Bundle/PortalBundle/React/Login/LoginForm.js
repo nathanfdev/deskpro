@@ -71,6 +71,12 @@ export class LoginForm extends React.Component {
     }
   };
 
+  onResetFailed = () => {
+    this.setState({
+      failed: false
+    });
+  };
+
   addCaptchaIfNecessary() {
     portalHttp.sendGet(portalUrlGenerator.path('/captcha-html?action=login')).then((r) => {
       if (r.data.captcha_required) {
@@ -99,6 +105,7 @@ export class LoginForm extends React.Component {
             placeholder="email@example.com"
             name="username"
             onBlur={this.onEmailBlur}
+            onChange={this.onResetFailed}
           />
         </label>
 
@@ -111,6 +118,7 @@ export class LoginForm extends React.Component {
             tabIndex="2"
             placeholder={portalPhrases.get('portal.account.login-password')}
             name="password"
+            onChange={this.onResetFailed}
           />
         </label>
 

@@ -49,18 +49,13 @@ abstract class ContentAbstract extends DomainObject
 {
     const CONTENT_TYPE = null;
 
-    const STATUS_PUBLISHED = 'published';
-
-    const STATUS_ARCHIVED = 'archived';
-
-    const STATUS_HIDDEN = 'hidden';
-
+    const STATUS_PUBLISHED          = 'published';
+    const STATUS_ARCHIVED           = 'archived';
+    const STATUS_HIDDEN             = 'hidden';
     const HIDDEN_STATUS_UNPUBLISHED = 'unpublished';
+    const HIDDEN_STATUS_DELETED     = 'deleted';
 
-    const HIDDEN_STATUS_DELETED = 'deleted';
-
-    const HIDDEN_STATUS_SPAM = 'spam';
-
+    const HIDDEN_STATUS_SPAM  = 'spam';
     const HIDDEN_STATUS_DRAFT = 'draft';
 
     /**
@@ -203,8 +198,6 @@ abstract class ContentAbstract extends DomainObject
      */
     protected $_label_manager = null;
 
-    /**
-     */
     protected $slug_history;
 
     /**

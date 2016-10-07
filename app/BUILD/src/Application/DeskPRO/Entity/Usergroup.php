@@ -199,6 +199,14 @@ class Usergroup extends DomainObject
     }
 
     /**
+     * @return bool
+     */
+    public function hasAllSafePermissions()
+    {
+        return $this->sys_name === self::AGENT_ALL_SAFE_PERM || $this->sys_name === self::AGENT_ALL_PERM;
+    }
+
+    /**
      * Set title.
      *
      * @param string $title
@@ -261,6 +269,14 @@ class Usergroup extends DomainObject
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->is_enabled;
+    }
+
+    /**
      * Generate a key for a set of usergroups. These same usergroups
      * will always generate the same key.
      *
@@ -292,18 +308,18 @@ class Usergroup extends DomainObject
         return md5(implode(',', $usergroup_ids));
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('title', new NotBlank());
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

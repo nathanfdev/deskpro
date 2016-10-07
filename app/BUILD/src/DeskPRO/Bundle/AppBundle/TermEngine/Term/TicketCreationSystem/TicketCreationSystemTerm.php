@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCreationSystem;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -42,19 +43,19 @@ class TicketCreationSystemTerm extends AbstractTerm
     public static function configureOptions(TermOptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'creation_system' => null,
-            )
+            ]
         );
 
         $resolver->setConstraints(
-            array(
-                'creation_system' => array(
+            [
+                'creation_system' => [
                     new Assert\NotBlank(),
                     new Assert\Type('string'),
                     new Assert\Choice(
-                        array(
-                            'choices' => array(
+                        [
+                            'choices' => [
                                 Ticket::CREATED_WEB_PERSON,
                                 Ticket::CREATED_WEB_PERSON_PORTAL,
                                 Ticket::CREATED_WEB_PERSON_WIDGET,
@@ -66,18 +67,18 @@ class TicketCreationSystemTerm extends AbstractTerm
                                 Ticket::CREATED_WEB_API_AGENT,
                                 Ticket::CREATED_GATEWAY_PERSON,
                                 Ticket::CREATED_GATEWAY_AGENT,
-                            ),
-                        )
+                            ],
+                        ]
                     ),
-                ),
-            )
+                ],
+            ]
         );
 
         $resolver->setNormalizer(
             'creation_system',
             function ($options, $value_array) {
                 if (!is_array($value_array)) {
-                    $value_array = array($value_array);
+                    $value_array = [$value_array];
                 }
 
                 return array_map('strtolower', $value_array);
@@ -87,12 +88,12 @@ class TicketCreationSystemTerm extends AbstractTerm
 
     public function getSupportedOps()
     {
-        return array(
+        return [
             TermInterface::OP_IS,
             TermInterface::OP_NOT,
             TermInterface::OP_HAS,
             TermInterface::OP_NOT_HAS,
-        );
+        ];
     }
 
     public function getDefaultOp()

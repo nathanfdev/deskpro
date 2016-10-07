@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class EmailSource extends AbstractEntityRepository
@@ -131,7 +132,7 @@ class EmailSource extends AbstractEntityRepository
             ORDER BY id DESC
             LIMIT 1
         ',
-            array(date('Y-m-d H:i:s', time() - $lock_time), $email)
+            [date('Y-m-d H:i:s', time() - $lock_time), $email]
         );
 
         if (!$last_accepted_id) {
@@ -145,7 +146,7 @@ class EmailSource extends AbstractEntityRepository
             WHERE id > ? AND from_email = ? AND status = "rejected" AND error_code = "rate_limit"
             LIMIT 1
         ',
-            array($last_accepted_id, $email)
+            [$last_accepted_id, $email]
         );
     }
 
@@ -173,20 +174,20 @@ class EmailSource extends AbstractEntityRepository
             WHERE date_created >= ? AND from_email = ? AND status = 'rejected' AND error_code = 'rate_limit'
             ORDER BY id DESC
             LIMIT 1
-        ", array(date('Y-m-d H:i:s', time() - $time), $email));
+        ", [date('Y-m-d H:i:s', time() - $time), $email]);
 
         if ($reject_id) {
             $count = $db->fetchColumn("
                 SELECT COUNT(*)
                 FROM email_sources
                 WHERE date_created >= ? AND from_email = ? AND !(status = 'rejected' AND error_code = 'rate_limit') AND id > ?
-            ", array(date('Y-m-d H:i:s', time() - $time), $email, $reject_id));
+            ", [date('Y-m-d H:i:s', time() - $time), $email, $reject_id]);
         } else {
             $count = $db->fetchColumn("
                 SELECT COUNT(*)
                 FROM email_sources
                 WHERE date_created >= ? AND from_email = ? AND !(status = 'rejected' AND error_code = 'rate_limit')
-            ", array(date('Y-m-d H:i:s', time() - $time), $email));
+            ", [date('Y-m-d H:i:s', time() - $time), $email]);
         }
 
         return $count;

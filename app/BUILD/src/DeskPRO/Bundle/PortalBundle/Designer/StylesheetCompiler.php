@@ -54,7 +54,7 @@ class StylesheetCompiler
      *
      * @return string
      */
-    public function compile($style_path, array $variables = [], $mainScss, $custom_scss = '')
+    public function compile($style_path, array $variables, $mainScss, $custom_scss = '')
     {
         $compiler = new ScssPhpCompiler();
         $project  = new SassProject();

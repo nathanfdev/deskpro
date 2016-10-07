@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -90,12 +91,12 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
 
         $this->_found_person = null;
 
-        $search_text   = array();
+        $search_text   = [];
         $search_text[] = $reader->getSubject()->subject;
         $search_text[] = $reader->getBodyText()->getBody();
         $search_text[] = $reader->getBodyHtml()->getBody();
 
-        $check_headers = array();
+        $check_headers = [];
         if ($reader->getHeader('In-Reply-To')) {
             foreach ($reader->getHeader('In-Reply-To')->getAllParts() as $part) {
                 $check_headers[] = $part;
@@ -138,19 +139,19 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
         $authcode_min_len = Ticket::TAC_AUTHCODE_LEN + 1;
         $authcode_max_len = Ticket::TAC_AUTHCODE_LEN_MAX;
 
-        #------------------------------
-        # TAC
-        #------------------------------
+        //------------------------------
+        // TAC
+        //------------------------------
 
         // TACs must be checked first
         // They will be more specific (specific person/agent)
         // which matters when we need to detect context later.
-        //
+
         // E.g., if this is an agent TAC, then we know its an agent context
         // even if its a plaintext message. Otherwise, we have to assume user context
         // because of a public TAC
 
-        $already_checked = array();
+        $already_checked = [];
 
         $matches = null;
         if (preg_match_all('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', $search_text, $matches, PREG_SET_ORDER)) {
@@ -193,13 +194,13 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
             }
         }
 
-        #------------------------------
-        # PTAC
-        #------------------------------
+        //------------------------------
+        // PTAC
+        //------------------------------
 
         // Reset the already checked array we build during tac checking,
         // we check the codes again for ptacs now
-        $already_checked = array();
+        $already_checked = [];
 
         $matches = null;
         if (preg_match_all('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', $search_text, $matches, PREG_SET_ORDER)) {

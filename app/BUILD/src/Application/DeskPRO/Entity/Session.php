@@ -199,6 +199,14 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('auth', substr($auth_code, 0, 15));
     }
 
+    /**
+     * @return string
+     */
+    public function getAuth()
+    {
+        return $this->auth;
+    }
+
     public function setData($data)
     {
         $this->setModelField('data', $data);
@@ -260,7 +268,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
      * Most notably used as the "proxy key"
      *
      * @param string $name    Another component to add to the hash
-     * @param bool   $not_vis True for do not use visitor secret. Default is to use visitor if it exists.
+     * @param bool   $not_vis True for do not use visitor secret. Default is to use visitor if it exists
      *
      * @return string
      */
@@ -290,7 +298,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
      *
      * @return bool
      */
-    public function checkSecurityToken($name = '', $token)
+    public function checkSecurityToken($name, $token)
     {
         return Util::checkStaticSecurityToken($token, $this->getSessionSecret($name, true));
     }
@@ -313,9 +321,9 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         return $session_id;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

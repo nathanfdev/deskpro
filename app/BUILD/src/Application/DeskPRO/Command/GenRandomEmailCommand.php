@@ -48,6 +48,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         $this->addOption('tpl', null, InputOption::VALUE_REQUIRED, 'The template to use: text, html, fwd, fwd_with_reply');
         $this->addOption('subject', null, InputOption::VALUE_REQUIRED, "A subject line. Defults to a generated one. Prefix with 'twig:' to pass the subject string throug twig.");
         $this->addOption('message', null, InputOption::VALUE_REQUIRED, "A message. Defaults to a generated one. Prefix with 'twig:' to pass the string through twig.");
+        $this->addOption('message-length', null, InputOption::VALUE_REQUIRED, 'Message length, using faker to gen random text.');
         $this->addOption('message-file', null, InputOption::VALUE_REQUIRED, "A file containing a message. Prefix with 'twig:' to pass the file through twig.");
         $this->addOption('ticket-reply', null, InputOption::VALUE_REQUIRED, 'Make this a reply to this ticket ID. If the --from is an agent, then it will be as an agent reply.');
         $this->addOption('vars', null, InputOption::VALUE_REQUIRED, 'Extra vars to make available to the templates. Should be a JSON encoded string');
@@ -64,9 +65,9 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        #------------------------------
-        # From
-        #------------------------------
+        //------------------------------
+        // From
+        //------------------------------
 
         $from_opt   = $input->getOption('from');
         $from_email = null;
@@ -95,9 +96,9 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
         $from_email = str_replace('%RAND%', RandUtils::randomStringFormat('%10A'), $from_email);
 
-        #------------------------------
-        # To
-        #------------------------------
+        //------------------------------
+        // To
+        //------------------------------
 
         $to_opt     = $input->getOption('to');
         $to_account = null;
@@ -130,9 +131,9 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             $to_email = $to_opt;
         }
 
-        #------------------------------
-        # As reply
-        #------------------------------
+        //------------------------------
+        // As reply
+        //------------------------------
 
         $ticket      = null;
         $access_code = null;
@@ -160,9 +161,11 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             }
         }
 
-        #------------------------------
-        # Subject and message
-        #------------------------------
+        //------------------------------
+        // Subject and message
+        //------------------------------
+
+        $faker = \Faker\Factory::create();
 
         $subject = $input->getOption('subject');
         if (!$subject) {
@@ -191,16 +194,22 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
                 $message = 'twig:'.$message;
             }
         } else {
-            $message = $input->getOption('message') ?: sprintf('Test Message #%s -- %s -- %s', date('Hi'), date('Y-m-d'), date('s'));
+            if ($input->getOption('message')) {
+                $message = $input->getOption('message');
+            } elseif ($input->getOption('message-length')) {
+                $message = $faker->realText($input->getOption('message-length'));
+            } else {
+                $message = sprintf('Test Message #%s -- %s -- %s', date('Hi'), date('Y-m-d'), date('s'));
+            }
         }
 
-        #------------------------------
-        # Tpl
-        #------------------------------
+        //------------------------------
+        // Tpl
+        //------------------------------
 
         $tpl = 'DeskPRO:dev:gen_email/'.($input->getOption('tpl') ?: 'html').'.txt.twig';
 
-        $vars = array(
+        $vars = [
             'uid'      => uniqid('dp', true),
             'ts'       => time(),
             'rand'     => mt_rand(100000, 999999),
@@ -210,7 +219,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             'message'  => $message,
 
             'as_reply'    => $ticket,
-            'as_agent'    => $from_user && $from_user->is_agent,
+            'as_agent'    => $from_user && $from_user->isAgent(),
             'access_code' => $access_code,
 
             'from_user'  => $from_user,
@@ -220,14 +229,14 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
             'to_email' => $to_email,
             'to_acc'   => $to_acc,
-        );
+        ];
 
         $custom_vars = null;
         if ($custom_vars = $input->getOption('vars')) {
             $custom_vars = @json_decode($custom_vars, true);
         }
         if (!$custom_vars) {
-            $custom_vars = array();
+            $custom_vars = [];
         }
 
         if ($custom_vars) {
@@ -249,9 +258,9 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             }
         }
 
-        #------------------------------
-        # Done
-        #------------------------------
+        //------------------------------
+        // Done
+        //------------------------------
 
         echo trim($this->getContainer()->get('templating.email')->render($tpl, $vars));
         echo "\n";

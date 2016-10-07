@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\Ldap\LdapPagedSearcher;
@@ -42,7 +43,7 @@ class Ldap extends AbstractAdapter
     {
         $info = $identity->getRawData();
 
-        return array(
+        return [
             'name'            => isset($info['name']) ? $info['name'] : '',
             'first_name'      => isset($info['first_name']) ? $info['first_name'] : '',
             'last_name'       => isset($info['last_name']) ? $info['last_name'] : '',
@@ -50,7 +51,7 @@ class Ldap extends AbstractAdapter
             'email_confirmed' => true,
             'phone'           => isset($info['phone']) ? $info['phone'] : null,
             'picture_data'    => isset($info['picture_data']) ? $info['picture_data'] : null,
-        );
+        ];
     }
 
     public function getIdentityForDn($identity)
@@ -118,10 +119,10 @@ class Ldap extends AbstractAdapter
             $adapter->getLogger()->logDebug("findIdentityByInput: $id_input");
         }
 
-        $adapter->setFormData(array(
+        $adapter->setFormData([
             'username' => $id_input,
             'password' => '',
-        ));
+        ]);
         $rec = null;
 
         try {
@@ -141,7 +142,7 @@ class Ldap extends AbstractAdapter
             throw $e;
         }
 
-        $raw_info = array();
+        $raw_info = [];
         if ($rec_arr && isset($rec_arr['dn'])) {
             if ($adapter->getLogger()) {
                 $adapter->getLogger()->logDebug('findRecordViaEmail result: '.print_r($rec_arr, 1));
@@ -244,10 +245,10 @@ class Ldap extends AbstractAdapter
      */
     public function getCapabilities()
     {
-        return array(
+        return [
             UsersourceInfo::CAPABILITY_FORM_LOGIN,
             UsersourceInfo::CAPABILITY_FIND_IDENTITY,
-        );
+        ];
     }
 
     /**

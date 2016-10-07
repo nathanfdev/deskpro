@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
@@ -46,7 +47,7 @@ class TermCompilerHelperPoolSpec extends ObjectBehavior
         $helper1->getId()->willReturn('helper1');
         $helper2->getId()->willReturn('helper2');
 
-        $this->beConstructedWith(array($helper1, $helper2));
+        $this->beConstructedWith([$helper1, $helper2]);
     }
 
     public function it_allows_you_to_get_helpers(
@@ -59,6 +60,6 @@ class TermCompilerHelperPoolSpec extends ObjectBehavior
 
     public function it_throws_exception_if_id_does_not_exist()
     {
-        $this->shouldThrow('\InvalidArgumentException')->during('getHelper', array('invalid'));
+        $this->shouldThrow('\InvalidArgumentException')->during('getHelper', ['invalid']);
     }
 }

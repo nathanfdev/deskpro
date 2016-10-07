@@ -81,7 +81,7 @@ class TmpDir
 
         $this->path = $path;
 
-        register_shutdown_function(array($this, 'cleanup'));
+        register_shutdown_function([$this, 'cleanup']);
     }
 
     /**

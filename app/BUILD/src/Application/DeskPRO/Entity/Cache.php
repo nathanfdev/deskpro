@@ -50,7 +50,7 @@ class Cache extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * @var \DateTime
@@ -60,7 +60,7 @@ class Cache extends \Application\DeskPRO\Domain\DomainObject
     public function setData($data)
     {
         if (!is_array($data)) {
-            $data = array('VALUE' => $data);
+            $data = ['VALUE' => $data];
         }
 
         $this->setModelField('data', $data);
@@ -123,9 +123,9 @@ class Cache extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('id', $id);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

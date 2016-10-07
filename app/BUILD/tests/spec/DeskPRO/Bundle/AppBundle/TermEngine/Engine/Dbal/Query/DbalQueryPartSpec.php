@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
@@ -42,24 +43,24 @@ class DbalQueryPartSpec extends ObjectBehavior
 {
     public function it_initizlizes_empty()
     {
-        $this->getParameters()->shouldReturn(array());
-        $this->getJoins()->shouldReturn(array());
-        $this->getUniqueJoins()->shouldReturn(array());
+        $this->getParameters()->shouldReturn([]);
+        $this->getJoins()->shouldReturn([]);
+        $this->getUniqueJoins()->shouldReturn([]);
         $this->getWhereString()->shouldReturn(null);
     }
 
     public function it_is_capable_of_holding_parameters()
     {
-        $this->setParameter('ids', array(1, 2, 3));
+        $this->setParameter('ids', [1, 2, 3]);
         $this->setParameter('agent', new TermEngineExpression('agent.getId()'));
         $this->setParameter('scalar', 'hello');
 
         $this->getParameters()->shouldBeLike(
-            array(
-                'ids'    => array(1, 2, 3),
+            [
+                'ids'    => [1, 2, 3],
                 'agent'  => new TermEngineExpression('agent.getId()'),
                 'scalar' => 'hello',
-            )
+            ]
         );
     }
 
@@ -69,18 +70,18 @@ class DbalQueryPartSpec extends ObjectBehavior
         $this->addJoin('other_table', 'foo = baz', DbalQuery::JOIN_INNER);
 
         $this->getJoins()->shouldBeLike(
-            array(
-                'table' => array(
+            [
+                'table' => [
                     'table' => 'table',
                     'on'    => 'on condition',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-                'other_table' => array(
+                ],
+                'other_table' => [
                     'table' => 'other_table',
                     'on'    => 'foo = baz',
                     'type'  => DbalQuery::JOIN_INNER,
-                ),
-            )
+                ],
+            ]
         );
     }
 
@@ -91,18 +92,18 @@ class DbalQueryPartSpec extends ObjectBehavior
         $this->addUniqueJoin('alias_2', 'table', '{alias_2}.id = ticket.something_else');
 
         $this->getUniqueJoins()->shouldBeLike(
-            array(
-                'alias_1' => array(
+            [
+                'alias_1' => [
                     'table' => 'table',
                     'on'    => '{alias_1}.id = ticket.something',
                     'type'  => DbalQuery::JOIN_RIGHT,
-                ),
-                'alias_2' => array(
+                ],
+                'alias_2' => [
                     'table' => 'table',
                     'on'    => '{alias_2}.id = ticket.something_else',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 
@@ -111,7 +112,7 @@ class DbalQueryPartSpec extends ObjectBehavior
         // {alias} is a reserved alias, and you CAN NOT set it as the alias of a unique join
         $this->shouldThrow('\InvalidArgumentException')->during(
             'addUniqueJoin',
-            array('alias', 'table', '{alias}.id = 4')
+            ['alias', 'table', '{alias}.id = 4']
         );
     }
 
@@ -135,10 +136,10 @@ class DbalQueryPartSpec extends ObjectBehavior
         $this->renameParam('param_name', 'xyz_2');
 
         $this->getParameters()->shouldBeLike(
-            array(
+            [
                 'xyz_2'           => 5,
                 'unchanged_param' => 15,
-            )
+            ]
         );
 
         $this->getWhereString()->shouldBe(
@@ -146,23 +147,23 @@ class DbalQueryPartSpec extends ObjectBehavior
         );
 
         $this->getJoins()->shouldBeLike(
-            array(
-                'departments' => array(
+            [
+                'departments' => [
                     'table' => 'departments',
                     'on'    => ':unchanged_param > 4 OR table.something = :xyz_2',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
 
         $this->getUniqueJoins()->shouldBeLike(
-            array(
-                'alias_2' => array(
+            [
+                'alias_2' => [
                     'table' => 'people',
                     'on'    => '{alias_2}.id = :xyz_2 AND :unchanged_param > 8',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 
@@ -182,23 +183,23 @@ class DbalQueryPartSpec extends ObjectBehavior
         );
 
         $this->getJoins()->shouldBeLike(
-            array(
-                'departments' => array(
+            [
+                'departments' => [
                     'table' => 'departments',
                     'on'    => ':unchanged_param > 4 OR table.something = {xyz_123}.name',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
 
         $this->getUniqueJoins()->shouldBeLike(
-            array(
-                'xyz_123' => array(
+            [
+                'xyz_123' => [
                     'table' => 'people',
                     'on'    => '{xyz_123}.id = :param_name AND :unchanged_param > 8',
                     'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
+                ],
+            ]
         );
     }
 }

@@ -3,7 +3,7 @@ Feature: Widget Setup123
 
   Background:
     Given I'm authenticated as admin
-    And I have default brand
+    And I have only default brand
 
   Scenario: I send empty request
     When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/widget/setup"

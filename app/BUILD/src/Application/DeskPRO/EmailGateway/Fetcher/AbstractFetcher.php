@@ -68,7 +68,7 @@ abstract class AbstractFetcher
 
     /**
      * @param \Application\DeskPRO\Entity\EmailAccount $account
-     * @param int                                      $max_size The max size in bytes to read. 0 to disable.
+     * @param int                                      $max_size The max size in bytes to read. 0 to disable
      */
     public function __construct(EmailAccount $account, $max_size = 0)
     {
@@ -229,16 +229,16 @@ abstract class AbstractFetcher
         App::getOrm()->beginTransaction();
 
         try {
-            #------------------------------
-            # Store the message
-            #------------------------------
+            //------------------------------
+            // Store the message
+            //------------------------------
 
             $source = new EmailSource();
-            $source->fromArray(array(
+            $source->fromArray([
                 'email_account' => $this->account,
                 'headers'       => $raw_message->headers,
                 'status'        => 'inserted',
-            ));
+            ]);
 
             // Rough matching, just for info purposes when browsing a list
             $source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_message->headers) ?: '';
@@ -253,7 +253,7 @@ abstract class AbstractFetcher
                 App::getDb()->executeUpdate('
                     INSERT IGNORE INTO email_uids
                     SET id = ?, email_account_id = ?, date_created = ?
-                ', array($raw_message->uid, $this->account->getId(), date('Y-m-d H:i:s')));
+                ', [$raw_message->uid, $this->account->getId(), date('Y-m-d H:i:s')]);
 
                 $this->logger->log(sprintf('Saved UID: %s', $raw_message->uid), 'debug');
             }
@@ -269,10 +269,10 @@ abstract class AbstractFetcher
 
                 $source->status      = 'error';
                 $source->error_code  = EmailSource::ERR_MESSAGE_TOO_BIG;
-                $source->source_info = array(
+                $source->source_info = [
                     'size'     => $raw_message->size,
                     'max_size' => $this->max_size,
-                );
+                ];
             } else {
                 $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
                     $raw_message->content,
@@ -290,9 +290,9 @@ abstract class AbstractFetcher
 
             $this->logger->log(sprintf('Committed message source: %s', $source->getId()), 'debug');
 
-            #------------------------------
-            # Delete message on the server
-            #------------------------------
+            //------------------------------
+            // Delete message on the server
+            //------------------------------
 
             $this->_doneRead($raw_message->id);
         } catch (\Exception $e) {

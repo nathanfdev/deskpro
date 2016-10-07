@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket as TicketModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketCsv;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayout as TicketLayoutModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Doctrine\ORM\EntityManager;
@@ -157,17 +158,18 @@ class TicketHandler extends AbstractEntityHandler
      */
     public function getTicketLayout(TicketEntity $ticket)
     {
-        $edit_layout = $this->layoutFactory->getLayoutForTicketForm($ticket->getDepartment(), true);
-        $view_layout = $this->layoutFactory->getLayoutForView($ticket->getDepartment());
+        $department = $ticket->getDepartment();
+        $editLayout = $this->layoutFactory->getLayoutForTicketForm($department, true);
+        $viewLayout = $this->layoutFactory->getLayoutForView($department);
 
         return [
             'edit' => [
-                'user'  => $edit_layout->getUserLayout()->exportToArray(),
-                'agent' => $edit_layout->getAgentLayout()->exportToArray(),
+                'user'  => new TicketLayoutModel($editLayout->getUserLayout(), 'user', $department),
+                'agent' => new TicketLayoutModel($editLayout->getAgentLayout(), 'agent', $department),
             ],
             'view' => [
-                'user'  => $view_layout->getUserLayout()->exportToArray(),
-                'agent' => $view_layout->getAgentLayout()->exportToArray(),
+                'user'  => new TicketLayoutModel($viewLayout->getUserLayout(), 'user', $department),
+                'agent' => new TicketLayoutModel($viewLayout->getAgentLayout(), 'agent', $department),
             ],
         ];
     }

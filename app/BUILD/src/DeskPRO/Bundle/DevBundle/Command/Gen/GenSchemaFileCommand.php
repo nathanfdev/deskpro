@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\DevBundle\Command\Gen;
 
 use DeskPRO\Bundle\InstallBundle\Schema\SchemaGenerator;

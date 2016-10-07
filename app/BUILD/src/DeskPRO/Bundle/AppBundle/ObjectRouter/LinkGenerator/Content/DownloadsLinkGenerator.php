@@ -36,8 +36,6 @@ use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 
-/**
- */
 class DownloadsLinkGenerator extends AbstractContentLinkGenerator
 {
     /**

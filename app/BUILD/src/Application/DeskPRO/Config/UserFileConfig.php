@@ -39,7 +39,7 @@ class UserFileConfig extends \Orb\Util\OptionsArray
 {
     public function __construct($name)
     {
-        $array = array();
+        $array = [];
 
         $sys_file = DP_ROOT.'/sys/config/config.'.$name.'.php';
 

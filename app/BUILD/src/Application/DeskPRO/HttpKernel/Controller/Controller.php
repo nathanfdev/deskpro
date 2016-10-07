@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\HttpKernel\Controller;
 
+use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
 use Application\DeskPRO\Util;
 use Orb\Util\Arrays;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -80,7 +81,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     public function __construct(ContainerInterface $container)
     {
         $this->setContainer($container);
-        $this->request          = $this->get('request');
+        $this->request          = $this->container->get('request_stack')->getCurrentRequest();
         $this->response         = $this->get('response');
         $this->event_dispatcher = $this->get('event_dispatcher');
         $this->init();
@@ -101,9 +102,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     {
     }
 
-    public function DeskPRO_onControllerPreActionHandler($event)
+    public function DeskPRO_onControllerPreActionHandler(PrePostEvent $event)
     {
-        $ret = $this->preActionHandler($event->get('action'), $event->get('arguments'));
+        $ret = $this->preActionHandler($event->get('request'), $event->get('action'), $event->get('arguments'));
         if ($ret) {
             $event->setResponse($ret);
         }
@@ -115,10 +116,11 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      * If this method returns a response object, then that repsonse is used and
      * the original action is NOT called. Any other return value is discarded.
      *
-     * @param string $action    The action that will be called
-     * @param array  $arguments The arguments that will be passed in
+     * @param Request $request
+     * @param string  $action    The action that will be called
+     * @param array   $arguments The arguments that will be passed in
      */
-    public function preActionHandler($action, $arguments = null)
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
     }
 
@@ -164,7 +166,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      *
      * @return Response
      */
-    public function redirectRoute($route, array $parameters = array(), $status = 302)
+    public function redirectRoute($route, array $parameters = [], $status = 302)
     {
         $url = $this->generateUrl($route, $parameters);
 
@@ -287,7 +289,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      *
      * @return Response
      */
-    public function renderJson($view, array $parameters = array(), Response $response = null)
+    public function renderJson($view, array $parameters = [], Response $response = null)
     {
         if ($response === null) {
             $response = $this->container->get('response');

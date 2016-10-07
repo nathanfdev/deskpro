@@ -42,7 +42,12 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     private $container;
 
     /**
-     * @deprecated since version 2.7, to be removed in 3.0.
+     * @var array
+     */
+    private $cache = [];
+
+    /**
+     * @deprecated since version 2.7, to be removed in 3.0
      */
     public function setContainer(ContainerInterface $container)
     {
@@ -52,17 +57,17 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
 
     public function __call($name, $arguments)
     {
-        return call_user_func_array(array($this->container->get('templating.globals'), $name), $arguments);
+        return call_user_func_array([$this->container->get('templating.globals'), $name], $arguments);
     }
 
     public function __get($name)
     {
-        return call_user_func_array(array($this->container->get('templating.globals'), '__get'), [$name]);
+        return call_user_func_array([$this->container->get('templating.globals'), '__get'], [$name]);
     }
 
     public function __isset($name)
     {
-        return call_user_func_array(array($this->container->get('templating.globals'), '__isset'), [$name]);
+        return call_user_func_array([$this->container->get('templating.globals'), '__isset'], [$name]);
     }
 
     public function getUser()
@@ -102,7 +107,11 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
 
     public function getSetting($name)
     {
-        return $this->container->get('templating.globals')->getSetting($name);
+        if (!isset($this->cache[__METHOD__][$name])) {
+            $this->cache[__METHOD__][$name] = $this->container->get('templating.globals')->getSetting($name);
+        }
+
+        return $this->cache[__METHOD__][$name];
     }
 
     public function getSettingDefaultGroup($id)
@@ -278,9 +287,18 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->container->get('templating.globals')->getBuildTime();
     }
 
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function isAppInstalled($name)
     {
-        return $this->container->get('templating.globals')->isAppInstalled($name);
+        if (!isset($this->cache[__METHOD__][$name])) {
+            $this->cache[__METHOD__][$name] = $this->container->get('templating.globals')->isAppInstalled($name);
+        }
+
+        return $this->cache[__METHOD__][$name];
     }
 
     public function getAppService($name)
@@ -314,5 +332,13 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     public function hasAccelerator()
     {
         return PhpInfo::hasAccelerator();
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Agent\AgentData
+     */
+    public function getAgentData()
+    {
+        return $this->container->get('agent_data');
     }
 }

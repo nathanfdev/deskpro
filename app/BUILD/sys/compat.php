@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,11 +27,11 @@
  */
 
 if (function_exists('curl_init')) {
-    foreach (array(
+    foreach ([
         'CURLOPT_CAINFO',
         'CURLOPT_SSL_VERIFYPEER',
         'CURLOPT_SSL_VERIFYHOST',
-    ) as $name) {
+    ] as $name) {
         if (!defined($name)) {
             define($name, '');
         }

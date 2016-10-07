@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
 /**
@@ -98,13 +99,13 @@ class Dates
      * be an integer like 2009, or an Orb_Date, or an array of date parts with an 'year' item.
      *
      * @param int   $month The month to check
-     * @param mixed $year  The year to check in, defaults to this year.
+     * @param mixed $year  The year to check in, defaults to this year
      *
      * @return int
      */
     public static function daysInMonth($month, $year = null)
     {
-        static $map = array(
+        static $map = [
             1  => 31,
             2  => 28,
             3  => 31,
@@ -117,7 +118,7 @@ class Dates
             10 => 31,
             11 => 30,
             12 => 31,
-        );
+        ];
 
         $month = (int) $month;
         $year  = (int) $year;
@@ -286,7 +287,7 @@ class Dates
 
         $seconds = intval($seconds - ($minutes * self::SECS_MIN));
 
-        return array('years' => $years, 'days' => $days, 'hours' => $hours, 'minutes' => $minutes, 'seconds' => $seconds);
+        return ['years' => $years, 'days' => $days, 'hours' => $hours, 'minutes' => $minutes, 'seconds' => $seconds];
     }
 
     /**
@@ -318,23 +319,23 @@ class Dates
      */
     public static function secsToReadable($seconds, $detail = 2, $lang = null)
     {
-        static $lang_en = array(
+        static $lang_en = [
             'seconds' => '%d seconds',
             'minutes' => '%d minutes',
             'hours'   => '%d hours',
             'days'    => '%d days',
             'years'   => '%d years',
             'sep'     => ' ',
-        );
+        ];
 
-        static $lang_en_short = array(
+        static $lang_en_short = [
             'seconds' => '%ds',
             'minutes' => '%dm',
             'hours'   => '%dh',
             'days'    => '%dd',
             'years'   => '%dy',
             'sep'     => ' ',
-        );
+        ];
 
         if (!$lang or $lang == 'long') {
             $lang = $lang_en;
@@ -346,7 +347,7 @@ class Dates
 
         $parts     = self::secsToPartsArray($seconds);
         $limit     = 0;
-        $str_parts = array();
+        $str_parts = [];
 
         if ($parts['years']) {
             $str_parts[] = sprintf($lang['years'], $parts['years']);

@@ -40,6 +40,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class ClientDeviceType.
+ */
 class ClientDeviceType extends AbstractType
 {
     /**
@@ -137,11 +140,9 @@ class ClientDeviceType extends AbstractType
                 'app_type',
                 'person',
             ])
-            ->setAllowedTypes([
-                'app_type'  => 'string',
-                'device_id' => 'string',
-                'person'    => Person::class,
-            ])
+            ->setAllowedTypes('app_type', 'string')
+            ->setAllowedTypes('device_id', 'string')
+            ->setAllowedTypes('person', Person::class)
         ;
     }
 }

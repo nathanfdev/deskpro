@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Twig\PreProcessor;
 
 /**
@@ -74,7 +75,7 @@ class EmailPreProcessor extends AbstractPreProcessor
 
         $source = $this->processTagAsTpl($source, 'ticket-properties-table', 'DeskPRO:emails_common:ticket-props-table.html.twig');
 
-        $sets   = array();
+        $sets   = [];
         $source = preg_replace_callback('#\s*\{\{\s*set_tplvar\((.*?),\s*(.*?)\)\s*\}\}\s*#', function ($m) use (&$sets) {
             $sets[] = trim($m[0]);
         }, $source);
@@ -115,7 +116,7 @@ class EmailPreProcessor extends AbstractPreProcessor
     public function processTagAsTpl($source, $tagname, $tplname)
     {
         $self         = $this;
-        $set_id_stack = array();
+        $set_id_stack = [];
         $source       = preg_replace_callback("#<dp:$tagname>#", function ($m) use ($self, &$set_id_stack) {
             $set_id = $self->getSetId();
             $set_id_stack[] = $set_id;
@@ -173,7 +174,7 @@ class EmailPreProcessor extends AbstractPreProcessor
     public function processTagAsMacro($source, $tagname, $tplname)
     {
         $self         = $this;
-        $set_id_stack = array();
+        $set_id_stack = [];
         $source       = preg_replace_callback("#<dp:$tagname>#", function ($m) use ($self, &$set_id_stack) {
             $set_id = $self->getSetId();
             $set_id_stack[] = $set_id;
@@ -203,7 +204,7 @@ class EmailPreProcessor extends AbstractPreProcessor
     public function processIfblock($source)
     {
         $self         = $this;
-        $set_id_stack = array();
+        $set_id_stack = [];
         $tagname      = '';
         $source       = preg_replace_callback("#\{%\s*ifblock\s*([a-zA-Z_]+)\s*%\}#", function ($m) use (&$tagname, $self, &$set_id_stack) {
             $set_id = $self->getSetId();

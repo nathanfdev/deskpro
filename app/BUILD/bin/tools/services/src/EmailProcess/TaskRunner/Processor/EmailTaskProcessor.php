@@ -47,12 +47,12 @@ class EmailTaskProcessor extends AbstractCommandProcessor
             throw new \InvalidArgumentException();
         }
 
-        $cmd_path = realpath(DP_ROOT.'/../cmd.php');
+        $cmd_path = realpath(DP_DIR.'/bin/console');
         $cmd      = dp_get_php_command($cmd_path, 'dp:process-email --enable-retries --expect-pending --source '.$email_id);
 
-        $this->logger->info("[EmailTaskProcessor] <EmailSource::{$email_id}> process command: $cmd", array(
+        $this->logger->info("[EmailTaskProcessor] <EmailSource::{$email_id}> process command: $cmd", [
             'task' => $task,
-        ));
+        ]);
 
         return $cmd;
     }

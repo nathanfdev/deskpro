@@ -133,6 +133,6 @@ class AddLabelsAction extends AbstractAction implements PermissionableAction
     {
         $tr = App::getTranslator();
 
-        return $tr->phrase('agent.tickets.add_labels_action', array('labels' => implode(', ', $this->add_labels)));
+        return $tr->phrase('agent.tickets.add_labels_action', ['labels' => implode(', ', $this->add_labels)]);
     }
 }

@@ -72,7 +72,7 @@ class ServerReportFile
     /**
      * @var array - this is mapping array between file name and method of this class that creates file content
      */
-    public $files_added_to_archive = array(
+    public $files_added_to_archive = [
         'phpinfo-web.html'      => '_createPhpInfoFile',
         'phpinfo-cli.txt'       => '_createCliInfoFile',
         'errorlog-deskpro.txt'  => '_createDeskPROErrorLog',
@@ -88,7 +88,7 @@ class ServerReportFile
         'license.txt'           => '_createLicense',
         'file-integrity.txt'    => '_createFileIntegrity',
         'templates.txt'         => '_createTemplates',
-    );
+    ];
 
     /**
      * @var OutputInterface
@@ -327,7 +327,7 @@ class ServerReportFile
      */
     protected function _createMysqlSchema($file_name)
     {
-        $sql = array();
+        $sql = [];
 
         $sql[] = '### '.App::getContainer()->getBrandSetting('core.deskpro_url')."\n";
         $sql[] = '### DeskPRO Build: '.DP_BUILD_TIME."\n";
@@ -337,7 +337,7 @@ class ServerReportFile
 
         foreach ($tables as $table) {
             $sql[] = "### TABLE: $table\n";
-            $sql[] = App::getDb()->fetchColumn("SHOW CREATE TABLE `$table`", array(), 1);
+            $sql[] = App::getDb()->fetchColumn("SHOW CREATE TABLE `$table`", [], 1);
             $sql[] = "\n\n";
         }
 
@@ -357,10 +357,10 @@ class ServerReportFile
      */
     protected function _createMysqlStatus($file_name)
     {
-        $sections = array();
+        $sections = [];
 
         try {
-            $mysqlstatus              = App::getDb()->fetchAllKeyValue('SHOW STATUS', array(), array(), 0, 1);
+            $mysqlstatus              = App::getDb()->fetchAllKeyValue('SHOW STATUS', [], [], 0, 1);
             $sections['MySQL Status'] = Strings::keyValueAsciiTable($mysqlstatus);
         } catch (\Exception $e) {
         }
@@ -391,10 +391,10 @@ class ServerReportFile
      */
     protected function _createMysqlVariables($file_name)
     {
-        $sections = array();
+        $sections = [];
 
         try {
-            $mysqlinfo                   = App::getDb()->fetchAllKeyValue('SHOW VARIABLES', array(), array(), 0, 1);
+            $mysqlinfo                   = App::getDb()->fetchAllKeyValue('SHOW VARIABLES', [], [], 0, 1);
             $sections['MySQL Variables'] = Strings::keyValueAsciiTable($mysqlinfo);
         } catch (\Exception $e) {
         }
@@ -451,7 +451,7 @@ class ServerReportFile
         $items['has_wincache'] = $vars['has_wincache'] ? 'Yes' : 'No';
         $items                 = array_merge($items, $vars['debug_settings']);
 
-        $sections = array();
+        $sections = [];
 
         $sections['Info'] = Strings::keyValueAsciiTable($items);
         $out              = '';
@@ -479,7 +479,7 @@ class ServerReportFile
     protected function _createTemplates()
     {
         $templates = App::getDb()->fetchAll('SELECT name, template_code, date_created, date_updated FROM templates');
-        $out       = array();
+        $out       = [];
 
         foreach ($templates as $t) {
             $out[] = ">>>>>>>>>>>>>>>>>>>> Template: {$t['name']} -- Created: {$t['date_created']} -- Updated: {$t['date_updated']} <<<<<<<<<<<<<<<<<<<<\n\n";
@@ -533,9 +533,9 @@ class ServerReportFile
 
         $content = '';
 
-        $content .=  '### '.App::getContainer()->getBrandSetting('core.deskpro_url')."\n";
-        $content .=  '### DeskPRO Build: '.DP_BUILD_TIME."\n";
-        $content .=  '### Generated: '.date('Y-m-d H:i:s')."\n\n";
+        $content .= '### '.App::getContainer()->getBrandSetting('core.deskpro_url')."\n";
+        $content .= '### DeskPRO Build: '.DP_BUILD_TIME."\n";
+        $content .= '### Generated: '.date('Y-m-d H:i:s')."\n\n";
 
         $content .= 'Task    Interval   Last Run   Last Complete   Next Run'."\n\n";
 
@@ -574,7 +574,6 @@ class ServerReportFile
         $license = License::getLicense();
 
         $licenseExpiresIn = function () use ($license) {
-
             if ($license->getExpireDays() == 0 && $license->getExpireTime('hours') == 0) {
                 return 'In '.$license->getExpireTime('mins').' minutes';
             } elseif ($license->getExpireDays() < 3) {

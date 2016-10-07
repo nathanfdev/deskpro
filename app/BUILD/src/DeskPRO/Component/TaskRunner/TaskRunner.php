@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,9 +33,11 @@ use DeskPRO\Component\TaskRunner\Reader\ReaderInterface;
 use Monolog\Logger;
 use React\EventLoop\Factory as EventLoopFactory;
 use React\EventLoop\LoopInterface;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class TaskRunner.
+ */
 class TaskRunner
 {
     const LOG_EV_TASK_START   = 'task_start';
@@ -67,7 +69,7 @@ class TaskRunner
     /**
      * @var TaskHandle[]
      */
-    private $running_tasks = array();
+    private $running_tasks = [];
 
     /**
      * @var LoopInterface
@@ -84,7 +86,12 @@ class TaskRunner
      */
     private $processor;
 
-    public function __construct(array $options = array())
+    /**
+     * Constructor.
+     *
+     * @param array $options
+     */
+    public function __construct(array $options = [])
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
@@ -103,34 +110,31 @@ class TaskRunner
      */
     protected function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'task_timeout'    => 0,
-            'max_tasks'       => 4,
-            'stop_on_done'    => false,
-            'stop_after_time' => 0,
-            'tick_time'       => 1.00,
-        ));
-        $resolver->setRequired(array(
-            'reader',
-            'processor',
-            'logger',
-            'loop',
-        ));
+        $resolver
+            ->setDefaults([
+                'task_timeout'    => 0,
+                'max_tasks'       => 4,
+                'stop_on_done'    => false,
+                'stop_after_time' => 0,
+                'tick_time'       => 1.00,
+            ])
+            ->setRequired([
+                'reader',
+                'processor',
+                'logger',
+                'loop',
+            ])
+            ->setAllowedTypes('task_timeout', 'integer')
+            ->setAllowedTypes('max_tasks', 'integer')
+            ->setAllowedTypes('stop_after_time', 'integer')
+            ->setAllowedTypes('tick_time', 'float')
+            ->setAllowedTypes('reader', 'DeskPRO\Component\TaskRunner\Reader\ReaderInterface')
+            ->setAllowedTypes('processor', 'DeskPRO\Component\TaskRunner\Processor\ProcessorInterface')
+            ->setAllowedTypes('logger', 'Monolog\Logger')
+            ->setAllowedTypes('loop', 'React\EventLoop\LoopInterface')
+        ;
 
-        $resolver->setAllowedTypes(array(
-            'task_timeout'    => 'integer',
-            'max_tasks'       => 'integer',
-            'stop_after_time' => 'integer',
-            'tick_time'       => 'float',
-            'reader'          => 'DeskPRO\Component\TaskRunner\Reader\ReaderInterface',
-            'processor'       => 'DeskPRO\Component\TaskRunner\Processor\ProcessorInterface',
-            'logger'          => 'Monolog\Logger',
-            'loop'            => 'React\EventLoop\LoopInterface',
-        ));
-
-        $resolver->setDefaults(array('loop' => function (Options $options) {
-            return EventLoopFactory::create();
-        }));
+        $resolver->setDefault('loop', EventLoopFactory::create());
     }
 
     /**
@@ -138,7 +142,7 @@ class TaskRunner
      */
     public function start()
     {
-        $this->loop->addPeriodicTimer($this->options['tick_time'], array($this, '_runLoop'));
+        $this->loop->addPeriodicTimer($this->options['tick_time'], [$this, '_runLoop']);
 
         $this->start_time = microtime(true);
 
@@ -193,7 +197,7 @@ class TaskRunner
 
                 $this->logger->info(
                     sprintf('[Task %s] Task started', $task->getId()),
-                    array('task' => $task, 'log_event' => self::LOG_EV_TASK_START)
+                    ['task' => $task, 'log_event' => self::LOG_EV_TASK_START]
                 );
 
                 $handle->addEventListener(TaskHandle::EVENT_DONE_SUCCESS, function ($v, TaskHandle $handle) use ($me) {
@@ -232,7 +236,7 @@ class TaskRunner
             } elseif ($this->options['task_timeout'] && (microtime() - $c->getStartTime()) > $this->options['task_timeout']) {
                 $this->logger->alert(
                     sprintf('[Task %s] Timed out after %s seconds; terminating', $c->getTask()->getId(), $this->options['task_timeout']),
-                    array('task' => $c->getTask(), 'log_event' => self::LOG_EV_TASK_TIMEOUT)
+                    ['task' => $c->getTask(), 'log_event' => self::LOG_EV_TASK_TIMEOUT]
                 );
 
                 try {
@@ -240,7 +244,7 @@ class TaskRunner
                 } catch (\Exception $e) {
                     $this->logger->error(
                         sprintf('[Task %s] Failed to terminate with exception: %s', $c->getTask()->getId(), $e->getMessage()),
-                        array('task' => $c->getTask(), 'exception' => $e, 'log_event' => self::LOG_EV_ERROR)
+                        ['task' => $c->getTask(), 'exception' => $e, 'log_event' => self::LOG_EV_ERROR]
                     );
                 }
             }
@@ -258,12 +262,12 @@ class TaskRunner
         if (!$is_success) {
             $this->logger->err(
                 sprintf('[Task %s] Task done (failure)', $c->getTask()->getId()),
-                array('task' => $c->getTask(), 'log_event' => self::LOG_EV_TASK_END)
+                ['task' => $c->getTask(), 'log_event' => self::LOG_EV_TASK_END]
             );
         } else {
             $this->logger->info(
                 sprintf('[Task %s] Task done (success)', $c->getTask()->getId()),
-                array('task' => $c->getTask(), 'log_event' => self::LOG_EV_TASK_END)
+                ['task' => $c->getTask(), 'log_event' => self::LOG_EV_TASK_END]
             );
         }
         unset($this->running_tasks[$c->getTask()->getId()]);
@@ -279,7 +283,7 @@ class TaskRunner
         } catch (\Exception $e) {
             $this->logger->error(
                 "getNext failed with exception: {$e->getMessage()}",
-                array('exception' => $e, 'log_event' => self::LOG_EV_ERROR)
+                ['exception' => $e, 'log_event' => self::LOG_EV_ERROR]
             );
 
             return;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Tickets\Filters\Terms\FilterQuery;
@@ -50,7 +51,7 @@ class TicketQueryBuilder
         $query = 'SELECT '.implode(', ', $fields)."\n";
         $query .= "FROM tickets\n";
 
-        $join_map = array();
+        $join_map = [];
         if (!empty($parts['joins'])) {
             $count = 0;
             foreach ($parts['joins'] as $join) {
@@ -64,12 +65,12 @@ class TicketQueryBuilder
         }
         $query .= "WHERE\n".$parts['where'];
 
-        $param_map = array();
+        $param_map = [];
         foreach ($parts['params'] as $p) {
             $param_map[$p['name']] = $p['value'];
         }
 
-        $ret_params = array();
+        $ret_params = [];
         $query      = preg_replace_callback('#__dpparam_.*?__#', function ($m) use (&$ret_params, $param_map) {
             $ret_params[] = $param_map[$m[0]];
 
@@ -79,10 +80,10 @@ class TicketQueryBuilder
             return $join_map[$m[0]];
         }, $query);
 
-        return array(
+        return [
             'sql'    => $query,
             'params' => $ret_params,
-        );
+        ];
     }
 
     /**
@@ -97,7 +98,7 @@ class TicketQueryBuilder
         $query = "SELECT COUNT(*)\n";
         $query .= "FROM tickets\n";
 
-        $join_map = array();
+        $join_map = [];
         if (!empty($parts['joins'])) {
             $count = 0;
             foreach ($parts['joins'] as $join) {
@@ -111,12 +112,12 @@ class TicketQueryBuilder
         }
         $query .= "WHERE\n".$parts['where'];
 
-        $param_map = array();
+        $param_map = [];
         foreach ($parts['params'] as $p) {
             $param_map[$p['name']] = $p['value'];
         }
 
-        $ret_params = array();
+        $ret_params = [];
         $query      = preg_replace_callback('#__dpparam_.*?__#', function ($m) use (&$ret_params, $param_map) {
             $ret_params[] = $param_map[$m[0]];
 
@@ -126,9 +127,9 @@ class TicketQueryBuilder
             return $join_map[$m[0]];
         }, $query);
 
-        return array(
+        return [
             'sql'    => $query,
             'params' => $ret_params,
-        );
+        ];
     }
 }

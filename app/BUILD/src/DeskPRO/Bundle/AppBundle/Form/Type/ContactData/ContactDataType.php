@@ -102,10 +102,8 @@ class ContactDataType extends AbstractType
                 'mapped'         => false,
             ])
             ->setRequired(['owner', 'parent_builder'])
-            ->setAllowedTypes([
-                'owner'          => [Person::class, Organization::class],
-                'parent_builder' => FormBuilderInterface::class,
-            ])
+            ->setAllowedTypes('owner', [Person::class, Organization::class])
+            ->setAllowedTypes('parent_builder', FormBuilderInterface::class)
         ;
     }
 

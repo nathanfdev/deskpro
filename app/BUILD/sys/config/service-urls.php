@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,11 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
 
-    ####################################################################################################################
-    # Links to specific KB articles
-    ####################################################################################################################
+    //###################################################################################################################
+    // Links to specific KB articles
+    //###################################################################################################################
 
     'dp.kb.install.error_php_version'        => 'https://support.deskpro.com/kb/articles/119',
     'dp.kb.install.error_config_missing'     => 'https://support.deskpro.com/kb/articles/120',
@@ -57,4 +57,4 @@ return array(
     'dp.kb.install.error_disabled_functions' => 'https://support.deskpro.com/kb/articles/122',
     'dp.kb.install.error_upload_tmp_dir'     => 'https://support.deskpro.com/kb/articles/122',
     'dp.kb.install.url_rewriting'            => 'https://support.deskpro.com/kb/articles/177',
-);
+];

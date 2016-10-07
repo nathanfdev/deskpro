@@ -101,9 +101,9 @@ class ProjectFileSet
     {
         $sets = [];
 
-        #------------------------------
-        # DpRun type files
-        #------------------------------
+        //------------------------------
+        // DpRun type files
+        //------------------------------
 
         $finder = Finder::create()
             ->files()
@@ -113,9 +113,9 @@ class ProjectFileSet
         $sets[] = $this->readIterator($finder, $this->env->getDpRoot(), '%DP_DIR%');
         unset($finder);
 
-        #------------------------------
-        # Current build files
-        #------------------------------
+        //------------------------------
+        // Current build files
+        //------------------------------
 
         $finder = Finder::create()
             ->files()
@@ -133,9 +133,9 @@ class ProjectFileSet
         $sets[] = $this->readIterator($finder, $this->env->getAppDir(), '%DP_APP_DIR%');
         unset($finder);
 
-        #------------------------------
-        # Vendor build files
-        #------------------------------
+        //------------------------------
+        // Vendor build files
+        //------------------------------
 
         $finder = Finder::create()
             ->files()
@@ -146,9 +146,9 @@ class ProjectFileSet
         $sets[] = $this->readIterator($finder, $this->env->getAppDir(), '%DP_APP_DIR%');
         unset($finder);
 
-        #------------------------------
-        # Current build kernel cache files
-        #------------------------------
+        //------------------------------
+        // Current build kernel cache files
+        //------------------------------
 
         $finder = Finder::create()
             ->files()
@@ -166,9 +166,9 @@ class ProjectFileSet
         $sets[] = $this->readIterator($finder, $this->env->getAppBaseKernelCacheDir(), '%DP_APP_KERNEL_CACHE%');
         unset($finder);
 
-        #------------------------------
-        # Asset files - built only
-        #------------------------------
+        //------------------------------
+        // Asset files - built only
+        //------------------------------
 
         $finder = Finder::create()
             ->files()

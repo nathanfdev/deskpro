@@ -43,16 +43,13 @@ class InstallTablesStep extends AbstractStep
      */
     private $failedCachePaths = [];
 
-    /**
-     *
-     */
     public function run()
     {
         $this->writeBigTitle('Installing Database Schema');
 
-        #------------------------------
-        # Read schema
-        #------------------------------
+        //------------------------------
+        // Read schema
+        //------------------------------
 
         $dbCachePaths = [];
         foreach (InstallProfile::getDbs() as $dbKey) {
@@ -102,9 +99,9 @@ class InstallTablesStep extends AbstractStep
             $schemasInfo = $this->createSchemas($dbCachePaths);
         }
 
-        #------------------------------
-        # DB connections
-        #------------------------------
+        //------------------------------
+        // DB connections
+        //------------------------------
 
         try {
             foreach ($schemasInfo as &$item) {
@@ -121,9 +118,9 @@ class InstallTablesStep extends AbstractStep
             return;
         }
 
-        #------------------------------
-        # Install schemas
-        #------------------------------
+        //------------------------------
+        // Install schemas
+        //------------------------------
         foreach ($schemasInfo as $item) {
             $this->installSchema($item['pdo'], $item['schema']);
         }

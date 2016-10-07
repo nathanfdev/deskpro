@@ -208,9 +208,17 @@ class TicketAttachment extends DomainObject
         return $this->blob;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @return bool
+     */
+    public function isInline()
+    {
+        return $this->is_inline;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

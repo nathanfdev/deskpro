@@ -54,7 +54,7 @@ class RateLimitLog extends AbstractEntityRepository
      */
     public function save($action, PersonEntity $person, $ip = null, $lockout = false)
     {
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 INSERT INTO %s
 (`action`, `ip`, `person_id`, `date_created`, `is_lockout`)
 VALUES

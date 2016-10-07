@@ -62,10 +62,8 @@ class OrganizationNoteType extends AbstractType
                 'data_class' => OrganizationNote::class,
             ])
             ->setRequired(['agent', 'organization'])
-            ->setAllowedTypes([
-                'agent'        => Person::class,
-                'organization' => Organization::class,
-            ])
+            ->setAllowedTypes('agent', Person::class)
+            ->setAllowedTypes('organization', Organization::class)
         ;
     }
 

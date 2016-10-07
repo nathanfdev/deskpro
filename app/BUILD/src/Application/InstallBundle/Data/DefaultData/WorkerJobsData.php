@@ -31,6 +31,7 @@
  *
  * @category Install
  */
+
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\WorkerProcess\Job;
@@ -39,9 +40,9 @@ class WorkerJobsData extends AbstractDefaultData
 {
     public function runInstall()
     {
-        #------------------------------
-        # Define jobs
-        #------------------------------
+        //------------------------------
+        // Define jobs
+        //------------------------------
 
         $jobs = [];
 
@@ -351,9 +352,9 @@ class WorkerJobsData extends AbstractDefaultData
             'run_interval' => Job\ProcessSystemAlertEvents::DEFAULT_INTERVAL,
         ];
 
-        #------------------------------
-        # Insert jobs
-        #------------------------------
+        //------------------------------
+        // Insert jobs
+        //------------------------------
 
         $got_ids = array_map(function ($j) {
             return $j['id'];

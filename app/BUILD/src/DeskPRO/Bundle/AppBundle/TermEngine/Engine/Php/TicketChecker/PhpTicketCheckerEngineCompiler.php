@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
 use DeskPRO\Bundle\AppBundle\Entity\FilterInterface;
@@ -65,20 +66,20 @@ class PhpTicketCheckerEngineCompiler
     {
         $this->logger->info(
             'START FILTER COMPILE',
-            array(
+            [
                 'filter_id'    => $filter->getId(),
                 'filter_title' => $filter->getTitle(),
-            )
+            ]
         );
 
         $timer = new SimpleTimer();
 
         $key = $this->generateKey($filter);
 
-        $this->logger->debug('Checking PhpCheckCache', array('key' => $key));
+        $this->logger->debug('Checking PhpCheckCache', ['key' => $key]);
 
         if ($compiled_query = $this->cacher->fetchCheck($key)) {
-            $this->logger->info('Cache hit, exiting compiler', array('time' => $timer->getElapsedTime()));
+            $this->logger->info('Cache hit, exiting compiler', ['time' => $timer->getElapsedTime()]);
 
             return $compiled_query;
         }
@@ -90,9 +91,9 @@ class PhpTicketCheckerEngineCompiler
         // cache it for future calls to retrieve
         $this->cacher->saveCheck($key, $compiled_query);
 
-        $this->logger->debug('Saved compiled query to the cache store', array('key' => $key));
+        $this->logger->debug('Saved compiled query to the cache store', ['key' => $key]);
 
-        $this->logger->info('END FILTER COMPILE', array('time' => $timer->getElapsedTime()));
+        $this->logger->info('END FILTER COMPILE', ['time' => $timer->getElapsedTime()]);
 
         return $compiled_query;
     }
