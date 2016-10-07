@@ -1,7 +1,7 @@
 define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_ServerAuditLogs_Ctrl_ServerAuditLogsView extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_ServerAuditLogs_Ctrl_ServerAuditLogsView'
-    @CTRL_AS   = 'ServerAuditLogsView'
+  class Admin_AgentAuditLogs_Ctrl_AuditLogsView extends Admin_Ctrl_Base
+    @CTRL_ID   = 'Admin_AgentAuditLogs_Ctrl_AuditLogsView'
+    @CTRL_AS   = 'AuditLogsView'
     @DEPS      = ['Api2']
 
     init: ->
@@ -17,4 +17,4 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       return angular.toJson(@log.data, true)
 
 
-  Admin_ServerAuditLogs_Ctrl_ServerAuditLogsView.EXPORT_CTRL()
+  Admin_AgentAuditLogs_Ctrl_AuditLogsView.EXPORT_CTRL()

@@ -23,7 +23,7 @@ Feature: Default settings endpoint
   Scenario: check settings resolve
     When I send a GET request to "/api/v2/settings/departments/default"
     Then the response should be in JSON
-    And print last JSON response
+
     And the response status code should be 200
     And the JSON node "data[0].brand" should be equal to "{b1}"
     And the JSON node "data[0].type" should be equal to "agent"
@@ -38,4 +38,47 @@ Feature: Default settings endpoint
     And the JSON node "data[3].type" should be equal to "user"
     And the JSON node "data[3].department" should be equal to "{d4}"
 
+  Scenario: check settings set
+    When I send a PUT request to "/api/v2/settings/departments/default" with body:
+    """
+{
+  "type": "user",
+  "department": ~d2~,
+  "brand": ~b1~
+}
+    """
+    Then the response status code should be 204
 
+    When I send a GET request to "/api/v2/settings/departments/default"
+    And the response status code should be 200
+    And the JSON node "data[1].brand" should be equal to "{b1}"
+    And the JSON node "data[1].type" should be equal to "user"
+    And the JSON node "data[1].department" should be equal to "{d2}"
+
+  Scenario: check settings remove
+    When I send a PUT request to "/api/v2/settings/departments/default" with body:
+    """
+{
+  "type": "agent",
+  "department": null,
+  "brand": ~b1~
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/settings/departments/default"
+    And the response status code should be 200
+    And the JSON node "data[0].brand" should be equal to "{b1}"
+    And the JSON node "data[0].type" should be equal to "agent"
+    And the JSON node "data[0].department" should be equal to "0"
+
+  Scenario: check error on invalid input
+    When I send a PUT request to "/api/v2/settings/departments/default" with body:
+    """
+{
+  "type": "agent",
+  "department": -20,
+  "brand": ~b1~
+}
+    """
+    Then the response status code should be 400

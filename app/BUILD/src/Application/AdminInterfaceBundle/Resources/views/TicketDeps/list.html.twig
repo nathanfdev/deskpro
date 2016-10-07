@@ -53,14 +53,14 @@
 			<nav>
 				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
 			</nav>
-			<h3>Default departments</h3>
+			<h3>{{ phrase('admin.departments.default_department_header') }}</h3>
 			<div class="dp-pane-help-box">
-				The default department is pre-selected in new ticket forms
+				{{ phrase('admin.departments.default_department_hint') }}
 			</div>
 		</header>
 		<article>
 			<div style="padding-left: 15px; padding-bottom: 20px;" ng-if="ListCtrl.brandList.length > 1">
-				<h4>Select brand</h4>
+				<h4>{{ phrase('admin.departments.default_department_brand_label') }}</h4>
 				<select
 						style="width: 200px"
 						ui-select2
@@ -79,7 +79,7 @@
 
 
 			<div style="padding-left: 15px; padding-bottom: 20px;">
-				<h4>Default department for agents:</h4>
+				<h4>{{ phrase('admin.departments.default_department_for_agents_label') }}</h4>
 				<select
 						style="width: 200px"
 						ui-select2
@@ -96,10 +96,10 @@
 			</div>
 
 			<div style="padding-left: 15px; padding-bottom: 20px;">
-				<h4>Default department for users:</h4>
+				<h4>{{ phrase('admin.departments.default_department_for_users_label') }}</h4>
 				<select
-						style="width: 200px"
 						ui-select2
+						style="width: 200px"
 						ng-model="ListCtrl.defaultDepartments[ListCtrl.brandId].user"
 						ng-change="ListCtrl.changeDefaultDepartment('user')">
 					<option

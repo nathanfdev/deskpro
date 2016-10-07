@@ -31,11 +31,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       promise = @depData.loadList().then( (list) =>
         @depList = list
         @deps = @depData.listModels
-        @flattenedList = []
+        @flattenedList = [ { id: 0, title: '', has_children: false } ]
         if @depList
           for dep in @depList
-            @flattenedList.push dep if !dep.children.length
-            for subdep in dep.children then @flattenedList.push subdep if dep.children.length
+            @flattenedList.push dep if !dep.has_children
+            @flattenedList.push subdep for subdep in dep.children if dep.has_children
       )
 
       brandsPromise = @Api.sendGet('/ticket_brands').then (response) =>
@@ -123,7 +123,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     changeDefaultDepartment: (type) =>
       if @brandId && !!@defaultDepartments[@brandId] && @defaultDepartments[@brandId][type]
-        @Api2.sendPutJson('settings/departments/default', {type: type, department: @defaultDepartments[@brandId][type], brand: @brandId})
+        data = {
+          type: type
+          department: if @defaultDepartments[@brandId][type] > 0 then @defaultDepartments[@brandId][type] else null
+          brand: @brandId
+        }
+
+        @Api2.sendPutJson('settings/departments/default', data)
           .success(() => @Growl.success('Default department for ' + type + 's was successfully set'))
 
   Admin_TicketDeps_Ctrl_List.EXPORT_CTRL()
