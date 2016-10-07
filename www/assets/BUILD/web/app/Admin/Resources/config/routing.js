@@ -430,6 +430,24 @@ define(function() {
     controller: 'Admin_AgentGroups_Ctrl_Edit'
   });
 
+  //###
+  //# AuditLogs
+  //###
+  routes.push({
+    id: 'agents.audit_logs',
+    url: '/audit_logs',
+    templateName: 'Agents/audit_logs.html',
+    controller: 'Admin_AgentAuditLogs_Ctrl_AuditLogs'
+  });
+
+  routes.push({
+    id: 'agents.audit_logs.view',
+    url: '/view/{id}',
+    templateName: 'Agents/audit_logs-view.html',
+    controller: 'Admin_AgentAuditLogs_Ctrl_AuditLogsView',
+    target: "appbody@agents"
+  });
+
   //##################################################################################################################
   // Tickets
   //##################################################################################################################
@@ -2394,24 +2412,6 @@ define(function() {
 		controller: 'Admin_ServerIncidents_Ctrl_View',
 		target: "appbody@server"
 	});
-
-  //###
-	//# AuditLogs
-	//###
-	routes.push({
-		id: 'server.audit_logs',
-		url: '/audit_logs',
-		templateName: 'Server/server-audit_logs.html',
-		controller: 'Admin_ServerAuditLogs_Ctrl_ServerAuditLogs'
-	});
-
-  routes.push({
-    id: 'server.audit_logs.view',
-    url: '/view/{id}',
-    templateName: 'Server/server-audit_logs-view.html',
-    controller: 'Admin_ServerAuditLogs_Ctrl_ServerAuditLogsView',
-    target: "appbody@server"
-  });
 
 	// routes.push({
 	// 	id: 'server.incidents.view',

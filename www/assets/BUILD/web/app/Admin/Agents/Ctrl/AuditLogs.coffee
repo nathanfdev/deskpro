@@ -1,7 +1,7 @@
-define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
-  class Admin_ServerAuditLogs_Ctrl_ServerAuditLogs extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_ServerAuditLogs_Ctrl_ServerAuditLogs'
-    @CTRL_AS   = 'ServerAuditLogs'
+define ['Admin/Main/Ctrl/Base', '../../../../bower_components/moment/moment'], (Admin_Ctrl_Base, moment) ->
+  class Admin_AgentAuditLogs_Ctrl_AuditLogs extends Admin_Ctrl_Base
+    @CTRL_ID   = 'Admin_AgentAuditLogs_Ctrl_AuditLogs'
+    @CTRL_AS   = 'AuditLogs'
     @DEPS      = ['Api2']
 
     init: ->
@@ -70,7 +70,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
     purgeLogs: ->
       @is_loading = true
       inst = @$modal.open({
-        templateUrl: @getTemplatePath('Server/server-audit-logs-delete-modal.html'),
+        templateUrl: @getTemplatePath('Agents/audit-logs-delete-modal.html'),
         controller: ['$scope', '$modalInstance',  ($scope, $modalInstance) ->
           $scope.confirm = ->
             $modalInstance.close()
@@ -126,4 +126,4 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
       @pagination.virtual_current_page = 1
       @updateFilter()
 
-  Admin_ServerAuditLogs_Ctrl_ServerAuditLogs.EXPORT_CTRL()
+  Admin_AgentAuditLogs_Ctrl_AuditLogs.EXPORT_CTRL()
