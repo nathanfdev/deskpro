@@ -136,6 +136,7 @@ class GmailConfig implements AccountConfigInterface
 
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
+        $metadata->addPropertyConstraint('user', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('clientId', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('clientSecret', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('token', new Constraints\NotBlank());

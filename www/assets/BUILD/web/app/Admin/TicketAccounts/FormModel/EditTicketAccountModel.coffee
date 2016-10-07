@@ -155,6 +155,10 @@ define [
 
         if @form.outgoing_type == 'gmail'
           @form.out_gmail_account.password = @account.outgoing_account.password
+          @form.out_gmail_account.clientId     = @account.outgoing_account.clientId
+          @form.out_gmail_account.clientSecret = @account.outgoing_account.clientSecret
+          @form.out_gmail_account.token        = @account.outgoing_account.token
+          @form.out_gmail_account.refreshToken = @account.outgoing_account.refreshToken
 
         if @form.outgoing_type == 'office365'
           @form.out_office365_account.password = @account.outgoing_account.password

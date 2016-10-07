@@ -124,7 +124,8 @@ class ImapSocket extends AbstractFetcher
                 $client->setAccessToken($gmail_config->token);
                 $client->setAccessType('offline');
                 $client->refreshToken($gmail_config->refreshToken);
-                if ($data = $client->getAccessToken()) {
+                $data = $client->getAccessToken();
+                if (!empty($data['access_token'])) {
                     $options['token'] = $data['access_token'];
                 }
 

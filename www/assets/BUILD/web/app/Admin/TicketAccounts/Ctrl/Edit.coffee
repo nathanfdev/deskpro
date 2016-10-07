@@ -88,11 +88,10 @@ define [
 
       final_promise.then(=>
         @form_model = @getFormModel()
-        if @deferredData.gmailIn?
-          @form_model.form.in_gmail_account.clientId     = @deferredData.gmailIn.clientId
-          @form_model.form.in_gmail_account.clientSecret = @deferredData.gmailIn.clientSecret
-          @form_model.form.in_gmail_account.token        = @deferredData.gmailIn.token
-          @form_model.form.in_gmail_account.refreshToken = @deferredData.gmailIn.refreshToken
+        if @deferredData.gmail?
+          for type in ['in', 'out']
+            for v in ['clientId', 'clientSecret', 'token', 'refreshToken']
+              @form_model.form[type + '_gmail_account'][v] = @deferredData.gmail[v]
 
         @$scope.form = @form_model.form
 

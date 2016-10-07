@@ -191,7 +191,7 @@
 		{# Gmail    #}
 		{############}
 		<div class="ng-hide" ng-show="form.incoming_type == 'gmail'" {% if gmail_token %}ng-init="
-				TicketAccountsEdit.deferredData.gmailIn = {
+				TicketAccountsEdit.deferredData.gmail = {
 					token: '{{ gmail_token.access_token }}',
 					refreshToken: '{{ gmail_token.refresh_token }}',
 					clientId: '{{ gmail_token.clientId }}',
