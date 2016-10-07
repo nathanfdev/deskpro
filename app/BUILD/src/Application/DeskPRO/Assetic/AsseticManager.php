@@ -104,6 +104,16 @@ class AsseticManager
      */
     protected $dep_map = [];
 
+    /**
+     * @var string
+     */
+    protected $last_pack_name;
+
+    /**
+     * @var string
+     */
+    protected $last_file = '';
+
     public function __construct(array $asset_config, $static_path, $build_subdir, $debug = false)
     {
         $this->debug = $debug;
@@ -137,6 +147,22 @@ class AsseticManager
                 }
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastFile()
+    {
+        return $this->last_file;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastPackName()
+    {
+        return $this->last_pack_name;
     }
 
     /**
@@ -194,6 +220,8 @@ class AsseticManager
             $new_file = dirname($file).'/'.$hash.'.'.$ext;
 
             file_put_contents($new_file, $content);
+            $this->last_file      = $new_file;
+            $this->last_pack_name = $name;
 
             $filters = [];
             foreach ($info['post_filters'] as $f) {
