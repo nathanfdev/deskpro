@@ -25,6 +25,9 @@ export class SideBarContainer extends SeparateComponent {
     this.state = {
       sectionsBadges: []
     };
+    if (window.IS_BILLING_ERROR) {
+      this.state.sectionsBadges.push('billing_section');
+    }
     window.document.addEventListener('dpUpdateSideBarBadge', (e) => {
       const sectionsBadges = this.state.sectionsBadges;
       if (e.detail.count > 0) {

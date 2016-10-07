@@ -607,6 +607,11 @@ $transition-close-delay: 0.1s;
         top: -10px;
       }
     }
+    .with-billing-error &.billing {
+      -webkit-animation-name: billingProblemPulse;
+      -webkit-animation-duration: 2s;
+      -webkit-animation-iteration-count: infinite;
+    }
   }
   &:hover {
     .logo svg .text {
@@ -646,3 +651,5 @@ $transition-close-delay: 0.1s;
     transition-delay: $transition-delayed-delay;
   }
 }
+
+@-webkit-keyframes billingProblemPulse{from{background-color:#630030;-webkit-box-shadow:0 0 9px #333;}50%{background-color:#a9014b;-webkit-box-shadow:0 0 18px #a9014b;}to{background-color:#630030;-webkit-box-shadow:0 0 9px #333;}}
