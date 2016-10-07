@@ -710,6 +710,16 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				audio.pause();
 			}
 			alertEl.remove();
+
+			if (window.DP_FRAME_OVERLAYS) {
+				for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
+					const iframe = window.DP_FRAME_OVERLAYS[key];
+					if (iframe.opened) {
+						iframe.close();
+					}
+				}
+			}
+
 		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id + '/join');
 	},
 
