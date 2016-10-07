@@ -4430,7 +4430,7 @@ GroupSequenceProviderInterface
             [
                 'fieldName'    => 'chats',
                 'mappedBy'     => 'participants',
-                'dpApi'        => true,
+                'dpApi'        => false,
                 'targetEntity' => ChatConversation::class,
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]

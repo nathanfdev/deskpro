@@ -683,7 +683,7 @@ define [
       return def
 
     getFilterUserContactPhone: (options = {}) ->
-      options.propName = 'address'
+      options.propName = 'phone'
       options.operators = ['contains', 'notcontains']
       def = @getStandardInput(options)
       return def
@@ -736,7 +736,7 @@ define [
       return def
 
     getFilterOrgContactPhone: (options = {}) ->
-      options.propName = 'address'
+      options.propName = 'phone'
       options.operators = ['contains', 'notcontains']
       def = @getStandardInput(options)
       return def

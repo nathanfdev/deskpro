@@ -34,7 +34,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetOptionsType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSettingsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
@@ -160,68 +160,6 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
     }
 
     /**
-     * Apply widget settings.
-     *
-     * @ApiDoc(
-     *     section="Widget setup",
-     *     resourceDescription="Operations about widget setup",
-     *     description="apply settings",
-     *
-     *     statusCodes={
-     *         200="Returned if request was successful",
-     *         400="In case your request was malformed",
-     *     },
-     *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSetupType",
-     *         "name"="",
-     *         "options"={"method"="POST"},
-     *     }
-     *)
-     * @Rest\Post("/portal/apply")
-     *
-     * @param Request $request
-     * @param Brand   $brand
-     *
-     * @return View
-     */
-    public function applyPortalWidgetSettingsAction(Request $request, Brand $brand)
-    {
-        $this->handleForm($request, $this->getModel($brand));
-
-        // enable widget on the portal
-        $settingRepo = $this->getSettingRepository();
-        $settingRepo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, true, $brand);
-
-        return new View(null, Response::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * Remove widget.
-     *
-     * @ApiDoc(
-     *     section="Widget setup",
-     *     resourceDescription="Operations about widget setup",
-     *     description="remove widget from portal",
-     *     statusCodes={
-     *         200="Returned if request was successful",
-     *     },
-     *)
-     *
-     * @Rest\Post("/portal/remove")
-     *
-     * @param Brand $brand
-     *
-     * @return View
-     */
-    public function removePortalWidgetAction(Brand $brand)
-    {
-        $settingRepo = $this->getSettingRepository();
-        $settingRepo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, false, $brand);
-
-        return new View(null, Response::HTTP_NO_CONTENT);
-    }
-
-    /**
      * Reset widget settings.
      *
      * @ApiDoc(
@@ -304,7 +242,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
     {
         $settings = $model->getSettings();
 
-        $form = $this->createForm($this->getType(), $settings);
+        $form = $this->createForm($this->getType(), $model);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
@@ -362,7 +300,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      */
     protected function getType()
     {
-        return WidgetOptionsType::class;
+        return WidgetSettingsType::class;
     }
 
     /**
@@ -379,6 +317,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
             ->updateSetting(WidgetSettingsResolver::CHAT_EMAIL_VALIDATION, $chat->isEmailValidation(), $brand)
             ->updateSetting(WidgetSettingsResolver::CHAT_REQUIRE_LOGIN, $chat->isRequireLogin(), $brand)
             ->updateSetting(WidgetSettingsResolver::CHAT_ENABLED, $chat->isEnabled(), $brand)
+            ->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, $model->isEnabledOnPortal(), $brand)
         ;
     }
 }

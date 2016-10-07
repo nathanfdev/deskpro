@@ -546,7 +546,7 @@ class ArticleSearch extends SearcherAbstract
                     break; // end labels
 
                 case self::TERM_BRAND:
-                    $brand_id = $choice['brand'];
+                    $brand_id = ((is_array($choice) && isset($choice['brand'])) ? $choice['brand'] : $choice);
 
                     $joins[] = [
                         'article_to_categories',

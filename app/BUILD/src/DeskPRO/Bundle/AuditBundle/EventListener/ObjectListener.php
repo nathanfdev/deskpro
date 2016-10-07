@@ -34,17 +34,26 @@ use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
 use DeskPRO\Component\Util\TypeUtils;
 
+/**
+ * Class ObjectListener.
+ */
 class ObjectListener
 {
+    /**
+     * @param LogEvent $event
+     */
     public function setObject(LogEvent $event)
     {
-        $log = $event->getLog();
-        /** @var EntityInterface|DomainObject $entity */
+        $log    = $event->getLog();
         $entity = $event->getContext()->getEntity();
         $log->setObjectId($entity->getId())->setObjectType(TypeUtils::getBaseTypeName($entity));
         $this->writeObjectName($log, $entity);
     }
 
+    /**
+     * @param AuditLog                     $log
+     * @param DomainObject|EntityInterface $entity
+     */
     private function writeObjectName(AuditLog $log, $entity)
     {
         switch (true) {

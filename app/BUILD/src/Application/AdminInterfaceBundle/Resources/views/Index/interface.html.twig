@@ -170,7 +170,7 @@
                 {{ nav.list_item_group(phrase('adm.general.tasks'), 'fa-check-circle-o', '', 'tasks') }}
                     {{ nav.list_subitem(phrase('adm.tasks.settings'), ng_href('tasks.settings'), 'tasks.settings', 'fa-cog') }}
                 {{ nav.list_item_group_end() }}
-                {% if not app.isCloud() %}
+                {% if not app.isCloud() and not app.getSetting('disable_server_section') %}
                     {{ nav.list_item_group(phrase('adm.general.apps_server'), 'fa-database', '', 'server') }}
                         {{ nav.list_subitem('Server Settings', ng_href('server.server_settings'), 'server.server_settings', 'fa-cog') }}
                         {{ nav.list_subitem('ElasticSearch', ng_href('server.elastic_search'), 'server.settings_elastic_search', 'fa-search') }}

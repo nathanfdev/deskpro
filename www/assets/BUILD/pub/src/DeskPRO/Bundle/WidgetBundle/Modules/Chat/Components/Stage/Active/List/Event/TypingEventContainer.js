@@ -19,8 +19,8 @@ export class TypingEventContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayChild:        false,
-      agentLastTypingTime: null
+      displayChild:    false,
+      agentTypingDate: null
     };
   }
 
@@ -28,8 +28,15 @@ export class TypingEventContainer extends React.Component {
     this.checkLastTypingDate();
   }
 
+  componentWillReceiveProps(newProps) {
+    this.checkLastTypingDate(newProps);
+  }
+
+  shouldComponentUpdate(props, state) {
+    return state.displayChild !== this.state.displayChild;
+  }
+
   componentDidUpdate() {
-    this.checkLastTypingDate();
     if (this.props.onUpdate) {
       this.props.onUpdate();
     }
@@ -45,9 +52,8 @@ export class TypingEventContainer extends React.Component {
     });
   };
 
-  checkLastTypingDate() {
-    const { agentTypingDate } = this.props;
-
+  checkLastTypingDate(props) {
+    const agentTypingDate = props ? props.agentTypingDate : this.props.agentTypingDate;
     if (!agentTypingDate) {
       if (this.state.displayChild) {
         this.setState({

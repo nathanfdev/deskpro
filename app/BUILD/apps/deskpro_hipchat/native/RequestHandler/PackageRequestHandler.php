@@ -71,7 +71,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      */
     public function testSettingsAction(ApiPackageRequestContext $context)
     {
-        $token = $context->getIn()->getString('api_token');
+        $token  = $context->getIn()->getString('api_token');
+        $target = $context->getIn()->getString('api_target');
 
         $error  = false;
         $client = null;
@@ -80,10 +81,10 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $log[] = 'token: '.$token;
 
         $tests   = [];
-        $tests[] = function () use (&$log, $token) {
+        $tests[] = function () use (&$log, $token, $target) {
             $log[] = 'Verifying HipChat API is accessible...';
 
-            $api = new \HipChatApi($token);
+            $api = new \HipChatApi($token, $target ?: \HipChatApi::DEFAULT_TARGET);
             try {
                 $api->get_rooms();
                 $log[] = 'Everything is ok';

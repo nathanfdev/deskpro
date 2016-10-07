@@ -31,6 +31,9 @@ namespace DeskPRO\Bundle\AuditBundle\Storage;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
 use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
 
+/**
+ * Interface TransformerInterface.
+ */
 interface TransformerInterface
 {
     /**
@@ -53,4 +56,12 @@ interface TransformerInterface
      * @return AuditLog
      */
     public function reverseTransformCollection(array $collection);
+
+    /**
+     * @param AuditLog          $log
+     * @param LoggableInterface $loggable
+     *
+     * @return LoggableInterface
+     */
+    public function updateLog(LoggableInterface $loggable, AuditLog $log);
 }

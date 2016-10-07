@@ -62,27 +62,31 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     createBrand: ->
       if (!@settings.deskpro_name || !@settings.deskpro_url)
-        @Growl.error("You must specify a name and a url")
+        @Growl.error "You must specify a name and a url"
         $('#helpdesk_name').focus()
         return false
       brand = {
         name: @settings.deskpro_name,
         url: @settings.deskpro_url
       }
-      @Api2.sendGet('/brands/check_url/' + encodeURIComponent(@settings.deskpro_url))
-      .then (res) =>
-        if res.data.data.free
-          @Api2.sendPostJson('brands', brand).then (res) =>
-            @Growl.success("Brand created")
-            @$scope.brand_id = res.data.data.id
-            @portalSettings.setBrandId(res.data.data.id)
-            @brandId = res.data.data.id
-            @saveSettings().then(=>
-              @$state.go 'portal', {brandId: @brandId}
-            )
-        else
-          @Growl.error("Each brand need to have a different url")
-          $('#helpdesk_url').focus()
+      @Api2.sendPostJson('/brands/check_url', {url: @settings.deskpro_url})
+      .then(
+        (res) =>
+          if res.data.data.free
+            @Api2.sendPostJson('brands', brand).then (res) =>
+              @Growl.success "Brand created"
+              @$scope.brand_id = res.data.data.id
+              @portalSettings.setBrandId(res.data.data.id)
+              @brandId = res.data.data.id
+              @saveSettings().then(=>
+                @$state.go 'portal', {brandId: @brandId}
+              )
+          else
+            @Growl.error "Each brand need to have a different url"
+            $('#helpdesk_url').focus()
+        =>
+          @Growl.error "We can't check this url. Try another one or contact your system administrator."
+      )
 
     deleteBrand: ->
       if confirm "Are you sure you want to delete this brand? Theme personalization and templates will be lost."

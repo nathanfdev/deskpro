@@ -161,7 +161,7 @@ class BinariesPathValidator
         // Output is like:
         // /some/path/mysql  Ver 15.1 Distrib 10.1.10-MariaDB, for osx10.11 (x86_64) using readline 5.1
 
-        if (!preg_match('#^([a-zA-Z0-9 \\/\.\-_:\\\\]*)mysql(\.exe)?\s*#m', $res, $match)) {
+        if (!preg_match('#^([a-zA-Z0-9 \\/\.\-_:\\\\\(\)]*)mysql(\.exe)?\s*#m', $res, $match)) {
             $this->throwCmdVerifyError($proc);
         }
 
@@ -199,7 +199,7 @@ class BinariesPathValidator
         // Output is like:
         // /some/path/mysqldump  Ver 10.16 Distrib 10.1.10-MariaDB, for osx10.11 (x86_64)
 
-        if (!preg_match('#^([a-zA-Z0-9 \\/\.\-_:\\\\]*)mysqldump(\.exe)?\s*#m', $res, $match)) {
+        if (!preg_match('#^([a-zA-Z0-9 \\/\.\-_:\\\\\(\)]*)mysqldump(\.exe)?\s*#m', $res, $match)) {
             $this->throwCmdVerifyError($proc);
         }
 

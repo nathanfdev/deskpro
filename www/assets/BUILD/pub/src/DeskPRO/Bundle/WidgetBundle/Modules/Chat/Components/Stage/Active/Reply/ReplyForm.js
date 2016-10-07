@@ -31,6 +31,10 @@ export class ReplyForm extends React.Component {
     onSendMessage:       PropTypes.func
   };
 
+  static getUploadUrl() {
+    return `${window.DP_HELPDESK_URL}portal/api/blobs/temp`;
+  }
+
   constructor(props) {
     super(props);
 
@@ -42,8 +46,18 @@ export class ReplyForm extends React.Component {
     this.state = { message };
   }
 
-  onChangeMessage = value => {
-    this.setState({ message: value });
+  shouldComponentUpdate(props, state) {
+    const { agentName, attachedImagesCount, isEnded, lostConnection, canReopen } = this.props;
+    return props.agentName !== agentName
+      || props.attachedImagesCount !== attachedImagesCount
+      || props.isEnded !== isEnded
+      || props.lostConnection !== lostConnection
+      || props.canReopen !== canReopen
+      || state.message === '';
+  }
+
+  onChangeMessage = (message) => {
+    this.setState({ message });
 
     if (!this.timeout) {
       const onUserTyping = () => {
@@ -58,25 +72,21 @@ export class ReplyForm extends React.Component {
     }
   };
 
-  onPasteImage = file => {
+  onPasteImage = (file) => {
     this.uploadButton.pushFileToQueue(file);
   };
 
-  onScreenShare = event => {
+  onScreenShare = (event) => {
     event.preventDefault();
     console.log('onScreenShare');
   };
 
-  onSubmit = event => {
+  onSubmit = (event) => {
     event.preventDefault();
 
     this.props.onSendMessage(this.state.message);
     this.setState({ message: '' });
   };
-
-  getUploadUrl() {
-    return `${window.DP_HELPDESK_URL}portal/api/blobs/temp`;
-  }
 
   renderRte() {
     return (
@@ -160,7 +170,7 @@ export class ReplyForm extends React.Component {
                   multiple
                   className="file"
                   name="files"
-                  uploadUrl={this.getUploadUrl()}
+                  uploadUrl={ReplyForm.getUploadUrl()}
                 />
               </DropZoneContainer>
             </span>
@@ -195,7 +205,7 @@ export class ReplyForm extends React.Component {
         <DropZoneContainer instant>
           <DropZone
             getExternalInput={() => this.fileUpload}
-            uploadUrl={this.getUploadUrl()}
+            uploadUrl={ReplyForm.getUploadUrl()}
           >
             <DragOverlayListener context={[parent.document, window.widgetFrame.document]}>
               <DropZoneOverlay />

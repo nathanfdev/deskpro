@@ -13,8 +13,9 @@
         <article>
             <div class="panel panel-fill indent">
                 <div class="panel-body">
-
-                    <div class="form-group">
+                    <div class="alert alert-warning" ng-show="ViewCtrl.model.is_request_truncated">{{ phrase('admin.api_logs.request_was_too_big') }}</div>
+                    <div class="alert alert-warning" ng-show="ViewCtrl.model.is_response_truncated">{{ phrase('admin.api_logs.response_was_too_big') }}</div>
+                    <div class="form-group" ng-show="!ViewCtrl.model.is_request_truncated">
                         <div class="col-lg-12 indent">
                             <div class="pull-left">
                                 <button class="btn btn-primary" ng-click="ViewCtrl.replay()">

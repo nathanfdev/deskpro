@@ -84,6 +84,8 @@ abstract class AbstractStatefulIncidentTrigger extends AbstractTrigger implement
             $incident = $this->continuingIncidents[$subject];
             $incident->addEvent($event);
             if ($this->isIncidentState($incident)) {
+                $incident->setResolved(false);
+
                 if (!$incident->isRaised()) {
                     $incident->setRaised(true);
                     if ($this->raisedCallback) {

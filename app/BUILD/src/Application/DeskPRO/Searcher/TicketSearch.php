@@ -541,12 +541,16 @@ class TicketSearch extends SearcherAbstract
     /**
      * (Optimised for this class, doesnt build query like usual).
      *
-     * @return array
+     * @return bool
      */
     public function needsPersonContext()
     {
         if ($this->done_person_context_check) {
             return $this->used_person_context > 0;
+        }
+
+        if ($this->done_person_context_check) {
+            return $this->used_person_context;
         }
 
         $this->used_person_context       = 0;
@@ -565,21 +569,28 @@ class TicketSearch extends SearcherAbstract
 
                 switch ($term) {
                     case self::TERM_AGENT:
-                        $this->_normalizeAgentChoice($choice);
+                        $res = $this->_normalizeAgentChoice($choice);
+                        if ($res['has_dyn']) {
+                            $this->used_person_context = true;
+                        }
                         break;
                     case self::TERM_PARTICIPANT:
-                        $this->_normalizeAgentChoice($choice);
+                        $res = $this->_normalizeAgentChoice($choice);
+                        if ($res['has_dyn']) {
+                            $this->used_person_context = true;
+                        }
                         break;
                     case self::TERM_AGENT_TEAM:
-                        $this->_normalizeAgentTeamChoice($choice);
+                        $res = $this->_normalizeAgentTeamChoice($choice);
+                        if ($res['has_dyn']) {
+                            $this->used_person_context = true;
+                        }
                         break;
                 }
             }
         }
 
-        $this->affected_fields = array_unique($this->affected_fields, SORT_STRING);
-
-        return $this->affected_fields;
+        return (bool) $this->used_person_context;
     }
 
     /**

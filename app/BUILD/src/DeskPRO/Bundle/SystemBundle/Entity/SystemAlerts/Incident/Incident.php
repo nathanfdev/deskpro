@@ -113,6 +113,11 @@ interface Incident extends EntityInterface, NotifyPropertyChanged
     /**
      * @return Event
      */
+    public function getFirstFailureEvent();
+
+    /**
+     * @return Event
+     */
     public function getLastFailureEvent();
 
     /**

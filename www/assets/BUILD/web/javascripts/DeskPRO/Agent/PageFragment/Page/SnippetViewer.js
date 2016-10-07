@@ -742,7 +742,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 			// The initial fire of this is after opening a new edit window,
 			// so we're just setting the defaults but not syncing an empty value back to the lang-x elements
-			var html = DP.convertTextToWysiwygHtml(langSnippetEl.val(), true);
+			var html = langSnippetEl.val();
 
       if ($(this).hasClass('initial')) {
 				inputTitleEl.val(langTitleEl.val());

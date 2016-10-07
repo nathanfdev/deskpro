@@ -1109,15 +1109,17 @@ abstract class SearcherAbstract implements PersonContextInterface
             $choice = [$choice];
         }
 
-        $agent_ids  = [];
-        $not_id     = null;
-        $unassigned = false;
+        $agent_ids   = [];
+        $not_id      = null;
+        $unassigned  = false;
+        $has_dynamic = false;
 
         foreach ($choice as $c) {
             $c = (int) $c;
             if ($c === 0) {
                 $unassigned = true;
             } elseif ($c == -1) {
+                $has_dynamic = true;
                 ++$this->used_person_context;
                 if ($this->getPersonContext()) {
                     $agent_ids[] = $this->getPersonContext()->getId();
@@ -1125,6 +1127,7 @@ abstract class SearcherAbstract implements PersonContextInterface
                     $agent_ids[] = -1;
                 }
             } elseif ($c == -2) {
+                $has_dynamic = true;
                 ++$this->used_person_context;
                 if ($this->getPersonContext()) {
                     $not_id = $this->getPersonContext()->getId();
@@ -1138,6 +1141,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 
         return [
             'agent_ids'  => $agent_ids,
+            'has_dyn'    => $has_dynamic,
             'not_id'     => $not_id,
             'unassigned' => $unassigned,
         ];
@@ -1147,9 +1151,10 @@ abstract class SearcherAbstract implements PersonContextInterface
     {
         $choice = (array) $choice;
 
-        $team_ids = [];
-        $not_ids  = null;
-        $no_team  = false;
+        $team_ids    = [];
+        $not_ids     = null;
+        $no_team     = false;
+        $has_dynamic = false;
 
         if ($this->getPersonContext()) {
             $agent = $this->getPersonContext();
@@ -1163,12 +1168,14 @@ abstract class SearcherAbstract implements PersonContextInterface
             if ($c === 0) {
                 $no_team = true;
             } elseif ($c == -1) {
+                $has_dynamic = true;
                 ++$this->used_person_context;
                 if ($agent) {
                     $team_ids = array_merge($team_ids, Arrays::removeFalsey($agent->getAgentTeamIds()));
                 }
                 $team_ids[] = -1;
             } elseif ($c == -2) {
+                $has_dynamic = true;
                 ++$this->used_person_context;
                 if ($agent) {
                     $not_ids = array_merge($team_ids, Arrays::removeFalsey($agent->getAgentTeamIds()));
@@ -1181,6 +1188,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 
         return [
             'team_ids' => $team_ids,
+            'has_dyn'  => $has_dynamic,
             'not_ids'  => $not_ids,
             'no_team'  => $no_team,
         ];

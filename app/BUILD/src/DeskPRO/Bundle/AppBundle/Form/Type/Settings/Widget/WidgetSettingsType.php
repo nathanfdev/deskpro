@@ -26,22 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget;
 
-use Symfony\Component\Validator\Constraint;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @Annotation
+ * Class WidgetSettingsType.
  */
-class ValidRecaptcha2 extends Constraint
+class WidgetSettingsType extends AbstractType
 {
-    public $message = 'portal.forms.error_captcha';
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('settings', WidgetOptionsType::class)
+            ->add('enabled_on_portal', ApiBooleanType::class, [
+                'property_path' => 'enabledOnPortal',
+            ])
+        ;
+    }
 
     /**
      * {@inheritdoc}
      */
-    public function validatedBy()
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return 'valid_recaptcha2';
+        $resolver->setDefaults([
+            'data_class' => WidgetSettings::class,
+        ]);
     }
 }

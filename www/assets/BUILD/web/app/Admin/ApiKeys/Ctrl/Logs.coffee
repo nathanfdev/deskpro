@@ -30,17 +30,20 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 
     toggleLogs: ->
       @options.enabled = !@options.enabled
-      @updateOptions()
 
     toggleMode: (mode) ->
       if Arrays.findIndex(@options.modes, (v) -> v == mode) >= 0
         Arrays.findAndRemove(@options.modes, (v) -> v == mode)
       else
         @options.modes.push(mode)
-      @updateOptions()
 
     updateOptions: ->
-      @service.updateOptions(@options).then((data) @options => data)
+      @service.updateOptions(@options).then(
+        =>
+          @Growl.success 'Successfuly saved your new settings'
+        =>
+          @Growl.error 'Error while saving'
+      )
 
     initializeScopeWatching: ->
 

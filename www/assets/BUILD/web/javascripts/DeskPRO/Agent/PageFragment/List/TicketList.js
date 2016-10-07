@@ -2219,7 +2219,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
 					html = html.replace(/^<p>/, '');
 					html = html.replace(/<\/p>$/, '');
-					textarea.data('redactor').insertSnippetHtml(html);
+					textarea.data('redactor').insertHtml(html);
 				} else {
 					self.page.insertTextInReply(result);
 				}

@@ -51,6 +51,8 @@ class DisabledHelpdeskListener implements EventSubscriberInterface, SkipLowReque
         'user_context_hash',
         'user_logout',
         'portal_ping',
+        'portal_reset_password_process',
+        'portal_set_password_process',
     ];
 
     /**

@@ -352,6 +352,8 @@ class AgentDataService
      */
     public function getByEmail($email)
     {
+        $this->preload();
+
         $email = strtolower($email);
 
         return isset($this->emails[$email]) ? $this->emails[$email] : null;
