@@ -5,6 +5,8 @@ require('../../compiled/Admin/Agents/Ctrl/DeletedRestore');
 require('../../compiled/Admin/Agents/Ctrl/Import');
 require('../../compiled/Admin/Agents/Ctrl/List');
 require('../../compiled/Admin/Agents/Ctrl/Logs');
+require('../../compiled/Admin/Agents/Ctrl/AuditLogs');
+require('../../compiled/Admin/Agents/Ctrl/AuditLogsView');
 
 require('../../compiled/Admin/AgentGroups/Ctrl/Edit');
 require('../../compiled/Admin/AgentGroups/Ctrl/List');
@@ -131,8 +133,6 @@ require('../../compiled/Admin/Server/Ctrl/ServerEnc');
 require('../../compiled/Admin/Server/Ctrl/ServerFileUploads');
 require('../../compiled/Admin/Server/Ctrl/ServerFileCheck');
 require('../../compiled/Admin/Server/Ctrl/ServerReportFile');
-require('../../compiled/Admin/Server/Ctrl/ServerAuditLogs');
-require('../../compiled/Admin/Server/Ctrl/ServerAuditLogsView');
 
 require('../../compiled/Admin/Tasks/Ctrl/Edit');
 
