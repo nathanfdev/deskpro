@@ -10,18 +10,18 @@ import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Component
 class AvatarHelper
 {
   static renderDepartmentAvatar(department) {
-    return <DepartmentAvatar department={department} size={24} classes={['ui avatar image im']} />;
+    return <DepartmentAvatar department={department} size={24} className="ui avatar image im" />;
   }
 
   static renderAgentTeamAvatar(team) {
-    return <AgentTeamAvatar agentTeam={team} size={24} classes={['ui avatar image im']} />;
+    return <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" />;
   }
 
   static renderAgentAvatar(agent) {
     return (<PersonAvatar
       color={chooseColor(agent.get('id'))}
       person={agent} size={24}
-      classes={['ui avatar image im']}
+      className="ui avatar image im"
     />);
   }
 
@@ -32,7 +32,7 @@ class AvatarHelper
       urlPattern: null,
       gravatar:   null,
       text:       'E',
-      classes:    ['ui avatar image im']
+      className:  'ui avatar image im'
     };
 
     return <Avatar {...props} />;

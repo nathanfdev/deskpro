@@ -10,21 +10,19 @@ class AgentList extends AbstractList {
     notifications: PropTypes.object.isRequired
   };
 
-  getAvatar(agent) {
-    return AvatarHelper.renderAgentAvatar(agent);
-  }
+  getAvatar = AvatarHelper.renderAgentAvatar;
 
   getItem(agent) {
     const notificationCount = this.props.notifications.get(`${agent.get('id')}`) || 0;
-    const classes = ['im', 'agent'];
+    const className = ['im', 'agent'];
     if (!agent.get('online')) {
-      classes.push('offline');
+      className.push('offline');
     }
 
     return (
       <ListElement
         key={agent.get('id')}
-        classes={classes}
+        className={className}
         imageNode={this.getAvatar(agent)}
       >
         <div
@@ -55,7 +53,7 @@ class AgentList extends AbstractList {
 
   render() {
     return (
-      <List classes={['im', 'middle', 'aligned', 'selection']}>
+      <List className="im middle aligned selection">
         {this.getItems()}
       </List>);
   }

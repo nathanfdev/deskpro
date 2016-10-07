@@ -5,17 +5,16 @@ class SegmentsGroup extends React.Component {
 
   static propTypes = {
     children:   PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
-    classes:    PropTypes.arrayOf(PropTypes.string),
+    className:  PropTypes.string,
     raised:     PropTypes.bool,
     horizontal: PropTypes.bool,
     vertical:   PropTypes.bool,
     piled:      PropTypes.bool,
     stacked:    PropTypes.bool
-
   };
 
   static defaultProps = {
-    classes:    [],
+    className:  '',
     raised:     false,
     horizontal: false,
     vertical:   false,
@@ -24,15 +23,15 @@ class SegmentsGroup extends React.Component {
   };
 
   render() {
-    const { stacked, raised, horizontal, vertical, piled, classes, children } = this.props;
-    const additionaClasses = {
+    const { stacked, raised, horizontal, vertical, piled, className, children } = this.props;
+    const additionalClasses = {
       raised,
       horizontal,
       vertical,
       piled,
       stacked
     };
-    return (<div className={classNames('ui', 'segments', classes, additionaClasses)}>
+    return (<div className={classNames('ui', 'segments', className, additionalClasses)}>
       {children}
     </div>);
   }

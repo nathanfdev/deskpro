@@ -4,22 +4,25 @@ import classNames from 'classnames';
 class TabsMenuItem extends React.Component {
 
   static propTypes = {
-    tabId:   PropTypes.string.isRequired,
     active:  PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
     title:   PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.object
     ]).isRequired,
-    classes: PropTypes.arrayOf(PropTypes.string).isRequired
+    className: PropTypes.string
+  };
+
+  static defaultProps = {
+    className: ''
   };
 
   render() {
-    const { onClick, active, title, classes } = this.props;
+    const { onClick, active, title, className } = this.props;
 
     return (
       <a
-        className={classNames('item', { active }, classes)}
+        className={classNames('item', { active }, className)}
         onClick={onClick}
       >
         {title}

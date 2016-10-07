@@ -27,7 +27,7 @@ class AbstractList extends React.Component {
   }
 
   getItem(item, type, titleProp) {
-    const classes = ['im', type];
+    const className = ['im', type];
     let size = item.get('agents').size;
     if (size > 2) {
       size -= 1;
@@ -37,7 +37,7 @@ class AbstractList extends React.Component {
     return (
       <ListElement
         key={item.get('id')}
-        classes={classes}
+        className={className}
         imageNode={this.getAvatar(item)}
       >
         <div
@@ -61,19 +61,19 @@ class AbstractList extends React.Component {
           return null;
         }
 
-        const classes = ['ui avatar image im'];
+        const className = ['ui avatar image im'];
         const agent = this.props.agents.get(agentId);
         if (!agent) {
           return null;
         }
         if (!agent.get('online')) {
-          classes.push('offline');
+          className.push('offline');
         }
 
         return (<PersonAvatar
           person={agent}
           size={14}
-          classes={classes}
+          className={className}
           color={chooseColor(agent)}
         />);
       }
@@ -82,7 +82,7 @@ class AbstractList extends React.Component {
 
   render() {
     return (
-      <List classes={['im', 'middle', 'aligned', 'selection']}>
+      <List className="im middle aligned selection">
         {this.getItems()}
       </List>);
   }

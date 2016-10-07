@@ -11,7 +11,6 @@ import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 class GroupAddDrawer extends React.Component
 {
   static propTypes = {
-    me:            PropTypes.object.isRequired,
     agents:        PropTypes.object.isRequired,
     target:        PropTypes.node.isRequired,
     isOpen:        PropTypes.bool.isRequired,
@@ -38,7 +37,7 @@ class GroupAddDrawer extends React.Component
     let count = 0;
     for (const key of Object.keys(checked)) {
       if (checked[key]) {
-        count++;
+        count += 1;
       }
     }
 
@@ -89,14 +88,14 @@ class GroupAddDrawer extends React.Component
   }
 
   renderAgent(agent) {
-    const classes = [];
+    const className = [];
     if (!agent.get('online')) {
-      classes.push('offline');
+      className.push('offline');
     }
     return (
       <ListElement
         key={agent.get('id')}
-        classes={classes}
+        className={className}
       >
         <Toggle checkbox active={!!this.state.checkedAgents[agent.get('id')]} onChange={() => this.agentClick(agent)}>
           {AvatarHelper.renderAgentAvatar(agent)}
@@ -125,18 +124,18 @@ class GroupAddDrawer extends React.Component
               <Segment vertical>
                 <Header
                   level={5}
-                  classes={['add group']}
+                  className="add group"
                   content={<span><i className="fa fa-users" />&nbsp;Create group</span>}
                 />
               </Segment>
               <Segment vertical>
-                <Header level={4} classes={['group name']} content="Group name" />
+                <Header level={4} className="group name" content="Group name" />
               </Segment>
               <Segment vertical>
-                <Header level={4} classes={['group-list']} content={this.getAgentsHeader()} />
-                <List classes={['im', 'middle', 'aligned', 'selection', 'agent']}>
+                <Header level={4} className="group-list" content={this.getAgentsHeader()} />
+                <List className="im middle aligned selection agent">
                   <Scrollable vertical>
-                    {agents.map((agent) => this.renderAgent(agent))}
+                    {agents.map(agent => this.renderAgent(agent))}
                   </Scrollable>
                 </List>
               </Segment>

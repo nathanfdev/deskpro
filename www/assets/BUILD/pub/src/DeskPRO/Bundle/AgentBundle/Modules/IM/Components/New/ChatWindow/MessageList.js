@@ -18,7 +18,7 @@ class MessageList extends React.Component {
   static renderEmpty() {
     return (
       <Header
-        classes="empty"
+        className="empty"
         level={5}
         content="Sorry, nothing found here"
       />

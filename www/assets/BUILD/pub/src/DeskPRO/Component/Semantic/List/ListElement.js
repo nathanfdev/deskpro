@@ -10,7 +10,7 @@ class ListElement extends React.Component {
     image:       PropTypes.string,
     imageNode:   PropTypes.object,
     elements:    PropTypes.arrayOf(PropTypes.object),
-    classes:     PropTypes.arrayOf(PropTypes.string),
+    className:   PropTypes.string,
     children:    PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.array
@@ -18,8 +18,8 @@ class ListElement extends React.Component {
   };
 
   static defaultProps = {
-    label:   '',
-    classes: []
+    label:     '',
+    className: ''
   };
 
   getContent() {
@@ -58,8 +58,8 @@ class ListElement extends React.Component {
   }
 
   render() {
-    const { classes, children } = this.props;
-    return (<div className={classNames('item', classes)}>
+    const { className, children } = this.props;
+    return (<div className={classNames('item', className)}>
       {this.getIcon()}
       {this.getContent()}
       {children}

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
+import classNames from 'classnames';
 
 class Message extends React.Component
 {
@@ -24,7 +25,7 @@ class Message extends React.Component
 
   render() {
     const my = this.props.message.person === this.props.me.get('id');
-    return (<Segment classes={['row', { my }]}>
+    return (<Segment className={classNames('row', { my })}>
       {my ? this.timestamp() : null}
       <div className="message">
         {!my ? <div className="agent name">{this.props.message.person_name}</div> : null}

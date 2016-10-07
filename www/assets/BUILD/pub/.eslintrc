@@ -73,6 +73,7 @@
       {"forbid": ["any"]}
     ],
     "import/prefer-default-export": "off",
+    "react/no-unused-prop-types": [2, { "skipShapeProps": true }],
     "class-methods-use-this": [
       "error",
       { "exceptMethods": [

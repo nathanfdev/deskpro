@@ -39,15 +39,15 @@ class TopBarRecentImList extends RecentList {
       }
     }
     const agent = this.props.agents.get(agentId);
-    const classes = ['im', 'agent', 'recent'];
+    const className = ['im', 'agent', 'recent'];
     if (!agent.get('online')) {
-      classes.push('offline');
+      className.push('offline');
     }
     return (<span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>
       <PersonAvatar
         color={chooseColor(agent.get('id'))}
         person={agent} size={24}
-        classes={['ui avatar image im']}
+        className="ui avatar image im"
       />
     </span>);
   }
@@ -57,7 +57,7 @@ class TopBarRecentImList extends RecentList {
 
     return (
       <span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>
-        <DepartmentAvatar department={department} size={24} classes={['ui avatar image im']} />
+        <DepartmentAvatar department={department} size={24} className="ui avatar image im" />
       </span>
     );
   }
@@ -67,7 +67,7 @@ class TopBarRecentImList extends RecentList {
 
     return (
       <span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>
-        <AgentTeamAvatar agentTeam={team} size={24} classes={['ui avatar image im']} />
+        <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" />
       </span>
     );
   }
@@ -79,7 +79,7 @@ class TopBarRecentImList extends RecentList {
       urlPattern: null,
       gravatar:   null,
       text:       'E',
-      classes:    ['ui avatar image im']
+      className:  'ui avatar image im'
     };
     return (
       <span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>

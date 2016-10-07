@@ -39,11 +39,21 @@ export default class IMOverlay extends React.Component {
 
   getRecentTab() {
     const { agentsLoaded, teamsLoaded, departmentsLoaded, recentLoaded } = this.props;
+    const { me, agents, departments, teams, notifications, chats, onRecentClick } = this.props;
     const loaded = agentsLoaded && teamsLoaded && departmentsLoaded && recentLoaded;
+    const props = {
+      me,
+      agents,
+      departments,
+      teams,
+      notifications,
+      chats,
+      onRecentClick
+    };
     const content = (
       <Loader loaded={loaded} opacity={0} width={4} color="#4696dc">
         <Scrollable vertical>
-          <RecentList {...this.props} />
+          <RecentList {...props} />
         </Scrollable>
       </Loader>
     );
@@ -81,20 +91,20 @@ export default class IMOverlay extends React.Component {
           <Scrollable vertical>
             <Header
               level={4}
-              classes={['group-list']}
+              className="group-list"
               content={<span>everyone<span className="agents-counter">({agents.size})</span></span>}
             />
             <EveryoneSegment agents={agents} onParticipantClick={onParticipantClick} />
             <div className="ui divider" />
-            <Header level={4} classes={['group-list']} content="im groups" />
-            <Segment classes={['new-im-group']} raised vertical>
+            <Header level={4} className="group-list" content="im groups" />
+            <Segment className="new-im-group" raised vertical>
               <span onClick={() => createNewGroup()}>+ create new im group</span>
             </Segment>
             <div className="ui divider" />
-            <Header level={4} classes={['group-list']} content="department" />
+            <Header level={4} className="group-list" content="department" />
             <DepartmentList agents={agents} departments={departments} me={me} onParticipantClick={onParticipantClick} />
             <div className="ui divider" />
-            <Header level={4} classes={['group-list']} content="teams" />
+            <Header level={4} className="group-list" content="teams" />
             <AgentTeamList agents={agents} teams={teams} me={me} onParticipantClick={onParticipantClick} />
           </Scrollable>
         </div>
@@ -127,13 +137,13 @@ export default class IMOverlay extends React.Component {
     return (
       <div>
         <div className="im header">Agent IM</div>
-        <SegmentsGroup classes={['im']}>
-          <Segment classes={['search-wrapper']}>
+        <SegmentsGroup className="im">
+          <Segment className="search-wrapper">
             <SearchBox
               placeholder="Search ..."
             />
           </Segment>
-          <Segment classes={['im-tabs']}>{this.getTabs()}</Segment>
+          <Segment className="im-tabs">{this.getTabs()}</Segment>
         </SegmentsGroup>
       </div>
     );
@@ -146,7 +156,7 @@ export default class IMOverlay extends React.Component {
       <div
         style={{ display: 'inline-block' }}
         className={classNames({ active: isOpen }, ['im', 'wrapper'])}
-        ref={c => { this.imButton = c; }}
+        ref={(c) => { this.imButton = c; }}
         onClick={toggleOverlay}
         onMouseEnter={this.onMouseEnter}
       >

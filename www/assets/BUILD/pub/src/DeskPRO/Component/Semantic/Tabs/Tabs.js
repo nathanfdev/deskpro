@@ -23,7 +23,7 @@ class Tabs extends React.Component {
   };
 
   static defaultProps = {
-    classes: {
+    allClasses: {
       menuItem:          [],
       notActiveMenuItem: [],
       activeMenuItem:    [],
@@ -62,12 +62,12 @@ class Tabs extends React.Component {
       const props = {
         key,
         active,
-        tabId:   item.id,
-        title:   item.title,
-        classes: allClasses,
-        onClick: self.onTabClick(item.id)
+        tabId:     item.id,
+        title:     item.title,
+        className: allClasses,
+        onClick:   self.onTabClick(item.id)
       };
-      key++;
+      key += 1;
       return menuItems.push(<TabsMenuItem {...props} />);
     });
 
@@ -82,12 +82,12 @@ class Tabs extends React.Component {
     items.map((item, index) => {
       const props = {
         key,
-        tabId:   item.id,
-        active:  self.state.activeId ? self.state.activeId === item.id : index === 0,
-        content: item.content,
-        classes: classes.item
+        tabId:     item.id,
+        active:    self.state.activeId ? self.state.activeId === item.id : index === 0,
+        content:   item.content,
+        className: classes.item
       };
-      key++;
+      key += 1;
       return tabsItems.push(<TabsItem {...props} />);
     });
 

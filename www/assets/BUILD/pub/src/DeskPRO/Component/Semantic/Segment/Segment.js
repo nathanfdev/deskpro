@@ -6,9 +6,9 @@ class Segment extends React.Component {
 
   static propTypes = {
     children:  PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
-    className: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.object])),
+    className: PropTypes.string,
     header:    PropTypes.shape({
-      size:    PropTypes.integer,
+      level:   PropTypes.integer,
       content: PropTypes.string
     }),
     raised:     PropTypes.bool,
@@ -21,8 +21,8 @@ class Segment extends React.Component {
   };
 
   static defaultProps = {
-    classes: [],
-    header:  {
+    className: '',
+    header:    {
       size:    3,
       content: ''
     },
@@ -45,7 +45,7 @@ class Segment extends React.Component {
 
   render() {
     const { disabled, loading, stacked, raised, horizontal, vertical, piled, className, children } = this.props;
-    const additionaClasses = {
+    const additionalClasses = {
       disabled,
       loading,
       raised,
@@ -55,7 +55,7 @@ class Segment extends React.Component {
       stacked
     };
     return (
-      <div className={classNames('ui', 'segment', className, additionaClasses)}>
+      <div className={classNames('ui', 'segment', className, additionalClasses)}>
         {this.getHeader()}
         {children}
       </div>

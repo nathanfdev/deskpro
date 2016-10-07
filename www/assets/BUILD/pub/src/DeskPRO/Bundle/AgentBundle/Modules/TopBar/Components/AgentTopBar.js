@@ -227,7 +227,6 @@ export class AgentTopBar extends React.Component {
     teams:               PropTypes.object.isRequired,
     me:                  PropTypes.object.isRequired,
     recentChats:         PropTypes.object.isRequired,
-    TopBar:              PropTypes.object,
     notificationCount:   PropTypes.number,
     dispatch:            PropTypes.func.isRequired,
     updateVolume:        PropTypes.func,
@@ -333,9 +332,7 @@ export class AgentTopBar extends React.Component {
             notifications={Immutable.fromJS({})}
             chats={recentChats}
             toggleOverlay={toggleImOverlay}
-            teamsLoaded={teamsLoaded}
             departmentsLoaded={myDepartmentsLoaded}
-            agentsLoaded={agentsLoaded}
             recentLoaded={recentLoaded}
           >
             <IMButton />

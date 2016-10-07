@@ -3,20 +3,20 @@ import classNames from 'classnames';
 
 class Header extends React.Component {
   static propTypes = {
-    level:   PropTypes.number.isRequired,
-    content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-    classes: PropTypes.array
+    level:     PropTypes.number.isRequired,
+    content:   PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    className: PropTypes.string
   };
 
   static defaultProps = {
-    classes: [],
-    level:   3
+    className: '',
+    level:     3
   };
 
   render() {
-    const { level, content, classes } = this.props;
+    const { level, content, className } = this.props;
     const element = `h${level}`;
-    return React.createElement(element, { className: classNames(['ui', 'header'], classes) }, content);
+    return React.createElement(element, { className: classNames(['ui', 'header'], className) }, content);
   }
 }
 
