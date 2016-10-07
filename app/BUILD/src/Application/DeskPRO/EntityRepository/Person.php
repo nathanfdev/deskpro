@@ -230,6 +230,7 @@ class Person extends AbstractEntityRepository
                 'p.is_disabled = 0',
                 'p.is_deleted = 0'
             )
+            ->orderBy('name', 'ASC')
         ;
 
         if ($forIds) {
