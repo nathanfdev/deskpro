@@ -56,8 +56,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
         $us->is_enabled  = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\GooglePlus';
 
-        $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
-        $this->setupUsergroup($us, $app->getSetting('auto_user_permission_group'));
+        $this->setupActions();
 
         $em->persist($app);
         $em->persist($us);

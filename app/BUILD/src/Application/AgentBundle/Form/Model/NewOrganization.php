@@ -54,7 +54,7 @@ class NewOrganization
      */
     protected $_em;
 
-    public function __construct(Person $person_context)
+    public function __construct(Person $person_context = null)
     {
         $this->_person_context = $person_context;
 
@@ -94,7 +94,7 @@ class NewOrganization
         $org->getLabelManager()->setLabelsArray($this->labels);
         $this->_em->flush();
 
-        $this->_org = $org;
+        return $this->_org = $org;
     }
 
     public function getOrganization()

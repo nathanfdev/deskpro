@@ -26,40 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace Application\DeskPRO\Usersource;
 
-namespace deskpro_us_facebook;
+use Application\DeskPRO\Usersource\Actions\AbstractAction;
+use DpSys\LowError\SystemErrorHandler;
+use Orb\Types\JsonObjectSerializable;
 
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
-use Application\DeskPRO\Entity\AppInstance;
-use Application\DeskPRO\Entity\Usersource;
-use Doctrine\ORM\EntityManager;
-
-class InstallerHandler extends AbstractUsersourceInstallerHandler
+class ActionsCollection extends \ArrayObject implements JsonObjectSerializable
 {
     /**
      * {@inheritdoc}
      */
-    protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+    public function serializeJsonArray()
     {
-        $us->options = [
-            'app_key'         => $app->getSetting('app_key'),
-            'app_secret'      => $app->getSetting('app_secret'),
-            'raw_info_filter' => $app->getSetting('raw_info_filter') ?: null,
-        ];
-        $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
-        $us->title             = $app->title;
-        $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-        $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook';
+        $data = [];
 
-        $this->setupActions();
+        foreach ($this as $v) {
+            $data[] = $v->toArray();
+        }
 
-        $em->persist($app);
-        $em->persist($us);
-        $em->flush();
+        return $data;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+        foreach ($data as $v) {
+            try {
+                $action = AbstractAction::fromArray($v);
+                $obj[]  = $action;
+            } catch (\Exception $e) {
+                SystemErrorHandler::logException($e, false, md5('action_'.$v['type']));
+            }
+        }
+
+        return $obj;
     }
 }

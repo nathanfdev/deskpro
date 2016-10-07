@@ -72,8 +72,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
         $us->lost_password_url = $app->getSetting('url') ?: '';
         $us->source_type       = 'deskpro_us_jwt\\Usersource\\Adapter\\Jwt';
 
-        $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
-        $this->setupUsergroup($us, $app->getSetting('auto_user_permission_group'));
+        $this->setupActions();
 
         if ('auto' == $app->getSetting('sso_type')) {
             $us->makeSsoAutoOnly();

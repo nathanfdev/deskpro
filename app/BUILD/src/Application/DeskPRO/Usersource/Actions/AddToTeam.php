@@ -26,37 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace Application\DeskPRO\Usersource\Actions;
 
-namespace deskpro_us_vbulletin;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\AgentTeam;
 
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
-use Application\DeskPRO\Entity\AppInstance;
-use Application\DeskPRO\Entity\Usersource;
-use deskpro_us_vbulletin\Usersource\AppOptionsMapper;
-use Doctrine\ORM\EntityManager;
-
-class InstallerHandler extends AbstractUsersourceInstallerHandler
+class AddToTeam extends AbstractAction
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+    protected $teamId;
+
+    public function getData()
     {
-        $us->title             = $app->title;
-        $us->options           = AppOptionsMapper::getOptions($app);
-        $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-        $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
-        $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Vbulletin';
+        return $this->teamId;
+    }
 
-        $this->setupActions();
+    public function setData($value)
+    {
+        if (!is_numeric($value)) {
+            throw new \Exception('Invalid data type for AddToTeam usersource action');
+        }
 
-        $em->persist($us);
-        $em->persist($app);
-        $em->flush();
+        $this->teamId = (int) $value;
+    }
+
+    protected function doHandle(DeskproContainer $container, Person $person, array $rawInput)
+    {
+        /** @var AgentTeam $teamsRep */
+        $teamsRep = $container->getEm()->getRepository('DeskPRO:AgentTeam');
+        $teams    = $teamsRep->getTeamsFromIds([$this->getData()]);
+        if ($team = reset($teams)) {
+            $person->addTeam($team);
+        }
     }
 }

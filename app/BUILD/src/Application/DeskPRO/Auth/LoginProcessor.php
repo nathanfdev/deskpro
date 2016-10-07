@@ -33,10 +33,12 @@
 namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DependencyInjection\SystemServices\AgentCheckerService;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Usersource\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
@@ -227,7 +229,7 @@ class LoginProcessor
         }
 
         // Update custom field data
-        App::getSystemService('person_fields_manager')->copyUsersourceData(
+        App::$container->getPersonFieldManager()->copyUsersourceData(
             $this->person,
             $this->identity,
             $this->usersource
@@ -236,7 +238,7 @@ class LoginProcessor
         $this->person['is_user'] = true;
         $this->person->setLastLoginAt();
 
-        self::tryUsergroupPromotion($this->usersource, $this->person);
+        self::tryUsergroupPromotion($this->usersource, $this->person, $this->identity->getRawData());
         if (self::tryAutoAgent($this->usersource, $this->person)) {
             $this->sendAgentWelcomeEmail();
         }
@@ -438,6 +440,7 @@ class LoginProcessor
     {
         if (Usersource::TYPE_AGENT == $usersource->type && $usersource->auto_agent) {
             $agentChecker = App::getSystemService('agent_checker');
+            /** @var $agentChecker AgentCheckerService */
             if ($agentChecker->addAgentSeat($person)) {
                 $person['is_agent']  = true;
                 $person['can_agent'] = true;
@@ -449,16 +452,17 @@ class LoginProcessor
         return false;
     }
 
-    public static function tryUsergroupPromotion(Usersource $usersource, Person $person)
+    public static function tryUsergroupPromotion(Usersource $usersource, Person $person, $raw_info)
     {
-        if ($usersource->type == Usersource::TYPE_AGENT) {
-            if ($usersource->agent_permission_group) {
-                $person->addUsergroup($usersource->agent_permission_group);
-            }
-        } elseif ($usersource->type == Usersource::TYPE_USER) {
-            if ($usersource->user_permission_group) {
-                $person->addUsergroup($usersource->user_permission_group);
-            }
+        if ($usersource->type === Usersource::TYPE_AGENT && !$usersource->auto_agent) {
+            return;
+        }
+
+        foreach ($usersource->actions as $action) {
+            /* @var $action AbstractAction */
+            $action->handle(App::$container, $person, $raw_info);
+
+            // todo how to handle exceptions here?
         }
     }
 }

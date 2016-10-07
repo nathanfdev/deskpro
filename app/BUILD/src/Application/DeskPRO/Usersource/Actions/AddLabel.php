@@ -26,37 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace Application\DeskPRO\Usersource\Actions;
 
-namespace deskpro_us_vbulletin;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\LabelPerson;
+use Application\DeskPRO\Entity\Person;
 
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
-use Application\DeskPRO\Entity\AppInstance;
-use Application\DeskPRO\Entity\Usersource;
-use deskpro_us_vbulletin\Usersource\AppOptionsMapper;
-use Doctrine\ORM\EntityManager;
-
-class InstallerHandler extends AbstractUsersourceInstallerHandler
+class AddLabel extends AbstractAction
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+    protected $label;
+
+    public function getData()
     {
-        $us->title             = $app->title;
-        $us->options           = AppOptionsMapper::getOptions($app);
-        $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-        $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
-        $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Vbulletin';
+        return $this->label;
+    }
 
-        $this->setupActions();
+    public function setData($value)
+    {
+        $this->label = (string) $value;
+    }
 
-        $em->persist($us);
-        $em->persist($app);
-        $em->flush();
+    protected function getValue(array $data)
+    {
+        return $this->getData();
+    }
+
+    protected function doHandle(DeskproContainer $container, Person $person, array $rawInput)
+    {
+        $value = $this->getValue($rawInput);
+        $label = new LabelPerson($value);
+        $person->addLabel($label);
     }
 }

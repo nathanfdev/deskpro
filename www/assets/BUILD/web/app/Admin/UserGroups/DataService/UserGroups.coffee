@@ -120,3 +120,7 @@ define [
       )
 
       return p
+
+    url: -> 'user_groups'
+
+    resolveResponse: (response) -> response.groups

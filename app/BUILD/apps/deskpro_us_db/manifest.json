@@ -189,29 +189,16 @@
 			"label": "Auto Agent",
 			"checkbox_label": "Automatically create agents if they do not already exist",
 			"usersource_display": "agent",
-			"default_value": true,
-
-			"inline_dependant": {
-				"name": "auto_agent_permission_group",
-				"type": "choice",
-				"label": "Add agents to this permission group",
-				"options_variable": "permission_groups",
-				"is_required": true
-			}
+			"default_value": true
 		},
 		{
-		  "name": "auto_user_permission_group",
-		  "usersource_display": "user",
-		  "type": "dynamic_choice",
-		  "options_variable": "permission_groups_user",
-		  "label": "Grant Usergroup",
-		  "description": "Add this usergroup to users who login with this usersource",
-		  "is_required": true
+			"name": "actions",
+			"type": "array"
 		},
 		{
 			"name": "sync_enabled",
 			"type": "checkbox",
-		  "usersource_display": "user",
+		  	"usersource_display": "user",
 			"label": "Enable Auto Sync",
 			"checkbox_label": "Routinely sync user information from this usersource to DeskPRO",
 			"default_value": false
