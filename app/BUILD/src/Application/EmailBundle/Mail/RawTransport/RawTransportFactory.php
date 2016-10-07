@@ -128,7 +128,26 @@ class RawTransportFactory
     {
         $tr = \Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl');
         $tr->setUsername($config->user);
-        $tr->setPassword($config->password);
+
+        if (!empty($config->token)) {
+            $client = new \Google_Client();
+            $client->setClientId($config->clientId);
+            $client->setClientSecret($config->clientSecret);
+            $client->setScopes(\Google_Service_Gmail::MAIL_GOOGLE_COM);
+            $client->setAccessToken($config->token);
+            $client->setAccessType('offline');
+            $client->refreshToken($config->refreshToken);
+            $data = $client->getAccessToken();
+            if (!empty($data['access_token'])) {
+                $auth = new \Swift_Transport_Esmtp_Auth_XOAuth2Authenticator();
+                $tr->setExtensionHandlers(['AUTH' => new \Swift_Transport_Esmtp_AuthHandler([$auth])]);
+                $tr->setAuthMode('XOAUTH2');
+                $tr->setPassword($data['access_token']);
+            }
+        } else {
+            $tr->setPassword($config->password);
+        }
+
         $tr->setTimeout(120);
         $tr->registerPlugin(new TransportLogger($this->logger));
 
