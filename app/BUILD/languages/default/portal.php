@@ -500,6 +500,7 @@ return [
     'portal.forms.label_last_name'                          => 'Last Name',
     'portal.forms.label_message'                            => 'Message',
     'portal.forms.label_name'                               => 'Name',
+    'portal.forms.label_current_password'                   => 'Current password',
     'portal.forms.label_password'                           => 'Password',
     'portal.forms.label_password_confirm'                   => 'Confirm',
     'portal.forms.label_priority'                           => 'Priority',
