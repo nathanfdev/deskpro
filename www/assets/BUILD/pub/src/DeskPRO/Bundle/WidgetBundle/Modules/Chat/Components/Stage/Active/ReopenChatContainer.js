@@ -55,3 +55,4 @@ export class ReopenChatContainer extends React.Component {
     });
   }
 }
+export default ReopenChatContainer;

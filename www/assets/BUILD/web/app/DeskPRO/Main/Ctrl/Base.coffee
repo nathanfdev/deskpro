@@ -1,4 +1,4 @@
-define ['angular'], (angular) ->
+define ['angular', 'underscore'], (angular, _) ->
   ###*
   * The base controller class is mainly to make it easier to define controllers with angular.
     *
@@ -101,7 +101,8 @@ define ['angular'], (angular) ->
         return @$state.isStateActive(stateId, stateParams)
 
       @$scope.state_path = (route, params = {}) =>
-        return @$state.href(route, params).replace(/\?.*$/, '')
+        # The # is not added since updating angular to 1.5 this manual fix does the trick
+        return '#'+@$state.href(route, params).replace(/\?.*$/, '')
 
       # Allow showAlert(message, callback) to be called from code
       @$scope.showAlert = (message, fn) =>
@@ -113,7 +114,7 @@ define ['angular'], (angular) ->
 
         inst = @showAlert(message, title)
         if fn
-          inst.result.then(=> fn() )
+          inst.result.then(-> fn() )
 
       @$scope.showConfirm = (message, fnTrue) =>
         if message.title
@@ -124,7 +125,7 @@ define ['angular'], (angular) ->
 
         inst = @showConfirm(message, title)
         if fnTrue
-          inst.result.then(=> fnTrue() )
+          inst.result.then(-> fnTrue() )
 
 
       @$scope.$on('$stateChangeStart', (ev, toState, toParams, fromState, fromParams) =>
@@ -134,7 +135,7 @@ define ['angular'], (angular) ->
           return
 
         if not @_state_cont_go and not window.DP_NO_DIRTYSTATE_CONFIRM and @isDirtyState()
-          ev.preventDefault();
+          ev.preventDefault()
 
           # - The window hash has changed at this point so we
           # need to reset it back to what it was
@@ -255,13 +256,13 @@ define ['angular'], (angular) ->
           if desc.doneSpin
             deferred.resolve()
         ,
-        setSpinDone: =>
+        setSpinDone: ->
           desc.doneSpin = true
           if desc.doneTime
             deferred.resolve()
         ,
         _promise: deferred.promise,
-        _timeout: @$timeout(=>
+        _timeout: @$timeout(->
           desc.setTimeoutDone()
         , minTime)
       }
@@ -372,7 +373,7 @@ define ['angular'], (angular) ->
             for check_code in field.dpServerValidationKeys
               if check_code.indexOf(code) == 0
                 code_segs = code.split('.')
-                last_seg = code_segs.pop();
+                last_seg = code_segs.pop()
 
                 switch last_seg
                   when 'required'
@@ -413,7 +414,7 @@ define ['angular'], (angular) ->
     ngApply: (fn) ->
       if !@$scope.$$phase && !@$scope.$root.$$phase
         try
-          @$scope.$apply(fn);
+          @$scope.$apply(fn)
         catch e
           window.setTimeout(=>
             try
@@ -471,14 +472,14 @@ define ['angular'], (angular) ->
         templateUrl: @getTemplatePath('Index/modal-confirm-leavetab.html'),
         controller: ['$scope', '$modalInstance', '$state', ($scope, $modalInstance, $state) ->
           $scope.dismiss = ->
-            $modalInstance.dismiss();
+            $modalInstance.dismiss()
 
           $scope.continue = ->
             parentCtrl._state_cont_go = true
-            $modalInstance.dismiss();
+            $modalInstance.dismiss()
             $state.go(parentCtrl._state_cont_state, parentCtrl._state_cont_state_params)
         ]
-      });
+      })
 
       return inst
 
@@ -504,9 +505,9 @@ define ['angular'], (angular) ->
           $scope.message = message
 
           $scope.dismiss = ->
-            $modalInstance.dismiss();
+            $modalInstance.dismiss()
         ]
-      });
+      })
 
       return inst
 
@@ -532,12 +533,12 @@ define ['angular'], (angular) ->
           $scope.message = message
 
           $scope.dismiss = ->
-            $modalInstance.dismiss();
+            $modalInstance.dismiss()
 
           $scope.confirm = ->
-            $modalInstance.close();
+            $modalInstance.close()
         ]
-      });
+      })
 
       return inst
 

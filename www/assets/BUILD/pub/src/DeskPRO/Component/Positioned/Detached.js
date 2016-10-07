@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import classNames from 'classnames';
 import { Abstract } from './Abstract';
 
 export class Detached extends Abstract {
@@ -10,7 +11,9 @@ export class Detached extends Abstract {
 
   componentWillUnmount() {
     if (this.cont) {
-      this.props.children && ReactDOM.unmountComponentAtNode(this.cont);
+      if (this.props.children) {
+        ReactDOM.unmountComponentAtNode(this.cont);
+      }
       this.cont.parentNode.removeChild(this.cont);
       this.cont = null;
     }
@@ -18,26 +21,32 @@ export class Detached extends Abstract {
 
   componentDidUpdate() {
     const { isOpen = false } = this.state;
-    const { onOpen, onClose } = this.props;
+    const { onOpen, onClose, className } = this.props;
 
     if (isOpen) {
       if (!this.cont) {
         this.cont = document.createElement('div');
-        this.cont.className = 'positioned-element';
+        this.cont.className = classNames('positioned-element', className);
         document.body.appendChild(this.cont);
       }
 
       ReactDOM.unstable_renderSubtreeIntoContainer(this, this.props.children, this.cont);
-      onOpen && onOpen();
+      if (onOpen) {
+        onOpen();
+      }
       this.updatePosition();
     } else {
       if (this.cont) {
-        this.props.children && ReactDOM.unmountComponentAtNode(this.cont);
+        if (this.props.children) {
+          ReactDOM.unmountComponentAtNode(this.cont);
+        }
         this.cont.parentNode.removeChild(this.cont);
         this.cont = null;
       }
 
-      onClose && onClose();
+      if (onClose) {
+        onClose();
+      }
     }
   }
 }

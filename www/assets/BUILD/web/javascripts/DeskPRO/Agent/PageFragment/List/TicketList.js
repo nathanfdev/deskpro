@@ -525,7 +525,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		console.log("[TicketList.addTicketResult] %o", ticketIds);
 
 		if (!$scope.realtime) {
-			$scope.hasUnloadedUpdates = true;
+			$('.view-alert-subheader').removeClass('hidden');
 			return;
 		}
 
@@ -675,7 +675,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		console.log("[TicketList.removeTicketResult] %o", ticketIds);
 
 		if (!$scope.realtime && !$scope.halfrealtime) {
-			$scope.hasUnloadedUpdates = true;
+			$('.view-alert-subheader').removeClass('hidden');
 			return;
 		}
 
@@ -758,7 +758,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		console.log("[TicketList.refreshTicketResult] %o", ticketIds);
 
 		if (!$scope.realtime && !$scope.halfrealtime) {
-			$scope.hasUnloadedUpdates = true;
+			$('.view-alert-subheader').removeClass('hidden');
 			return;
 		}
 
@@ -1560,10 +1560,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		$scope.realtime              = true;
 		$scope.refreshCursor         = function() { self.refreshCursor(); };
-		$scope.hasUnloadedUpdates    = false;
 		$scope.toggleRealtimeUpdates = function() {
 			$scope.realtime = !$scope.realtime;
-			if ($scope.realtime && $scope.hasUnloadedUpdates) {
+			if ($scope.realtime && $('.view-alert-subheader').hasClass('hidden')) {
 				self.refreshCursor();
 			}
 		};
@@ -1617,7 +1616,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				time2 = new Date();
 				console.log('[TicketList] refreshCursor :: done load (%dms) :: %o', time2.getTime() - time1.getTime(), data);
 
-				$scope.hasUnloadedUpdates = false;
+				$('.view-alert-subheader').addClass('hidden');
 				self._handleRefreshCursor(data);
 				def.resolve(data);
 
@@ -1709,8 +1708,6 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 				return ticket.agent ? ticket.agent.id : null;
 			case 'agent_team':
 				return ticket.agent_team ? ticket.agent_team.id : null;
-			case 'agent_team':
-				return ticket.agent_team ? ticket.agent_team.id : null;
 			case 'urgency':
 				return ticket.urgency ? ticket.urgency : null;
 			default:
@@ -1737,8 +1734,6 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 				return (ticket.language && ticket.language.id === intValue) || (!ticket.language && intValue === 0);
 			case 'agent':
 				return (ticket.agent && ticket.agent.id === intValue) || (!ticket.agent && intValue === 0);
-			case 'agent_team':
-				return (ticket.agent_team && ticket.agent_team.id === intValue) || (!ticket.agent_team && intValue === 0);
 			case 'agent_team':
 				return (ticket.agent_team && ticket.agent_team.id === intValue) || (!ticket.agent_team && intValue === 0);
 			case 'urgency':

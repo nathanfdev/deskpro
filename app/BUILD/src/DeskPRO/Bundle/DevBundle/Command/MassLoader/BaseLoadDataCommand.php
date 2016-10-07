@@ -43,7 +43,7 @@ class BaseLoadDataCommand extends AbstractLoadDataCommand
     protected function configure()
     {
         $this->setName('dpdev:load-data:base');
-        $this->setDescription(<<<EOF
+        $this->setDescription(<<<'EOF'
 Agents: 1500
 Teams: 15, randomly assign agents to 1 team each
 Departments: 200

@@ -202,15 +202,11 @@ define([
       log: function(){},
       warn: function(){},
       error: function(){}
-    }
+    };
   }
 
   return {
     start: function() {
-      var loadingEl = document.getElementById('dp_loading');
-      loadingEl.parentNode.removeChild(loadingEl);
-      loadingEl = null;
-
       window.DP_UID_COUNTER = 0;
       window.dp_get_uid = function () {
         return window.DP_UID_COUNTER++;
@@ -238,5 +234,5 @@ define([
         angular.bootstrap($html, ['Admin_App']);
       });
     }
-  }
+  };
 });

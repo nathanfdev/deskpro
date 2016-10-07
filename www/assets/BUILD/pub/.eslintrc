@@ -46,6 +46,7 @@
       }
     ],
     "react/prefer-stateless-function": 0,
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
     "react/react-in-jsx-scope": 2,
@@ -61,7 +62,16 @@
         "SwitchCase": 1
       }
     ],
-    "valid-jsdoc": 0
+    "valid-jsdoc": 0,
+    "import/no-extraneous-dependencies": [
+      "error",
+      {"devDependencies": true}
+    ],
+    "jsx-a11y/no-static-element-interactions": 0,
+    "react/forbid-prop-types": [
+      "error",
+      {"forbid": ["any"]}
+    ]
   },
   "plugins": [
     "react",

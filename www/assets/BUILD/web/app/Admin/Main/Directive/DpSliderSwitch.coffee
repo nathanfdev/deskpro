@@ -6,7 +6,7 @@ define ->
     # This turns an element into an iOS7-style toggle on/off switch. It toggles the connected
     # model to true or false.
     #
-    # (This is similar to DpToggleSwitch, this is just cleaner; aka 'version 2' of that compontent)
+    # (This is similar to DpToggleSwitch, this is just cleaner; aka 'version 2' of that component)
     #
     # Additional Attributes
     # ---------------------
@@ -38,41 +38,29 @@ define ->
         </div>
       """,
       replace: true,
-      link: (scope, element, attrs, ngModel) ->
+      scope: {
+        isLocked: "=?",
+        isOn: "=?",
+        isSome: "=?",
+        lockedTipE: "=?"
+      }
+      link: (scope, element, attr, ngModel) ->
 
         ngModel.$render = ->
-          val = ngModel.$viewValue || { checked: false, on: false, locked: false }
-          if val.on || val.checked
+          if scope.isOn || ngModel.$viewValue
             element.addClass('switch-on')
             element.removeClass('switch-off switch-some')
-          else if val.some
+          else if scope.isSome
             element.removeClass('switch-on switch-off')
             element.addClass('switch-some')
           else
             element.removeClass('switch-on switch-some')
             element.addClass('switch-off')
 
-          if val.locked
+          if scope.isLocked
             element.addClass('locked')
           else
             element.removeClass('locked')
-
-        ngModel.$formatters.push( (modelValue) ->
-          val = ngModel.$viewValue || { checked: false, on: false, locked: false }
-          if modelValue
-            val.checked = true
-          else
-            val.checked = false
-
-          return val
-        )
-
-        ngModel.$parsers.push( (viewValue) ->
-          if viewValue and viewValue.checked
-            return true
-          else
-            return false
-        )
 
         element.on('click', (ev) ->
           ev.preventDefault()
@@ -81,46 +69,13 @@ define ->
           if element.hasClass('locked')
             return
 
-          val = ngModel.$viewValue || { checked: false, on: false, locked: false }
-          val.checked = !val.checked
           scope.$apply(->
-            ngModel.$setViewValue(val)
+            ngModel.$setViewValue(!ngModel.$viewValue)
           )
           ngModel.$render()
         )
 
-        if attrs.isLocked
-          scope.$watch(attrs.isLocked, (newVal) ->
-            val = ngModel.$viewValue || { checked: false, on: false, locked: false }
-            val.locked = newVal
-            ngModel.$setViewValue(val)
-            ngModel.$render()
-          )
-
-        if attrs.isOn
-          scope.$watch(attrs.isOn, (newVal) ->
-            val = ngModel.$viewValue || { checked: false, on: false, locked: false }
-            val.on = newVal
-            ngModel.$setViewValue(val)
-            ngModel.$render()
-          )
-
-        if attrs.isSome
-          scope.$watch(attrs.isSome, (newVal) ->
-            val = ngModel.$viewValue || { checked: false, on: false, locked: false }
-            val.some = !!newVal
-            ngModel.$setViewValue(val)
-            ngModel.$render()
-          )
-
-        scope.$watch(attrs.ngModel, (newVal) ->
-          val = ngModel.$viewValue || { checked: false, on: false, locked: false }
-          val.checked = newVal
-          ngModel.$setViewValue(val)
-          ngModel.$render()
-        )
-
-        if attrs.lockedTip or attrs.lockedTipE
+        if attr.lockedTip or scope.lockedTipE
           tipTarget = angular.element('<div class="mouse-target show-on-locked-on"></div>')
           tipTarget.appendTo(element)
           tipTarget.tooltip({
@@ -128,10 +83,10 @@ define ->
             trigger: 'hover',
             container: 'body',
             title: ->
-              if attrs.lockedTipE
-                return scope.$eval(attrs.lockedTipE)
+              if scope.lockedTipE
+                return scope.lockedTipE
               else
-                return attrs.lockedTip
+                return attr.lockedTip
           })
     }
   ]

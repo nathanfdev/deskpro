@@ -12,8 +12,9 @@
 	top: @topHeight;
 	bottom: 0;
 	left: 0;
-	width: @appNavWidth;
-	background: #2b2f33;
+	width: 55px;
+	background: #21282d;
+	border-left: 2px solid black;
 	z-index: 2;
 }
 
@@ -32,6 +33,12 @@
 	right: 0;
 	overflow: hidden;
 }
+.dp-layout-app.reports-app {
+	left: 55px;
+}
+.dp-layout.billing .dp-layout-app {
+	left: 0;
+}
 
 //######################################################################################################################
 //# App Nav
@@ -46,7 +53,6 @@
 	bottom: 0;
 	width: @navWidth;
 	overflow: auto;
-	display: none;
 
 	background: #eceef0;
 	border-right: 1px solid #b7bac0;

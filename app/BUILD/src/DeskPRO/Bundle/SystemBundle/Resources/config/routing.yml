@@ -1,0 +1,4 @@
+system_routes:
+    prefix: /
+    type: annotation
+    resource: "@SystemBundle/Controller"

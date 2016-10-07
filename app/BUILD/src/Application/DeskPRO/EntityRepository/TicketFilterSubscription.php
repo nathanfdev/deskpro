@@ -64,7 +64,7 @@ class TicketFilterSubscription extends AbstractEntityRepository
     {
         /** @var Connection $connection */
         $connection = $this->getEntityManager()->getConnection();
-        $agentIds   = $connection->fetchAllCol(<<<SQL
+        $agentIds   = $connection->fetchAllCol(<<<'SQL'
             SELECT DISTINCT s.person_id
             FROM ticket_filter_subscriptions s
             JOIN people p ON p.id = s.person_id

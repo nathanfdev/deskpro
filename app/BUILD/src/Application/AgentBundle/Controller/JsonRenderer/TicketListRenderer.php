@@ -108,7 +108,7 @@ class TicketListRenderer
         foreach ($this->ticket_display->getTickets() as $ticket) {
             $ticket_ids[] = $ticket->getId();
             if ($ticket->getPerson()) {
-            	$person_ids[] = $ticket->getPersonId();
+                $person_ids[] = $ticket->getPersonId();
             }
 
             if ($ticket->getOrganization()) {

@@ -18,9 +18,9 @@ export class HeaderWidget extends React.Component {
     return (
       <div className="agent-ims">
         <a href="#" id="im-button" onClick={this.onClick} className="show-more">
-            <span>
-                IMs <i className="fa fa-angle-down"></i>
-            </span>
+          <span>
+            IMs <i className="fa fa-angle-down" />
+          </span>
         </a>
         <RecentList />
       </div>

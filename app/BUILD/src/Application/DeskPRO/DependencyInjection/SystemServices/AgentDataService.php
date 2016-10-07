@@ -39,7 +39,7 @@ use Orb\Util\Arrays;
  * Class AgentDataService.
  *
  * @deprecated Avoid using it as much as possible. It works really slow if we have many agents/usergroups/teams
- * because it pre loads them ALL, even if we need something just for one agent.
+ * because it pre loads them ALL, even if we need something just for one agent
  */
 class AgentDataService
 {
@@ -180,7 +180,7 @@ class AgentDataService
     /**
      * @return \Application\DeskPRO\Entity\Person[]
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getAgents()
     {
@@ -192,7 +192,7 @@ class AgentDataService
     /**
      * @return \Application\DeskPRO\Entity\AgentTeam[]
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getAgentTeams()
     {
@@ -204,7 +204,7 @@ class AgentDataService
     /**
      * @return array
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getAgentToTeams()
     {
@@ -216,7 +216,7 @@ class AgentDataService
      *
      * @return string[]
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getNames(array $for_ids = null)
     {
@@ -234,7 +234,7 @@ class AgentDataService
     /**
      * @return int[]
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getIds()
     {
@@ -246,7 +246,7 @@ class AgentDataService
     /**
      * @return int[]
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getTeamIds()
     {
@@ -260,7 +260,7 @@ class AgentDataService
      *
      * @return \Application\DeskPRO\Entity\Person|null
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function get($id)
     {
@@ -278,7 +278,7 @@ class AgentDataService
      *
      * @return bool
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function has($id)
     {
@@ -294,7 +294,7 @@ class AgentDataService
      *
      * @return array
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getByIds($ids)
     {
@@ -321,7 +321,7 @@ class AgentDataService
      *
      * @return array
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function confirmAgentIds(array $ids, &$invalid_ids = null)
     {
@@ -348,7 +348,7 @@ class AgentDataService
      *
      * @return \Application\DeskPRO\Entity\Person
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getByEmail($email)
     {
@@ -364,7 +364,7 @@ class AgentDataService
      *
      * @return int[]
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getOnlineAgentIds()
     {
@@ -386,7 +386,7 @@ class AgentDataService
     /**
      * @return array
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getOnlineAgents()
     {
@@ -407,7 +407,7 @@ class AgentDataService
      *
      * @return bool
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function isAgentOnline($id_or_agent)
     {
@@ -422,7 +422,7 @@ class AgentDataService
      *
      * @return int
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function countOnlineAgents()
     {
@@ -434,7 +434,7 @@ class AgentDataService
      *
      * @return \Application\DeskPRO\Entity\AgentTeam|null
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getTeam($id)
     {
@@ -452,7 +452,7 @@ class AgentDataService
      *
      * @return bool
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function hasTeam($id)
     {
@@ -468,7 +468,7 @@ class AgentDataService
      *
      * @return array
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getTeamsByIds($ids)
     {
@@ -493,7 +493,7 @@ class AgentDataService
      *
      * @return \Application\DeskPRO\Entity\AgentTeam[]
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getTeamsForAgent($agent)
     {
@@ -528,7 +528,7 @@ class AgentDataService
      *
      * @return bool
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function isAgentMemberOfTeam($agent, $team)
     {
@@ -573,7 +573,7 @@ class AgentDataService
      *
      * @return \Application\DeskPRO\Entity\AgentTeam[]
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getGroupIdsForAgent($agent, $forceAgentData = false)
     {
@@ -610,7 +610,7 @@ class AgentDataService
      *
      * @return \Application\DeskPRO\Entity\Person[]
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getAgentsForTeam($team)
     {
@@ -659,7 +659,7 @@ class AgentDataService
      *
      * @return array
      *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above.
+     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function selectAgents($selector, Person $person_context = null, Ticket $ticket_context = null)
     {

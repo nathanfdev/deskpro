@@ -30,6 +30,7 @@ bin/deskpro-importer-tools
 /www/assets/BUILD/web/app/node_modules
 /www/assets/BUILD/web/app/bower_components
 /www/assets/BUILD/web/app-build
+/www/assets/BUILD/web/compiled
 /www/assets/BUILD/web/loader-build
 /www/assets/BUILD/web/stylesheets-less/admin/styleguide
 /www/assets/BUILD/pub/node_modules

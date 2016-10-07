@@ -59,7 +59,7 @@
 				</div>
 			</header>
 		</header>
-		<header class="view-alert-subheader" ng-show="hasUnloadedUpdates">
+		<header class="view-alert-subheader hidden">
 			There have been updates since you loaded this list.
 			<button class="clean-white" ng-click="refreshCursor();">
 				<span ng-hide="refreshCursorLoading">Refresh List</span>
@@ -67,7 +67,6 @@
 			</button>
 		</header>
 		<article class="view-body">
-
 			<div style="padding: 20px; text-align: center;" ng-show="refreshCursorLoading">
 				<i class="spinner-circle-32"></i>
 			</div>

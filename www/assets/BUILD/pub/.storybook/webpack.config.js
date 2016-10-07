@@ -6,11 +6,15 @@ const config = {
       {
         test: /\.css?$/,
         loaders: ['style', 'raw'],
-        include: path.resolve(__dirname, '../')
+        include: path.resolve(__dirname, '../../')
       },
       {
-        loader: 'json-loader',
-        test: /\.json$/
+        test: /\.(svg|png|jpg)$/,
+        loader:  'url'
+      },
+      {
+        test: /\.json$/,
+        loader: 'json-loader'
       }
     ]
   },

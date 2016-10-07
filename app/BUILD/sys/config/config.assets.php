@@ -120,10 +120,13 @@ $CONFIG['agent_vendors'] = [
         'vendor/idbstore/idbstore.min.js',
         'vendor/twig/twig.js',
         'bower_components/moment/min/moment-with-locales.min.js',
+        'bower_components/moment-timezone/builds/moment-timezone-with-data.min.js',
         'bower_components/notify.js/notify.js',
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
         'bower_components/jquery-qrcode/dist/jquery.qrcode.js',
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+        'bower_components/react/react.js',
+        'bower_components/react/react-dom.js',
     ],
 ];
 
@@ -290,6 +293,7 @@ $CONFIG['agent_element_handlers'] = [
         'javascripts/DeskPRO/Agent/ElementHandler/QuickSearch.js',
         'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
         'javascripts/DeskPRO/Agent/ElementHandler/OverlayFrame.js',
+        'javascripts/DeskPRO/Agent/ElementHandler/GoToBilling.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',
         'javascripts/DeskPRO/Agent/ElementHandler/RadioExpander.js',
         'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',

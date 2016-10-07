@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { TypingEvent } from './TypingEvent';
 import { agentNameSelector, agentAvatarSelector, agentTypingDateSelector } from '../../../../../Selectors/chat';
-import moment from 'moment';
 
 @connect(state => ({
   agentName:       agentNameSelector(state),
@@ -25,11 +25,11 @@ export class TypingEventContainer extends React.Component {
   }
 
   componentDidMount() {
-    this.checkLastTypingDate(this.props);
+    this.checkLastTypingDate();
   }
 
-  componentWillReceiveProps(props) {
-    this.checkLastTypingDate(props);
+  componentWillReceiveProps(newProps) {
+    this.checkLastTypingDate(newProps);
   }
 
   shouldComponentUpdate(props, state) {
@@ -53,8 +53,7 @@ export class TypingEventContainer extends React.Component {
   };
 
   checkLastTypingDate(props) {
-    const { agentTypingDate } = props;
-
+    const agentTypingDate = props ? props.agentTypingDate : this.props.agentTypingDate;
     if (!agentTypingDate) {
       if (this.state.displayChild) {
         this.setState({
@@ -68,7 +67,7 @@ export class TypingEventContainer extends React.Component {
 
     const ended = moment(agentTypingDate).format('X');
     const now = moment().format('X');
-    const delay = ended - now + 10; // displays in 10 seconds
+    const delay = (ended - now) + 10; // displays in 10 seconds
 
     if (delay > 0 && (!this.state.displayChild || agentTypingDate !== this.state.agentTypingDate)) {
       this.setState({
@@ -84,3 +83,4 @@ export class TypingEventContainer extends React.Component {
     return this.state.displayChild ? <TypingEvent {...this.props} /> : null;
   }
 }
+export default TypingEventContainer;

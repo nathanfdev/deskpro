@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ asset('stylesheets-less/semantic-ui/semantic.css') }}" type="text/css" >
 {% if not in_body %}
 	<script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
 {% endif %}
@@ -72,3 +73,5 @@
 {# --- NEW AGENT --- #}
 {#<link type="text/css" rel="stylesheet" href="{{ asset('DeskPRO_AgentBundle.css', 'app_assets') }}" />#}
 {#<script type="text/javascript" src="{{ asset('DeskPRO_AgentBundle.js', 'app_assets') }}"></script>#}
+<link type="text/css" rel="stylesheet" href="{{ asset('DeskPRO_AgentLegacyBundle_style.css', 'app_assets') }}" />
+<script type="text/javascript" src="{{ asset('DeskPRO_AgentLegacyBundle.js', 'app_assets') }}"></script>

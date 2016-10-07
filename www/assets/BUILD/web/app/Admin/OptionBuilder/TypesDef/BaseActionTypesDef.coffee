@@ -1,12 +1,12 @@
 define [
+  'underscore',
   'DeskPRO/Util/Util',
   'DeskPRO/Util/Arrays',
   'Admin/OptionBuilder/TypesDef/BaseTypesDef'
-], (
+], (_,
   Util,
   Arrays,
-  BaseTypesDef
-) ->
+  BaseTypesDef) ->
   class Admin_OptionBuilder_TypesDef_BaseActionTypesDef extends BaseTypesDef
     constructor: (@$q, @Api, @dpTemplateManager) ->
       @options_data   = null
@@ -51,11 +51,11 @@ define [
       # Constructs a standard select box type
     ###
     getStandardSelect: (options) ->
-      type      = options.type
+      type = options.type
       prop_name = options.propName
       data_name = options.dataName
       options_formatter = options.optionsFormatter || null
-      is_multi  = options.isMulti
+      is_multi = options.isMulti
       extraOptions = options.extraOptions || null
 
       if not options_formatter
@@ -105,10 +105,10 @@ define [
               }
             getValue: (model = {}, data) ->
               value = {}
-              value.type = type
-              value.options = {}
+              value.type               = type
+              value.options            = {}
               value.options[prop_name] = model.value
-              value.options.op = model.op
+              value.options.op         = model.op
               return value
           }
       }
@@ -118,9 +118,9 @@ define [
       # Constructs a standard "is" template (no options, just a boolean is)
     ###
     getStandardIs: (options) ->
-      type      = options.type
+      type = options.type
       prop_name = options.propName
-      icon      = options.icon
+      icon = options.icon
 
       me = @
       return {
@@ -140,8 +140,8 @@ define [
               }
             getValue: (model = {}, data) ->
               value = {}
-              value.type = type
-              value.options = {}
+              value.type               = type
+              value.options            = {}
               value.options[prop_name] = true
               return value
           }
@@ -152,7 +152,7 @@ define [
       # Constructs a standard input box
     ###
     getStandardInput: (options) ->
-      type      = options.type
+      type = options.type
       prop_name = options.propName
 
       me = @
@@ -177,16 +177,15 @@ define [
                 op: value.options?.op || value.op || _.first(data.operators)
               }
             getValue: (model = {}, data) ->
-
               val = model.value || ''
               if options.tags
                 val = val.split(',')
 
               value = {}
-              value.type = type
-              value.options = {}
+              value.type               = type
+              value.options            = {}
               value.options[prop_name] = val
-              value.options.op = model.op
+              value.options.op         = model.op
               return value
           }
       }
@@ -200,11 +199,11 @@ define [
 
       options.operators = ['set', 'unset']
       if field.type_name == 'choice'
-        options.options = field.choices.map( (o) -> {title: o.title, value: o.id + ""})
+        options.options  = field.choices.map((o) -> { title: o.title, value: o.id + "" })
         options.template = 'OptionBuilder/type-actions-custom-select.html'
         return @getStandardSelect(options)
       else if field.type_name == 'toggle'
-        options.options = [{title: 'On', value: "1"}, {title: "Off", value: "0"}]
+        options.options  = [{ title: 'On', value: "1" }, { title: "Off", value: "0" }]
         options.template = 'OptionBuilder/type-actions-custom-select.html'
         return @getStandardSelect(options)
       else
@@ -222,8 +221,8 @@ define [
     initFieldGetter: (base_name, f, force) ->
       fname = base_name + f.id
 
-      if not this['get'+fname] || force?
-        this['get'+fname] = (options = {}) =>
+      if not this['get' + fname] || force?
+        this['get' + fname] = (options = {}) =>
           options.type = base_name + f.id
           return @getStandardForFieldDef(f, options)
 

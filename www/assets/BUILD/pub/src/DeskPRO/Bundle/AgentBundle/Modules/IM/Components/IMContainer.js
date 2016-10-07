@@ -27,7 +27,7 @@ export class IMContainer extends React.Component {
     this.helper = new ChatHelper();
   }
 
-  renderOverlay = () => {
+  renderOverlay = function () {
     return (
       <Simple
         positionMy="left-25 top+1"
@@ -58,10 +58,10 @@ export class IMContainer extends React.Component {
 
   render() {
     return (
-     <div id="im-container">
-       {this.renderOverlay()}
-       {this.renderChat()}
-     </div>
+      <div id="im-container">
+        {this.renderOverlay()}
+        {this.renderChat()}
+      </div>
     );
   }
 }

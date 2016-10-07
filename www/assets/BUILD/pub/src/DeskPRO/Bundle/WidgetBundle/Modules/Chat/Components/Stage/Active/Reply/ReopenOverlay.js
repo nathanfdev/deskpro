@@ -22,11 +22,12 @@ export class ReopenOverlay extends React.Component {
       <div className="dpdesignportal-chat-form-disabled">
         {lostConnection
           ? null
-          : <a href="#" className={classNames('dpdesignportal-button', { locked })} onClick={this.onReopen}>
+          : <button className={classNames('dpdesignportal-button', { locked })} onClick={this.onReopen}>
             <i className="fa fa-commenting-o" /> {portalPhrases.get('portal.chat.reopen_chat')}
-          </a>
+          </button>
         }
       </div>
     );
   }
 }
+export default ReopenOverlay;

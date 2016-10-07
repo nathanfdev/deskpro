@@ -2,4 +2,6 @@
     User Variable Overrides
 *******************************/
 
+@color: @dp-greyscale-850;
+@fontWeight: 400;
 @verticalDividerHeight: 100%;

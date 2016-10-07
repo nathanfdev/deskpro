@@ -1,11 +1,10 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
+import Immutable from 'immutable';
 import { MessageFactoryContainer } from './MessageFactoryContainer';
 import { TypingEventContainer } from './Event/TypingEventContainer';
 import '../../../../../../Resources/sounds/pop.mp3';
 import '../../../../../../Resources/sounds/pop.ogg';
 import '../../../../../../Resources/sounds/pop.wav';
-import Immutable from 'immutable';
 
 export class MessageList extends React.Component {
 
@@ -35,7 +34,7 @@ export class MessageList extends React.Component {
       lastId = this.state.messages.last().get('id');
     }
 
-    for (let i = state.messages.size - 1; i >= 0; i--) {
+    for (let i = state.messages.size - 1; i >= 0; i -= 1) {
       const message = state.messages.get(i);
 
       if (lastId < message.get('id') && !message.get('is_user') && !message.get('is_sys')) {
@@ -55,8 +54,7 @@ export class MessageList extends React.Component {
   }
 
   scrollBottom = () => {
-    const node = ReactDOM.findDOMNode(this);
-    node.scrollTop = node.scrollHeight;
+    this.node.scrollTop = this.node.scrollHeight;
   };
 
   playSound() {
@@ -66,9 +64,8 @@ export class MessageList extends React.Component {
       return;
     }
 
-    const sound = ReactDOM.findDOMNode(this.refs.sound);
     try {
-      sound.play();
+      this.sound.play();
     } catch (e) {
       console.warn('Unable to play sound');
     }
@@ -78,11 +75,17 @@ export class MessageList extends React.Component {
 
   render() {
     return (
-      <div style={{ overflowY: 'auto' }}>
-        <audio ref="sound" preload="preload">
-          <source src={`${window.DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.mp3`} />
-          <source src={`${window.DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.ogg`} />
-          <source src={`${window.DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.wav`} />
+      <div style={{ overflowY: 'auto' }} ref={(c) => { this.node = c; }}>
+        <audio ref={(c) => { this.sound = c; }} preload="preload">
+          <source
+            src={`${window.DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.mp3`}
+          />
+          <source
+            src={`${window.DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.ogg`}
+          />
+          <source
+            src={`${window.DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.wav`}
+          />
         </audio>
         {this.state.messages.map((message, key) => <MessageFactoryContainer key={key} message={message} />)}
         <TypingEventContainer onUpdate={this.scrollBottom} />
@@ -90,3 +93,4 @@ export class MessageList extends React.Component {
     );
   }
 }
+export default MessageList;

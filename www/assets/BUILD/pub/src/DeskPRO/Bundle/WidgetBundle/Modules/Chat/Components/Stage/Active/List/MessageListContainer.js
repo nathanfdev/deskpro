@@ -1,16 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import ReactDOM from 'react-dom';
+import $ from 'jquery';
+import Immutable from 'immutable';
+import { MessageList } from './MessageList';
+import { MessageListSpinner } from './MessageListSpinner';
 import {
   chatLoadedSelector,
   messagesSelector,
   muteSelector
 } from '../../../../Selectors/chat';
 import { widgetDimensionsSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
-import { MessageList } from './MessageList';
-import { MessageListSpinner } from './MessageListSpinner';
-import $ from 'jquery';
-import Immutable from 'immutable';
 
 @connect(state => ({
   chatLoaded:       chatLoadedSelector(state),
@@ -50,7 +49,6 @@ export class MessageListContainer extends React.Component {
 
   reCalcHeight() {
     const widgetHeight = this.props.widgetDimensions.get('height');
-    const node = ReactDOM.findDOMNode(this);
     const $document = $(window.widgetFrame.document);
 
     let height = widgetHeight;
@@ -62,9 +60,9 @@ export class MessageListContainer extends React.Component {
     // lost margin of .dpdesignportal-chat-header-controls
     height -= 20;
 
-    $(node).parent().children()
+    $(this.list).parent().children()
       .each((i, child) => {
-        if (child !== node) {
+        if (child !== this.list) {
           height -= $(child).outerHeight();
         }
       });
@@ -73,14 +71,17 @@ export class MessageListContainer extends React.Component {
       height = 100;
     }
 
-    $(node).css('height', height);
+    $(this.list).css('height', height);
 
-    if (this.refs.list) {
-      this.refs.list.scrollBottom();
+    if (this.list) {
+      this.list.scrollBottom();
     }
   }
 
   render() {
-    return this.props.chatLoaded ? <MessageList ref="list" {...this.props} /> : <MessageListSpinner />;
+    return this.props.chatLoaded
+      ? <MessageList ref={(c) => { this.list = c; }} {...this.props} />
+      : <MessageListSpinner />;
   }
 }
+export default MessageListContainer;

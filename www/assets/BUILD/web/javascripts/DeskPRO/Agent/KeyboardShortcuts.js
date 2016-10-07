@@ -11,6 +11,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 
 		this.isWindows = navigator.platform.toUpperCase().indexOf('WIN') !== -1;
 		this.isMac     = navigator.platform.toUpperCase().indexOf('MAC') !== -1;
+		this.isPaused  = false;
 
 		if (this.isMac) {
 			$(document).bind('keydown', 'ctrl+shift+left', this.tabLeft.bind(this));

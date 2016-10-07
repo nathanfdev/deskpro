@@ -22,12 +22,8 @@
                                 ng-model="LogsCtrl.pagination.page"
                                 ui-select2
                                 style="width: 130px;"
+                                ng-options='page as ("Page " + page) for page in LogsCtrl.pagination.page_nums'
                                 >
-                            <option ng-selected="page == LogsCtrl.pagination.page"
-                                    ng-repeat="page in LogsCtrl.pagination.page_nums "
-                                    value="{{ ng_var('page') }}">
-                                Page {{ ng_var('page') }}
-                            </option>
                         </select>
                     </div>
 					<table dp-hide-spinning="loading" class="table table-hover">
@@ -85,12 +81,8 @@
                                 ng-model="LogsCtrl.pagination.page"
                                 ui-select2
                                 style="width: 130px;"
+                                ng-options='page as ("Page " + page) for page in LogsCtrl.pagination.page_nums'
                                 >
-                            <option ng-selected="page == LogsCtrl.pagination.page"
-                                    ng-repeat="page in LogsCtrl.pagination.page_nums "
-                                    value="{{ ng_var('page') }}">
-                                Page {{ ng_var('page') }}
-                            </option>
                         </select>
                     </div>
 				</div>

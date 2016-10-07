@@ -1,16 +1,16 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import { css } from 'Visual/decorators';
 import { SectionsPane, Section, SectionHeader, NestedList }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
+import { css } from '../../../../decorators';
 
 storiesOf('Common-Nav: Section Header', module)
   .addDecorator(story => css(
-    <div style={{width: '250px'}}>
+    <div style={{ width: '250px' }}>
       <SectionsPane>
         <Section>
           {story()}
-          <NestedList items={[{id: 1, title: 'Demo list beneath the header'}]} />
+          <NestedList items={[{ id: 1, title: 'Demo list beneath the header' }]} />
         </Section>
       </SectionsPane>
     </div>
@@ -23,8 +23,7 @@ storiesOf('Common-Nav: Section Header', module)
   .add(
     'w/ label',
     () =>
-      <SectionHeader label="Using the label prop">
-      </SectionHeader>
+      <SectionHeader label="Using the label prop" />
   )
   .add(
     'w/ SLA',

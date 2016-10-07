@@ -12,9 +12,8 @@ import { DpAppContainer } from './Modules/Application/Components/DpAppContainer'
 import { IntlProvider } from 'react-intl';
 import Immutable from 'immutable';
 window.Immutable = Immutable;
-import { setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 /**
  * ---------------------------------------------------------------------------------------------------------------------
@@ -33,6 +32,7 @@ export class AgentApp {
   }
 
   start() {
+    /* global __DEV__ */
     window.DP_DEV_MODE = __DEV__;
     const store = AgentApp.createStore();
 
@@ -49,7 +49,6 @@ export class AgentApp {
   }
 
   static createStore(initialState = {}) {
-
     // Bootstrap API and DAL
     setApi(api);
     loadRepositoriesConfig(repositoriesConfig);

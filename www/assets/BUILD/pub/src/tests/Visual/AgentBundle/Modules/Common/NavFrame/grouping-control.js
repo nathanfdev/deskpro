@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { storiesOf, action } from '@kadira/storybook';
-import { css } from 'Visual/decorators';
+import { storiesOf } from '@kadira/storybook';
 import { ListGroupingModal, ListGroupingForm } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
-import { formDemoProps, modalDemoProps } from 'DemoState/AgentBundle/Modules/Common/NavFrame/grouping-control';
+import { formDemoProps, modalDemoProps } from '../../../../../DemoState/AgentBundle/Modules/Common/NavFrame/grouping-control';
+import { css } from '../../../../decorators';
 
 /**
  * Demo component wrapping the ListGroupingModal together with its' DOM target
@@ -10,13 +10,13 @@ import { formDemoProps, modalDemoProps } from 'DemoState/AgentBundle/Modules/Com
 class ListGroupingModalDemo extends Component {
   render = () =>
     <div>
-      <span ref="target" />
-      <ListGroupingModal {...this.props} attachTo={this.refs.target} />
+      <span ref={(c) => { this.target = c; }} />
+      <ListGroupingModal {...this.props} attachTo={this.target} />
     </div>
 }
 
 storiesOf('Common-Nav: List Grouping', module)
-  .addDecorator(story => css(<div style={{padding: '20px'}}>{story()}</div>))
+  .addDecorator(story => css(<div style={{ padding: '20px' }}>{story()}</div>))
   .add('ListGroupingForm', () => <ListGroupingForm {...formDemoProps} />)
   .add('ListGroupingModal', () => <ListGroupingModalDemo {...modalDemoProps} />)
 ;

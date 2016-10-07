@@ -14,7 +14,8 @@ DeskPRO.BasicWindow = new Orb.Class({
 
 		var _winshow = function() { $(document).trigger('windowshow'); $('html').addClass('window-active'); };
 		var _winhide = function() { $(document).trigger('windowhide'); $('html').removeClass('window-active'); };
-		if (/*@cc_on!@*/false) {
+		// if (/*@cc_on!@*/false) {
+		if (false) {
 			document.onfocusin  = _winshow;
 			document.onfocusout = _winhide;
 		} else {

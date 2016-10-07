@@ -24,3 +24,4 @@ export class ChatActive extends React.Component {
     );
   }
 }
+export default ChatActive;

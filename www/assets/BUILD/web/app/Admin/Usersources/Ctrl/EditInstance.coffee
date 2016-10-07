@@ -12,7 +12,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       @$scope.getController = => return this
       @$scope.setPresaveCallback = (callback) => @presaveCallback = callback
       @$scope.enableCustomFooter = => @$scope.has_own_footer = true
-      @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
+      @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state)
       if @usersourceType == 'agent'
         @allowedActions = ['AddToAgentGroup', 'AddToTeam', 'AddToUserGroup', 'MakeAnAdmin', 'AddLabel', 'AddLabelExpression']
       if @usersourceType == 'user'
@@ -38,7 +38,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       @Api.sendDataGet({
         app: '/apps/instances/' + @instanceId
       }).then( (result) =>
-        @app = result.data.app?.app;
+        @app = result.data.app?.app
 
         @$scope.app = @app
         @$scope.appId = @app?.id
@@ -225,19 +225,19 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
         controller: ['app', '$scope', '$modalInstance', (app, $scope, $modalInstance) ->
           $scope.app = app
           $scope.dismiss = ->
-            $modalInstance.close();
+            $modalInstance.close()
 
           $scope.confirm = ->
             $scope.is_loading = true
             doDelete().then(->
-              $modalInstance.close();
+              $modalInstance.close()
             )
         ],
         resolve: {
           app: =>
             return @app
         }
-      });
+      })
 
 
 

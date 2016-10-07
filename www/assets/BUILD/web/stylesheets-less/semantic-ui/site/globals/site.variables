@@ -31,7 +31,7 @@
 ******************************/
 @dp-night-sky: #28323c;
 @dp-cloudy-sky: #f0fafa;
-@dp-morning-sky: #f3faff;
+@dp-morning-sky: #e9f7ff;
 @dp-bright-sky: #fdfeff;
 
 @dp-knuckles-secondary: #d41d72;
@@ -55,11 +55,13 @@
     Fonts
 ******************************/
 
-@fontName : 'Helvetica Neue', Helvetica, Arial, sans-serif;
-@fontPath: '../../../../fonts';
+@fontName : "Helvetica Neue";
+@googleFontName : "Open Sans";
+@fontPath: '../../../fonts';
 @googleFontSizes   : '300,400,600,700,400italic,700italic';
 @pageFont: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 @headerFont: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+@imagePath: 'images';
 
 @textColor: @dp-greyscale-1000;
 

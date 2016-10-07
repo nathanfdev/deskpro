@@ -134,13 +134,13 @@ export const authorSelector = createSelector(
 export const authorEmailSelector = createSelector(
   chatInfoSelector,
   authorSelector,
-  (chatInfo, author) => chatInfo.get('person_email') || author && author.get('primary_email_address')
+  (chatInfo, author) => chatInfo.get('person_email') || (author && author.get('primary_email_address'))
 );
 
 export const authorNameSelector = createSelector(
   chatInfoSelector,
   authorSelector,
-  (chatInfo, author) => chatInfo.get('person_name') || author && author.get('display_name') || 'User'
+  (chatInfo, author) => chatInfo.get('person_name') || (author && author.get('display_name')) || 'User'
 );
 
 export const dateEndedSelector = createSelector(

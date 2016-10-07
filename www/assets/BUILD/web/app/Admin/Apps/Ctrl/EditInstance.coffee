@@ -24,7 +24,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       @Api.sendDataGet({
         app: '/apps/instances/' + @instanceId
       }).then( (result) =>
-        @app = result.data.app.app;
+        @app = result.data.app.app
         @$scope.appId = @app.id
 
         getData = {
@@ -32,8 +32,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         }
 
         if @app.with_permissions
-          service.agents.all();
-          service.groups.all();
+          service.agents.all()
+          service.groups.all()
 
         @Api.sendDataGet(getData).then( (result) =>
           @pack = result.data.pack['package']
@@ -92,9 +92,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
           loadingAssets.push(@$http.get(path, { responseType: "text"}).success((data) =>
             @dpTemplateManager.setTemplate(form_template, data)
           ))
-        if path = getResourcePath('js', 'AdminInterface/Install/settings.js')
+        if getResourcePath('js', 'AdminInterface/Install/settings.js')
           jsDeferred = @$q.defer()
-          require([path], (c) =>
+          require(["../../../../../../../../app/BUILD/apps/" + @pack.name + "/js/AdminInterface/Install/settings.js"], (c) ->
             installCtrl = c
             jsDeferred.resolve()
           )
@@ -105,7 +105,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
             if installCtrl
               @$scope.install_ctrl = installCtrl
             else
-              @$scope.install_ctrl = [=>
+              @$scope.install_ctrl = [->
                 return
               ]
 
@@ -202,18 +202,18 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         controller: ['app', '$scope', '$modalInstance', (app, $scope, $modalInstance) ->
           $scope.app = app
           $scope.dismiss = ->
-            $modalInstance.close();
+            $modalInstance.close()
 
           $scope.confirm = ->
             $scope.is_loading = true
             doDelete().then(->
-              $modalInstance.close();
+              $modalInstance.close()
             )
         ],
         resolve: {
           app: =>
             return @app
         }
-      });
+      })
 
   Admin_Apps_Ctrl_EditInstance.EXPORT_CTRL()

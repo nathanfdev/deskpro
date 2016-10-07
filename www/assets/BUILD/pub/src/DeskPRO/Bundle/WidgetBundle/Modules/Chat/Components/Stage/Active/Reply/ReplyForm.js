@@ -1,23 +1,23 @@
 import React, { PropTypes } from 'react';
-import { EndChatContainer } from '../EndChat/EndChatContainer';
-import { EndChatButton } from './EndChatButton';
+import ScrollArea from 'react-scrollbar-versioned';
 import { EmotionButton } from 'DeskPRO/Component/Rte/EmotionButton';
 import { RteEditor } from 'DeskPRO/Component/Rte/RteEditor';
+import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
+import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
+import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
+import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { UploadingFilesContainer } from './Upload/Uploading/UploadingFilesContainer';
 import { UploadingFiles } from './Upload/Uploading/UploadingFiles';
 import { AttachmentContainer } from './Upload/Attachment/AttachmentContainer';
 import { AttachedFiles } from './Upload/Attachment/File/AttachedFiles';
 import { AttachedImages } from './Upload/Attachment/Image/AttachedImages';
 import { DropZoneContainer } from './Upload/DropZone/DropZoneContainer';
-import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
-import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
-import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
-import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
-import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { DropZoneOverlay } from './Upload/DropZone/DropZoneOverlay';
 import { ReopenOverlay } from './ReopenOverlay';
-import ScrollArea from 'react-scrollbar-versioned';
-import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { EndChatContainer } from '../EndChat/EndChatContainer';
+import { EndChatButton } from './EndChatButton';
 
 export class ReplyForm extends React.Component {
 
@@ -30,6 +30,10 @@ export class ReplyForm extends React.Component {
     onUserTyping:        PropTypes.func,
     onSendMessage:       PropTypes.func
   };
+
+  static getUploadUrl() {
+    return `${window.DP_HELPDESK_URL}portal/api/blobs/temp`;
+  }
 
   constructor(props) {
     super(props);
@@ -52,7 +56,7 @@ export class ReplyForm extends React.Component {
       || state.message === '';
   }
 
-  onChangeMessage = message => {
+  onChangeMessage = (message) => {
     this.setState({ message });
 
     if (!this.timeout) {
@@ -68,32 +72,28 @@ export class ReplyForm extends React.Component {
     }
   };
 
-  onPasteImage = file => {
-    this.refs.uploadButton.pushFileToQueue(file);
+  onPasteImage = (file) => {
+    this.uploadButton.pushFileToQueue(file);
   };
 
-  onScreenShare = event => {
+  onScreenShare = (event) => {
     event.preventDefault();
     console.log('onScreenShare');
   };
 
-  onSubmit = event => {
+  onSubmit = (event) => {
     event.preventDefault();
 
     this.props.onSendMessage(this.state.message);
     this.setState({ message: '' });
   };
 
-  getUploadUrl() {
-    return `${window.DP_HELPDESK_URL}portal/api/blobs/temp`;
-  }
-
   renderRte() {
     return (
       <ScrollArea vertical>
         <RteEditor
           inline
-          ref="editor"
+          ref={(c) => { this.editor = c; }}
           value={this.state.message}
           onChange={this.onChangeMessage}
           onSubmit={this.onSubmit}
@@ -165,20 +165,26 @@ export class ReplyForm extends React.Component {
             <span className="dpdesignportal-chat-form-button">
               <i className="fa fa-upload" /> {portalPhrases.get('portal.chat.upload_file')}
               <DropZoneContainer>
-                <UploadButton ref="uploadButton" multiple className="file" name="files" uploadUrl={this.getUploadUrl()} />
+                <UploadButton
+                  ref={(c) => { this.uploadButton = c; }}
+                  multiple
+                  className="file"
+                  name="files"
+                  uploadUrl={ReplyForm.getUploadUrl()}
+                />
               </DropZoneContainer>
             </span>
 
             {false /* disabled for now */ &&
-              <a href="#" className="dpdesignportal-chat-form-button" onClick={this.onScreenShare}>
+              <button className="dpdesignportal-chat-form-button" onClick={this.onScreenShare}>
                 <i className="fa fa-camera" /> {portalPhrases.get('portal.chat.screen_share')}
-              </a>
+              </button>
             }
 
             <EmotionButton
               buttonClassName="img"
               context={[parent.document, window.widgetFrame.document]}
-              getEditor={() => this.refs.editor}
+              getEditor={() => this.editor}
               popupPositionAt="center top-15"
               popupPositionMy="center bottom"
             />
@@ -189,11 +195,17 @@ export class ReplyForm extends React.Component {
           </EndChatContainer>
         </div>
 
-        <input ref="fileUpload" className="hidden" type="file" name="files[]" multiple="multiple" />
+        <input
+          ref={(c) => { this.fileUpload = c; }}
+          className="hidden"
+          type="file"
+          name="files[]"
+          multiple="multiple"
+        />
         <DropZoneContainer instant>
           <DropZone
-            getExternalInput={() => this.refs.fileUpload}
-            uploadUrl={this.getUploadUrl()}
+            getExternalInput={() => this.fileUpload}
+            uploadUrl={ReplyForm.getUploadUrl()}
           >
             <DragOverlayListener context={[parent.document, window.widgetFrame.document]}>
               <DropZoneOverlay />
@@ -206,3 +218,4 @@ export class ReplyForm extends React.Component {
     );
   }
 }
+export default ReplyForm;

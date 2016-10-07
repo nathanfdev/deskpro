@@ -443,7 +443,7 @@ define [
             getViewValue: (value = {}, data) ->
               return {
                 op: 'is',
-                value: if value.is_hold then '1' else '0'
+                value: if value.options.is_hold then '1' else '0'
               }
             getValue: (model = {}, data) ->
               value = {}

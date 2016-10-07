@@ -1,11 +1,13 @@
 define [
   'DeskPRO/Util/Util',
   'DeskPRO/Util/Arrays',
-  'Admin/OptionBuilder/TypesDef/BaseTypesDef'
+  'Admin/OptionBuilder/TypesDef/BaseTypesDef',
+  'underscore'
 ], (
   Util,
   Arrays,
-  BaseTypesDef
+  BaseTypesDef,
+  _
 ) ->
   class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef extends BaseTypesDef
     constructor: (@$q, @Api, @dpTemplateManager) ->

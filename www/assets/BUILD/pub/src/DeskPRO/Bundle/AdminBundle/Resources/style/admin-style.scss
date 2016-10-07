@@ -1,0 +1,13 @@
+@import '../../../AppBundle/Resources/style/variables';
+@import 'email-templates';
+
+.two-panels-menu {
+  display: table;
+  border-collapse: collapse;
+  border: 1px solid $dp-sonic-primary;
+  & > .ui.vertical.menu {
+    display: table-cell;
+    width: 50%;
+    box-shadow: none;
+  }
+}

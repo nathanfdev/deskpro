@@ -1,0 +1,76 @@
+import React from 'react';
+import { storiesOf, action, linkTo } from '@kadira/storybook';
+import { Toggle, Range, Select } from 'DeskPRO/Component/Semantic/Form';
+import { css } from '../../decorators';
+
+const options = [
+  {
+    label: 'Male',
+    value: 1
+  },
+  {
+    label: 'Female',
+    value: 2
+  }
+];
+const optionsColours = [
+  {
+    label: 'Blue',
+    value: 'blue'
+  },
+  {
+    label: 'Brown',
+    value: 'brown'
+  },
+  {
+    label: 'Green',
+    value: 'green'
+  },
+  {
+    label: 'Orange',
+    value: 'orange'
+  },
+  {
+    label: 'Pink',
+    value: 'pink'
+  },
+  {
+    label: 'Red',
+    value: 'red'
+  },
+  {
+    label: 'Yellow',
+    value: 'yellow'
+  }
+];
+storiesOf('Semantic: form', module)
+  .addDecorator(story => css(story()))
+  .add(
+    'Toggle off', () =>
+      <Toggle onChange={linkTo('Semantic: form', 'Toggle on')}>Label</Toggle>
+  )
+  .add(
+    'Toggle on', () =>
+      <Toggle active onChange={linkTo('Semantic: form', 'Toggle off')}>Label</Toggle>
+  )
+  .add(
+    'Toggle small off', () =>
+      <Toggle className="small" onChange={linkTo('Semantic: form', 'Toggle small on')}>Label</Toggle>
+  )
+  .add(
+    'Toggle small on', () =>
+      <Toggle className="small" active onChange={linkTo('Semantic: form', 'Toggle small off')}>Label</Toggle>
+  )
+  .add(
+    'Range', () =>
+      <Range min={0} max={20} onChange={action('Range change')} />
+  )
+  .add(
+    'Select', () =>
+      <Select options={options} onChange={action('Range change')} placeholder="Gender" />
+  )
+  .add(
+    'Select with filter', () =>
+      <Select options={optionsColours} onChange={action('Range change')} placeholder="Colour" filter />
+  )
+;
