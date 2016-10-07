@@ -532,6 +532,9 @@ $transition-close-delay: 0.1s;
         transition-delay: $transition-close-delay;
       }
     }
+    .logoText svg {
+      display: none;
+    }
   }
   .ui.item {
     height: 52px;
@@ -603,6 +606,9 @@ $transition-close-delay: 0.1s;
     }
   }
   &:hover {
+    .logo .logoText svg {
+      display: inline;
+    }
     .logo svg .text {
       fill: #fff;
       transition: fill $transition-open-time;
