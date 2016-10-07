@@ -105,7 +105,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
             me.initialLoad().then(->
               $modalInstance.dismiss()
               me.$timeout(->
-                console.log(data)
                 me.$state.go('apps.go_apps_install', {name: 'go-apps-' + data.package_name})
               , 250)
             )

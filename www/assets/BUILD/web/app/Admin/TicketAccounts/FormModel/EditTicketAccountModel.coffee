@@ -8,7 +8,9 @@ define [
       @form.address             = @account.address
       @form.is_enabled          = @account.is_enabled
       @form.incoming_type       = 'pop3'
-      @form.in_gmail_account    = {}
+      @form.in_gmail_account    =
+        mode: "read"
+        read_mailbox_type: "inbox"
       @form.in_pop3_account     = {}
       @form.in_imap_account     = {}
       @form.in_exchange_account = {}
@@ -118,7 +120,19 @@ define [
             @form.in_exchange_account.archive_mailbox = @account.incoming_account.archive_mailbox
 
         if @form.incoming_type == 'gmail'
-          @form.in_gmail_account.password = @account.incoming_account.password
+          @form.in_gmail_account.password     = @account.incoming_account.password
+          @form.in_gmail_account.clientId     = @account.incoming_account.clientId
+          @form.in_gmail_account.clientSecret = @account.incoming_account.clientSecret
+          @form.in_gmail_account.token        = @account.incoming_account.token
+          @form.in_gmail_account.refreshToken = @account.incoming_account.refreshToken
+          @form.in_gmail_account.mode        = @account.incoming_account.mode || 'read'
+          if @form.in_gmail_account.secure_mode and @form.in_gmail_account.secure_mode != ''
+            @form.in_gmail_account.secure = true
+          if @account.incoming_account.read_mailbox and @account.incoming_account.read_mailbox != ''
+            @form.in_gmail_account.read_mailbox = @account.incoming_account.read_mailbox
+            @form.in_gmail_account.read_mailbox_type = 'folder'
+          if @account.incoming_account.mode == 'archive'
+            @form.in_gmail_account.archive_mailbox = @account.incoming_account.archive_mailbox
 
         if @form.incoming_type == 'office365'
           @form.in_office365_account.password = @account.incoming_account.password
@@ -141,6 +155,10 @@ define [
 
         if @form.outgoing_type == 'gmail'
           @form.out_gmail_account.password = @account.outgoing_account.password
+          @form.out_gmail_account.clientId     = @account.outgoing_account.clientId
+          @form.out_gmail_account.clientSecret = @account.outgoing_account.clientSecret
+          @form.out_gmail_account.token        = @account.outgoing_account.token
+          @form.out_gmail_account.refreshToken = @account.outgoing_account.refreshToken
 
         if @form.outgoing_type == 'office365'
           @form.out_office365_account.password = @account.outgoing_account.password
@@ -158,6 +176,12 @@ define [
 
       if form.incoming_type == 'gmail'
         form.in_gmail_account.user = form.address
+        if form.in_gmail_account.read_mailbox_type == 'inbox' or form.in_gmail_account.read_mailbox == ''
+          form.in_gmail_account.read_mailbox = null
+        if form.in_gmail_account.mode == 'archive'
+          if not @form.in_gmail_account.archive_mailbox or @form.in_gmail_account.archive_mailbox == ''
+            form.in_gmail_account.mode = 'read'
+            form.in_gmail_account.archive_mailbox = ''
       if form.outgoing_type == 'gmail'
         form.out_gmail_account.user = form.address
 

@@ -190,8 +190,16 @@
 		{############}
 		{# Gmail    #}
 		{############}
-
-		<div class="ng-hide" ng-show="form.incoming_type == 'gmail'">
+		<div class="ng-hide" ng-show="form.incoming_type == 'gmail'" {% if gmail_token %}ng-init="
+				TicketAccountsEdit.deferredData.gmail = {
+					token: '{{ gmail_token.access_token }}',
+					refreshToken: '{{ gmail_token.refresh_token }}',
+					clientId: '{{ gmail_token.clientId }}',
+					clientSecret: '{{ gmail_token.clientSecret }}'
+				}
+			"{% endif %}
+		>
+			{% if server_capable('imap') %}
 			<div class="inner-group">
 				<table width="100%" class="inner-form-table">
 					<tr>
@@ -201,23 +209,110 @@
 							<span ng-hide="form.address">Enter your email address above</span>
 						</td>
 					</tr>
-					<tr>
-						<th>Password</th>
-						<td><input type="password" class="form-control" name="title" ng-model="form.in_gmail_account.password" style="width: 50%;" /></td>
-					</tr>
-					<tr>
-						<th>&nbsp;</th>
+					<tr ng-if="!form.in_gmail_account.token">
+						<th>
+							App ID
+						</th>
 						<td>
-							<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+							<input type="text" class="form-control" ng-model="form.in_gmail_account.clientId" style="width: 50%;" />
 						</td>
 					</tr>
+					<tr ng-if="!form.in_gmail_account.token">
+						<th>
+							App Secret
+						</th>
+						<td>
+							<input type="text" class="form-control" ng-model="form.in_gmail_account.clientSecret" style="width: 50%;" />
+						</td>
+					</tr>
+
+					{% if app.session.getFlash('gmail.oauth.error') %}
+						<tr>
+							<td colspan="2" class="text-danger">
+								An error occurred while retrieving access token
+							</td>
+						</tr>
+					{% endif %}
+
+					<tr ng-if="form.in_gmail_account.token">
+						<td></td>
+						<td>
+							<button class="btn btn-danger" ng-click="TicketAccountsEdit.resetToken('in_gmail_account')" type="button">
+								<i class="fa fa-bolt"></i> Reset Access Token
+							</button>
+						</td>
+					</tr>
+					<tr ng-if="!form.in_gmail_account.token && form.in_gmail_account.clientId && form.in_gmail_account.clientSecret">
+						<th>&nbsp;</th>
+						<td>
+							{% set replacements = {
+								_id_: 	  ng_var('form.in_gmail_account.clientId'),
+								_secret_: ng_var('form.in_gmail_account.clientSecret'),
+								_url_: 	  url('admin') ~ '%23' ~ ng_var('path')
+							} %}
+							<a ng-href="{{ path('gmail_token', {id: '_id_', secret: '_secret_', back_url: '_url_' })|replace(replacements)|raw }}" class="btn btn-info">
+								<i class="fa fa-bolt"></i> Get Access Token
+							</a>
+						</td>
+					</tr>
+
+					<tr>
+						<th style="vertical-align: top; padding-top: 10px;">IMAP Folder</th>
+						<td style="padding-bottom: 10px;">
+							<label style="margin-bottom: 10px;"><input type="radio" ng-model="form.in_gmail_account.read_mailbox_type" value="inbox" /> Read messages from the inbox</label>
+							<label style="display: inline-block;"><input type="radio" ng-model="form.in_gmail_account.read_mailbox_type" value="folder" /> Read messages from a specific folder</label>
+							<div ng-hide="form.in_gmail_account.read_mailbox_type != 'folder'" style="margin: 4px 0 0 15px;">
+								Read from folder: <input style="width: 200px;" type="text" class="form-control" name="title" ng-model="form.in_gmail_account.read_mailbox" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th style="vertical-align: top; padding-top: 10px;">Read Mode</th>
+						<td style="padding-bottom: 10px;">
+							<div>
+								<label><input type="radio" ng-model="form.in_gmail_account.mode" value="read" /> Read all unread messages</label>
+								<span class="help-block" ng-show="form.in_gmail_account.mode == 'read'">
+										DeskPRO will read and process all unread messages in the mailbox. After processing, messages are marked as read but stay in the mailbox.
+									</span>
+							</div>
+							<div style="margin: 10px 0;">
+								<label style="display: inline-block"><input type="radio" ng-model="form.in_gmail_account.mode" value="archive" /> Read all messages and then move</label>
+								<div ng-show="form.in_gmail_account.mode == 'archive'" style="margin: 4px 0 0 15px;">
+									Move to folder: <input type="text" class="form-control" ng-model="form.in_gmail_account.archive_mailbox" style="width: 150px;" />
+								</div>
+								<span class="help-block" ng-show="form.in_gmail_account.mode == 'archive'">
+										All messages in the mailbox are read and processed. After DeskPRO has processed a message, it will move it into a different folder.
+									</span>
+							</div>
+							<div>
+								<label><input type="radio" ng-model="form.in_gmail_account.mode" value="delete" /> Read all messages and then delete</label>
+								<span class="help-block" ng-show="form.in_gmail_account.mode == 'delete'">
+										All messages in the mailbox are read and processed. After DeskPRO has processed a message, it will be marked for deletion.
+									</span>
+							</div>
+						</td>
+					</tr>
+
 				</table>
 			</div>
+			{% else %}
+				<div class="inner-group">
+					<br/><br/>
+					<div class="alert alert-danger">
+						<p>
+							To set up IMAP accounts, your server must be configured with the PHP <a href="http://php.net/manual/en/book.imap.php">IMAP extension</a>.
+						</p>
+						<p>
+							Please install the IMAP extension then try again.
+						</p>
+					</div>
+				</div>
+			{% endif %}
 		</div>
 
-		{#############}
-		{# Office365 #}
-		{#############}
+		{# ########### #}
+		{# Office365   #}
+		{# ########### #}
 
 		<div class="ng-hide" ng-show="form.incoming_type == 'office365'">
 			<div class="inner-group">
@@ -243,9 +338,9 @@
 			</div>
 		</div>
 
-		{###############}
-		{# MS Exchange #}
-		{###############}
+		{# ############# #}
+		{# MS Exchange   #}
+		{# ############# #}
 
 		<div class="ng-hide" ng-show="form.incoming_type == 'exchange'">
 			{% if server_capable('soap') %}
@@ -330,3 +425,13 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/ng-template" id="ticket-accounts-gmail-modal">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="dismiss()">&times;</button>
+		<h4 class="modal-title">Get Access Token</h4>
+	</div>
+	<div class="modal-body">
+		<iframe style="border: 0; width: 100%; height: 300px" ng-src="{{ ng_var('iframeSrc') }}"></iframe>
+	</div>
+</script>

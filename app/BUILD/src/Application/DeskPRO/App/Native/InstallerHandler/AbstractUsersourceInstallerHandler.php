@@ -36,6 +36,7 @@ namespace Application\DeskPRO\App\Native\InstallerHandler;
 
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Usersource\ActionsCollection;
 use Doctrine\ORM\EntityManager;
 
 abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandler
@@ -76,50 +77,26 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
         return;
     }
 
-    public function setupAutoAgent(Usersource $us, $auto_agent, $permission_group_id)
+    public function setupActions()
     {
-        if ($context = $this->context) {
-            if (Usersource::TYPE_AGENT == $us->type && $auto_agent) {
-                $us->auto_agent = true;
-
-                // PERMISSION GROUPS
-                if ($permission_group_id) {
-                    $permission_group = $context->getEm()->getRepository('DeskPRO:Usergroup')->find($permission_group_id);
-
-                    if ($permission_group) {
-                        $us->agent_permission_group = $permission_group;
-                    }
-                } else {
-                    $us->user_permission_group = null;
-                }
-            } else {
-                $us->auto_agent             = false;
-                $us->agent_permission_group = null;
-            }
-        } else {
+        if (!$context = $this->context) {
             throw new \RuntimeException('please ensure an installer context is present');
         }
-    }
 
-    public function setupUsergroup(Usersource $us, $permission_group_id)
-    {
-        if ($context = $this->context) {
-            if (Usersource::TYPE_USER == $us->type) {
-                if ($permission_group_id) {
-                    $permission_group = $context->getEm()->getRepository('DeskPRO:Usergroup')->find($permission_group_id);
+        $us  = $context->getUsersource();
+        $app = $context->getApp();
 
-                    if ($permission_group) {
-                        $us->user_permission_group = $permission_group;
-                    }
-                } else {
-                    $us->user_permission_group = null;
-                }
-            } else {
-                $us->user_permission_group = null;
+        if (Usersource::TYPE_AGENT === $us->type) {
+            $us->auto_agent = $app->getSetting('auto_agent') ? true : false;
+
+            if (!$us->auto_agent) {
+                $us->actions = new ActionsCollection();
+
+                return;
             }
-        } else {
-            throw new \RuntimeException('please ensure an installer context is present');
         }
+
+        $us->actions = ActionsCollection::unserializeJsonArray($app->getSetting('actions') ?: []);
     }
 
     /**

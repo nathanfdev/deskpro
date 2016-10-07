@@ -155,24 +155,11 @@
 			"label": "Auto Agent",
 			"checkbox_label": "Automatically create agents if they do not already exist",
 			"usersource_display": "agent",
-			"default_value": true,
-
-			"inline_dependant": {
-				"name": "auto_agent_permission_group",
-				"type": "choice",
-				"label": "Add new agents to this permission group",
-				"options_variable": "permission_groups",
-				"is_required": true
-			}
+			"default_value": true
 		},
 		{
-		  "name": "auto_user_permission_group",
-		  "usersource_display": "user",
-		  "type": "dynamic_choice",
-		  "options_variable": "permission_groups_user",
-		  "label": "Grant Usergroup",
-		  "description": "Add this usergroup to users who login with this usersource",
-		  "is_required": false
+			"name": "actions",
+			"type": "array"
 		},
 		{
 		  "name": "raw_info_filter",

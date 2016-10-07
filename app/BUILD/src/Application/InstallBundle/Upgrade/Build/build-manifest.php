@@ -1799,12 +1799,16 @@ return [
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/09/Build1475238742.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1475238742',
     ],
-    1475831827 => [
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/10/Build1475831827.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1475831827',
+    1475832285 => [
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/10/Build1475832285.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1475832285',
     ],
-    1475831835 => [
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/10/Build1475831835.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1475831835',
+    1475840803 => [
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/10/Build1475840803.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1475840803',
+    ],
+    1475840809 => [
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/10/Build1475840809.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1475840809',
     ],
 ];

@@ -107,4 +107,13 @@ $collection->create('admin_download_export_file', [
     'methods'    => ['GET'],
 ]);
 
+//#######################################################################################################################
+// Gmail OAuth
+//#######################################################################################################################
+
+$collection->create('gmail_token', [
+    'path'       => '/gmail/request_token',
+    'controller' => 'AdminInterfaceBundle:Gmail:token',
+]);
+
 return $collection;

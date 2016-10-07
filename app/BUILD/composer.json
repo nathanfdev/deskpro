@@ -29,7 +29,7 @@
     "firebase/php-jwt": "~2.0",
     "league/url": "~3.3",
     "onelogin/php-saml": "dev-master@dev",
-    "google/apiclient": "1.0.*@dev",
+    "google/apiclient": "^2.0",
     "predis/predis": "1.0.3",
     "react/event-loop": "0.4.*",
     "react/child-process": "0.4.*",

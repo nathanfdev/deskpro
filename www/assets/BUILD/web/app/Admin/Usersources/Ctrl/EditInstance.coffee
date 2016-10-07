@@ -9,12 +9,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 
     init: ->
       @instanceId = @getInstanceId()
-      @permission_groups = []
-      @permission_groups_user = []
       @$scope.getController = => return this
       @$scope.setPresaveCallback = (callback) => @presaveCallback = callback
       @$scope.enableCustomFooter = => @$scope.has_own_footer = true
       @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state)
+      if @usersourceType == 'agent'
+        @allowedActions = ['AddToAgentGroup', 'AddToTeam', 'AddToUserGroup', 'MakeAnAdmin', 'AddLabel', 'AddLabelExpression']
+      if @usersourceType == 'user'
+        @allowedActions = ['AddToUserGroup', 'AddToOrg', 'AddToOrgExpression', 'AddLabel', 'AddLabelExpression']
       @presaveCallback = null
       @app = null
 
@@ -67,21 +69,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
         else
           # this is an app instance
 
-          if @permission_groups.length == 0
-            @Api.sendGet('/agent_groups').then( (res) =>
-              res.data.groups.forEach( (val) =>
-                @permission_groups.push({"value": val.id.toString(), "label": val.title})
-              )
-            )
-          if @permission_groups_user.length == 0
-            @permission_groups_user = [{"value": 0, "label": ""}]
-            @Api.sendGet('/user_groups').then( (res) =>
-              res.data.groups.forEach( (val) =>
-                @permission_groups_user.push({"value": val.id.toString(), "label": val.title})
-              )
-              console.log(@permission_groups_user)
-            )
-
           @$scope.pack = @pack
           @$scope.setting_values = @app.settings
           if not @$scope.setting_values || Util.isArray(@$scope.setting_values)
@@ -105,9 +92,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
             loadingAssets.push(@$http.get(path, { responseType: "text"}).success((data) =>
               @dpTemplateManager.setTemplate(form_template, data)
             ))
-          if getResourcePath('js', 'AdminInterface/Install/settings.js')
+          if path = getResourcePath('js', 'AdminInterface/Install/settings.js')
             jsDeferred = @$q.defer()
-            require(["../../../../../../../../app/BUILD/apps/" + @pack.name + "/js/AdminInterface/Install/settings.js"], (c) ->
+            require([path], (c) =>
               installCtrl = c
               jsDeferred.resolve()
             )
@@ -118,7 +105,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
               if installCtrl
                 @$scope.install_ctrl = installCtrl
               else
-                @$scope.install_ctrl = [->
+                @$scope.install_ctrl = [=>
                   return
                 ]
 
@@ -255,7 +242,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 
 
     listCtrl: ->
-      @$scope.$parent?.ListCtrl || {refresh: ->}
+      @$scope.$parent?.ListCtrl || {refresh: =>}
 
 
 

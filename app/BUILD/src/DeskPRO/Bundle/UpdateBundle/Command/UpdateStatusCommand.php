@@ -40,7 +40,7 @@ class UpdateStatusCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('dp:update:status')
+            ->setName('dp:update:status-watch')
             ->addOption('session-id', null, InputOption::VALUE_REQUIRED, '(internal)')
             ->setDescription('Watches an existing automatic updater to show you the current status');
     }
