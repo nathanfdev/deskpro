@@ -32,7 +32,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\AbstractController;
-use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\LoginLog;
 use Application\DeskPRO\Entity\Person;
@@ -95,11 +94,6 @@ class LoginController extends AbstractController
     const USERSOURCE_TEST = 'usersource_test';
 
     /**
-     * @var LoginHelper
-     */
-    protected $login_helper;
-
-    /**
      * @var UsersourceManager
      */
     protected $usersource_manager;
@@ -112,12 +106,6 @@ class LoginController extends AbstractController
     public function init()
     {
         parent::init();
-
-        $this->login_helper = new LoginHelper(
-            $this,
-            $this->tpl_prefix,
-            $this->route_prefix
-        );
 
         $this->auth_manager       = $this->container->getSystemService('authentication_manager');
         $this->usersource_manager = $this->container->getSystemService('usersource_manager');
