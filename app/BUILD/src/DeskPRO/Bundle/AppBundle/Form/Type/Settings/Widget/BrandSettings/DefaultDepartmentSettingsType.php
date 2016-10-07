@@ -57,7 +57,7 @@ class DefaultDepartmentSettingsType extends AbstractType
             ->add('department', EntityType::class, [
                 'class'        => Department::class,
                 'choice_label' => 'id',
-                'required'     => true,
+                'required'     => false,
             ])
             ->add('type', ChoiceType::class, [
                 'required' => true,
