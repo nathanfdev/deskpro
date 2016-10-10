@@ -498,6 +498,11 @@ class ProcessAgentFwd extends ProcessAbstract
         $ticket->email_account   = $this->account;
         $ticket->creation_system = 'gateway.agent';
 
+        $ccAddresses = $user_reader->getCcAddresses();
+        if ($ccAddresses) {
+            $this->handleCc($ticket, $ccAddresses);
+        }
+
         $ticket_message                  = new TicketMessage($user_reader->getId());
         $ticket_message->person          = $user;
         $ticket_message->creation_system = 'gateway.agent';
