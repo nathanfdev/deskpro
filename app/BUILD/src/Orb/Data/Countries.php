@@ -263,6 +263,7 @@ class Countries
         'UA' => 'Ukraine',
         'AE' => 'United Arab Emirates',
         'UK' => 'United Kingdom',
+        'GB' => 'United Kingdom',
         'US' => 'United States',
         'UM' => 'United States Minor Outlying Islands',
         'UY' => 'Uruguay',

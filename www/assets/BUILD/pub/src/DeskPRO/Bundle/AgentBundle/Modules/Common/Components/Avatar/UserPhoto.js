@@ -16,8 +16,8 @@ export class UserPhoto extends React.Component {
   getStyle() {
     const { imageUrl, color, width, height } = this.props;
     const style = {
-      width:  `${width}px !important`,
-      height: `${height}px !important`
+      width:   `${width}px`,
+      height:  `${height}px`
     };
 
     if (color) {
@@ -51,7 +51,7 @@ export class UserPhoto extends React.Component {
         className={classNames(
         'user-photo', {
           'text-fallback': type === 'text',
-          'gravatar':      type === 'gravatar'
+          gravatar:        type === 'gravatar'
         })}
       >
 

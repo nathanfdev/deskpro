@@ -64,11 +64,12 @@ class ApiWrapper
     /**
      * ApiWrapper constructor.
      *
-     * @param $data
+     * @param mixed $data
+     * @param array $meta
      */
-    public function __construct($data)
+    public function __construct($data, array $meta = [])
     {
-        $this->meta = new \ArrayObject();
+        $this->meta = new \ArrayObject($meta);
         if (!$this->checkPagination($data)) {
             $this->data = $data;
         }

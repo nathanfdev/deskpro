@@ -1,15 +1,10 @@
 import Immutable from 'immutable';
-import { createReducer } from 'Ampliflux';
-import { loadBatch, setCollection, releaseCollection, addToCollection, removeFromCollection } from '../Actions/store';
 import { async, asyncIndicator, composeHandlers } from 'Ampliflux/reducers/handlers';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
+import { createReducer } from 'Ampliflux';
+import { loadBatch, setCollection, releaseCollection, addToCollection, removeFromCollection, updateCollection } from '../Actions/store';
 
 const storeInitialState = {};
-
-function mergeRecords(state, recordName, records) {
-  const currentRecords = state.getIn([recordName, 'records']);
-  return currentRecords ? currentRecords.merge(records) : records;
-}
 
 function gc(state, recordName) {
   const validRecordIds = [];
@@ -51,6 +46,26 @@ function handleAddToCollection(state, { recordName, collectionName, records }) {
   });
 }
 
+function handleUpdateCollection(state, { recordName, records, mergeType }) {
+  let currentRecords = state.getIn([recordName, 'records']);
+  currentRecords = currentRecords.withMutations(set => {
+    const newRecords = Immutable.Map.isMap(records) ? records : mapKeyedFromArray(records, 'id');
+    newRecords.forEach((record, id) => {
+      let newRecord = record;
+      if (mergeType === 'merge') {
+        const oldRecord = set.get(id);
+        if (oldRecord) {
+          newRecord = oldRecord.merge(newRecord);
+        }
+      }
+
+      set.set(id, newRecord);
+    });
+  });
+
+  return state.setIn([recordName, 'records'], currentRecords);
+}
+
 export default createReducer(storeInitialState, {
   [loadBatch]: composeHandlers(
     asyncIndicator((state, { recordName, collectionName }) => ({
@@ -64,7 +79,8 @@ export default createReducer(storeInitialState, {
 
   [setCollection]: handleSetCollection,
 
-  [addToCollection]: handleAddToCollection,
+  [addToCollection]:  handleAddToCollection,
+  [updateCollection]: handleUpdateCollection,
 
   [removeFromCollection]: (state, { recordName, collectionName, ids }) => {
     let collection = state.getIn([recordName, 'collections', collectionName]);

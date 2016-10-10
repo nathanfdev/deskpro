@@ -207,6 +207,7 @@ function getWebpackConfig(mode, isProd) {
             path.resolve(__dirname, 'node_modules/bourbon-neat'),
             path.resolve(__dirname, 'node_modules/font-awesome'),
             path.resolve(__dirname, 'node_modules/intl-tel-input'),
+            path.resolve(__dirname, 'node_modules/flag-icon-css'),
             path.resolve(__dirname, 'node_modules/cropper')
           ]
         },

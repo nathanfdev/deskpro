@@ -8,6 +8,7 @@ import AdminReducers from './AdminApp_Reducers';
 import AppReducers from '../AppBundle/AppApp_Reducers';
 
 export class AdminApp {
+
   run() {
     document.addEventListener('DOMContentLoaded', () => this.start());
   }

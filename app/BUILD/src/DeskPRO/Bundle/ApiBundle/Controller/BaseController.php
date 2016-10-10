@@ -64,12 +64,13 @@ class BaseController extends FOSRestController
 
     /**
      * @param mixed $data
+     * @param array $meta
      *
      * @return ApiWrapper
      */
-    protected function wrap($data)
+    protected function wrap($data, array $meta = [])
     {
-        return new ApiWrapper($data);
+        return new ApiWrapper($data, $meta);
     }
 
     /**

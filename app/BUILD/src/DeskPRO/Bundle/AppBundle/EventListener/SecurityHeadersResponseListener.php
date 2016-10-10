@@ -68,9 +68,9 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
             'img-src'     => ['*', 'data:', 'blob:'],
             'font-src'    => ['*', 'data:'],
             'connect-src' => '*',
-            'media-src'   => '*',
+            'media-src'   => ['*', 'data:', 'blob:'],
             'object-src'  => '*',
-            'child-src'   => '*',
+            'child-src'   => ['*', 'blob:'],
             'form-action' => '*',
         ];
 

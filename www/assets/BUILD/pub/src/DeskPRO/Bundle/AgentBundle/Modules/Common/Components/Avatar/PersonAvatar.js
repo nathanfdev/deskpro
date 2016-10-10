@@ -20,7 +20,7 @@ export class PersonAvatar extends React.Component {
 
   render() {
     const { size, person } = this.props;
-    const avatar = person ? person.get('avatar') : Immutable.fromJS({});
+    const avatar = person && person.get('avatar') ? person.get('avatar') : Immutable.fromJS({});
 
     const props = {
       size,

@@ -36,5 +36,6 @@
   "angularSpectrumColorpicker":      ["angular", "spectrum"],
   "semanticAccordion":               ["jquery"],
   "clipboard":                       { "exports": "Clipboard" },
-  "customEventPolyfill":             []
+  "customEventPolyfill":             [],
+  "reactDOM":                        ["react"]
 }

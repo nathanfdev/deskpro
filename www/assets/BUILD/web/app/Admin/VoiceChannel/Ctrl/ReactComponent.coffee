@@ -1,0 +1,14 @@
+define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+  class Admin_VoiceChannel_Ctrl_ReactComponent extends Admin_Ctrl_Base
+    @CTRL_ID = 'Admin_VoiceChannel_Ctrl_ReactComponent'
+
+    init: ->
+      routePath = window.location.hash.replace(/#\//, '');
+      if (routePath[0] != '/')
+        routePath = '/' + routePath;
+
+      @$scope.reactProps = {
+        routePath: routePath
+      }
+
+  Admin_VoiceChannel_Ctrl_ReactComponent.EXPORT_CTRL()

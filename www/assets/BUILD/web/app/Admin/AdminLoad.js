@@ -181,6 +181,7 @@ define([
   'Admin/AntiAbuse/Ctrl/CaptchaSettings',
   'Admin/AntiAbuse/Ctrl/EmailRateLimiting',
   'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
+  'Admin/VoiceChannel/Ctrl/ReactComponent',
 
   'CloudAdminLoad'
 

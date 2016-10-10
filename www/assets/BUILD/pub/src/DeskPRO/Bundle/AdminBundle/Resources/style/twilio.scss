@@ -1,0 +1,271 @@
+.twilio-list-table {
+  width: 100%;
+
+  .row {
+    padding: 0;
+    margin: 0 0 10px;
+
+    .column {
+      padding: 20px;
+      display: inline-block;
+
+      &.options {
+        display: block;
+        border: 1px solid #F2F2F2;
+        background-color: #FCFCFC;
+
+        input, .Select {
+          width: 285px;
+        }
+
+        button {
+          background-color: #fff !important;
+        }
+
+        .targets {
+          padding: 10px 0;
+        }
+      }
+
+      &.location {
+        width: 60px;
+
+        .flag-icon {
+          width: 24px;
+          height: 16px;
+        }
+      }
+
+      &.number {
+        width: 200px;
+      }
+
+      &.nickname {
+        width: 200px;
+      }
+
+      &.account-name {
+        width: 400px;
+      }
+
+      &.sid {
+        width: 350px;
+      }
+
+      &.date {
+        width: 300px;
+      }
+
+      &.queue-name {
+        width: 275px;
+      }
+
+      &.asset {
+        width: 200px;
+
+        button {
+          height: 28px;
+          padding: 3px 10px;
+          background-color: #fff !important;
+          font-size: 12px;
+          font-weight: bold;
+          border: 1px solid #DCDCDC;
+          border-bottom: 2px solid #DCDCDC;
+        }
+
+        a {
+          cursor: pointer;
+
+          i {
+            margin-left: 10px;
+            color: #CCCCCC;
+          }
+        }
+      }
+    }
+
+    &.header {
+      .column {
+        padding-bottom: 10px;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-weight: bold;
+
+        &.location {
+          padding-left: 0;
+        }
+      }
+    }
+
+    .info {
+      width: 100%;
+      background-color: #F8F8F8;
+      border: 1px solid #F2F2F2;
+
+      .column {
+        &.location {
+          background-color: #fff;
+          border-right: 1px solid #F2F2F2;
+        }
+
+        &.targets {
+          padding: 10px 20px;
+        }
+
+        &.options-button {
+          width: 60px;
+          float: right;
+
+          a {
+            cursor: pointer;
+            color: #CCCCCC;
+          }
+        }
+
+        .more-button {
+          color: #4D4D4D;
+          text-decoration: underline;
+          font-size: 12px;
+          font-weight: bold;
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+
+  .target {
+    min-width: 50px;
+    padding: 3px 5px;
+    display: inline-block;
+    font-size: 10px;
+    text-transform: uppercase;
+    border: 1px solid #E3E3E3;
+    margin: 5px;
+
+    .ui.loader {
+      width: 15px;
+      height: 15px;
+    }
+
+    .ui.loader:before, .ui.loader:after {
+      width: 1rem;
+      height: 1rem;
+      margin: 0 auto;
+    }
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    .icon {
+      margin-left: 5px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  }
+}
+
+.twilio-number-search {
+  &-form {
+    width: 100%;
+    height: 140px;
+    background-color: #F3FAFF;
+    border: 1px solid #E3F4FF;
+    padding: 35px;
+    margin-bottom: 25px;
+
+    .inline-field {
+      display: inline-block;
+      margin-right: 20px;
+      float: left;
+    }
+
+    .ui.form {
+      .field {
+        label {
+          font-size: 13px;
+        }
+
+        .Select, input[type="text"] {
+          width: 200px;
+        }
+
+        .checkbox {
+          margin-right: 20px;
+        }
+      }
+    }
+  }
+
+  &-table {
+    width: 100%;
+
+    tr {
+      border: 1px solid #E3E3E3;
+      border-left: 0;
+      border-right: 0;
+
+      td {
+        padding: 14px;
+
+        .number {
+          font-weight: bold;
+          display: block;
+        }
+
+        .location {
+          display: block;
+          margin-top: 5px;
+          font-size: 12px;
+        }
+
+        &:last-child {
+          width: 200px;
+
+          button {
+            width: 100%;
+          }
+
+          .number-added {
+            font-size: 14px;
+            text-align: center;
+            text-transform: uppercase;
+            color: green;
+          }
+        }
+      }
+    }
+  }
+}
+
+.twilio-queue-form {
+  width: 425px;
+
+  .queue-size {
+    .help {
+      float: right;
+      margin-top: 10px;
+    }
+
+    input[type="text"] {
+      width: 45px !important;
+    }
+  }
+
+  .multi-select {
+    height: 200px;
+
+    .flat-spinner {
+      width: 15px;
+      margin: 100px auto;
+    }
+  }
+
+  .cancel-button {
+    margin-left: 15px !important;
+  }
+}

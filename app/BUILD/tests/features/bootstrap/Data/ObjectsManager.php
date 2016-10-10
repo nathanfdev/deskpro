@@ -98,6 +98,9 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskList;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use DeskPRO\Bundle\AppBundle\Entity\TaskSubtask;
+use DeskPRO\Bundle\AppBundle\Entity\TwilioAccount;
+use DeskPRO\Bundle\AppBundle\Entity\TwilioNumber;
+use DeskPRO\Bundle\AppBundle\Entity\TwilioQueue;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -162,8 +165,8 @@ class ObjectsManager
         } else {
             $args = [];
         }
-        $args[] = $data;
 
+        $args[] = $data;
         $object = call_user_func_array($factory, $args);
 
         return $object;
@@ -319,6 +322,9 @@ class ObjectsManager
             'Usersource'             => [Factory\SimpleFactory::class, 'create', Usersource::class],
             'UsersourceAssoc'        => [Factory\SimpleFactory::class, 'create', PersonUsersourceAssoc::class],
             'PersonNote'             => [Factory\SimpleFactory::class, 'create', PersonNote::class],
+            'TwilioAccount'          => [Factory\SimpleFactory::class, 'create', TwilioAccount::class],
+            'TwilioNumber'           => [Factory\SimpleFactory::class, 'create', TwilioNumber::class],
+            'TwilioQueue'            => [Factory\SimpleFactory::class, 'create', TwilioQueue::class],
         ];
     }
 
@@ -403,6 +409,9 @@ class ObjectsManager
             'UsersourceAssoc'        => [$this, 'find', PersonUsersourceAssoc::class],
             'PersonNote'             => [$this, 'find',  PersonNote::class],
             'Permission'             => [$this, 'find',  Permission::class],
+            'TwilioAccount'          => [$this, 'find',  TwilioAccount::class],
+            'TwilioNumber'           => [$this, 'find',  TwilioNumber::class],
+            'TwilioQueue'            => [$this, 'find',  TwilioQueue::class],
         ];
     }
 }

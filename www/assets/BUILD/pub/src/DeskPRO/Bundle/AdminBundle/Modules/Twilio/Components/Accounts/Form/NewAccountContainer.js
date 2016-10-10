@@ -1,0 +1,11 @@
+import { connect } from 'react-redux';
+import { createAccount } from '../../../Actions/accountActions';
+import BaseAccountFormContainer from './BaseAccountFormContainer';
+
+@connect()
+class NewAccountContainer extends BaseAccountFormContainer {
+
+  submitData = data => this.props.dispatch(createAccount(data));
+}
+
+export default NewAccountContainer;

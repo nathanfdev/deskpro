@@ -283,3 +283,10 @@ services:
     arguments: ["@settings_resolver", "@language_manager"]
     tags:
       - { name: form.type }
+
+  form.twilio_account:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Twilio\TwilioAccountType
+    arguments:
+      - "@twilio_adapter"
+    tags:
+      - { name: form.type }

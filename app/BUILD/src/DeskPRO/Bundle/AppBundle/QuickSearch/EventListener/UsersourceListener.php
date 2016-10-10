@@ -81,12 +81,14 @@ class UsersourceListener implements EventSubscriberInterface
         }
 
         $person = $this->usersource_manager->findPersonByEmail($request->getQuery());
+        if (!$person) {
+            return;
+        }
+
         if (!$person->isAgent() && $context->getType() === QuickSearchContext::TYPE_AGENT) {
             return;
         }
 
-        if ($person) {
-            $context->addEntity($person);
-        }
+        $context->addEntity($person);
     }
 }

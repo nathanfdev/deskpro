@@ -53,6 +53,10 @@ export function getErrorsByPropertyPath(formErrors, propertyPath) {
   return iterator(formErrors, getErrorPath(propertyPath));
 }
 
+export function getFormDataErrors(formData) {
+  return formData._errorList.errors;
+}
+
 /**
  * @deprecated use getErrorsByPropertyPath instead
  */

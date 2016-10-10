@@ -8,6 +8,14 @@ import Immutable from 'immutable';
 export const loadBatch = createAction(
   'RECORDS_STORE_LOAD',
   (recordName, ids, collectionName) => (dispatch, getState) => {
+    const numericIds = [];
+    ids.forEach((id) => {
+      const intId = parseInt(id, 10);
+      if (intId) {
+        numericIds.push(intId);
+      }
+    });
+
     const recordStore = getState().RecordsStore.store.get(recordName);
     const loaded = recordStore && recordStore.has('records')
       ? recordStore.get('records')
@@ -15,22 +23,29 @@ export const loadBatch = createAction(
 
     const targets = [];
 
-    ids.forEach(id => {
+    numericIds.forEach((id) => {
       if (!loaded.has(id) && !loaded.has(id.toString())) {
         targets.push(id);
       }
     });
+
+    // merge new ids with existing collection
+    const existIds = recordStore && recordStore.hasIn(['collections', collectionName])
+      ? recordStore.getIn(['collections', collectionName])
+      : Immutable.fromJS([]);
+
+    const allCollectionIds = existIds.merge(numericIds).toJS();
 
     let result;
     if (targets.length) {
       result = {
         recordName,
         collectionName,
-        ids,
+        allCollectionIds,
         promise: repository(recordName).loadBatch(targets).then(response => ({
           recordName,
           collectionName,
-          ids,
+          allCollectionIds,
           records: response.getData().data
         }))
       };
@@ -38,7 +53,7 @@ export const loadBatch = createAction(
       result = {
         recordName,
         collectionName,
-        ids,
+        allCollectionIds,
         records: []
       };
     }
@@ -48,7 +63,7 @@ export const loadBatch = createAction(
 );
 export const loadAll = createAction(
   'RECORDS_STORE_LOAD',
-  (recordName) => (dispatch, getState) => {
+  recordName => (dispatch, getState) => {
     const recordStore = getState().RecordsStore.store.get(recordName);
 
     let result;
@@ -57,7 +72,7 @@ export const loadAll = createAction(
         recordName,
         collectionName: 'all',
         ids:            [],
-        promise:        repository(recordName).loadAll().then(response => {
+        promise:        repository(recordName).loadAll().then((response) => {
           const records = response.getData().data;
           const ids = records.map(record => record.id);
 
@@ -83,7 +98,7 @@ export const loadFromApi = createAction(
   (recordName, url, collectionName) => ({
     recordName,
     collectionName,
-    promise: api.sendGet(url).then(response => {
+    promise: api.sendGet(url).then((response) => {
       const records = response.getData().data;
       const ids = records.map(record => record.id);
 
@@ -105,6 +120,15 @@ export const setCollection = createAction(
     const recordsArray = records.map ? records : Object.keys(records).map(k => records[k]);
 
     return { recordName, collectionName, records: recordsArray };
+  }
+);
+
+export const updateCollection = createAction(
+  'RECORDS_STORE_UPDATE_COLLECTION',
+  (recordName, records, mergeType = 'replace') => {
+    const recordsArray = records.map ? records : Object.keys(records).map(k => records[k]);
+
+    return { recordName, records: recordsArray, mergeType };
   }
 );
 

@@ -1,0 +1,71 @@
+import React, { PropTypes } from 'react';
+import { Fieldset, createValue } from 'react-forms';
+import { Form, Field, BlurInput, Select } from 'DeskPRO/Component/Semantic/ReactForm';
+import QueuesChoiceWrapper from '../../Queues/QueuesChoiceWrapper';
+
+class NumberOptionsForm extends React.Component {
+
+  static propTypes = {
+    queues:     PropTypes.object,
+    number:     PropTypes.object.isRequired,
+    onSubmit:   PropTypes.func,
+    onAddQueue: PropTypes.func
+  };
+
+  constructor(props) {
+    super(props);
+    const number = props.number;
+    const targetType = number.get('target_type');
+
+    this.state = {
+      formData: createValue({
+        value: {
+          nickname:     number.get('nickname') || '',
+          target_queue: targetType === 'queue' ? number.get('target_id') : null
+        },
+        errorList: {},
+        onChange:  this.onChange
+      })
+    };
+  }
+
+  onChange = (formData) => {
+    this.setState({ formData });
+    const value = formData.value;
+
+    let submitData = { nickname: value.nickname };
+    if (value.target_queue) {
+      submitData = { ...submitData, target_id: value.target_queue, target_type: 'queue' };
+    }
+
+    this.props.onSubmit(submitData);
+  };
+
+  render() {
+    const { queues, onAddQueue } = this.props;
+
+    return (
+      <Form onSubmit={(event) => { event.preventDefault(); }} formValue={this.state.formData}>
+        <Fieldset>
+          <Field
+            select="nickname"
+            label="Nickname"
+            help="These can be used to more quickly find and identify numbers e.g. for assigning as part of an IVR menu."
+          >
+            <BlurInput placeholder="e.g. 'Primary Sales number'" />
+          </Field>
+          <Field select="target_queue" label="Queue">
+            <QueuesChoiceWrapper queues={queues}>
+              <Select clearable={false} />
+            </QueuesChoiceWrapper>
+          </Field>
+          <button className="ui basic button" onClick={onAddQueue}>
+            Add another queue
+          </button>
+        </Fieldset>
+      </Form>
+    );
+  }
+}
+
+export default NumberOptionsForm;
