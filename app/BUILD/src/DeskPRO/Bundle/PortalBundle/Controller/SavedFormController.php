@@ -205,7 +205,7 @@ class SavedFormController extends AbstractController
 
     /**
      * @Route("/validate/{type}/{auth_code}", name="portal_validation")
-     * @ParamConverter("saved_form", class="AppBundle:SavedForm", options={"auth_code" = "auth_code"})
+     * @ParamConverter("saved_form", class="App:SavedForm", options={"auth_code" = "auth_code"})
      */
     public function validateAction(Request $request, $type, SavedForm $saved_form)
     {

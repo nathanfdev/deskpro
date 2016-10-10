@@ -334,7 +334,7 @@ class ProfileController extends AbstractController
             //////////////////////////////////////////////////////////////////////////////////////////////
             // PENDING EMAIL ADDRESSES
             //////////////////////////////////////////////////////////////////////////////////////////////
-            $savedForms = $this->getRepo(SavedForm::class)->findBy([
+            $savedForms = $this->getRepo('App:SavedForm')->findBy([
                 'person'         => $person,
                 'intention_type' => SavedForm::INTENTION_VERIFY_EMAIL,
             ]);

@@ -73,7 +73,6 @@ class ApiKernel extends BaseKernel
             'test' === $this->getEnvironment()) {
             $bundles[] = new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
             $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
-            $bundles[] = new \Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
         }
 
         if ('test' === $this->getEnvironment()) {

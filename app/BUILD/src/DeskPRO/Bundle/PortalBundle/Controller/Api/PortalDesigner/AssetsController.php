@@ -69,7 +69,7 @@ class AssetsController extends AbstractApiController
     /**
      * @Route("/portal/api/style/edit-theme-set/assets/{id}", requirements={"id"="\d+"})
      * @Method({"DELETE"})
-     * @ParamConverter("asset", class="AppBundle:ThemeSetAsset")
+     * @ParamConverter("asset", class="App:ThemeSetAsset")
      *
      * @param ThemeSetAsset $asset
      *

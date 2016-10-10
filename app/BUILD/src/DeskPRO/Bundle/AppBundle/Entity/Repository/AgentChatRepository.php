@@ -66,8 +66,8 @@ class AgentChatRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('ac');
         $qb
-            ->innerJoin('AppBundle:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
-            ->innerJoin('AppBundle:AgentChatParticipant', 'acp2', 'WITH', 'ac.id = acp2.chat')
+            ->innerJoin('App:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
+            ->innerJoin('App:AgentChatParticipant', 'acp2', 'WITH', 'ac.id = acp2.chat')
             ->andWhere('acp.person = :agent')
             ->andWhere('acp2.person = :me')
             ->andWhere('ac.type = :type')
@@ -89,7 +89,7 @@ class AgentChatRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('ac');
         $qb
-            ->innerJoin('AppBundle:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
+            ->innerJoin('App:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
             ->andWhere('acp.team = :team_id')
             ->andWhere('ac.type = :type')
             ->setParameter('team_id', $team)
@@ -109,7 +109,7 @@ class AgentChatRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('ac');
         $qb
-            ->innerJoin('AppBundle:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
+            ->innerJoin('App:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
             ->andWhere('acp.department = :department_id')
             ->andWhere('ac.type = :type')
             ->setParameter('department_id', $department)

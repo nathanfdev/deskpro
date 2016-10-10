@@ -262,6 +262,7 @@ $container->loadFromExtension(
 
                         'AppBundle' => [
                             'type'      => 'annotation',
+                            'alias'     => 'App',
                             'is_bundle' => false,
                             'dir'       => '%kernel.root_dir%/../src/DeskPRO/Bundle/AppBundle/Entity',
                             'prefix'    => 'DeskPRO\Bundle\AppBundle\Entity',
