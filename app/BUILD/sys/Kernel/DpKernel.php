@@ -151,6 +151,10 @@ class DpKernel extends BaseKernel
             ]);
         }
 
+        if (in_array($this->getEnvironment(), ['dev', 'test'])) {
+            $bundles[] = new \Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
+        }
+
         return $bundles;
     }
 }

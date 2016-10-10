@@ -91,7 +91,7 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
 
     protected function getChatMessage(NewMessageEvent $event)
     {
-        $messageRepo = $this->em->getRepository('App:AgentChatMessage');
+        $messageRepo = $this->em->getRepository('AppBundle:AgentChatMessage');
         /** @var AgentChatMessage $message */
         $message = $messageRepo->findOneBy(['id' => $event->getMessageId()]);
         if (!$message) {
