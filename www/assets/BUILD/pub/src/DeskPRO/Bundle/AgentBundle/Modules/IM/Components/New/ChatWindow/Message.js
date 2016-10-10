@@ -8,7 +8,7 @@ class Message extends React.Component
   static propTypes = {
     me:       PropTypes.object.isRequired,
     message:  PropTypes.object.isRequired,
-    previous: PropTypes.object.isRequired
+    previous: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired
   };
 
   static renderSeparator(dateCreated) {

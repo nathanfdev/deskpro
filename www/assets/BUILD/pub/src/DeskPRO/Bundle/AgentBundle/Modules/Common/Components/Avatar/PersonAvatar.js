@@ -7,7 +7,7 @@ export class PersonAvatar extends React.Component {
   static propTypes = {
     person:    PropTypes.object.isRequired,
     size:      PropTypes.number,
-    className: PropTypes.array,
+    className: PropTypes.string,
     color:     PropTypes.string
   };
 
