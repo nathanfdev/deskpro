@@ -205,6 +205,18 @@ class TicketEmailBuilder
     }
 
     /**
+     * @param string $email
+     *
+     * @return $this
+     */
+    public function setToPersonEmail($email)
+    {
+        $this->options->set('to_person_email', $email);
+
+        return $this;
+    }
+
+    /**
      * @param Person[] $people
      *
      * @return $this

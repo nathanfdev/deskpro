@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
@@ -97,13 +98,16 @@ class SendArbitraryUserEmail extends AbstractEmailAction
         // Sort out the users to send to
         //-------------------------
 
-        /** @var \Application\DeskPRO\Entity\Person[] $send_people */
-        $send_people = [];
+        /** @var \Application\DeskPRO\Entity\Person[] $sendPeople */
+        $sendPeople = [];
 
         if ($this->getActionOption('send_org_managers')) {
-            $managers = $this->getContainer()->getEm()->getRepository('DeskPRO:Organization')->getManagers($ticket->organization);
+            /** @var \Application\DeskPRO\EntityRepository\Organization $orgRepo */
+            $orgRepo  = $this->getContainer()->getEm()->getRepository(Organization::class);
+            $managers = $orgRepo->getManagers($ticket->getOrganization());
+
             foreach ($managers as $p) {
-                $send_people[] = $p;
+                $sendPeople[$p->getEmailAddress()] = $p;
             }
         }
 
@@ -111,7 +115,7 @@ class SendArbitraryUserEmail extends AbstractEmailAction
         foreach ($this->getActionOption('emails') as $email) {
             $person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
             if ($person) {
-                $send_people[] = $person;
+                $sendPeople[$email] = $person;
             } else {
                 if ($reg_closed) {
                     continue;
@@ -123,14 +127,12 @@ class SendArbitraryUserEmail extends AbstractEmailAction
                 $person     = $person_processor->createPerson($eml);
 
                 if ($person) {
-                    $send_people[] = $person;
+                    $sendPeople[$email] = $person;
                 }
             }
         }
 
-        $send_people = array_unique($send_people);
-
-        if (!$send_people) {
+        if (!$sendPeople) {
             $context->getLogger()->debug('[SendArbitraryUserEmail] no people to send to');
         }
 
@@ -138,12 +140,13 @@ class SendArbitraryUserEmail extends AbstractEmailAction
         // Send emails
         //-------------------------
 
-        foreach ($send_people as $person) {
+        foreach ($sendPeople as $email => $person) {
             $context->getLogger()->debug(sprintf('[SendArbitraryUserEmail] Sending to Person#%d %s <%s>', $person->id, $person->getDisplayName(), $person->primary_email ? $person->primary_email->email : '?'));
 
             $builder = TicketEmailBuilder::createFromContainer($this->getContainer())
                 ->setTicket($ticket)
                 ->setToPerson($person)
+                ->setToPersonEmail($email)
                 ->setUserMode()
                 ->setTemplateName($template)
                 ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
@@ -153,7 +156,7 @@ class SendArbitraryUserEmail extends AbstractEmailAction
                 ->setFromEmailAccount($from_account);
 
             $ticket_email = $builder->buildTicketEmail();
-            $default_vars = array_merge($builder->getCommonVars($person->isAgent()));
+            $default_vars = array_merge($default_vars, $builder->getCommonVars($person->isAgent()));
 
             try {
                 $ticket_email->send($default_vars);
