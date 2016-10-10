@@ -8,7 +8,6 @@ import Message from './Message';
 class MessageList extends React.Component {
   static propTypes = {
     me:              PropTypes.object.isRequired,
-    agents:          PropTypes.object.isRequired,
     messages:        PropTypes.object.isRequired,
     searchQuery:     PropTypes.string,
     current:         PropTypes.object.isRequired,
@@ -46,10 +45,7 @@ class MessageList extends React.Component {
               <Message
                 key={index}
                 message={message}
-                size={msg.size}
-                current={parseInt(index, 10)}
-                previousMessage={previous}
-                agents={this.props.agents}
+                previous={previous}
                 me={this.props.me}
               />
             );
