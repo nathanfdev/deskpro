@@ -93,7 +93,6 @@ class PersonMerge implements PersonContextInterface
         try {
             // todo: organizations cc?
             $standard_prop_names = [
-                'gravatar_url',
                 'language',
                 'organization',
                 'organization_position',
