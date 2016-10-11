@@ -8,12 +8,12 @@ export const openChat = createAction('IM_OPEN_CHAT');
 
 export const markChatAsManuallyClosed = createAction(
   'MARK_CHAT_AS_CLOSED',
-  (chatId) => chatId
+  chatId => chatId
 );
 
 export const closeChat = createAction(
   'IM_CLOSE_CHAT',
-  (chatId) => (dispatch) => {
+  chatId => (dispatch) => {
     dispatch(markChatAsManuallyClosed(chatId));
     return chatId;
   }
