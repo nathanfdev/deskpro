@@ -1624,27 +1624,27 @@ $collection->create('agent_publish_validatingcomments', [
 ]);
 
 $collection->create('agent_publish_approve_comment', [
-    'path'       => '/publish/comments/approve/{typename}/{comment_id}',
+    'path'       => '/publish/comments/approve/{typename}/{commentId}',
     'controller' => 'AgentBundle:Publish:approveComment',
 ]);
 
 $collection->create('agent_publish_delete_comment', [
-    'path'       => '/publish/comments/delete/{typename}/{comment_id}',
+    'path'       => '/publish/comments/delete/{typename}/{commentId}',
     'controller' => 'AgentBundle:Publish:deleteComment',
 ]);
 
 $collection->create('agent_publish_comment_info', [
-    'path'       => '/publish/comments/info/{typename}/{comment_id}',
+    'path'       => '/publish/comments/info/{typename}/{commentId}',
     'controller' => 'AgentBundle:Publish:commentInfo',
 ]);
 
 $collection->create('agent_publish_comment_save', [
-    'path'       => '/publish/comments/save-comment/{typename}/{comment_id}',
+    'path'       => '/publish/comments/save-comment/{typename}/{commentId}',
     'controller' => 'AgentBundle:Publish:saveComment',
 ]);
 
 $collection->create('agent_public_comment_newticketinfo', [
-    'path'       => '/publish/comments/new-ticket-info/{typename}/{comment_id}.json',
+    'path'       => '/publish/comments/new-ticket-info/{typename}/{commentId}.json',
     'controller' => 'AgentBundle:Publish:getNewTicketCommentInfo',
 ]);
 
