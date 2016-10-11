@@ -4,14 +4,14 @@ import { SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
 import Message from './Message';
 
-
 class MessageList extends React.Component {
   static propTypes = {
     me:              PropTypes.object.isRequired,
     messages:        PropTypes.object.isRequired,
     searchQuery:     PropTypes.string,
     current:         PropTypes.object.isRequired,
-    loadingMessages: PropTypes.bool.isRequired
+    loadingMessages: PropTypes.bool.isRequired,
+    markNewMessages: PropTypes.func
   };
 
   static renderEmpty() {
@@ -22,6 +22,14 @@ class MessageList extends React.Component {
         content="Sorry, nothing found here"
       />
     );
+  }
+
+  componentDidMount() {
+    this.props.markNewMessages();
+  }
+
+  componentDidUpdate() {
+    this.props.markNewMessages();
   }
 
   getPath = () => {

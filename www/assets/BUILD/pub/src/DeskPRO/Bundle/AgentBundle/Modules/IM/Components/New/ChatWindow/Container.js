@@ -20,7 +20,8 @@ class Container extends React.Component {
     onAttach:        PropTypes.func.isRequired,
     messages:        PropTypes.object,
     dispatch:        PropTypes.func,
-    loadingMessages: PropTypes.bool.isRequired
+    loadingMessages: PropTypes.bool.isRequired,
+    markNewMessages: PropTypes.func
   };
 
   static defaultProps = {
@@ -147,6 +148,7 @@ class Container extends React.Component {
                   messages={messages}
                   me={me}
                   agents={agents}
+                  markNewMessages={this.props.markNewMessages}
                 />
               </Scrollable>
             </div>

@@ -75,13 +75,13 @@ export const markMessagesOptimistic = createAction(
 
 export const markMessages = createAction(
   'IM_MARK_MESSAGES',
-  (ids, uuids, chatId, status = 2) => (dispatch) => {
-    dispatch(markMessagesOptimistic(uuids, chatId, status));
-    return new Promise(
-      (resolve, reject) => repository('AgentChat').markMessages(chatId, ids, status)
-        .success(() => resolve({ chatId, uuids, status }))
-        .error(response => reject(response))
-    );
-  }
+  (ids, uuids, chatId, status = 2) => dispatch => new Promise(
+      (resolve, reject) => {
+        dispatch(markMessagesOptimistic(uuids, chatId, status));
+        return repository('AgentChat').markMessages(chatId, ids, status)
+          .success(() => resolve({ chatId, uuids, status }))
+          .error(response => reject(response));
+      }
+    )
 );
 

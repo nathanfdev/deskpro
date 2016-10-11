@@ -82,6 +82,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.participantClick = this.participantClick.bind(this);
     this.chatClickOut     = this.chatClickOut.bind(this);
     this.onSubmit         = this.onSubmit.bind(this);
+    this.markNewMessages  = this.markNewMessages.bind(this);
   }
 
   componentWillMount() {
@@ -196,22 +197,53 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.props.dispatch(chatsActions.toggleOverlay());
   }
 
+  getPath = () => {
+    let path;
+    if (!this.props.searchQuery) {
+      path = ['chatMessages', this.props.current.get('id')];
+    } else {
+      path = ['searchMessages', this.props.current.get('id')];
+    }
+    return path;
+  };
+
+  markNewMessages() {
+    if (!this.props.updatingMessages) {
+      const ids = [];
+      const uuids = [];
+      const { messages, dispatch } = this.props;
+
+      const msg = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
+      msg.map((message) => {
+        if (message.id && message.status < 2 && message.person !== this.props.me.get('id')) {
+          ids.push(message.id);
+          uuids.push(message.uuid);
+        }
+        return true;
+      });
+      if (ids.length > 0) {
+        dispatch(messagesActions.markMessages(ids, uuids, this.props.current.get('id')));
+      }
+    }
+  }
+
   render() {
     const props = { ...this.props,
-      updateVolume:       AgentTopBarContainer.updateVolume,
-      onSearch:           AgentTopBarContainer.onSearch,
-      onSearchFocus:      this.onSearchFocus,
-      onSearchBlur:       AgentTopBarContainer.onSearchBlur,
-      toggleViewMode:     AgentTopBarContainer.toggleViewMode,
-      onRecent:           AgentTopBarContainer.onRecent,
-      onNotification:     AgentTopBarContainer.onNotification,
-      closeIframes:       AgentTopBarContainer.closeIframes,
-      notificationCount:  this.state.notificationCount,
-      toggleImOverlay:    this.toggleImOverlay,
-      chatClickOut:       this.chatClickOut,
-      recentClick:        this.recentClick,
-      participantClick:   this.participantClick,
-      onSubmit:           this.onSubmit,
+      updateVolume:      AgentTopBarContainer.updateVolume,
+      onSearch:          AgentTopBarContainer.onSearch,
+      onSearchFocus:     this.onSearchFocus,
+      onSearchBlur:      AgentTopBarContainer.onSearchBlur,
+      toggleViewMode:    AgentTopBarContainer.toggleViewMode,
+      onRecent:          AgentTopBarContainer.onRecent,
+      onNotification:    AgentTopBarContainer.onNotification,
+      closeIframes:      AgentTopBarContainer.closeIframes,
+      notificationCount: this.state.notificationCount,
+      toggleImOverlay:   this.toggleImOverlay,
+      chatClickOut:      this.chatClickOut,
+      recentClick:       this.recentClick,
+      participantClick:  this.participantClick,
+      onSubmit:          this.onSubmit,
+      markNewMessages:   this.markNewMessages,
       onClearSearchInput: AgentTopBarContainer.onClearSearchInput,
       onToggleChat:       this.onToggleChat
     };
@@ -242,6 +274,7 @@ export class AgentTopBar extends React.Component {
     recentClick:         PropTypes.func,
     participantClick:    PropTypes.func,
     onSubmit:            PropTypes.func,
+    markNewMessages:     PropTypes.func,
     messages:            PropTypes.object,
     current:             PropTypes.object,
     loadingMessages:     PropTypes.bool.isRequired,
@@ -283,7 +316,7 @@ export class AgentTopBar extends React.Component {
     const { teamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
     const { current, chating, recentClick, messages, chatClickOut, participantClick, dispatch } = this.props;
     const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
-    const { onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
+    const { markNewMessages, onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
     const { closeIframes, toggleViewMode, me, myDepartments, teams, recentChats, recentLoaded, overlayShown } = this.props;
 
     return (<TopBar>
@@ -351,6 +384,7 @@ export class AgentTopBar extends React.Component {
             clickOut={chatClickOut}
             dispatch={dispatch}
             loadingMessages={loadingMessages}
+            markNewMessages={markNewMessages}
           /> : null }
         </TopBarRecentImList>
       </TopBarItem>

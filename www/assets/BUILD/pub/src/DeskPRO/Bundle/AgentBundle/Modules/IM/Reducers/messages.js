@@ -5,8 +5,6 @@ import * as actions from '../Actions/messagesActions';
 import { newActionAlerts } from '../../Application/Actions/notificationActions';
 import { MessagesHelper } from '../../../Services/Helpers/MessagesHelper';
 
-const messagesHelper = new MessagesHelper();
-
 const initialState = {
   me:               {},
   chatMessages:     {},
@@ -27,8 +25,8 @@ export default createReducer(initialState, {
       success: (state, payloadArgument) => {
         const payload  = payloadArgument;
         const newState = state.set('searching', Boolean(payload.searchQuery));
-        const chat     = messagesHelper.getChat(newState, payload.chat);
-        const path     = messagesHelper.getPath(newState, payload.chat);
+        const chat     = MessagesHelper.getChat(newState, payload.chat);
+        const path     = MessagesHelper.getPath(newState, payload.chat);
 
         if (!chat || (payload.searchQuery && chat.searchQuery !== payload.searchQuery)) {
           const messages = {};
@@ -52,11 +50,11 @@ export default createReducer(initialState, {
     }
   ),
 
-  [actions.addMessageOptimistic]:   messagesHelper.addMessageOptimistic.bind(messagesHelper),
-  [actions.markMessagesOptimistic]: messagesHelper.markMessagesOptimistic.bind(messagesHelper),
+  [actions.addMessageOptimistic]:   MessagesHelper.addMessageOptimistic,
+  [actions.markMessagesOptimistic]: MessagesHelper.markMessagesOptimistic,
 
   [actions.markMessages]: async({
-    success: messagesHelper.markMessages.bind(messagesHelper),
+    success: MessagesHelper.markMessages,
     done:    state => state.set('updatingMessages', false)
   }),
 
@@ -67,5 +65,5 @@ export default createReducer(initialState, {
     }
   ),
 
-  [newActionAlerts]: messagesHelper.handleActionAlerts.bind(messagesHelper)
+  [newActionAlerts]: MessagesHelper.handleActionAlerts
 });
