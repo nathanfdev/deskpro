@@ -1,4 +1,4 @@
-define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
+define ['AdminStart/Ctrl/StartBase', 'jstz'], (StartBase, jstzObj) ->
   class AdminStart_Ctrl_Home extends StartBase
     @CTRL_ID = 'AdminStart_Ctrl_Home'
     @DEPS    = ['$modal', '$location', 'AppState']
@@ -13,6 +13,8 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
       @$scope.opt.deskpro_url = (window.location.href+"").replace(/\/admin\/start(.*?)$/, '')+"/"
       @$scope.opt.deskpro_url = @$scope.opt.deskpro_url.replace(/\/index\.php\/?(.*?)$/, '')
       @$scope.opt.deskpro_url = @$scope.opt.deskpro_url.replace(/\/$/, '') + "/"
+
+      jstz = jstzObj.jstz
 
       tz = jstz.determine()
       if tz and tz.name()

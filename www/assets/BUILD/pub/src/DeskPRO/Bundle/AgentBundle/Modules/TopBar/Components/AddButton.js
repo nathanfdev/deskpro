@@ -41,7 +41,7 @@ class AddButton extends React.Component {
         items.push(<MenuItem key="feedback" onClick={this.addFeedback}>
           <i className="icon thumbs outline up" /> {agentPhrases.get('agent.general.feedback')}</MenuItem>);
       }
-      if (window.DESKPRO_PERSON_PERMS['agent_tasks.use']) {
+      if (window.DESKPRO_APP_SETTINGS['core.apps_tasks'] && window.DESKPRO_PERSON_PERMS['agent_tasks.use']) {
         items.push(<MenuItem key="task" onClick={this.addTask}>
           <i className="icon check circle outline" /> {agentPhrases.get('agent.general.task')}</MenuItem>);
       }

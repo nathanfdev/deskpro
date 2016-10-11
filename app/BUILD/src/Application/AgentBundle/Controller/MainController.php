@@ -743,6 +743,7 @@ class MainController extends AbstractController
             PortalSettingsResolver::APPS_DOWNLOADS => false,
             PortalSettingsResolver::APPS_NEWS      => false,
             PortalSettingsResolver::APPS_FEEDBACK  => false,
+            'core.apps_tasks'                      => false,
         ];
 
         /** @var Brand[] $brands */

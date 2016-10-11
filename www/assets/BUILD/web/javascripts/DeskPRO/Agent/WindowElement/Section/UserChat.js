@@ -526,12 +526,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 	modListingCount: function(id, op, count) {
 
-
-		if (oldCount != newCount) {
-			if (this.isVisible()) {
-				DeskPRO_Window.runPageRouteFromElement(el.closest('[data-route]'));
-			}
-		}
 	},
 
 	modDepListingCount: function(id, op, count) {
@@ -710,6 +704,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				audio.pause();
 			}
 			alertEl.remove();
+
+			self.closeIframes();
+
 		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id + '/join');
 	},
 
@@ -842,6 +839,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		});
 		$('.accept-trigger, .join-trigger', alertEl).on('click', function(ev) {
 			ev.stopPropagation();
+			self.closeIframes();
 			if (audio) {
 				try {
 					audio.pause();
@@ -881,5 +879,16 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		console.log("%d in %o", id, window.DESKPRO_PERSON_PERMS.chat_dep_ids);
 
 		return window.DESKPRO_PERSON_PERMS.chat_dep_ids.indexOf(id) !== -1;
+	},
+
+	closeIframes: function() {
+		if (window.DP_FRAME_OVERLAYS) {
+      Object.keys(window.DP_FRAME_OVERLAYS).forEach(function(key) {
+				var iframe = window.DP_FRAME_OVERLAYS[key];
+				if (iframe.opened) {
+					iframe.close();
+				}
+			});
+		}
 	}
 });

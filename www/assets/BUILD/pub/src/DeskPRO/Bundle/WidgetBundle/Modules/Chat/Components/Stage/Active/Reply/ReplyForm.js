@@ -155,7 +155,7 @@ export class ReplyForm extends React.Component {
             </AttachmentContainer>
           </div>
 
-          <button>
+          <button className="send">
             <i className="fa fa-angle-double-right" />
           </button>
         </form>
