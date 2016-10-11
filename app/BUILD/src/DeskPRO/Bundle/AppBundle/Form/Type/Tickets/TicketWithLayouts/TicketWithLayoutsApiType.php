@@ -37,7 +37,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -61,23 +60,17 @@ class TicketWithLayoutsApiType extends AbstractType
     private $fieldRenderer;
 
     /**
-     * @var FormFactory
-     */
-    private $formFactory;
-
-    /**
      * Constructor.
      *
      * @param ApiFieldResolver    $fieldResolver
      * @param ApiFieldRenderer    $fieldRenderer
      * @param TicketLayoutFactory $layoutFactory
      */
-    public function __construct(ApiFieldResolver $fieldResolver, ApiFieldRenderer $fieldRenderer, TicketLayoutFactory $layoutFactory, FormFactory $formFactory)
+    public function __construct(ApiFieldResolver $fieldResolver, ApiFieldRenderer $fieldRenderer, TicketLayoutFactory $layoutFactory)
     {
         $this->fieldResolver = $fieldResolver;
         $this->fieldRenderer = $fieldRenderer;
         $this->layoutFactory = $layoutFactory;
-        $this->formFactory   = $formFactory;
     }
 
     /**
@@ -85,7 +78,6 @@ class TicketWithLayoutsApiType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onEnsureRequireFields'], 100);
     }
 
@@ -103,9 +95,10 @@ class TicketWithLayoutsApiType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'field_resolver' => $this->fieldResolver,
-            'field_renderer' => $this->fieldRenderer,
-            'layout_factory' => function ($department) {
+            'field_resolver'  => $this->fieldResolver,
+            'field_renderer'  => $this->fieldRenderer,
+            'full_type_class' => TicketWithLayoutsApiFullType::class,
+            'layout_factory'  => function ($department) {
                 return $this->layoutFactory->getLayoutForTicketForm($department, true);
             },
         ]);
@@ -140,14 +133,5 @@ class TicketWithLayoutsApiType extends AbstractType
         }
 
         $event->setData($data);
-    }
-
-    /**
-     * @param FormEvent $event
-     */
-    public function onPreSubmit(FormEvent $event)
-    {
-        $this->onEnsureRequireFields($event);
-        TicketWithLayoutsManipulatorType::onPreSubmit($event, TicketWithLayoutsApiFullType::class, $this->formFactory);
     }
 }

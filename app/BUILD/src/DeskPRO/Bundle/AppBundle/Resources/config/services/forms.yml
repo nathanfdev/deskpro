@@ -203,6 +203,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsManipulatorType
     arguments:
       - "@form_hierarchy_generator"
+      - "@form.factory"
     tags:
       - { name: form.type }
 
@@ -212,7 +213,6 @@ services:
       - "@ticket_with_layouts_web_field_resolver"
       - "@ticket_with_layouts_web_field_renderer"
       - "@ticket_layout_factory"
-      - "@form.factory"
     tags:
       - { name: form.type }
 
@@ -231,7 +231,6 @@ services:
       - "@ticket_with_layouts_api_field_resolver"
       - "@ticket_with_layouts_api_field_renderer"
       - "@ticket_layout_factory"
-      - "@form.factory"
     tags:
       - { name: form.type }
 
