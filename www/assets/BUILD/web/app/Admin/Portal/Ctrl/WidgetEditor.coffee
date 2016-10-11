@@ -92,7 +92,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
         @$scope.saving_code = true
         @loadCode().then (codeResponse) =>
-          @$scope.code = codeResponse.data
+          @$scope.code = codeResponse.data.data
           @$scope.saving_code = false
       promises.push(promise)
 
@@ -277,7 +277,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       promise = @Api2.sendPostJson('/settings/brands/'+@$scope.brand_id+'/widget/setup', @getWidgetSaveData(), null, headers: {'X-Agent-Request': 'true'})
       promise.then(
         () => @loadCode().then (codeResponse) =>
-          @$scope.code = codeResponse.data
+          @$scope.code = codeResponse.data.data
           @$scope.saving_code = false
         ,
         (response) =>
@@ -305,7 +305,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       )
 
     initLiveDemo: () ->
-      window.addEventListener('message', (event) =>
+      (window.parent || window).addEventListener('message', (event) =>
         if (event.data?.type == 'widgetStatus')
           @$scope.$apply =>
             @$scope.widgetLoaded = true
@@ -322,7 +322,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       , false)
 
       @loadLiveDemoCode().then (codeResponse) =>
-        code = codeResponse.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
+        code = codeResponse.data.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
 
         demoDocument = @getLiveDemoDocument()
         demoDocument.write("<body>#{code}</body>")

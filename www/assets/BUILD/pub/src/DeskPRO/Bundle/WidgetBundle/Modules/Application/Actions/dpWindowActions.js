@@ -1,4 +1,7 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
+import $ from 'jquery';
+import lscache from 'lscache';
+import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import {
   requireChatLoginSelector,
   widgetSessionIsLoginSelector,
@@ -18,11 +21,8 @@ import {
 import { chatIdSelector, needValidateEmailSelector } from '../../Chat/Selectors/chat';
 import { loadNewTicketForm } from '../../Ticket/Actions/ticketActions';
 import { history, getLocation } from '../../../Services/history';
-import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
-import $ from 'jquery';
-import lscache from 'lscache';
 
-const openChatBeginStageByMode = chatBeginMode => {
+const openChatBeginStageByMode = (chatBeginMode) => {
   switch (chatBeginMode) {
     case 'conversation':
       history.replace('/chat/begin/conversation');
@@ -67,7 +67,7 @@ export const widgetResize = createAction(
 
 export const windowResize = createAction(
   'WINDOW_RESIZE',
-  () => dispatch => {
+  () => (dispatch) => {
     dispatch(widgetResize());
 
     const parentWindow = parent.window;
@@ -113,8 +113,8 @@ export const openWidget = createAction(
     return null;
   }
 );
-export const reopenWidget = createAction('WIDGET_REOPEN', () => dispatch => {
-  getLocation(location => {
+export const reopenWidget = createAction('WIDGET_REOPEN', () => (dispatch) => {
+  getLocation((location) => {
     // if history location was changed then just reopen widget, no need to resolve path
     // /chat is default path
     if (location.pathname !== '/chat') {
@@ -130,8 +130,8 @@ export const reopenWidget = createAction('WIDGET_REOPEN', () => dispatch => {
 export const loadOptions = createAction('WIDGET_OPTIONS', options => $.extend(true, {}, options));
 export const fetchOptions = createAction(
   'WIDGET_FETCH_OPTIONS',
-  () => dispatch => new Promise(resolve => {
-    const setOptions = options => {
+  () => dispatch => new Promise((resolve) => {
+    const setOptions = (options) => {
       // we need to merge the fetched options with the 'window.DP_OPTIONS' to have per-page customization
       // (e.g. have Page A on your site can use different phrases than Page B)
       const mergedOptions = $.extend(true, {}, options, window.DP_OPTIONS);
@@ -147,7 +147,7 @@ export const fetchOptions = createAction(
     }
 
     const promise = widgetApi.sendGet('DP_API/widget/brand_options');
-    promise.then(response => {
+    promise.then((response) => {
       const options = response.data.data;
 
       setOptions(options);
