@@ -72,7 +72,6 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @property int                                 $id
  * @property Blob                                $picture_blob
  * @property bool                                $disable_picture
- * @property string                              $gravatar_url
  * @property bool                                $is_contact
  * @property bool                                $is_user
  * @property bool                                $is_agent
@@ -163,6 +162,9 @@ GroupSequenceProviderInterface
 
     /**
      * The URL to the users gravatar if any.
+     *
+     * @deprecated Gravatar url is getting from the person email
+     * @see AvatarResolver
      *
      * @var string
      */
@@ -2819,16 +2821,6 @@ GroupSequenceProviderInterface
     }
 
     /**
-     * Sets the gravatar URL.
-     *
-     * @param string $url
-     */
-    public function setGravatarUrl($url)
-    {
-        $this->setModelField('gravatar_url', $url);
-    }
-
-    /**
      * Gets the URL to a picture for the person. Note that this will always return
      * a path to an image, even if it's the default. If you need to check for the
      * existance of an image, use hasPicture.
@@ -2928,17 +2920,17 @@ GroupSequenceProviderInterface
      *
      * @return bool
      */
-    public function hasPicture($auto_check = false)
+    public function hasPicture()
     {
         if ($this->disable_picture) {
             return false;
         }
 
-        if ($this->picture_blob || $this->gravatar_url) {
+        if ($this->picture_blob) {
             return true;
         }
 
-        if ($this->primary_email and App::getSetting('core.use_gravatar')) {
+        if ($this->primary_email || App::getSetting('core.use_gravatar')) {
             return true;
         }
 
