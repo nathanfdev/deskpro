@@ -1,12 +1,11 @@
-import * as actions from '../Actions/messagesActions';
-import { newActionAlerts } from '../../Application/Actions/notificationActions';
+import Immutable from 'immutable';
 import { createReducer } from 'Ampliflux';
 import { async } from 'Ampliflux/reducers/handlers';
-import Immutable from 'immutable';
+import * as actions from '../Actions/messagesActions';
+import { newActionAlerts } from '../../Application/Actions/notificationActions';
 import { MessagesHelper } from '../../../Services/Helpers/MessagesHelper';
 
 const messagesHelper = new MessagesHelper();
-
 
 const initialState = {
   me:               {},
@@ -24,7 +23,7 @@ export default createReducer(initialState, {
 
   [actions.loadMessages]: async(
     {
-      start:   (state) => state.set('loadingMessages', true),
+      start:   state => state.set('loadingMessages', true),
       success: (state, payloadArgument) => {
         const payload  = payloadArgument;
         const newState = state.set('searching', Boolean(payload.searchQuery));
@@ -49,7 +48,7 @@ export default createReducer(initialState, {
 
         return newState.setIn(path, { ...chat });
       },
-      done: (state) => state.set('loadingMessages', false)
+      done: state => state.set('loadingMessages', false)
     }
   ),
 
@@ -64,7 +63,7 @@ export default createReducer(initialState, {
   [actions.refreshCounts]: async(
     {
       success: (state, payload) => state.set('counts', payload),
-      done:    (state) => state.set('loadingCounts', false)
+      done:    state => state.set('loadingCounts', false)
     }
   ),
 
