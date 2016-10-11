@@ -33,6 +33,8 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\BrandFormHelper;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\FieldRendererInterface;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\AbstractFieldResolver;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -105,6 +107,10 @@ class TicketWithLayoutsType extends AbstractType
                 // the form fields are very dependant on the visibility context ('new', 'edit') and layout type ('agent' or 'user')
                 'ticket_visibility',
                 'ticket_view_context',
+
+                'field_resolver',
+                'field_renderer',
+                'layout_factory',
             ])
             ->setAllowedValues('ticket_visibility', [
                 TicketWithLayoutsContext::VISIBILITY_NEW,
@@ -117,6 +123,9 @@ class TicketWithLayoutsType extends AbstractType
             ])
             ->setAllowedTypes('person', Person::class)
             ->setAllowedTypes('department_id', ['null', 'integer'])
+            ->setAllowedTypes('field_resolver', AbstractFieldResolver::class)
+            ->setAllowedTypes('field_renderer', FieldRendererInterface::class)
+            ->setAllowedTypes('layout_factory', 'callable')
         ;
     }
 

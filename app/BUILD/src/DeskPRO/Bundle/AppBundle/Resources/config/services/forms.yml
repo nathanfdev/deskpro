@@ -207,6 +207,13 @@ services:
     tags:
       - { name: form.type }
 
+  form.full_ticket_with_layouts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsFullType
+    arguments:
+      - "@ticket_layout_factory"
+    tags:
+      - { name: form.type }
+
   form.web_ticket_with_layouts:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType
     arguments:

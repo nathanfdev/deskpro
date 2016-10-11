@@ -33,8 +33,6 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDisableAutoProcessListener;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\FieldRendererInterface;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\AbstractFieldResolver;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -86,15 +84,7 @@ class TicketWithLayoutsManipulatorType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([
-                'field_resolver',
-                'field_renderer',
-                'layout_factory',
-                'full_type_class',
-            ])
-            ->setAllowedTypes('field_resolver', AbstractFieldResolver::class)
-            ->setAllowedTypes('field_renderer', FieldRendererInterface::class)
-            ->setAllowedTypes('layout_factory', 'callable')
+            ->setRequired('full_type_class')
             ->setAllowedTypes('full_type_class', 'string')
         ;
     }

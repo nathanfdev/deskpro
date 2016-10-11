@@ -28,19 +28,17 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\ApiFieldRenderer;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\ApiFieldResolver;
+use Application\DeskPRO\Entity\TicketLayout;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
- * This is stub form. Used to output a 'full' form with every field,
- * which is used by JS to dynamically update the UI as a user changes options.
- *
- * Class TicketWithLayoutsApiFullType.
+ * Class AbstractTicketWithLayoutsFullType.
  */
-class TicketWithLayoutsApiFullType extends AbstractType
+class TicketWithLayoutsFullType extends AbstractType
 {
     /**
      * @var TicketLayoutFactory
@@ -48,27 +46,13 @@ class TicketWithLayoutsApiFullType extends AbstractType
     private $layoutFactory;
 
     /**
-     * @var ApiFieldResolver
-     */
-    private $fieldResolver;
-
-    /**
-     * @var ApiFieldRenderer
-     */
-    private $fieldRenderer;
-
-    /**
      * Constructor.
      *
      * @param TicketLayoutFactory $layoutFactory
-     * @param ApiFieldResolver    $fieldResolver
-     * @param ApiFieldRenderer    $fieldRenderer
      */
-    public function __construct(TicketLayoutFactory $layoutFactory, ApiFieldResolver $fieldResolver, ApiFieldRenderer $fieldRenderer)
+    public function __construct(TicketLayoutFactory $layoutFactory)
     {
         $this->layoutFactory = $layoutFactory;
-        $this->fieldResolver = $fieldResolver;
-        $this->fieldRenderer = $fieldRenderer;
     }
 
     /**
@@ -76,20 +60,32 @@ class TicketWithLayoutsApiFullType extends AbstractType
      */
     public function getParent()
     {
-        return TicketWithLayoutsFullType::class;
+        return TicketWithLayoutsType::class;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $resolver->setDefaults([
-            'field_resolver' => $this->fieldResolver,
-            'field_renderer' => $this->fieldRenderer,
-            'layout_factory' => function ($department) {
-                return $this->layoutFactory->getLayoutForTicketForm($department, false);
-            },
-        ]);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onRenderFullLayout']);
+    }
+
+    /**
+     * Returns fields from all layouts.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onRenderFullLayout(FormEvent $event)
+    {
+        $context = new TicketWithLayoutsContext($event->getForm(), $event->getData(), new TicketLayout());
+        $context->setNewLayout($this->layoutFactory->getFullLayoutForTicketForm());
+
+        TicketLayoutHelper::renderFormFields($context, function () {
+            // just stub, no need form field validation for the 'full' form
+            return true;
+        });
     }
 }
