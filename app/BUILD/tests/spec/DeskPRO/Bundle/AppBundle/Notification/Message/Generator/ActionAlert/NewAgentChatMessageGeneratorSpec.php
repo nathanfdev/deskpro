@@ -65,7 +65,7 @@ class NewAgentChatMessageGeneratorSpec extends ObjectBehavior
         $event->getMessageId()->willReturn(1);
         $event->getName()->willReturn(NewMessageEvent::EVENT_NAME);
 
-        $em->getRepository('App:AgentChatMessage')->willReturn($repo);
+        $em->getRepository(AgentChatMessage::class)->willReturn($repo);
         $em->getRepository(Person::class)->willReturn($repo);
         $repo->findOneBy(['id' => 1])->willReturn($message);
         $repo->findBy(['is_agent' => true])->willReturn([$bob, $alice]);

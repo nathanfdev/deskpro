@@ -29,6 +29,7 @@
 namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Brand;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DpBehat\Data\DataContext;
 
 class PortalBrandThemeContext extends BasePortalContext
@@ -40,7 +41,7 @@ class PortalBrandThemeContext extends BasePortalContext
      */
     public function theActiveBrandHasTheme($themeId)
     {
-        $themeSet = $this->em()->getRepository('App:ThemeSet')->findOneBy(['theme_id' => $themeId]);
+        $themeSet = $this->em()->getRepository(ThemeSet::class)->findOneBy(['theme_id' => $themeId]);
 
         // portal fixtures BC
         $brand = $this->getEm()->getRepository(Brand::class)->findOneBy(['theme_set' => $themeSet]);
