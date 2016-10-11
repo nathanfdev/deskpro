@@ -362,6 +362,10 @@ export class SideBar extends React.Component {
       >
         <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo}>
           <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logo.svg`} />
+          <Isvg
+            className="logo-text"
+            src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logoText.svg`}
+          />
         </div>
         {this.getMenuItems()}
       </div>
