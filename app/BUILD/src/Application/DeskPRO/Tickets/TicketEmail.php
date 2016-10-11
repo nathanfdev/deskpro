@@ -80,6 +80,11 @@ class TicketEmail
     /**
      * @var string
      */
+    private $toPersonEmail;
+
+    /**
+     * @var string
+     */
     private $sentToEmail;
 
     /**
@@ -170,6 +175,7 @@ class TicketEmail
         $opt->addValidNames(
             'from_name',
             'from_email_account',
+            'to_person_email',
             'cc_users',
             'is_auto',
             'max_attach_size',
@@ -179,10 +185,11 @@ class TicketEmail
         $opt->setAll($options);
         $opt->ensureRequired();
 
-        $this->toPerson     = $opt->get('to_person');
-        $this->ticket       = $opt->get('ticket');
-        $this->templateName = $opt->get('template_name');
-        $this->fromName     = $opt->get('from_name', '');
+        $this->toPerson      = $opt->get('to_person');
+        $this->toPersonEmail = $opt->get('to_person_email');
+        $this->ticket        = $opt->get('ticket');
+        $this->templateName  = $opt->get('template_name');
+        $this->fromName      = $opt->get('from_name', '');
 
         $this->mailer           = $opt->get('mailer');
         $this->emailAccounts    = $opt->get('email_accounts');
@@ -293,7 +300,9 @@ class TicketEmail
         }
 
         // To user - use the selected email address on the ticket
-        if ($this->userMode == self::MODE_USER) {
+        if ($this->toPersonEmail && $this->toPerson->hasEmailAddress($this->toPersonEmail)) {
+            $toEmail = $this->toPersonEmail;
+        } elseif ($this->userMode == self::MODE_USER) {
             if ($this->ticket->getPersonEmail() && $this->ticket->getPersonEmail()->getPerson() === $this->toPerson) {
                 $toEmail = $this->ticket->getPersonEmail()->getEmail();
                 $this->logger->info(sprintf('[TicketEmail] to_email(1): %s', $toEmail));
