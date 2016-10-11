@@ -58,7 +58,7 @@ define [
     console.log("Redirect to license")
     window.location.hash = '/license'
 
-  if window.parent == window.self
+  if window.parent == window.self && !window.DP_IS_DEV_ENV
     window.location.href = window.DP_BASE_URL + 'agent/#admin:' + (window.location.hash.replace(/^#/, '') || '/')
 
   if window.parent?.DP_FRAME_OVERLAYS?.admin

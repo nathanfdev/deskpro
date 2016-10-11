@@ -242,6 +242,7 @@
         window.DP_IS_DEBUG          = {% if app.isDebug() %}true{% else %}false{% endif %};
         window.DP_IS_TESTING        = {% if app.isTesting() %}true{% else %}false{% endif %};
         window.DP_IS_CLOUD          = {% if app.isCloud() %}true{% else %}false{% endif %};
+        window.DP_IS_DEV_ENV        = {% if app.isDevEnv() %}true{% else %}false{% endif %};
         window.DP_SECURE_LIC_SERVER = '{{ license_server }}';
         {% if app.isCloud() %}
         window.DPC_SITE_DOMAIN = '{{ constant('DPC_SITE_DOMAIN') }}';
