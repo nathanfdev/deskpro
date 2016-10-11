@@ -42,11 +42,11 @@ Feature: Widget Setup
   Scenario: I get initial widget code
     When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/widget/code"
     And the response status code should be 200
-    And the response should contain "DESKPRO_WIDGET_LOADER::BEGIN"
-    And the response should contain "DESKPRO_WIDGET_LOADER::END"
-    And the response should contain "pub/build/widget_loader.min.js"
-    And the response should contain "dp-widget-loader"
-    And the response should contain "helpdeskUrl"
+    And the JSON node "data" should contain "DESKPRO_WIDGET_LOADER::BEGIN"
+    And the JSON node "data" should contain "DESKPRO_WIDGET_LOADER::END"
+    And the JSON node "data" should contain "pub/build/widget_loader.min.js"
+    And the JSON node "data" should contain "dp-widget-loader"
+    And the JSON node "data" should contain "helpdeskUrl"
 
   Scenario: I update global widget configuration
     When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/widget/setup" with body:

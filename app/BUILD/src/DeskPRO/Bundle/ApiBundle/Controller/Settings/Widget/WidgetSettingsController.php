@@ -99,7 +99,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
     {
         $code = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, false);
 
-        return new Response($code);
+        return new View($this->wrap($code));
     }
 
     /**
@@ -124,7 +124,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
         $brand = $this->get('brand_stack')->getActive()->getBrand();
         $code  = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, true);
 
-        return new Response($code);
+        return new View($this->wrap($code));
     }
 
     /**

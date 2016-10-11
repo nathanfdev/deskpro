@@ -33,7 +33,7 @@ export const getSession = createAction(
   () => dispatch => new Promise(resolve =>
     widgetApi
       .sendPost('DP_API/auth/session', { dpsid: localStorage.getItem('dpWidget.sessionCode') }, { ...ajaxOptions })
-      .success(response => {
+      .success((response) => {
         const data = response.data;
         localStorage.setItem('dpWidget.sessionCode', data.session_code);
         dispatch(setSettings(data.global_settings));
@@ -85,7 +85,7 @@ export const reloadSettings = createAction(
 
 export const loadPortalPhraseTranslations = createAction(
   'WIDGET_LOAD_PHRASE_TRANSLATIONS',
-  () => (dispatch, getState) => new Promise(resolve => {
+  () => (dispatch, getState) => new Promise((resolve) => {
     const state = getState();
     const language = widgetLanguageSelector(state);
 
@@ -102,7 +102,7 @@ export const loadPortalPhraseTranslations = createAction(
     } else {
       widgetApi
         .sendGet(`DP_API/lang/widget-phrases.json?language=${language}`, { ...ajaxOptions })
-        .success(response => {
+        .success((response) => {
           setPhrases(response);
           lscache.set(cacheKey, response, 60);
         });
@@ -129,7 +129,7 @@ export const chatResume = createAction(
     dispatch(setLastAgentId(storedLastAgentId));
 
     const promise = dispatch(pollingChat(storedChatId));
-    promise.then(response => {
+    promise.then((response) => {
       const chatInfo = response.data.chat_info && response.data.chat_info.data;
 
       // Reset stored chat id on reload page if chat was ended
@@ -146,7 +146,7 @@ export const chatResume = createAction(
 
 export const bootstrapWidget = createAction(
   'WIDGET_BOOTSTRAP',
-  () => (dispatch, getState) => new Promise(resolve => {
+  () => (dispatch, getState) => new Promise((resolve) => {
     // load widget options first to choose which mode to use ("normal" or "demo")
     const options = window.DP_OPTIONS;
 
@@ -178,7 +178,7 @@ export const bootstrapWidget = createAction(
         promises.push(dispatch(fetchOptions()));
       }
 
-      Promise.all(promises).then(response => {
+      Promise.all(promises).then((response) => {
         // get updated state after the ajax requests
         state = getState();
 
@@ -193,7 +193,7 @@ export const bootstrapWidget = createAction(
             resolve(response);
           };
 
-          const onError = data => {
+          const onError = (data) => {
             // Remove from local storage broken chat id
             if (data && data.code === 400 && data.message === 'wrong_session_code') {
               dispatch(unsetChatId());
