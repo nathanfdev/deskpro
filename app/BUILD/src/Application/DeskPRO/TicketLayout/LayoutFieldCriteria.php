@@ -38,8 +38,10 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
-use Zend\Db\Sql\Ddl\Constraint\Check;
 
+/**
+ * Class LayoutFieldCriteria.
+ */
 class LayoutFieldCriteria implements \Serializable, \Countable
 {
     const CRIT_ALL = 'all';
@@ -121,32 +123,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         } else {
             foreach ($this->terms as $t) {
                 if ($t->isTicketMatch($ticket)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return bool
-     */
-    public function isSubmittedDataMatch(array $data)
-    {
-        if ($this->mode == self::CRIT_ALL) {
-            foreach ($this->terms as $t) {
-                if (!$t->isSubmittedDataMatch($data)) {
-                    return false;
-                }
-            }
-
-            return true;
-        } else {
-            foreach ($this->terms as $t) {
-                if ($t->isSubmittedDataMatch($data)) {
                     return true;
                 }
             }
