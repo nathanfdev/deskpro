@@ -883,13 +883,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 	closeIframes: function() {
 		if (window.DP_FRAME_OVERLAYS) {
-			console.log(window.DP_FRAME_OVERLAYS);
-			for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
-				const iframe = window.DP_FRAME_OVERLAYS[key];
+      Object.keys(window.DP_FRAME_OVERLAYS).forEach(function(key) {
+				var iframe = window.DP_FRAME_OVERLAYS[key];
 				if (iframe.opened) {
 					iframe.close();
 				}
-			}
+			});
 		}
 	}
 });
