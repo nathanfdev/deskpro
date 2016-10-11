@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\UpdateBundle\DbBackup;
 
+use DeskPRO\Component\Filesystem\BigFile;
 use DeskPRO\Component\Util\Timer;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -49,6 +50,9 @@ class DbVerify implements DbVerifyInterface, LoggerAwareInterface
      */
     private $logger;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->logger = new NullLogger();
@@ -76,7 +80,7 @@ class DbVerify implements DbVerifyInterface, LoggerAwareInterface
 
         $this->logger->debug('Verify: File does exist');
 
-        $size = filesize($filename);
+        $size = BigFile::getFileSize($filename);
         if ($size < self::MIN_SIZE) {
             $this->logger->critical(sprintf('Database dump filesize is too small, path: %s. Got: %d, expected at least: %d.', $filename, $size, self::MIN_SIZE));
             throw new DbBackupException('Database dump too small to be successful', DbBackupException::DUMP_ERROR_TOOSMALL);
