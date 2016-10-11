@@ -34,7 +34,6 @@ class MessageList extends React.Component {
     return path;
   };
 
-
   renderList(msg) {
     let previous = false;
     return (

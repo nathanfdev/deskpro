@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import ScrollArea from 'react-scrollbar-versioned';
+import ScrollArea from 'react-scrollbar';
 import classNames from 'classnames';
 
 // NOTE
@@ -19,11 +19,11 @@ export class Scrollable extends React.Component {
   };
 
   // @todo how can we determine if current platform supports scrollbars?
-  platformSupportsScrollbars() {
+  static platformSupportsScrollbars() {
     return true;
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps() {
     this.dirty = true;
   }
 
@@ -33,21 +33,30 @@ export class Scrollable extends React.Component {
     return dirty;
   }
 
+  scrollBottom() {
+    if (this.scrollarea) {
+      this.scrollarea.scrollBottom();
+    }
+  }
+
   renderWithScrollbars() {
     const { horizontal, vertical, both, className, children } = this.props;
 
     return (
-      <div className={classNames(
-        'dp-scrollable',
-        'as-js-scrollbar',
-        className,
-        {
-          'as-horizontal': horizontal || both,
-          'as-vertical':   vertical || both
-        }
+      <div
+        className={classNames(
+          'dp-scrollable',
+          'as-js-scrollbar',
+          className,
+          {
+            'as-horizontal': horizontal || both,
+            'as-vertical':   vertical || both
+          }
       )}
       >
-        <ScrollArea className="dpscrollarea"
+        <ScrollArea
+          ref={(c) => { this.scrollarea = c; }}
+          className="dpscrollarea"
           contentClassName="dpscrollarea"
           horizontal={horizontal || both}
           vertical={vertical || both}
@@ -63,15 +72,16 @@ export class Scrollable extends React.Component {
     const { horizontal, vertical, both, className, children } = this.props;
 
     return (
-      <div className={classNames(
-        'dp-scrollable',
-        'as-native-scrollbar',
-        className,
-        {
-          'as-horizontal': horizontal || both,
-          'as-vertical':   vertical || both
-        }
-      )}
+      <div
+        className={classNames(
+          'dp-scrollable',
+          'as-native-scrollbar',
+          className,
+          {
+            'as-horizontal': horizontal || both,
+            'as-vertical':   vertical || both
+          }
+        )}
       >
         {children}
       </div>
@@ -79,6 +89,8 @@ export class Scrollable extends React.Component {
   }
 
   render() {
-    return this.platformSupportsScrollbars() ? this.renderWithScrollbars() : this.renderWithoutScrollbars();
+    return Scrollable.platformSupportsScrollbars() ? this.renderWithScrollbars() : this.renderWithoutScrollbars();
   }
 }
+
+export default Scrollable;

@@ -37,6 +37,7 @@ class Container extends React.Component {
     this.state = {
       emojiOpened: false
     };
+    this.shouldScrollBottom = true;
 
     this.openEmoji    = this.openEmoji.bind(this);
     this.closeEmoji   = this.closeEmoji.bind(this);
@@ -47,6 +48,12 @@ class Container extends React.Component {
 
   componentDidMount() {
     this.refresh();
+  }
+
+  componentDidUpdate() {
+    if (this.scrollarea && this.shouldScrollBottom) {
+      this.scrollarea.scrollBottom();
+    }
   }
 
   getAgentHeader(chat) {
@@ -102,7 +109,7 @@ class Container extends React.Component {
   }
 
   addEmoji(emoji) {
-    console.log(emoji);
+    console.log(emoji, this.state.emojiOpened);
   }
 
   handleChange(event) {
@@ -132,8 +139,9 @@ class Container extends React.Component {
           <div className="ui popup left bottom im chat drawer">
             <div className="im header">{this.getHeader()}</div>
             <div className="box">
-              <Scrollable vertical>
+              <Scrollable vertical ref={(c) => { this.scrollarea = c; }}>
                 <MessageList
+                  scrollarea={this.scrollarea}
                   loadingMessages={loadingMessages}
                   current={current}
                   messages={messages}

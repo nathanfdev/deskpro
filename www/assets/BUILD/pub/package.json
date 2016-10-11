@@ -65,7 +65,7 @@
     "react-proxy": "1.1.8",
     "react-redux": "4.4.5",
     "react-router": "2.4.1",
-    "react-scrollbar-versioned": "15.1.0",
+    "react-scrollbar": "0.4.2",
     "react-select": "^1.0.0-beta13",
     "react-select-plus": "^1.0.0-beta12",
     "react-stylesheet": "^1.0.2",
