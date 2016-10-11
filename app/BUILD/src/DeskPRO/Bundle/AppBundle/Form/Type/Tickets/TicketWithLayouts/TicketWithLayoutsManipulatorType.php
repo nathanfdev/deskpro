@@ -148,14 +148,14 @@ class TicketWithLayoutsManipulatorType extends AbstractType
             $ticket->setDepartment($data->getDepartment());
         }
 
-        $options = $form->getConfig()->getOptions();
-        $options = [
+        $options         = $form->getConfig()->getOptions();
+        $fullFormOptions = [
             'person'              => $options['person'],
             'ticket_view_context' => $options['ticket_view_context'],
             'ticket_visibility'   => $options['ticket_visibility'],
         ];
 
-        $fullForm = $this->formFactory->create($options['full_type_class'], $ticket, $options);
+        $fullForm = $this->formFactory->create($options['full_type_class'], $ticket, $fullFormOptions);
         $fullForm->submit($event->getData());
 
         $context = TicketWithLayoutsContext::createOnPreSubmit($event);
@@ -176,9 +176,8 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $ticket = $event->getForm()->getData();
 
         // update ticket message properties
-        /** @var TicketMessage $ticketMessage */
         $ticketMessage = $ticket->messages->first();
-        if ($ticketMessage) {
+        if ($ticketMessage instanceof TicketMessage) {
             $person = $ticket->getPerson();
             $ticketMessage->setPerson($person);
             foreach ($ticketMessage->getAttachments() as $attachment) {
