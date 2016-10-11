@@ -22,12 +22,8 @@
                                 ng-model="LogsCtrl.pagination.page"
                                 ui-select2
                                 style="width: 130px;"
+                                ng-options='page as ("Page " + page) for page in LogsCtrl.pagination.page_nums'
                                 >
-                            <option ng-selected="page == LogsCtrl.pagination.page"
-                                    ng-repeat="page in LogsCtrl.pagination.page_nums "
-                                    value="{{ ng_var('page') }}">
-                                Page {{ ng_var('page') }}
-                            </option>
                         </select>
                     </div>
 					<table dp-hide-spinning="loading" class="table table-hover">
@@ -85,12 +81,8 @@
                                 ng-model="LogsCtrl.pagination.page"
                                 ui-select2
                                 style="width: 130px;"
+                                ng-options='page as ("Page " + page) for page in LogsCtrl.pagination.page_nums'
                                 >
-                            <option ng-selected="page == LogsCtrl.pagination.page"
-                                    ng-repeat="page in LogsCtrl.pagination.page_nums "
-                                    value="{{ ng_var('page') }}">
-                                Page {{ ng_var('page') }}
-                            </option>
                         </select>
                     </div>
 				</div>
@@ -103,7 +95,7 @@
                                 </div>
                                 <div class="col-lg-9">
                                     <label>
-                                        <input type="checkbox" ng-checked="LogsCtrl.options.enabled" dp-change="LogsCtrl.toggleLogs()" />
+                                        <input type="checkbox" ng-model="LogsCtrl.options.enabled"/>
                                         <em>{{ ng_var('mode') }}</em>
                                     </label>
                                 </div>
@@ -122,6 +114,25 @@
                                         </li>
                                     </ul>
                                 </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Max request body length (bytes)</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="input" ng-model="LogsCtrl.options.request_length"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Max response body length (bytes)</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="input" ng-model="LogsCtrl.options.response_length"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary" ng-click="LogsCtrl.updateOptions()">Save</button>
                             </div>
                         </div>
                     </div>

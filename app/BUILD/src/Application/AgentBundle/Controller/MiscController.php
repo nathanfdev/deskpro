@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository\Usersource;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Application\DeskPRO\Routing\Generator\UrlGenerator;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
@@ -919,7 +920,7 @@ JS;
         // Auth usersources that accept local input
         //------------------------------
 
-        $usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
+        $usersources = $this->em->getRepository(Usersource::class)->getLocalInputUsersources();
         foreach ($usersources as $us) {
             foreach ($this->person->getEmailAddresses() as $email) {
                 /* @var $us \Application\DeskPRO\Entity\Usersource */

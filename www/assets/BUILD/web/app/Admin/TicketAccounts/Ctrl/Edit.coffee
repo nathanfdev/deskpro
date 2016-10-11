@@ -1,14 +1,16 @@
 define [
   'Admin/Main/Ctrl/Base',
   'Admin/TicketAccounts/FormModel/EditTicketAccountModel',
+  'underscore'
 ], (
   Admin_Ctrl_Base,
-  EditTicketAccountModel
+  EditTicketAccountModel,
+  _
 ) ->
   class Admin_TicketAccounts_Ctrl_Edit extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_TicketAccounts_Ctrl_Edit'
     @CTRL_AS = 'TicketAccountsEdit'
-    @DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal', 'dpObTypesDefTicketActions']
+    @DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal', 'dpObTypesDefTicketActions', '$location']
 
     init: ->
       @actionsTypeDef = @dpObTypesDefTicketActions
@@ -26,6 +28,8 @@ define [
         subject: 'Test email',
         message: 'This is a test. If you see this email in your inbox, your outgoing email account settings are correct.'
       }
+      @$scope.path = @$location.path()
+      @deferredData = {}
 
     updateCriteriaOptionTypes: ->
       types = ['web', 'web.user']
@@ -86,6 +90,10 @@ define [
 
       final_promise.then(=>
         @form_model = @getFormModel()
+        if @deferredData.gmail?
+          for type in ['in', 'out']
+            for v in ['clientId', 'clientSecret', 'token', 'refreshToken']
+              @form_model.form[type + '_gmail_account'][v] = @deferredData.gmail[v]
 
         @$scope.form = @form_model.form
 
@@ -294,5 +302,14 @@ define [
             resetTest()
         ]
       });
+
+
+
+    resetToken: (type) ->
+      if @form_model.form[type]?.token?
+        @form_model.form[type].token = null
+        @form_model.form[type].refreshToken = null
+
+
 
   Admin_TicketAccounts_Ctrl_Edit.EXPORT_CTRL()

@@ -24,21 +24,13 @@
 							</div>
 							<div class="col-lg-9">
 								<p>
-									Deleted tickets are automatically purged from the system after<br/>
-									<select dp-closest-number ng-model="settings.auto_purge_time" ui-select2="{dropdownAutoWidth:true}">
-										<option value="86400">1 day</option>
-										<option value="259200">3 days</option>
-										<option value="432000">5 days</option>
-										<option value="604800">1 week</option>
-										<option value="1209600">2 weeks</option>
-										<option value="1814400">3 weeks</option>
-										<option value="2592000">1 month</option>
-										<option value="5184000">2 months</option>
-										<option value="7776000">3 months</option>
-										<option value="15552000">6 months</option>
-										<option value="23328000">9 months</option>
-										<option value="31536000">1 year</option>
-										<option value="63072000">2 years</option>
+									Deleted tickets are automatically purged from the system after
+									<br/>
+									<select
+											dp-closest-number
+											ng-model="settings.auto_purge_time"
+											ng-options="time.id as time.label for time in times"
+									>
 									</select>
 								</p>
 

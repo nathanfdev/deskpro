@@ -9,7 +9,17 @@
 		</span>
 	</div>
 </div>
-
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>API Target</h3>
+	</div>
+	<div class="col-lg-8" ng-class="{'has-error': errors.api_target}">
+		<input type="text" class="form-control" ng-model="setting_values.api_target" />
+		<span class="help-block">
+			Enter the base URL to your HipChat API. Leave this blank to use the default (for the hosted version of HipChat).
+		</span>
+	</div>
+</div>
 <div class="form-group">
 	<div class="col-lg-4">
 		<h3>Notify</h3>

@@ -9,7 +9,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     initialLoad: ->
       @Api.sendGet('/dp_license/cloud/billing-login-token').then( (result) =>
-        console.log(result.data)
         @$scope.iframe_loading = false
         @$scope.iframe_code    = '<iframe src="' + result.data.ma_url + '" frameborder="0"></iframe>'
       )

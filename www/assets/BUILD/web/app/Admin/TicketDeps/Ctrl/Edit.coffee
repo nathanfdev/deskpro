@@ -1,11 +1,13 @@
 define [
   'Admin/Main/Ctrl/Base',
   'Admin/Main/Model/DepAgentPermMatrix',
-  'DeskPRO/Util/Util'
+  'DeskPRO/Util/Util',
+  'underscore'
 ], (
   Admin_Ctrl_Base,
   Admin_Main_Model_DepAgentPermMatrix,
-  Util
+  Util,
+  _
 ) ->
   class Admin_TicketDeps_Ctrl_Edit extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_TicketDeps_Ctrl_Edit'

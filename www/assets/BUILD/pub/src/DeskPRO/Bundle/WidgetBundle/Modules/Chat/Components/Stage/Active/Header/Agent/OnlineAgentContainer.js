@@ -63,3 +63,4 @@ export class OnlineAgentContainer extends React.Component {
     );
   }
 }
+export default OnlineAgentContainer;

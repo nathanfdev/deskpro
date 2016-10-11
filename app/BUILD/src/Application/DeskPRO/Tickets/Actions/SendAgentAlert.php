@@ -188,7 +188,9 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             'log_items'          => $this->getActionOption('ticket_logs'),
         ];
 
-        $log_ids = array_map(function ($l) { return $l->getId(); }, $vars['log_items']);
+        $log_ids = array_map(function ($l) {
+            return $l->getId();
+        }, $vars['log_items']);
         $alertData = [
             '@fetch_types'       => ['ticket' => 'DeskPRO:Ticket', 'performer' => 'DeskPRO:Person', 'log_items' => 'DeskPRO:TicketLog'],
             'ticket'             => $ticket->getId(),

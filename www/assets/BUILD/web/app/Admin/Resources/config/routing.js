@@ -34,70 +34,70 @@ define(function() {
   routes.push({
     id: 'setup',
     url: '/setup',
-    templateName: 'Index/app-nav-setup.html',
+    templateName: 'Layout/app.html',
     controller: 'Admin_Main_Ctrl_Nav'
   });
 
   routes.push({
     id: 'agents',
     url: '/agents',
-    templateName: 'Index/app-nav-agents.html',
+    templateName: 'Layout/app.html',
     controller: 'Admin_Main_Ctrl_Nav'
   });
 
   routes.push({
     id: 'tickets',
     url: '/tickets',
-    templateName: 'Index/app-nav-tickets.html',
+    templateName: 'Layout/app.html',
     controller: 'Admin_Main_Ctrl_Nav'
   });
 
   routes.push({
     id: 'crm',
     url: '/crm',
-    templateName: 'Index/app-nav-crm.html',
+    templateName: 'Layout/app.html',
     controller: 'Admin_Main_Ctrl_Nav'
   });
 
   routes.push({
     id: 'portal',
     url: '/portal/{brandId:[0-9]+|new}',
-    templateName: 'Index/app-nav-portal.html',
+    templateName: 'Layout/app.html',
 		controller: 'Admin_Portal_Ctrl_Nav'
 	});
 
   routes.push({
     id: 'chat',
     url: '/chat',
-    templateName: 'Index/app-nav-chat.html',
+    templateName: 'Layout/app.html',
     controller: 'Admin_Main_Ctrl_Nav'
   });
 
   routes.push({
     id: 'twitter',
     url: '/twitter',
-    templateName: 'Index/app-nav-twitter.html',
+    templateName: 'Layout/app.html',
     controller: 'Admin_Main_Ctrl_Nav'
   });
 
   routes.push({
     id: 'apps',
     url: '/apps',
-    templateName: 'Index/app-nav-apps.html',
+    templateName: 'Layout/app.html',
     controller: 'Admin_Main_Ctrl_Nav'
   });
 
   routes.push({
     id: 'tasks',
     url: '/tasks',
-    templateName: 'Index/app-nav-tasks.html',
+    templateName: 'Layout/app.html',
     controller: 'Admin_Main_Ctrl_Nav'
   });
 
   routes.push({
     id: 'server',
     url: '/server',
-    templateName: 'Index/app-nav-server.html',
+    templateName: 'Layout/app.html',
     controller: 'Admin_Main_Ctrl_Nav'
   });
 
@@ -428,6 +428,24 @@ define(function() {
     url: '/{id:[0-9]+}',
     templateName: 'AgentGroups/edit.html',
     controller: 'Admin_AgentGroups_Ctrl_Edit'
+  });
+
+  //###
+  //# AuditLogs
+  //###
+  routes.push({
+    id: 'agents.audit_logs',
+    url: '/audit_logs',
+    templateName: 'Agents/audit_logs.html',
+    controller: 'Admin_AgentAuditLogs_Ctrl_AuditLogs'
+  });
+
+  routes.push({
+    id: 'agents.audit_logs.view',
+    url: '/view/{id}',
+    templateName: 'Agents/audit_logs-view.html',
+    controller: 'Admin_AgentAuditLogs_Ctrl_AuditLogsView',
+    target: "appbody@agents"
   });
 
   //##################################################################################################################
@@ -2394,24 +2412,6 @@ define(function() {
 		controller: 'Admin_ServerIncidents_Ctrl_View',
 		target: "appbody@server"
 	});
-
-  //###
-	//# AuditLogs
-	//###
-	routes.push({
-		id: 'server.audit_logs',
-		url: '/audit_logs',
-		templateName: 'Server/server-audit_logs.html',
-		controller: 'Admin_ServerAuditLogs_Ctrl_ServerAuditLogs'
-	});
-
-  routes.push({
-    id: 'server.audit_logs.view',
-    url: '/view/{id}',
-    templateName: 'Server/server-audit_logs-view.html',
-    controller: 'Admin_ServerAuditLogs_Ctrl_ServerAuditLogsView',
-    target: "appbody@server"
-  });
 
 	// routes.push({
 	// 	id: 'server.incidents.view',

@@ -151,7 +151,7 @@ class SyncerHelper
             // tries the auto-agent routine, if agent usersource (just like on login from a usersource)
             LoginProcessor::tryAutoAgent($usersource, $person);
         }
-        LoginProcessor::tryUsergroupPromotion($usersource, $person);
+        LoginProcessor::tryUsergroupPromotion($usersource, $person, $user_info);
 
         // Update custom field data
         App::getSystemService('person_fields_manager')->copyUsersourceData(

@@ -1,9 +1,10 @@
+/* eslint import/no-extraneous-dependencies: ["error", {"peerDependencies": true}] */
 import 'babel-polyfill';
 import $ from 'jquery';
 import factory from 'iframe-resizer';
 
-const runEmbed = function (helpdeskUrl, options, containerEl) {
-  const { language = 'en', department = 0, hide_department = 0 } = options;
+const runEmbed = (helpdeskUrl, options, containerEl) => {
+  const { language = 'en', department = 0, hideDepartment = 0 } = options;
 
   const node = document.createElement('iframe');
   node.frameborder = 0;
@@ -14,38 +15,38 @@ const runEmbed = function (helpdeskUrl, options, containerEl) {
 
   (node.frameElement || node).style.cssText = 'border: none; margin: 0; padding: 0;';
 
-  const langSeg = language && language != '0' ? `/${language}` : '';
+  const langSeg = language && language !== '0' ? `/${language}` : '';
 
-  node.src = (function () {
-    let src = helpdeskUrl + `/focus-win${langSeg}/new-ticket`;
+  node.src = (() => {
+    let src = `${helpdeskUrl}/focus-win${langSeg}/new-ticket`;
     if (department) {
       src += `?department_id=${department}`;
-      if (hide_department) {
+      if (hideDepartment) {
         src += '&hide_department=1';
       }
     }
     return src;
   })();
 
-  const calculatedWidth = function () {
-    if (options.width && parseInt(options.width) !== 0 && !isNaN(parseInt(options.width))) {
+  const calculatedWidth = () => {
+    if (options.width && parseInt(options.width, 10) !== 0 && !isNaN(parseInt(options.width, 10))) {
       return options.width;
     }
 
     return $(containerEl).width() || 500;
   };
 
-  const updateWidth = function () {
+  const updateWidth = () => {
     const w = calculatedWidth();
     node.width = w;
-    node.style.width = w + 'px';
+    node.style.width = `${w} px`;
   };
 
   if (!(options.width && options.width !== 0)) {
-    window.setInterval(function () {
+    window.setInterval(() => {
       updateWidth();
     }, 5000);
-    $(window).on('load resize', function () {
+    $(window).on('load resize', () => {
       updateWidth();
     });
   }
@@ -64,7 +65,7 @@ const runEmbed = function (helpdeskUrl, options, containerEl) {
 const options = window.DESKPRO_EMBED_OPTIONS;
 
 runEmbed(
-  options['helpdeskUrl'],
+  options.helpdeskUrl,
   options,
-  document.getElementById(options['containerId'])
+  document.getElementById(options.containerId)
 );

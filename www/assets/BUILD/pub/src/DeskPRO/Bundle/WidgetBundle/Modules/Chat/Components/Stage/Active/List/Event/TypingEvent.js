@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import { Message } from '../Message/Message';
-import { MessageAvatar } from '../Message/MessageAvatar';
 import { AvatarResolver } from 'DeskPRO/Component/Avatar';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { Message } from '../Message/Message';
+import { MessageAvatar } from '../Message/MessageAvatar';
 
 export class TypingEvent extends React.Component {
 
@@ -31,3 +31,4 @@ export class TypingEvent extends React.Component {
     );
   }
 }
+export default TypingEvent;

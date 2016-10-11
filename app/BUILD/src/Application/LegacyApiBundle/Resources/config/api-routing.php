@@ -6745,7 +6745,7 @@ $collection->create(
         'path'         => '/langs/{id}/{group_id}',
         'controller'   => 'LegacyApiBundle:Languages:getPhrases',
         'methods'      => ['GET'],
-        'requirements' => ['id' => '\d+|[a-z]+', 'group_id' => '[a-zA-Z0-9\-_\.]+'],
+        'requirements' => ['id' => '\d+|[a-z_]+', 'group_id' => '[a-zA-Z0-9\-_\.]+'],
     ]
 );
 

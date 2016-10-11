@@ -91,6 +91,9 @@ class AcceptWebUrlStep extends AbstractStep
             $url = $this->askQuestion($q, 'web_url');
 
             if ($this->validateUrl($url)) {
+                $this->writeln('');
+                $this->writeln('For help troubleshooting this, refer to this page:');
+                $this->writeln('https://support.deskpro.com/kb/articles/558');
                 break;
             }
 
@@ -179,29 +182,6 @@ class AcceptWebUrlStep extends AbstractStep
         $this->writeln('  > <info>OK</info>');
 
         //------------------------------
-        // Verify the web root is ok
-        //------------------------------
-
-        $this->writeln('Verifying web root is safe...');
-
-        foreach ([
-            $url.'/app/run/test_ping.html',
-            $url.'/../app/run/test_ping.html',
-        ] as $test) {
-            $res = $this->loadUrl($test);
-            if (
-                $res['result']
-                && (strpos($res['result'], 'DESKPRO_PONG') !== false || strpos($res['result'], 'OK') !== 0)
-            ) {
-                $this->writeln('<error>It seems like you have put DeskPRO files within the web root. This is a major security issue. You must only put the www/ directory within the web root.</error>');
-
-                return false;
-            }
-        }
-
-        $this->writeln('  > <info>OK</info>');
-
-        //------------------------------
         // Verify the web deps
         //------------------------------
 
@@ -225,6 +205,26 @@ class AcceptWebUrlStep extends AbstractStep
             $this->writeln('');
 
             return false;
+        }
+
+        $this->writeln('  > <info>OK</info>');
+
+        //------------------------------
+        // Verify the web root is ok
+        //------------------------------
+
+        $this->writeln('Verifying web root is safe...');
+
+        foreach ([
+            $url.'/app/run/test_ping.html',
+            $url.'/../app/run/test_ping.html',
+        ] as $test) {
+            $res = $this->loadUrl($test);
+            if ($res['result'] && strpos($res['result'], 'DESKPRO_PONG') !== false) {
+                $this->writeln('<error>It seems like you have put DeskPRO files within the web root. This is a major security issue. You must only put the www/ directory within the web root.</error>');
+
+                return false;
+            }
         }
 
         $this->writeln('  > <info>OK</info>');

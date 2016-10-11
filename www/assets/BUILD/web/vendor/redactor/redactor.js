@@ -846,11 +846,9 @@ var RLANG = {
 					{
 						this.formatNewLine(e);
 					}
-				}
-
-				if (this.opts.convertLinks && ((key === 13 && !e.shiftKey && !e.ctrlKey && !e.metaKey) || key === 32)) {
-					this.$editor.linkify();
-					this.focusEnd();
+          if (this.opts.convertLinks) {
+            this.$editor.linkify();
+          }
 				}
 
 				this.syncCode();
@@ -1190,6 +1188,13 @@ var RLANG = {
 
 			return this.stripTags(html);
 		},
+    insertSnippetHtml: function(html)
+    {
+      this.snippetFocus();
+      this.pasteHtmlAtCaret(html);
+      this.observeImages();
+      this.syncCode();
+    },
 		insertHtml: function(html)
 		{
 			this.$editor.focus();
@@ -1197,7 +1202,14 @@ var RLANG = {
 			this.observeImages();
 			this.syncCode();
 		},
-
+    snippetFocus: function()
+    {
+      var selection = this.document.getSelection();
+      var range = selection ? selection.getRangeAt(0) : null;
+      if(range && range.startOffset === 0) {
+        this.focusEnd();
+      }
+    },
 		focusEnd: function()
 		{
 			var el = this.$editor[0];

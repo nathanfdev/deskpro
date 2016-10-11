@@ -109,8 +109,8 @@ define [
         @massActionsLoading = false
 
         @page_nums = []
-        for i in [0...@num_pages]
-          @page_nums.push(i+1)
+        for i in [1..@num_pages]
+          @page_nums.push(i)
 
         if fallbackPrevPage and !@results.length and data.page > 1
           @filter.page = data.page - 1;

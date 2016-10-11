@@ -1,5 +1,7 @@
 @import "lib";
 @import "layout";
+@import "icons-style";
+@import "new-admin";
 
 //######################################################################################################################
 //# Standard
@@ -265,79 +267,9 @@ div.info-message {
 //######################################################################################################################
 
 .dp-app-header {
-	.gradient-v(@agent_header_bg_color, darken(@agent_header_bg_color, 2%), @topHeight);
+	.gradient-v(@agent_header_bg_color, darken(@agent_header_bg_color, 2%));
 	border-top: 1px solid @agent_header_bg_color;
 	border-bottom: 1px solid @agent_header_border_color;
-
-	.user-profile {
-		background-color: @agent_header_userprofile_bg_color;
-		height: (@agent_header_height - 8);
-		width: 234px;
-		margin: 4px 0 0 6px;
-		padding: 3px 5px 3px 3px;
-		border: 1px solid @agent_header_userprofile_border_color;
-		border-radius: 3px;
-		box-shadow: inset 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
-		color: @agent_header_userprofile_text_color;
-		line-height: 100%;
-		white-space: nowrap;
-		overflow: hidden;
-
-		.gravatar {
-			border: 1px solid darken(@agent_header_userprofile_border_color, 30%);
-			margin-right: 4px;
-			border-radius: 3px;
-			overflow: hidden;
-			width: 33px;
-			height: 33px;
-		}
-
-		.username {
-			white-space: nowrap;
-			margin-left: 38px;
-			font-size: 11px;
-			padding: 3px 0 2px 0;
-			line-height: 100%;
-			width: 158px;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		ul.nav-list {
-			margin: 1px 0 0 0;
-			padding: 0;
-			line-height: 15px;
-			width: 200px;
-		}
-
-		ul.nav-list > li {
-			display: inline-block;
-			margin: 0;
-			margin-right: 7px;
-			font-size: 11px;
-			line-height: 100%;
-			color: lighten(@agent_header_userprofile_text_color, 25%);
-		}
-
-		ul.nav-list > li:last-child {
-			margin-right: 0;
-		}
-
-		ul.nav-list > li:hover {
-			cursor: pointer;
-			color: darken(@agent_header_userprofile_text_color, 8%);
-		}
-
-		ul.nav-list > li > a {
-			font-size: 11px;
-			color: lighten(@agent_header_userprofile_text_color, 25%);
-			border-bottom: 1px solid #165d94;
-		}
-
-		ul.nav-list > li > a:hover, ul.nav-list > li:hover > a {
-			color: darken(@agent_header_userprofile_text_color, 8%);
-		}
-	}
 
 	a.logo {
 		display: block;
@@ -359,10 +291,11 @@ div.info-message {
 .dp-appstrip {
 	overflow: hidden;
 	ul {
-		background: #2b2f33;
-		margin: 0;
+		top: calc(~"50% - 148px");
+		position: absolute;
+		background: #21282d;
 		padding: 0;
-		box-shadow: 0 -4px 14px 0 #2b2f33;
+		box-shadow: 0 -4px 14px 0 #21282d;
 		li {
 			padding: 0;
 			margin: 0;
@@ -397,10 +330,10 @@ div.info-message {
 			}
 
 			i.app-icon {
-				display: block;
-				overflow: hidden;
-				width: @appIconImgW;
-				height: @appIconImgH;
+				display:    block;
+				overflow:   hidden;
+				width:      @appIconImgW;
+				height:     @appIconImgH;
 
 				background-position: 50% 50%;
 				background-repeat: no-repeat;
@@ -415,7 +348,7 @@ div.info-message {
 				background-color: #1D2022;
 				border-top: 1px solid #080909;
 				border-bottom: 1px solid #080909;
-				box-shadow: 0 0px 2px #080909;
+				box-shadow: 0 0 2px #080909;
 
 				i.app-icon {
 					opacity: 1;
@@ -729,7 +662,7 @@ nav.dp-appnav {
 
 		i.fa-caret-down {
 			position: relative;
-			top: 0px;
+			top: 0;
 			font-size: 9px;
 			margin-left: 3px;
 			vertical-align: middle;
@@ -961,7 +894,7 @@ div.dp-appalt-section {
 		margin-top: 15px;
 		strong {
 			font-size: 120%;
-			font-size: normal;
+			font-weight: normal;
 		}
 
 		ul {
@@ -1119,6 +1052,10 @@ div.dp-appalt-section {
 .dp-pane {
 	h3, h4 {
 		font-weight: normal;
+	}
+	> .alert-info {
+		margin: 10px 15px;
+		border-radius: 2px;
 	}
 }
 
@@ -1372,7 +1309,7 @@ nav.dp-tabletabs {
 //######################################################################################################################
 
 section.dp-help-content-wrapper {
-	margin: 10px 90px 0px 90px;
+	margin: 10px 90px 0 90px;
 	text-align: center;
 	position: relative;
 	z-index: 999;
@@ -1539,7 +1476,7 @@ section.dp-help-content-wrapper.open {
 	}
 
 	.dp-help-content-outer {
-		box-shadow:  0px 0px 5px 2px rgba(0, 0, 0, 0.3);
+		box-shadow:  0 0 5px 2px rgba(0, 0, 0, 0.3);
 		transition: all 0.2s linear;
 	}
 
@@ -1869,7 +1806,7 @@ section.dp-help-content-wrapper.open {
 
 	.group-section-wrapper {
 		position: relative;
-		height: 0px;
+		height: 0;
 		overflow: hidden;
 
 		-webkit-transition: all 250ms ease;
@@ -1902,7 +1839,7 @@ section.dp-help-content-wrapper.open {
 	}
 
 	.with-no-height {
-		height: 0px !important;
+		height: 0 !important;
 	}
 
 	&.group-open {
@@ -2005,7 +1942,6 @@ section.dp-help-content-wrapper.open {
 			td, th {
 				background: #F2F2F2;
 				font-size: 14px;
-				font-weight: bold;
 				color: lighten(@text-color, 10%);
 				padding-top: 5px;
 				padding-bottom: 5px;
@@ -2025,12 +1961,9 @@ section.dp-help-content-wrapper.open {
 
 	.panel-heading {
 		h3 {
-			padding: 0;
-			margin-top: 5px;
-			margin-bottom: 5px;
-			margin-left: 0;
-			margin-right: 0;
-			font-size: 120%;
+			padding:       0;
+      margin:        5px 0;
+      font-size:     120%;
 			border-bottom: 3px solid #aaa;
 		}
 	}
@@ -2066,23 +1999,19 @@ section.dp-help-content-wrapper.open {
 
 				li {
 					display: inline-block;
-					margin: 0;
-					padding: 0;
-					margin-left: 3px;
-				}
+          padding: 0;
+          margin:  0 0 0 3px;
+        }
 			}
 		}
 
 		h3 {
-			padding: 0 0 2px 0;
-			margin-top: 5px;
-			margin-bottom: 5px;
-			margin-left: 0;
-			margin-right: 0;
-			font-size: 140%;
+			padding:       0 0 2px 0;
+      margin:        5px 0;
+      font-size:     140%;
 			border-bottom: 3px solid #aaa;
-			display: inline-block;
-			font-weight: normal;
+			display:       inline-block;
+			font-weight:   normal;
 		}
 	}
 }
@@ -2823,8 +2752,6 @@ ul.dp-display-list {
 
 .dp-switch {
 	display: inline-block;
-	cursor: pointer;
-	position: relative;
 	text-align: left;
 	overflow: visible;
 	vertical-align: middle;
@@ -2850,10 +2777,9 @@ ul.dp-display-list {
 	label {
 		display: block;
 		background: #fff;
-		-webkit-box-shadow:  1px 1px 1px 0px rgba(0, 0, 0, 0.1);
-		box-shadow:  1px 1px 1px 0px rgba(0, 0, 0, 0.1);
+		-webkit-box-shadow:  1px 1px 1px 0 rgba(0, 0, 0, 0.1);
+		box-shadow:  1px 1px 1px 0 rgba(0, 0, 0, 0.1);
 		.rounded(20px);
-		width: 10px;
 		overflow: hidden;
 		width: 21px;
 		height: 19px;
@@ -2895,7 +2821,7 @@ ul.dp-display-list {
 		color: #bbb;
 		vertical-align: middle;
 
-		text-shadow: 1px 0px 0px rgba(0,0,0, 0.4);
+		text-shadow: 1px 0 0 rgba(0,0,0, 0.4);
 
 		&:before {
 			content: "\f023";
@@ -3389,7 +3315,7 @@ button.toast-close-button {
 		em {
 			font-style: normal;
 			display: inline-block;
-			padding: 0px 5px;
+			padding: 0 5px;
 			color: #fff;
 			width: 100px;
 			text-align: center;
@@ -3852,7 +3778,7 @@ li.dp-layout-editor-layout-field {
 	}
 
 	&.disabled {
-		cursor: 'not-allowed';
+		cursor: not-allowed;
 	}
 	&.disabled span {
 		background: #f5f7fa;
@@ -3900,48 +3826,6 @@ li.dp-layout-editor-layout-field {
 }
 
 //######################################################################################################################
-//# Devbar
-//######################################################################################################################
-
-#dp_dev_bar_btn {
-	position: absolute;
-	top: 6px;
-	left: 245px;
-	background: #444;
-	padding: 3px;
-	z-index: 1000;
-	border-radius: 2px;
-
-	button {
-		border: none;
-		background: #fff;
-		color: #444;
-		margin: 0;
-		padding: 5px;
-	}
-}
-
-#dp_dev_bar {
-	position: absolute;
-	top: 6px;
-	left: 245px;
-	background: #444;
-	padding: 3px;
-	z-index: 1000;
-	border-radius: 2px;
-
-	button {
-		display: inline-block;
-		border: none;
-		background: #fff;
-		color: #444;
-		margin: 0;
-		padding: 5px;
-		margin-right: 4px;
-	}
-}
-
-//######################################################################################################################
 //# Table Grid
 //######################################################################################################################
 
@@ -3978,7 +3862,6 @@ table.table {
 			width: 5px;
 			text-wrap: none;
 			white-space: nowrap;
-			text-wrap: none;
 			text-align: left;
 		}
 	}
@@ -4317,7 +4200,7 @@ section#portal_colors .style-row.color.dual .desc {
 
 .dp-slider-control {
 	border: 1px solid #ccc;
-	padding: 0px 5px;
+	padding: 0 5px;
 	border-radius: 2px;
 	width: 410px;
 
@@ -4485,13 +4368,13 @@ table.notify-pref-table {
 	th.pref-col {
 		text-align: center;
 		text-wrap: none;
-		word-wrap: none;
+		word-wrap: normal;
 		white-space: nowrap;
 	}
 	td.pref-col {
 		text-align: center;
 		text-wrap: none;
-		word-wrap: none;
+		word-wrap: normal;
 		white-space: nowrap;
 
 		.tooltip {
@@ -4604,15 +4487,15 @@ table.agent-perms-table {
 			text-indent: 1000px;
 		}
 
-		&.visa             { background-image: url("@{img_path}/credit-cards/visa.png"); }
-		&.visa_electron    { background-image: url("@{img_path}/credit-cards/visa_electron.png"); }
+		&.visa             { background-image: url('@{img_path}/credit-cards/visa.png'); }
+		&.visa_electron    { background-image: url('@{img_path}/credit-cards/visa_electron.png'); }
 		&.uke              { background-image: url("@{img_path}/credit-cards/uke.png"); }
 		&.mc               { background-image: url("@{img_path}/credit-cards/mastercard.png"); }
 		&.mastercard       { background-image: url("@{img_path}/credit-cards/mastercard.png"); }
 		&.maestro          { background-image: url("@{img_path}/credit-cards/maestro.png"); }
 		&.discover         { background-image: url("@{img_path}/credit-cards/discover.png"); }
-		&.amex             { background-image: url("@{img_path}/credit-cards/amex.png"); }
-		&.american-express { background-image: url("@{img_path}/credit-cards/amex.png"); }
+		&.amex             { background-image: url('@{img_path}/credit-cards/amex.png'); }
+		&.american-express { background-image: url('@{img_path}/credit-cards/amex.png'); }
 	}
 
 	.credit-card-num {
@@ -4652,8 +4535,8 @@ table.agent-perms-table {
 	&.mastercard       .credit-card-type { background-image: url("@{img_path}/credit-cards/mastercard.png"); }
 	&.maestro          .credit-card-type { background-image: url("@{img_path}/credit-cards/maestro.png"); }
 	&.discover         .credit-card-type { background-image: url("@{img_path}/credit-cards/discover.png"); }
-	&.amex             .credit-card-type { background-image: url("@{img_path}/credit-cards/amex.png"); }
-	&.american-express .credit-card-type { background-image: url("@{img_path}/credit-cards/amex.png"); }
+	&.amex             .credit-card-type { background-image: url('@{img_path}/credit-cards/amex.png'); }
+	&.american-express .credit-card-type { background-image: url('@{img_path}/credit-cards/amex.png'); }
 }
 
 //######################################################################################################################
@@ -4725,7 +4608,6 @@ table.agent-perms-table {
 				iframe {
 					margin: 0;
 					padding: 0;
-					border: none;
 					width: 100%;
 					height: 150px;
 					border: 1px solid #ccc;

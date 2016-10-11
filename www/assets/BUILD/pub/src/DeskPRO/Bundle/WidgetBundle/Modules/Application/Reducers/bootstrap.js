@@ -1,6 +1,6 @@
 import { createReducer } from 'DeskPRO/Component/Ampliflux';
-import * as actions from '../Actions/bootstrapActions';
 import { setValue, setFullPayload, async, composeHandlers } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
+import * as actions from '../Actions/bootstrapActions';
 import { dispatchWidgetStatus } from '../../../Services/WindowApi';
 
 const initialState = {
@@ -22,7 +22,7 @@ export default createReducer(initialState, {
   [actions.bootstrapWidget]: async({
     done: composeHandlers(
       setValue('loaded', true),
-      state => {
+      (state) => {
         setTimeout(() => dispatchWidgetStatus(), 1);
         return state;
       }

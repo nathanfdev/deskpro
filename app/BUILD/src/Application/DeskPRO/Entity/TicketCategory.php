@@ -96,6 +96,9 @@ class TicketCategory extends DomainObject implements HasPhraseName, Hierarchical
      */
     protected $display_order = 0;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->children = new ArrayCollection();
@@ -125,6 +128,14 @@ class TicketCategory extends DomainObject implements HasPhraseName, Hierarchical
         } else {
             $this->setModelField('parent', null);
         }
+    }
+
+    /**
+     * @return TicketCategory
+     */
+    public function getParent()
+    {
+        return $this->parent;
     }
 
     /**
@@ -189,7 +200,7 @@ class TicketCategory extends DomainObject implements HasPhraseName, Hierarchical
     /**
      * Get children.
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return \Doctrine\Common\Collections\ArrayCollection|TicketCategory[]
      */
     public function getChildren()
     {
@@ -251,6 +262,14 @@ class TicketCategory extends DomainObject implements HasPhraseName, Hierarchical
         }
 
         return $this->title;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
     }
 
     public function __toString()

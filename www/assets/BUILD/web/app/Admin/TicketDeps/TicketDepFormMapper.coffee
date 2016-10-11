@@ -133,7 +133,9 @@ define [
       if formModel.enable_user_title
         depData.user_title = formModel.user_title
 
-      permData = formModel.agent_perms.getPermsData()
+      permData = []
+      if typeof formModel.agent_perms.getPermsData == 'function'
+        permData = formModel.agent_perms.getPermsData()
       for own uid,usergroup of formModel.usergroup_perms
         if usergroup.full
           permData.push({

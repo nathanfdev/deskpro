@@ -208,7 +208,7 @@ class AuditListener
         $logEvent = new LogEvent($context);
 
         $this->dispatcher->dispatch(LogEvent::PRE_LOG_EVENT, $logEvent);
-        if ($logEvent->isShouldLog()) {
+        if ($logEvent->shouldLog()) {
             $logEvent = new LogEvent($context); // need this, cause propagation is stopped
             $log      = $this->auditLogHelper->createAuditLog();
 

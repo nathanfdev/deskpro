@@ -116,43 +116,6 @@
 		</div>
 	</div>
 
-	<div class="dp-interface-buttons">
-		<table cellspacing="35" width="100%">
-			<tbody>
-			<tr>
-				<td class="dp-item" width="33%">
-					<article><a href="/{{ path('user')|ltrim('/') }}agent/" dp-click-href="#/go_to_agent" onmouseover="$('body').addClass('agent-interface-hover');" onmouseout="$('body').removeClass('agent-interface-hover');">
-							<div class="title-wrap"><h3>Agent Interface</h3></div>
-							<div class="img-wrap"><img src="{{ asset('images/admin/agent-screen.png') }}" /></div>
-							<strong>
-								Reply to tickets and manage helpdesk content.
-							</strong>
-						</a></article>
-				</td>
-				<td class="dp-item" width="33%">
-					<article onmouseover="$('body').addClass('reports-interface-hover');" onmouseout="$('body').removeClass('reports-interface-hover');"><a href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports">
-							<div class="title-wrap"><h3>Reports Interface</h3></div>
-							<div class="img-wrap"><img src="{{ asset('images/admin/reports-screen.png') }}" /></div>
-							<strong>
-								View and create reports.
-							</strong>
-						</a></article>
-				</td>
-				<td class="dp-item" width="33%">
-					<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
-							<div class="title-wrap"><h3>Billing</h3></div>
-							<div class="img-wrap"><img src="{{ asset('images/admin/billing-screen.png') }}" /></div>
-							<strong>
-								Manage your DeskPRO account.
-							</strong>
-						</a></article>
-				</td>
-			</tr>
-			</tbody>
-		</table>
-	</div>
-
-
 	<div class="dp-dashboard">
 		<table cellspacing="15" width="100%">
 			<tr>

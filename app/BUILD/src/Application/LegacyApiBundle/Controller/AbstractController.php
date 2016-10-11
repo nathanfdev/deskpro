@@ -335,15 +335,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             // Dont log rate limit
             if ($status == 429) {
                 $em->remove($log);
-                $em->flush($log);
+            } else {
+                $log->response = [
+                    'status'  => $status,
+                    'content' => $data,
+                ];
             }
-
-            $log->response = [
-                'status'  => $status,
-                'content' => $data,
-            ];
-
-            $em->flush($log);
+            $em->flush();
         }
 
         return $response;

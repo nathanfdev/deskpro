@@ -57,13 +57,14 @@ class LegacyRequestUtils
             return;
         }
 
-        $return = Strings::removeInvisibleCharacters($return);
-        if (!$return) {
+        if (Strings::containsInvisibleCharacters($return) || Strings::containsLineBreaks($return)) {
             return;
         }
 
-        if ('/' !== $return[0] || '//' === substr($return, 0, 2)) {
-            return;
+        if (strpos($return, '\\') !== false || strpos($return, '@') !== false) {
+            if ('/' !== $return[0] || '//' === substr($return, 0, 2)) {
+                return;
+            }
         }
 
         return $return;

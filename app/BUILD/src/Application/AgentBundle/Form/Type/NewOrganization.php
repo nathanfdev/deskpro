@@ -59,7 +59,8 @@ class NewOrganization extends AbstractType
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewOrganization',
+            'data_class'      => 'Application\\AgentBundle\\Form\\Model\\NewOrganization',
+            'csrf_protection' => false,
         ];
     }
 

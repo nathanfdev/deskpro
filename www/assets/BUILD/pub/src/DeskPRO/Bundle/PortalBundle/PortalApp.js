@@ -1,7 +1,7 @@
 import 'babel-polyfill';
-import { PortalPage } from './PageWidget/PortalPage';
-import { portalPhrases } from './PortalPhrases';
 import $ from 'jquery';
+import PortalPage from './PageWidget/PortalPage';
+import { portalPhrases } from './PortalPhrases';
 
 class PortalApp {
   constructor() {
@@ -15,13 +15,13 @@ class PortalApp {
   }
 
   getPortalPage() {
-    return this._portalPage;
+    return this.portalPage;
   }
 
   run() {
     const page = new PortalPage();
     page.renderWhenReady();
-    this._portalPage = page;
+    this.portalPage = page;
   }
 }
 

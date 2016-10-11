@@ -44,7 +44,8 @@ define ['DeskPRO/Util/Util'], (Util)  ->
         d.resolve(Util.clone(@settings, true))
       else
         @_loadSettings().then((r) ->
-          d.resolve(Util.clone(r.data.data, true))
+          if r.data
+            d.resolve(Util.clone(r.data.data, true))
         , (r, s) ->
           d.reject(r, s)
         )

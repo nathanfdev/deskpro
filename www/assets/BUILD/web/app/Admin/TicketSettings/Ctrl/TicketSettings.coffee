@@ -23,6 +23,24 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Bas
           @$scope.settings.billing_on_reply = false if newVal == false
       )
 
+      @$scope.lock_timeouts = [
+        {id:900, label:"15 minutes"},
+        {id:1800, label:"30 minutes"},
+        {id:3600, label:"1 hour"},
+        {id:7200, label:"2 hours"},
+        {id:14400, label:"4 hours"},
+        {id:28000, label:"8 hours"},
+        {id:86400, label:"1 day"}
+      ]
+
+      @$scope.digits = []
+      for i in [0..8]
+        if (i != 1)
+          @$scope.digits.push {id: i, label: i + " digits"}
+        else
+          @$scope.digits.push {id: i, label: i + " digit"}
+
+
     initialLoad: ->
       data_promise = @Api.sendDataGet({
         'settings': '/ticket_settings'

@@ -1,40 +1,46 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import ReactDOM from 'react-dom';
+import $ from 'jquery';
+import Immutable from 'immutable';
+import { MessageList } from './MessageList';
+import { MessageListSpinner } from './MessageListSpinner';
 import {
   chatLoadedSelector,
   messagesSelector,
-  lastMessageIdSelector,
-  muteSelector,
-  agentTypingDateSelector
+  muteSelector
 } from '../../../../Selectors/chat';
-import { widgetDimensionsSelector, widgetHeightSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
-import { peopleSelector } from '../../../../../Application/Selectors/peopleSelectors';
-import { MessageList } from './MessageList';
-import { MessageListSpinner } from './MessageListSpinner';
-import $ from 'jquery';
+import { widgetDimensionsSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
 
 @connect(state => ({
   chatLoaded:       chatLoadedSelector(state),
   messages:         messagesSelector(state),
-  lastMessageId:    lastMessageIdSelector(state),
   widgetDimensions: widgetDimensionsSelector(state),
-  widgetHeight:     widgetHeightSelector(state),
   mute:             muteSelector(state),
-  isBubble:         isBubbleSelector(state),
-  people:           peopleSelector(state),
-  agentTypingDate:  agentTypingDateSelector(state)
+  isBubble:         isBubbleSelector(state)
 }))
 export class MessageListContainer extends React.Component {
 
   static propTypes = {
-    chatLoaded:   PropTypes.bool,
-    isBubble:     PropTypes.bool,
-    widgetHeight: PropTypes.number
+    chatLoaded:       PropTypes.bool,
+    messages:         PropTypes.object,
+    widgetDimensions: PropTypes.object,
+    mute:             PropTypes.bool,
+    isBubble:         PropTypes.bool
   };
 
   componentDidMount() {
     this.reCalcHeight();
+  }
+
+  shouldComponentUpdate(props) {
+    const { chatLoaded, messages, widgetDimensions, mute, isBubble } = this.props;
+    const dimensionsChanged = !Immutable.is(widgetDimensions, props.widgetDimensions);
+
+    return props.chatLoaded !== chatLoaded
+      || !Immutable.is(messages, props.messages)
+      || dimensionsChanged
+      || props.mute !== mute
+      || props.isBubble !== isBubble;
   }
 
   componentDidUpdate() {
@@ -42,8 +48,7 @@ export class MessageListContainer extends React.Component {
   }
 
   reCalcHeight() {
-    const { widgetHeight } = this.props;
-    const node = ReactDOM.findDOMNode(this);
+    const widgetHeight = this.props.widgetDimensions.get('height');
     const $document = $(window.widgetFrame.document);
 
     let height = widgetHeight;
@@ -55,9 +60,9 @@ export class MessageListContainer extends React.Component {
     // lost margin of .dpdesignportal-chat-header-controls
     height -= 20;
 
-    $(node).parent().children()
+    $(this.list).parent().children()
       .each((i, child) => {
-        if (child !== node) {
+        if (child !== this.list) {
           height -= $(child).outerHeight();
         }
       });
@@ -66,13 +71,17 @@ export class MessageListContainer extends React.Component {
       height = 100;
     }
 
-    $(node).css('height', height);
-    if (this.refs.list) {
-      this.refs.list.refresh();
+    $(this.list).css('height', height);
+
+    if (this.list) {
+      this.list.scrollBottom();
     }
   }
 
   render() {
-    return this.props.chatLoaded ? <MessageList ref="list" {...this.props} /> : <MessageListSpinner />;
+    return this.props.chatLoaded
+      ? <MessageList ref={(c) => { this.list = c; }} {...this.props} />
+      : <MessageListSpinner />;
   }
 }
+export default MessageListContainer;

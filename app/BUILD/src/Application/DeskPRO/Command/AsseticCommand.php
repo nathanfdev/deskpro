@@ -98,8 +98,14 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                     $assetic_manager->writeBuildFileIfStale($name);
                 }
             } catch (\Exception $e) {
-                $msg = substr($e->getMessage(), 0, 550)."\n... (truncated)";
-                $output->writeln("<error>Exception: $msg");
+                echo $e->getTraceAsString();
+                echo "\n\n";
+                $msg = sprintf('[%s] %s', get_class($e), substr($e->getMessage(), 0, 500));
+                echo $msg;
+                echo "\n\n";
+                echo "The last file being compiled was:\n";
+                echo 'Pack:     '.$assetic_manager->GetLastPackName()."\n";
+                echo 'Tmp File: '.$assetic_manager->getLastFile()."\n";
 
                 return 1;
             }

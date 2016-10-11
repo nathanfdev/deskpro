@@ -82,7 +82,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property Organization                        $organization
  * @property ChatConversation                    $linked_chat
  * @property TicketAttachment[]                  $attachments
- * @property TicketAccessCode[]                  $access_codes
+ * @property TicketAccessCode[]|ArrayCollection  $access_codes
  * @property TicketMessage[]|ArrayCollection     $messages
  * @property TicketSms[]                         $sms_messages
  * @property CustomDataTicket[]|ArrayCollection  $custom_data
@@ -2897,16 +2897,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $use_date;
     }
 
+    /**
+     * @deprecated Use TicketMessage repository getLastAgentReply() instead
+     *
+     * @return TicketMessage|null
+     */
     public function getLastAgentMessage()
     {
-        $non_agent_note_agent_messages = $this->messages->filter(
-            function (TicketMessage $message) {
-                // agents and not agent notes
-                return !$message->is_agent_note && $message->getPerson() && $message->getPerson()->is_agent;
-            }
-        );
-
-        return $non_agent_note_agent_messages->last();
+        return App::getEntityRepository(TicketMessage::class)->getLastAgentReply($this);
     }
 
     /**
@@ -3330,7 +3328,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Add an access code for a person.
      *
-     * @param PersonEmail $email
+     * @param Person $person
+     *
+     * @return TicketAccessCode
      */
     public function addAccessCodeForPerson(Person $person)
     {
@@ -3338,10 +3338,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             return $tac;
         }
 
-        $tac           = new TicketAccessCode();
-        $tac['ticket'] = $this;
-        $tac['person'] = $person;
+        $tac = new TicketAccessCode();
+        $tac->setTicket($this);
+        $tac->setPerson($person);
         $this->access_codes->add($tac);
+
+        return $tac;
     }
 
     /**
@@ -3428,6 +3430,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $str .= $this->auth;
 
         return $str;
+    }
+
+    /**
+     * @return TicketAccessCode[]|ArrayCollection
+     */
+    public function getAccessCodes()
+    {
+        return $this->access_codes;
     }
 
     public function forceSetAccessCode($code)

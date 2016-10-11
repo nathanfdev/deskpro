@@ -1,22 +1,32 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import $ from 'jquery';
 
-export class AgentBarWidget extends PageWidget {
+class AgentBarWidget extends PageWidget {
 
   renderWidget() {
-    const $agentArrow = $('#agent-dropdown-arrow');
     const $agentDrop = $('#agent-bar-agent-dropdown');
-    const $adminArrow = $('#admin-dropdown-arrow');
     const $adminDrop = $('#agent-bar-admin-dropdown');
 
-    if ($agentArrow.length) {
-      $agentDrop.css('top', $agentArrow.offset().top + $agentArrow.height());
-      $agentDrop.css('right', $(document).width() - $agentArrow.offset().left - $agentArrow.width() - 25);
-    }
+    // if we are inside the iframe then just change or close the iframe
+    if (window.parent && window.parent.DP_FRAME_OVERLAYS && window.parent.DP_FRAME_OVERLAYS.user) {
+      if ($agentDrop) {
+        $agentDrop.find('a').on('click', event => {
+          event.preventDefault();
+          window.parent.DP_FRAME_OVERLAYS.user.close();
+          window.parent.location.hash = $(event.currentTarget).attr('href').replace(/\/agent\//, '');
+          window.parent.DeskPRO_Window.enableHashPath();
+        });
+      }
 
-    if ($adminArrow.length) {
-      $adminDrop.css('top', $adminArrow.offset().top + $adminArrow.height());
-      $adminDrop.css('right', $(document).width() - $adminArrow.offset().left - $adminArrow.width() - 25);
+      if ($adminDrop) {
+        $adminDrop.find('a').on('click', event => {
+          event.preventDefault();
+          window.parent.DP_FRAME_OVERLAYS.user.close();
+          window.parent.DP_FRAME_OVERLAYS.admin.open($(event.currentTarget).attr('href'));
+        });
+      }
     }
   }
 }
+
+export default AgentBarWidget;

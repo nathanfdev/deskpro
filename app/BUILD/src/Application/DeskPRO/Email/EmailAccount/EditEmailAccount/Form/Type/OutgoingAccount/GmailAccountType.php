@@ -42,7 +42,10 @@ class GmailAccountType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('user', 'email', ['required' => true]);
-        $builder->add('password', 'dp_enc_password', ['required' => false]);
+        $builder->add('token', 'text', ['required' => true]);
+        $builder->add('refreshToken', 'text', ['required' => true]);
+        $builder->add('clientId', 'text', ['required' => true]);
+        $builder->add('clientSecret', 'text', ['required' => true]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

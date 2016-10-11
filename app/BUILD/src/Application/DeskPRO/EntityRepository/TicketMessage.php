@@ -39,10 +39,15 @@ use Application\DeskPRO\Entity;
 
 class TicketMessage extends AbstractEntityRepository
 {
+    /**
+     * @param $ticket
+     *
+     * @return \Application\DeskPRO\Entity\TicketMessage|null
+     */
     public function getLastAgentReply($ticket)
     {
         if (!($ticket instanceof Entity\Ticket)) {
-            $ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket);
+            $ticket = App::getEntityRepository(Entity\Ticket::class)->find($ticket);
         }
 
         return $this->getEntityManager()->createQuery('
@@ -125,19 +130,21 @@ class TicketMessage extends AbstractEntityRepository
     /**
      * Get all messages in a ticket.
      *
-     * @param  $ticket
+     * @param int|Entity\Ticket $ticket
+     * @param array             $set_options
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
     public function getTicketMessages($ticket, array $set_options = [])
     {
         $options = array_merge([
-            'order'      => 'ASC',
-            'order_dir'  => null,
-            'limit'      => null,
-            'with_notes' => false,
-            'since_id'   => 0,
-            'ids'        => null,
+            'order'            => 'ASC',
+            'order_dir'        => null,
+            'limit'            => null,
+            'with_notes'       => false,
+            'with_attachments' => false,
+            'since_id'         => 0,
+            'ids'              => null,
         ], $set_options);
 
         // Compatibility with other repos format
@@ -151,11 +158,16 @@ class TicketMessage extends AbstractEntityRepository
         }
 
         $q = $this->getEntityManager()->createQueryBuilder();
-        $q->from('DeskPRO:TicketMessage', 'm');
+        $q->from(Entity\TicketMessage::class, 'm');
         $q->select('m');
         $q->leftJoin('m.person', 'p');
         $q->where('m.ticket = :ticket');
         $q->addOrderBy('m.date_created', $order);
+
+        if ($options['with_attachments']) {
+            $q->addSelect('a');
+            $q->leftJoin('m.attachments', 'a');
+        }
 
         $params           = [];
         $params['ticket'] = $ticket;

@@ -32,6 +32,9 @@ define([
   'Reports/Main/Ctrl/Bare',
 
   'Reports/Main/Ctrl/BackToAgent',
+  'Reports/Main/Ctrl/GoToAdmin',
+  'Reports/Main/Ctrl/GoToBilling',
+  'Reports/Main/Ctrl/GoToUser',
 
   'Reports/Overview/Ctrl/Overview',
   'Reports/Builder/Ctrl/List',
@@ -48,7 +51,7 @@ define([
       log: function(){},
       warn: function(){},
       error: function(){}
-    }
+    };
   }
 
   return {
@@ -79,5 +82,5 @@ define([
         angular.bootstrap($html, ['Reports_App']);
       });
     }
-  }
+  };
 });

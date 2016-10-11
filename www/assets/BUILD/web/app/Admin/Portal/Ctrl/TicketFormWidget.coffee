@@ -23,7 +23,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       params = {language: @$scope.language, department: @$scope.department, width: @$scope.width}
       if params.department
         params.hide_department = 1
-      @Api2.sendGet('/ticket-form-widget/code', params).then (response) =>
+      httpParams = {
+        transformResponse: undefined
+      }
+      @Api2.sendGet('/ticket-form-widget/code', params, httpParams).then (response) =>
         @$scope.code = response.data
 
   Admin_Portal_Ctrl_TicketFormWidget.EXPORT_CTRL()

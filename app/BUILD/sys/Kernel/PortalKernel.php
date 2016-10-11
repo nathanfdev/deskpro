@@ -75,6 +75,7 @@ class PortalKernel extends BaseKernel
             $bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
             $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
+            $bundles[] = new \Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
         }
 
         if ('test' === $this->getEnvironment()) {

@@ -41,12 +41,6 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider
     arguments: ["@brand_stack", "@security.authorization_checker", "@security.token_storage", "@request_stack", "@anti_abuse"]
 
-  deskpro.validator.valid_recaptcha:
-    class: DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidRecaptcha2Validator
-    arguments: ["@brand_stack", "@request_stack"]
-    tags:
-      - { name: validator.constraint_validator, alias: valid_recaptcha2 }
-
   form.api.chat.set_person_listener:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\SetPersonListener
     arguments: ["@email.email_account_manager", "@doctrine.orm.default_entity_manager"]
@@ -118,12 +112,6 @@ services:
   form.captcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType
     arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
-    tags:
-      - { name: form.type }
-
-  form.recaptcha:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType
-    arguments: ["@brand_stack", "@language_manager"]
     tags:
       - { name: form.type }
 

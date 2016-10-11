@@ -4,6 +4,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
 	init: function() {
+		this.initRetries = 5;
+		this.initRetryTimeout = 300;
 		this.baseId = this.el.data('base-id');
 		this.agentNotifyListShown = false;
 	},
@@ -11,6 +13,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	initPage: function() {
 		var self = this;
 		this.page = this.el.closest('.with-page-fragment').data('page-fragment');
+
+		if (!this.page && this.initRetries-- > 0) {
+			return setTimeout(this.initPage.bind(this), this.initRetryTimeout);
+		}
 
 		this.lang = eval(this.el.data('dp-lang') || '{}');
 

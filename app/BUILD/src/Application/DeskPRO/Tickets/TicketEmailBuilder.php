@@ -205,6 +205,18 @@ class TicketEmailBuilder
     }
 
     /**
+     * @param string $email
+     *
+     * @return $this
+     */
+    public function setToPersonEmail($email)
+    {
+        $this->options->set('to_person_email', $email);
+
+        return $this;
+    }
+
+    /**
      * @param Person[] $people
      *
      * @return $this
@@ -392,7 +404,12 @@ class TicketEmailBuilder
         $messageRepo = $this->em->getRepository(TicketMessage::class);
         $messages    = $messageRepo->getTicketMessages(
             $ticket,
-            ['with_notes' => $forAgent, 'limit' => 15, 'order' => 'DESC']
+            [
+                'with_notes'       => $forAgent,
+                'with_attachments' => true,
+                'limit'            => 15,
+                'order'            => 'DESC',
+            ]
         );
 
         $vars = [
@@ -449,8 +466,8 @@ class TicketEmailBuilder
 
         $state = $ticket->getStateChangeRecorder();
 
-        /** @var TicketAttachment[] $ticketAttachments */
-        $ticketAttachments = [];
+        /** @var TicketAttachment[] $lastMessageAttachments */
+        $lastMessageAttachments = [];
         if ($state->hasNewReply() && !$isAuto) {
             /** @var TicketMessage $lastMessage */
             $lastMessage = Arrays::getFirstItem($vars['messages']);
@@ -471,7 +488,7 @@ class TicketEmailBuilder
 
                         if ($blob->getFilesize() <= $maxAttachSize) {
                             $logger->info(sprintf('[TicketEmail] Adding attachment %s', $blob->getFilename()));
-                            $ticketAttachments[$attachment->getId()] = $attachment;
+                            $lastMessageAttachments[$attachment->getId()] = $attachment;
                         } else {
                             $logger->info(sprintf('[TicketEmail] Skipping attachment %s', $blob->getFilename()));
                         }
@@ -486,8 +503,8 @@ class TicketEmailBuilder
             }
         }
 
-        if ($ticketAttachments) {
-            $vars['attached_blobs'] = $ticketAttachments;
+        if ($lastMessageAttachments) {
+            $vars['attached_blobs'] = $lastMessageAttachments;
         }
 
         return $vars;

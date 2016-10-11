@@ -1,5 +1,4 @@
 import { createReducer } from 'DeskPRO/Component/Ampliflux';
-import * as actions from '../Actions/chatActions';
 import {
   async,
   setFullPayload,
@@ -10,6 +9,7 @@ import {
   composeHandlers
 } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import moment from 'moment';
+import * as actions from '../Actions/chatActions';
 
 const initialState = {
   mute:    false,

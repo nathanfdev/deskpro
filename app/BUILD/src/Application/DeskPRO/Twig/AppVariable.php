@@ -341,4 +341,12 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     {
         return $this->container->get('agent_data');
     }
+
+    /**
+     * @return bool
+     */
+    public function isDevEnv()
+    {
+        return $this->container->get('kernel')->getEnvironment() !== 'prod';
+    }
 }

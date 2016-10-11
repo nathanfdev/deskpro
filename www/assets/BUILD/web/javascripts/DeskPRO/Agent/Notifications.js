@@ -377,6 +377,9 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		var ev = { notif: this, type: type, op: op, count: newcount };
 		this.fireEvent('beforeModCount', [ev]);
 
+		var event = new CustomEvent('dpUpdateNotifCount', { 'detail': ev });
+		window.document.dispatchEvent(event);
+
 		this.notifsBadge.text(newcount).data('count', newcount);
 
 		if (newcount < 1) {

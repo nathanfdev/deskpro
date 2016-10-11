@@ -38,6 +38,9 @@ use Orb\Util\Numbers;
 
 class Util
 {
+    /** @ToDo this functionality was removed from less, replaced by bootstrap gradient mixin
+     * So we should delete this class if it doesn't use on other places
+     */
     /**
      * Create a gradient image useful for repeating backgrounds.
      *

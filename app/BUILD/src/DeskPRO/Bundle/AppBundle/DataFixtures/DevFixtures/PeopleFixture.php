@@ -305,6 +305,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
     {
         $labels_batch = [];
         $notes_batch  = [];
+        $onboardings  = [];
 
         foreach ($this->people_ids as $people_id) {
             foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
@@ -322,11 +323,22 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
             }
         }
 
+        foreach ($this->agent_ids as $agent_id) {
+            $onboardings[] = [
+                'person_id'        => $agent_id,
+                'onboarding_class' => 'topbar',
+                'application'      => 'Agent',
+            ];
+        }
+
         if ($labels_batch) {
             $this->db->batchInsert('labels_people', $labels_batch, true);
         }
         if ($notes_batch) {
             $this->db->batchInsert('people_notes', $notes_batch);
+        }
+        if ($onboardings) {
+            $this->db->batchInsert('person_onboarding', $onboardings);
         }
     }
 

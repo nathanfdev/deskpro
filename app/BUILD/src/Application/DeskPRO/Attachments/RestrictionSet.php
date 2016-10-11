@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Attachments;
 
+use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -103,7 +104,7 @@ class RestrictionSet
             if ($this->max_size && $props['size'] > $this->max_size) {
                 return [
                     'error_code'   => self::ERR_SIZE,
-                    'error_detail' => $this->max_size,
+                    'error_detail' => Numbers::filesizeDisplay($this->max_size),
                 ];
             }
         }

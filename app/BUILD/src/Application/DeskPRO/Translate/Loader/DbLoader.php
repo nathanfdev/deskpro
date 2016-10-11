@@ -123,6 +123,9 @@ class DbLoader implements LoaderInterface
         return $phrases;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function load($groups, $language, array $loaded_phrases = null)
     {
         if ($this->loaded !== null) {

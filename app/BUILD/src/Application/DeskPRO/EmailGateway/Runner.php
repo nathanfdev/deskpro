@@ -722,7 +722,7 @@ BODY;
 
         $inserted_source_ids = [];
 
-        $only_collect = $only_collect || $DP_ENV->getConfig('adv_email_process');
+        $only_collect = $only_collect || $DP_ENV->getConfig('async_email_processing.process');
 
         if (!$only_collect) {
             $inserted_source_ids = App::getDb()->fetchAllCol("
@@ -835,7 +835,7 @@ BODY;
                 continue;
             }
 
-            if ($only_collect && $source->status !== 'error' && $DP_ENV->getConfig('adv_email_process')) {
+            if ($only_collect && $source->status !== 'error' && $DP_ENV->getConfig('async_email_processing.process')) {
                 /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
                 $proc = App::getContainer()->get('in_email.proc_queue');
                 try {
@@ -942,7 +942,7 @@ BODY;
      *
      * @throws \InvalidArgumentException
      *
-     * @return Fetcher\Exchange|Fetcher\Imap|Fetcher\Pop3
+     * @return Fetcher\Exchange|Fetcher\Imap|Fetcher\Pop3|Fetcher\ImapSocket
      */
     private function createFetcher(EmailAccount $account)
     {
@@ -954,7 +954,12 @@ BODY;
             case 'pop3':
                 return new Fetcher\Pop3($account, 20971520);
             case 'gmail':
-                return new Fetcher\Pop3($account, 20971520);
+                // BC, Gmail XOAUTH2 works only via IMAP
+                if (!empty($account->incoming_account->token)) {
+                    return new Fetcher\ImapSocket($account, 20971520);
+                } else {
+                    return new Fetcher\Pop3($account, 20971520);
+                }
             case 'imap':
                 return new Fetcher\Imap($account, 20971520);
             case 'exchange':

@@ -46,7 +46,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.appsSidebar = {
 			visible: false,
 			width: 350
-		}
+		};
 
 		if (Modernizr.localstorage) {
 			if (localStorage['apps_sidebar_state'] && localStorage['apps_sidebar_state'] == 'open') {
@@ -69,7 +69,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			source: 1,
 			list: 2,
 			tabs: 4
-		}
+		};
 
 		var self = this;
 
@@ -327,9 +327,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				if (options.uploadTemplate) {
-					var setel = options.uploadTemplate;
+					setel = options.uploadTemplate;
 				} else {
-					var setel = $('.template-upload', el);
+					setel = $('.template-upload', el);
 				}
 
 				if (!setel || !setel[0]) {
@@ -347,9 +347,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				options.uploadTemplateId = id;
 
 				if (options.downloadTemplate) {
-					var setel = options.downloadTemplate;
+					setel = options.downloadTemplate;
 				} else {
-					var setel = $('.template-download', el);
+					setel = $('.template-download', el);
 				}
 
 				if (!setel || !setel[0]) {
@@ -584,6 +584,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			reloadInterface: function() {
 				$('#reload_overlay').show().on('click', function(ev) { ev.stopPropagation(); });
 				window.location.reload(false);
+			},
+
+			inIframe: function () {
+				try {
+					return window.self !== window.top;
+				} catch (e) {
+					return true;
+				}
 			}
 		};
 	},
@@ -656,12 +664,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadNewTicket = loadNewTicket[1];
 		}
 
-		var loadSearchTerm = false;
+		var loadSearchTerm;
 		if (loadSearchTerm = window.location.hash.match(/#q:(.*?)$/)) {
 			loadSearchTerm = loadSearchTerm[1];
 		}
 
-		var loadVis = false;
+		var loadVis;
 		if (loadVis = window.location.hash.match(/vis:([0-9]{1})/)) {
 			loadVis = parseInt(loadVis[1]);
 		}
@@ -675,14 +683,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.setPaneVisNum(loadVis);
 		}
 
-		var loadAdmin = false;
+		var loadAdmin;
 		if (loadAdmin = window.location.hash.match(/#admin:(.*?)$/)) {
 			loadAdmin = loadAdmin[1];
 		}
 
-		var loadReports = false;
+		var loadReports;
 		if (loadReports = window.location.hash.match(/#reports:(.*?)$/)) {
 			loadReports = loadReports[1];
+		}
+
+		if (this.util.inIframe()) {
+			console.log('Sending iframe message');
+			data = {
+				reload: true,
+				location: window.location.href
+			};
+			window.top.postMessage(data, window.location.origin);
 		}
 
 		$.fn.qtip.zindex = 999999999;
@@ -1080,7 +1097,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				var left = btnMenu.offset().left,
 					top = btnMenu.offset().top,
 					right = left + btnMenu.outerWidth(),
-					bottom = top + btnMenu.outerHeight()
+					bottom = top + btnMenu.outerHeight();
 
 				if (e.pageX < left || e.pageX > right || e.pageY < top || e.pageY > bottom) {
 					return true;
@@ -1093,7 +1110,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				var left = wrap.offset().left,
 					top = wrap.offset().top,
 					right = left + wrap.outerWidth(),
-					bottom = top + wrap.outerHeight()
+					bottom = top + wrap.outerHeight();
 
 				if (e.pageX < left || e.pageX > right || e.pageY < top || e.pageY > bottom) {
 					return true;
@@ -1106,7 +1123,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if (isOutCoords1(e) && isOutCoords2(e)) {
 					if (!isClosingTimeout) {
 						isClosingTimeout = window.setTimeout(function () {
-							isClosingTimeout = null
+							isClosingTimeout = null;
 							$('.zindex-chrome0').trigger('click');
 						}, 350);
 					}
@@ -3160,95 +3177,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self.faviconBadge.updateBadge(count, true);
 		});
 
-		this.volume = 0.8;
-		$('#sound_icon').find('i').removeClass('icon-volume-down icon-volume-up icon-volume-off').addClass('icon-volume-up');
-
-		var updateVolumeUi = function() {
-			if (self.volume == 0 || self.volume == 0.0) {
-				self.volume = 0;
-				$('#sound_icon_in').addClass('off');
-				$('#sound_icon').find('i').removeClass('icon-volume-down icon-volume-up').addClass('icon-volume-off');
-			} else {
-				if (self.volume < 0.6) {
-					$('#sound_icon').find('i').removeClass('icon-volume-down icon-volume-up icon-volume-off').addClass('icon-volume-down');
-				} else {
-					$('#sound_icon').find('i').removeClass('icon-volume-down icon-volume-up icon-volume-off').addClass('icon-volume-up');
-				}
-
-				$('#sound_icon_in').removeClass('off');
-			}
-
-			$('audio').each(function() {
-				this.volume = self.volume;
-			});
-
-			$('#volume_controls .slider').slider('value', self.volume * 100);
-		}
-
-		// Volume slider
-		$('#volume_controls .slider').slider({
-			orientation: "vertical",
-			range: "min",
-			min: 0,
-			max: 100,
-			value: 80,
-			slide: function(event, ui) {
-				self.volume = parseInt(ui.value) / 100;
-				$('#sound_icon_in').data('last-value', $('#volume_controls .slider').slider('value'));
-				updateVolumeUi();
-			}
-		});
-
-		$('#sound_icon_in').data('last-value', $('#volume_controls .slider').slider('value'));
-
-		$('#sound_icon_in').on('click', function(ev) {
-			ev.stopPropagation();
-			if ($(this).is('.off')) {
-				var last = $(this).data('last-value');
-				if (last == 0 || last == 0.0) {
-					last = 80;
-				}
-				self.volume = parseInt(last) / 100;
-				updateVolumeUi();
-			} else {
-				self.volume = 0;
-				updateVolumeUi();
-			}
-		});
-
-		var closeSoundMenu = function() {
-			$('#volume_controls_back').hide();
-			$('#volume_controls').fadeOut();
-		};
-
-		// Use of a backdrop here ensures we can handle the click and not
-		// fire anything else by accident on bubbling
-		// Also the document click is unreliable since there may be other
-		// elements that also stop bubbling.
-		$('#volume_controls_back').on('click', function(ev) {
-			ev.stopPropagation();
-			closeSoundMenu();
-		});
-
-		var showSoundMenu = function() {
-			$('#volume_controls_back').show();
-
-			var atEl = $('#sound_icon').find('i');
-			$('#volume_controls').css({
-				'top': atEl.offset().top - 1,
-				'left': atEl.offset().left - 2
-			});
-
-			$('#volume_controls').fadeIn();
-		};
-
-		$('#sound_icon').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			showSoundMenu();
-		});
-
 		// Create menu
 		this.createMenu = new DeskPRO.UI.Menu({
 			triggerElement: '#create_content_trigger',
@@ -3804,6 +3732,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 				cancelRouteSelection(ev);
 
 				self.runPageRouteFromElement($(this), { event: ev });
+
+				if (window.DP_FRAME_OVERLAYS) {
+          Object.keys(window.DP_FRAME_OVERLAYS).forEach(function(key) {
+            var iframe = window.DP_FRAME_OVERLAYS[key];
+            if (iframe.opened) {
+              iframe.close();
+            }
+          });
+				}
 
 				// If this was a list-pane and we have an open popover,
 				// we need to close the popover so the listpane can actually load

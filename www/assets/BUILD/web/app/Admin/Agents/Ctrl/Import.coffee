@@ -22,7 +22,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
             @sendEmails data.data.filename
           () =>
             @busy = false
-            console.log 'error'
+            console.error 'error'
         )
 
 

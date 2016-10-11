@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 22 22" style="enable-background:new 0 0 22 22;" xml:space="preserve">
+<style type="text/css">
+	.recent-primary{fill:#C0C4C4;}
+	.recent-secondary{fill:none;stroke:#C0C4C4;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+</style>
+<g>
+	<g>
+		<path class="recent-primary" d="M11,2c5,0,9,4,9,9s-4,9-9,9s-9-4-9-9S6,2,11,2 M11,0C4.9,0,0,4.9,0,11s4.9,11,11,11s11-4.9,11-11S17.1,0,11,0
+			L11,0z"/>
+	</g>
+	<polyline class="recent-secondary" points="6.5,11.4 11.4,13.3 11.4,6 	"/>
+</g>
+</svg>

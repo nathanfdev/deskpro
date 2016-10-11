@@ -372,7 +372,7 @@ class AuditLog implements LoggableInterface, NotifyPropertyChanged, EntityInterf
      *
      * @return $this
      */
-    public function setApiKey($apiKey)
+    public function setApiKey($apiKey = null)
     {
         $this->apiKey = $apiKey;
 

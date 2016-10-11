@@ -10,3 +10,4 @@ export class MessageListSpinner extends React.Component {
     );
   }
 }
+export default MessageListSpinner;

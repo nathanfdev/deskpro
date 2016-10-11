@@ -114,8 +114,10 @@ class Util
      */
     public static function getTacForPerson(Ticket $ticket, Person $person)
     {
+        $em = App::getOrm();
+
         try {
-            $tac = App::getOrm()->createQuery('
+            $tac = $em->createQuery('
                 SELECT t
                 FROM DeskPRO:TicketAccessCode t
                 WHERE t.ticket = ?1 AND t.person = ?2
@@ -123,13 +125,13 @@ class Util
 
             return $tac;
         } catch (\Exception $e) {
-            $tac           = new TicketAccessCode();
-            $tac['ticket'] = $ticket;
-            $tac['person'] = $person;
-            $ticket->access_codes->add($tac);
+            $tac = new TicketAccessCode();
+            $tac->setTicket($ticket);
+            $tac->setPerson($person);
+            $ticket->getAccessCodes()->add($tac);
 
-            App::getOrm()->persist($tac);
-            App::getOrm()->flush();
+            $em->persist($tac);
+            $em->flush();
 
             return $tac;
         }

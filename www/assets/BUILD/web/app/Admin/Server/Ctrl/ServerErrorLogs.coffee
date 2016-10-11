@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define ['underscore','Admin/Main/Ctrl/Base'], (_, Admin_Ctrl_Base) ->
   class Admin_ServerErrorLogs_Ctrl_ServerErrorLogs extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_ServerErrorLogs_Ctrl_ServerErrorLogs'
     @CTRL_AS   = 'ServerErrorLogs'
@@ -33,7 +33,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           $scope.dismiss = ->
             $modalInstance.dismiss()
         ]
-      });
+      })
 
       inst.result.then( () =>
         @clearAll()

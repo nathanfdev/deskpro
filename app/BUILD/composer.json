@@ -29,7 +29,7 @@
     "firebase/php-jwt": "~2.0",
     "league/url": "~3.3",
     "onelogin/php-saml": "dev-master@dev",
-    "google/apiclient": "1.0.*@dev",
+    "google/apiclient": "^2.0",
     "predis/predis": "1.0.3",
     "react/event-loop": "0.4.*",
     "react/child-process": "0.4.*",
@@ -104,7 +104,8 @@
     "sensiolabs/behat-page-object-extension": "2.0.*@dev",
     "friendsofphp/php-cs-fixer": "^1.11",
     "behat/mink-goutte-driver": "^1.2",
-    "onesky/api-library-php5": "^1.0"
+    "onesky/api-library-php5": "^1.0",
+    "sensio/generator-bundle": "^3.0"
   },
   "preferred-install": "dist"
 }

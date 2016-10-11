@@ -716,10 +716,10 @@ define([
 				var $results = $el.find('.dp-omnibox-results');
 				var $listPane = $('#dp_list');
 				var $backdrop = $('<div class="backdrop search-menu-backdrop" style="top: 40px;">')
-				var recentOpen = false;
-				var notifsOpen = false;
 				var lastUpdateTime = null;
 
+				scope.notifsOpen = false;
+				scope.recentOpen = false;
 				scope.searchQuery = '';
 				scope.isActive = false;
 				scope.mode = 'search';
@@ -754,7 +754,8 @@ define([
 				});
 
 				$('body').on('mousedown mouseup click', function(ev) {
-					if (!ev.target || !$(ev.target).closest('.dp-omnibox-wrap')[0]) {
+					if (!ev.target ||
+						!($(ev.target).closest('.dp-omnibox-wrap')[0] || $(ev.target).closest('.legacy-omnibox')[0])) {
 						closeAll();
 					}
 				});
@@ -837,12 +838,12 @@ define([
 				};
 
 				var updateMode = function() {
-					if (recentOpen) {
-						recentOpen = false;
+					if (scope.recentOpen) {
+						scope.recentOpen = false;
 						$('#recent_tabs_menu').hide().removeClass('active');
 					}
-					if (notifsOpen) {
-						notifsOpen = false;
+					if (scope.notifsOpen) {
+						scope.notifsOpen = false;
 						$('#dp_header_notify_wrap').hide().removeClass('active');
 					}
 
@@ -857,7 +858,7 @@ define([
 				};
 
 				var showRecent = function() {
-					recentOpen = true;
+					scope.recentOpen = true;
 					var wrap = $('#recent_tabs_menu');
 					wrap.addClass('active').show();
 					wrap.width(Math.max($el.width() - 2, 560));
@@ -877,7 +878,7 @@ define([
 				};
 
 				var showNotifs = function() {
-					notifsOpen = true;
+					scope.notifsOpen = true;
 					var wrap = $('#dp_header_notify_wrap');
 					wrap.addClass('active').show();
 					wrap.width(Math.max($el.width() - 2, 560));
@@ -906,7 +907,7 @@ define([
 
 						scope.expanded = {};
 
-						lastUpdateTime = t
+						lastUpdateTime = t;
 						scope.resultGroups = data.grouped_results || [];
 						scope.resultGroups = scope.resultGroups.filter(function(v) { return v.results && v.results.length; });
 						scope.index_running = data.index_running || false;
@@ -963,8 +964,8 @@ define([
 					var maxHeight = $(window).height() - 40 - 75;
 
 					$results.css({
-						top: 39,
-						left: 5,
+						top: 50,
+						left: 55,
 						width: width - 7,
 						'max-height': maxHeight
 					}).show();
@@ -1128,7 +1129,7 @@ define([
 
 
 	AgentApp.service('LabelDefinition', ['$http', '$q', function($http, $q){
-		return new DeskPRO_Service_LabelDefinition($q, $http.get('/agent/labels/definitions'));
+		return new DeskPRO_Service_LabelDefinition($q, $http.get('DP_URL/agent/labels/definitions'));
 	}]);
 	AgentApp.service('PersonService', DeskPRO_Service_Person);
 	AgentApp.service('AgentTeamService', DeskPRO_Service_AgentTeam);

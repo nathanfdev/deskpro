@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
     <meta charset="utf-8" />
-    <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name') }}{% endif %}</title>
+    <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</title>
     <meta name="viewport" content="width=device-width">
     {% include 'Theme:Internal:head-include.html.twig' %}
     <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />

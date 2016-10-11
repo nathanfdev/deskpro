@@ -34,12 +34,14 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Mail\Message;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Monolog\Logger;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -74,6 +76,11 @@ class TicketEmail
      * @var \Application\DeskPRO\Entity\Person
      */
     private $toPerson;
+
+    /**
+     * @var string
+     */
+    private $toPersonEmail;
 
     /**
      * @var string
@@ -168,6 +175,7 @@ class TicketEmail
         $opt->addValidNames(
             'from_name',
             'from_email_account',
+            'to_person_email',
             'cc_users',
             'is_auto',
             'max_attach_size',
@@ -177,10 +185,11 @@ class TicketEmail
         $opt->setAll($options);
         $opt->ensureRequired();
 
-        $this->toPerson     = $opt->get('to_person');
-        $this->ticket       = $opt->get('ticket');
-        $this->templateName = $opt->get('template_name');
-        $this->fromName     = $opt->get('from_name', '');
+        $this->toPerson      = $opt->get('to_person');
+        $this->toPersonEmail = $opt->get('to_person_email');
+        $this->ticket        = $opt->get('ticket');
+        $this->templateName  = $opt->get('template_name');
+        $this->fromName      = $opt->get('from_name', '');
 
         $this->mailer           = $opt->get('mailer');
         $this->emailAccounts    = $opt->get('email_accounts');
@@ -274,29 +283,26 @@ class TicketEmail
 
     /**
      * @param array $vars
+     *
+     * @return Message
      */
-    public function send(array $vars = [])
+    public function prepareMailerMessage(array $vars = [])
     {
-        $mailer     = $this->mailer;
-        $translator = $this->translate;
-
-        $ticketDisplay = new TicketDisplay($this->ticket, $this->toPerson);
-        $ticketDisplay->setPersonContext($this->toPerson, $this->userMode);
-
         if ($this->toPerson && $this->toPerson->isAgent()) {
             $this->toPerson->loadHelper('Agent');
             $this->toPerson->loadHelper('AgentTeam');
         }
 
-        $vars['person']        = $this->toPerson;
-        $vars['ticketdisplay'] = $ticketDisplay;
+        $vars['person'] = $this->toPerson;
 
         if ($this->ticket->getBrand()) {
             $this->brandStack->push($this->ticket->getBrand());
         }
 
         // To user - use the selected email address on the ticket
-        if ($this->userMode == self::MODE_USER) {
+        if ($this->toPersonEmail && $this->toPerson->hasEmailAddress($this->toPersonEmail)) {
+            $toEmail = $this->toPersonEmail;
+        } elseif ($this->userMode == self::MODE_USER) {
             if ($this->ticket->getPersonEmail() && $this->ticket->getPersonEmail()->getPerson() === $this->toPerson) {
                 $toEmail = $this->ticket->getPersonEmail()->getEmail();
                 $this->logger->info(sprintf('[TicketEmail] to_email(1): %s', $toEmail));
@@ -328,7 +334,7 @@ class TicketEmail
         $this->sentWithCcs = [];
 
         /** @var Message $message */
-        $message = $mailer->createMessage();
+        $message = $this->mailer->createMessage();
         $this->logger->info(sprintf('[TicketEmail] To: %s -- Name: %s', $toEmail, $this->toPerson->getDisplayName()));
         $message->setTo([$toEmail => $this->toPerson->getDisplayName()]);
         $message->setContextId('ticket_gateway');
@@ -336,7 +342,6 @@ class TicketEmail
         if (isset($vars['attached_blobs'])) {
             /** @var TicketAttachment $attachment */
             foreach ($vars['attached_blobs'] as $attachment) {
-                $ticketDisplay->setIgnoreAttachment($attachment);
                 $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), $attachment->isInline());
             }
         }
@@ -404,7 +409,7 @@ class TicketEmail
         $this->logger->info(sprintf('[TicketEmail] Language: %s', $lang->getSystemName()));
 
         $start = microtime(true);
-        $translator->setTemporaryLanguage($lang, function () use ($message) {
+        $this->translate->setTemporaryLanguage($lang, function () use ($message) {
             $message->prepare();
         });
         $this->logger->info(sprintf('[TicketEmail] Prepare took %.3fs', microtime(true) - $start));
@@ -413,24 +418,46 @@ class TicketEmail
             $message->getHeaders()->addTextHeader($header['name'], $header['value']);
         }
 
-        $start = microtime(true);
-
-        if ($mailer instanceof StorageTransportInterface) {
-            $id = $mailer->queueMessage($message);
-            if ($id) {
-                $this->logger->info(sprintf('[TicketEmail] SendmailSource ID #%d', $id));
-                $this->sendmailSourceId = $id;
-            }
-        } else {
-            $mailer->send($message);
-        }
-
         /* If we added a brand in the stack we remove it */
         if ($this->ticket->getBrand()) {
             $this->brandStack->pop();
         }
 
-        $this->logger->info(sprintf('[TicketEmail] Send took %.3fs', microtime(true) - $start));
+        return $message;
+    }
+
+    /**
+     * @param Message $message
+     * @param Logger  $logger
+     *
+     * @return $int
+     */
+    public static function sendMailerMessage(Message $message, Logger $logger)
+    {
+        $mailer = App::$container->getMailer();
+        $start  = microtime(true);
+
+        if ($mailer instanceof StorageTransportInterface) {
+            $id = $mailer->queueMessage($message);
+            if ($id) {
+                $logger->info(sprintf('[TicketEmail] SendmailSource ID #%d', $id));
+            }
+        } else {
+            $mailer->send($message);
+            $id = null;
+        }
+
+        $logger->info(sprintf('[TicketEmail] Send took %.3fs', microtime(true) - $start));
+
+        return $id;
+    }
+
+    /**
+     * @param array $vars
+     */
+    public function send(array $vars = [])
+    {
+        $this->sendmailSourceId = self::sendMailerMessage($this->prepareMailerMessage($vars), $this->logger);
     }
 
     /**

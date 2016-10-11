@@ -36,11 +36,14 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\EventListener\PersonChangeLogListener;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
+use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -69,7 +72,6 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @property int                                 $id
  * @property Blob                                $picture_blob
  * @property bool                                $disable_picture
- * @property string                              $gravatar_url
  * @property bool                                $is_contact
  * @property bool                                $is_user
  * @property bool                                $is_agent
@@ -160,6 +162,9 @@ GroupSequenceProviderInterface
 
     /**
      * The URL to the users gravatar if any.
+     *
+     * @deprecated Gravatar url is getting from the person email
+     * @see AvatarResolver
      *
      * @var string
      */
@@ -2816,16 +2821,6 @@ GroupSequenceProviderInterface
     }
 
     /**
-     * Sets the gravatar URL.
-     *
-     * @param string $url
-     */
-    public function setGravatarUrl($url)
-    {
-        $this->setModelField('gravatar_url', $url);
-    }
-
-    /**
      * Gets the URL to a picture for the person. Note that this will always return
      * a path to an image, even if it's the default. If you need to check for the
      * existance of an image, use hasPicture.
@@ -2925,17 +2920,17 @@ GroupSequenceProviderInterface
      *
      * @return bool
      */
-    public function hasPicture($auto_check = false)
+    public function hasPicture()
     {
         if ($this->disable_picture) {
             return false;
         }
 
-        if ($this->picture_blob || $this->gravatar_url) {
+        if ($this->picture_blob) {
             return true;
         }
 
-        if ($this->primary_email and App::getSetting('core.use_gravatar')) {
+        if ($this->primary_email || App::getSetting('core.use_gravatar')) {
             return true;
         }
 
@@ -3761,7 +3756,7 @@ GroupSequenceProviderInterface
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Person';
+        $metadata->customRepositoryClassName = PersonRepository::class;
 
         $metadata->setPrimaryTable(
             [
@@ -3785,8 +3780,15 @@ GroupSequenceProviderInterface
             foreach ([Events::prePersist, Events::postPersist, Events::preUpdate, Events::postUpdate] as $event) {
                 $metadata->addEntityListener(
                     $event,
-                    'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener',
+                    PersonChangeLogListener::class,
                     'on'.ucfirst($event)
+                );
+            }
+            foreach ([Events::prePersist, Events::preUpdate, Events::preFlush] as $event) {
+                $metadata->addEntityListener(
+                    $event,
+                    PersonOnboardingListener::class,
+                    $event
                 );
             }
         }
@@ -4184,7 +4186,7 @@ GroupSequenceProviderInterface
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'picture_blob',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+                'targetEntity' => Blob::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'fetch'        => ClassMetadata::FETCH_EAGER,
@@ -4203,7 +4205,7 @@ GroupSequenceProviderInterface
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'language',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
+                'targetEntity' => Language::class,
                 'mappedBy'     => null,
                 'cascade'      => ['persist'],
                 'inversedBy'   => null,
@@ -4221,7 +4223,7 @@ GroupSequenceProviderInterface
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'organization',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
+                'targetEntity' => Organization::class,
                 'mappedBy'     => null,
                 'inversedBy'   => 'members',
                 'fetch'        => ClassMetadata::FETCH_EAGER,
@@ -4241,7 +4243,7 @@ GroupSequenceProviderInterface
         $metadata->mapOneToOne(
             [
                 'fieldName'    => 'primary_email',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail',
+                'targetEntity' => PersonEmail::class,
                 'cascade'      => ['persist', 'detach'],
                 'mappedBy'     => null,
                 'inversedBy'   => null,
@@ -4261,7 +4263,7 @@ GroupSequenceProviderInterface
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'emails',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\PersonEmail',
+                'targetEntity'  => PersonEmail::class,
                 'cascade'       => ['persist', 'detach'],
                 'mappedBy'      => 'person',
                 'dpApi'         => true,
@@ -4271,7 +4273,7 @@ GroupSequenceProviderInterface
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'labels',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelPerson',
+                'targetEntity'  => LabelPerson::class,
                 'cascade'       => ['remove', 'persist', 'merge', 'detach'],
                 'mappedBy'      => 'person',
                 'orphanRemoval' => true,
@@ -4280,7 +4282,7 @@ GroupSequenceProviderInterface
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'custom_data',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataPerson',
+                'targetEntity'  => CustomDataPerson::class,
                 'cascade'       => ['remove', 'persist', 'merge', 'detach'],
                 'mappedBy'      => 'person',
                 'orphanRemoval' => true,
@@ -4290,7 +4292,7 @@ GroupSequenceProviderInterface
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'contact_data',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonContactData',
+                'targetEntity' => PersonContactData::class,
                 'cascade'      => ['remove', 'persist', 'merge', 'detach'],
                 'mappedBy'     => 'person',
                 'indexBy'      => 'id',
@@ -4301,7 +4303,7 @@ GroupSequenceProviderInterface
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'usergroups',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'targetEntity' => Usergroup::class,
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [
                     'name'        => 'person2usergroups',
@@ -4331,7 +4333,7 @@ GroupSequenceProviderInterface
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'preferences',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref',
+                'targetEntity' => PersonPref::class,
                 'cascade'      => ['persist', 'remove', 'merge'],
                 'mappedBy'     => 'person',
             ]
@@ -4339,7 +4341,7 @@ GroupSequenceProviderInterface
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'usersource_assoc',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc',
+                'targetEntity' => PersonUsersourceAssoc::class,
                 'mappedBy'     => 'person',
                 'cascade'      => ['persist', 'remove'],
             ]
@@ -4347,21 +4349,21 @@ GroupSequenceProviderInterface
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'twitter_users',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonTwitterUser',
+                'targetEntity' => PersonTwitterUser::class,
                 'mappedBy'     => 'person',
             ]
         );
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'twitter_accounts',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount',
+                'targetEntity' => TwitterAccount::class,
                 'mappedBy'     => 'persons',
             ]
         );
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'notes',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonNote',
+                'targetEntity' => PersonNote::class,
                 'mappedBy'     => 'person',
                 'cascade'      => ['persist', 'remove'],
             ]
@@ -4369,7 +4371,7 @@ GroupSequenceProviderInterface
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'phone_numbers',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\PhoneNumber',
+                'targetEntity'  => PhoneNumber::class,
                 'mappedBy'      => 'person',
                 'cascade'       => ['persist', 'detach'],
                 'orphanRemoval' => true,
@@ -4378,14 +4380,14 @@ GroupSequenceProviderInterface
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'department_permissions',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
+                'targetEntity' => DepartmentPermission::class,
                 'mappedBy'     => 'person',
             ]
         );
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'assigned_tasks',
-                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TaskAssignment',
+                'targetEntity'  => TaskAssignment::class,
                 'mappedBy'      => 'person',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'orphanRemoval' => true,
@@ -4395,7 +4397,7 @@ GroupSequenceProviderInterface
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'tickets',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketParticipant',
+                'targetEntity'  => TicketParticipant::class,
                 'mappedBy'      => 'person',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'orphanRemoval' => true,
@@ -4407,7 +4409,7 @@ GroupSequenceProviderInterface
                 'fieldName'    => 'teams',
                 'mappedBy'     => 'members',
                 'dpApi'        => true,
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+                'targetEntity' => AgentTeam::class,
                 'joinTable'    => [
                     'name'               => 'agent_team_members',
                     'joinColumns'        => [['name' => 'person_id', 'onDelete' => 'CASCADE']],
@@ -4420,8 +4422,8 @@ GroupSequenceProviderInterface
             [
                 'fieldName'    => 'chats',
                 'mappedBy'     => 'participants',
-                'dpApi'        => true,
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation',
+                'dpApi'        => false,
+                'targetEntity' => ChatConversation::class,
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
@@ -4430,7 +4432,7 @@ GroupSequenceProviderInterface
             [
                 'fieldName'    => 'primary_team',
                 'dpApi'        => true,
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+                'targetEntity' => AgentTeam::class,
                 'nullable'     => true,
                 'joinColumns'  => [
                     [

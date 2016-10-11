@@ -21,3 +21,4 @@ export class LostConnectionContainer extends React.Component {
     return <LostConnection />;
   }
 }
+export default LostConnectionContainer;

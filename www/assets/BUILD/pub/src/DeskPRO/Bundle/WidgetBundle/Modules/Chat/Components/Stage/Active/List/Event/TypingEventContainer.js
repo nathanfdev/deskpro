@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { TypingEvent } from './TypingEvent';
 import { agentNameSelector, agentAvatarSelector, agentTypingDateSelector } from '../../../../../Selectors/chat';
-import moment from 'moment';
 
 @connect(state => ({
   agentName:       agentNameSelector(state),
@@ -19,8 +19,8 @@ export class TypingEventContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayChild:        false,
-      agentLastTypingTime: null
+      displayChild:    false,
+      agentTypingDate: null
     };
   }
 
@@ -28,8 +28,15 @@ export class TypingEventContainer extends React.Component {
     this.checkLastTypingDate();
   }
 
+  componentWillReceiveProps(newProps) {
+    this.checkLastTypingDate(newProps);
+  }
+
+  shouldComponentUpdate(props, state) {
+    return state.displayChild !== this.state.displayChild;
+  }
+
   componentDidUpdate() {
-    this.checkLastTypingDate();
     if (this.props.onUpdate) {
       this.props.onUpdate();
     }
@@ -45,9 +52,8 @@ export class TypingEventContainer extends React.Component {
     });
   };
 
-  checkLastTypingDate() {
-    const { agentTypingDate } = this.props;
-
+  checkLastTypingDate(props) {
+    const agentTypingDate = props ? props.agentTypingDate : this.props.agentTypingDate;
     if (!agentTypingDate) {
       if (this.state.displayChild) {
         this.setState({
@@ -61,7 +67,7 @@ export class TypingEventContainer extends React.Component {
 
     const ended = moment(agentTypingDate).format('X');
     const now = moment().format('X');
-    const delay = ended - now + 10; // displays in 10 seconds
+    const delay = (ended - now) + 10; // displays in 10 seconds
 
     if (delay > 0 && (!this.state.displayChild || agentTypingDate !== this.state.agentTypingDate)) {
       this.setState({
@@ -77,3 +83,4 @@ export class TypingEventContainer extends React.Component {
     return this.state.displayChild ? <TypingEvent {...this.props} /> : null;
   }
 }
+export default TypingEventContainer;

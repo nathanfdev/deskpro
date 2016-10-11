@@ -84,7 +84,7 @@ SQL;
 
             $db    = $this->getDbConnection('default');
             $stmnt = $db->prepare("
-              UPDATE `{$parameters['data_table']}` 
+              UPDATE IGNORE `{$parameters['data_table']}` 
               SET `root_field_id` = :root_field_id WHERE `field_id` = :field_id AND `root_field_id` IS NULL");
             // try to fix rows where field_id is set, but root_field_id is not - so put propper relation
             foreach ($map as $fieldId => $rootFieldId) {
@@ -93,7 +93,7 @@ SQL;
             //now find rows where field_id IS NULL and root_field_id is defined and this is not choice then just set
             //field_id === root_field_id
             $fixSQL = <<<SQL
-            UPDATE `{$parameters['data_table']}` as `tab` 
+            UPDATE IGNORE `{$parameters['data_table']}` as `tab` 
             INNER JOIN `{$defName}` as `def` ON `tab`.`root_field_id` = `def`.`id`
             SET `tab`.`root_field_id` = `def`.`id`
             WHERE `def`.`handler_class` NOT LIKE "%Choice%"

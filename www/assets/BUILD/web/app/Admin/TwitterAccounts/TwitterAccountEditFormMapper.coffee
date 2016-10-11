@@ -1,7 +1,9 @@
 define [
-  'DeskPRO/Util/Util'
+  'DeskPRO/Util/Util',
+  'underscore'
 ], (
-  Util
+  Util,
+  _
 ) ->
   class Admin_TwitterAccounts_TwitterAccountEditFormMapper
 

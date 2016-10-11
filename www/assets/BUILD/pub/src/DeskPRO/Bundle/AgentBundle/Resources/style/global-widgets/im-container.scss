@@ -1,16 +1,4 @@
-@mixin corner-top {
-  &:before {
-    content: "";
-    display: block;
-    width: 0px;
-    height: 0px;
-    border: 5px solid rgba(0, 0, 0, 0.0);
-    border-bottom: 5px solid #454545;
-    position: absolute;
-    left: 20px;
-    top: -10px;
-  }
-}
+@import "../raw/misc";
 
 // Notifications container
 .notification-dropdown {
@@ -1764,7 +1752,7 @@ $secondary-surface-border: #d5d6d7;
   padding-bottom: 2px;
 }
 
-.dropdown {
+.dropdown:not(i) {
   border-top: 4px solid darken($secondary-surface, 15%);
   border-bottom: 4px solid darken($secondary-surface, 5%);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AuditBundle\Log\FieldFilter;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\CustomDataAbstract;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\ORM\PersistentCollection;
@@ -75,7 +76,9 @@ class CollectionFieldFilter implements FieldFilterInterface
         $ids = [];
         try {
             foreach ($values as $item) {
-                if ($item instanceof EntityInterface || $item instanceof DomainObject) {
+                if ($item instanceof CustomDataAbstract) {
+                    $ids[] = $this->language->evaluate(new Expression('item.__toString()'), ['item' => $item]);
+                } elseif ($item instanceof EntityInterface || $item instanceof DomainObject) {
                     $ids[] = $this->language->evaluate(new Expression($expression), ['item' => $item]);
                 } elseif ($item instanceof \Traversable || is_array($item)) {
                     $ids[] = $this->filter($item);

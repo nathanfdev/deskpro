@@ -163,6 +163,17 @@ class PostBuild extends AbstractBuild
         }
 
         //------------------------------
+        // Clear prod logs
+        //------------------------------
+
+        foreach (glob(dp_get_log_dir().DIRECTORY_SEPARATOR.'*-prod.log') as $l) {
+            if (file_exists($l)) {
+                $this->out('resetting '.pathinfo($l, PATHINFO_BASENAME));
+                @file_put_contents($l, '');
+            }
+        }
+
+        //------------------------------
         // Recompile tempaltes
         //------------------------------
 

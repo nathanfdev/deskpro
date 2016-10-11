@@ -282,3 +282,9 @@ services:
       - "@brand_stack"
     tags:
       - { name: form.type }
+
+  form.recaptcha:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType
+    arguments: ["@settings_resolver", "@language_manager"]
+    tags:
+      - { name: form.type }

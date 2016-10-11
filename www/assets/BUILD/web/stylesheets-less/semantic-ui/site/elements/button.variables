@@ -9,6 +9,7 @@
 @background: @dp-sonic-primary;
 @hoverBackgroundColor: @dp-sonic-secondary;
 @downBackgroundColor: @dp-sonic-tertiary;
+@borderRadius: 2px;
 
 @boxShadow:  0px 2px 0px @dp-sonic-midnight;
 @downBoxShadow: 0 2px 0 @dp-sonic-midnight;

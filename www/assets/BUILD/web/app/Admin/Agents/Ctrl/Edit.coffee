@@ -242,7 +242,7 @@ define [
 
     hasSomePerms: (typename, permname) ->
       suffix = permname.replace(/^.*?_(.*?)$/, '$1')
-      return if not suffix or not (@ugEffectivePerms?[typename]? || @perm_form[typename]?)
+      return if not suffix or not (@ugEffectivePerms?[typename]? || @perm_form?[typename]?)
 
       suffix = "_" + suffix
       prefix = "modify_"

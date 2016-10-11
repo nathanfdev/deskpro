@@ -18,6 +18,8 @@ define([
   'Admin/Agents/Ctrl/List',
   'Admin/Agents/Ctrl/Logs',
   'Admin/Agents/Ctrl/Import',
+  'Admin/Agents/Ctrl/AuditLogs',
+  'Admin/Agents/Ctrl/AuditLogsView',
   'Admin/AgentGroups/Ctrl/Edit',
   'Admin/AgentGroups/Ctrl/List',
   'Admin/AgentTeams/Ctrl/Edit',
@@ -133,8 +135,6 @@ define([
   'Admin/Server/Ctrl/ServerFileUploads',
   'Admin/Server/Ctrl/ServerFileCheck',
   'Admin/Server/Ctrl/ServerReportFile',
-  'Admin/Server/Ctrl/ServerAuditLogs',
-  'Admin/Server/Ctrl/ServerAuditLogsView',
   'Admin/Settings/Ctrl/AdvancedSettings',
   'Admin/Settings/Ctrl/ElasticSearch',
   'Admin/Settings/Ctrl/GeneralSettings',
@@ -202,15 +202,11 @@ define([
       log: function(){},
       warn: function(){},
       error: function(){}
-    }
+    };
   }
 
   return {
     start: function() {
-      var loadingEl = document.getElementById('dp_loading');
-      loadingEl.parentNode.removeChild(loadingEl);
-      loadingEl = null;
-
       window.DP_UID_COUNTER = 0;
       window.dp_get_uid = function () {
         return window.DP_UID_COUNTER++;
@@ -238,5 +234,5 @@ define([
         angular.bootstrap($html, ['Admin_App']);
       });
     }
-  }
+  };
 });

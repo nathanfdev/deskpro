@@ -77,6 +77,7 @@ class PersonChangePasswordType extends AbstractType
     {
         if ($options['require_current_password']) {
             $builder->add('current_password', PasswordType::class, [
+                'label'       => $this->phrase('portal.forms.label_current_password'),
                 'required'    => true,
                 'constraints' => [
                     new UserPassword([

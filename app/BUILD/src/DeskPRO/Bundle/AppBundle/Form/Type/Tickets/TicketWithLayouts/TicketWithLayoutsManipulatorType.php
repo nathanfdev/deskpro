@@ -107,6 +107,11 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $form    = $event->getForm();
         $options = $form->getConfig()->getOptions();
 
+        // Setting ticket person if not defined
+        if (!$data->getPerson()) {
+            $data->setPerson($options['person']);
+        }
+
         // if there is only one department we want to make sure to set it now...
         $hierarchy = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($options['person']);
 

@@ -40,34 +40,33 @@ class Attachment
     /**
      * @var string
      */
-    
     public $tmp_file;
-    
+
     /**
-     * @var Callable 
+     * @var callable
      */
     public $file_contents_callback;
-    
+
     /**
      * @var string|null
      */
     public $file_contents = null;
-    
+
     /**
      * @var string
      */
     public $file_name;
-    
+
     /**
      * @var string
      */
     public $file_name_utf8;
-    
+
     /**
      * @var string
      */
     public $mime_type;
-    
+
     /**
      * @var string
      */

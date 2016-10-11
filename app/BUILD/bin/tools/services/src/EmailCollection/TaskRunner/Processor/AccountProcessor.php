@@ -42,7 +42,7 @@ class AccountProcessor extends AbstractCommandProcessor
     {
         $account_id = $task->get('account_id');
 
-        $cmd_path = realpath(DP_ROOT.'/../cmd.php');
+        $cmd_path = realpath(DP_DIR.'/bin/console');
         $cmd      = dp_get_php_command($cmd_path, 'dp:collect-email '.$account_id);
 
         $this->logger->info("[AccountProcessor] <EmailAccount::{$account_id}> process command: $cmd", [

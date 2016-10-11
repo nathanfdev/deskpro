@@ -191,21 +191,23 @@ class AffectedFiltersCheck
             $searcher = LegacyTicketFilter::createSearcher($filter['sys_name'], $filter['terms']);
 
             if ($is_new_messages || $is_hidden_change || $searcher->hasAnyAffectedFields($changed_fields)) {
-                // check filters w/o agent context
-                // if base check is failed then no need to check it in the agent context
-                $newMatch = false;
-                $origMath = false;
+                if (!$searcher->needsPersonContext()) {
+                    // check filters w/o agent context
+                    // if base check is failed then no need to check it in the agent context
+                    $newMatch = false;
+                    $origMath = false;
 
-                if (!$isNewTicket && $searcher->doesTicketMatch($originalTicket)) {
-                    $origMath = true;
-                }
-                if ($searcher->doesTicketMatch($newTicket)) {
-                    $newMatch = true;
-                }
+                    if (!$isNewTicket && $searcher->doesTicketMatch($originalTicket)) {
+                        $origMath = true;
+                    }
+                    if ($searcher->doesTicketMatch($newTicket)) {
+                        $newMatch = true;
+                    }
 
-                if (!$origMath && !$newMatch) {
-                    $this->logger->debug(sprintf('[FilterChangeDetector] ----- Base check failed #%d -----', $filter['id']));
-                    continue;
+                    if (!$origMath && !$newMatch) {
+                        $this->logger->debug(sprintf('[FilterChangeDetector] ----- Base check failed #%d -----', $filter['id']));
+                        continue;
+                    }
                 }
 
                 // collect affected filters

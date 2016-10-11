@@ -40,3 +40,4 @@ export class ChatContentContainer extends React.Component {
     );
   }
 }
+export default ChatContentContainer;

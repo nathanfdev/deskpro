@@ -36,16 +36,16 @@ class GenBuildManifest
     /**
      * @var string
      */
-    private $builds_path;
+    private $buildsPath;
 
     /**
      * @var array
      */
     private $add = [];
 
-    public function __construct($builds_path, array $add = null)
+    public function __construct($buildsPath, array $add = null)
     {
-        $this->builds_path = $builds_path;
+        $this->buildsPath = $buildsPath;
         if ($add) {
             $this->add = $add;
         }
@@ -56,19 +56,19 @@ class GenBuildManifest
      */
     public function getBuildsArray()
     {
-        $builds_path = $this->builds_path;
+        $buildsPath = $this->buildsPath;
 
-        $finder = Finder::create()->in($builds_path)->files()->name('/^Build.*?(\\d+)(.*?)\.php$/');
+        $finder = Finder::create()->in($buildsPath)->files()->name('/^Build.*?(\\d+)(.*?)\.php$/');
         $finder->sortByName();
-        $start_ids = [];
+        $startIds = [];
 
         $builds = [];
 
         foreach ($finder as $file) {
             /* @var $file \SplFileInfo */
 
-            $build_id = Strings::extractRegexMatch('/^Build.*?(\\d+)(.*?)\.php$/', $file->getFilename());
-            if (!$build_id) {
+            $buildId = Strings::extractRegexMatch('/^Build.*?(\\d+)(.*?)\.php$/', $file->getFilename());
+            if (!$buildId) {
                 continue;
             }
 
@@ -76,24 +76,24 @@ class GenBuildManifest
             // of the build based off of a start build ID.
             // it allows the whole directory to be moved/renamed up/down the timeline easily (e.g, for big merges)
             $d = dirname($file->getRealPath());
-            if (!isset($start_ids[$d])) {
+            if (!isset($startIds[$d])) {
                 if (file_exists($d.'/build-pack.txt')) {
                     $packinfo = Strings::parseEqualsLines(file_get_contents($d.'/build-pack.txt'));
                     if ($packinfo['start_build_id']) {
-                        $start_ids[$d] = $packinfo['start_build_id'];
+                        $startIds[$d] = $packinfo['start_build_id'];
                     }
                 }
             }
 
-            if (isset($start_ids[$d])) {
-                $build_id = $start_ids[$d]++;
+            if (isset($startIds[$d])) {
+                $buildId = $startIds[$d]++;
             }
 
-            $trim_path = str_replace(DP_ROOT, '', $file->getRealPath());
+            $trimPath  = str_replace(DP_ROOT, '', $file->getRealPath());
             $classname = 'Application\\InstallBundle\\Upgrade\\Build\\'.str_replace('.php', '', $file->getBasename());
 
-            $builds[$build_id] = [
-                'file'      => $trim_path,
+            $builds[$buildId] = [
+                'file'      => $trimPath,
                 'classname' => $classname,
             ];
         }
@@ -102,13 +102,13 @@ class GenBuildManifest
             foreach ($this->add as $filepath) {
                 $file = new \SplFileInfo($filepath);
 
-                $build_id  = Strings::extractRegexMatch('/^Build(\\d+)\.php$/', $file->getFilename());
-                $trim_path = str_replace(DP_ROOT, '', $file->getRealPath());
+                $buildId   = Strings::extractRegexMatch('/^Build(\\d+)\.php$/', $file->getFilename());
+                $trimPath  = str_replace(DP_ROOT, '', $file->getRealPath());
                 $classname = 'Application\\InstallBundle\\Upgrade\\Build\\'.str_replace('.php', '', $file->getBasename());
 
-                if ($build_id) {
-                    $builds[$build_id] = [
-                        'file'      => $trim_path,
+                if ($buildId) {
+                    $builds[$buildId] = [
+                        'file'      => $trimPath,
                         'classname' => $classname,
                     ];
                 }
@@ -161,21 +161,20 @@ class GenBuildManifest
 CODE;
 
         $file   = [];
-        $file[] = $header.PHP_EOL.'return array(';
+        $file[] = $header.PHP_EOL.'return [';
 
-        $builds_array       = $this->getBuildsArray();
-        $builds_array_count = count($builds_array);
-        foreach ($builds_array as $build_id => $build_info) {
-            $row = $indent.$build_id.' => array('.PHP_EOL;
-            $row .= $indent.$indent."'file'      => '".$build_info['file']."',".PHP_EOL;
-            $row .= $indent.$indent."'classname' => '".$build_info['classname']."',".PHP_EOL;
-            $row .= $indent.')';
+        $buildsArray = $this->getBuildsArray();
+        foreach ($buildsArray as $buildId => $buildInfo) {
+            $row = $indent.$buildId.' => ['.PHP_EOL;
+            $row .= $indent.$indent."'file'      => '".$buildInfo['file']."',".PHP_EOL;
+            $row .= $indent.$indent."'classname' => '".$buildInfo['classname']."',".PHP_EOL;
+            $row .= $indent.']';
             $row .= ',';
 
             $file[] = $row;
         }
 
-        $file[] = ');'.PHP_EOL;
+        $file[] = '];'.PHP_EOL;
 
         $file = implode(PHP_EOL, $file);
 

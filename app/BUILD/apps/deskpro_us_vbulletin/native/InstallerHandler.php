@@ -53,8 +53,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
         $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
         $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Vbulletin';
 
-        $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
-        $this->setupUsergroup($us, $app->getSetting('auto_user_permission_group'));
+        $this->setupActions();
 
         $em->persist($us);
         $em->persist($app);

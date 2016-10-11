@@ -242,25 +242,32 @@ abstract class AbstractIncident implements Incident
         }
 
         if (!$this->events->contains($event)) {
-            $this->events[] = $event;
 
-            // getNewEvents() data -------------------------------------------
-
-            $this->newEvents[] = $event;
-
-            // Denormalized data ---------------------------------------------
+            // Denormalized data --------------------------------------------
 
             $this->subjectUniqueId = $subjectUniqueId;
 
             if ($event instanceof SuccessEvent) {
                 ++$this->successEventsCount;
-                $this->firstFailureEvent = null;
-                $this->lastFailureEvent  = null;
             } else {
                 ++$this->failureEventsCount;
+
+                // Clear the first failure in to make it set to the current event
+                if ($this->events->last() instanceof SuccessEvent) {
+                    $this->firstFailureEvent = null;
+                }
+
                 $this->firstFailureEvent or $this->firstFailureEvent = $event;
                 $this->lastFailureEvent                              = $event;
             }
+
+            // Push the new event -------------------------------------------
+
+            $this->events[] = $event;
+
+            // getNewEvents() data ------------------------------------------
+
+            $this->newEvents[] = $event;
         }
     }
 
@@ -282,6 +289,14 @@ abstract class AbstractIncident implements Incident
         if ($count = $this->events->count()) {
             return $this->events->get($count - 1);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFirstFailureEvent()
+    {
+        return $this->firstFailureEvent;
     }
 
     /**

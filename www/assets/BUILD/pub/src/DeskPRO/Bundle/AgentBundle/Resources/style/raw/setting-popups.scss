@@ -14,7 +14,7 @@ $item-padding: 9px 10px;
 $popup-background: #f5f6f7;
 
 // main popup styles
-.popup {
+.popup:not(.ui) {
   @include clearfix;
   width: 100%;// Some responsiveness (although content will break for now)
   max-width: 950px;

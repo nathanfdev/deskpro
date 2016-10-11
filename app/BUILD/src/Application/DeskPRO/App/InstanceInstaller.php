@@ -168,7 +168,7 @@ class InstanceInstaller
         $settings = [];
         foreach ($package->settings_def as $setting_def) {
             $value = isset($settings_form[$setting_def['name']]) ? $settings_form[$setting_def['name']] : null;
-            if (!is_scalar($value)) {
+            if (!is_scalar($value) && $setting_def['type'] !== 'array') {
                 $value = null;
             }
 

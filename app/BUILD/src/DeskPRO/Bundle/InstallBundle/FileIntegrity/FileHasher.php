@@ -83,8 +83,10 @@ class FileHasher
 
     private function getExt($path)
     {
-        if (($pos = strrpos($path, '.')) !== false) {
-            return substr($path, $pos + 1) ?: null;
+        $name = @basename($path) ?: '';
+
+        if (($pos = strrpos($name, '.')) !== false) {
+            return substr($name, $pos + 1) ?: null;
         }
 
         return;

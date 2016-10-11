@@ -54,6 +54,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         @updateLiveDemo()
       , 350)
 
+      @$scope.$watch('enabled_on_portal', updateLiveDemoDebounce, true)
       @$scope.$watch('brand_settings', updateLiveDemoDebounce, true)
       @$scope.$watch('global_settings', updateLiveDemoDebounce, true)
       @$scope.$watch('chat_custom_fields', updateLiveDemoDebounce, true)
@@ -70,6 +71,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       promise.then (response) =>
         data = response.data.data
         @$scope.remote_settings = JSON.parse(JSON.stringify(data.settings))
+        @$scope.remote_settings.enabled_on_portal = data.enabled_on_portal
 
         @$scope.url = data.url
         @$scope.company = data.company
@@ -90,7 +92,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
         @$scope.saving_code = true
         @loadCode().then (codeResponse) =>
-          @$scope.code = codeResponse.data
+          @$scope.code = codeResponse.data.data
           @$scope.saving_code = false
       promises.push(promise)
 
@@ -153,8 +155,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @getFrameNode().contentWindow.DpWidget
 
     getWidgetSaveData: -> {
-      global: @$scope.global_settings,
-      brand: @$scope.brand_settings
+      enabled_on_portal: @$scope.enabled_on_portal
+      settings: {
+        global: @$scope.global_settings
+        brand: @$scope.brand_settings
+      }
     }
 
     getLanguage: (translation) ->
@@ -241,32 +246,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         return @$scope.user_group_permission[@$scope.everyone_group.id]
       return @$scope.user_group_permission[@$scope.reg_group.id]
 
-    applyPortalWidgetSettings: ->
-      @$scope.applying_to_portal = true
-      @Api2.sendPostJson('widget/portal/apply', @getWidgetSaveData(), null, headers: {
-        'X-Agent-Request': 'true'
-      }).then(
-        () =>
-          @$scope.applying_to_portal = false
-          @$scope.enabled_on_portal = true
-      ,
-        (response) =>
-          @$scope.formErrors = response.data?.errors?.fields
-          @$scope.applying_to_portal = false
-      )
-
-    removeFromPortal: ->
-      @$scope.applying_to_portal = true
-      @Api2.sendPost('widget/portal/remove').then(
-        () =>
-          @$scope.applying_to_portal = false
-          @$scope.enabled_on_portal = false
-      ,
-        () =>
-          @$scope.applying_to_portal = false
-      )
-
     hasChanged: ->
+      angular.toJson(@$scope.enabled_on_portal) != angular.toJson(@$scope.remote_settings.enabled_on_portal) or
       angular.toJson(@$scope.global_settings) != angular.toJson(@$scope.remote_settings.global) or
       angular.toJson(@$scope.brand_settings) != angular.toJson(@$scope.remote_settings.brand) or
       angular.toJson(@$scope.user_group_permission) != angular.toJson(@$scope.remote_user_group_permission) or
@@ -296,7 +277,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       promise = @Api2.sendPostJson('/settings/brands/'+@$scope.brand_id+'/widget/setup', @getWidgetSaveData(), null, headers: {'X-Agent-Request': 'true'})
       promise.then(
         () => @loadCode().then (codeResponse) =>
-          @$scope.code = codeResponse.data
+          @$scope.code = codeResponse.data.data
           @$scope.saving_code = false
         ,
         (response) =>
@@ -309,7 +290,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @startSpinner('saving')
       @$q.all(promises).then( =>
         @stopSpinner('saving')
-        @$scope.remote_settings = angular.copy(@getWidgetSaveData())
+        widgetData = @getWidgetSaveData();
+        @$scope.remote_settings = {
+          global: angular.copy(widgetData.settings.global)
+          brand: angular.copy(widgetData.settings.brand)
+          enabled_on_portal: angular.copy(widgetData.enabled_on_portal)
+        }
         @$scope.flag_has_changed = @hasChanged()
         localStorage.removeItem 'dpWidgetSettings'+@$scope.brand_id
         @Growl.success "Settings saved"
@@ -319,7 +305,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       )
 
     initLiveDemo: () ->
-      window.addEventListener('message', (event) =>
+      (window.parent || window).addEventListener('message', (event) =>
         if (event.data?.type == 'widgetStatus')
           @$scope.$apply =>
             @$scope.widgetLoaded = true
@@ -336,7 +322,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       , false)
 
       @loadLiveDemoCode().then (codeResponse) =>
-        code = codeResponse.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
+        code = codeResponse.data.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
 
         demoDocument = @getLiveDemoDocument()
         demoDocument.write("<body>#{code}</body>")

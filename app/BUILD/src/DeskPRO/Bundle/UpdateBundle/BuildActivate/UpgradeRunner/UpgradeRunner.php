@@ -69,6 +69,7 @@ class UpgradeRunner implements UpgradeRunnerInterface, LoggerAwareInterface
             $build->getAppPath().DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'console',
             'dp:upgrade',
         ]);
+        $builder->setTimeout(null);
 
         $proc = $builder->getProcess();
         $this->logger->info('[UpgradeRunner] command: '.$proc->getCommandLine());

@@ -29,12 +29,12 @@
                                     </div>
                                 </div>
                                 <ul class="errors">
-                                    <li ng-repeat="error in formErrors.brand.fields.button.fields.translations.errors">
+                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.button.fields.translations.errors">
                                         {{ ng_var('error.message') }}
                                     </li>
                                 </ul>
                                 <ul class="errors" ng-repeat="translation in brand_settings.button.translations">
-                                    <li ng-repeat="error in formErrors.brand.fields.button.fields.translations.fields['translations_' + $index].fields.name.errors">
+                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.button.fields.translations.fields['translations_' + $index].fields.name.errors">
                                         {{ ng_var('error.message') }}
                                     </li>
                                 </ul>
@@ -469,12 +469,12 @@
                                         </div>
                                     </div>
                                     <ul class="errors">
-                                        <li ng-repeat="error in formErrors.brand.fields.ticket.fields.select_department.errors">
+                                        <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.select_department.errors">
                                             {{ ng_var('error.message') }}
                                         </li>
                                     </ul>
                                     <ul class="errors">
-                                        <li ng-repeat="error in formErrors.brand.fields.ticket.fields.default_department.errors">
+                                        <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.default_department.errors">
                                             {{ ng_var('error.message') }}
                                         </li>
                                     </ul>
@@ -508,6 +508,12 @@
                                         class="ui basic button"
                                         data-clipboard-target="#widget_code"
                                         ngclipboard-success="Growl.success('The code snippet was copied to your clipboard')">COPY</button>
+                            </div>
+                        </div>
+                        <div class="inline fields">
+                            <div class="ui toggle checkbox">
+                                <input type="checkbox" id="enabled_on_portal" ng-model="enabled_on_portal" class="hidden right">
+                                <label for="enabled_on_portal">Enable on the portal</label>
                             </div>
                         </div>
                         <div class="ui top attached tabular menu">

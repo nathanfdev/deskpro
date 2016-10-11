@@ -37,10 +37,10 @@ use Symfony\Component\HttpFoundation\HeaderBag;
 class LogHelper extends AbstractLogHelper
 {
     /** @var string */
-    protected $request_id;
+    protected $requestId;
 
     /** @var bool */
-    protected $client_generated_request_id = false;
+    protected $clientGeneratedRequestId = false;
 
     /**
      * @var string
@@ -54,26 +54,26 @@ class LogHelper extends AbstractLogHelper
      */
     public function getRequestId($headers = null)
     {
-        if (!$this->request_id) {
-            $headers          = $this->mutateHeaders($headers);
-            $this->request_id =
+        if (!$this->requestId) {
+            $headers         = $this->mutateHeaders($headers);
+            $this->requestId =
                 ($headers->has(self::REQUEST_ID_CLIENT_HEADER))
                     ? $this->generateRequestId(true, $headers->get(self::REQUEST_ID_CLIENT_HEADER))
                     : $this->generateRequestId();
         }
 
-        return $this->request_id;
+        return $this->requestId;
     }
 
     /**
      * @param bool|false $incoming
-     * @param string     $incoming_value
+     * @param string     $incomingValue
      *
      * @return string
      */
-    protected function generateRequestId($incoming = false, $incoming_value = '')
+    protected function generateRequestId($incoming = false, $incomingValue = '')
     {
-        if ($incoming && !$incoming_value) {
+        if ($incoming && !$incomingValue) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'In case you have incoming %s header, you should provide it\'s value when generating ID',
@@ -81,10 +81,10 @@ class LogHelper extends AbstractLogHelper
                 ));
         }
         if ($incoming) {
-            $value                             = $incoming_value;
-            $suffix                            = self::CLIENT_SUFFIX;
-            $prefix                            = '';
-            $this->client_generated_request_id = true;
+            $value                          = $incomingValue;
+            $suffix                         = self::CLIENT_SUFFIX;
+            $prefix                         = '';
+            $this->clientGeneratedRequestId = true;
         } else {
             $value  = RandUtils::randomStringFormat('%30cn');
             $suffix = self::DESKPRO_SUFFIX;
@@ -116,7 +116,7 @@ class LogHelper extends AbstractLogHelper
      */
     public function isClientRequestedLog()
     {
-        return $this->client_generated_request_id;
+        return $this->clientGeneratedRequestId;
     }
 
     /**
@@ -137,5 +137,15 @@ class LogHelper extends AbstractLogHelper
         $this->mode = $mode;
 
         return $this;
+    }
+
+    public function getMaxRequestBodyLength()
+    {
+        return $this->resolver->getGlobalSettings()->get('api_log.max_request_body_length', 1024 * 1024);
+    }
+
+    public function getMaxResponseBodyLength()
+    {
+        return $this->resolver->getGlobalSettings()->get('api_log.max_request_body_length', 1024 * 1024);
     }
 }

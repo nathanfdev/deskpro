@@ -36,7 +36,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class WidgetSetupType.
+ * Class WidgetOptionsType.
  */
 class WidgetOptionsType extends AbstractType
 {

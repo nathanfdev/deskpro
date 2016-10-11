@@ -52,7 +52,7 @@ class TicketReminders extends AbstractJob
     public function run()
     {
         /** @var \DeskPRO\Bundle\AppBundle\Entity\Repository\SavedFormRepository $saved_form_repo */
-        $saved_form_repo = App::$container->getEm()->getRepository('App:SavedForm');
+        $saved_form_repo = App::$container->getEm()->getRepository(SavedForm::class);
 
         $first_reminders  = $saved_form_repo->getForTicketReminders(0, new \DateTime('now - 3 hours'));
         $second_reminders = $saved_form_repo->getForTicketReminders(1, new \DateTime('now - 24 hours'));
