@@ -397,10 +397,6 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             return false;
         }
         if ($name === 'chat.use' || $name === 'agent_chat.use') {
-            if (!App::getSetting('core.apps_chat')) {
-                return false;
-            }
-
             if (!$this->get('Departments')->getAllowed('chat')) {
                 return false;
             }

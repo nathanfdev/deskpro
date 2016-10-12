@@ -183,22 +183,21 @@
 </table>
 {# /PEOPLE PERMISSIONS #}
 
-    {# CHAT PERMISSIONS #}
-    {% if app.getSetting('core.apps_chat') %}
-        <table class="table table-hover" dp-tab-body="main.perms.chat">
-            <tbody>
-            {{ macro.perm_row('chat', 'use') }}
-            {{ macro.perm_row('chat', 'view_transcripts') }}
-            {{ macro.perm_row('chat', 'view_unassigned') }}
-            {{ macro.perm_row('chat', 'view_others') }}
-            {{ macro.perm_row('chat', 'create_labels') }}
-            {{ macro.perm_row('chat', 'delete', {destructive: true}) }}
-            </tbody>
-        </table>
-    {% endif %}
-    {# /CHAT PERMISSIONS #}
+{# CHAT PERMISSIONS #}
+<table class="table table-hover" dp-tab-body="main.perms.chat">
+    <tbody>
+    {{ macro.perm_row('chat', 'use') }}
+    {{ macro.perm_row('chat', 'view_transcripts') }}
+    {{ macro.perm_row('chat', 'view_unassigned') }}
+    {{ macro.perm_row('chat', 'view_others') }}
+    {{ macro.perm_row('chat', 'create_labels') }}
+    {{ macro.perm_row('chat', 'delete', {destructive: true}) }}
+    </tbody>
+</table>
 
-    {# PUBLISH PERMISSIONS #}
+{# /CHAT PERMISSIONS #}
+
+{# PUBLISH PERMISSIONS #}
 <table class="table table-hover" dp-tab-body="main.perms.publish">
     <tbody>
     {{ macro.perm_row('publish', 'create') }}

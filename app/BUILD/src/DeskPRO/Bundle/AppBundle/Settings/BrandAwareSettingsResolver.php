@@ -176,4 +176,25 @@ class BrandAwareSettingsResolver
     {
         return $this->settings_resolver->getGlobalSettings()->get($name, $default);
     }
+
+    /**
+     * @return mixed
+     */
+    public function isChatAvailable()
+    {
+        $brands   = $this->em->getRepository(Brand::class)->findAll();
+        $that     = $this;
+        $settings = array_map(function ($brand) use ($that) {
+            return $that->getBrandSetting(WidgetSettingsResolver::CHAT_ENABLED, $brand, false);
+        },
+        $brands);
+
+        return array_reduce(
+            $settings,
+            function ($carry, $item) {
+                return $carry || $item;
+            },
+            false
+        );
+    }
 }
