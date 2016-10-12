@@ -12,7 +12,8 @@ import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'Des
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { loadFromApi, isLoadedCollectionSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { IMOverlay, IMButton, TopBarRecentImList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar';
+import notificationsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg';
+import { IMOverlay, IMButton, TopBarRecentImList, GroupAddDrawer } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
@@ -34,6 +35,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   current:             state.IM.chats.get('current'),
   chating:             state.IM.chats.get('chating'),
   overlayShown:        state.IM.chats.get('overlayShown'),
+  groupCreation:       state.IM.chats.get('groupCreation'),
   messages:            state.IM.messages,
   loadingMessages:     state.IM.messages.get('loadingMessages'),
   updatingMessages:    state.IM.messages.get('updatingMessages'),
@@ -64,7 +66,8 @@ export class AgentTopBarContainer extends SeparateComponent {
     overlayShown:        PropTypes.bool.isRequired,
     teamsLoaded:         PropTypes.bool.isRequired,
     myDepartmentsLoaded: PropTypes.bool.isRequired,
-    agentsLoaded:        PropTypes.bool.isRequired
+    agentsLoaded:        PropTypes.bool.isRequired,
+    groupCreation:       PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -83,6 +86,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.chatClickOut     = this.chatClickOut.bind(this);
     this.onSubmit         = this.onSubmit.bind(this);
     this.markNewMessages  = this.markNewMessages.bind(this);
+    this.openGroupDrawer  = this.openGroupDrawer.bind(this);
   }
 
   componentWillMount() {
@@ -197,6 +201,10 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.props.dispatch(chatsActions.toggleOverlay());
   }
 
+  openGroupDrawer() {
+    this.props.dispatch(chatsActions.openGroupDrawer());
+  }
+
   getPath = () => {
     let path;
     if (!this.props.searchQuery) {
@@ -244,6 +252,7 @@ export class AgentTopBarContainer extends SeparateComponent {
       participantClick:  this.participantClick,
       onSubmit:          this.onSubmit,
       markNewMessages:   this.markNewMessages,
+      openGroupDrawer:   this.openGroupDrawer,
       onClearSearchInput: AgentTopBarContainer.onClearSearchInput,
       onToggleChat:       this.onToggleChat
     };
@@ -270,6 +279,7 @@ export class AgentTopBar extends React.Component {
     closeIframes:        PropTypes.func,
     toggleViewMode:      PropTypes.func,
     toggleImOverlay:     PropTypes.func,
+    openGroupDrawer:     PropTypes.func,
     chatClickOut:        PropTypes.func,
     recentClick:         PropTypes.func,
     participantClick:    PropTypes.func,
@@ -278,6 +288,7 @@ export class AgentTopBar extends React.Component {
     messages:            PropTypes.object,
     current:             PropTypes.object,
     loadingMessages:     PropTypes.bool.isRequired,
+    groupCreation:       PropTypes.bool.isRequired,
     chating:             PropTypes.bool.isRequired,
     overlayShown:        PropTypes.bool.isRequired,
     recentLoaded:        PropTypes.bool.isRequired,
@@ -313,11 +324,13 @@ export class AgentTopBar extends React.Component {
   };
 
   render() {
-    const { teamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
+    const { groupCreation, teamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
     const { current, chating, recentClick, messages, chatClickOut, participantClick, dispatch } = this.props;
     const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
-    const { markNewMessages, onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
+    const { openGroupDrawer, markNewMessages, onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
     const { closeIframes, toggleViewMode, me, myDepartments, teams, recentChats, recentLoaded, overlayShown } = this.props;
+
+    const groupDrawerTarget = document.getElementById('im-button');
 
     return (<TopBar>
       <TopBarItem className="search-box legacy-omnibox">
@@ -360,7 +373,7 @@ export class AgentTopBar extends React.Component {
             teams={teams}
             onRecentClick={recentClick}
             onParticipantClick={participantClick}
-            createNewGroup={() => console.log('create new group click')}
+            createNewGroup={() => openGroupDrawer()}
             isOpen={overlayShown}
             notifications={Immutable.fromJS({})}
             chats={recentChats}
@@ -370,6 +383,14 @@ export class AgentTopBar extends React.Component {
           >
             <IMButton />
           </IMOverlay>
+          {(groupDrawerTarget) ? <GroupAddDrawer
+            isOpen={groupCreation}
+            agents={agents}
+            target={groupDrawerTarget}
+            checkedAgents={{}}
+            clickOut={() => { this.props.dispatch(chatsActions.closeGroupDrawer()); }}
+            createGroup={() => { console.log('creategroup'); }}
+          /> : null }
           {current.get('id') ? <Container
             isOpen={chating}
             agents={agents}
@@ -386,6 +407,7 @@ export class AgentTopBar extends React.Component {
             loadingMessages={loadingMessages}
             markNewMessages={markNewMessages}
           /> : null }
+
         </TopBarRecentImList>
       </TopBarItem>
       <AddButton closeIframes={closeIframes} />

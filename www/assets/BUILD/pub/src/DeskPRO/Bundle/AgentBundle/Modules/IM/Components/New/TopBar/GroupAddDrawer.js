@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
@@ -12,7 +13,7 @@ class GroupAddDrawer extends React.Component
 {
   static propTypes = {
     agents:        PropTypes.object.isRequired,
-    target:        PropTypes.node.isRequired,
+    target:        PropTypes.object.isRequired,
     isOpen:        PropTypes.bool.isRequired,
     agentClick:    PropTypes.func,
     clickOut:      PropTypes.func,
@@ -52,8 +53,9 @@ class GroupAddDrawer extends React.Component
       checkedAgentsCount: GroupAddDrawer.recalculateChecked(props.checkedAgents),
       groupName:          ''
     };
-    this.agentClick = this.agentClick.bind(this);
+    this.agentClick  = this.agentClick.bind(this);
     this.createGroup = this.createGroup.bind(this);
+    this.clickOut    = this.clickOut.bind(this);
   }
 
   getAgentsHeader() {
@@ -88,14 +90,14 @@ class GroupAddDrawer extends React.Component
   }
 
   renderAgent(agent) {
-    const className = [];
+    const classes = [];
     if (!agent.get('online')) {
-      className.push('offline');
+      classes.push('offline');
     }
     return (
       <ListElement
         key={agent.get('id')}
-        className={className}
+        className={classNames(classes)}
       >
         <Toggle checkbox active={!!this.state.checkedAgents[agent.get('id')]} onChange={() => this.agentClick(agent)}>
           {AvatarHelper.renderAgentAvatar(agent)}

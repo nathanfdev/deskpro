@@ -6,6 +6,12 @@ export const toggleOverlay = createAction('IM_TOGGLE_OVERLAY');
 
 export const openChat = createAction('IM_OPEN_CHAT');
 
+export const toggleGroupDrawer = createAction('IM_TOGGLE_GROUP_ADD_DRAWER');
+
+export const openGroupDrawer = createAction('IM_OPEN_GROUP_ADD_DRAWER');
+
+export const closeGroupDrawer = createAction('IM_CLOSE_GROUP_ADD_DRAWER');
+
 export const markChatAsManuallyClosed = createAction(
   'MARK_CHAT_AS_CLOSED',
   chatId => chatId
