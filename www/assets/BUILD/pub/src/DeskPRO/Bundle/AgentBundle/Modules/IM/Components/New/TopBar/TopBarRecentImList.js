@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
 import {
-  Avatar,
   DepartmentAvatar,
   PersonAvatar,
   AgentTeamAvatar
@@ -9,6 +8,7 @@ import {
 import classNames from 'classnames';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
+import AvatarHelper from '../IMTabs/AvatarHelper';
 
 class TopBarRecentImList extends RecentList {
 
@@ -43,20 +43,30 @@ class TopBarRecentImList extends RecentList {
     if (!agent.get('online')) {
       className.push('offline');
     }
-    return (<span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>
-      <PersonAvatar
-        color={chooseColor(agent.get('id'))}
-        person={agent} size={24}
-        className="ui avatar image im"
-      />
-    </span>);
+    return (
+      <span
+        className="im wrapper"
+        id={`chat-${chat.get('id')}`}
+        onClick={() => this.props.onRecentClick(chat.get('id'))}
+      >
+        <PersonAvatar
+          color={chooseColor(agent.get('id'))}
+          person={agent} size={24}
+          className="ui avatar image im"
+        />
+      </span>
+    );
   }
 
   renderDepartment(chat) {
     const department = this.props.departments.getIn(chat.get('departments', 0));
 
     return (
-      <span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>
+      <span
+        className="im wrapper"
+        id={`chat-${chat.get('id')}`}
+        onClick={() => this.props.onRecentClick(chat.get('id'))}
+      >
         <DepartmentAvatar department={department} size={24} className="ui avatar image im" />
       </span>
     );
@@ -66,28 +76,36 @@ class TopBarRecentImList extends RecentList {
     const team = this.props.teams.get(chat.getIn(['agent_teams', 0]));
 
     return (
-      <span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>
+      <span
+        className="im wrapper"
+        id={`chat-${chat.get('id')}`}
+        onClick={() => this.props.onRecentClick(chat.get('id'))}
+      >
         <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" />
       </span>
     );
   }
 
   renderEveryone(chat) {
-    const props = {
-      size:       24,
-      color:      '#DD00AA',
-      urlPattern: null,
-      gravatar:   null,
-      text:       'E',
-      className:  'ui avatar image im'
-    };
     return (
       <span
         className="im wrapper"
         id={`chat-${chat.get('id')}`}
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
-        <Avatar {...props} />
+        {AvatarHelper.renderEveryoneAvatar()}
+      </span>
+    );
+  }
+
+  renderGroup(chat) {
+    return (
+      <span
+        className="im wrapper"
+        id={`chat-${chat.get('id')}`}
+        onClick={() => this.props.onRecentClick(chat.get('id'))}
+      >
+        {AvatarHelper.renderGroupAvatar(chat)}
       </span>
     );
   }

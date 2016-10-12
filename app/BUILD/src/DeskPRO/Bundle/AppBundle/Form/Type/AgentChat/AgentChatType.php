@@ -82,6 +82,7 @@ class AgentChatType extends AbstractType
                 AgentChat::TYPE_AGENT,
                 AgentChat::TYPE_TEAM,
                 AgentChat::TYPE_DEPARTMENT,
+                AgentChat::TYPE_GROUP,
                 AgentChat::TYPE_EVERYONE,
             ],
             'choices_as_values' => true,
@@ -120,10 +121,14 @@ class AgentChatType extends AbstractType
         $data   = $event->getData();
         $type   = isset($data['type']) ? $data['type'] : null;
 
+        $multiple = false;
         switch ($type) {
+            case AgentChat::TYPE_GROUP:
+                $multiple = true;
             case AgentChat::TYPE_AGENT:
                 $form->add('participant', EntityType::class, [
                     'mapped'      => false,
+                    'multiple'    => $multiple,
                     'class'       => Person::class,
                     'constraints' => [
                         new Assert\NotNull(),
@@ -205,12 +210,16 @@ class AgentChatType extends AbstractType
         $agentChat   = $event->getData();
         $participant = $this->getFormParticipant($event);
 
-        if ($participant) {
-            if (!$agentChat->containsParticipant($participant)) {
-                $agentChat->addParticipant($participant);
+        if ($participant && (is_array($participant) || $participant instanceof \Traversable || $participant =
+                    [$participant])) {
+            foreach ($participant as $item) {
+                if (!$agentChat->containsParticipant($item)) {
+                    $agentChat->addParticipant($item);
+                }
             }
         }
-        if ($this->getFormType($event) === AgentChat::TYPE_AGENT && !$agentChat->getId()) {
+        $formType = $this->getFormType($event);
+        if (($formType === AgentChat::TYPE_AGENT || $formType === AgentChat::TYPE_GROUP) && !$agentChat->getId()) {
             $agentChat->addParticipant($this->getPerson($event));
         }
     }

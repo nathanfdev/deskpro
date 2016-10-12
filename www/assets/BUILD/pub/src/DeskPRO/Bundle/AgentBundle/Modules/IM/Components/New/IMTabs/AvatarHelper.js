@@ -38,6 +38,19 @@ class AvatarHelper
     return <Avatar {...props} />;
   }
 
+  static renderGroupAvatar(chat) {
+    const props = {
+      size:       24,
+      color:      chooseColor(chat.get('id')),
+      urlPattern: null,
+      gravatar:   null,
+      text:       chat.get('id'),
+      className:  'ui avatar image im'
+    };
+
+    return <Avatar {...props} />;
+  }
+
 }
 
 export default AvatarHelper;

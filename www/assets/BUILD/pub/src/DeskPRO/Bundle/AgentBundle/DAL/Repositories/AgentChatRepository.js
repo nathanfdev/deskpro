@@ -14,6 +14,8 @@ export class AgentChatRepository extends ApiRepository {
     const params = { type };
     if (Number(entityId)) {
       params.participant = entityId;
+    } else if (Array.isArray(entityId)) {
+      params.participant = entityId;
     }
 
     return this.api.sendPost(`DP_API/${this.url}?follow_location=1`, params);
@@ -44,7 +46,9 @@ export class AgentChatRepository extends ApiRepository {
    * @returns {Promise} promise
    */
   loadMessagesCount() {
-    return this.api.sendGet(`DP_API/${this.url}/messages/counts?group_by=chat&status[]=0&status[]=1&index_group_by=1&not_my=1`);
+    return this.api.sendGet(
+      `DP_API/${this.url}/messages/counts?group_by=chat&status[]=0&status[]=1&index_group_by=1&not_my=1`
+    );
   }
 
   /**
@@ -57,3 +61,5 @@ export class AgentChatRepository extends ApiRepository {
     return this.api.sendPut(`DP_API/${this.url}/${chatId}/messages/mark`, { ids, status });
   }
 }
+
+export default AgentChatRepository;
