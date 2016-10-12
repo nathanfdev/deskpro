@@ -41,10 +41,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\BadCredentialsFormException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType;
-use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Component\Util\ListUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -92,12 +90,6 @@ class ApiTokensController extends BaseController
         $form->submit($request_data);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
-        }
-
-        $form = $this->createForm(AuthenticationType::class);
-        $form->submit($request_data);
-        if (!$form->isValid()) {
-            throw new BadCredentialsFormException($form);
         }
 
         $data     = $form->getData();
