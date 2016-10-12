@@ -8,5 +8,5 @@ echo ".. done"
 
 echo ">> Installing dependencies"
 cd $DIR_ROOT/www/BUILD/pub
-npm install
+yarn install
 echo ".. done"

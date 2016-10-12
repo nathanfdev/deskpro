@@ -24,13 +24,13 @@ if [ "$1" = "sequential-build" ] ; then
     composer install --ignore-platform-reqs -o
 
     cd $ROOT_DIR/www/assets/BUILD/pub
-    npm install
-    npm run-script gulp-prod
-    npm run-script gulp-refresh-reducers
+    yarn install
+    yarn run gulp-prod
+    yarn run gulp-refresh-reducers
 
     cd $ROOT_DIR/www/assets/BUILD/web
-    npm install
-    npm run-script sassdoc
+    yarn install
+    yarn run sassdoc
 elif [ "$1" = "fresh-build" ] ; then
     echo "Building from the ground up"
     $ROOT_DIR/dev/bin/init-project
