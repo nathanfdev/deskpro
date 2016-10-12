@@ -30,7 +30,12 @@ export class ChatBeginConversation extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.customFields !== this.props.customFields || newProps.errors || newProps.submit) {
+    const { customFields, customFieldsLoaded } = this.props;
+
+    if (newProps.customFields !== customFields
+        || newProps.customFieldsLoaded !== customFieldsLoaded
+        || newProps.errors
+        || newProps.submit) {
       this.prepareFormFields(newProps);
     }
   }
