@@ -29,32 +29,17 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\TicketLayout;
-use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class AbstractTicketWithLayoutsFullType.
  */
 class TicketWithLayoutsFullType extends AbstractType
 {
-    /**
-     * @var TicketLayoutFactory
-     */
-    private $layoutFactory;
-
-    /**
-     * Constructor.
-     *
-     * @param TicketLayoutFactory $layoutFactory
-     */
-    public function __construct(TicketLayoutFactory $layoutFactory)
-    {
-        $this->layoutFactory = $layoutFactory;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -72,6 +57,17 @@ class TicketWithLayoutsFullType extends AbstractType
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setRequired('full_layout')
+            ->setAllowedTypes('full_layout', TicketLayout::class)
+        ;
+    }
+
+    /**
      * Returns fields from all layouts.
      *
      * @internal
@@ -81,7 +77,7 @@ class TicketWithLayoutsFullType extends AbstractType
     public function onRenderFullLayout(FormEvent $event)
     {
         $context = new TicketWithLayoutsContext($event->getForm(), $event->getData(), new TicketLayout());
-        $context->setNewLayout($this->layoutFactory->getFullLayoutForTicketForm());
+        $context->setNewLayout($event->getForm()->getConfig()->getOption('full_layout'));
 
         TicketLayoutHelper::renderFormFields($context, function () {
             // just stub, no need form field validation for the 'full' form
