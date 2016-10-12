@@ -115,6 +115,9 @@ class PersonHandler extends AbstractEntityHandler
             if (!in_array($emailEntity->getEmail(), $model->getEmails())) {
                 $this->logger->debug("`{$emailEntity->getEmail()}` email was not found in the new email list, removing.");
                 $entity->getEmails()->removeElement($emailEntity);
+                if ($entity->getPrimaryEmailAddress() === $emailEntity->getEmail()) {
+                    $entity->setPrimaryEmail(null);
+                }
             }
         }
 
