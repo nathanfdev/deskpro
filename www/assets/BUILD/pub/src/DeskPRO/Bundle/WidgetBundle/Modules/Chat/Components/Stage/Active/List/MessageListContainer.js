@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import Immutable from 'immutable';
@@ -44,10 +45,11 @@ export class MessageListContainer extends React.Component {
   }
 
   componentDidUpdate() {
-    this.reCalcHeight();
+    setTimeout(() => this.reCalcHeight(), 0);
   }
 
   reCalcHeight() {
+    const node = ReactDOM.findDOMNode(this);
     const widgetHeight = this.props.widgetDimensions.get('height');
     const $document = $(window.widgetFrame.document);
 
@@ -60,9 +62,9 @@ export class MessageListContainer extends React.Component {
     // lost margin of .dpdesignportal-chat-header-controls
     height -= 20;
 
-    $(this.list).parent().children()
+    $(node).parent().children()
       .each((i, child) => {
-        if (child !== this.list) {
+        if (child !== node) {
           height -= $(child).outerHeight();
         }
       });
@@ -71,7 +73,7 @@ export class MessageListContainer extends React.Component {
       height = 100;
     }
 
-    $(this.list).css('height', height);
+    $(node).css('height', height);
 
     if (this.list) {
       this.list.scrollBottom();
