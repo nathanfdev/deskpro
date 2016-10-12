@@ -77,8 +77,13 @@ class UserGroupHelper
      */
     public function updateUserGroups(UsergroupAwareModelInterface $model, $entity)
     {
+        $modelUserGroups = $model->getUserGroups();
+        if (!$modelUserGroups) {
+            $modelUserGroups = ['everyone'];
+        }
+
         // add new user groups
-        foreach ($model->getUserGroups() as $groupName) {
+        foreach ($modelUserGroups as $groupName) {
             $entity->addUsergroup($this->findOrCreateUserGroup($groupName));
         }
 
@@ -88,7 +93,7 @@ class UserGroupHelper
             if ($usergroup->isAgentGroup()) {
                 continue;
             }
-            if (!in_array($usergroup->getSysName(), $model->getUserGroups()) && !in_array($usergroup->getTitle(), $model->getUserGroups())) {
+            if (!in_array($usergroup->getSysName(), $modelUserGroups) && !in_array($usergroup->getTitle(), $modelUserGroups)) {
                 $entity->getUsergroups()->removeElement($usergroup);
             }
         }
