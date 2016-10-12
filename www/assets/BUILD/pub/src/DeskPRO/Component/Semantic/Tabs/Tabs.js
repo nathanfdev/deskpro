@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import TabsMenu from './TabsMenu';
 import TabsItem from './TabsItem';
 import TabsMenuItem from './TabsMenuItem';
+
 
 class Tabs extends React.Component {
 
@@ -64,7 +66,7 @@ class Tabs extends React.Component {
         active,
         tabId:     item.id,
         title:     item.title,
-        className: allClasses,
+        className: classNames(allClasses),
         onClick:   self.onTabClick(item.id)
       };
       key += 1;

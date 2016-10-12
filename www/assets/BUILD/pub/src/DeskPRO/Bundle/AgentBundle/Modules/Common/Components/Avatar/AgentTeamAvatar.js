@@ -7,7 +7,7 @@ export class AgentTeamAvatar extends React.Component {
 
   static propTypes = {
     agentTeam: PropTypes.object.isRequired,
-    size:      PropTypes.oneOfType(PropTypes.number, PropTypes.string),
+    size:      PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     className: PropTypes.string
   };
 

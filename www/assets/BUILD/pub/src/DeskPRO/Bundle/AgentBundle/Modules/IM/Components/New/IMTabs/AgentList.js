@@ -22,7 +22,7 @@ class AgentList extends AbstractList {
     return (
       <ListElement
         key={agent.get('id')}
-        className={className}
+        className={classNames(className)}
         imageNode={this.getAvatar(agent)}
       >
         <div

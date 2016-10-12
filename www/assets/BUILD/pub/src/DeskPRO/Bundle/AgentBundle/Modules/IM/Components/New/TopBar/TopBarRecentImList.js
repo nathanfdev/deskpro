@@ -82,7 +82,11 @@ class TopBarRecentImList extends RecentList {
       className:  'ui avatar image im'
     };
     return (
-      <span className="im wrapper" id={`chat-${chat.get('id')}`} onClick={() => this.props.onRecentClick(chat.get('id'))}>
+      <span
+        className="im wrapper"
+        id={`chat-${chat.get('id')}`}
+        onClick={() => this.props.onRecentClick(chat.get('id'))}
+      >
         <Avatar {...props} />
       </span>
     );

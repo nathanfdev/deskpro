@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
@@ -60,9 +59,10 @@ class RecentList extends React.Component {
         }
 
         return (<PersonAvatar
+          key={`agent_${agentId}`}
           person={agent}
           size={24}
-          className={className}
+          className={classNames(className)}
           color={chooseColor(agent)}
         />);
       }
@@ -85,8 +85,8 @@ class RecentList extends React.Component {
     }
     return (
       <ListElement
-        key={agent.get('id')}
-        className={className}
+        key={`agent_${agentId}`}
+        className={classNames(className)}
         imageNode={AvatarHelper.renderAgentAvatar(agent)}
       >
         <div className="content agent recent" onClick={() => this.props.onRecentClick(chat.get('id'))}>
@@ -109,12 +109,11 @@ class RecentList extends React.Component {
 
   renderDepartment(chat) {
     const department = this.props.departments.get(chat.getIn(['departments', 0]));
-    const className = ['im', 'department', 'recent'];
     return (
       <ListElement
         onClick={() => this.props.onRecentClick(chat.get('id'))}
-        key={department.get('id')}
-        className={className}
+        key={`department_${department.get('id')}`}
+        className="im department recent"
         imageNode={AvatarHelper.renderDepartmentAvatar(department)}
       >
         <div className="content department" onClick={() => this.props.onRecentClick(chat.get('id'))}>
@@ -133,12 +132,11 @@ class RecentList extends React.Component {
 
   renderTeam(chat) {
     const team = this.props.teams.get(chat.getIn(['agent_teams', 0]));
-    const className = ['im', 'team', 'recent'];
     return (
       <ListElement
         onClick={() => this.props.onRecentClick(chat.get('id'))}
-        key={team.get('id')}
-        className={className}
+        key={`team_${team.get('id')}`}
+        className="im team recent"
         imageNode={AvatarHelper.renderAgentTeamAvatar(team)}
       >
         <div className="content team" onClick={() => this.props.onRecentClick(chat.get('id'))}>
@@ -155,12 +153,11 @@ class RecentList extends React.Component {
   }
 
   renderEveryone(chat) {
-    const className = ['im', 'team', 'recent'];
     return (
       <ListElement
         onClick={() => this.props.onRecentClick(chat.get('id'))}
         key="everyone"
-        className={className}
+        className="im team recent"
         imageNode={AvatarHelper.renderEveryoneAvatar()}
       >
         <div className="content team" onClick={() => this.props.onRecentClick(chat.get('id'))}>

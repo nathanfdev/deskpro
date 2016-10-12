@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
@@ -27,7 +28,6 @@ class AbstractList extends React.Component {
   }
 
   getItem(item, type, titleProp) {
-    const className = ['im', type];
     let size = item.get('agents').size;
     if (size > 2) {
       size -= 1;
@@ -36,8 +36,8 @@ class AbstractList extends React.Component {
     }
     return (
       <ListElement
-        key={item.get('id')}
-        className={className}
+        key={`${type}_${item.get('id')}`}
+        className={`im ${type}`}
         imageNode={this.getAvatar(item)}
       >
         <div
@@ -71,9 +71,10 @@ class AbstractList extends React.Component {
         }
 
         return (<PersonAvatar
+          key={`agent_${agentId}`}
           person={agent}
           size={14}
-          className={className}
+          className={classNames(className)}
           color={chooseColor(agent)}
         />);
       }
