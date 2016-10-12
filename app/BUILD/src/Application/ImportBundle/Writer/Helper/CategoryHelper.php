@@ -31,6 +31,7 @@ namespace Application\ImportBundle\Writer\Helper;
 use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\ImportMap;
 use Application\ImportBundle\Writer\EntityPersister;
+use Application\ImportBundle\Writer\Mapper\BrandMapper;
 use Application\ImportBundle\Writer\Mapper\CategoryMapperInterface;
 use Application\ImportBundle\Writer\Mapper\ImportMapMapper;
 use Psr\Log\LoggerInterface;
@@ -46,6 +47,11 @@ class CategoryHelper
     private $importMapMapper;
 
     /**
+     * @var BrandMapper
+     */
+    private $brandMapper;
+
+    /**
      * @var EntityPersister
      */
     private $persister;
@@ -59,12 +65,18 @@ class CategoryHelper
      * Constructor.
      *
      * @param ImportMapMapper $importMapMapper
+     * @param BrandMapper     $brandMapper
      * @param EntityPersister $persister
      * @param LoggerInterface $logger
      */
-    public function __construct(ImportMapMapper $importMapMapper, EntityPersister $persister, LoggerInterface $logger)
-    {
+    public function __construct(
+        ImportMapMapper $importMapMapper,
+        BrandMapper     $brandMapper,
+        EntityPersister $persister,
+        LoggerInterface $logger
+    ) {
         $this->importMapMapper = $importMapMapper;
+        $this->brandMapper     = $brandMapper;
         $this->persister       = $persister;
         $this->logger          = $logger;
     }
@@ -111,6 +123,7 @@ class CategoryHelper
                 /** @var CategoryAbstract $entity */
                 $entity = new $categoryClass();
                 $entity->setTitle($categoryTitle);
+                $this->setDefaultBrand($entity);
 
                 $this->persister->persistAndFlush($entity);
 
@@ -141,6 +154,7 @@ class CategoryHelper
                     $entity = new $categoryClass();
                     $entity->setTitle($categoryTitle);
                     $entity->setParent($parent);
+                    $this->setDefaultBrand($entity);
 
                     if ($parent) {
                         $parent->getChildren()->add($entity);
@@ -154,5 +168,15 @@ class CategoryHelper
         }
 
         return $entity;
+    }
+
+    /**
+     * @param CategoryAbstract $entity
+     */
+    private function setDefaultBrand(CategoryAbstract $entity)
+    {
+        if (method_exists($entity, 'setBrand')) {
+            $entity->setBrand($this->brandMapper->findOneBy([]));
+        }
     }
 }

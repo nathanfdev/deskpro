@@ -166,6 +166,7 @@ class ArticleCategoryHandler extends AbstractEntityHandler
             ->setRealTitle($model->getTitle())
             ->setIsAgent($model->isAgent())
             ->setIsBook($model->isBook())
+            ->setBrand($this->mappers->getBrandMapper()->findOneBy([])) // set first brand for now
         ;
 
         $this->helpers->getUserGroupHelper()->updateUserGroups($model, $entity);

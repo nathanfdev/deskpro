@@ -29,7 +29,11 @@ services:
 
   dp.importer.writer.helper.category:
     class: Application\ImportBundle\Writer\Helper\CategoryHelper
-    arguments: ["@dp.importer.writer.mapper.import_map", "@dp.importer.entity_persister", "@dp.importer_logger"]
+    arguments:
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer.writer.mapper.brand"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
     tags:
       - { name: dp.importer.writer.helper }
 
