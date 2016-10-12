@@ -88,6 +88,7 @@ bin/deskpro-importer-tools
 # Dev
 /www/assets/BUILD/web/sassdoc/vars.json
 /www/assets/BUILD/web/build
+/www/assets/BUILD/web/compiled
 /www/assets/BUILD/web/app/build/*/build.js
 /www/assets/BUILD/web/stylesheets/agent
 /www/assets/BUILD/web/stylesheets/admin
