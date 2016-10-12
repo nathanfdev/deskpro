@@ -86,10 +86,11 @@ class Message extends \Swift_Message
 
         $this->has_prepared = true;
 
+        $this->preSend();
         $this->doPrepare();
     }
 
-    protected function doPrepare()
+    public function doPrepare()
     {
     }
 
