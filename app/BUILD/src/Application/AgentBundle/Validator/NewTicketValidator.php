@@ -35,6 +35,7 @@ namespace Application\AgentBundle\Validator;
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Orb\Validator\AbstractValidator;
 
@@ -83,22 +84,26 @@ class NewTicketValidator extends AbstractValidator
         $this->newticket   = $newticket;
         $this->is_resolved = $newticket->status == 'resolved';
 
-        $this->mock_ticket = new \Application\DeskPRO\Entity\Ticket(false);
-        $this->mock_ticket->_setNoPersist();
-        if ($newticket->department_id) {
-            $this->mock_ticket->setDepartmentId($newticket->department_id);
-        }
-        if ($newticket->category_id) {
-            $this->mock_ticket->setCategoryId($newticket->category_id);
-        }
-        if ($newticket->product_id) {
-            $this->mock_ticket->setProductId($newticket->product_id);
-        }
-        if ($newticket->priority_id) {
-            $this->mock_ticket->setPriorityId($newticket->priority_id);
-        }
-        if ($newticket->workflow_id) {
-            $this->mock_ticket->setWorkflowId($newticket->workflow_id);
+        if ($this->layout instanceof LayoutDisplay && ($t = $this->layout->getTicket())) {
+            $this->mock_ticket = $t;
+        } else {
+            $this->mock_ticket = new \Application\DeskPRO\Entity\Ticket(false);
+            $this->mock_ticket->_setNoPersist();
+            if ($newticket->department_id) {
+                $this->mock_ticket->setDepartmentId($newticket->department_id);
+            }
+            if ($newticket->category_id) {
+                $this->mock_ticket->setCategoryId($newticket->category_id);
+            }
+            if ($newticket->product_id) {
+                $this->mock_ticket->setProductId($newticket->product_id);
+            }
+            if ($newticket->priority_id) {
+                $this->mock_ticket->setPriorityId($newticket->priority_id);
+            }
+            if ($newticket->workflow_id) {
+                $this->mock_ticket->setWorkflowId($newticket->workflow_id);
+            }
         }
 
         $this->_traverseItems($this->layout);
@@ -132,7 +137,7 @@ class NewTicketValidator extends AbstractValidator
                         'allow_none'          => !App::getSetting('core_tickets.field_validation_ticket_prod_agent_required'),
                     ]);
                     if (!$validator->isValid($this->newticket->product_id)) {
-                        $this->addError('ticket.product_id', ['message' => 'Select a product']);
+                        $this->addError('ticket.product_id', ['message' => 'Select a product', 'field' => 'product']);
                     }
                 }
                 break;
@@ -144,7 +149,7 @@ class NewTicketValidator extends AbstractValidator
                         'allow_none'          => !App::getSetting('core_tickets.field_validation_ticket_cat_agent_required'),
                     ]);
                     if (!$validator->isValid($this->newticket->category_id)) {
-                        $this->addError('ticket.category_id', ['message' => 'Select a category']);
+                        $this->addError('ticket.category_id', ['message' => 'Select a category', 'field' => 'category']);
                     }
                 }
                 break;
@@ -155,7 +160,7 @@ class NewTicketValidator extends AbstractValidator
                         'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_pri_agent_required'),
                     ]);
                     if (!$validator->isValid($this->newticket->priority_id)) {
-                        $this->addError('ticket.priority_id', ['message' => 'Select a priority']);
+                        $this->addError('ticket.priority_id', ['message' => 'Select a priority', 'field' => 'priority']);
                     }
                 }
                 break;
@@ -166,7 +171,7 @@ class NewTicketValidator extends AbstractValidator
                         'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_work_agent_required'),
                     ]);
                     if (!$validator->isValid($this->newticket->workflow_id)) {
-                        $this->addError('ticket.workflow_id', ['message' => 'Select a workflow']);
+                        $this->addError('ticket.workflow_id', ['message' => 'Select a workflow', 'field' => 'workflow']);
                     }
                 }
                 break;
@@ -205,7 +210,7 @@ class NewTicketValidator extends AbstractValidator
                                     break;
                             }
 
-                            $this->addError('ticket.'.$code, ['message' => $str]);
+                            $this->addError('ticket.'.$code, array('message' => $str, 'field' => 'ticket_field_' . $field->getId()));
                         }
                     }
                 }
@@ -241,7 +246,7 @@ class NewTicketValidator extends AbstractValidator
                                     break;
                             }
 
-                            $this->addError('person.'.$code, ['message' => $str]);
+                            $this->addError('person.'.$code, ['message' => $str, 'field' => 'person_field_' . $field->getId()]);
                         }
                     }
                 }
@@ -277,7 +282,7 @@ class NewTicketValidator extends AbstractValidator
                                     break;
                             }
 
-                            $this->addError('person.'.$code, ['message' => $str]);
+                            $this->addError('person.'.$code, ['message' => $str, 'field' => 'org_field_' . $field->getId()]);
                         }
                     }
                 }

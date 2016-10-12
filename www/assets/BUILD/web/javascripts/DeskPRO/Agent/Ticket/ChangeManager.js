@@ -290,7 +290,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	/**
 	 * Save the changes for all queued items
 	 */
-	saveChanges: function(data, callback, onError) {
+	saveChanges: function(data, callback, onError, onValidationError) {
 		data = data || [];
 
 		var saving_classes = [];
@@ -340,7 +340,6 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				success: function(data) {
 
 					if (data.error_messages) {
-
 						var list = self.ticketPage.getEl('field_errors').find('ul').empty();
 						Array.each(data.error_messages, function(msg) {
 							var li = $('<li/>');
@@ -350,9 +349,10 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 						self.ticketPage.getEl('field_errors').show().addClass('on');
 
-						self.ticketPage.getEl('field_edit_cancel').show();
-						self.ticketPage.getEl('field_edit_save').show();
-						self.ticketPage.getEl('field_edit_controls').removeClass('loading');
+						if (onValidationError) {
+							onValidationError(data);
+						}
+
 						return;
 					}
 

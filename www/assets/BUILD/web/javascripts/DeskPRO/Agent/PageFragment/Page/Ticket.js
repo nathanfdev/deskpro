@@ -710,7 +710,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		if (this.getEl('field_errors').hasClass('on')) {
 			this.wrapper.addClass('field-error');
-			this.ticketFields.openEditMode();
 		}
 
 		var messagePageWrap = this.getEl('message_page_wrap');
@@ -1247,6 +1246,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	destroyPage: function() {
+		this.$scope && this.$scope.$destroy();
 		if (this.ticketReplyBox) {
 			this.ticketReplyBox.destroy();
 			this.ticketReplyBox = null;

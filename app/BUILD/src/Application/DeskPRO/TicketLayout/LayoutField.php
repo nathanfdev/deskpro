@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\TicketLayout;
 
+use Application\DeskPRO\Tickets\Triggers\TermFactory;
 use Orb\Util\OptionsArray;
 
 /**
@@ -80,6 +81,11 @@ class LayoutField implements \Serializable
     private $criteria = null;
 
     /**
+     * @var TermFactory
+     */
+    protected $factory;
+
+    /**
      * @param string   $field_type
      * @param int|null $field_id
      */
@@ -87,6 +93,7 @@ class LayoutField implements \Serializable
     {
         $this->field_type = $field_type;
         $this->field_id   = $field_id;
+        $this->factory    = new TermFactory();
     }
 
     /**
@@ -147,6 +154,10 @@ class LayoutField implements \Serializable
                             $term = new Terms\CheckWorkflow($term_info['op'], $term_info['options']);
                         }
                         break;
+                    default:
+                        try {
+                            $term = $this->factory->createFromArray($term_info, 'Application\\DeskPRO\\TicketLayout\\Terms');
+                        } catch (\Exception $e) {}
                 }
 
                 if ($term) {

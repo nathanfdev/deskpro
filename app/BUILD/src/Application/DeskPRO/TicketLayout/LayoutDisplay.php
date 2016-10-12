@@ -169,4 +169,9 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
                 return true;
         }
     }
+
+    public function getTicket()
+    {
+        return $this->ticket_context;
+    }
 }

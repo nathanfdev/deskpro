@@ -26,52 +26,52 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\TicketLayout\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContext;
+use Orb\Util\CheckedOptionsArray;
 
-/**
- * Class CheckProduct.
- */
-class CheckProduct extends AbstractTicketLayoutTerm
+class CheckUserField extends \Application\DeskPRO\Tickets\Triggers\Terms\CheckUserField implements TicketLayoutTermInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function isTicketMatch(Ticket $ticket)
+    public function getTicketFieldValueJs($id)
     {
-        $have_id  = $ticket->product ? $ticket->product->getId() : 0;
-        $is_match = in_array($have_id, $this->options['product_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
+        return "ticket.getUserFieldValue($id)";
     }
 
     /**
      * {@inheritdoc}
      */
-    public function compileJsCheck()
+    protected function getOptionsDef()
     {
-        $js_ids = [];
-        foreach ((array) $this->options['product_ids'] as $id) {
-            $js_ids[] = (int) $id;
-        }
-        $js_ids = '['.implode(',', $js_ids).']';
-        $op     = $this->op == self::OP_NOT ? '===' : '!==';
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('field_id', 'value', 'type_name');
 
-        $js = <<<JS
-function (ticket) { return $js_ids.indexOf(ticket.getProductId()) $op -1; }
-JS;
+        return $options;
+    }
 
-        return $js;
+    /**
+     * {@inheritdoc}
+     */
+    public function isTicketMatch(Ticket $ticket)
+    {
+        $context = new ExecutorContext();
+
+        return $this->isTriggerMatch($ticket, $context);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTermType()
+    {
+        $class = get_class($this);
+        $parts = explode('\\', $class);
+        $class = end($parts);
+
+        return $class.$this->getTermOptions()->get('field_id');
     }
 }

@@ -479,51 +479,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
             }
         }
 
-        if (!$value) {
-            return false;
-        }
-
-        if ($check_value === null) {
-            return false;
-        }
-
-        $value       = $value->getTimestamp();
-        $check_value = $check_value->getTimestamp();
-
-        switch ($op) {
-            case 'is':
-                if ($check_value == $value) {
-                    return true;
-                }
-                break;
-            case 'not':
-                if ($check_value != $value) {
-                    return true;
-                }
-                break;
-            case 'gt':
-                if ($check_value > $value) {
-                    return true;
-                }
-                break;
-            case 'gte':
-                if ($check_value >= $value) {
-                    return true;
-                }
-                break;
-            case 'lt':
-                if ($check_value < $value) {
-                    return true;
-                }
-                break;
-            case 'lte':
-                if ($check_value <= $value) {
-                    return true;
-                }
-                break;
-        }
-
-        return false;
+        return $this->isDateValuesMatch($op, $value, $check_value);
     }
 
     /**
@@ -545,15 +501,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         $opts  = $this->getValueOpArray($ticket, $context, $prop_name);
         $value = $opts['value'];
 
-        $value = $value->getTimestamp();
-        $lower = $lower->getTimestamp();
-        $upper = $upper->getTimestamp();
-
-        if (Numbers::inRange($value, $lower, $upper)) {
-            return true;
-        }
-
-        return false;
+        return $this->isDateRangeValuesMatch($value, $lower, $upper);
     }
 
     /**
@@ -582,43 +530,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
             return false;
         }
 
-        $value       = (int) $value;
-        $check_value = (int) $check_value;
-
-        switch ($op) {
-            case 'is':
-                if ($value == $check_value) {
-                    return true;
-                }
-                break;
-            case 'not':
-                if ($value != $check_value) {
-                    return true;
-                }
-                break;
-            case 'gt':
-                if ($value > $check_value) {
-                    return true;
-                }
-                break;
-            case 'gte':
-                if ($value >= $check_value) {
-                    return true;
-                }
-                break;
-            case 'lt':
-                if ($value < $check_value) {
-                    return true;
-                }
-                break;
-            case 'lte':
-                if ($value <= $check_value) {
-                    return true;
-                }
-                break;
-        }
-
-        return false;
+        return $this->isIntValuesMatch($op, $value, $check_value);
     }
 
     /**
@@ -690,121 +602,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
             return true;
         }
 
-        if ($check_value === null) {
-            return false;
-        }
-
-        if (!is_array($all_values)) {
-            $all_values = [$all_values];
-        }
-
-        $check_value = is_array($check_value) ? $check_value : [$check_value];
-
-        $check_value_i = array_map(
-            function ($v) {
-                return Strings::utf8_strtolower($v);
-            },
-            $check_value
-        );
-
-        $check_fn = function ($value) use ($op, $check_value_i, $check_value) {
-            if (!is_string($value)) {
-                if ($value === null || $value === false) {
-                    $value = '';
-                } else {
-                    $value .= '';
-                }
-            }
-
-            $value_i = Strings::utf8_strtolower($value);
-            switch ($op) {
-                case 'isset':
-                    if ($value_i !== '') {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                    break;
-
-                case 'not_isset':
-                    if ($value_i === '' || $value_i === null || $value_i === false) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                    break;
-
-                case 'is':
-                case 'not':
-                    foreach ($check_value_i as $vi) {
-                        if ($value_i == $vi) {
-                            if ($op == 'is') {
-                                return true;
-                            }
-                            if ($op == 'not') {
-                                return false;
-                            }
-                        }
-                    }
-                    if ($op == 'not') {
-                        return true;
-                    }
-                    break;
-
-                case 'contains':
-                case 'notcontains':
-                    foreach ($check_value_i as $vi) {
-                        // Special case: empty search string
-                        // We consider 'ticket subject has ""' to be true
-                        if ($vi === '') {
-                            if ($op == 'contains') {
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        }
-
-                        if (strpos($value_i, $vi) !== false) {
-                            if ($op == 'contains') {
-                                return true;
-                            }
-                            if ($op == 'notcontains') {
-                                return false;
-                            }
-                        }
-                    }
-                    if ($op == 'notcontains') {
-                        return true;
-                    }
-                    break;
-
-                case 'is_regex':
-                case 'not_regex':
-                    foreach ($check_value as $v) {
-                        $regex = Strings::getInputRegexPattern($v);
-
-                        if (!$regex) {
-                            return false;
-                        }
-
-                        if (RegexUtils::safePregMatch($regex, $value)) {
-                            if ($op == 'is_regex') {
-                                return true;
-                            }
-                            if ($op == 'not_regex') {
-                                return false;
-                            }
-                        }
-                    }
-                    if ($op == 'not_regex') {
-                        return true;
-                    }
-            }
-
-            return false;
-        };
-
-        return $this->getMultiMatchResult($all_values, $check_fn, $op, $multi_mode);
+        return $this->isStringValuesMatch($op, $all_values, $check_value, $multi_mode);
     }
 
     /**
@@ -865,13 +663,229 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
      *
      * @return bool
      */
-    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    abstract public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context);
+
+    protected function isIntValuesMatch($op, $value, $check_value)
     {
-        /*
-         * This should really be an abstract method but PHP <5.3.9 will error out due to https://bugs.php.net/bug.php?id=43200
-         * "Fatal error: Can't inherit abstract function ..."
-         */
+        $value       = (int) $value;
+        $check_value = (int) $check_value;
+
+        switch ($op) {
+            case self::OP_IS:
+                if ($value == $check_value) {
+                    return true;
+                }
+                break;
+            case self::OP_NOT:
+                if ($value != $check_value) {
+                    return true;
+                }
+                break;
+            case self::OP_GT:
+                if ($value > $check_value) {
+                    return true;
+                }
+                break;
+            case self::OP_GTE:
+                if ($value >= $check_value) {
+                    return true;
+                }
+                break;
+            case self::OP_LT:
+                if ($value < $check_value) {
+                    return true;
+                }
+                break;
+            case self::OP_LTE:
+                if ($value <= $check_value) {
+                    return true;
+                }
+                break;
+        }
 
         return false;
+    }
+
+    protected function isDateValuesMatch($op, $value, $check_value)
+    {
+        if (!$value) {
+            return false;
+        }
+
+        if ($check_value === null) {
+            return false;
+        }
+
+        $value       = $value->getTimestamp();
+        $check_value = $check_value->getTimestamp();
+
+        switch ($op) {
+            case 'is':
+                if ($check_value == $value) {
+                    return true;
+                }
+                break;
+            case 'not':
+                if ($check_value != $value) {
+                    return true;
+                }
+                break;
+            case 'gt':
+                if ($check_value > $value) {
+                    return true;
+                }
+                break;
+            case 'gte':
+                if ($check_value >= $value) {
+                    return true;
+                }
+                break;
+            case 'lt':
+                if ($check_value < $value) {
+                    return true;
+                }
+                break;
+            case 'lte':
+                if ($check_value <= $value) {
+                    return true;
+                }
+                break;
+        }
+
+        return false;
+    }
+
+    protected function isDateRangeValuesMatch($value, $lower, $upper)
+    {
+        $value = $value->getTimestamp();
+        $lower = $lower->getTimestamp();
+        $upper = $upper->getTimestamp();
+
+        if (Numbers::inRange($value, $lower, $upper)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function isStringValuesMatch($op, $value, $check_value, $multi_mode = null)
+    {
+        if ($check_value === null) {
+            return false;
+        }
+
+        $all_values = $value;
+
+        if (!is_array($all_values)) {
+            $all_values = [$all_values];
+        }
+
+        $check_value = is_array($check_value) ? $check_value : [$check_value];
+
+        $check_value_i = array_map(
+            function ($v) {
+                return Strings::utf8_strtolower($v);
+            },
+            $check_value
+        );
+
+        $check_fn = function ($value) use ($op, $check_value_i, $check_value) {
+            if (!is_string($value)) {
+                if ($value === null || $value === false) {
+                    $value = '';
+                } else {
+                    $value .= '';
+                }
+            }
+
+            $value_i = Strings::utf8_strtolower($value);
+            switch ($op) {
+                case AbstractTriggerTerm::OP_ISSET:
+                    if ($value_i !== '') {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                    break;
+
+                case AbstractTriggerTerm::OP_NOTISSET:
+                    if ($value_i === '' || $value_i === null || $value_i === false) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                    break;
+
+                case AbstractTriggerTerm::OP_IS:
+                case AbstractTriggerTerm::OP_NOT:
+                    foreach ($check_value_i as $vi) {
+                        if ($value_i == $vi) {
+                            if ($op == AbstractTriggerTerm::OP_IS) {
+                                return true;
+                            }
+                            if ($op == AbstractTriggerTerm::OP_NOT) {
+                                return false;
+                            }
+                        }
+                    }
+                    if ($op == AbstractTriggerTerm::OP_NOT) {
+                        return true;
+                    }
+                    break;
+
+                case AbstractTriggerTerm::OP_CONTAINS:
+                case AbstractTriggerTerm::OP_NOTCONTAINS:
+                    foreach ($check_value_i as $vi) {
+                        // Special case: empty search string
+                        // We consider 'ticket subject has ""' to be true
+                        if ($vi === '') {
+                            if ($op == AbstractTriggerTerm::OP_CONTAINS) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+
+                        if (strpos($value_i, $vi) !== false) {
+                            if ($op == AbstractTriggerTerm::OP_CONTAINS) {
+                                return true;
+                            }
+                            if ($op == AbstractTriggerTerm::OP_NOTCONTAINS) {
+                                return false;
+                            }
+                        }
+                    }
+                    if ($op == AbstractTriggerTerm::OP_NOTCONTAINS) {
+                        return true;
+                    }
+                    break;
+
+                case AbstractTriggerTerm::OP_IS_REGEX:
+                case AbstractTriggerTerm::OP_NOT_REGEX:
+                    foreach ($check_value as $v) {
+                        $regex = Strings::getInputRegexPattern($v);
+
+                        if (!$regex) {
+                            return false;
+                        }
+
+                        if (RegexUtils::safePregMatch($regex, $value)) {
+                            if ($op == AbstractTriggerTerm::OP_IS_REGEX) {
+                                return true;
+                            }
+                            if ($op == AbstractTriggerTerm::OP_NOT_REGEX) {
+                                return false;
+                            }
+                        }
+                    }
+                    if ($op == AbstractTriggerTerm::OP_NOT_REGEX) {
+                        return true;
+                    }
+            }
+
+            return false;
+        };
+
+        return $this->getMultiMatchResult($all_values, $check_fn, $op, $multi_mode);
     }
 }

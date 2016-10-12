@@ -11,8 +11,14 @@ define ['DeskPRO/Util/Util'], (Util) ->
       @scope.CustomFieldTitleFilter = (f) =>
         @scope.field.field_type == 'custom_field' and (f.id+'') == (@scope.field.field_id+'')
 
-      $q.all([TicketFields.loadList(), UserFields.loadList(), TicketFieldsPerPerson.all(), TicketFieldsPerOrg.all(), OrgFields.loadList()])
-      .then (results) =>
+      $q.all([
+        TicketFields.loadList()
+        UserFields.loadList()
+        TicketFieldsPerPerson.all()
+        TicketFieldsPerOrg.all()
+        OrgFields.loadList()
+        @dpObTypesDefTicketCriteria.loadDataOptions()
+      ]).then (results) =>
         @scope.custom_ticket_fields     = results[0]
         @scope.custom_user_fields       = results[1]
         @scope.ticket_fields_per_person = results[2]
@@ -54,7 +60,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
       inst = @$modal.open({
         templateUrl: tpl,
-        controller: ['$scope', '$modalInstance', 'options', 'typeDef', ($scope, $modalInstance, options, typeDef) ->
+        controller: ['$scope', '$modalInstance', 'options', 'typeDef', 'dpObTypesDefTicketCriteria', ($scope, $modalInstance, options, typeDef, types) ->
           if not options.criteria? then options.criteria = {}
           if not options.criteria?.terms then options.criteria.terms = {}
           if not options.criteria?.mode then options.criteria.mode = 'all'
@@ -96,6 +102,72 @@ define ['DeskPRO/Util/Util'], (Util) ->
             title: 'Workflow',
             value: 'CheckWorkflow'
           })
+
+          initFieldGetter = (base_name, f) ->
+            options = {}
+            options.type_name = f.type_name
+            if f.type_name == 'choice'
+              options.operators = ['isset', 'not_isset', 'is', 'not']
+            else if f.type_name == 'toggle'
+              options.operators = ['isset', 'not_isset']
+            else if f.type_name == 'date' || f.type_name == 'datetime'
+              options.operators = ['isset', 'not_isset', 'lte', 'gte', 'between']
+            else
+              options.operators = ['isset', 'not_isset', 'is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
+            types.initFieldGetter base_name, f, true, options
+
+          types.loadDataOptions().then =>
+            if types.options_data?.ticket_fields
+              sub_options = []
+
+              for f in types.options_data.ticket_fields
+                sub_options.push({
+                  title: f.title,
+                  value: initFieldGetter 'CheckTicketField', f
+                })
+
+            if types.options_data?.contextual_fields
+              for f in types.options_data.contextual_fields
+                sub_options.push({
+                  title: f.title,
+                  value: initFieldGetter 'CheckTicketContextualField', f
+                })
+
+              if sub_options.length
+                $scope.criteriaOptions.push({
+                  title: 'Ticket Fields',
+                  subOptions: sub_options
+                })
+
+            if types.options_data?.user_fields
+              sub_options = []
+
+              for f in types.options_data.user_fields
+                sub_options.push({
+                  title: f.title,
+                  value: initFieldGetter 'CheckUserField', f
+                })
+
+              if sub_options.length
+                $scope.criteriaOptions.push({
+                  title: 'Person Fields',
+                  subOptions: sub_options
+                })
+
+            if types.options_data?.org_fields
+              sub_options = []
+
+              for f in types.options_data.org_fields
+                sub_options.push({
+                  title: f.title,
+                  value: initFieldGetter 'CheckOrgField', f
+                })
+
+              if sub_options.length
+                $scope.criteriaOptions.push({
+                  title: 'Organization Fields',
+                  subOptions: sub_options
+                })
 
           $scope.criteriaTypesDef = typeDef
 

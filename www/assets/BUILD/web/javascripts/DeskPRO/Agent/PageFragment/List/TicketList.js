@@ -2673,6 +2673,8 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 
 
 	destroy: function() {
+		this.$scope && this.$scope.$destroy();
+
 		if (this._hasInit) {
 			this.wrapper.remove();
 			this.backdropEls.remove();

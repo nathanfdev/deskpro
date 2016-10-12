@@ -546,6 +546,16 @@ class FieldManager
      */
     public function saveFormToObject(array $form, $object, $only_set = false, $flushChanges = true)
     {
+        $this->setFormToObject($form, $object, $only_set);
+
+        // BC: $em should be flushed outside this method
+        if ($flushChanges) {
+            $this->em->flush();
+        }
+    }
+
+    public function setFormToObject(array $form, $object, $only_set = false)
+    {
         $fields = $this->getFields();
 
         // When setting specific values, always operate on all enabled
@@ -595,11 +605,6 @@ class FieldManager
         }
 
         $this->_orig_display = null;
-
-        // BC: $em should be flushed outside this method
-        if ($flushChanges) {
-            $this->em->flush();
-        }
     }
 
     /**

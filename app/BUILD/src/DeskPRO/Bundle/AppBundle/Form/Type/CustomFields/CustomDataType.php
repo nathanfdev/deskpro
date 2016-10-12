@@ -60,6 +60,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class CustomDataType extends AbstractType
 {
+    const KEY = 'data';
+
     /**
      * @var ValidatorInterface
      */
@@ -132,7 +134,7 @@ class CustomDataType extends AbstractType
         // child field is not mapped so the form tries to get data from the options
         // so we should pass stored value via its options
         $options['data'] = $this->getFormData($event->getData() ?: new ArrayCollection(), $customDef);
-        $form->add('data', $field->getType(), $options);
+        $form->add(self::KEY, $field->getType(), $options);
     }
 
     /**
@@ -153,7 +155,7 @@ class CustomDataType extends AbstractType
         $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
 
         if ($customDef->isChoiceType()) {
-            $data = $form->get('data')->getNormData();
+            $data = $form->get(self::KEY)->getNormData();
             $data = is_array($data) ? $data : ($data ? [$data] : []);
             $data = array_map(function (HierarchyNode $choiceCustomDef) {
                 return $choiceCustomDef->getData()->getId();
@@ -184,7 +186,7 @@ class CustomDataType extends AbstractType
                 }
             }
         } else {
-            $data = $form->get('data')->getData();
+            $data = $form->get(self::KEY)->getData();
 
             if ($customDefData->count()) {
                 $customData = $customDefData->first();

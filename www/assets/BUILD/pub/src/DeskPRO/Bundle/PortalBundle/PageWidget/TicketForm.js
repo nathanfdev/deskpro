@@ -14,32 +14,71 @@ class TicketValueReader {
     this.$formEl = $formEl;
   }
 
-  _parseIntSelect(f) {
+  parseIntSelect(f) {
     return parseInt(f.val() || 0, 10) || 0;
   }
 
   getDepartmentId() {
-    return this._parseIntSelect($('#ticket_department', this.$formEl));
+    return this.parseIntSelect($('#ticket_department', this.$formEl));
   }
 
   getCategoryId() {
-    return this._parseIntSelect($('#ticket_category', this.$formEl));
+    return this.parseIntSelect($('#ticket_category', this.$formEl));
   }
 
   getPriorityId() {
-    return this._parseIntSelect($('#ticket_priority', this.$formEl));
+    return this.parseIntSelect($('#ticket_priority', this.$formEl));
   }
 
   getProductId() {
-    return this._parseIntSelect($('#ticket_product', this.$formEl));
+    return this.parseIntSelect($('#ticket_product', this.$formEl));
   }
 
   getOrganizationId() {
-    return this._parseIntSelect($('#ticket_user_organization', this.$formEl));
+    return this.parseIntSelect($('#ticket_user_organization', this.$formEl));
   }
 
   getWorkflowId() {
-    return this._parseIntSelect($('#ticket_workflow', this.$formEl));
+    return this.parseIntSelect($('#ticket_workflow', this.$formEl));
+  }
+
+  getFieldValue(prefix, fieldId) {
+    const id = `#ticket_${prefix}_field_${fieldId}_data`;
+    let $field = $(id, this.$formEl);
+
+    // toggle
+    if ($field.is(':checkbox')) {
+      return $field.is(':checked');
+    }
+
+    if ($field.is('select, input, textarea')) {
+      return $field.val();
+    }
+
+    // date and datetime widgets
+    if ($field.find(`${id}_year`).length) {
+      const year = $(`${id}_year`, $field).val();
+      const month = $(`${id}_month`, $field).val();
+      const day = $(`${id}_day`, $field).val();
+      return `${year}-${month}-${day}`;
+    }
+
+    // choice of checkboxes, radio
+    const name = `ticket[${prefix}_field_${fieldId}]`;
+    $field = $(`[name="${name}[data]"]:checked, [name="${name}[data][]"]:checked`, this.$formEl);
+    return $field.map((i, el) => el.value).get();
+  }
+
+  getTicketFieldValue(fieldId) {
+    return this.getFieldValue('ticket', fieldId);
+  }
+
+  getUserFieldValue(fieldId) {
+    return this.getFieldValue('user', fieldId);
+  }
+
+  getOrgFieldValue(fieldId) {
+    return this.getFieldValue('org', fieldId);
   }
 }
 
@@ -49,9 +88,7 @@ export class TicketForm extends PageWidget {
     const $formEl = this.$element.find('.dp_ticket_form');
     const $tplEl = this.$element.find('.js_form_tpl');
     const ticketReader = new TicketValueReader($formEl);
-    const allFormFields = $([]).add($formEl.find('select')).add($tplEl.find('select'));
-
-    let updateHitter;
+    const allFormFields = $([]).add($formEl.find('select, input, textarea')).add($tplEl.find('select, input, textarea'));
 
     $('#ticket_message_message_html', this.$formEl).attr('data-blob-path', 'ticket[attachments]');
 
@@ -100,7 +137,7 @@ export class TicketForm extends PageWidget {
       }
     });
 
-    updateHitter = _.throttle(() => this.dynamicForm.update(), 250);
+    const updateHitter = _.throttle(() => this.dynamicForm.update(), 250);
     allFormFields.on('change', () => setTimeout(() => updateHitter(), 0));
   }
 }

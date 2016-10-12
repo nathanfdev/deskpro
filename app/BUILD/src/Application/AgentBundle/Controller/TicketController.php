@@ -2068,11 +2068,13 @@ class TicketController extends AbstractController
                 } else {
                     if (!$validator->isValid($newticket)) {
                         $free = [];
+                        $fields = [];
                         foreach ($validator->getErrorsInfo() as $info) {
                             $free[] = htmlspecialchars($info['message']);
+                            $fields[] = $info['field'];
                         }
 
-                        return $this->createJsonResponse(['error' => true, 'error_messages' => $free]);
+                        return $this->createJsonResponse(['error' => true, 'error_messages' => $free, 'fields' => $fields]);
                     }
                 }
 

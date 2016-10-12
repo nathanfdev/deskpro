@@ -28,21 +28,19 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\ApiFieldRenderer;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\ApiFieldResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TicketWithLayoutsApiType.
+ * This is stub form. Used to output a 'full' form with every field,
+ * which is used by JS to dynamically update the UI as a user changes options.
+ *
+ * Class TicketWithLayoutsApiFullType.
  */
-class TicketWithLayoutsApiType extends AbstractType
+class TicketWithLayoutsApiFullType extends AbstractType
 {
     /**
      * @var TicketLayoutFactory
@@ -62,23 +60,15 @@ class TicketWithLayoutsApiType extends AbstractType
     /**
      * Constructor.
      *
+     * @param TicketLayoutFactory $layoutFactory
      * @param ApiFieldResolver    $fieldResolver
      * @param ApiFieldRenderer    $fieldRenderer
-     * @param TicketLayoutFactory $layoutFactory
      */
-    public function __construct(ApiFieldResolver $fieldResolver, ApiFieldRenderer $fieldRenderer, TicketLayoutFactory $layoutFactory)
+    public function __construct(TicketLayoutFactory $layoutFactory, ApiFieldResolver $fieldResolver, ApiFieldRenderer $fieldRenderer)
     {
+        $this->layoutFactory = $layoutFactory;
         $this->fieldResolver = $fieldResolver;
         $this->fieldRenderer = $fieldRenderer;
-        $this->layoutFactory = $layoutFactory;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onEnsureRequireFields'], 100);
     }
 
     /**
@@ -86,7 +76,7 @@ class TicketWithLayoutsApiType extends AbstractType
      */
     public function getParent()
     {
-        return TicketWithLayoutsManipulatorType::class;
+        return TicketWithLayoutsFullType::class;
     }
 
     /**
@@ -95,43 +85,12 @@ class TicketWithLayoutsApiType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'field_resolver'  => $this->fieldResolver,
-            'field_renderer'  => $this->fieldRenderer,
-            'full_type_class' => TicketWithLayoutsApiFullType::class,
-            'layout_factory'  => function ($department) {
-                return $this->layoutFactory->getLayoutForTicketForm($department, true);
+            'field_resolver' => $this->fieldResolver,
+            'field_renderer' => $this->fieldRenderer,
+            'full_layout'    => $this->layoutFactory->getFullLayoutForTicketForm(true),
+            'layout_factory' => function ($department) {
+                return $this->layoutFactory->getLayoutForTicketForm($department, false);
             },
         ]);
-    }
-
-    /**
-     * We use partial updates for POST and PATCH request.
-     * So we need to make sure that required fields are in the request for new tickets.
-     *
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onEnsureRequireFields(FormEvent $event)
-    {
-        $ticket = $event->getForm()->getData();
-        $data   = $event->getData();
-
-        // should applied for new tickets only
-        if (!$ticket instanceof Ticket || $ticket->getId()) {
-            return;
-        }
-
-        if (!isset($data[FormFields::DEPARTMENT])) {
-            $data[FormFields::DEPARTMENT] = '';
-        }
-        if (!isset($data[FormFields::SUBJECT])) {
-            $data[FormFields::SUBJECT] = '';
-        }
-        if (!isset($data[FormFields::MESSAGE])) {
-            $data[FormFields::MESSAGE] = ['message' => ''];
-        }
-
-        $event->setData($data);
     }
 }
