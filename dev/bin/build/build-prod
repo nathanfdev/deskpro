@@ -26,6 +26,7 @@ $options = getopt('', [
     'quick',
     'with-build:',
     'with-build-time:',
+    'with-build-name:',
 ]);
 
 $is_quick = (bool) @$options['quick'];
