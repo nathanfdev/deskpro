@@ -82,7 +82,6 @@ module.exports = {
   },
   plugins: [
     new WebpackNotifierPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     new ExtractTextPlugin('[name].css'),
     new webpack.DefinePlugin({
