@@ -119,11 +119,11 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   recentClick(chatId) {
-    this.props.dispatch(chatsActions.startChat(null, null, chatId));
+    this.props.dispatch(chatsActions.startChat(null, chatId));
   }
 
   participantClick(id, type) {
-    this.props.dispatch(chatsActions.startChat(id, type));
+    this.props.dispatch(chatsActions.startChat({ id, type }));
   }
 
   chatClickOut(chatId) {
@@ -206,8 +206,8 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.props.dispatch(chatsActions.openGroupDrawer());
   }
 
-  createGroup(agentIds) {
-    this.props.dispatch(chatsActions.startChat(agentIds, 'group'));
+  createGroup(agentIds, groupName) {
+    this.props.dispatch(chatsActions.startChat({ id: agentIds, type: 'group', name: groupName }));
   }
 
   getPath = () => {
@@ -391,6 +391,7 @@ export class AgentTopBar extends React.Component {
             <IMButton />
           </IMOverlay>
           {(groupDrawerTarget) ? <GroupAddDrawer
+            me={me}
             isOpen={groupCreation}
             agents={agents}
             target={groupDrawerTarget}

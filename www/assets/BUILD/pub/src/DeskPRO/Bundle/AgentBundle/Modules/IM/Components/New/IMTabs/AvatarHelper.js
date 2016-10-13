@@ -39,12 +39,14 @@ class AvatarHelper
   }
 
   static renderGroupAvatar(chat) {
+    const name = chat.get('name');
+    const text = (name && name.length ? name[0] : '');
     const props = {
       size:       24,
       color:      chooseColor(chat.get('id')),
       urlPattern: null,
       gravatar:   null,
-      text:       chat.get('id'),
+      text:       text || '?',
       className:  'ui avatar image im'
     };
 

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
-import { Toggle } from 'DeskPRO/Component/Semantic/Form';
+import { Toggle, Input } from 'DeskPRO/Component/Semantic/Form';
 import { AvatarHelper } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
@@ -12,6 +12,7 @@ import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 class GroupAddDrawer extends React.Component
 {
   static propTypes = {
+    me:            PropTypes.object.isRequired,
     agents:        PropTypes.object.isRequired,
     target:        PropTypes.object.isRequired,
     isOpen:        PropTypes.bool.isRequired,
@@ -56,6 +57,11 @@ class GroupAddDrawer extends React.Component
     this.agentClick  = this.agentClick.bind(this);
     this.createGroup = this.createGroup.bind(this);
     this.clickOut    = this.clickOut.bind(this);
+    this.onChange    = this.onChange.bind(this);
+  }
+
+  onChange(event) {
+    this.setState({ groupName: event.target.value });
   }
 
   getAgentsHeader() {
@@ -82,7 +88,7 @@ class GroupAddDrawer extends React.Component
   }
 
   createGroup() {
-    this.props.createGroup(Object.keys(this.state.checkedAgents));
+    this.props.createGroup(Object.keys(this.state.checkedAgents), this.state.groupName);
   }
 
   clickOut() {
@@ -90,6 +96,9 @@ class GroupAddDrawer extends React.Component
   }
 
   renderAgent(agent) {
+    if (agent.get('id') === this.props.me.get('id')) {
+      return null;
+    }
     const classes = [];
     if (!agent.get('online')) {
       classes.push('offline');
@@ -126,15 +135,12 @@ class GroupAddDrawer extends React.Component
               <Segment vertical>
                 <Header
                   level={5}
-                  className="add group"
+                  className="group add"
                   content={<span><i className="fa fa-users" />&nbsp;Create group</span>}
                 />
-              </Segment>
-              <Segment vertical>
                 <Header level={4} className="group name" content="Group name" />
-              </Segment>
-              <Segment vertical>
-                <Header level={4} className="group-list" content={this.getAgentsHeader()} />
+                <Input name="groupName" value={this.state.groupName} id="groupName" onChange={this.onChange} />
+                <Header level={4} className="group list" content={this.getAgentsHeader()} />
                 <List className="im middle aligned selection agent">
                   <Scrollable vertical>
                     {agents.map(agent => this.renderAgent(agent))}

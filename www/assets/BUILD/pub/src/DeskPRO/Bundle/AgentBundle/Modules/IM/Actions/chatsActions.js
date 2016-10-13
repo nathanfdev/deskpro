@@ -27,7 +27,8 @@ export const closeChat = createAction(
 
 export const startChat = createAction(
   'IM_START_CHAT',
-  (targetId, targetType = 'agent', chatId = null, forced = false) => (dispatch, getState) => {
+  (targetParams, chatId = null, forced = false) => (dispatch, getState) => {
+    dispatch(closeGroupDrawer);
     if (!(forced && getState().IM.chats.getIn(['manuallyClosed', chatId]))) {
       dispatch(openChat());
     }
@@ -41,7 +42,7 @@ export const startChat = createAction(
         if (chatId) {
           method = () => repository('AgentChat').load(chatId);
         } else {
-          method = () => repository('AgentChat').startChat(targetId, targetType);
+          method = () => repository('AgentChat').startChat(targetParams.id, targetParams.type, targetParams.name || '');
         }
         return method()
           .success((response) => {

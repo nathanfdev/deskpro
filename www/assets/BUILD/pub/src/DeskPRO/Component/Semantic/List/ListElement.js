@@ -11,6 +11,7 @@ class ListElement extends React.Component {
     imageNode:   PropTypes.object,
     elements:    PropTypes.arrayOf(PropTypes.object),
     className:   PropTypes.string,
+    onClick:     PropTypes.func,
     children:    PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.array
@@ -18,6 +19,9 @@ class ListElement extends React.Component {
   };
 
   static defaultProps = {
+    onClick() {
+
+    },
     label:     '',
     className: ''
   };
@@ -59,7 +63,7 @@ class ListElement extends React.Component {
 
   render() {
     const { className, children } = this.props;
-    return (<div className={classNames('item', className)}>
+    return (<div className={classNames('item', className)} onClick={this.props.onClick}>
       {this.getIcon()}
       {this.getContent()}
       {children}

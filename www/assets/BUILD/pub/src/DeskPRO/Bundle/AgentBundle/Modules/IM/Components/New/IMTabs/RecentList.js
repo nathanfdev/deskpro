@@ -158,13 +158,14 @@ class RecentList extends React.Component {
     return (
       <ListElement
         onClick={() => this.props.onRecentClick(chat.get('id'))}
-        key={`chat_${chat.get('id')}`}
+        key={`group_${chat.get('id')}`}
         className="im team recent"
         imageNode={AvatarHelper.renderGroupAvatar(chat)}
       >
         <div className="content team" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">
-            {chat.get('id')}
+            {chat.get('name')}
+            <span className="agents-list">{this.getAgents(chat)}</span>
           </div>
         </div>
         <div className="timestamp content right floated">

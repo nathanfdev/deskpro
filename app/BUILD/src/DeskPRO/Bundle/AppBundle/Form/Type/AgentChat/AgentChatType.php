@@ -39,6 +39,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -124,6 +125,13 @@ class AgentChatType extends AbstractType
         $multiple = false;
         switch ($type) {
             case AgentChat::TYPE_GROUP:
+                $form->add('name', TextType::class, [
+                    'required'    => true,
+                    'constraints' => [
+                        new Assert\NotNull(),
+                        new Assert\NotBlank(),
+                    ],
+                ]);
                 $multiple = true;
             case AgentChat::TYPE_AGENT:
                 $form->add('participant', EntityType::class, [

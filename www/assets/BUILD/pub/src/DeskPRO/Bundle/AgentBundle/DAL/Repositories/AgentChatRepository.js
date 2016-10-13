@@ -8,13 +8,17 @@ export class AgentChatRepository extends ApiRepository {
   /**
    * @param {integer} entityId Entity identity to start the chat
    * @param {string} type type of entity, one of agent, team, department or everyone
+   * @param {string} groupName used only for group type.
    * @returns {Promise} promise
    */
-  startChat(entityId, type) {
+  startChat(entityId, type, groupName = '') {
     const params = { type };
     if (Number(entityId)) {
       params.participant = entityId;
-    } else if (Array.isArray(entityId)) {
+    } else if (Array.isArray(entityId) && type === 'group') {
+      if (groupName) {
+        params.name = groupName;
+      }
       params.participant = entityId;
     }
 

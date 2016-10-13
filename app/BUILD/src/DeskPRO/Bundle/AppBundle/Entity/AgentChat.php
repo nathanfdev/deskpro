@@ -112,6 +112,16 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     protected $date_last_message;
 
     /**
+     * Custom groups name for chat with type = 'group'.
+     *
+     * @var \DateTime
+     * @ORM\Column(type="string", nullable=true)
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     */
+    protected $name;
+
+    /**
      * List of participating in chat entities.
      *
      * @var AgentChatParticipant[] an id array of participants
@@ -219,6 +229,26 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     public function setDateLastMessage(\DateTime $date)
     {
         $this->setModelField('date_last_message', $date);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param \DateTime $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
 
         return $this;
     }

@@ -147,6 +147,11 @@
         width: 14px;
         height: 14px;
         margin-right: 5px;
+        background-position: center center;
+        -webkit-background-size: 100%;
+        -o-background-size: 100%;
+        -moz-background-size: 100%;
+        background-size: 100%;
 
         .text {
           font-size: 6px;
@@ -332,13 +337,6 @@
     }
   }
 
-  .im.add.group {
-    .create-group.button {
-      margin-left: 20px;
-      margin-top: 5px;
-    }
-  }
-
   &.chat.drawer {
     .box {
       min-width: 300px;
@@ -483,13 +481,19 @@
   }
 
   .im.group.add {
+    padding-top: 25px;
     width: 300px;
     height: 535px;
 
+    .create-group.button {
+      margin-left: 20px;
+      margin-top: 5px;
+    }
+
     .ui.segment{
-      padding: 5px 20px 15px 20px;
+      padding: 0px 20px 15px 20px;
       border: none;
-      margin-top: 20px;
+      margin-top: 0;
       margin-bottom: 0;
 
       .ui.header {
@@ -498,15 +502,23 @@
         font-weight: 400;
         color: $dp-greyscale-850;
 
-        &.group.name {
+        &.group.add {
+          font-family: "Open Sans", serif;
+          font-size: 14px;
           font-weight: 600;
           margin-bottom: 0;
         }
 
-        &.add.group {
-          font-family: "Open Sans", serif;
-          font-size: 14px;
+        &.group.name {
           font-weight: 600;
+          margin-bottom: 10px;
+          margin-top: 15px;
+        }
+
+        &.group.list {
+          font-weight: 600;
+          margin-bottom: 10px;
+          margin-top: 15px;
         }
 
         .selected.counter {
