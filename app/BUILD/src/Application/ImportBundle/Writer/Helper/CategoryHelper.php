@@ -52,6 +52,11 @@ class CategoryHelper
     private $brandMapper;
 
     /**
+     * @var UserGroupHelper
+     */
+    private $userGroupHelper;
+
+    /**
      * @var EntityPersister
      */
     private $persister;
@@ -66,17 +71,20 @@ class CategoryHelper
      *
      * @param ImportMapMapper $importMapMapper
      * @param BrandMapper     $brandMapper
+     * @param UserGroupHelper $userGroupHelper
      * @param EntityPersister $persister
      * @param LoggerInterface $logger
      */
     public function __construct(
         ImportMapMapper $importMapMapper,
         BrandMapper     $brandMapper,
+        UserGroupHelper $userGroupHelper,
         EntityPersister $persister,
         LoggerInterface $logger
     ) {
         $this->importMapMapper = $importMapMapper;
         $this->brandMapper     = $brandMapper;
+        $this->userGroupHelper = $userGroupHelper;
         $this->persister       = $persister;
         $this->logger          = $logger;
     }
@@ -124,6 +132,7 @@ class CategoryHelper
                 $entity = new $categoryClass();
                 $entity->setTitle($categoryTitle);
                 $this->setDefaultBrand($entity);
+                $this->userGroupHelper->updateUserGroups($entity);
 
                 $this->persister->persistAndFlush($entity);
 
@@ -155,6 +164,7 @@ class CategoryHelper
                     $entity->setTitle($categoryTitle);
                     $entity->setParent($parent);
                     $this->setDefaultBrand($entity);
+                    $this->userGroupHelper->updateUserGroups($entity);
 
                     if ($parent) {
                         $parent->getChildren()->add($entity);

@@ -169,7 +169,7 @@ class ArticleCategoryHandler extends AbstractEntityHandler
             ->setBrand($this->mappers->getBrandMapper()->findOneBy([])) // set first brand for now
         ;
 
-        $this->helpers->getUserGroupHelper()->updateUserGroups($model, $entity);
+        $this->helpers->getUserGroupHelper()->updateUserGroupsByModel($model, $entity);
 
         return $entity;
     }

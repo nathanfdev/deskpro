@@ -75,11 +75,19 @@ class UserGroupHelper
      * @param UsergroupAwareModelInterface $model
      * @param mixed                        $entity
      */
-    public function updateUserGroups(UsergroupAwareModelInterface $model, $entity)
+    public function updateUserGroupsByModel(UsergroupAwareModelInterface $model, $entity)
     {
-        $modelUserGroups = $model->getUserGroups();
+        $this->updateUserGroups($entity, $model->getUserGroups());
+    }
+
+    /**
+     * @param array $modelUserGroups
+     * @param mixed $entity
+     */
+    public function updateUserGroups($entity, array $modelUserGroups = [])
+    {
         if (!$modelUserGroups) {
-            $modelUserGroups = ['everyone'];
+            $modelUserGroups = [Usergroup::EVERYONE];
         }
 
         // add new user groups
@@ -103,7 +111,7 @@ class UserGroupHelper
      * @param Model\Person  $model
      * @param Entity\Person $entity
      */
-    public function updateAgentGroups(Model\Person $model, Entity\Person $entity)
+    public function updateAgentGroupsByModel(Model\Person $model, Entity\Person $entity)
     {
         // add new agent groups
         foreach ($model->getAgentGroups() as $groupName) {
