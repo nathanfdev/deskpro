@@ -63,7 +63,7 @@ class RecentList extends React.Component {
         return (<PersonAvatar
           key={`agent_${agentId}`}
           person={agent}
-          size={24}
+          size={14}
           className={classNames(className)}
           color={chooseColor(agent)}
         />);

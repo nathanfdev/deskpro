@@ -1,5 +1,10 @@
 @import '../variables';
 
+.ui.im.avatar {
+  width: 24px;
+  height: 24px;
+}
+
 .ui.topbar > .item > .im-list {
   .im.recent {
     margin: 0 3px;
@@ -8,8 +13,6 @@
     }
     > .im.wrapper {
       > .im.avatar {
-        width: 24px;
-        height: 24px;
         margin: 0 10px;
 
         .text {
@@ -109,8 +112,6 @@
     }
 
     .im.avatar {
-      width: 24px;
-      height: 24px;
       margin-right: 5px;
 
       &.image {
@@ -338,6 +339,56 @@
   }
 
   &.chat.drawer {
+
+    height: initial;
+    width: 320px;
+
+    .ui.segment.group.participants {
+      padding: 8px 10px;
+
+      .ui.im.avatar {
+        margin-right: 3px;
+      }
+
+      .icon.write.group-edit, .dots {
+        font-size: 24px;
+        color: $dp-greyscale-450;
+        margin-top: 4px;
+        display: inline-block;
+        height: 24px;
+        position: relative;
+        vertical-align: middle;
+      }
+
+      .icon.write.group-edit {
+        float: right;
+        cursor: pointer;
+      }
+
+      &.expanded {
+
+        padding: 8px 20px;
+
+        .ui.im.avatar {
+          margin-right: 10px;
+          margin-bottom: 5px;
+          margin-top: 5px;
+        }
+
+        .icon.write.group-edit {
+          color: $dp-greyscale-450;
+          display: block;
+          text-align: right;
+          width: 100%;
+          float: none;
+        }
+        .dots {
+          display: none;
+        }
+      }
+
+    }
+
     .box {
       min-width: 300px;
       height: 425px;
@@ -353,6 +404,7 @@
       }
 
       .ui.segments {
+
         padding: 0 20px;
         border: 0;
         box-shadow: none;

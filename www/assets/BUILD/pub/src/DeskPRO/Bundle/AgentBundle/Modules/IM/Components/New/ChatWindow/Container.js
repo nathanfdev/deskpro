@@ -1,7 +1,11 @@
 import React, { PropTypes } from 'react';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
+import classNames from 'classnames';
+import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import { loadMessages } from '../../../Actions/messagesActions';
 import MessageList from './MessageList';
 import EmojiBox from './EmojiBox';
@@ -36,7 +40,8 @@ class Container extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      emojiOpened: false
+      emojiOpened:       false,
+      expandGroupHeader: false
     };
     this.shouldScrollBottom = true;
 
@@ -129,6 +134,47 @@ class Container extends React.Component {
     this.props.onAttach();
   }
 
+  groupHeader() {
+    let agents = this.props.current.get('agents');
+    agents = this.state.expandGroupHeader ? agents : agents.slice(0, 9);
+    if (this.props.current.get('chat_type') === 'group') {
+      return (
+        <Segment vertical className={classNames('group participants', { expanded: this.state.expandGroupHeader })}>
+          <i
+            className="write icon group-edit"
+            onClick={() => this.setState({ expandGroupHeader: !this.state.expandGroupHeader })}
+          />
+          {agents.map(
+            (agentId) => {
+              if (agentId === this.props.me.get('id')) {
+                return null;
+              }
+
+              const className = ['ui avatar image im'];
+              const agent = this.props.agents.get(agentId);
+              if (!agent.get('online')) {
+                className.push('offline');
+              }
+
+              return (<PersonAvatar
+                key={`agent_${agentId}`}
+                person={agent}
+                size={24}
+                className={classNames(className)}
+                color={chooseColor(agent)}
+              />);
+            }
+          )}
+          <span className="dots">
+            {this.props.current.get('agents').size > 9 && !this.state.expandGroupHeader ? '...' : null}
+          </span>
+        </Segment>
+      );
+    }
+
+    return null;
+  }
+
   render() {
     const { current, isOpen, messages, me, agents, loadingMessages } = this.props;
 
@@ -141,6 +187,7 @@ class Container extends React.Component {
         <ClickOut onClickOut={() => this.clickOut()} ignoreNodes={['.emoji.box']}>
           <div className="ui popup left bottom im chat drawer">
             <div className="im header">{this.getHeader()}</div>
+            {this.groupHeader()}
             <div className="box">
               <Scrollable vertical ref={(c) => { this.scrollarea = c; }}>
                 <MessageList
@@ -158,7 +205,10 @@ class Container extends React.Component {
               <form onSubmit={this.handleSubmit}>
                 <input value={this.state.message} type="text" onChange={this.handleChange} />
                 <i className="fa fa-paperclip reply-icon" onClick={this.handleAttach} />
-                <i className="fa fa-smile-o reply-icon emoji trigger" onClick={this.openEmoji} ref={(c) => { this.emoji = c; }} />
+                <i
+                  className="fa fa-smile-o reply-icon emoji trigger"
+                  onClick={this.openEmoji} ref={(c) => { this.emoji = c; }}
+                />
               </form>
               <EmojiBox
                 isOpen={this.state.emojiOpened}
