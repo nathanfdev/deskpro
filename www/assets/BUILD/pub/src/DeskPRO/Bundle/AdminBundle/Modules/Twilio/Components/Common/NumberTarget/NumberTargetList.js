@@ -33,6 +33,7 @@ class NumberTargetList extends React.Component {
               positionAt="left bottom"
               id={1}
               zIndex={99999}
+              autoClose
               content={(
                 <div>
                   {popupTargets.map((target, index) => (

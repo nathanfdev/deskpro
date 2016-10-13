@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\People\PasswordPolicyValidator;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
@@ -601,6 +602,14 @@ GroupSequenceProviderInterface
      * @var ChatConversation[]|ArrayCollection
      */
     protected $chats;
+
+    /**
+     * @var AgentData
+     *
+     * @Assert\IsNull(groups="User")
+     * @Assert\Valid()
+     */
+    protected $agentData;
 
     /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
@@ -3749,6 +3758,30 @@ GroupSequenceProviderInterface
         });
     }
 
+    /**
+     * @param AgentData $agentData
+     *
+     * @return $this
+     */
+    public function setAgentData(AgentData $agentData = null)
+    {
+        if ($agentData) {
+            $agentData->setPerson($this);
+        }
+
+        $this->setModelField('agentData', $agentData);
+
+        return $this;
+    }
+
+    /**
+     * @return AgentData
+     */
+    public function getAgentData()
+    {
+        return $this->agentData;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -4453,6 +4486,13 @@ GroupSequenceProviderInterface
                 'mappedBy'     => 'person',
             ]
         );
+
+        $metadata->mapOneToOne([
+            'fieldName'    => 'agentData',
+            'targetEntity' => AgentData::class,
+            'mappedBy'     => 'person',
+            'cascade'      => ['persist', 'remove'],
+        ]);
     }
 
     public function clear()

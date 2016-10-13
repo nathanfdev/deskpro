@@ -74,12 +74,12 @@ class LimitsService
     protected $key;
 
     /**
-     * LimitsService constructor.
+     * Constructor.
      *
-     * @param SettingsResolver                                               $resolver
-     * @param TokenStorageInterface                                          $storage
-     * @param \DeskPRO\Bundle\AppBundle\Limits\Adapter\LimitAdapterInterface $limit_adapter
-     * @param EntityManager                                                  $em
+     * @param SettingsResolver      $resolver
+     * @param TokenStorageInterface $storage
+     * @param LimitAdapterInterface $limit_adapter
+     * @param EntityManager         $em
      */
     public function __construct(
         SettingsResolver $resolver,
@@ -134,14 +134,11 @@ class LimitsService
      */
     protected function getKey()
     {
-        if (!$this->key) {
-            $credentials = $this->storage->getToken()->getCredentials();
-            /** @var \Application\DeskPRO\EntityRepository\ApiKey $repository */
-            $repository = $this->em->getRepository('\Application\DeskPRO\Entity\ApiKey');
-            $this->key  = $repository->findByKeyString($credentials);
-        }
+        $credentials = $this->storage->getToken()->getCredentials();
+        /** @var \Application\DeskPRO\EntityRepository\ApiKey $repository */
+        $repository = $this->em->getRepository(ApiKey::class);
 
-        return $this->key;
+        return $repository->findByKeyString($credentials);
     }
 
     public function checkLimits()
@@ -163,6 +160,11 @@ class LimitsService
         }
     }
 
+    /**
+     * @param int $interval
+     *
+     * @return KeyLimit
+     */
     public function createLimit($interval = AbstractLimit::INTERVAL_HOUR)
     {
         switch ($interval) {

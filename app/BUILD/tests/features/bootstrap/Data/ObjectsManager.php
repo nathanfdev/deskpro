@@ -86,6 +86,7 @@ use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
@@ -99,6 +100,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskList;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use DeskPRO\Bundle\AppBundle\Entity\TaskSubtask;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioAccount;
+use DeskPRO\Bundle\AppBundle\Entity\TwilioAsset;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioNumber;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioQueue;
 use Doctrine\ORM\EntityManager;
@@ -313,6 +315,7 @@ class ObjectsManager
             'Agent'                  => [Factory\CommonFactories::class, 'person', 'agent'],
             'Admin'                  => [Factory\CommonFactories::class, 'person', 'admin'],
             'PersonEmail'            => [Factory\SimpleFactory::class, 'create', PersonEmail::class],
+            'AgentData'              => [Factory\SimpleFactory::class, 'create', AgentData::class],
             'LabelTicket'            => [Factory\SimpleFactory::class, 'create', LabelTicket::class],
             'LabelDef'               => [Factory\SimpleFactory::class, 'create', LabelDef::class],
             'LabelFeedback'          => [Factory\SimpleFactory::class, 'create', LabelFeedback::class],
@@ -325,6 +328,7 @@ class ObjectsManager
             'TwilioAccount'          => [Factory\SimpleFactory::class, 'create', TwilioAccount::class],
             'TwilioNumber'           => [Factory\SimpleFactory::class, 'create', TwilioNumber::class],
             'TwilioQueue'            => [Factory\SimpleFactory::class, 'create', TwilioQueue::class],
+            'TwilioAsset'            => [Factory\SimpleFactory::class, 'create', TwilioAsset::class],
         ];
     }
 
@@ -340,6 +344,7 @@ class ObjectsManager
             'User'                   => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => false]],
             'Agent'                  => [$this, 'find', Person::class, ['is_agent' => true, 'can_admin' => false]],
             'Admin'                  => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => true]],
+            'AgentData'              => [$this, 'find', AgentData::class],
             'Ticket'                 => [$this, 'find', Ticket::class],
             'TicketLayout'           => [$this, 'find', TicketLayout::class],
             'TicketMessage'          => [$this, 'find', TicketMessage::class],
@@ -412,6 +417,7 @@ class ObjectsManager
             'TwilioAccount'          => [$this, 'find',  TwilioAccount::class],
             'TwilioNumber'           => [$this, 'find',  TwilioNumber::class],
             'TwilioQueue'            => [$this, 'find',  TwilioQueue::class],
+            'TwilioAsset'            => [$this, 'find',  TwilioAsset::class],
         ];
     }
 }

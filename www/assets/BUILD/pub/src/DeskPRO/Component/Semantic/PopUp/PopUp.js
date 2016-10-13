@@ -47,10 +47,8 @@ class PopUp extends React.Component {
     if (this.props.opened) {
       return;
     }
-    const self = this;
-    this.timeout = setTimeout(() => {
-      self.closePopup();
-    }, 500);
+
+    this.timeout = setTimeout(() => this.closePopup(), 100);
   };
 
   openPopup = () => {
@@ -101,9 +99,10 @@ class PopUp extends React.Component {
       <div
         style={{ display: 'inline-block' }}
         className={classNames({ active: isOpen })}
-        ref={c => { this.button = c; }}
+        ref={(c) => { this.button = c; }}
         onClick={this.openPopup}
         onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
       >
         {children}
         <Detached

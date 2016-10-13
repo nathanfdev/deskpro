@@ -136,6 +136,10 @@ class PersonType extends AbstractType
             ->add('primary_team', EntityType::class, [
                 'class' => AgentTeam::class,
             ])
+            ->add('agent_data', PersonAgentDataType::class, [
+                'property_path' => 'agentData',
+                'required'      => false,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncEmails']);

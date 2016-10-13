@@ -12,8 +12,16 @@ class BlurInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: props.value || ''
+      originalValue: '',
+      tempValue:     ''
     };
+  }
+
+  componentWillMount() {
+    this.setState({
+      originalValue: this.props.value || '',
+      tempValue:     this.props.value || ''
+    });
   }
 
   componentDidMount() {
@@ -32,15 +40,19 @@ class BlurInput extends React.Component {
 
   onChange = (event) => {
     this.setState({
-      value: event.currentTarget.value
+      tempValue: event.currentTarget.value
     });
   };
 
   onBlur = () => {
-    const { value, onChange } = this.props;
+    const { onChange } = this.props;
+    const { originalValue, tempValue } = this.state;
 
-    if (this.state.value !== (value || '')) {
-      onChange(this.state.value);
+    if (tempValue !== originalValue) {
+      onChange(tempValue);
+      this.setState({
+        originalValue: tempValue
+      });
     }
   };
 
@@ -49,7 +61,7 @@ class BlurInput extends React.Component {
       <input
         ref={(c) => { this.input = c; }}
         {...this.props}
-        value={this.state.value}
+        value={this.state.tempValue}
         onChange={this.onChange}
       />
     );

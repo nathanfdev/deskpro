@@ -19,18 +19,20 @@ npm install
 npm run bower-install
 echo ".. done"
 
-echo ">> Building web assets"
-npm run build:prod
-echo ".. done"
-echo
-
 echo ">> Installing new web dependencies (dev)"
 cd $DIR_ROOT/www/assets/BUILD/pub
 npm install
 echo ".. done"
 echo
 
+echo ">> Building web assets"
+cd $DIR_ROOT/www/assets/BUILD/web
+npm run build:prod
+echo ".. done"
+echo
+
 echo ">> Building new web assets"
+cd $DIR_ROOT/www/assets/BUILD/pub
 npm run gulp-prod
 npm run test:visual:build
 echo ".. done"
