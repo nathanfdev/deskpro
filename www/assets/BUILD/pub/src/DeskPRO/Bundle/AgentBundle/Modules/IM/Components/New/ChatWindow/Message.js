@@ -13,15 +13,14 @@ class Message extends React.Component
 
   static renderSeparator(dateCreated) {
     const date = moment(dateCreated);
-    let fromNow;
-    if (date.fromNow(true) === 'a day') {
-      fromNow = 'yesterday';
-    } else {
-      fromNow = date.fromNow();
+    const now = moment();
+    let today = false;
+    if (now.dayOfYear() === date.dayOfYear() && now.year() === date.year()) {
+      today = true;
     }
     return (
-      <div className="ui horizontal divider">
-        <span>{`${fromNow} ${date.format('MMM. D')}`}</span>
+      <div className="ui date separator">
+        <span>{today ? date.format('Do MMM YYYY') : 'Today'}</span>
       </div>
     );
   }

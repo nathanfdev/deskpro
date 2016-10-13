@@ -69,6 +69,7 @@ storiesOf('Agent: IM', module)
                   onChange={action('reply')}
                   onAttach={action('attach')}
                   clickOut={action('clickout')}
+                  markNewMessages={action('mark messages')}
                 />
               </TopBarRecentImList>
             </span>
