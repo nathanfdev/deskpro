@@ -36,7 +36,7 @@ class HttpVerifyRequirementsBootTask
     {
         // If installed, we render check requirements
         if (!$env->getConfig('database.host') && !$env->getConfig('database.0.host')) {
-            self::renderServerCheckPage();
+            $this->renderServerCheckPage();
             exit;
         }
 
@@ -67,7 +67,7 @@ class HttpVerifyRequirementsBootTask
         }
     }
 
-    public static function renderServerCheckPage()
+    protected function renderServerCheckPage()
     {
         $checker = require __DIR__.'/../../SoftwareRequirements/load_checker.php';
 

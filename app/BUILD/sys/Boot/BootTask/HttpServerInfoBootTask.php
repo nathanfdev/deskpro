@@ -143,7 +143,20 @@ class HttpServerInfoBootTask implements BootTaskInterface
                 exit;
 
             case 'check_requirements':
-                HttpVerifyRequirementsBootTask::renderServerCheckPage();
+                $checker = require __DIR__.'/../../SoftwareRequirements/load_checker.php';
+
+                if (isset($_GET['encode-output'])) {
+                    header('Content-Type: text/plain');
+                    echo str_repeat('-', 25).'BEGIN'.str_repeat('-', 25).PHP_EOL;
+                    echo base64_encode(serialize($checker));
+                    echo PHP_EOL;
+                    echo str_repeat('-', 25).'END'.str_repeat('-', 25).PHP_EOL;
+                    exit;
+                }
+
+                $majorProblems = $checker->getFailedRequirements();
+                $minorProblems = $checker->getFailedRecommendations();
+                require __DIR__.'/../../Resources/views/requirements.php';
                 exit;
 
             case 'opcache':
