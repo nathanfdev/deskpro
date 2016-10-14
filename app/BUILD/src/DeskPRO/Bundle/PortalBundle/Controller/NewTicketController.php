@@ -86,11 +86,25 @@ class NewTicketController extends AbstractController
             'hide_department_field' => (bool) $request->attributes->getInt('department_id'),
         ];
 
+        if ($request->isMethod('get') && $request->query->count()) {
+            // to set form default values from request query
+            $formOptions['validation_groups']             = false;
+            $formOptions['csrf_protection']               = false;
+            $formOptions['csrf_double_submit_protection'] = false;
+            $formOptions['allow_extra_fields']            = true;
+        }
+
         $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
         $form->handleRequest($request);
 
         $rerendering       = $form->has('rerender_form');
         $rerendering_saved = $request->attributes->get('rerender-form', false);
+
+        if (!$form->isSubmitted() && $request->query->has('ticket')) {
+            // set default values
+            // using the string constant to acquire data from query instead of Form::getName for BC
+            $form->submit($request->query->get('ticket') ?: []);
+        }
 
         if ($form->isValid()) {
             // dont process if user hit "more attachments"
