@@ -26,16 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
-use Application\DeskPRO\Usersource\UsersourceManager;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -44,18 +41,18 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class UsersourceListener implements EventSubscriberInterface
 {
     /**
-     * @var UsersourceManager
+     * @var EntityManager
      */
-    private $usersource_manager;
+    private $em;
 
     /**
      * Constructor.
      *
-     * @param UsersourceManager $usersource_manager
+     * @param EntityManager $em
      */
-    public function __construct(UsersourceManager $usersource_manager)
+    public function __construct(EntityManager $em)
     {
-        $this->usersource_manager = $usersource_manager;
+        $this->em = $em;
     }
 
     /**
@@ -80,7 +77,10 @@ class UsersourceListener implements EventSubscriberInterface
             return;
         }
 
-        $person = $this->usersource_manager->findPersonByEmail($request->getQuery());
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+        $personRepo = $this->em->getRepository(Person::class);
+        $person     = $personRepo->findOneByEmail($request->getQuery());
+
         if (!$person) {
             return;
         }
