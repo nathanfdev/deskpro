@@ -13,6 +13,9 @@ class AgentList extends AbstractList {
   getAvatar = AvatarHelper.renderAgentAvatar;
 
   getItem(agent) {
+    if (agent.get('id') === this.props.me.get('id')) {
+      return null;
+    }
     const notificationCount = this.props.notifications.get(`${agent.get('id')}`) || 0;
     const className = ['im', 'agent'];
     if (!agent.get('online')) {

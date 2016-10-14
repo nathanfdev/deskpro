@@ -69,11 +69,11 @@ export default class IMOverlay extends React.Component {
 
 
   getAgentsTab() {
-    const { agents, notifications, onParticipantClick, agentsLoaded } = this.props;
+    const { agents, notifications, onParticipantClick, agentsLoaded, me } = this.props;
     const content = (
       <Loader loaded={agentsLoaded} opacity={0} width={4} color="#4696dc">
         <Scrollable vertical>
-          <AgentList agents={agents} notifications={notifications} onParticipantClick={onParticipantClick} />
+          <AgentList agents={agents} notifications={notifications} onParticipantClick={onParticipantClick} me={me} />
         </Scrollable>
       </Loader>
     );

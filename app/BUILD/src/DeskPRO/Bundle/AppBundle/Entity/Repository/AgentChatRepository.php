@@ -56,7 +56,7 @@ class AgentChatRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('ac');
         $qb
-            ->innerJoin('App:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
+            ->innerJoin(AgentChatParticipant::class, 'acp', 'WITH', 'ac.id = acp.chat')
             ->andWhere('acp.person = :me')
             ->andWhere('ac.type = :type')
             ->setParameter('me', $me)
