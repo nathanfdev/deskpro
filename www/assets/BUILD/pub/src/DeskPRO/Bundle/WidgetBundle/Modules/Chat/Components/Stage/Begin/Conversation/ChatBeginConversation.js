@@ -30,20 +30,26 @@ export class ChatBeginConversation extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.customFields !== this.props.customFields || newProps.errors || newProps.submit) {
+    const { customFields, customFieldsLoaded } = this.props;
+
+    if (newProps.customFields !== customFields
+        || newProps.customFieldsLoaded !== customFieldsLoaded
+        || newProps.errors
+        || newProps.submit) {
       this.prepareFormFields(newProps);
     }
   }
 
   onSubmit = () => {
-    const { errors } = this.props;
+    const { errors, onSubmit } = this.props;
+    const { fields, current } = this.state;
 
-    if (!errors && this.state.fields[this.state.current + 1]) {
+    if (!errors && fields[current + 1]) {
       this.setState({
-        current: this.state.current + 1
+        current: current + 1
       });
     } else {
-      this.props.onSubmit();
+      onSubmit();
     }
   };
 
@@ -126,13 +132,16 @@ export class ChatBeginConversation extends React.Component {
   isNotHiddenField = customField => !this.isHiddenField(customField);
 
   render() {
-    if (!this.props.customFieldsLoaded || !this.state.fields.length) {
+    const { fields, current } = this.state;
+    const { customFieldsLoaded } = this.props;
+
+    if (!customFieldsLoaded || !fields.length) {
       return <ChatBeginLoadingSpinner />;
     }
 
     return (
       <div>
-        {this.state.fields[this.state.current]}
+        {fields[current]}
       </div>
     );
   }

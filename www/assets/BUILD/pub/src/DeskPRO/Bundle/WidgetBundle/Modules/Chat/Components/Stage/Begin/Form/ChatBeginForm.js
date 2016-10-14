@@ -58,11 +58,10 @@ export class ChatBeginForm extends React.Component {
             <div className="button-label">
               {submit
                 ? <div className="spinner"><i /></div>
-                : <input
-                  type="submit"
-                  value={portalPhrases.get('portal.chat.start')}
-                  className="dpdesignportal-button dpdesignportal-button-wide"
-                />
+                :
+                <button className="dpdesignportal-button dpdesignportal-button-wide">
+                  {portalPhrases.get('portal.chat.start')}
+                </button>
               }
             </div>
           </form>

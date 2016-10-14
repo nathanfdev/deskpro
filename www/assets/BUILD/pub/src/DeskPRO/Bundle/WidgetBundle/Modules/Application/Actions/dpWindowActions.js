@@ -17,7 +17,7 @@ import {
 } from '../Selectors/dpWindow';
 import { chatIdSelector, needValidateEmailSelector } from '../../Chat/Selectors/chat';
 import { loadNewTicketForm } from '../../Ticket/Actions/ticketActions';
-import { history, getLocation } from '../../../Services/history';
+import { history } from '../../../Services/history';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import $ from 'jquery';
 import lscache from 'lscache';
@@ -113,16 +113,10 @@ export const openWidget = createAction(
     return null;
   }
 );
+
+// alias for widget open
 export const reopenWidget = createAction('WIDGET_REOPEN', () => dispatch => {
-  getLocation(location => {
-    // if history location was changed then just reopen widget, no need to resolve path
-    // /chat is default path
-    if (location.pathname !== '/chat') {
-      dispatch(windowResize());
-    } else {
-      dispatch(openWidget());
-    }
-  });
+  dispatch(openWidget());
 
   return null;
 });

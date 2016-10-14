@@ -29,7 +29,7 @@ export class UserInfoForm extends React.Component {
           <FieldErrors errors={errors} name={field} />
           {isSubmit
             ? <div className="spinner"><i /></div>
-            : <input type="submit" value="Go" />
+            : <button>Go</button>
           }
         </form>
       </div>
