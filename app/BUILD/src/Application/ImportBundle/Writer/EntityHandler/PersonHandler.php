@@ -115,6 +115,9 @@ class PersonHandler extends AbstractEntityHandler
             if (!in_array($emailEntity->getEmail(), $model->getEmails())) {
                 $this->logger->debug("`{$emailEntity->getEmail()}` email was not found in the new email list, removing.");
                 $entity->getEmails()->removeElement($emailEntity);
+                if ($entity->getPrimaryEmailAddress() === $emailEntity->getEmail()) {
+                    $entity->setPrimaryEmail(null);
+                }
             }
         }
 
@@ -124,8 +127,8 @@ class PersonHandler extends AbstractEntityHandler
         }
 
         // update common props
-        $this->helpers->getUserGroupHelper()->updateUserGroups($model, $entity);
-        $this->helpers->getUserGroupHelper()->updateAgentGroups($model, $entity);
+        $this->helpers->getUserGroupHelper()->updateUserGroupsByModel($model, $entity);
+        $this->helpers->getUserGroupHelper()->updateAgentGroupsByModel($model, $entity);
         $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getPersonCustomDefMapper(), $model, $entity);
         $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelPerson::class);
 

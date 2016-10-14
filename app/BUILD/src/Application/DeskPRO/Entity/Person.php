@@ -2530,12 +2530,12 @@ GroupSequenceProviderInterface
      */
     public function addEmailAddressString($email)
     {
-        $email_obj          = new PersonEmail();
-        $email_obj['email'] = $email;
+        $emailObj = new PersonEmail();
+        $emailObj->setEmail($email);
 
-        $this->addEmailAddress($email_obj);
+        $this->addEmailAddress($emailObj);
 
-        return $email_obj;
+        return $emailObj;
     }
 
     /**

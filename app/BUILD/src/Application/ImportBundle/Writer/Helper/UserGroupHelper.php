@@ -75,10 +75,23 @@ class UserGroupHelper
      * @param UsergroupAwareModelInterface $model
      * @param mixed                        $entity
      */
-    public function updateUserGroups(UsergroupAwareModelInterface $model, $entity)
+    public function updateUserGroupsByModel(UsergroupAwareModelInterface $model, $entity)
     {
+        $this->updateUserGroups($entity, $model->getUserGroups());
+    }
+
+    /**
+     * @param array $modelUserGroups
+     * @param mixed $entity
+     */
+    public function updateUserGroups($entity, array $modelUserGroups = [])
+    {
+        if (!$modelUserGroups) {
+            $modelUserGroups = [Usergroup::EVERYONE];
+        }
+
         // add new user groups
-        foreach ($model->getUserGroups() as $groupName) {
+        foreach ($modelUserGroups as $groupName) {
             $entity->addUsergroup($this->findOrCreateUserGroup($groupName));
         }
 
@@ -88,7 +101,7 @@ class UserGroupHelper
             if ($usergroup->isAgentGroup()) {
                 continue;
             }
-            if (!in_array($usergroup->getSysName(), $model->getUserGroups()) && !in_array($usergroup->getTitle(), $model->getUserGroups())) {
+            if (!in_array($usergroup->getSysName(), $modelUserGroups) && !in_array($usergroup->getTitle(), $modelUserGroups)) {
                 $entity->getUsergroups()->removeElement($usergroup);
             }
         }
@@ -98,7 +111,7 @@ class UserGroupHelper
      * @param Model\Person  $model
      * @param Entity\Person $entity
      */
-    public function updateAgentGroups(Model\Person $model, Entity\Person $entity)
+    public function updateAgentGroupsByModel(Model\Person $model, Entity\Person $entity)
     {
         // add new agent groups
         foreach ($model->getAgentGroups() as $groupName) {

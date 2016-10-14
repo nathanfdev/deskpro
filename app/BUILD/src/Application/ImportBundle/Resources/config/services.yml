@@ -17,6 +17,7 @@ services:
       - "@dp.importer.writer.entity_handler_registry"
       - "@doctrine.orm.entity_manager"
       - "@deskpro.search.entity_listener"
+      - "@serializer"
       - "@dp.importer_logger"
 
   dp.importer:
