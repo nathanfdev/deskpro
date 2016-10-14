@@ -25,7 +25,8 @@ class Container extends React.Component {
     messages:        PropTypes.object,
     dispatch:        PropTypes.func,
     loadingMessages: PropTypes.bool.isRequired,
-    markNewMessages: PropTypes.func
+    markNewMessages: PropTypes.func,
+    openGroupDrawer: PropTypes.func
   };
 
   static defaultProps = {
@@ -33,6 +34,9 @@ class Container extends React.Component {
 
     },
     onSubmit() {
+
+    },
+    openGroupDrawer() {
 
     }
   };
@@ -63,14 +67,21 @@ class Container extends React.Component {
   }
 
   getAgentHeader(chat) {
+    const { agents, me, openGroupDrawer } = this.props;
     let agentId;
     for (const id of chat.get('agents')) {
-      if (id !== this.props.me.get('id')) {
+      if (id !== me.get('id')) {
         agentId = id;
         break;
       }
     }
-    return this.props.agents.getIn([agentId, 'name']);
+    const agent =  agents.get(agentId);
+    return (
+      <span className="im create group" onClick={() => { openGroupDrawer([agent.get('id')]); }}>
+        {agents.getIn([agentId, 'name'])}
+        <i className="icon group add" />
+      </span>
+    );
   }
 
   getDepartmentHeader(chat) {

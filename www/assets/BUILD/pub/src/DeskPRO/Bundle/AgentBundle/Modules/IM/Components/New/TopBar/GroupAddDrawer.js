@@ -48,7 +48,6 @@ class GroupAddDrawer extends React.Component
 
   constructor(props) {
     super(props);
-
     this.state = {
       checkedAgents:      props.checkedAgents,
       checkedAgentsCount: GroupAddDrawer.recalculateChecked(props.checkedAgents),
@@ -56,8 +55,15 @@ class GroupAddDrawer extends React.Component
     };
     this.agentClick  = this.agentClick.bind(this);
     this.createGroup = this.createGroup.bind(this);
-    this.clickOut    = this.clickOut.bind(this);
     this.onChange    = this.onChange.bind(this);
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({
+      checkedAgents:      props.checkedAgents,
+      checkedAgentsCount: GroupAddDrawer.recalculateChecked(props.checkedAgents),
+      groupName:          ''
+    });
   }
 
   onChange(event) {
@@ -89,10 +95,6 @@ class GroupAddDrawer extends React.Component
 
   createGroup() {
     this.props.createGroup(Object.keys(this.state.checkedAgents), this.state.groupName);
-  }
-
-  clickOut() {
-    this.props.clickOut();
   }
 
   renderAgent(agent) {
@@ -128,7 +130,7 @@ class GroupAddDrawer extends React.Component
         positionTarget={target}
         positionMy="center-17 top-2"
       >
-        <ClickOut onClickOut={this.clickOut}>
+        <ClickOut onClickOut={() => this.props.clickOut()}>
           <div className="ui popup im center bottom">
             <div className="header">Agent IM</div>
             <div className="im add group">

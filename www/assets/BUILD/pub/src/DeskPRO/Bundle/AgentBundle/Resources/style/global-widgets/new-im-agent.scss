@@ -49,6 +49,11 @@
     padding-right: 15px;
     height: 40px;
     vertical-align: middle;
+
+    .im.create.group .icon {
+      margin-left: 5px;
+      cursor: pointer;
+    }
   }
 
   .ui.segments.im {

@@ -9,18 +9,34 @@ const initialState = {
   overlayShown:   false,
   chating:        false,
   groupCreation:  false,
-  manuallyClosed: {}
+  manuallyClosed: {},
+  checkedAgents:  {}
 };
 
 export default createReducer(initialState, {
+  [actions.openChat]:                 state => state.mergeIn([], { overlayShown: false, chating: true }),
+  [actions.closeChat]:                state => state.merge({ chating: false, current: Immutable.fromJS({}) }),
+  [actions.closeGroupDrawer]:         state => state.mergeIn([], { groupCreation: false, checkedAgents: {} }),
+  [actions.markChatAsManuallyClosed]: (state, payload) => state.setIn(['manuallyClosed', payload], true),
+  [actions.toggleGroupDrawer]:        state => state.set('groupCreation', !state.get('groupCreation')),
+
   [actions.startChat]: async({
     success: (state, payload) => state.set('current', Immutable.fromJS(payload))
   }),
-  [actions.toggleOverlay]:            state => state.mergeIn([], { overlayShown: !state.get('overlayShown'), groupCreation: false }),
-  [actions.openChat]:                 state => state.mergeIn([], { overlayShown: false, chating: true }),
-  [actions.closeChat]:                state => state.merge({ chating: false, current: Immutable.fromJS({}) }),
-  [actions.toggleGroupDrawer]:        state => state.set('groupCreation', !state.get('groupCreation')),
-  [actions.openGroupDrawer]:          state => state.mergeIn([], { overlayShown: false, chating: false, groupCreation: true }),
-  [actions.closeGroupDrawer]:         state => state.set('groupCreation', false),
-  [actions.markChatAsManuallyClosed]: (state, payload) => state.setIn(['manuallyClosed', payload], true)
+  [actions.toggleOverlay]: state => state.mergeIn([], {
+    overlayShown:  !state.get('overlayShown'),
+    groupCreation: false
+  }),
+  [actions.openGroupDrawer]: (state, payload) => {
+    const diff = {
+      overlayShown:  false,
+      chating:       false,
+      groupCreation: true,
+      checkedAgents: {}
+    };
+    if (payload && Array.isArray(payload)) {
+      payload.forEach((item) => { diff.checkedAgents[item] = true; return null; });
+    }
+    return state.mergeIn([], diff);
+  }
 });
