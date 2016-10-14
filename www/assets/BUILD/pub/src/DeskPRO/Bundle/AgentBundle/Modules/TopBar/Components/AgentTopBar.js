@@ -29,6 +29,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   agents:              collectionSelectorFactory('Person', 'agents')(state),
   chatDepartments:     collectionSelectorFactory('Department', 'all_tickets')(state),
   recentChats:         collectionSelectorFactory('AgentChat', 'recent')(state),
+  groupChats:          collectionSelectorFactory('AgentChat', 'group')(state),
   myDepartments:       collectionSelectorFactory('Department', 'my_tickets')(state),
   teams:               collectionSelectorFactory('AgentTeam', 'my')(state),
   me:                  meSelector(state),
@@ -40,6 +41,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   loadingMessages:     state.IM.messages.get('loadingMessages'),
   updatingMessages:    state.IM.messages.get('updatingMessages'),
   recentLoaded:        isLoadedCollectionSelectorFactory('AgentChat', 'recent')(state),
+  groupLoaded:         isLoadedCollectionSelectorFactory('AgentChat', 'group')(state),
   teamsLoaded:         isLoadedCollectionSelectorFactory('AgentTeam', 'my')(state),
   myDepartmentsLoaded: isLoadedCollectionSelectorFactory('Department', 'my_tickets')(state),
   agentsLoaded:        isLoadedCollectionSelectorFactory('Person', 'agents')(state),
@@ -57,9 +59,11 @@ export class AgentTopBarContainer extends SeparateComponent {
     myDepartments:       PropTypes.object.isRequired,
     teams:               PropTypes.object.isRequired,
     recentChats:         PropTypes.object.isRequired,
+    groupChats:          PropTypes.object.isRequired,
     messages:            PropTypes.object,
     current:             PropTypes.object,
     recentLoaded:        PropTypes.bool.isRequired,
+    groupLoaded:         PropTypes.bool.isRequired,
     loadingMessages:     PropTypes.bool.isRequired,
     updatingMessages:    PropTypes.bool.isRequired,
     chating:             PropTypes.bool.isRequired,
@@ -95,6 +99,11 @@ export class AgentTopBarContainer extends SeparateComponent {
       'AgentChat',
       'DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=5',
       'recent'
+    ));
+    this.props.dispatch(loadFromApi(
+      'AgentChat',
+      'DP_API/agent_chats/groups',
+      'group'
     ));
   }
 
@@ -274,6 +283,7 @@ export class AgentTopBar extends React.Component {
     teams:               PropTypes.object.isRequired,
     me:                  PropTypes.object.isRequired,
     recentChats:         PropTypes.object.isRequired,
+    groupChats:          PropTypes.object.isRequired,
     notificationCount:   PropTypes.number,
     dispatch:            PropTypes.func.isRequired,
     updateVolume:        PropTypes.func,
@@ -299,6 +309,7 @@ export class AgentTopBar extends React.Component {
     chating:             PropTypes.bool.isRequired,
     overlayShown:        PropTypes.bool.isRequired,
     recentLoaded:        PropTypes.bool.isRequired,
+    groupLoaded:         PropTypes.bool.isRequired,
     teamsLoaded:         PropTypes.bool.isRequired,
     myDepartmentsLoaded: PropTypes.bool.isRequired,
     agentsLoaded:        PropTypes.bool.isRequired,
@@ -331,9 +342,9 @@ export class AgentTopBar extends React.Component {
   };
 
   render() {
-    const { groupCreation, teamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
+    const { groupLoaded, groupCreation, teamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
     const { current, chating, recentClick, messages, chatClickOut, participantClick, dispatch } = this.props;
-    const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
+    const { groupChats, agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
     const { createGroup, openGroupDrawer, markNewMessages, onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
     const { closeIframes, toggleViewMode, me, myDepartments, teams, recentChats, recentLoaded, overlayShown } = this.props;
 
@@ -384,9 +395,11 @@ export class AgentTopBar extends React.Component {
             isOpen={overlayShown}
             notifications={Immutable.fromJS({})}
             chats={recentChats}
+            groups={groupChats}
             toggleOverlay={toggleImOverlay}
             departmentsLoaded={myDepartmentsLoaded}
             recentLoaded={recentLoaded}
+            groupLoaded={groupLoaded}
           >
             <IMButton />
           </IMOverlay>

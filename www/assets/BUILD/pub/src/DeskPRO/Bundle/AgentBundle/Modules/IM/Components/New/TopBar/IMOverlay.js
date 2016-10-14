@@ -10,6 +10,7 @@ import {
   DepartmentList,
   AgentTeamList,
   RecentList,
+  GroupList,
   EveryoneSegment }
   from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
@@ -25,6 +26,7 @@ export default class IMOverlay extends React.Component {
     teams:              PropTypes.object.isRequired,
     notifications:      PropTypes.object.isRequired,
     chats:              PropTypes.object.isRequired,
+    groups:             PropTypes.object.isRequired,
     children:           PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     onRecentClick:      PropTypes.func.isRequired,
     onParticipantClick: PropTypes.func.isRequired,
@@ -34,7 +36,8 @@ export default class IMOverlay extends React.Component {
     recentLoaded:       PropTypes.bool.isRequired,
     teamsLoaded:        PropTypes.bool.isRequired,
     departmentsLoaded:  PropTypes.bool.isRequired,
-    agentsLoaded:       PropTypes.bool.isRequired
+    agentsLoaded:       PropTypes.bool.isRequired,
+    groupLoaded:        PropTypes.bool.isRequired
   };
 
   getRecentTab() {
@@ -82,9 +85,9 @@ export default class IMOverlay extends React.Component {
   }
 
   getGroupsTab() {
-    const { agents, departments, me, onParticipantClick, createNewGroup, teams } = this.props;
-    const { agentsLoaded, teamsLoaded, departmentsLoaded } = this.props;
-    const loaded = agentsLoaded && teamsLoaded && departmentsLoaded;
+    const { agents, departments, me, onParticipantClick, createNewGroup, teams, groups, onRecentClick } = this.props;
+    const { agentsLoaded, teamsLoaded, departmentsLoaded, groupLoaded } = this.props;
+    const loaded = agentsLoaded && teamsLoaded && departmentsLoaded && groupLoaded;
     const content = (
       <Loader loaded={loaded} opacity={0} width={4} color="#4696dc">
         <div style={{ height: '355px' }}>
@@ -98,8 +101,11 @@ export default class IMOverlay extends React.Component {
             <div className="ui divider" />
             <Header level={4} className="group-list" content="im groups" />
             <Segment className="new-im-group" raised vertical>
-              <span onClick={() => createNewGroup()}>+ create new im group</span>
+              <span onClick={() => createNewGroup()}>
+                {groups.size < 1 ? '+ create new im group' : '+ new'}
+              </span>
             </Segment>
+            {groups.size > 0 ? <GroupList agents={agents} onGroupClick={onRecentClick} groups={groups} me={me} /> : null}
             <div className="ui divider" />
             <Header level={4} className="group-list" content="department" />
             <DepartmentList agents={agents} departments={departments} me={me} onParticipantClick={onParticipantClick} />

@@ -347,6 +347,9 @@
       padding: 8px 10px;
 
       .ui.im.avatar {
+        &.offline {
+          opacity: 0.5;
+        }
         margin-right: 3px;
       }
 

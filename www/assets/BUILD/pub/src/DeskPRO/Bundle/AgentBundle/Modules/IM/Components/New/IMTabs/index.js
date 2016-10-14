@@ -5,3 +5,4 @@ export AvatarHelper from './AvatarHelper';
 export DepartmentList from './DepartmentList';
 export EveryoneSegment from './EveryoneSegment';
 export RecentList from './RecentList';
+export GroupList from './GroupList';

@@ -37,7 +37,6 @@ namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat as AgentChatEntity;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
@@ -49,12 +48,21 @@ use Doctrine\ORM\EntityRepository;
 class AgentChatRepository extends EntityRepository
 {
     /**
-     * @param PersonEntity $person
+     * @param Person $me
      *
      * @return AgentChatEntity[]
      */
-    public function findAllPersonChats(PersonEntity $person)
+    public function findGroupChats(Person $me)
     {
+        $qb = $this->createQueryBuilder('ac');
+        $qb
+            ->innerJoin('App:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
+            ->andWhere('acp.person = :me')
+            ->andWhere('ac.type = :type')
+            ->setParameter('me', $me)
+            ->setParameter('type', 'group');
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

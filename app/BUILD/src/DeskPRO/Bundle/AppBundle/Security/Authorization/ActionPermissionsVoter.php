@@ -107,9 +107,10 @@ class ActionPermissionsVoter extends Voter
     protected function fetchMetadata($method, $controller)
     {
         /** @var ClassMetadata $classMetadata */
-        $classMetadata  = $this->factory->getMetadataForClass(get_class($controller));
-        $methodMetadata = $classMetadata->methodMetadata[$method];
-        if (!$methodMetadata) {
+        $classMetadata = $this->factory->getMetadataForClass(get_class($controller));
+        if (!isset($classMetadata->methodMetadata[$method])
+            || !$methodMetadata = $classMetadata->methodMetadata[$method]
+        ) {
             throw new \LogicException('Looks like you are requested action without "Action" suffix. Please contact developers"');
         }
 
