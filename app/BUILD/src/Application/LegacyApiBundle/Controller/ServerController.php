@@ -445,6 +445,8 @@ class ServerController extends AbstractController implements ProtectedController
     public function getReportFileAction()
     {
         $server_report_file = new ServerReportFile($this->em);
+        $server_report_file->setSystemEntityManager($this->get('doctrine.orm.system_entity_manager'));
+        $server_report_file->setInstructionGenerator($this->get('dp_sys.alerts.instructions_generator'));
         $server_report_file->createArchive();
         $server_report_file->outputArchive();
     }
