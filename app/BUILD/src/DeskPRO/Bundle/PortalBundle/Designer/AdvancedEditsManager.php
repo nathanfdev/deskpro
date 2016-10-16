@@ -121,6 +121,22 @@ class AdvancedEditsManager
     }
 
     /**
+     * @param array $data
+     */
+    public function delete(array $data)
+    {
+        if (array_key_exists('custom_scss', $data)) {
+            $this->saveThemeSetAsset(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG, 'text/css', $this->getCustomScssCode());
+        }
+        if (array_key_exists('main_scss', $data)) {
+            $this->saveThemeSetAsset(self::MAIN_SCSS_ASSET_NAME, self::MAIN_SCSS_ASSET_TAG, 'text/css', file_get_contents($this->mainScssPath));
+        }
+        if (array_key_exists('javascript', $data)) {
+            $this->saveThemeSetAsset(self::CUSTOM_JS_ASSET_NAME, self::CUSTOM_JS_ASSET_TAG, 'text/javascript', '');
+        }
+    }
+
+    /**
      * @return bool
      */
     public function hasChangedCssFiles()
@@ -177,6 +193,11 @@ class AdvancedEditsManager
             }
         }
 
+        return $this->getCustomScssCode();
+    }
+
+    protected function getCustomScssCode()
+    {
         $scss = <<<'CODE'
 /*
     Use this template to add custom CSS to your site.
