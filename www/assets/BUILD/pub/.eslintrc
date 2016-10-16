@@ -72,7 +72,11 @@
       "error",
       {"forbid": ["any"]}
     ],
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "class-methods-use-this": [
+      "error",
+      { "exceptMethods": ["renderWidget"] }
+    ]
   },
   "plugins": [
     "react",
