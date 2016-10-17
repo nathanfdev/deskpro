@@ -101,7 +101,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             $url .= '/api?wsdl';
             $handle = @curl_init($url);
             @curl_setopt($handle,  CURLOPT_RETURNTRANSFER, true);
-            $cainfo = $context->getContainer()->get('kernel.root_dir')
+            $cainfo = $context->getContainer()->getParameter('kernel.root_dir')
                 .DIRECTORY_SEPARATOR
                 .'Resources'
                 .DIRECTORY_SEPARATOR
