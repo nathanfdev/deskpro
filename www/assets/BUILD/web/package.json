@@ -82,7 +82,7 @@
     "tmp:old-agent": "cpx \"compiled/Agent/**/*.js\" \"app-build/Agent\" && cpx \"compiled/DeskPRO/**/*.js\" \"app-build/DeskPRO\" && gulp prod",
     "build:prod": "npm run prebuild && webpack --progress --colors --display-error-details --config webpack-prod.config.js -p && npm run tmp:old-agent && npm run postbuild",
     "build:dev": "npm run prebuild && webpack --progress --colors --display-error-details && npm run tmp:old-agent && npm run postbuild",
-    "watch:webpack": "node webpack",
+    "watch:webpack": "node `./node_modules/.bin/webpack -w`",
     "watch:coffee": "coffee -o compiled/ -cw app/",
     "watch:js": "cpx \"app/**/*.js\" compiled -w -v",
     "watch": "parallelshell 'npm run watch:js' 'npm run watch:coffee' 'npm run watch:webpack'"
