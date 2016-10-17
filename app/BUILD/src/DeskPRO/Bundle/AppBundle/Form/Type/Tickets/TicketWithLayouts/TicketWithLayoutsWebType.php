@@ -36,6 +36,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -97,6 +99,14 @@ class TicketWithLayoutsWebType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddUiFields'], -1);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddRerenderField'], -1);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onResetRerenderFormData'], 100);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['visibility'] = $options['ticket_visibility'];
     }
 
     /**

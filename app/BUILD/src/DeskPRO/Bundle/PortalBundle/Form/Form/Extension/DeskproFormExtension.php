@@ -59,7 +59,7 @@ class DeskproFormExtension extends AbstractTypeExtension
                 // be present in the form data even though we've removed them from the actual form
                 return $options['saved_form_subrequest'];
             },
-            'extra_fields_message' => 'portal.forms.extra_fields',
+            'extra_fields_message' => 'portal.forms.error_extra_fields',
         ]);
     }
 

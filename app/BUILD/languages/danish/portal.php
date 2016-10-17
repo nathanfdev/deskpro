@@ -479,7 +479,7 @@ return [
     'portal.forms.error_upload_general'                     => 'Der opstod et problem med at uploade denne fil. Prøv igen.',
     'portal.forms.error_upload_html_size'                   => 'Filen er for stor.',
     'portal.forms.error_upload_ini_size'                    => 'Filen er for stor. Den maksimalt tilladte størrelse er {{limit}} {{suffix}}.',
-    'portal.forms.extra_fields'                             => 'Beklager, men der opstod en fejl under behandling af din anmodning. Prøv igen.',
+    'portal.forms.error_extra_fields'                       => 'Beklager, men der opstod en fejl under behandling af din anmodning. Prøv igen.',
     'portal.forms.label_add_attachment'                     => 'Tilføj endnu en vedhæftet fil',
     'portal.forms.label_captcha'                            => 'For at bevise du er et menneske, så angiv den tekst, du ser i CAPTCHA billedet',
     'portal.forms.label_category'                           => 'Kategori',
