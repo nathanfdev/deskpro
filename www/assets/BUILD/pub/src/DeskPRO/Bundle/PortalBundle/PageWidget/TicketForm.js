@@ -75,7 +75,28 @@ export class TicketForm extends PageWidget {
         }
 
         const layout = window.DESKPRO_TICKET_DISPLAY.getLayout(ticketReader.getDepartmentId());
-        const newFields = _.map(layout.getMatchingFields(ticketReader), (v) => {
+
+        let newFields = layout.getMatchingFields(ticketReader);
+        let filterFn;
+
+        switch ($formEl.find('form').data('visibility')) {
+          case 'view':
+            filterFn = i => (!!i.isVisibleOnView) || (!!i.isVisibleOnViewAlways);
+            break;
+          case 'edit':
+            filterFn = i => !!i.isVisibleOnEdit;
+            break;
+          case 'new':
+          default:
+            filterFn = i => !!i.isVisibleOnNew;
+            break;
+        }
+
+        if (filterFn) {
+          newFields = newFields.filter(filterFn);
+        }
+
+        newFields = _.map(newFields, (v) => {
           const id = v.id;
           switch (id) {
             case 'subject': return 'subject';
