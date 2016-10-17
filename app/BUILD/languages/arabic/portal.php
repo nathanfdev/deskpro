@@ -479,7 +479,7 @@ return [
     'portal.forms.error_upload_general'                     => 'كان هناك مشكلة في تحميل الملف . حاول مرة اخرى',
     'portal.forms.error_upload_html_size'                   => 'حجم المف كبير جدا',
     'portal.forms.error_upload_ini_size'                    => 'حجم الملف كبير جدا. الحد الاعلى المسموح هو  {{ limit }} {{ suffix }}.',
-    'portal.forms.extra_fields'                             => 'عفواً لقد كان هناك خطأ في تمرير طلبك حاول مرة اخرى',
+    'portal.forms.error_extra_fields'                       => 'عفواً لقد كان هناك خطأ في تمرير طلبك حاول مرة اخرى',
     'portal.forms.label_add_attachment'                     => 'اضف مرفق اخر',
     'portal.forms.label_captcha'                            => 'لتثبت انسانيتك . خبرنا عن النص الذي تشاهده في CAPTCHA image',
     'portal.forms.label_category'                           => 'تصنيفات',

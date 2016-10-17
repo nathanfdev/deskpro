@@ -479,7 +479,7 @@ return [
     'portal.forms.error_upload_general'                     => 'C\'è stato un problema nel caricare questi file. Riprova.',
     'portal.forms.error_upload_html_size'                   => 'Il file è troppo grande.',
     'portal.forms.error_upload_ini_size'                    => 'Il file è troppo grande. La misura massima consentita è di {{ limit }} {{ suffix }}.',
-    'portal.forms.extra_fields'                             => 'Si è verificato un errore nel processare la tua richiesta. Riprova.',
+    'portal.forms.error_extra_fields'                       => 'Si è verificato un errore nel processare la tua richiesta. Riprova.',
     'portal.forms.label_add_attachment'                     => 'Aggiungi un altro allegato',
     'portal.forms.label_captcha'                            => 'Per assicurarci che sei un umano, scrivi il testo che vedi in questa immagine',
     'portal.forms.label_category'                           => 'Categoria',
