@@ -1,15 +1,15 @@
 import React, { PropTypes } from 'react';
-import ScrollArea from 'react-scrollbar-versioned';
+import ScrollArea from 'react-scrollbar';
 
 export class WidgetBodyScrollArea extends React.Component {
 
   static propTypes = {
     height:   PropTypes.number,
-    children: PropTypes.any
+    children: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
   };
 
   componentDidUpdate() {
-    const scrollArea = this.refs.scrollArea;
+    const scrollArea = this.scrollArea;
     if (scrollArea) {
       scrollArea.setSizesToState();
       scrollArea.handleWindowResize();
@@ -22,7 +22,7 @@ export class WidgetBodyScrollArea extends React.Component {
     return (
       <ScrollArea
         vertical
-        ref="scrollArea"
+        ref={(c) => { this.scrollArea = c; }}
         ownerDocument={window.widgetFrame.document}
         style={{ height }}
       >
@@ -31,3 +31,5 @@ export class WidgetBodyScrollArea extends React.Component {
     );
   }
 }
+
+export default WidgetBodyScrollArea;
