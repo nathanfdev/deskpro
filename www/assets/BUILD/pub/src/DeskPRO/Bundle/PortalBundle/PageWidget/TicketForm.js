@@ -19,27 +19,27 @@ class TicketValueReader {
   }
 
   getDepartmentId() {
-    return this.parseIntSelect($('#ticket_department', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_department', this.$formEl));
   }
 
   getCategoryId() {
-    return this.parseIntSelect($('#ticket_category', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_category', this.$formEl));
   }
 
   getPriorityId() {
-    return this.parseIntSelect($('#ticket_priority', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_priority', this.$formEl));
   }
 
   getProductId() {
-    return this.parseIntSelect($('#ticket_product', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_product', this.$formEl));
   }
 
   getOrganizationId() {
-    return this.parseIntSelect($('#ticket_user_organization', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_user_organization', this.$formEl));
   }
 
   getWorkflowId() {
-    return this.parseIntSelect($('#ticket_workflow', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_workflow', this.$formEl));
   }
 
   getFieldValue(prefix, fieldId) {
