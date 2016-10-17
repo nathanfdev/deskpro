@@ -15,7 +15,14 @@ export class Scrollable extends React.Component {
     both:       PropTypes.bool,
     horizontal: PropTypes.bool,
     vertical:   PropTypes.bool,
-    className:  PropTypes.string
+    className:  PropTypes.string,
+    onScroll:   PropTypes.func
+  };
+
+  static defaultProps = {
+    onScroll() {
+
+    }
   };
 
   // @todo how can we determine if current platform supports scrollbars?
@@ -40,7 +47,7 @@ export class Scrollable extends React.Component {
   }
 
   renderWithScrollbars() {
-    const { horizontal, vertical, both, className, children } = this.props;
+    const { horizontal, vertical, both, className, children, onScroll } = this.props;
 
     return (
       <div
@@ -60,6 +67,7 @@ export class Scrollable extends React.Component {
           contentClassName="dpscrollarea"
           horizontal={horizontal || both}
           vertical={vertical || both}
+          onScroll={onScroll}
         >
 
           {children}

@@ -12,21 +12,23 @@ import EmojiBox from './EmojiBox';
 
 class Container extends React.Component {
   static propTypes = {
-    me:              PropTypes.object.isRequired,
-    agents:          PropTypes.object.isRequired,
-    departments:     PropTypes.object.isRequired,
-    teams:           PropTypes.object.isRequired,
-    current:         PropTypes.object.isRequired,
-    isOpen:          PropTypes.bool.isRequired,
-    clickOut:        PropTypes.func,
-    onSubmit:        PropTypes.func,
-    onChange:        PropTypes.func.isRequired,
-    onAttach:        PropTypes.func.isRequired,
-    messages:        PropTypes.object,
-    dispatch:        PropTypes.func,
-    loadingMessages: PropTypes.bool.isRequired,
-    markNewMessages: PropTypes.func,
-    openGroupDrawer: PropTypes.func
+    me:                 PropTypes.object.isRequired,
+    agents:             PropTypes.object.isRequired,
+    departments:        PropTypes.object.isRequired,
+    teams:              PropTypes.object.isRequired,
+    current:            PropTypes.object.isRequired,
+    isOpen:             PropTypes.bool.isRequired,
+    clickOut:           PropTypes.func,
+    onSubmit:           PropTypes.func,
+    onChange:           PropTypes.func.isRequired,
+    onAttach:           PropTypes.func.isRequired,
+    messages:           PropTypes.object,
+    dispatch:           PropTypes.func,
+    loadingMessages:    PropTypes.bool.isRequired,
+    markNewMessages:    PropTypes.func,
+    openGroupDrawer:    PropTypes.func,
+    onScroll:           PropTypes.func,
+    shouldScrollBottom: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
@@ -47,7 +49,7 @@ class Container extends React.Component {
       emojiOpened:       false,
       expandGroupHeader: false
     };
-    this.shouldScrollBottom = true;
+    this.firstScroll = true;
 
     this.openEmoji    = this.openEmoji.bind(this);
     this.closeEmoji   = this.closeEmoji.bind(this);
@@ -61,8 +63,9 @@ class Container extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.scrollarea && this.shouldScrollBottom) {
+    if (this.scrollarea && (this.firstScroll || this.props.shouldScrollBottom)) {
       this.scrollarea.scrollBottom();
+      this.firstScroll = false;
     }
   }
 
@@ -187,7 +190,7 @@ class Container extends React.Component {
   }
 
   render() {
-    const { current, isOpen, messages, me, agents, loadingMessages } = this.props;
+    const { current, isOpen, messages, me, agents, loadingMessages, onScroll } = this.props;
 
     return (
       <Detached
@@ -200,7 +203,7 @@ class Container extends React.Component {
             <div className="im header">{this.getHeader()}</div>
             {this.groupHeader()}
             <div className="box">
-              <Scrollable vertical ref={(c) => { this.scrollarea = c; }}>
+              <Scrollable onScroll={onScroll} vertical ref={(c) => { this.scrollarea = c; }}>
                 <MessageList
                   scrollarea={this.scrollarea}
                   loadingMessages={loadingMessages}
