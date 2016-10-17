@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
+import { AvatarResolver } from 'DeskPRO/Component/Avatar';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { InlineEvent } from './Event/InlineEvent';
 import { Message } from './Message/Message';
 import { MessageAvatar } from './Message/MessageAvatar';
@@ -7,11 +10,8 @@ import { MessageBody } from './Message/MessageBody';
 import { MessageAttachment } from './Message/Attachment/MessageAttachment';
 import { MessageContent } from './Message/MessageContent';
 import { MessageFooter } from './Message/MessageFooter';
-import { AvatarResolver } from 'DeskPRO/Component/Avatar';
 import { authorNameSelector } from '../../../../Selectors/chat';
 import { peopleSelector } from '../../../../../Application/Selectors/peopleSelectors';
-import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
-import Immutable from 'immutable';
 
 @connect(state => ({
   chatAuthorName: authorNameSelector(state),
@@ -20,17 +20,16 @@ import Immutable from 'immutable';
 export class MessageFactoryContainer extends React.Component {
 
   static propTypes = {
-    chatAuthorName:     PropTypes.string,
-    people:             PropTypes.object,
-    phraseTranslations: PropTypes.object,
-    message:            PropTypes.object
+    chatAuthorName: PropTypes.string,
+    people:         PropTypes.object,
+    message:        PropTypes.object
   };
 
   getAuthor() {
     const { message, people } = this.props;
     const authorId = message.get('author');
 
-    return authorId && people.get(authorId) || Immutable.fromJS({ id: authorId, display_name: `ID ${authorId}` });
+    return (authorId && people.get(authorId)) || Immutable.fromJS({ id: authorId, display_name: `ID ${authorId}` });
   }
 
   getMetadata() {
@@ -81,7 +80,7 @@ export class MessageFactoryContainer extends React.Component {
 
     return (
       <Message isUser={message.get('is_user')}>
-        <AvatarResolver avatar={author.get('avatar')} size={20}>
+        <AvatarResolver avatar={author.get('avatar')} size={40}>
           <MessageAvatar />
         </AvatarResolver>
         <MessageBody>
@@ -108,3 +107,4 @@ export class MessageFactoryContainer extends React.Component {
     return message.get('is_sys') ? this.renderEvent() : this.renderMessage();
   }
 }
+export default MessageFactoryContainer;
