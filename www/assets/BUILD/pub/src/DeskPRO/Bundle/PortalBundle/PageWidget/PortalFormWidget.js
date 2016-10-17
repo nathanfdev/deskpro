@@ -4,12 +4,12 @@ import { DpxMultipleSelectBox } from './Common/Form/DpxMultipleSelectBox';
 import { DpxCheckboxGroup } from './Common/Form/DpxCheckboxGroup';
 import { DpxDateWidget } from './Common/Form/DpxDateWidget';
 import { DpxAttach } from './Common/Form/DpxAttach';
-import { DpxRte } from './Common/Form/DpxRte';
+import DpxRte from './Common/Form/DpxRte';
 import { DpxRadio } from './Common/Form/DpxRadio';
 import { DpxDoubleSubmitPrevention } from './Common/Form/DpxDoubleSubmitPrevention';
 import { DpxFormDraft } from './Common/Form/Draft/DpxFormDraft';
 
-export class PortalFormWidget extends PageWidget {
+export default class PortalFormWidget extends PageWidget {
 
   init() {
     this.addWidgetDef(DpxDateWidget, '.dpx-date');
@@ -24,15 +24,15 @@ export class PortalFormWidget extends PageWidget {
     this.addWidgetDef(DpxDoubleSubmitPrevention, '[type="submit"]');
 
     if (this.$element.is('form')) {
-      this.initForms(this.$element);
+      PortalFormWidget.initForms(this.$element);
     } else {
-      this.initForms(this.$element.find('form'));
+      PortalFormWidget.initForms(this.$element.find('form'));
     }
   }
 
-  initForms($forms) {
+  static initForms($forms) {
     // Disable pressing enter from submitting forms by accident
-    $forms.find('input, select').not('[type="submit"], [type="reset"], [type="button"]').on('keyup keypress', ev => {
+    $forms.find('input, select').not('[type="submit"], [type="reset"], [type="button"]').on('keyup keypress', (ev) => {
       const keyCode = ev.keyCode || ev.which;
       if (keyCode === 13) {
         ev.preventDefault();

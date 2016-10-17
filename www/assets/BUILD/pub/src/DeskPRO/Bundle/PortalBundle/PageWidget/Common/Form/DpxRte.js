@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import { PortalRte } from '../../../React/Form/PortalRte';
 import $ from 'jquery';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import PortalRte from '../../../React/Form/PortalRte';
 
 /**
  * A DpxRte takes three fields:
@@ -13,7 +13,7 @@ import $ from 'jquery';
  *  If this browser is able to use the RTE, then we hide the txt field,
  *  show the html field, and set the format to html
  */
-export class DpxRte extends PageWidget {
+export default class DpxRte extends PageWidget {
 
   renderWidget() {
     const $el = this.$element;
@@ -29,8 +29,7 @@ export class DpxRte extends PageWidget {
 
       className:          'dp-medium-rte medium-editor-placeholder',
       $inlineAttachProto: $inlineAttachProto[0] ? $inlineAttachProto : null,
-      widgetOptions:      this.options,
-      $toolbarContainer:  $rElement
+      widgetOptions:      this.options
     });
 
     ReactDOM.render(component, $rElement.get(0));
