@@ -15,8 +15,8 @@ const topbar = {
     },
     {
       title: 'Create',
-      text:  'Add new tickets, people, articles etc. to your ' +
-        'helpdesk by clicking the \'create button\' in the header.',
+      text:  'Add new tickets, people, content and tasks to your ' +
+        'helpdesk by clicking the \'+\' button in the header.',
       selector: '#react_dp_agent_top_bar .item.add',
       position: 'bottom'
     },
