@@ -37,7 +37,7 @@ class PortalCacheHelper
     /**
      * @var RequestStack
      */
-    private $request_stack;
+    private $requestStack;
 
     /**
      * @var TokenStorageInterface
@@ -47,17 +47,17 @@ class PortalCacheHelper
     /**
      * @var null|bool used to only make guest decision once per master request
      */
-    private $is_guest;
+    private $isGuest;
 
     /**
-     * @param RequestStack          $request_stack
+     * @param RequestStack          $requestStack
      * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(RequestStack $request_stack, TokenStorageInterface $tokenStorage)
+    public function __construct(RequestStack $requestStack, TokenStorageInterface $tokenStorage)
     {
-        $this->request_stack = $request_stack;
-        $this->tokenStorage  = $tokenStorage;
-        $this->is_guest      = null;
+        $this->requestStack = $requestStack;
+        $this->tokenStorage = $tokenStorage;
+        $this->isGuest      = null;
     }
 
     /**
@@ -70,11 +70,11 @@ class PortalCacheHelper
     public function isGuestRequest()
     {
         // only make the decision once per php run
-        if (null !== $this->is_guest) {
-            return $this->is_guest;
+        if (null !== $this->isGuest) {
+            return $this->isGuest;
         }
 
-        return $this->is_guest = $this->determineIfGuestRequest();
+        return $this->isGuest = $this->determineIfGuestRequest();
     }
 
     /**
@@ -82,13 +82,13 @@ class PortalCacheHelper
      */
     public function getUserContextHash()
     {
-        $current_request = $this->request_stack->getMasterRequest();
+        $currentRequest = $this->requestStack->getMasterRequest();
 
-        if (!$current_request->headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)) {
+        if (!$currentRequest->headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)) {
             return;
         }
 
-        return $current_request->headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER);
+        return $currentRequest->headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER);
     }
 
     /**
@@ -98,7 +98,7 @@ class PortalCacheHelper
      */
     private function determineIfGuestRequest()
     {
-        if (!$user_hash = $this->getUserContextHash()) {
+        if (!$userHash = $this->getUserContextHash()) {
             // portal cache is disabled. In that case treat nobody as a guest.
             return false;
         }
@@ -109,7 +109,7 @@ class PortalCacheHelper
             }
         }
 
-        return $this->isGuestHash($user_hash);
+        return $this->isGuestHash($userHash);
     }
 
     public function isGuestHash($hash)
