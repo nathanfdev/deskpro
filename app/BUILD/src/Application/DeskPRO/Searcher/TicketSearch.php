@@ -1060,8 +1060,11 @@ class TicketSearch extends SearcherAbstract
             }
         }
 
-        $sql .= " GROUP BY tickets.id $order_by";
-        $sql2 .= " GROUP BY part_perm.id $order_by";
+        // each query must have a limit here even if its used in the union
+        // otherwise a big db and/or queries against tickets (instead of tickets_search_active)
+        // will have huge result and kill the server
+        $sql .= " GROUP BY tickets.id $order_by $limit_sql";
+        $sql2 .= " GROUP BY part_perm.id $order_by $limit_sql ";
 
         if ($with_part_union) {
             $select_query = "
@@ -1072,7 +1075,7 @@ class TicketSearch extends SearcherAbstract
                 $limit_sql
             ";
         } else {
-            $select_query = $sql.' '.$limit_sql;
+            $select_query = $sql;
         }
 
         $this->_last_sql = $select_query;
@@ -1463,16 +1466,14 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case self::TERM_DATE_STATUS:
                         $wheres[] = $this->_dateMatch("$tickets_table.date_status", $op, $choice);
-                        $this->enableArchiveSearch();
                         break;
                     case self::TERM_DATE_RESOLVED:
-                        $this->enableArchiveSearch();
                         $this->affected_fields[] = 'ticket.date_resolved';
                         $wheres[]                = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
                         $wheres[]                = $this->_choiceMatch("$tickets_table.status", 'is', ['resolved']);
+                        $this->is_archive        = false;
                         break;
                     case self::TERM_DATE_ARCHIVED:
-                        $this->enableArchiveSearch();
                         $this->affected_fields[] = 'ticket.date_archived';
                         if (!$this->is_testing) {
                             $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_archived'), $op, $choice);
@@ -1481,19 +1482,16 @@ class TicketSearch extends SearcherAbstract
                         $wheres[] = $this->_choiceMatch("$tickets_table.status", 'is', ['archived']);
                         break;
                     case self::TERM_DATE_LAST_USER_REPLY:
-                        $this->enableArchiveSearch();
                         $this->affected_fields[] = 'ticket.date_last_user_reply';
 
                         $wheres[] = $this->_dateMatch("$tickets_table.date_last_user_reply", $op, $choice);
                         break;
                     case self::TERM_DATE_LAST_AGENT_REPLY:
-                        $this->enableArchiveSearch();
                         $this->affected_fields[] = 'ticket.date_last_agent_reply';
 
                         $wheres[] = $this->_dateMatch("$tickets_table.date_last_agent_reply", $op, $choice);
                         break;
                     case self::TERM_DATE_LAST_REPLY:
-                        $this->enableArchiveSearch();
                         $this->affected_fields[] = 'ticket.date_last_reply';
 
                         $wheres[] = $this->_dateMatch("GREATEST(COALESCE($tickets_table.date_last_agent_reply, '0000-00-00'), COALESCE($tickets_table.date_last_user_reply, '0000-00-00'), $tickets_table.date_created)", $op, $choice);
@@ -2276,7 +2274,6 @@ class TicketSearch extends SearcherAbstract
 
                     case 'time_waiting':
                     case self::TERM_USER_WAITING:
-                        $this->enableArchiveSearch();
                         $this->affected_fields[] = 'ticket.date_user_waiting';
 
                         $choice = $this->normalizeWaitingTime($choice);
