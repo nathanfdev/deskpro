@@ -133,7 +133,7 @@ export default class PortalRte extends React.Component {
           options={{
             contentWindow,
             ownerDocument,
-            toolbar: $toolbarContainer && {
+            toolbar: widgetOptions.isWidget ? false : {
               buttons: [
                 'bold',
                 'italic',
