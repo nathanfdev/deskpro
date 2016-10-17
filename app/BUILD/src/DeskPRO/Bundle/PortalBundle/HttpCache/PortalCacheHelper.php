@@ -29,6 +29,8 @@
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class PortalCacheHelper
 {
@@ -38,13 +40,23 @@ class PortalCacheHelper
     private $request_stack;
 
     /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
      * @var null|bool used to only make guest decision once per master request
      */
     private $is_guest;
 
-    public function __construct(RequestStack $request_stack)
+    /**
+     * @param RequestStack          $request_stack
+     * @param TokenStorageInterface $tokenStorage
+     */
+    public function __construct(RequestStack $request_stack, TokenStorageInterface $tokenStorage)
     {
         $this->request_stack = $request_stack;
+        $this->tokenStorage  = $tokenStorage;
         $this->is_guest      = null;
     }
 
@@ -89,6 +101,12 @@ class PortalCacheHelper
         if (!$user_hash = $this->getUserContextHash()) {
             // portal cache is disabled. In that case treat nobody as a guest.
             return false;
+        }
+
+        if ($token = $this->tokenStorage->getToken()) {
+            if ($token->getUser() instanceof UserInterface) {
+                return false;
+            }
         }
 
         return $this->isGuestHash($user_hash);
