@@ -23,11 +23,12 @@ export default class DpxRte extends PageWidget {
     const $rElement          = $('<div class="dp-medium-rte-wrapper as-dpui"></div>').appendTo(this.$element);
 
     $textarea.hide();
+    const widget = this.options.isWidget;
 
     const component = React.createElement(PortalRte, {
       $textarea,
 
-      className:          'dp-medium-rte medium-editor-placeholder',
+      className:          `dp-medium-rte medium-editor-placeholder${widget ? ' widget' : null}`,
       $inlineAttachProto: $inlineAttachProto[0] ? $inlineAttachProto : null,
       widgetOptions:      this.options,
       $toolbarContainer:  $rElement
