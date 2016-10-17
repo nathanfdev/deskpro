@@ -75,7 +75,12 @@
     "import/prefer-default-export": "off",
     "class-methods-use-this": [
       "error",
-      { "exceptMethods": ["renderWidget", "render"] }
+      { "exceptMethods": [
+        "renderWidget",
+        "render",
+        "componentWillReceiveProps",
+        "componentDidMount"
+      ] }
     ]
   },
   "plugins": [

@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-import { TicketFormWidget } from './TicketFormWidget';
 import $ from 'jquery';
-import 'jquery.serializejson';
+import 'jquery-serializejson';
+import { TicketFormWidget } from './TicketFormWidget';
 
 export class TicketFormContent extends React.Component {
 
@@ -29,7 +28,7 @@ export class TicketFormContent extends React.Component {
     this.removeListeners();
   }
 
-  onSubmit = event => {
+  onSubmit = (event) => {
     event.preventDefault();
 
     const data = $(event.target).serializeJSON();
@@ -37,7 +36,7 @@ export class TicketFormContent extends React.Component {
   };
 
   getCurrentNode() {
-    return ReactDOM.findDOMNode(this);
+    return this.node;
   }
 
   getForm() {
@@ -68,6 +67,6 @@ export class TicketFormContent extends React.Component {
   }
 
   render() {
-    return <div dangerouslySetInnerHTML={{ __html: this.props.content }}></div>;
+    return <div ref={(node) => { this.node = node; }} dangerouslySetInnerHTML={{ __html: this.props.content }} />;
   }
 }

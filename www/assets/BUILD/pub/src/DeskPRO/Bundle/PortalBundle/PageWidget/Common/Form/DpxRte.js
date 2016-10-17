@@ -29,7 +29,8 @@ export default class DpxRte extends PageWidget {
 
       className:          'dp-medium-rte medium-editor-placeholder',
       $inlineAttachProto: $inlineAttachProto[0] ? $inlineAttachProto : null,
-      widgetOptions:      this.options
+      widgetOptions:      this.options,
+      $toolbarContainer:  $rElement
     });
 
     ReactDOM.render(component, $rElement.get(0));
