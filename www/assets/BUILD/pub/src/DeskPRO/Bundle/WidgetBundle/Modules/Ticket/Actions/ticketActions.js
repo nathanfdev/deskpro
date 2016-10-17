@@ -22,7 +22,10 @@ export const loadNewTicketForm = createAction(
   'WIDGET_LOAD_NEW_TICKET_FORM',
   () => (dispatch, getState) => {
     const state = getState();
-    const queryParams = getNewTicketQueryParams(state);
+    const queryParams = {
+      type: 'widget',
+      ...getNewTicketQueryParams(state)
+    };
 
     const promise = widgetApi.sendGet(`DP_API/tickets/new?${compileParams(queryParams)}`, { ...ajaxOptions });
     promise.success(response => dispatch(setNewTicketFormContent(response.data)));
@@ -43,7 +46,7 @@ export const saveNewTicketForm = createAction(
     const queryParams = getNewTicketQueryParams(state);
     const promise = widgetApi.sendPost(`DP_API/tickets/new?${compileParams(queryParams)}`, params, { ...ajaxOptions });
     promise.then(
-      response => {
+      (response) => {
         if (response.data && response.data.ticket_id) {
           history.replace('ticket/form_submitted');
         } else {
@@ -59,11 +62,11 @@ export const saveNewTicketForm = createAction(
 
 export const bootstrapTicketApp = createAction(
   'WIDGET_LOAD_TICKET_APP',
-  () => dispatch => new Promise(resolve => {
+  () => dispatch => new Promise((resolve) => {
     Promise.all([
       dispatch(loadNewTicketForm()),
       dispatch(loadTicketDisplayFields())
-    ]).then(response => {
+    ]).then((response) => {
       resolve(response);
     });
   })
