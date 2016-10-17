@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import uuid from 'node-uuid';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
@@ -33,6 +32,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   myDepartments:       collectionSelectorFactory('Department', 'my_tickets')(state),
   teams:               collectionSelectorFactory('AgentTeam', 'my')(state),
   me:                  meSelector(state),
+  counts:              state.IM.messages.get('counts'),
   current:             state.IM.chats.get('current'),
   chating:             state.IM.chats.get('chating'),
   overlayShown:        state.IM.chats.get('overlayShown'),
@@ -62,6 +62,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     recentChats:         PropTypes.object.isRequired,
     groupChats:          PropTypes.object.isRequired,
     messages:            PropTypes.object,
+    counts:              PropTypes.object,
     current:             PropTypes.object,
     checkedAgents:       PropTypes.object,
     recentLoaded:        PropTypes.bool.isRequired,
@@ -73,7 +74,8 @@ export class AgentTopBarContainer extends SeparateComponent {
     teamsLoaded:         PropTypes.bool.isRequired,
     myDepartmentsLoaded: PropTypes.bool.isRequired,
     agentsLoaded:        PropTypes.bool.isRequired,
-    groupCreation:       PropTypes.bool.isRequired
+    groupCreation:       PropTypes.bool.isRequired,
+
   };
 
   constructor(props) {
@@ -107,6 +109,16 @@ export class AgentTopBarContainer extends SeparateComponent {
       'DP_API/agent_chats/groups',
       'group'
     ));
+
+    this.refreshCounts();
+  }
+
+  refreshCounts() {
+    if (this.props.recentLoaded) {
+      this.props.dispatch(messagesActions.refreshCounts());
+    } else {
+      setTimeout(this.refreshCounts.bind(this), 2000);
+    }
   }
 
   static getType() {
@@ -305,6 +317,7 @@ export class AgentTopBar extends React.Component {
     onSubmit:            PropTypes.func,
     markNewMessages:     PropTypes.func,
     messages:            PropTypes.object,
+    counts:              PropTypes.object,
     current:             PropTypes.object,
     checkedAgents:       PropTypes.object,
     loadingMessages:     PropTypes.bool.isRequired,
@@ -347,7 +360,7 @@ export class AgentTopBar extends React.Component {
   render() {
     const { groupLoaded, groupCreation, teamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
     const { current, chating, recentClick, messages, chatClickOut, participantClick, dispatch } = this.props;
-    const { groupChats, agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
+    const { counts, groupChats, agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
     const { createGroup, openGroupDrawer, markNewMessages, onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
     const { checkedAgents, closeIframes, toggleViewMode, me, myDepartments, teams, recentChats, recentLoaded, overlayShown } = this.props;
 
@@ -378,6 +391,7 @@ export class AgentTopBar extends React.Component {
           departments={myDepartments}
           teams={teams}
           chats={recentChats}
+          counts={counts}
           onRecentClick={recentClick}
           teamsLoaded={teamsLoaded}
           departmentsLoaded={myDepartmentsLoaded}
@@ -385,6 +399,7 @@ export class AgentTopBar extends React.Component {
           recentLoaded={recentLoaded}
         >
           <IMOverlay
+            counts={counts}
             teamsLoaded={teamsLoaded}
             myDepartmentsLoaded={myDepartmentsLoaded}
             agentsLoaded={agentsLoaded}
@@ -396,7 +411,6 @@ export class AgentTopBar extends React.Component {
             onParticipantClick={participantClick}
             createNewGroup={() => openGroupDrawer()}
             isOpen={overlayShown}
-            notifications={Immutable.fromJS({})}
             chats={recentChats}
             groups={groupChats}
             toggleOverlay={toggleImOverlay}

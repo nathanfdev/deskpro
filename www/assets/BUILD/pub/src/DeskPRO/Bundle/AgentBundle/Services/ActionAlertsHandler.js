@@ -20,9 +20,12 @@ export class ActionAlertsHandler
         if (linked.agent_chat[data.chat].chat_type === 'team') {
           this.options.dispatch(addToCollection('AgentTeam', 'my', linked.agent_team));
         }
+        if (linked.agent_chat[data.chat].chat_type === 'group') {
+          this.options.dispatch(addToCollection('AgentChat', 'group', linked.agent_chat[data.chat]));
+        }
         this.options.dispatch(addToCollection('AgentChat', 'recent', [linked.agent_chat[data.chat]]));
         this.options.dispatch(markMessages([data.id], [data.uuid], data.chat, 1));
-        this.options.dispatch(startChat(null, null, data.chat, true));
+        this.options.dispatch(startChat(null, data.chat, true));
         break;
       default:
         break;
@@ -30,3 +33,6 @@ export class ActionAlertsHandler
     this.options.dispatch(newActionAlerts(payload));
   }
 }
+
+export default ActionAlertsHandler;
+

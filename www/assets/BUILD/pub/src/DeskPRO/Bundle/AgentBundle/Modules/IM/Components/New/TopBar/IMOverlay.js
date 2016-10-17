@@ -24,7 +24,7 @@ export default class IMOverlay extends React.Component {
     agents:             PropTypes.object.isRequired,
     departments:        PropTypes.object.isRequired,
     teams:              PropTypes.object.isRequired,
-    notifications:      PropTypes.object.isRequired,
+    counts:             PropTypes.object.isRequired,
     chats:              PropTypes.object.isRequired,
     groups:             PropTypes.object.isRequired,
     children:           PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -42,14 +42,14 @@ export default class IMOverlay extends React.Component {
 
   getRecentTab() {
     const { agentsLoaded, teamsLoaded, departmentsLoaded, recentLoaded } = this.props;
-    const { me, agents, departments, teams, notifications, chats, onRecentClick } = this.props;
+    const { me, agents, departments, teams, counts, chats, onRecentClick } = this.props;
     const loaded = agentsLoaded && teamsLoaded && departmentsLoaded && recentLoaded;
     const props = {
       me,
       agents,
       departments,
       teams,
-      notifications,
+      counts,
       chats,
       onRecentClick
     };
@@ -69,11 +69,11 @@ export default class IMOverlay extends React.Component {
 
 
   getAgentsTab() {
-    const { agents, notifications, onParticipantClick, agentsLoaded, me } = this.props;
+    const { agents, counts, onParticipantClick, agentsLoaded, me } = this.props;
     const content = (
       <Loader loaded={agentsLoaded} opacity={0} width={4} color="#4696dc">
         <Scrollable vertical>
-          <AgentList agents={agents} notifications={notifications} onParticipantClick={onParticipantClick} me={me} />
+          <AgentList agents={agents} counts={counts} onParticipantClick={onParticipantClick} me={me} />
         </Scrollable>
       </Loader>
     );

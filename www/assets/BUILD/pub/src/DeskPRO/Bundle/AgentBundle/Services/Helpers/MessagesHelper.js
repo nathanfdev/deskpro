@@ -1,3 +1,5 @@
+import Immutable from 'immutable';
+
 export class MessagesHelper {
 
   static markMessages(state, payload) {
@@ -23,12 +25,12 @@ export class MessagesHelper {
 
   static reduceCounts(state, payload) {
     const counts = state.get('counts');
-    const nested = counts.get('nested');
-    if (nested.has(payload.chatId) && payload.status === 2 && payload.person !== state.get('me').id) {
-      let count = nested.getIn([payload.chatId, 'count']) - 1;
-      if (count < 0) count = 0;
-      nested.setIn([payload.chatId, 'count'], (count));
-      counts.set('nested', nested);
+    if (counts.nested[payload.chatId] && payload.status === 2 && payload.person !== state.get('me').id) {
+      counts.nested[payload.chatId].count -= 1;
+      if (counts.nested[payload.chatId].count < 0) {
+        counts.nested[payload.chatId].count = 0;
+      }
+
       return state.set('counts', { ...counts });
     }
     return state;
@@ -36,16 +38,14 @@ export class MessagesHelper {
 
   static increaseCounts(state, payload) {
     const counts = state.get('counts');
-    const nested = counts.get('nested');
-    if (!nested.has(payload.chatId)) {
-      nested.set(payload.chatId, { count: 0 });
+    if (!counts.nested[payload.chatId]) {
+      counts.nested[payload.chatId] = { count: 0 };
     }
     if (payload.status !== 2 && payload.person !== state.get('me').id) {
-      const count = nested.getIn([payload.chatId, 'count']) + 1;
-      nested.setIn([payload.chatId, 'count'], (count));
-      counts.set('nested', nested);
+      counts.nested[payload.chatId].count += 1;
       return state.set('counts', { ...counts });
     }
+
     return state;
   }
 
@@ -91,21 +91,17 @@ export class MessagesHelper {
   }
 
   static handleNewMessage(state, payload) {
-    let newState = state;
     const { data } = payload.data;
-    const chat = MessagesHelper.getChat(state, data.chat);
-    if (chat) {
-      chat.messages = chat.messages.set(data.uuid, data);
-      newState = MessagesHelper.increaseCounts(state, {
-        chatId: data.chat,
-        uuids:  [data.uuid],
-        status: data.status,
-        person: data.person
-      });
-      return newState.setIn(MessagesHelper.getPath(state, payload.data.data.chat), { ...chat });
-    }
+    const chat = MessagesHelper.getChat(state, data.chat) || { messages: Immutable.fromJS({}) };
+    chat.messages = chat.messages.set(data.uuid, data);
+    const newState = MessagesHelper.increaseCounts(state, {
+      chatId: data.chat,
+      uuids:  [data.uuid],
+      status: data.status,
+      person: data.person
+    });
 
-    return newState;
+    return newState.setIn(MessagesHelper.getPath(state, payload.data.data.chat), { ...chat });
   }
 
   static handleMarkMessage(state, payload) {

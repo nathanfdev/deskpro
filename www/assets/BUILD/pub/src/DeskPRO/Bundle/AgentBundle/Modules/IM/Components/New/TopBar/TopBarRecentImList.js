@@ -23,11 +23,23 @@ class TopBarRecentImList extends RecentList {
     recentLoaded:      PropTypes.bool.isRequired,
     teamsLoaded:       PropTypes.bool.isRequired,
     departmentsLoaded: PropTypes.bool.isRequired,
-    agentsLoaded:      PropTypes.bool.isRequired
+    agentsLoaded:      PropTypes.bool.isRequired,
+    counts:            PropTypes.object
+  };
+
+  static defaultProps = {
+    counts: {
+      nested: {}
+    }
   };
 
   getItems() {
     return RecentList.sortList(this.props.chats).slice(0, 10).map(agent => this.getItem(agent));
+  }
+
+  renderNotificationsBaloon(chat) {
+    const notificationCount = this.getNotificationCount(chat);
+    return notificationCount ? <div className="ui knuckles label message-counter">{notificationCount}</div> : null;
   }
 
   renderAgent(chat) {
@@ -43,6 +55,7 @@ class TopBarRecentImList extends RecentList {
     if (!agent.get('online')) {
       className.push('offline');
     }
+
     return (
       <span
         className="im wrapper"
@@ -54,6 +67,7 @@ class TopBarRecentImList extends RecentList {
           person={agent} size={24}
           className="ui avatar image im"
         />
+        {this.renderNotificationsBaloon(chat)}
       </span>
     );
   }
@@ -68,6 +82,7 @@ class TopBarRecentImList extends RecentList {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
         <DepartmentAvatar department={department} size={24} className="ui avatar image im" />
+        {this.renderNotificationsBaloon(chat)}
       </span>
     );
   }
@@ -82,6 +97,7 @@ class TopBarRecentImList extends RecentList {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
         <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" />
+        {this.renderNotificationsBaloon(chat)}
       </span>
     );
   }
@@ -94,6 +110,7 @@ class TopBarRecentImList extends RecentList {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
         {AvatarHelper.renderEveryoneAvatar()}
+        {this.renderNotificationsBaloon(chat)}
       </span>
     );
   }
@@ -106,6 +123,7 @@ class TopBarRecentImList extends RecentList {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
         {AvatarHelper.renderGroupAvatar(chat)}
+        {this.renderNotificationsBaloon(chat)}
       </span>
     );
   }

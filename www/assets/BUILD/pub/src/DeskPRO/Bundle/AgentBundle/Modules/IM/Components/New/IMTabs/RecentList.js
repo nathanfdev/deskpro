@@ -13,7 +13,7 @@ class RecentList extends React.Component {
     agents:        PropTypes.object.isRequired,
     departments:   PropTypes.object.isRequired,
     teams:         PropTypes.object.isRequired,
-    notifications: PropTypes.object.isRequired,
+    counts:        PropTypes.object.isRequired,
     chats:         PropTypes.object.isRequired,
     onRecentClick: PropTypes.func.isRequired
   };
@@ -47,6 +47,7 @@ class RecentList extends React.Component {
     return RecentList.sortList(this.props.chats).map(this.getItem.bind(this));
   }
 
+
   getAgents(container) {
     return container.get('agents').map(
       (agentId) => {
@@ -71,6 +72,25 @@ class RecentList extends React.Component {
     );
   }
 
+  getNotificationCount(chat) {
+    const nestedCounts = this.props.counts.nested ? this.props.counts.nested[chat.get('id')] : false;
+    return nestedCounts && nestedCounts.count ? nestedCounts.count : 0;
+  }
+
+  renderNotificationsBaloon(chat) {
+    const notificationCount = this.getNotificationCount(chat);
+    return (
+      <div
+        className={classNames(
+                ['ui', 'knuckles', 'label', 'message-counter'],
+                { grey: !notificationCount || notificationCount < 1 })
+            }
+      >
+        {notificationCount || 0}
+      </div>
+    );
+  }
+
   renderAgent(chat) {
     let agentId;
     for (const id of chat.get('agents')) {
@@ -81,7 +101,6 @@ class RecentList extends React.Component {
     }
     const agent = this.props.agents.get(agentId);
     const className = ['im', 'agent', 'recent'];
-    const notificationCount = this.props.notifications.get(`${agent.get('id')}`);
     if (!agent.get('online')) {
       className.push('offline');
     }
@@ -93,14 +112,7 @@ class RecentList extends React.Component {
       >
         <div className="content agent recent" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">{agent.get('name')}</div>
-          <div
-            className={classNames(
-                ['ui', 'knuckles', 'label', 'message-counter'],
-                { grey: !notificationCount || notificationCount < 1 })
-            }
-          >
-            {notificationCount || 0}
-          </div>
+          {this.renderNotificationsBaloon(chat)}
         </div>
         <div className="timestamp content right floated">
           {AbstractList.getTimestamp(chat.get('date_last_message'))}
@@ -120,6 +132,7 @@ class RecentList extends React.Component {
       >
         <div className="content department" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">department</div>
+          {this.renderNotificationsBaloon(chat)}
           <div className="description">
             {department.get('title')}
             <span className="agents-list">{this.getAgents(department)}</span>
@@ -146,6 +159,7 @@ class RecentList extends React.Component {
             {team.get('name')}
             <span className="agents-list">{this.getAgents(team)}</span>
           </div>
+          {this.renderNotificationsBaloon(chat)}
         </div>
         <div className="timestamp content right floated">
           {AbstractList.getTimestamp(chat.get('date_last_message'))}
@@ -167,6 +181,7 @@ class RecentList extends React.Component {
             {chat.get('name')}
             <span className="agents-list">{this.getAgents(chat)}</span>
           </div>
+          {this.renderNotificationsBaloon(chat)}
         </div>
         <div className="timestamp content right floated">
           {AbstractList.getTimestamp(chat.get('date_last_message'))}
@@ -187,6 +202,7 @@ class RecentList extends React.Component {
           <div className="header">
             Everyone
           </div>
+          {this.renderNotificationsBaloon(chat)}
         </div>
         <div className="timestamp content right floated">
           {AbstractList.getTimestamp(chat.get('date_last_message'))}

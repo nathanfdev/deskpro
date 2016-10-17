@@ -7,7 +7,7 @@ import AbstractList from './AbstractList';
 class AgentList extends AbstractList {
 
   static propTypes = {
-    notifications: PropTypes.object.isRequired
+    counts: PropTypes.object.isRequired
   };
 
   getAvatar = AvatarHelper.renderAgentAvatar;
@@ -16,7 +16,7 @@ class AgentList extends AbstractList {
     if (agent.get('id') === this.props.me.get('id')) {
       return null;
     }
-    const notificationCount = this.props.notifications.get(`${agent.get('id')}`) || 0;
+
     const className = ['im', 'agent'];
     if (!agent.get('online')) {
       className.push('offline');
@@ -33,14 +33,6 @@ class AgentList extends AbstractList {
           className="content agent"
         >
           <div className="header">{agent.get('name')}</div>
-          <div
-            className={classNames(
-                ['ui', 'knuckles', 'label', 'message-counter'],
-                { grey: notificationCount < 1 })
-            }
-          >
-            {notificationCount}
-          </div>
         </div>
         <div className="timestamp last-seen content right floated">
           {AbstractList.getTimestamp(agent.get('last_seen'))}
