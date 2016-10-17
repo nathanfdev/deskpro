@@ -15,7 +15,16 @@
                             {% for error in form_errors %}
                                 {% set error_view = error.origin.createView() %}
                                 <li>
-                                        <span>{{ phrase_form_error(error) }}</span>
+                                    <span>
+                                        {{ phrase_form_error(error) }}
+                                        {% if error.cause %}
+                                            <!--
+                                                code: {{ error.cause.code }}
+                                                message: {{ error.cause.message }}
+                                                parameters: {{ error.cause.parameters|json_encode() }}
+                                            -->
+                                        {% endif %}
+                                    </span>
                                 </li>
                             {% endfor %}
                         </ul>
