@@ -10,7 +10,7 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 export const loadAgentPhraseTranslations = createAction(
   'AGENT_LOAD_PHRASE_TRANSLATIONS',
-  () => () => new Promise(resolve => {
+  () => () => new Promise((resolve) => {
     const language = window.DESKPRO_PERSON_LANG_ID;
 
     const setPhrases = (data) => {
@@ -25,7 +25,7 @@ export const loadAgentPhraseTranslations = createAction(
     } else {
       api
         .sendGet(`DP_API/languages/agent_phrases?language=${language}`)
-        .success(response => {
+        .success((response) => {
           setPhrases(response);
           lscache.set(cacheKey, response, 60);
         });
@@ -54,6 +54,8 @@ export const preloadData    = createAction(
       };
       const batch           = api.prepareParams(batchComponents);
 
+      dispatch(loadAgentPhraseTranslations());
+
       api.sendGet(batch)
         .success(({ responses }) => {
           const data = flattenBatchResponses(responses);
@@ -73,7 +75,6 @@ export const preloadData    = createAction(
           dispatch(setCollection('Person', 'me', [data.me.person]));
           dispatch(setImMe(data.me.person));
 
-          dispatch(loadAgentPhraseTranslations());
           dispatch(donePreloading());
         })
       ;

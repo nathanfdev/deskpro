@@ -22,8 +22,9 @@ class AgentLegacyApp {
 
   run() {
     this.store = AgentLegacyApp.createStore();
-    this.store.dispatch(preloadData());
-    window.$(document).on('ready', () => this.start());
+    this.store.dispatch(preloadData()).then(() => {
+      window.$(document).on('ready', () => this.start());
+    });
   }
 
   start() {
@@ -44,7 +45,7 @@ class AgentLegacyApp {
     }
 
     const element = React.createElement(piece, { store: this.store });
-    const elementPlace = piecePlace.replace(/([A-Z])/g, ($1) => `_${$1.toLowerCase()}`);
+    const elementPlace = piecePlace.replace(/([A-Z])/g, $1 => `_${$1.toLowerCase()}`);
     const node = document.getElementById(`react_dp${elementPlace}`);
 
     if (node) {

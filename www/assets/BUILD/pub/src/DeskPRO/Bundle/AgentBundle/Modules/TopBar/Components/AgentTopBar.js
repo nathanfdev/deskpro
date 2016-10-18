@@ -151,7 +151,7 @@ export class AgentTopBar extends React.Component {
       img = me.getIn(['avatar', 'url_pattern']);
     }
     if (img) {
-      return img.replace(/\{\{IMG_SIZE}}/, 32);
+      return img.replace(/\{\{IMG_SIZE}}/, 56);
     }
 
     return '';
