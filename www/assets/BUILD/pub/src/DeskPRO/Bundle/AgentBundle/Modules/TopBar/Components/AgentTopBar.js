@@ -480,7 +480,7 @@ export class AgentTopBar extends React.Component {
         >
           <TopBarNotificationIcon
             elementId="notifications"
-            svg={notificationsSvg}
+            svg={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg`}
             count={notificationCount}
           />
         </TopBarItem>
