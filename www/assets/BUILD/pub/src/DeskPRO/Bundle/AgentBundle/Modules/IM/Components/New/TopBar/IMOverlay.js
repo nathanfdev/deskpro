@@ -32,6 +32,8 @@ export default class IMOverlay extends React.Component {
     onParticipantClick: PropTypes.func.isRequired,
     createNewGroup:     PropTypes.func.isRequired,
     toggleOverlay:      PropTypes.func.isRequired,
+    onFocus:            PropTypes.func.isRequired,
+    onBlur:             PropTypes.func.isRequired,
     isOpen:             PropTypes.bool.isRequired,
     recentLoaded:       PropTypes.bool.isRequired,
     teamsLoaded:        PropTypes.bool.isRequired,
@@ -140,12 +142,16 @@ export default class IMOverlay extends React.Component {
   }
 
   getContent() {
+    const { onFocus, onBlur } = this.props;
+
     return (
       <div>
         <div className="im header">Agent IM</div>
         <SegmentsGroup className="im">
           <Segment className="search-wrapper">
             <SearchBox
+              onFocus={onFocus}
+              onBlur={onBlur}
               placeholder="Search ..."
             />
           </Segment>

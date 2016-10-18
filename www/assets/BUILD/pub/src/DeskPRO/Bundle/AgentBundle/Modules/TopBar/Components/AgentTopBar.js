@@ -431,6 +431,8 @@ export class AgentTopBar extends React.Component {
             departmentsLoaded={myDepartmentsLoaded}
             recentLoaded={recentLoaded}
             groupLoaded={groupLoaded}
+            onFocus={onSearchFocus}
+            onBlur={onSearchBlur}
           >
             <IMButton />
           </IMOverlay>
