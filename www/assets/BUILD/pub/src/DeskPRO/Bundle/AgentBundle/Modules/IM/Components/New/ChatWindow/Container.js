@@ -134,7 +134,7 @@ class Container extends React.Component {
         {header}
         <i
           className={classNames('search icon', { enabled: this.state.searching })}
-          onClick={() => this.setState({ searching: !this.state.searching, expandedHeader: false })}
+          onClick={() => { this.toggleSearch(); }}
         />
       </span>
     );
@@ -149,6 +149,13 @@ class Container extends React.Component {
     }
     return path;
   };
+
+  toggleSearch() {
+    if (this.state.searching) {
+      this.props.onChatSearch('');
+    }
+    this.setState({ searching: !this.state.searching, expandedHeader: false });
+  }
 
   refresh() {
     this.props.loadMessages();

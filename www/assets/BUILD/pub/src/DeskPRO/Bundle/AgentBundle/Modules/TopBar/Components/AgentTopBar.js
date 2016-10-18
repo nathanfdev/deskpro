@@ -278,7 +278,7 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   onChatSearch(searchQuery) {
     let reload = false;
-    if (this.state.searchQuery !== searchQuery && searchQuery.length > 2) {
+    if ((this.state.searchQuery !== searchQuery && searchQuery.length > 2) || searchQuery === '') {
       reload = true;
     }
     if (reload && !this.props.loadingMessages) {
