@@ -3,7 +3,7 @@ import uniqueId from 'lodash/utility/uniqueId';
 import $ from 'jquery';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
-import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
+import DropZone from 'DeskPRO/Component/Uploader/DropZone';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';

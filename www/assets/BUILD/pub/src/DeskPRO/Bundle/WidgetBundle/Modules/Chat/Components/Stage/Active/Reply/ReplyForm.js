@@ -4,7 +4,7 @@ import { EmotionButton } from 'DeskPRO/Component/Rte/EmotionButton';
 import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
 import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
-import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
+import DropZone from 'DeskPRO/Component/Uploader/DropZone';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';

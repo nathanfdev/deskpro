@@ -3,7 +3,7 @@ import { DpxSelectBox } from './Common/Form/DpxSelectBox';
 import { DpxMultipleSelectBox } from './Common/Form/DpxMultipleSelectBox';
 import { DpxCheckboxGroup } from './Common/Form/DpxCheckboxGroup';
 import { DpxDateWidget } from './Common/Form/DpxDateWidget';
-import { DpxAttach } from './Common/Form/DpxAttach';
+import DpxAttach from './Common/Form/DpxAttach';
 import DpxRte from './Common/Form/DpxRte';
 import { DpxRadio } from './Common/Form/DpxRadio';
 import { DpxDoubleSubmitPrevention } from './Common/Form/DpxDoubleSubmitPrevention';

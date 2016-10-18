@@ -47,10 +47,11 @@ export class TicketFormContent extends React.Component {
     this.getForm().on('submit', this.onSubmit);
 
     this.formWidget = new TicketFormWidget($(this.getCurrentNode()), null, {
-      context:       [parent.document, window.widgetFrame.document],
-      contentWindow: window.widgetFrame,
-      ownerDocument: window.widgetFrame.document,
-      isWidget:      true
+      context:         [parent.document, window.widgetFrame.document],
+      contentWindow:   window.widgetFrame,
+      ownerDocument:   window.widgetFrame.document,
+      isWidget:        true,
+      getDropZoneNode: () => this.getCurrentNode()
     });
 
     this.formWidget.renderWhenReady();
