@@ -9,7 +9,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.buttonEl = $('#tickets_section');
 		this.filterTicketIds = {};
 		this.filterCounts = {};
-		this.archiveTableFilterIds = [13, 14, 15, 16];
+		this.archiveTableFilterIds = [11, 12, 13, 14, 15, 16];
 
 		this.urlFragmentName = 'tickets';
 
