@@ -7,7 +7,7 @@ import { DpxAttach } from './Common/Form/DpxAttach';
 import DpxRte from './Common/Form/DpxRte';
 import { DpxRadio } from './Common/Form/DpxRadio';
 import { DpxDoubleSubmitPrevention } from './Common/Form/DpxDoubleSubmitPrevention';
-import { DpxFormDraft } from './Common/Form/Draft/DpxFormDraft';
+import DpxFormDraft from './Common/Form/Draft/DpxFormDraft';
 
 export default class PortalFormWidget extends PageWidget {
 
