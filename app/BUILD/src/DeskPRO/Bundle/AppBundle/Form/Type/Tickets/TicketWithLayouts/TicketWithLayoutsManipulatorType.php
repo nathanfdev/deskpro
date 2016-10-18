@@ -86,6 +86,7 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $resolver
             ->setRequired('full_type_class')
             ->setAllowedTypes('full_type_class', 'string')
+            ->setDefault('form_type', null)
         ;
     }
 

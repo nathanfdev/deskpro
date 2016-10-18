@@ -22,7 +22,10 @@ export const loadNewTicketForm = createAction(
   'WIDGET_LOAD_NEW_TICKET_FORM',
   () => (dispatch, getState) => {
     const state = getState();
-    const queryParams = getNewTicketQueryParams(state);
+    const queryParams = {
+      type: 'widget',
+      ...getNewTicketQueryParams(state)
+    };
 
     const promise = widgetApi.sendGet(`DP_API/tickets/new?${compileParams(queryParams)}`, { ...ajaxOptions });
     promise.success(response => dispatch(setNewTicketFormContent(response.data)));

@@ -118,10 +118,12 @@ class WebFieldResolver extends AbstractFieldResolver
     /**
      * @return FormField
      */
-    protected function createSubject()
+    protected function createSubject(TicketWithLayoutsContext $context)
     {
         return new FormField(TextType::class, [
-            'label'       => $this->phrase('portal.forms.label_subject'),
+            'label' => $context->isWidgetType()
+                ? $this->phrase('portal.widget.label_subject')
+                : $this->phrase('portal.forms.label_subject'),
             'required'    => true,
             'constraints' => [
                 new Assert\NotBlank(),
@@ -148,6 +150,9 @@ class WebFieldResolver extends AbstractFieldResolver
             'data'           => $context->getMessage(),
             'format'         => 'html',
             'required'       => true,
+            'message_label'  => $context->isWidgetType()
+                ? $this->phrase('portal.widget.label_message')
+                : $this->phrase('portal.forms.label_message'),
         ]);
     }
 
@@ -198,9 +203,11 @@ class WebFieldResolver extends AbstractFieldResolver
             'type'    => TextType::class,
             'options' => [
                 'property_path' => 'person.name',
-                'label'         => $this->phrase('portal.forms.label_name'),
-                'empty_data'    => $context->getPerson()->getDisplayName(false),
-                'constraints'   => [
+                'label'         => $context->isWidgetType()
+                    ? $this->phrase('portal.widget.label_name')
+                    : $this->phrase('portal.forms.label_name'),
+                'empty_data'  => $context->getPerson()->getDisplayName(false),
+                'constraints' => [
                     new Assert\NotBlank(),
                 ],
             ],
@@ -232,7 +239,9 @@ class WebFieldResolver extends AbstractFieldResolver
             'type'    => PersonEmailType::class,
             'options' => [
                 'property_path' => 'person.primary_email',
-                'label'         => $this->phrase('portal.forms.label_email'),
+                'label'         => $context->isWidgetType()
+                    ? $this->phrase('portal.widget.label_email')
+                    : $this->phrase('portal.forms.label_email'),
 
                 // ignore the "unique entity" constraint here
                 'constraints' => [],
