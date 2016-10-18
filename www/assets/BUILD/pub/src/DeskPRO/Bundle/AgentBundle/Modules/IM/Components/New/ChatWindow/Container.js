@@ -12,26 +12,27 @@ import EmojiBox from './EmojiBox';
 
 class Container extends React.Component {
   static propTypes = {
-    me:                 PropTypes.object.isRequired,
-    agents:             PropTypes.object.isRequired,
-    departments:        PropTypes.object.isRequired,
-    teams:              PropTypes.object.isRequired,
-    current:            PropTypes.object.isRequired,
-    isOpen:             PropTypes.bool.isRequired,
-    clickOut:           PropTypes.func,
-    onSubmit:           PropTypes.func,
-    onChange:           PropTypes.func.isRequired,
-    onAttach:           PropTypes.func.isRequired,
-    messages:           PropTypes.object,
-    dispatch:           PropTypes.func,
-    loadingMessages:    PropTypes.bool.isRequired,
-    markNewMessages:    PropTypes.func,
-    openGroupDrawer:    PropTypes.func,
-    onScroll:           PropTypes.func,
-    shouldScrollBottom: PropTypes.bool.isRequired
+    me:              PropTypes.object.isRequired,
+    agents:          PropTypes.object.isRequired,
+    departments:     PropTypes.object.isRequired,
+    teams:           PropTypes.object.isRequired,
+    current:         PropTypes.object.isRequired,
+    searchQuery:     PropTypes.string,
+    isOpen:          PropTypes.bool.isRequired,
+    clickOut:        PropTypes.func,
+    onSubmit:        PropTypes.func,
+    onChange:        PropTypes.func.isRequired,
+    onAttach:        PropTypes.func.isRequired,
+    messages:        PropTypes.object,
+    dispatch:        PropTypes.func,
+    loadingMessages: PropTypes.bool.isRequired,
+    markNewMessages: PropTypes.func,
+    openGroupDrawer: PropTypes.func,
+    onScroll:        PropTypes.func
   };
 
   static defaultProps = {
+    searchQuery: '',
     clickOut() {
 
     },
@@ -62,11 +63,19 @@ class Container extends React.Component {
     this.refresh();
   }
 
+
   componentDidUpdate() {
-    if (this.scrollarea && (this.firstScroll || this.props.shouldScrollBottom)) {
-      this.scrollarea.scrollBottom();
-      this.firstScroll = false;
+    if (this.props.loadingMessages) return;
+    if (this.scrollarea) {
+      if (!this.props.loadingMessages && this.firstScroll) {
+        this.scrollarea.scrollBottom();
+        this.firstScroll = false;
+
+        return;
+      }
     }
+
+    return;
   }
 
   getAgentHeader(chat) {
@@ -112,6 +121,16 @@ class Container extends React.Component {
         return 'some im';
     }
   }
+
+  getPath = () => {
+    let path;
+    if (!this.props.searchQuery) {
+      path = ['chatMessages', this.props.current.get('id')];
+    } else {
+      path = ['searchMessages', this.props.current.get('id')];
+    }
+    return path;
+  };
 
   refresh() {
     this.props.dispatch(loadMessages(this.props.current.get('id'), ''));

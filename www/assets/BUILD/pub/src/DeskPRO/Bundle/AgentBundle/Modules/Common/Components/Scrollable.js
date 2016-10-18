@@ -35,7 +35,7 @@ export class Scrollable extends React.Component {
   }
 
   shouldComponentUpdate() {
-    const dirty = this.dirty;
+    const dirty = this.dirty || true;
     this.dirty = false;
     return dirty;
   }
