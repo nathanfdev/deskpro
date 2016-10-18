@@ -1120,13 +1120,25 @@ class TicketSearch extends SearcherAbstract
 
         switch ($type) {
             case 'ticket.urgency':
-                if ($this->needsUrgency()) {
-                    $this->add_raw_selects[] = "IF(tickets.status = 'awaiting_agent', tickets.urgency, IF(tickets.status = 'awaiting_user', 1, 0)) AS status_order";
+                $statuses = $this->getApplicableStatuses();
+
+                // urgency only applies to awaiting_agnet
+                if (in_array('awaiting_agent', $statuses)) {
+                    // only have awaiting agent
+                    if (count($statuses) === 1) {
+                        $this->add_raw_selects[] = 'tickets.urgency AS tickets_urgency';
+                        $order_by                = "ORDER BY tickets_urgency $dir, id $r_dir";
+
+                    // a mix of stautses, so we need to compute it
+                    } else {
+                        $this->add_raw_selects[] = "IF(tickets.status = 'awaiting_agent', tickets.urgency, IF(tickets.status = 'awaiting_user', 1, 0)) AS status_order";
+                        $order_by                = "ORDER BY status_order $dir, id $r_dir";
+                    }
                 } else {
-                    $this->add_raw_selects[] = 'tickets.urgency AS status_order';
+                    // urgency does not apply to other statuses
+                    $order_by = "ORDER BY id $dir";
                 }
 
-                $order_by            = "ORDER BY status_order $dir, id $r_dir";
                 $this->order_summary = $tr->phrase('agent.general.urgency');
                 break;
 
@@ -2983,27 +2995,71 @@ class TicketSearch extends SearcherAbstract
      */
     public function needsUrgency()
     {
-        $info                   = $this->findTerm('status');
-        list($term, $op, $data) = $info;
+        $status = $this->getApplicableStatuses();
 
-        if (isset($data['status'])) {
-            $status = $data['status'];
+        if ($status && !in_array('awaiting_agent', $status)) {
+            return false;
         }
 
-        if (isset($data['options']) && isset($data['options']['status'])) {
-            $status = $data['options']['status'];
-        }
+        return true;
+    }
 
-        if (isset($status)) {
+    /**
+     * Get the statuses that this search is matching.
+     *
+     * @return array
+     */
+    private function getApplicableStatuses()
+    {
+        $status = [];
+
+        if ($info = $this->findTerm('status')) {
+            list($term, $op, $data) = $info;
+            if (isset($data['status'])) {
+                $status = $data['status'];
+            }
+
+            if (isset($data['options']) && isset($data['options']['status'])) {
+                $status = $data['options']['status'];
+            }
+
             if (!is_array($status)) {
                 $status = [$status];
             }
 
-            if (isset($status) && $op == 'is' && !in_array('awaiting_agent', $status)) {
-                return false;
+            // not means the real applicable statuses are the opposite
+            if ($op === self::OP_NOT || $op === self::OP_NOTCONTAINS) {
+                $status = array_diff([
+                    Ticket::STATUS_AWAITING_AGENT,
+                    Ticket::STATUS_AWAITING_USER,
+                    Ticket::STATUS_RESOLVED,
+                    Ticket::STATUS_ARCHIVED,
+                    Ticket::STATUS_HIDDEN,
+                ], $status);
             }
         }
 
-        return true;
+        // No specific terms added, so means all of them apply
+        if (!$status) {
+            // all tickets inc archive
+            if ($this->is_archive) {
+                return [
+                    Ticket::STATUS_AWAITING_AGENT,
+                    Ticket::STATUS_AWAITING_USER,
+                    Ticket::STATUS_RESOLVED,
+                    Ticket::STATUS_ARCHIVED,
+                    Ticket::STATUS_HIDDEN,
+                ];
+            // just active
+            } else {
+                return [
+                    Ticket::STATUS_AWAITING_AGENT,
+                    Ticket::STATUS_AWAITING_USER,
+                    Ticket::STATUS_RESOLVED,
+                ];
+            }
+        }
+
+        return $status;
     }
 }
