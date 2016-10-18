@@ -746,7 +746,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!loadAdmin && !loadReports) {
-			$('#dp_loading').remove();
 			$('#page_loading').remove();
 			$('#loading_css').remove();
 		}
@@ -1180,7 +1179,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if ($('#admin_interface_trigger').data('handler')) {
 					console.log("Loading admin: " + loadAdmin);
 					$('#admin_interface_trigger').data('handler').open(loadAdmin, function () {
-						$('#dp_loading').remove();
 						$('#page_loading').remove();
 						$('#loading_css').remove();
 					});
@@ -1191,7 +1189,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if ($('#reports_interface_trigger').data('handler')) {
 					console.log("Loading reports: " + loadReports);
 					$('#reports_interface_trigger').data('handler').open(loadReports, function () {
-						$('#dp_loading').remove();
 						$('#page_loading').remove();
 						$('#loading_css').remove();
 					});

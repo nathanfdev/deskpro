@@ -121,7 +121,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 
     var loadingEl = document.getElementById('dp_loading');
     if (loadingEl && loadingEl.parentNode) {
-      loadingEl.parentNode.removeChild(loadingEl);
+      // loadingEl.parentNode.removeChild(loadingEl);
     }
   },
 

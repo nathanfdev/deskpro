@@ -36,6 +36,7 @@ class AgentLegacyApp {
       this.renderPiece(AgentList, AgentList.getType());
       this.renderPiece(SideBarContainer, SideBarContainer.getType());
       this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());
+      window.$('#dp_loading').remove();
     }
   }
 
