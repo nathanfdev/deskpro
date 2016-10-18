@@ -81,6 +81,7 @@ class TicketWithLayoutsManipulatorType extends AbstractType
             ->setAllowedTypes('field_resolver', AbstractFieldResolver::class)
             ->setAllowedTypes('field_renderer', FieldRendererInterface::class)
             ->setAllowedTypes('layout_factory', 'callable')
+            ->setDefault('form_type', null)
         ;
     }
 

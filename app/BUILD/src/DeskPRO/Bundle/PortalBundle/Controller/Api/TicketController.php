@@ -107,6 +107,7 @@ class TicketController extends AbstractApiController
             'hide_department_field'         => $request->query->getBoolean('hide_department_field'),
             'ticket_view_context'           => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'             => TicketWithLayoutsContext::VISIBILITY_NEW,
+            'form_type'                     => $request->get('type'),
         ];
 
         $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
