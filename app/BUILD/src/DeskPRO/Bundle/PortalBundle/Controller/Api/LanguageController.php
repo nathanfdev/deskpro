@@ -158,6 +158,7 @@ class LanguageController extends AbstractApiController
             'portal.chat.attached_photo',
             'portal.chat.see_full_image',
             'portal.widget.new-ticket-title',
+            'portal.widget.label_add_attachment',
             'user.chat.email',
             'user.chat.ended-no-agent',
             'user.chat.error',

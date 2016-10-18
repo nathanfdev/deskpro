@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
-import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
-import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import DropZone from 'DeskPRO/Component/Uploader/DropZone';
 import { AttachedList } from './AttachedList';
 
-export class PortalAttach extends React.Component {
+export default class PortalAttach extends React.Component {
 
   static propTypes = {
     files:         PropTypes.array,
@@ -45,7 +45,7 @@ export class PortalAttach extends React.Component {
   }
 
   onRteFileUpload = (file) => {
-    this.dropZone.pushFileToQueue(file);
+    this.refDropZone.pushFileToQueue(file);
   };
 
   onUploadStarted = (event, data) => {
@@ -113,6 +113,31 @@ export class PortalAttach extends React.Component {
     });
   };
 
+  renderLink() {
+    const rand = Math.random();
+    return (
+      <span className="attach-file link">
+        <input type="file" ref={(node) => { this.refFileUpload = node; }} id={rand} name="file[blob]" />
+        <label htmlFor={rand}>
+          <a>
+            {portalPhrases.get('portal.widget.label_add_attachment')}
+          </a>
+        </label>
+      </span>
+    );
+  }
+
+  renderButton() {
+    return (
+      <span className="attach-file button">
+        <i className="fa fa-upload" />
+        <span className="text">{portalPhrases.get('portal.forms.label_drag')}</span>
+        <span className="fake-button">{portalPhrases.get('portal.forms.label_choose')}</span>
+        <input type="file" ref={(node) => { this.refFileUpload = node; }} name="file[blob]" />
+      </span>
+    );
+  }
+
   render() {
     const { widgetOptions, inputName } = this.props;
     const context = widgetOptions.context || document;
@@ -125,21 +150,17 @@ export class PortalAttach extends React.Component {
     return (
       <div className="new-ticket-attachments">
         <DropZone
-          ref={(c) => { this.dropZone = c; }}
-          getExternalInput={() => this.fileUpload}
+          ref={(node) => { this.refDropZone = node; }}
+          getExternalInput={() => this.refFileUpload}
           uploadUrl={`${portalUrlGenerator.path('/')}dpblob`}
           uploadParams={params}
           context={context}
           onSend={this.onUploadStarted}
           onSuccess={this.onUploadSuccess}
           onFail={this.onUploadFail}
+          getDropZoneNode={widgetOptions.getDropZoneNode}
         >
-          <span className="attach-file">
-            <i className="fa fa-upload" />
-            <span className="text">{portalPhrases.get('portal.forms.label_drag')}</span>
-            <span className="fake-button">{portalPhrases.get('portal.forms.label_choose')}</span>
-            <input type="file" ref={(c) => { this.fileUpload = c; }} name="file[blob]" />
-          </span>
+          {widgetOptions.isWidget ? this.renderLink() : this.renderButton()}
         </DropZone>
 
         <AttachedList files={this.state.files} inputName={inputName} onDelete={this.onDelete} />

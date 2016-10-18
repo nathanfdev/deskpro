@@ -758,6 +758,7 @@ return [
     'portal.widget.label_email'                             => 'Your Email',
     'portal.widget.label_name'                              => 'Your Name',
     'portal.widget.label_message'                           => 'Your Question',
+    'portal.widget.label_add_attachment'                    => 'Add Attachment',
     'user.chat.email'                                       => 'Your Email Address',
     'user.chat.ended-no-agent'                              => 'We are very sorry but we do not have anyone available to take your chat right now. Please email us or try again later.',
     'user.chat.error'                                       => 'Chat Error',

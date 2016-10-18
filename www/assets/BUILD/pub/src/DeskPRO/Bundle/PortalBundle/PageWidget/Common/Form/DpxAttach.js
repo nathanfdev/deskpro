@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import { PortalAttach } from '../../../React/Form/DropZone/PortalAttach';
+import PortalAttach from '../../../React/Form/DropZone/PortalAttach';
 
-export class DpxAttach extends PageWidget {
+export default class DpxAttach extends PageWidget {
 
   renderWidget() {
     this.$element.hide();
