@@ -97,3 +97,16 @@ Feature: /ticket_forms
     When I send a GET request to "/api/v2/tickets/{t1}"
     Then the response status code should be 200
     And the JSON node "data.cc" should have 0 elements
+
+  Scenario: I add non existing email as CC
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{t1}" with body:
+    """
+{
+  "cc": ["new-user@deskpro.dev"]
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/{t1}"
+    Then the response status code should be 200
+    And the JSON node "data.cc" should have 1 element

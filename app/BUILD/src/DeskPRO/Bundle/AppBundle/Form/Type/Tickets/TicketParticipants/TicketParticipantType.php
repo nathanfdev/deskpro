@@ -60,6 +60,7 @@ class TicketParticipantType extends AbstractTicketParticipantType
         $builder->add('person', PersonAssignType::class, [
             'error_bubbling' => $options['inline'],
             'constraints'    => $personConstraints,
+            'allow_create'   => true,
         ]);
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());

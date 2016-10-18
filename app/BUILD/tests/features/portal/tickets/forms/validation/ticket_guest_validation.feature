@@ -18,5 +18,5 @@ Feature: New ticket form validation
     When I go to "/new-ticket"
     And I fill in "ticket[person][user_email][email]" with "12356"
     And I press "Submit"
-    Then "ticket[person][user_email][email]" form field should have error with the phrase "This email address is not valid"
+    Then "ticket[person][user_email][email]" form field should have error with the phrase "12356"
     And "ticket[person][user_email][email]" form field should have 1 error

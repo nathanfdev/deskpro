@@ -451,7 +451,7 @@ return [
     'portal.forms.error_dupe_ticket'                        => 'Duplicate ticket.',
     'portal.forms.error_dupe_ticket_message'                => 'Duplicate ticket message.',
     'portal.forms.error_email_required'                     => 'You must provide your email address',
-    'portal.forms.error_invalid_email'                      => 'This email address is not valid',
+    'portal.forms.error_invalid_email'                      => 'This email address {{ value }} is not valid',
     'portal.forms.error_length_invalid'                     => 'This value should have exactly {{ limit }} characters.',
     'portal.forms.error_length_too_long'                    => 'This value is too long. It should have {{ limit }} characters or less',
     'portal.forms.error_length_too_short'                   => 'This value should have {{ limit }} characters or more',

@@ -206,6 +206,18 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
         $this->access_code->ticket = $this->ticket;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        if ($this->person_email && $this->person_email->getEmail()) {
+            return $this->person_email->getEmail();
+        }
+
+        return '';
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -261,6 +273,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => null,
                 'inversedBy'   => 'tickets',
+                'cascade'      => ['persist'],
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'person_id',
