@@ -35,6 +35,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\ReversedTransformer;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -76,6 +77,18 @@ class WidgetBrandTicketSettingsType extends AbstractType
             ->add('default_department', EntityType::class, [
                 'property_path' => 'defaultDepartment',
                 'class'         => Department::class,
+            ])
+            ->add('select_subject', ChoiceType::class, [
+                'property_path'     => 'selectSubject',
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandTicketSettings::SELECT_CUSTOM,
+                    WidgetBrandTicketSettings::SELECT_MESSAGE,
+                    WidgetBrandTicketSettings::SELECT_DEFAULT,
+                ],
+            ])
+            ->add('default_subject', TextType::class, [
+                'property_path' => 'defaultSubject',
             ])
         ;
 

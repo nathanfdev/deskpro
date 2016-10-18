@@ -41,6 +41,7 @@ class WidgetBrandTicketSettings implements GroupSequenceProviderInterface
 {
     const SELECT_DEFAULT = 'default';
     const SELECT_CUSTOM  = 'custom';
+    const SELECT_MESSAGE = 'message';
 
     /**
      * @var string
@@ -57,6 +58,20 @@ class WidgetBrandTicketSettings implements GroupSequenceProviderInterface
      * @Assert\NotNull(groups={"DefaultDepartment"})
      */
     private $defaultDepartment;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $selectSubject = self::SELECT_CUSTOM;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $defaultSubject;
 
     /**
      * @return string
@@ -109,5 +124,37 @@ class WidgetBrandTicketSettings implements GroupSequenceProviderInterface
         }
 
         return $groups;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultSubject()
+    {
+        return $this->defaultSubject;
+    }
+
+    /**
+     * @param string $defaultSubject
+     */
+    public function setDefaultSubject($defaultSubject)
+    {
+        $this->defaultSubject = $defaultSubject;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelectSubject()
+    {
+        return $this->selectSubject;
+    }
+
+    /**
+     * @param string $selectSubject
+     */
+    public function setSelectSubject($selectSubject)
+    {
+        $this->selectSubject = $selectSubject;
     }
 }
