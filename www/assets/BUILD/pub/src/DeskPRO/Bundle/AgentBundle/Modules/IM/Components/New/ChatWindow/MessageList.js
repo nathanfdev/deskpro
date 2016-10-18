@@ -47,6 +47,13 @@ class MessageList extends React.Component {
     return (
       <SegmentsGroup vertical>
         {
+          this.props.loadingMessages
+            ? <div style={{ height: '20px', width: '100%', position: 'relative' }}>
+              <Loader loaded={!this.props.loadingMessages} opacity={0} width={4} scale={0.5} color="#4696dc" />
+            </div>
+            : null
+        }
+        {
           msg.map((message, index) => {
             const result = (
               <Message
