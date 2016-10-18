@@ -89,6 +89,8 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
     this.opened = true;
     this.frameWrap.css('display', 'block');
 
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
+
     var event = new CustomEvent('dpOpenOverlayFrame', { 'detail': { id: this.frameId, path: path } });
     window.document.dispatchEvent(event);
 
@@ -142,6 +144,8 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
   close: function() {
     this.opened = false;
     this.frameWrap.css('display', 'none');
+    
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
 
     if (this.frameTitle) {
       document.title = this.originalTitle;
