@@ -1,4 +1,4 @@
-const topbar = {
+const topbarChanges = {
   force: true,
   steps: [
     {
@@ -46,11 +46,11 @@ const topbar = {
     },
   ],
   intro: {
-    title:  'Welcome to DeskPRO',
-    text:   'Let’s take a quick look...',
+    title:  'New DeskPRO update',
+    text:   'We’ve made a few changes to how you navigate DeskPRO. Let’s take a quick look...',
     action: 'Start',
     img:    `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/topbar_intro.png`
   }
 };
-export default topbar;
+export default topbarChanges;
 
