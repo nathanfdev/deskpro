@@ -83,10 +83,11 @@ class TicketSearchController extends AbstractController
         $archive_filters  = $filter_info['archive_filters'];
         $custom_filters   = $filter_info['custom_filters'];
 
-        $filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($all_filters, $this->person);
+        $filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($sys_filters, $this->person);
         $filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
 
         $archive_filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($archive_filters, $this->person);
+        $custom_filter_counts  = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($custom_filters, $this->person);
 
         // Summary of terms for all filters
         $filters_summary = [];
@@ -161,6 +162,7 @@ class TicketSearchController extends AbstractController
             'archive_filters'        => $archive_filters,
             'problem_filters'        => $problem_filters,
             'archive_filter_counts'  => $archive_filter_counts,
+            'custom_filter_counts'   => $custom_filter_counts,
             'filter_id_matches'      => $filter_id_matches,
             'filters_summary'        => $filters_summary,
             'custom_filters'         => $custom_filters,
