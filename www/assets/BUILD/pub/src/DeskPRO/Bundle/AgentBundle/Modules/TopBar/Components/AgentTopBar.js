@@ -96,6 +96,8 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.openGroupDrawer  = this.openGroupDrawer.bind(this);
     this.createGroup      = this.createGroup.bind(this);
     this.onScroll         = this.onScroll.bind(this);
+    this.loadMessages     = this.loadMessages.bind(this);
+    this.onChatSearch     = this.onChatSearch.bind(this);
   }
 
   componentWillMount() {
@@ -235,7 +237,7 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   getPath = () => {
     let path;
-    if (!this.props.searchQuery) {
+    if (!this.state.searchQuery) {
       path = ['chatMessages', this.props.current.get('id')];
     } else {
       path = ['searchMessages', this.props.current.get('id')];
@@ -264,36 +266,53 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   onScroll(object) {
-    const messages = this.props.messages.getIn(['chatMessages', this.props.current.get('id')]);
+    const messages = this.props.messages.getIn(this.getPath());
     if (messages) {
       const page = messages.page;
       const maxPage = messages.pages;
       if (object.topPosition === 0 && !this.props.loadingMessages && page < maxPage) {
-        this.props.dispatch(messagesActions.loadMessages(this.props.current.get('id'), '', page + 1));
+        this.loadMessages(page + 1);
       }
     }
   }
 
+  onChatSearch(searchQuery) {
+    let reload = false;
+    if (this.state.searchQuery !== searchQuery && searchQuery.length > 2) {
+      reload = true;
+    }
+    if (reload && !this.props.loadingMessages) {
+      this.setState({ searchQuery }, () => { this.loadMessages(1); });
+    }
+  }
+
+  loadMessages(page = 1) {
+    this.props.dispatch(messagesActions.loadMessages(this.props.current.get('id'), this.state.searchQuery, page));
+  }
+
   render() {
     const props = { ...this.props,
-      updateVolume:      AgentTopBarContainer.updateVolume,
-      onSearch:          AgentTopBarContainer.onSearch,
-      onSearchFocus:     this.onSearchFocus,
-      onSearchBlur:      AgentTopBarContainer.onSearchBlur,
-      toggleViewMode:    AgentTopBarContainer.toggleViewMode,
-      onRecent:          AgentTopBarContainer.onRecent,
-      onNotification:    AgentTopBarContainer.onNotification,
-      closeIframes:      AgentTopBarContainer.closeIframes,
-      notificationCount: this.state.notificationCount,
-      toggleImOverlay:   this.toggleImOverlay,
-      chatClickOut:      this.chatClickOut,
-      recentClick:       this.recentClick,
-      participantClick:  this.participantClick,
-      onSubmit:          this.onSubmit,
-      markNewMessages:   this.markNewMessages,
-      openGroupDrawer:   this.openGroupDrawer,
-      createGroup:       this.createGroup,
-      onScroll:          this.onScroll,
+      updateVolume:       AgentTopBarContainer.updateVolume,
+      onSearch:           AgentTopBarContainer.onSearch,
+      onSearchFocus:      this.onSearchFocus,
+      onSearchBlur:       AgentTopBarContainer.onSearchBlur,
+      toggleViewMode:     AgentTopBarContainer.toggleViewMode,
+      onRecent:           AgentTopBarContainer.onRecent,
+      onNotification:     AgentTopBarContainer.onNotification,
+      closeIframes:       AgentTopBarContainer.closeIframes,
+      notificationCount:  this.state.notificationCount,
+      toggleImOverlay:    this.toggleImOverlay,
+      chatClickOut:       this.chatClickOut,
+      recentClick:        this.recentClick,
+      participantClick:   this.participantClick,
+      onSubmit:           this.onSubmit,
+      markNewMessages:    this.markNewMessages,
+      openGroupDrawer:    this.openGroupDrawer,
+      createGroup:        this.createGroup,
+      onScroll:           this.onScroll,
+      loadMessages:       this.loadMessages,
+      onChatSearch:       this.onChatSearch,
+      searchQuery:        this.state.searchQuery,
       shouldScrollBottom: this.state.shouldScrollBottom,
       onClearSearchInput: AgentTopBarContainer.onClearSearchInput,
       onToggleChat:       this.onToggleChat
@@ -330,10 +349,13 @@ export class AgentTopBar extends React.Component {
     onSubmit:            PropTypes.func,
     markNewMessages:     PropTypes.func,
     onScroll:            PropTypes.func,
+    loadMessages:        PropTypes.func,
+    onChatSearch:        PropTypes.func,
     messages:            PropTypes.object,
     counts:              PropTypes.object,
     current:             PropTypes.object,
     checkedAgents:       PropTypes.object,
+    searchQuery:         PropTypes.string,
     loadingMessages:     PropTypes.bool.isRequired,
     groupCreation:       PropTypes.bool.isRequired,
     chating:             PropTypes.bool.isRequired,
@@ -374,8 +396,8 @@ export class AgentTopBar extends React.Component {
   render() {
     const { groupLoaded, groupCreation, teamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
     const { current, chating, recentClick, messages, chatClickOut, participantClick, dispatch } = this.props;
-    const { counts, groupChats, agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
-    const { onScroll, createGroup, openGroupDrawer, markNewMessages, onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
+    const { searchQuery, counts, groupChats, agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
+    const { loadMessages, onChatSearch, onScroll, createGroup, openGroupDrawer, markNewMessages, onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
     const { checkedAgents, closeIframes, toggleViewMode, me, myDepartments, teams, recentChats, recentLoaded, overlayShown } = this.props;
 
     const groupDrawerTarget = document.getElementById('im-button');
@@ -433,6 +455,7 @@ export class AgentTopBar extends React.Component {
             groupLoaded={groupLoaded}
             onFocus={onSearchFocus}
             onBlur={onSearchBlur}
+            searchQuery={searchQuery}
           >
             <IMButton />
           </IMOverlay>
@@ -448,6 +471,8 @@ export class AgentTopBar extends React.Component {
           {current.get('id') ? <Container
             isOpen={chating}
             onScroll={onScroll}
+            searchQuery={searchQuery}
+            onChatSearch={onChatSearch}
             agents={agents}
             departments={myDepartments}
             teams={teams}
@@ -458,7 +483,7 @@ export class AgentTopBar extends React.Component {
             onChange={() => console.log('change')}
             onAttach={() => console.log('attach')}
             clickOut={chatClickOut}
-            dispatch={dispatch}
+            loadMessages={loadMessages}
             loadingMessages={loadingMessages}
             markNewMessages={markNewMessages}
             openGroupDrawer={openGroupDrawer}

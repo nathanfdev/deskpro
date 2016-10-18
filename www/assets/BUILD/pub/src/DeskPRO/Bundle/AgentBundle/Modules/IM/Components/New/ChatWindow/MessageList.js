@@ -72,8 +72,9 @@ class MessageList extends React.Component {
   }
 
   render() {
-    let msg = this.props.messages.hasIn(this.getPath()) ? this.props.messages.getIn(this.getPath()).messages : [];
-    msg = msg.sort((first, second) => first.timestamp - second.timestamp);
+    const path     = this.getPath();
+    let msg = this.props.messages.hasIn(path) ? this.props.messages.getIn(path).messages : [];
+    msg          = msg.sort((first, second) => first.timestamp - second.timestamp);
     const loaded = !this.props.loadingMessages || msg.size > 0;
     return (
       <Loader loaded={loaded} parentClassName="box">

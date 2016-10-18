@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
-import classNames from 'classnames';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
-import { loadMessages } from '../../../Actions/messagesActions';
+import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import MessageList from './MessageList';
 import EmojiBox from './EmojiBox';
 
@@ -24,11 +24,12 @@ class Container extends React.Component {
     onChange:        PropTypes.func.isRequired,
     onAttach:        PropTypes.func.isRequired,
     messages:        PropTypes.object,
-    dispatch:        PropTypes.func,
+    loadMessages:    PropTypes.func,
     loadingMessages: PropTypes.bool.isRequired,
     markNewMessages: PropTypes.func,
     openGroupDrawer: PropTypes.func,
-    onScroll:        PropTypes.func
+    onScroll:        PropTypes.func,
+    onChatSearch:    PropTypes.func
   };
 
   static defaultProps = {
@@ -48,7 +49,8 @@ class Container extends React.Component {
     super(props);
     this.state = {
       emojiOpened:       false,
-      expandGroupHeader: false
+      expandGroupHeader: false,
+      searching:         false
     };
     this.firstScroll = true;
 
@@ -106,20 +108,36 @@ class Container extends React.Component {
 
   getHeader() {
     const { current } = this.props;
+    let header;
     switch (current.get('chat_type')) {
       case 'agent':
-        return this.getAgentHeader(current);
+        header = this.getAgentHeader(current);
+        break;
       case 'department':
-        return this.getDepartmentHeader(current);
+        header = this.getDepartmentHeader(current);
+        break;
       case 'team':
-        return this.getAgentTeamHeader(current);
+        header = this.getAgentTeamHeader(current);
+        break;
       case 'group':
-        return current.get('name');
+        header = current.get('name');
+        break;
       case 'everyone':
-        return 'Everyone';
+        header = 'Everyone';
+        break;
       default:
-        return 'some im';
+        header = 'some im';
+        break;
     }
+    return (
+      <span className="header wrapper">
+        {header}
+        <i
+          className={classNames('search icon', { enabled: this.state.searching })}
+          onClick={() => this.setState({ searching: !this.state.searching, expandedHeader: false })}
+        />
+      </span>
+    );
   }
 
   getPath = () => {
@@ -133,7 +151,7 @@ class Container extends React.Component {
   };
 
   refresh() {
-    this.props.dispatch(loadMessages(this.props.current.get('id'), ''));
+    this.props.loadMessages();
   }
 
   openEmoji() {
@@ -170,7 +188,7 @@ class Container extends React.Component {
   groupHeader() {
     let agents = this.props.current.get('agents');
     agents = this.state.expandGroupHeader ? agents : agents.slice(0, 9);
-    if (this.props.current.get('chat_type') === 'group') {
+    if (this.props.current.get('chat_type') === 'group' && !this.state.searching) {
       return (
         <Segment vertical className={classNames('group participants', { expanded: this.state.expandGroupHeader })}>
           <i
@@ -208,8 +226,24 @@ class Container extends React.Component {
     return null;
   }
 
+  searchHeader() {
+    if (this.state.searching) {
+      return (
+        <Segment vertical className="search">
+          <SearchBox
+            onFocus={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
+            onBlur={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
+            onUserInput={this.props.onChatSearch}
+          />
+        </Segment>
+      );
+    }
+
+    return null;
+  }
+
   render() {
-    const { current, isOpen, messages, me, agents, loadingMessages, onScroll } = this.props;
+    const { current, isOpen, messages, me, agents, loadingMessages, onScroll, searchQuery } = this.props;
 
     return (
       <Detached
@@ -220,6 +254,7 @@ class Container extends React.Component {
         <ClickOut onClickOut={() => this.clickOut()} ignoreNodes={['.emoji.box']}>
           <div className="ui popup left bottom im chat drawer">
             <div className="im header">{this.getHeader()}</div>
+            {this.searchHeader()}
             {this.groupHeader()}
             <div className="box">
               <Scrollable onScroll={onScroll} vertical ref={(c) => { this.scrollarea = c; }}>
@@ -230,6 +265,7 @@ class Container extends React.Component {
                   messages={messages}
                   me={me}
                   agents={agents}
+                  searchQuery={searchQuery}
                   markNewMessages={this.props.markNewMessages}
                 />
               </Scrollable>
