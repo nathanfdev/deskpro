@@ -117,6 +117,9 @@ class TicketWithLayoutsWebType extends AbstractType
         $resolver->setDefaults([
             'use_captcha'           => true,
             'hide_department_field' => false,
+            'hide_subject_field'    => false,
+            'subject_type'          => null,
+            'default_subject'       => null,
             'field_resolver'        => $this->fieldResolver,
             'field_renderer'        => $this->fieldRenderer,
             'layout_factory'        => function ($department) {

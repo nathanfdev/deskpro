@@ -43,6 +43,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsWebType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -120,6 +121,15 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     protected function createSubject(TicketWithLayoutsContext $context)
     {
+        if ($context->getOption('hide_subject_field')) {
+            $params = [];
+            if ($context->getOption('subject_type') === 'default') {
+                $params['data'] = $context->getOption('default_subject');
+            }
+
+            return new FormField(HiddenType::class, $params);
+        }
+
         return new FormField(TextType::class, [
             'label' => $context->isWidgetType()
                 ? $this->phrase('portal.widget.label_subject')
