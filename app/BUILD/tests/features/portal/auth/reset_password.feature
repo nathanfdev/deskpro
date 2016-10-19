@@ -13,5 +13,5 @@ Feature: Reset password
 
     When I fill in "Email" with "bad_email"
     And I press "Reset Password"
-    Then "password_reset_request[email]" form field should have error with the phrase "portal.forms.error_invalid_email"
+    Then "password_reset_request[email]" form field should have error with the phrase "bad_email"
     And "password_reset_request[email]" form field should have 1 error

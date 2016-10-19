@@ -36,6 +36,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class TicketParticipantsWebType.
@@ -81,7 +82,10 @@ class TicketParticipantsWebType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'inline' => true,
+            'inline'      => true,
+            'constraints' => new Assert\All([
+                'constraints' => new Assert\Email(),
+            ]),
         ]);
     }
 

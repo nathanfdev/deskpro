@@ -5,7 +5,8 @@ Feature: /tickets endpoint
   I want an API endpoint
 
   Background:
-    Given I'm authenticated as admin
+    Given no Person records exist
+    And I'm authenticated as admin
     And agent and user exist
     And the following Organization records exist:
       | #         | Name                  |
