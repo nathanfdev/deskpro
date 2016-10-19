@@ -194,11 +194,11 @@ phpunit=$(tail -n 2 "$LOGS_DIR/phpunit.txt" | tr '\n' ' ')
 phpunit_term_engine=$(tail -n 2 "$LOGS_DIR/phpunit-term-engine.txt" | tr '\n' ' ')
 phpunit_portal=$(tail -n 2 "$LOGS_DIR/phpunit-portal.txt" | tr '\n' ' ')
 phpspec=$(tail -n 3 "$LOGS_DIR/phpspec.txt" | tr '\n' ' ')
-jest=$(tail -n 1 "$LOGS_DIR/jest.txt" | tr '\n' ' ')
+jest=$(tail -n 3 "$LOGS_DIR/jest.txt" | tr '\n' ' ')
 behat_install=$(tail -n 3 "$LOGS_DIR/behat-install.txt" | tr '\n' ' ')
 behat_system_api=$(tail -n 3 "$LOGS_DIR/behat-system-api.txt" | tr '\n' ' ')
 behat_production=$(tail -n 3 "$LOGS_DIR/behat-production.txt" | tr '\n' ' ')
-e2e=$(tail -n 2 "$LOGS_DIR/e2e.txt" | tr '\n' ' ')
+e2e=$(tail -n 3 "$LOGS_DIR/e2e.txt" | tr '\n' ' ')
 for ((i=1;i<=$API_THREADS_NUM;i++)); do
     behat_api[$i]=$(tail -n 3 "$LOGS_DIR/behat-api-$i.txt" | tr '\n' ' ')
 done
