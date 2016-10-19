@@ -15,8 +15,8 @@ echo
 
 echo ">> Installing web dependencies"
 cd $DIR_ROOT/www/assets/BUILD/web
-npm run bower-install
 npm install
+npm run bower-install
 echo ".. done"
 
 echo ">> Building web assets"
