@@ -16,7 +16,7 @@ export class TypingEvent extends React.Component {
 
     return (
       <Message type="agent" typing>
-        <AvatarResolver avatar={agentAvatar} size={20}>
+        <AvatarResolver avatar={agentAvatar} size={40}>
           <MessageAvatar />
         </AvatarResolver>
         <div className="dpdesignportal-message-content">

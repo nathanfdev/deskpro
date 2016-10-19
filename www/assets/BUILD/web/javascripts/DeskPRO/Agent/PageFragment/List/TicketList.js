@@ -409,10 +409,12 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		// Tab indicator
 		this.addEvent('watchedTabAdded', function(tab) {
-			var ticketId = parseInt(tab.page.meta.ticket_id);
-			if (ticketId) {
-				$scope.openTickets[ticketId] = true;
-				wrapperEl.find('.ticket-row-' + ticketId).addClass('open');
+			if (tab) {
+				var ticketId = parseInt(tab.page.meta.ticket_id);
+				if (ticketId) {
+					$scope.openTickets[ticketId] = true;
+					wrapperEl.find('.ticket-row-' + ticketId).addClass('open');
+				}
 			}
 		});
 		this.addEvent('watchedTabRemoved', function(tab) {

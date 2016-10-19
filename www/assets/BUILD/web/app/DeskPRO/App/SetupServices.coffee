@@ -87,31 +87,6 @@ define [
         return $filter('date')(timestamp, 'EEEE, MMMM d, y h:mm a')
     ])
 
-    # Add logging to digest loop
-    Module.config(['$provide', ($provide) ->
-
-      # This var is used in browser tests so we can
-      # properly wait for a page to be finished rendering
-      window.DP_DIGEST_RUNNING = false
-      startRunning = ->
-        window.DP_DIGEST_RUNNING = true
-      stopRunning = ->
-        window.DP_DIGEST_RUNNING = false
-
-      $provide.decorator('$rootScope', ['dpInterfaceTimer', '$delegate', (dpInterfaceTimer, $delegate) ->
-        origDigest = $delegate.$digest
-        $delegate.$digest = ->
-          startRunning()
-          dpInterfaceTimer.startDigest()
-          ret = origDigest.apply($delegate, arguments)
-          dpInterfaceTimer.endDigest()
-          stopRunning()
-          return ret
-
-        return $delegate
-      ])
-    ])
-
     # Add fcall() to $q service (like Kris Kowal's Q: https://github.com/kriskowal/q)
     # Add isPromise
     Module.config(['$provide', ($provide) ->

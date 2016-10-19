@@ -1,4 +1,5 @@
 <div class="content">
+  {%  if brand_setting('core.iface_portal') %}
   <div class="search-and-ticket">
     <div class="search-form">
       <form action="{{ path('portal_search') }}" id="omnisearch" autocomplete="off">
@@ -72,7 +73,7 @@
       </div>
     {% endif %}
   </div>
-
+  {%  endif %}
   {#
   <div class="search-form-suggestions">
     For example: "<a href="#" class="dpx-omnisearch-link">lorel ipsum</a>", "<a href="#" class="dpx-omnisearch-link">lorel ipsum</a>", "<a href="#" class="dpx-omnisearch-link">lorel ipsum</a>"
