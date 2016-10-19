@@ -90,12 +90,10 @@ class Container extends React.Component {
       }
     }
     const agent =  agents.get(agentId);
-    return (
-      <span className="im create group" onClick={() => { openGroupDrawer([agent.get('id')]); }}>
-        {agents.getIn([agentId, 'name'])}
-        <i className="icon group add" />
-      </span>
-    );
+    return [
+      agents.getIn([agentId, 'name']),
+      <i className="icon group add" onClick={() => { openGroupDrawer([agent.get('id')]); }} />
+    ];
   }
 
   getDepartmentHeader(chat) {
@@ -130,7 +128,7 @@ class Container extends React.Component {
         break;
     }
     return (
-      <span className="header wrapper">
+      <span className="wrapper">
         {header}
         <i
           className={classNames('search icon', { enabled: this.state.searching })}

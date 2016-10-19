@@ -57,14 +57,16 @@
   .im.header {
     padding-right: 15px;
     height: 40px;
-    vertical-align: middle;
 
-    .im.create.group .icon {
+
+    .icon.group.add {
       margin-left: 5px;
       cursor: pointer;
     }
 
     .wrapper {
+
+      vertical-align: middle;
       .icon.search {
         &.enabled {
           background: $dp-sonic-midnight;

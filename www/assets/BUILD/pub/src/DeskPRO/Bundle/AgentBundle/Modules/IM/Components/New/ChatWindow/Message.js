@@ -11,7 +11,7 @@ class Message extends React.Component
     message:     PropTypes.object.isRequired,
     previous:    PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired,
     searchQuery: PropTypes.string,
-    agent:       PropTypes.agent
+    agent:       PropTypes.object
   };
 
   static renderSeparator(dateCreated) {

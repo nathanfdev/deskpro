@@ -156,8 +156,10 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   onSubmit(message) {
-    const { dispatch, current, me } = this.props;
-    dispatch(messagesActions.addMessage(current.get('id'), message, uuid(), me));
+    if (message.trim()) {
+      const { dispatch, current, me } = this.props;
+      dispatch(messagesActions.addMessage(current.get('id'), message, uuid(), me));
+    }
   }
 
   componentWillMount = () => {
