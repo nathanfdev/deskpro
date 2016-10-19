@@ -113,7 +113,11 @@ export default class IMOverlay extends React.Component {
             <DepartmentList agents={agents} departments={departments} me={me} onParticipantClick={onParticipantClick} />
             <div className="ui divider" />
             <Header level={4} className="group-list" content="teams" />
-            <AgentTeamList agents={agents} teams={teams} me={me} onParticipantClick={onParticipantClick} />
+            { teams.size > 0
+              ? <AgentTeamList agents={agents} teams={teams} me={me} onParticipantClick={onParticipantClick} />
+              : null
+            }
+
           </Scrollable>
         </div>
       </Loader>
@@ -166,7 +170,6 @@ export default class IMOverlay extends React.Component {
 
     return (
       <div
-        style={{ display: 'inline-block' }}
         className={classNames({ active: isOpen }, ['im', 'wrapper'])}
         ref={(c) => { this.imButton = c; }}
         onClick={toggleOverlay}

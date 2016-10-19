@@ -30,7 +30,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   recentChats:         collectionSelectorFactory('AgentChat', 'recent')(state),
   groupChats:          collectionSelectorFactory('AgentChat', 'group')(state),
   myDepartments:       collectionSelectorFactory('Department', 'my_tickets')(state),
-  teams:               collectionSelectorFactory('AgentTeam', 'my')(state),
+  teams:               collectionSelectorFactory('AgentTeam', 'all')(state),
   me:                  meSelector(state),
   counts:              state.IM.messages.get('counts'),
   current:             state.IM.chats.get('current'),
