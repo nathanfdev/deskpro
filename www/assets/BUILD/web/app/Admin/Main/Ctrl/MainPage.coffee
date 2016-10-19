@@ -30,6 +30,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @portalSettings = @DataService.get 'PortalGeneralSettings'
 
       @$scope.brandId = @$stateParams.brandId
+      @$scope.selectBrandId = @$stateParams.brandId
 
       if !@$scope.brandId
         @$scope.brandId = 1
@@ -58,9 +59,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     changeBrand: ->
       if typeof @$stateParams.brandId != 'undefined'
-        if @$scope.brandId == '-1'
+        if @$scope.selectBrandId == '-1'
+          @$scope.brandId = 'new';
           @$state.go 'portal.setup', {brandId: 'new'}
-        else if @$scope.brandId
-          @$state.go 'portal.setup', {brandId: @$scope.brandId}
+        else if @$scope.selectBrandId
+          @$scope.brandId = @$scope.selectBrandId
+          @$state.go 'portal.setup', {brandId: @$scope.selectBrandId}
 
   Admin_Main_Ctrl_MainPage.EXPORT_CTRL()
