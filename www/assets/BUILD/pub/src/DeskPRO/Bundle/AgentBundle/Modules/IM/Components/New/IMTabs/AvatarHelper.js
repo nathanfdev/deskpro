@@ -17,10 +17,10 @@ class AvatarHelper
     return <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" />;
   }
 
-  static renderAgentAvatar(agent) {
+  static renderAgentAvatar(agent, size = 24) {
     return (<PersonAvatar
       color={chooseColor(agent.get('id'))}
-      person={agent} size={24}
+      person={agent} size={size}
       className="ui avatar image im"
     />);
   }

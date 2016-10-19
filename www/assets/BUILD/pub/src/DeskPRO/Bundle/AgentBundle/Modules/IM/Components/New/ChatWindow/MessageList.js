@@ -11,7 +11,8 @@ class MessageList extends React.Component {
     searchQuery:     PropTypes.string,
     current:         PropTypes.object.isRequired,
     loadingMessages: PropTypes.bool.isRequired,
-    markNewMessages: PropTypes.func
+    markNewMessages: PropTypes.func,
+    agents:          PropTypes.object.isRequired
   };
 
   static renderEmpty() {
@@ -44,23 +45,27 @@ class MessageList extends React.Component {
 
   renderList(msg) {
     let previous = false;
+    const { loadingMessages, agents, searchQuery, me } = this.props;
     return (
       <SegmentsGroup vertical>
         {
-          this.props.loadingMessages
+          loadingMessages
             ? <div style={{ height: '20px', width: '100%', position: 'relative' }}>
-              <Loader loaded={!this.props.loadingMessages} opacity={0} width={4} scale={0.5} color="#4696dc" />
+              <Loader loaded={!loadingMessages} opacity={0} width={4} scale={0.5} color="#4696dc" />
             </div>
             : null
         }
         {
           msg.map((message, index) => {
+            const agent = agents.get(message.person);
             const result = (
               <Message
                 key={index}
+                agent={agent}
+                searchQuery={searchQuery}
                 message={message}
                 previous={previous}
-                me={this.props.me}
+                me={me}
               />
             );
             previous = message;

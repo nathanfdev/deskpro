@@ -382,7 +382,7 @@
     height: initial;
     width: 320px;
 
-    .ui.segment.search {
+    > .ui.segment.search {
       height: 75px;
       padding: 15px;
 
@@ -567,9 +567,104 @@
               padding-left: 0;
             }
           }
+
+          &.search.result {
+            padding: 0;
+            margin: 0;
+
+            .ui.date.separator {
+              margin-top: 0;
+            }
+
+            &:hover {
+              .ui.divider.horizontal.timestamp, .message {
+                color: $dp-sonic-primary;
+                background-color: $dp-morning-sky;
+              }
+              .ui.divider.horizontal.timestamp {
+                &:before, &:after {
+                  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABaAAAAACCAYAAACuTHuKAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AoTEAozi5V7HgAAADJJREFUaN7t0DERACAMBDC4Y0UBOy7xWEePiY6JhMwkdwAAAAAAQLN1Xm0NAAAAAAB0+6sqBJ7q+V/NAAAAAElFTkSuQmCC');
+                }
+              }
+            }
+
+            .ui.divider.horizontal.timestamp {
+              display: table;
+              color: $dp-greyscale-450;
+              font-family: "Open Sans", serif;
+              font-size: 10px;
+              vertical-align: bottom;
+              padding: 0;
+
+              &:before {
+                content: none;
+              }
+              &:after {
+                width: 95%;
+              }
+            }
+
+            .message {
+              border-radius: initial;
+              border: none;
+              width: 100%;
+              max-width: initial;
+              display: table;
+              padding-left: 0;
+
+              &:before {
+                content: none;
+              }
+
+              &:after {
+                right: 20px;
+                top: 50%;
+                box-shadow: none;
+                background: #FFFFFF;
+                position: absolute;
+                content: none;
+                width: 0.71428571em;
+                height: 0.71428571em;
+                transform: rotate(-45deg);
+                z-index: 2;
+                border: 1px solid #cacece;
+                border-top: none;
+                border-left: none;
+              }
+
+              > .content {
+                display: table-cell;
+              }
+
+              > .avatar.wrapper {
+                display: table-cell;
+                width: 14px;
+
+                .ui.im.avatar {
+                  width: 14px;
+                  height: 14px;
+                  margin-right: 5px;
+                  background-position: center center;
+                  -webkit-background-size: 100%;
+                  -o-background-size: 100%;
+                  -moz-background-size: 100%;
+                  background-size: 100%;
+
+                  &.offline {
+                    opacity: 0.5;
+                  }
+
+                  .text {
+                    font-size: 6px;
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
+
     .reply {
       width: 100%;
       padding: 15px;
