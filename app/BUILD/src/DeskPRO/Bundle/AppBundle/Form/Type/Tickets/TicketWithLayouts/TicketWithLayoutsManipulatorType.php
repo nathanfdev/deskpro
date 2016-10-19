@@ -143,6 +143,29 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $form = $event->getForm();
         $data = $form->getData();
 
+        $context = TicketWithLayoutsContext::createOnPreSubmit($event);
+        if ($context->getOption('subject_type') === 'default') {
+            $data            = $event->getData();
+            $data['subject'] = $context->getOption('default_subject');
+            $event->setData($data);
+        }
+
+        if ($context->getOption('subject_type') === 'message') {
+            $data            = $event->getData();
+            $message         = trim(strip_tags(html_entity_decode(@$data['message']['message'])));
+            $data['subject'] = '';
+            $num             = 0;
+            $delim           = " \n\t,.!?:;";
+            $word            = strtok($message, $delim);
+            while ($num++ < 5 && $word !== false) {
+                if ($word) {
+                    $data['subject'] = $data['subject'].' '.$word;
+                }
+                $word = strtok($delim);
+            }
+            $event->setData($data);
+        }
+
         $ticket = new Ticket();
         $ticket->disableAutoTicketProcess();
         if ($data) {
@@ -159,7 +182,6 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $fullForm = $this->formFactory->create($options['full_type_class'], $ticket, $fullFormOptions);
         $fullForm->submit($event->getData());
 
-        $context = TicketWithLayoutsContext::createOnPreSubmit($event);
         TicketLayoutHelper::renderFormFields($context, function (LayoutField $field) use ($ticket) {
             return $field->getCriteria()->isTicketMatch($ticket);
         });

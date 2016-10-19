@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
-import { widgetLanguageSelector } from './bootstrap';
 import Immutable from 'immutable';
+import { widgetLanguageSelector } from './bootstrap';
 
 export const translationsSelectorFactory = (property, defaultValue) => (options, language) => {
   const translations = options.get('translations') || [];
@@ -219,8 +219,25 @@ export const ticketSelectDepartmentTypeSelector = createSelector(
   options => options.get('select_department')
 );
 
+export const ticketDefaultSubjectSelector = createSelector(
+  ticketOptionsSelector,
+  options => options.get('default_subject')
+);
+
+export const ticketSelectSubjectTypeSelector = createSelector(
+  ticketOptionsSelector,
+  options => options.get('select_subject')
+);
+
 export const isTicketDepartmentFieldHidden = createSelector(
   ticketDefaultDepartmentSelector,
   ticketSelectDepartmentTypeSelector,
   (defaultDepartment, selectDepartmentType) => selectDepartmentType === 'default' && defaultDepartment > 0
+);
+
+export const isTicketSubjectFieldHidden = createSelector(
+  ticketDefaultSubjectSelector,
+  ticketSelectSubjectTypeSelector,
+  (defaultSubject, selectSubjectType) => (selectSubjectType === 'default' && defaultSubject)
+    || selectSubjectType === 'message'
 );
