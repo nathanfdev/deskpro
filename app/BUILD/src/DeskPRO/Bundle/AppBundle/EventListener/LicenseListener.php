@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
+use Application\DeskPRO\NewSettings\SettingsBag;
 use DpSys\License;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -69,55 +70,64 @@ class LicenseListener implements EventSubscriberInterface
 
     public function onPreRequest(GetResponseEvent $event)
     {
-        $container = $this->container;
-        $me        = $this;
-        License::setLoaderFunction(function () use ($me, $container) {
-            return $me->licenseLoader($container);
+        $me = $this;
+        License::setLoaderFunction(function () use ($me) {
+            return $me->licenseLoader();
         });
     }
 
     public function onCommand(ConsoleCommandEvent $event)
     {
-        $container = $this->container;
-        $me        = $this;
-        License::setLoaderFunction(function () use ($me, $container) {
-            return $me->licenseLoader($container);
+        $me = $this;
+        License::setLoaderFunction(function () use ($me) {
+            return $me->licenseLoader();
         });
     }
 
     /**
      * @internal
      *
-     * @param ContainerInterface $container
-     *
      * @return array
      */
-    public function licenseLoader(ContainerInterface $container)
+    public function licenseLoader()
     {
-        $settings = $container->get('settings_resolver')->getGlobalSettings();
-
         if (defined('DP_LIC_FILE')) {
-            $license_code = file_get_contents(DP_LIC_FILE);
+            $licenseCode = file_get_contents(DP_LIC_FILE);
         } elseif (defined('DP_LIC_STR')) {
-            $license_code = DP_LIC_STR;
+            $licenseCode = DP_LIC_STR;
         } else {
-            $license_code = $settings->get('core.license');
+            $licenseCode = $this->getSetting('core.license');
         }
 
         if (defined('DP_INSTALL_KEY')) {
-            $install_key = DP_INSTALL_KEY;
+            $installKey = DP_INSTALL_KEY;
         } else {
-            $install_key = $settings->get('core.install_key');
-        }
-
-        $licopt = $settings->get('core.licenseopt');
-        if ($licopt) {
-            $license_code .= '#'.$licopt;
+            $installKey = $this->getSetting('core.install_key');
         }
 
         return [
-            'license_code' => $license_code,
-            'install_key'  => $install_key,
+            'license_code' => $licenseCode,
+            'install_key'  => $installKey,
         ];
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return string
+     */
+    private function getSetting($id)
+    {
+        global $DP_ENV;
+        $settingsConfig = $DP_ENV->getConfig('settings', []);
+
+        if (isset($settingsConfig[$id])) {
+            return $settingsConfig[$id];
+        }
+
+        /** @var SettingsBag $settings */
+        $settings = $this->container->get('settings_resolver')->getGlobalSettings();
+
+        return $settings->get($id, '');
     }
 }
