@@ -3,7 +3,7 @@
 DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
 
 echo ">> Cleaning"
-$DIR_ROOT/dev/bin/clean-project
+#$DIR_ROOT/dev/bin/clean-project
 echo ".. done"
 echo
 
@@ -20,12 +20,12 @@ echo
 
 echo ">> Installing web dependencies"
 cd $DIR_ROOT/www/assets/BUILD/web
+npm run bower-install
 npm install
-bower install --config.interactive=false --allow-root
 echo ".. done"
 
 echo ">> Building web assets"
-npm run build:dev
+npm run gulp
 echo ".. done"
 echo
 
@@ -34,12 +34,7 @@ cd $DIR_ROOT/www/assets/BUILD/pub
 npm install
 echo ".. done"
 
-echo ">> Building documentation"
-npm run-script gulp-docs
-echo ".. done"
-echo
-
 echo ">> Building new web assets"
-npm run-script gulp bundle
+npm run gulp
 echo ".. done"
 echo

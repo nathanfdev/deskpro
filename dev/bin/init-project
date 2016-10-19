@@ -15,13 +15,12 @@ echo
 
 echo ">> Installing web dependencies"
 cd $DIR_ROOT/www/assets/BUILD/web
+npm run bower-install
 npm install
-
-npm run-script bower-install
 echo ".. done"
 
 echo ">> Building web assets"
-npm run-script build:prod
+npm run build:prod
 echo ".. done"
 echo
 
@@ -32,12 +31,12 @@ echo ".. done"
 echo
 
 echo ">> Building new web assets"
-npm run-script gulp-prod
-npm run-script test:visual:build
+npm run gulp-prod
+npm run test:visual:build
 echo ".. done"
 echo
 
 echo ">> Building documentation"
-npm run-script gulp-docs
+npm run gulp-docs
 echo ".. done"
 echo
