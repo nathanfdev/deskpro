@@ -1251,6 +1251,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			})(key);
 		}
 
+		window.document.addEventListener('dpCloseOverlayFrame', (e) => {
+			if (e.detail.id === 'admin') {
+				if (window.DP_NEED_RELOAD == true) {
+					DeskPRO_Window.showRefreshAlert();
+				}
+			}
+		});
+
 
 		/***************** scrolling handle on drag ******************/
 		var drag = function(){
@@ -1981,7 +1989,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}
 
-		$('#refresh_alert_overlay').find('.admin-name').text(admin_name);
+		if (admin_name) {
+			$('#refresh_alert_overlay').find('.admin-name').text(admin_name);
+		} else {
+			var overlay = $('#refresh_alert_overlay');
+			overlay.find('.by_admin').hide();
+			overlay.find('.self').show();
+		}
 
 		var time = 30;
 		var timeShow = $('#refresh_alert_overlay').find('.countdown').text(30);

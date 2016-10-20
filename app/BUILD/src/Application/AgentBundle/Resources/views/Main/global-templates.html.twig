@@ -182,8 +182,11 @@
 			<h4>{{ phrase('agent.general.refresh_required') }}</h4>
 		</div>
 		<div class="overlay-content">
-			<p>
+			<p class="by_admin">
 				{{ phrase('agent.general.refresh_required_explain', {name: '<span class="admin-name"></span>'}, true) }}
+			</p>
+			<p class="self" style="display: none">
+				{{ phrase('agent.general.refresh_required_self') }}
 			</p>
 			<br/>
 			<p>
