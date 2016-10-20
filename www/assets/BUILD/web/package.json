@@ -3,15 +3,15 @@
   "description": "Client-side scripts for DeskPRO",
   "version": "1.0.0",
   "dependencies": {
+    "Select2": "^3.5.7",
+    "angular-ui-select2": "0.0.5",
+    "clipboard": "^1.5.12",
     "fbjs": "^0.8.3",
     "jquery": "^3.1.0",
     "jquery-ui": "^1.12.0",
     "react": "15.1.0",
     "react-dom": "15.1.0",
-    "react-tooltip": "^3.1.1",
-    "angular-ui-select2": "0.0.5",
-    "Select2": "^3.5.7",
-    "clipboard": "^1.5.12"
+    "react-tooltip": "^3.1.1"
   },
   "devDependencies": {
     "@kadira/storybook": "^1.1.0",
@@ -33,6 +33,7 @@
     "express": "^4.14.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
+    "graceful-fs": "^4.1.9",
     "gulp": "^3.9.1",
     "gulp-file-include": "^0.13.7",
     "gulp-if": "^2.0.1",
@@ -53,6 +54,7 @@
     "postcss-cli": "^2.5.2",
     "postcss-discard-comments": "^2.0.4",
     "raw-loader": "^0.5.1",
+    "rimraf": "^2.5.4",
     "sass-loader": "^4.0.0",
     "sassdoc": "^2.1.18",
     "semantic-ui-less": "^2.2.3",
@@ -74,17 +76,17 @@
     "build:sass": "node-sass -r --source-map true -o app-build/styles/Admin app/**/Resources/style/*-style.scss",
     "build:less": "lessc --source-map -rp=app/Admin/Resources/style/../../../ app/**/Resources/style/admin-style.less app-build/styles/Admin/admin-style.css",
     "build:semantic-less": "lessc --source-map  node_modules/semantic-ui-less/semantic.less stylesheets-less/semantic-ui/semantic.css",
-    "build:css": "npm run build:sass && npm run build:less",
+    "build:css": "yarn run build:sass && yarn run build:less",
     "semantic:copy": "postcss --use autoprefixer --autoprefixer.browsers 'last 2 versions' --use postcss-discard-comments --postcss-discard-comments.removeAll true -d app-build/styles/Admin/ stylesheets-less/semantic-ui/semantic.css",
-    "semantic": "npm run semantic:copy",
-    "prebuild": "npm run clean && npm run copy:js && npm run compile:coffee && npm run semantic",
-    "postbuild": "npm run sassdoc",
+    "semantic": "yarn run semantic:copy",
+    "prebuild": "yarn run clean && yarn run copy:js && yarn run compile:coffee && yarn run semantic",
+    "postbuild": "yarn run sassdoc",
     "tmp:old-agent": "cpx \"compiled/Agent/**/*.js\" \"app-build/Agent\" && cpx \"compiled/DeskPRO/**/*.js\" \"app-build/DeskPRO\" && gulp prod",
-    "build:prod": "npm run prebuild && webpack --progress --colors --display-error-details --config webpack-prod.config.js -p && npm run tmp:old-agent && npm run postbuild",
-    "build:dev": "npm run prebuild && webpack --progress --colors --display-error-details && npm run tmp:old-agent && npm run postbuild",
+    "build:prod": "yarn run prebuild && webpack --progress --colors --display-error-details --config webpack-prod.config.js -p && yarn run tmp:old-agent && yarn run postbuild",
+    "build:dev": "yarn run prebuild && webpack --progress --colors --display-error-details && yarn run tmp:old-agent && yarn run postbuild",
     "watch:webpack": "node `./node_modules/.bin/webpack -w`",
     "watch:coffee": "coffee -o compiled/ -cw app/",
     "watch:js": "cpx \"app/**/*.js\" compiled -w -v",
-    "watch": "parallelshell 'npm run watch:js' 'npm run watch:coffee' 'npm run watch:webpack'"
+    "watch": "parallelshell 'yarn run watch:js' 'yarn run watch:coffee' 'yarn run watch:webpack'"
   }
 }

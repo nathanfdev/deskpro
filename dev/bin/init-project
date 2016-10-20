@@ -15,28 +15,28 @@ echo
 
 echo ">> Installing web dependencies"
 cd $DIR_ROOT/www/assets/BUILD/web
-npm install
-npm run bower-install
+yarn install
+yarn run bower-install
 echo ".. done"
 
 echo ">> Building web assets"
-npm run build:prod
+yarn run build:prod
 echo ".. done"
 echo
 
 echo ">> Installing new web dependencies (dev)"
 cd $DIR_ROOT/www/assets/BUILD/pub
-npm install
+yarn install
 echo ".. done"
 echo
 
 echo ">> Building new web assets"
-npm run gulp-prod
-npm run test:visual:build
+yarn run gulp-prod
+yarn run test:visual:build
 echo ".. done"
 echo
 
 echo ">> Building documentation"
-npm run gulp-docs
+yarn run gulp-docs
 echo ".. done"
 echo
