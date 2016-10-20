@@ -137,7 +137,7 @@
                 {{ nav.list_item_group(phrase('admin.setup.user_interface'), 'fa-cog', '', 'portal') }}
                     <select
                             ui-select2
-                            ng-model="brandId"
+                            ng-model="selectBrandId"
                             ng-change="Ctrl.changeBrand()"
                             style="width: 194px"
                             class="no-search"
@@ -146,13 +146,13 @@
                         <option class="new-brand"value="-1">{{ phrase('admin.setup.new_brand') }}</option>
                     </select>
                     {{ nav.list_subitem('Setup', ng_href('portal.setup', '{brandId: brandId}'), 'portal.setup', 'fa-th-large') }}
-                    <div ng-if="brandId > 0">
+                    <div ng-if="brandId > 0 && brandId != 'new'">
                         {{ nav.list_subitem_regex_statemark('Knowledgebase', ng_href('portal.kb_settings', '{brandId: brandId}'), 'portal.kb_settings', 'fa-book', null, '{"is-disabled": !Ctrl.settings.apps_kb || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                         {{ nav.list_subitem_regex_statemark('News', ng_href('portal.news_settings', '{brandId: brandId}'), 'portal.news_settings', 'fa-clock-o', null, '{"is-disabled": !Ctrl.settings.apps_news || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                         {{ nav.list_subitem_regex_statemark('Downloads', ng_href('portal.downloads_settings', '{brandId: brandId}'), 'portal.downloads_settings', 'fa-download', null, '{"is-disabled": !Ctrl.settings.apps_downloads || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                         {{ nav.list_subitem_regex_statemark('Feedback', ng_href('portal.feedback_settings', '{brandId: brandId}'), 'portal.feedback_settings', 'fa-thumbs-up', null, '{"is-disabled": !Ctrl.settings.apps_feedback || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                     </div>
-                    <div ng-if="brandId > 0">
+                    <div ng-if="brandId > 0 && brandId != 'new'">
                         {{ nav.list_subitem('Portal', ng_href('portal.portal_editor', '{brandId: brandId}'), 'portal.portal_editor', 'fa-home', 'true', '{"is-disabled": !Ctrl.settings.iface_portal}') }}
                         {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor', '{brandId: brandId}'), 'portal.widget_editor', 'fa-puzzle-piece') }}
                         {{ nav.list_subitem('Ticket Form Widget', ng_href('portal.ticket_form_widget', '{brandId: brandId}'), 'portal.ticket_form_widget', 'fa-envelope') }}

@@ -101,8 +101,7 @@ define ['angular', 'underscore'], (angular, _) ->
         return @$state.isStateActive(stateId, stateParams)
 
       @$scope.state_path = (route, params = {}) =>
-        # The # is not added since updating angular to 1.5 this manual fix does the trick
-        return '#'+@$state.href(route, params).replace(/\?.*$/, '')
+        return @$state.href(route, params).replace(/\?.*$/, '')
 
       # Allow showAlert(message, callback) to be called from code
       @$scope.showAlert = (message, fn) =>
