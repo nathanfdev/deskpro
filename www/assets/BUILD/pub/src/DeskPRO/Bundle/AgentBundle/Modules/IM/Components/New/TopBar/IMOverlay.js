@@ -182,7 +182,7 @@ export default class IMOverlay extends React.Component {
           positionTarget={this.imButton}
           {...this.props}
         >
-          <ClickOut onClickOut={toggleOverlay}>
+          <ClickOut onClickOut={toggleOverlay} ignoreNodes={['.im.recent .im.wrapper']}>
             <div className={classNames(['ui', 'popup', 'im', 'tabs', 'center', 'bottom'], { visible: isOpen })}>
               {this.getContent()}
             </div>

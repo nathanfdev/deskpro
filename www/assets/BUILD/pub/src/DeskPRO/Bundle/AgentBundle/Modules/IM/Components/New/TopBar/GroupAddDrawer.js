@@ -122,7 +122,7 @@ class GroupAddDrawer extends React.Component
   }
 
   render() {
-    const { isOpen, target, agents } = this.props;
+    const { isOpen, target, agents, clickOut } = this.props;
 
     return (
       <Detached
@@ -130,7 +130,7 @@ class GroupAddDrawer extends React.Component
         positionTarget={target}
         positionMy="center-17 top-2"
       >
-        <ClickOut onClickOut={() => this.props.clickOut()}>
+        <ClickOut onClickOut={clickOut} ignoreNodes={['.im.recent .im.wrapper', '.icon.group.add']}>
           <div className="ui popup im center bottom">
             <div className="header">Agent IM</div>
             <div className="im add group">

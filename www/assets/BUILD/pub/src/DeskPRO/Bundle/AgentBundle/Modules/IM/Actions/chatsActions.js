@@ -8,10 +8,6 @@ export const openChat = createAction('IM_OPEN_CHAT');
 
 export const toggleGroupDrawer = createAction('IM_TOGGLE_GROUP_ADD_DRAWER');
 
-export const openGroupDrawer = createAction('IM_OPEN_GROUP_ADD_DRAWER');
-
-export const closeGroupDrawer = createAction('IM_CLOSE_GROUP_ADD_DRAWER');
-
 export const markChatAsManuallyClosed = createAction(
   'MARK_CHAT_AS_CLOSED',
   chatId => chatId
@@ -19,11 +15,23 @@ export const markChatAsManuallyClosed = createAction(
 
 export const closeChat = createAction(
   'IM_CLOSE_CHAT',
-  chatId => (dispatch) => {
-    dispatch(markChatAsManuallyClosed(chatId));
+  (chatId = null) => (dispatch) => {
+    if (chatId) {
+      dispatch(markChatAsManuallyClosed(chatId));
+    }
     return chatId;
   }
 );
+
+export const openGroupDrawer = createAction(
+  'IM_OPEN_GROUP_ADD_DRAWER',
+  payload => (dispatch) => {
+    dispatch(closeChat());
+    return payload;
+  }
+);
+
+export const closeGroupDrawer = createAction('IM_CLOSE_GROUP_ADD_DRAWER');
 
 export const startChat = createAction(
   'IM_START_CHAT',

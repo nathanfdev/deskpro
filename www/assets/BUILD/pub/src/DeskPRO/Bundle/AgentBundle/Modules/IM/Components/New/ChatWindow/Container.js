@@ -267,7 +267,7 @@ class Container extends React.Component {
         positionTarget={document.getElementById(`chat-${current.get('id')}`)}
         positionMy="left-43 top-2"
       >
-        <ClickOut onClickOut={() => this.clickOut()} ignoreNodes={['.emoji.box']}>
+        <ClickOut onClickOut={() => this.clickOut()} ignoreNodes={['.emoji.box', '.im.recent .im.wrapper']}>
           <div className="ui popup left bottom im chat drawer">
             <div className="im header">{this.getHeader()}</div>
             {this.searchHeader()}
