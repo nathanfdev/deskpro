@@ -44,7 +44,7 @@ class TopBarRecentImList extends RecentList {
   componentWillReceiveProps(props) {
     let { chats } = this.state;
     if (props.chats) {
-      props.chats.forEach((chat) => {
+      RecentList.sortList(props.chats).forEach((chat) => {
         if (!chats.hasIn([chat.get('id'), 'added'])) {
           chats = chats.set(chat.get('id'), chat.set('added', Date.now()));
         }
