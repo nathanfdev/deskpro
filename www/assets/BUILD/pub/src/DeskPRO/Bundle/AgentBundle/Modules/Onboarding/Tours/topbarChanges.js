@@ -22,7 +22,7 @@ const topbarChanges = {
     },
     {
       title:    'Manage views',
-      text:     'Click the \'views icon\' when you want to change the layout of your screen.',
+      text:     'Click the \'View\' icon when you want to change the layout of your agent screen.',
       selector: '#react_dp_agent_top_bar .item.views',
       position: 'bottom'
     },
