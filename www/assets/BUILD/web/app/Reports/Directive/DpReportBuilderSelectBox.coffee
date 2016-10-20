@@ -137,7 +137,7 @@ define ->
 
         updateLink = ->
           linkParams = scope.selected.join(',')
-          scope.report_link = '#' + $state.href('builder.edit', {
+          scope.report_link = $state.href('builder.edit', {
               id: scope.reportId,
               params: linkParams,
               type: scope.type
