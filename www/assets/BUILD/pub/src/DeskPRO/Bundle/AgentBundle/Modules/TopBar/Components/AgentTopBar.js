@@ -80,7 +80,9 @@ export class AgentTopBarContainer extends SeparateComponent {
   constructor(props) {
     super(props);
     this.state = {
-      notificationCount: 0
+      notificationCount: 0,
+      searchQuery:       '',
+      page:              0
     };
     window.document.addEventListener('dpUpdateNotifCount', (e) => {
       this.setState({
@@ -284,7 +286,7 @@ export class AgentTopBarContainer extends SeparateComponent {
       reload = true;
     }
     if (reload && !this.props.loadingMessages) {
-      this.setState({ searchQuery }, () => { this.loadMessages(1); });
+      this.setState({ searchQuery, page: 1 }, () => { this.loadMessages(1); });
     }
   }
 

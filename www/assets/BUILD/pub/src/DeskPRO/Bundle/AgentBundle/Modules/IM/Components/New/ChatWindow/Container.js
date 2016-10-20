@@ -72,14 +72,12 @@ class Container extends React.Component {
     this.refresh();
   }
 
-
   componentDidUpdate() {
     if (this.props.loadingMessages) return;
     if (this.scrollarea) {
       if (!this.props.loadingMessages && this.firstScroll) {
         this.scrollarea.scrollBottom();
         this.firstScroll = false;
-
         return;
       }
     }
@@ -163,7 +161,13 @@ class Container extends React.Component {
   }
 
   refresh() {
-    this.props.loadMessages();
+    if (
+      !this.props.messages.hasIn(this.getPath())
+      || (this.props.messages.hasIn(this.getPath()) && this.props.messages.getIn(this.getPath()).messages.size < 1)
+    ) {
+      this.props.loadMessages();
+    }
+    this.setState({ mounted: true });
   }
 
   openEmoji() {
