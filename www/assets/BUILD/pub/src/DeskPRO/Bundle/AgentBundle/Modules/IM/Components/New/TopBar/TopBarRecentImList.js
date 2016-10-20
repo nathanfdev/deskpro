@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
+import Immutable from 'immutable';
 import {
   DepartmentAvatar,
   PersonAvatar,
@@ -33,8 +34,29 @@ class TopBarRecentImList extends RecentList {
     }
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      chats: Immutable.Map({})
+    };
+  }
+
+  componentWillReceiveProps(props) {
+    let { chats } = this.state;
+    if (props.chats) {
+      props.chats.forEach((chat) => {
+        if (!chats.hasIn([chat.get('id'), 'added'])) {
+          chats = chats.set(chat.get('id'), chat.set('added', Date.now()));
+        }
+      });
+    }
+    this.props = props;
+    chats = chats.sort((a, b) => b.get('added') - a.get('added'));
+    this.setState({ chats });
+  }
+
   getItems() {
-    return RecentList.sortList(this.props.chats).slice(0, 10).map(agent => this.getItem(agent));
+    return this.state.chats.slice(0, 10).map(agent => this.getItem(agent));
   }
 
   renderNotificationsBaloon(chat) {
@@ -133,7 +155,7 @@ class TopBarRecentImList extends RecentList {
     const loaded = agentsLoaded && teamsLoaded && departmentsLoaded && recentLoaded;
     return (
       <Loader loaded={loaded} opacity={0} width={3} scale={0.5} color="#4696dc">
-        <div className={classNames(['im', 'recent', { empty: this.props.chats.size < 1 }])}>
+        <div className={classNames(['im', 'recent', { empty: this.state.chats.size < 1 }])}>
           {this.getItems()}
           {this.props.children}
         </div>
