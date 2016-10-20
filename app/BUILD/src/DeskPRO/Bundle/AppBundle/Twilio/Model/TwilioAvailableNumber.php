@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Twilio\Model;
 
-use DeskPRO\Bundle\AppBundle\Entity\TwilioAccount;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -60,12 +60,12 @@ class TwilioAvailableNumber extends AbstractTwilioNumber
     /**
      * Constructor.
      *
-     * @param object        $apiNumber
-     * @param TwilioAccount $account
-     * @param bool          $added
-     * @param string        $type
+     * @param object       $apiNumber
+     * @param VoiceAccount $account
+     * @param bool         $added
+     * @param string       $type
      */
-    public function __construct($apiNumber, TwilioAccount $account, $added, $type)
+    public function __construct($apiNumber, VoiceAccount $account, $added, $type)
     {
         parent::__construct($apiNumber, $account, $added);
 

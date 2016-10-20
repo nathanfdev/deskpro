@@ -26,10 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Twilio;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioQueue;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -39,9 +39,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TwilioQueueType.
+ * Class VoiceQueueType.
  */
-class TwilioQueueType extends AbstractType
+class VoiceQueueType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -58,21 +58,21 @@ class TwilioQueueType extends AbstractType
                 'property_path'     => 'routingModel',
                 'choices_as_values' => true,
                 'choices'           => [
-                    TwilioQueue::ROUTING_MODEL_ROUND_ROBIN,
-                    TwilioQueue::ROUTING_MODEL_LEAST_UTILIZED,
-                    TwilioQueue::ROUTING_MODEL_LEAST_IDLE,
-                    TwilioQueue::ROUTING_MODEL_RANDOM,
+                    VoiceQueue::ROUTING_MODEL_ROUND_ROBIN,
+                    VoiceQueue::ROUTING_MODEL_LEAST_UTILIZED,
+                    VoiceQueue::ROUTING_MODEL_LEAST_IDLE,
+                    VoiceQueue::ROUTING_MODEL_RANDOM,
                 ],
             ])
-            ->add('greet_asset', TwilioAssetType::class, [
+            ->add('greet_asset', VoiceAssetType::class, [
                 'property_path' => 'greetAsset',
                 'required'      => false,
             ])
-            ->add('loop_asset', TwilioAssetType::class, [
+            ->add('loop_asset', VoiceAssetType::class, [
                 'property_path' => 'loopAsset',
                 'required'      => false,
             ])
-            ->add('voicemail_asset', TwilioAssetType::class, [
+            ->add('voicemail_asset', VoiceAssetType::class, [
                 'property_path' => 'voicemailAsset',
                 'required'      => false,
             ])
@@ -88,7 +88,7 @@ class TwilioQueueType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => TwilioQueue::class,
+            'data_class' => VoiceQueue::class,
         ]);
     }
 }

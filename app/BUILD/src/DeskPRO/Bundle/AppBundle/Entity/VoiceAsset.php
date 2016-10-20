@@ -36,16 +36,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
- * Class TwilioNumber.
+ * Class VoiceAsset.
  *
  * @ORM\Entity()
- * @ORM\Table(name="twilio_assets")
+ * @ORM\Table(name="voice_assets")
  *
  * @JMS\ExclusionPolicy("all")
  *
  * @Assert\GroupSequenceProvider
  */
-class TwilioAsset implements EntityInterface, NotifyPropertyChanged, GroupSequenceProviderInterface
+class VoiceAsset implements EntityInterface, NotifyPropertyChanged, GroupSequenceProviderInterface
 {
     use NotifyPropertyChangedTrait;
 
@@ -262,7 +262,7 @@ class TwilioAsset implements EntityInterface, NotifyPropertyChanged, GroupSequen
      */
     public function getGroupSequence()
     {
-        $groups = ['TwilioAsset'];
+        $groups = ['VoiceAsset'];
 
         if ($this->type === 'text') {
             $groups[] = 'text';

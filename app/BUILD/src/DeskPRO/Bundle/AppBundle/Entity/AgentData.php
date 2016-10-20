@@ -77,22 +77,22 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
      * @JMS\Expose()
      * @JMS\Type("integer")
      *
-     * @AppAssert\Twilio\TwilioExtension()
+     * @AppAssert\Voice\VoiceExtension()
      *
      * @var int
      */
     private $extensionNumber;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TwilioAsset", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="voicemail_asset_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @JMS\Expose()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\TwilioAsset")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
      *
      * @Assert\Valid()
      *
-     * @var TwilioAsset
+     * @var VoiceAsset
      */
     private $voicemailAsset;
 
@@ -145,7 +145,7 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return TwilioAsset
+     * @return VoiceAsset
      */
     public function getVoicemailAsset()
     {
@@ -153,11 +153,11 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param TwilioAsset $voicemailAsset
+     * @param VoiceAsset $voicemailAsset
      *
      * @return $this
      */
-    public function setVoicemailAsset(TwilioAsset $voicemailAsset = null)
+    public function setVoicemailAsset(VoiceAsset $voicemailAsset = null)
     {
         $this->setModelField('voicemailAsset', $voicemailAsset);
 

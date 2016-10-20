@@ -28,8 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Twilio;
 
-use DeskPRO\Bundle\AppBundle\Entity\TwilioAccount;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioNumber;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioAvailableNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioExistingNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioPaginate;
@@ -63,11 +63,11 @@ class TwilioAdapter
     }
 
     /**
-     * @param TwilioAccount $account
+     * @param VoiceAccount $account
      *
      * @return \Twilio\Rest\Api\V2010\AccountInstance|false
      */
-    public function getAccount(TwilioAccount $account)
+    public function getAccount(VoiceAccount $account)
     {
         $accountSid = $account->getAccountSid();
 
@@ -86,14 +86,14 @@ class TwilioAdapter
     }
 
     /**
-     * @param TwilioAccount $account
-     * @param string        $countryCode
-     * @param string        $type
-     * @param array         $options
+     * @param VoiceAccount $account
+     * @param string       $countryCode
+     * @param string       $type
+     * @param array        $options
      *
      * @return TwilioAvailableNumber[]
      */
-    public function getAvailablePhoneNumbers(TwilioAccount $account, $countryCode, $type, array $options)
+    public function getAvailablePhoneNumbers(VoiceAccount $account, $countryCode, $type, array $options)
     {
         $accountSid = $account->getAccountSid();
         $numbers    = [];
@@ -119,12 +119,12 @@ class TwilioAdapter
     }
 
     /**
-     * @param TwilioAccount $account
-     * @param int           $pageNum
+     * @param VoiceAccount $account
+     * @param int          $pageNum
      *
      * @return TwilioPaginate
      */
-    public function getExistingPhoneNumbers(TwilioAccount $account, $pageNum = 1)
+    public function getExistingPhoneNumbers(VoiceAccount $account, $pageNum = 1)
     {
         $accountSid = $account->getAccountSid();
 
@@ -150,16 +150,16 @@ class TwilioAdapter
     }
 
     /**
-     * @param TwilioAccount $account
+     * @param VoiceAccount $account
      *
      * @return string[]
      */
-    protected function getAccountNumbersList(TwilioAccount $account)
+    protected function getAccountNumbersList(VoiceAccount $account)
     {
         $qb = $this->em->createQueryBuilder();
         $qb
             ->select('n.number')
-            ->from(TwilioNumber::class, 'n')
+            ->from(VoiceNumber::class, 'n')
             ->where('n.account = :account')
             ->setParameter('account', $account)
         ;

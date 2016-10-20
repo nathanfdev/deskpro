@@ -26,12 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Twilio;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioAccount;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioNumber;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioQueue;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -43,9 +43,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TwilioNumberType.
+ * Class VoiceNumberType.
  */
-class TwilioNumberType extends AbstractType
+class VoiceNumberType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -54,7 +54,7 @@ class TwilioNumberType extends AbstractType
     {
         $builder
             ->add('account', EntityType::class, [
-                'class' => TwilioAccount::class,
+                'class' => VoiceAccount::class,
             ])
             ->add('sid', TextType::class)
             ->add('nickname', TextType::class)
@@ -66,8 +66,8 @@ class TwilioNumberType extends AbstractType
                 'mapped'            => false,
                 'choices_as_values' => true,
                 'choices'           => [
-                    TwilioNumber::TARGET_QUEUE,
-                    TwilioNumber::TARGET_AGENT,
+                    VoiceNumber::TARGET_QUEUE,
+                    VoiceNumber::TARGET_AGENT,
                 ],
             ])
         ;
@@ -82,7 +82,7 @@ class TwilioNumberType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => TwilioNumber::class,
+            'data_class' => VoiceNumber::class,
         ]);
     }
 
@@ -112,14 +112,14 @@ class TwilioNumberType extends AbstractType
         $targetType = isset($data['target_type']) ? $data['target_type'] : null;
 
         switch ($targetType) {
-            case TwilioNumber::TARGET_QUEUE:
+            case VoiceNumber::TARGET_QUEUE:
                 $form->add('target_id', EntityType::class, [
-                    'class'         => TwilioQueue::class,
+                    'class'         => VoiceQueue::class,
                     'property_path' => 'target_queue',
                 ]);
 
                 break;
-            case TwilioNumber::TARGET_AGENT:
+            case VoiceNumber::TARGET_AGENT:
                 $form->add('target_id', EntityType::class, [
                     'class'         => Person::class,
                     'property_path' => 'target_agent',

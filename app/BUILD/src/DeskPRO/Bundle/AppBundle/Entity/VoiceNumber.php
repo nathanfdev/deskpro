@@ -37,16 +37,16 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class TwilioNumber.
+ * Class VoiceNumber.
  *
  * @ORM\Entity()
- * @ORM\Table(name="twilio_numbers")
+ * @ORM\Table(name="voice_numbers")
  *
  * @JMS\ExclusionPolicy("all")
  *
  * @UniqueEntity("sid")
  */
-class TwilioNumber implements EntityInterface, NotifyPropertyChanged
+class VoiceNumber implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
@@ -68,15 +68,15 @@ class TwilioNumber implements EntityInterface, NotifyPropertyChanged
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TwilioAccount", inversedBy="numbers")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAccount", inversedBy="numbers")
      * @ORM\JoinColumn(name="account_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\TwilioAccount>")
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceAccount>")
      *
      * @Assert\NotNull()
      *
-     * @var TwilioAccount
+     * @var VoiceAccount
      */
     private $account;
 
@@ -130,10 +130,10 @@ class TwilioNumber implements EntityInterface, NotifyPropertyChanged
     private $countryCode;
 
     /**
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TwilioQueue")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
      * @ORM\JoinColumn(name="target_queue_id", referencedColumnName="id", onDelete="CASCADE")
      *
-     * @var TwilioQueue
+     * @var VoiceQueue
      */
     private $targetQueue;
 
@@ -154,7 +154,7 @@ class TwilioNumber implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return TwilioAccount
+     * @return VoiceAccount
      */
     public function getAccount()
     {
@@ -162,7 +162,7 @@ class TwilioNumber implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param TwilioAccount $account
+     * @param VoiceAccount $account
      *
      * @return $this
      */
@@ -262,11 +262,11 @@ class TwilioNumber implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param TwilioQueue $targetQueue
+     * @param VoiceQueue $targetQueue
      *
      * @return $this
      */
-    public function setTargetQueue(TwilioQueue $targetQueue)
+    public function setTargetQueue(VoiceQueue $targetQueue)
     {
         $this->setModelField('targetQueue', $targetQueue);
         $this->setModelField('targetAgent', null);
@@ -300,7 +300,7 @@ class TwilioNumber implements EntityInterface, NotifyPropertyChanged
      * @JMS\Type("entity")
      * @JMS\SerializedName("target_id")
      *
-     * @return Person|TwilioQueue
+     * @return Person|VoiceQueue
      */
     public function getTarget()
     {

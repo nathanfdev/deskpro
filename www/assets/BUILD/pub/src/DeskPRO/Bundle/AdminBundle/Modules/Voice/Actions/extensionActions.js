@@ -6,7 +6,7 @@ import { editPerson } from '../../Application/Actions/peopleActions';
 import { allAgentsSelector } from '../../Application/Selectors/people';
 
 export const addExtension = createAction(
-  'TWILIO_EDIT_EXTENSION',
+  'VOICE_EDIT_EXTENSION',
   (agentId, extensionNumber) => (dispatch) => {
     const data = {
       agent_data: {
@@ -19,7 +19,7 @@ export const addExtension = createAction(
 );
 
 export const addExtensions = createAction(
-  'TWILIO_ADD_EXTENSIONS',
+  'VOICE_ADD_EXTENSIONS',
   extensionNumbers => (dispatch, getState) => {
     const requests = {};
     extensionNumbers.forEach(({ agentId, extensionNumber }) => {

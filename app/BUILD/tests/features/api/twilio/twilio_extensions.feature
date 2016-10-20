@@ -6,7 +6,7 @@ Feature: Twilio extensions
     And I'm authenticated as admin
 
   Scenario: I get agent data
-    Given only the following TwilioAsset records exist:
+    Given only the following VoiceAsset records exist:
       | #   | Name  | Type | Text       | Language |
       | ta1 | Asset | text | text asset | en-GB    |
     And only the following AgentData records exist:
@@ -121,7 +121,7 @@ Feature: Twilio extensions
   @skip-ci
   # until https://github.com/symfony/symfony/issues/20251 will be fixed
   Scenario: existing voicemail asset validation
-    Given only the following TwilioAsset records exist:
+    Given only the following VoiceAsset records exist:
       | #   | Name  | Type | Text       | Language |
       | ta1 | Asset | text | text asset | en-GB    |
     And only the following AgentData records exist:

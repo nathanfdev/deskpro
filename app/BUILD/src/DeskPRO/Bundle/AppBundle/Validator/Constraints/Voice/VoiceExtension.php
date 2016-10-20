@@ -26,28 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTestSrc\TestBundle\Mock;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Voice;
 
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
-use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
+use Symfony\Component\Validator\Constraint;
 
 /**
- * Class TwilioNullAdapter.
+ * Class VoiceExtension.
+ *
+ * @Annotation
+ * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  */
-class TwilioNullAdapter extends TwilioAdapter
+class VoiceExtension extends Constraint
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct()
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAccount(VoiceAccount $account)
-    {
-        return true;
-    }
 }

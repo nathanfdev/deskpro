@@ -26,17 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Twilio;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Voice;
 
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Class TwilioAccount.
+ * Class VoiceAccount.
  *
  * @Annotation
  * @Target({"CLASS", "PROPERTY", "METHOD", "ANNOTATION"})
  */
-class TwilioAccount extends Constraint
+class VoiceAccount extends Constraint
 {
     const INVALID_ACCOUNT_CREDENTIALS = 'invalid_account_credentials';
 

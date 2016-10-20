@@ -30,18 +30,18 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Twilio;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioQueue;
-use DeskPRO\Bundle\AppBundle\Form\Type\Twilio\TwilioQueueType;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceQueueType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
- * Class TwilioQueuesController.
+ * Class VoiceQueuesController.
  *
  * @ApiModes("all")
- * @Rest\Route("/twilio_queues")
+ * @Rest\Route("/voice_queues")
  */
 class TwilioQueuesController extends CrudController
 {
-    public static $entity = TwilioQueue::class;
-    public static $type   = TwilioQueueType::class;
+    public static $entity = VoiceQueue::class;
+    public static $type   = VoiceQueueType::class;
 }

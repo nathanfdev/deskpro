@@ -99,10 +99,10 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskList;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use DeskPRO\Bundle\AppBundle\Entity\TaskSubtask;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioAccount;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioAsset;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioNumber;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioQueue;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -325,10 +325,10 @@ class ObjectsManager
             'Usersource'             => [Factory\SimpleFactory::class, 'create', Usersource::class],
             'UsersourceAssoc'        => [Factory\SimpleFactory::class, 'create', PersonUsersourceAssoc::class],
             'PersonNote'             => [Factory\SimpleFactory::class, 'create', PersonNote::class],
-            'TwilioAccount'          => [Factory\SimpleFactory::class, 'create', TwilioAccount::class],
-            'TwilioNumber'           => [Factory\SimpleFactory::class, 'create', TwilioNumber::class],
-            'TwilioQueue'            => [Factory\SimpleFactory::class, 'create', TwilioQueue::class],
-            'TwilioAsset'            => [Factory\SimpleFactory::class, 'create', TwilioAsset::class],
+            'VoiceAccount'           => [Factory\SimpleFactory::class, 'create', VoiceAccount::class],
+            'VoiceNumber'            => [Factory\SimpleFactory::class, 'create', VoiceNumber::class],
+            'VoiceQueue'             => [Factory\SimpleFactory::class, 'create', VoiceQueue::class],
+            'VoiceAsset'             => [Factory\SimpleFactory::class, 'create', VoiceAsset::class],
         ];
     }
 
@@ -414,10 +414,10 @@ class ObjectsManager
             'UsersourceAssoc'        => [$this, 'find', PersonUsersourceAssoc::class],
             'PersonNote'             => [$this, 'find',  PersonNote::class],
             'Permission'             => [$this, 'find',  Permission::class],
-            'TwilioAccount'          => [$this, 'find',  TwilioAccount::class],
-            'TwilioNumber'           => [$this, 'find',  TwilioNumber::class],
-            'TwilioQueue'            => [$this, 'find',  TwilioQueue::class],
-            'TwilioAsset'            => [$this, 'find',  TwilioAsset::class],
+            'VoiceAccount'           => [$this, 'find',  VoiceAccount::class],
+            'VoiceNumber'            => [$this, 'find',  VoiceNumber::class],
+            'VoiceQueue'             => [$this, 'find',  VoiceQueue::class],
+            'VoiceAsset'             => [$this, 'find',  VoiceAsset::class],
         ];
     }
 }

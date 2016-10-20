@@ -36,10 +36,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Twilio\Twiml;
 
 /**
- * Class TwilioTextToSpeechController.
+ * Class VoiceTextToSpeechController.
  *
  * @ApiModes("all")
- * @Rest\Route("/twilio_tts")
+ * @Rest\Route("/voice_tts")
  * @ApiUserContext("open")
  */
 class TwilioTextToSpeechController extends BaseController

@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
 import { collectionSelectorFactory, isLoadedCollectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
-export const allNumbersSelector = collectionSelectorFactory('TwilioNumber', 'all');
-export const isNumbersLoadedSelector = isLoadedCollectionSelectorFactory('TwilioNumber', 'all');
+export const allNumbersSelector = collectionSelectorFactory('VoiceNumber', 'all');
+export const isNumbersLoadedSelector = isLoadedCollectionSelectorFactory('VoiceNumber', 'all');
 
-const stateSelector = state => state.Twilio.numbers;
+const stateSelector = state => state.Voice.numbers;
 
 export const existingNumbersFilterSelector = createSelector(
   stateSelector,

@@ -26,11 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Twilio;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
-use DeskPRO\Bundle\AppBundle\Entity\TwilioAccount;
-use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset;
+use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -38,43 +39,28 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class AccountType.
+ * Class VoiceAssetType.
  */
-class TwilioAccountType extends AbstractType
+class VoiceAssetType extends AbstractType
 {
-    /**
-     * @var TwilioAdapter
-     */
-    private $twilioAdapter;
-
-    /**
-     * Constructor.
-     *
-     * @param TwilioAdapter $twilioAdapter
-     */
-    public function __construct(TwilioAdapter $twilioAdapter)
-    {
-        $this->twilioAdapter = $twilioAdapter;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('account_name', TextType::class, [
-                'property_path' => 'accountName',
-            ])
-            ->add('account_sid', TextType::class, [
-                'property_path' => 'accountSid',
-            ])
-            ->add('auth_token', TextType::class, [
-                'property_path' => 'authToken',
+            ->add('name', TextType::class)
+            ->add('type', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [
+                    'text',
+                    'upload',
+                    'record',
+                ],
             ])
         ;
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetExternalAccountName'], 200);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetFields']);
     }
 
     /**
@@ -83,40 +69,30 @@ class TwilioAccountType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => TwilioAccount::class,
+            'data_class' => VoiceAsset::class,
         ]);
     }
 
     /**
-     * @internal
+     * @inheritdoc
      *
      * @param FormEvent $event
      */
-    public function onSetExternalAccountName(FormEvent $event)
+    public function onSetFields(FormEvent $event)
     {
-        $account = $event->getData();
-        if (!$account instanceof TwilioAccount) {
+        $form = $event->getForm();
+        $data = $event->getData();
+        $type = isset($data['type']) ? $data['type'] : null;
+
+        if (!$type) {
             return;
         }
 
-        // no need to pre-load account name if it's not empty
-        if ($account->getAccountName()) {
-            return;
-        }
-
-        // don't pre-load account name for existing accounts
-        if ($account->getId()) {
-            return;
-        }
-
-        // don't try to pre-load account name w/o credentials
-        if (!$account->getAccountSid() || !$account->getAuthToken()) {
-            return;
-        }
-
-        $properties = $this->twilioAdapter->getAccount($account);
-        if ($properties) {
-            $account->setAccountName($properties->friendlyName);
+        if ($type === 'text') {
+            $form->add('text', TextType::class);
+            $form->add('language', TextType::class);
+        } else {
+            $form->add('blob', BlobAuthType::class);
         }
     }
 }

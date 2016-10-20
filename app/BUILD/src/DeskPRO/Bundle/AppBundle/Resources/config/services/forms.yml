@@ -284,8 +284,8 @@ services:
     tags:
       - { name: form.type }
 
-  form.twilio_account:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Twilio\TwilioAccountType
+  form.voice_account:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAccountType
     arguments:
       - "@twilio_adapter"
     tags:

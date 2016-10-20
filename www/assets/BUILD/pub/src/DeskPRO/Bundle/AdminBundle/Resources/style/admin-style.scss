@@ -7,7 +7,7 @@ $flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
 @import "../../../../../../node_modules/react-select/scss/components";
 @import '../../../AppBundle/Resources/style/variables';
 @import 'email-templates';
-@import 'twilio';
+@import 'voice';
 
 .two-panels-menu {
   display: table;

@@ -80,8 +80,8 @@ services:
     tags:
       - { name: validator.constraint_validator }
 
-  validator.twilio_account:
-    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Twilio\TwilioAccountValidator
+  validator.voice_account:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Voice\VoiceAccountValidator
     arguments:
       - "@twilio_adapter"
     tags:

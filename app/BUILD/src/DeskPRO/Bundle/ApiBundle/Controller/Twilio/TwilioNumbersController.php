@@ -30,18 +30,18 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Twilio;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioNumber;
-use DeskPRO\Bundle\AppBundle\Form\Type\Twilio\TwilioNumberType;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceNumberType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
- * Class TwilioNumbersController.
+ * Class VoiceNumbersController.
  *
  * @ApiModes("all")
- * @Rest\Route("/twilio_numbers")
+ * @Rest\Route("/voice_numbers")
  */
 class TwilioNumbersController extends CrudController
 {
-    public static $entity = TwilioNumber::class;
-    public static $type   = TwilioNumberType::class;
+    public static $entity = VoiceNumber::class;
+    public static $type   = VoiceNumberType::class;
 }

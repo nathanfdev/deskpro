@@ -31,25 +31,25 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Twilio;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioAccount;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Twilio\TwilioAccountType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAccountType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Orb\Data\Countries;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class TwilioAccountsController.
+ * Class VoiceAccountsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/twilio_accounts")
- * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\TwilioAccount")
+ * @Rest\Route("/voice_accounts")
+ * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceAccount")
  */
 class TwilioAccountsController extends CrudController
 {
-    public static $entity    = TwilioAccount::class;
-    public static $type      = TwilioAccountType::class;
+    public static $entity    = VoiceAccount::class;
+    public static $type      = VoiceAccountType::class;
     public static $listOrder = 'asc';
 
     /**
@@ -61,12 +61,12 @@ class TwilioAccountsController extends CrudController
      */
     public function testCredentialsAction(Request $request)
     {
-        $account    = new TwilioAccount();
+        $account    = new VoiceAccount();
         $accountSid = $request->request->get('account_sid');
 
         if ($accountSid) {
             // pre-load existing account entity to avoid duplicate validation errors
-            $existingAccount = $this->getManager()->getRepository(TwilioAccount::class)->findOneBy([
+            $existingAccount = $this->getManager()->getRepository(VoiceAccount::class)->findOneBy([
                 'accountSid' => $accountSid,
             ]);
 
@@ -75,7 +75,7 @@ class TwilioAccountsController extends CrudController
             }
         }
 
-        $form = $this->createForm(TwilioAccountType::class, $account);
+        $form = $this->createForm(VoiceAccountType::class, $account);
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
@@ -90,12 +90,12 @@ class TwilioAccountsController extends CrudController
     /**
      * @Rest\Get("/{account}/available_numbers")
      *
-     * @param TwilioAccount $account
-     * @param Request       $request
+     * @param VoiceAccount $account
+     * @param Request      $request
      *
      * @return View
      */
-    public function getAvailableNumbersAction(TwilioAccount $account, Request $request)
+    public function getAvailableNumbersAction(VoiceAccount $account, Request $request)
     {
         $adapter     = $this->get('twilio_adapter');
         $query       = $request->query;
@@ -137,12 +137,12 @@ class TwilioAccountsController extends CrudController
     /**
      * @Rest\Get("/{account}/existing_numbers")
      *
-     * @param TwilioAccount $account
-     * @param Request       $request
+     * @param VoiceAccount $account
+     * @param Request      $request
      *
      * @return View
      */
-    public function getExistingNumbersAction(TwilioAccount $account, Request $request)
+    public function getExistingNumbersAction(VoiceAccount $account, Request $request)
     {
         $page   = $request->query->getInt('page', 1);
         $result = $this->get('twilio_adapter')->getExistingPhoneNumbers($account, $page);

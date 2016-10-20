@@ -5,7 +5,7 @@ import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DA
 import { repositoriesConfig } from 'DeskPRO/Bundle/AdminBundle/DAL/config';
 import store from '../../../Services/store';
 import { history } from '../../../Services/history';
-import * as Twilio from '../../Twilio/Components/index';
+import * as Voice from '../../Voice/Components/index';
 
 class AppContainer extends React.Component {
 
@@ -30,15 +30,15 @@ class AppContainer extends React.Component {
       <Provider store={store}>
         <Router history={history}>
           <Route path="voice_channel">
-            <Route path="accounts" component={Twilio.Accounts} />
-            <Route path="numbers" component={Twilio.Numbers} />
-            <Route path="numbers/available" component={Twilio.AvailableNumbers} />
-            <Route path="numbers/existing" component={Twilio.ExistingNumbers} />
-            <Route path="queues" component={Twilio.Queues} />
-            <Route path="queues/new" component={Twilio.NewQueue} />
-            <Route path="queues/:queueId" component={Twilio.EditQueue} />
-            <Route path="extensions" component={Twilio.ExistingExtensionList} />
-            <Route path="extensions/new" component={Twilio.NewExtensionList} />
+            <Route path="accounts" component={Voice.Accounts} />
+            <Route path="numbers" component={Voice.Numbers} />
+            <Route path="numbers/available" component={Voice.AvailableNumbers} />
+            <Route path="numbers/existing" component={Voice.ExistingNumbers} />
+            <Route path="queues" component={Voice.Queues} />
+            <Route path="queues/new" component={Voice.NewQueue} />
+            <Route path="queues/:queueId" component={Voice.EditQueue} />
+            <Route path="extensions" component={Voice.ExistingExtensionList} />
+            <Route path="extensions/new" component={Voice.NewExtensionList} />
           </Route>
         </Router>
       </Provider>

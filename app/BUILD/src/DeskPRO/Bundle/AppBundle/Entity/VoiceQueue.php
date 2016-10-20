@@ -37,14 +37,14 @@ use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class TwilioQueue.
+ * Class VoiceQueue.
  *
  * @ORM\Entity()
- * @ORM\Table(name="twilio_queues")
+ * @ORM\Table(name="voice_queues")
  *
  * @JMS\ExclusionPolicy("all")
  */
-class TwilioQueue implements EntityInterface, NotifyPropertyChanged
+class VoiceQueue implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
@@ -82,9 +82,9 @@ class TwilioQueue implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinTable(
-     *      name="twilio_queue_agents",
+     *      name="voice_queue_agents",
      *      joinColumns={
-     *          @ORM\JoinColumn(name="twilio_queue_id", referencedColumnName="id", onDelete="CASCADE")
+     *          @ORM\JoinColumn(name="voice_queue_id", referencedColumnName="id", onDelete="CASCADE")
      *      },
      *      inverseJoinColumns={
      *          @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
@@ -111,38 +111,38 @@ class TwilioQueue implements EntityInterface, NotifyPropertyChanged
     private $routingModel;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TwilioAsset", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER")
      *
      * @JMS\Expose()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\TwilioAsset")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
      *
      * @Assert\Valid()
      *
-     * @var TwilioAsset
+     * @var VoiceAsset
      */
     private $greetAsset;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TwilioAsset", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER")
      *
      * @JMS\Expose()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\TwilioAsset")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
      *
      * @Assert\Valid()
      *
-     * @var TwilioAsset
+     * @var VoiceAsset
      */
     private $loopAsset;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TwilioAsset", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER")
      *
      * @JMS\Expose()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\TwilioAsset")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
      *
      * @Assert\Valid()
      *
-     * @var TwilioAsset
+     * @var VoiceAsset
      */
     private $voicemailAsset;
 

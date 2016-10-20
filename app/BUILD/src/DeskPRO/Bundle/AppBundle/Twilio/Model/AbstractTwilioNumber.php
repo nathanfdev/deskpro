@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Twilio\Model;
 
-use DeskPRO\Bundle\AppBundle\Entity\TwilioAccount;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use JMS\Serializer\Annotation as JMS;
 use libphonenumber\PhoneNumberUtil;
 
@@ -40,7 +40,7 @@ abstract class AbstractTwilioNumber
     /**
      * @var string
      *
-     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\TwilioAccount>")
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceAccount>")
      */
     protected $account;
 
@@ -97,10 +97,10 @@ abstract class AbstractTwilioNumber
      * Constructor.
      *
      * @param object        $apiNumber
-     * @param TwilioAccount $account
+     * @param VoiceAccount $account
      * @param bool          $added
      */
-    public function __construct($apiNumber, TwilioAccount $account, $added)
+    public function __construct($apiNumber, VoiceAccount $account, $added)
     {
         $phoneUtil = PhoneNumberUtil::getInstance();
         $number    = $phoneUtil->parse($apiNumber->phoneNumber, null);

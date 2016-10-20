@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
-use DeskPRO\Bundle\AppBundle\Form\Type\Twilio\TwilioAssetType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -49,7 +49,7 @@ class PersonAgentDataType extends AbstractType
             ->add('extension_number', NumberType::class, [
                 'property_path' => 'extensionNumber',
             ])
-            ->add('voicemail_asset', TwilioAssetType::class, [
+            ->add('voicemail_asset', VoiceAssetType::class, [
                 'property_path' => 'voicemailAsset',
                 'required'      => false,
             ])

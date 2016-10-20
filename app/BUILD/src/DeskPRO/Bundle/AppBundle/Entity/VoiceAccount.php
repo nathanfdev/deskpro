@@ -37,19 +37,19 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class TwilioAccount.
+ * Class VoiceAccount.
  *
  * @ORM\Entity()
- * @ORM\Table(name="twilio_accounts", uniqueConstraints={
+ * @ORM\Table(name="voice_accounts", uniqueConstraints={
  *   @ORM\UniqueConstraint(name="account_sid", columns={"account_sid"}
  * )})
  *
  * @JMS\ExclusionPolicy("all")
  *
- * @AppAssert\Twilio\TwilioAccount()
+ * @AppAssert\Voice\VoiceAccount()
  * @UniqueEntity("accountSid")
  */
-class TwilioAccount implements EntityInterface, NotifyPropertyChanged
+class VoiceAccount implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
@@ -114,9 +114,9 @@ class TwilioAccount implements EntityInterface, NotifyPropertyChanged
     private $dateCreated;
 
     /**
-     * @ORM\OneToMany(targetEntity="TwilioNumber", mappedBy="account", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="VoiceNumber", mappedBy="account", cascade={"persist", "remove"})
      *
-     * @var TwilioNumber[]
+     * @var VoiceNumber[]
      */
     private $numbers;
 
