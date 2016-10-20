@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { RteEditor } from 'DeskPRO/Component/Rte/RteEditor';
 import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
@@ -21,8 +22,8 @@ class Container extends React.Component {
     isOpen:          PropTypes.bool.isRequired,
     clickOut:        PropTypes.func,
     onSubmit:        PropTypes.func,
-    onChange:        PropTypes.func.isRequired,
-    onAttach:        PropTypes.func.isRequired,
+    onChange:        PropTypes.func,
+    onAttach:        PropTypes.func,
     messages:        PropTypes.object,
     loadMessages:    PropTypes.func,
     loadingMessages: PropTypes.bool.isRequired,
@@ -34,6 +35,12 @@ class Container extends React.Component {
 
   static defaultProps = {
     searchQuery: '',
+    onChange() {
+
+    },
+    onAttach() {
+
+    },
     clickOut() {
 
     },
@@ -176,9 +183,9 @@ class Container extends React.Component {
     console.log(emoji, this.state.emojiOpened);
   }
 
-  handleChange(event) {
-    this.setState({ message: event.target.value });
-    this.props.onChange(event.target.value);
+  handleChange(text) {
+    this.setState({ message: text });
+    this.props.onChange(text);
   }
 
   handleSubmit() {
@@ -277,7 +284,30 @@ class Container extends React.Component {
             </div>
             <div className="reply">
               <form onSubmit={this.handleSubmit}>
-                <input value={this.state.message} type="text" onChange={this.handleChange} />
+                <RteEditor
+                  inline
+                  ref={(c) => { this.editor = c; }}
+                  value={this.state.message}
+                  onChange={this.handleChange}
+                  onSubmit={this.handleSubmit}
+                  onFocus={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
+                  onBlur={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = false; }}
+                  className="textarea"
+                  options={{
+                    autoLink:      true,
+                    imageDragging: true,
+                    placeholder:   false,
+                    toolbar:       {
+                      buttons:                ['bold', 'italic', 'underline'],
+                      updateOnEmptySelection: true
+                    },
+                    paste: {
+                      forcePlainText:  false,
+                      cleanPastedHTML: false,
+                      cleanAttrs:      ['style', 'dir']
+                    }
+                  }}
+                />
                 <i className="fa fa-paperclip reply-icon" onClick={this.handleAttach} />
                 <i
                   className="fa fa-smile-o reply-icon emoji trigger"

@@ -674,33 +674,44 @@
       padding: 15px;
       background: $dp-greyscale-150;
       border-top: 1px solid $dp-greyscale-450;
-      position: relative;
 
-      input {
-        padding: 10px;
-        width: 100%;
-        outline: none;
-        border: 1px solid $dp-greyscale-450;
+      form {
+        position: relative;
 
-        &:focus {
-          border: 1px solid $dp-sonic-primary;
+        .textarea {
+          background: #fff;
+          min-height: 40px;
+          padding: 10px 40px 10px 10px;
+          width: 100%;
           outline: none;
+          border: 1px solid $dp-greyscale-450;
+          font-size: 12px;
+
+          &:focus {
+            border: 1px solid $dp-sonic-primary;
+            outline: none;
+          }
+        }
+
+        .reply-icon {
+          cursor: pointer;
+          position: absolute;
+          top: 10px;
+
+          &.fa-paperclip {
+            color: $dp-greyscale-850;
+            right: 30px;
+          }
+
+          &.fa-smile-o{
+            color: $dp-sonic-primary;
+            right: 10px;
+          }
         }
       }
 
-      .reply-icon {
-        cursor: pointer;
 
-        &.fa-paperclip {
-          color: $dp-greyscale-850;
-          margin-left: -45px;
-        }
 
-        &.fa-smile-o{
-          color: $dp-sonic-primary;
-          margin-left: 10px;
-        }
-      }
     }
   }
 

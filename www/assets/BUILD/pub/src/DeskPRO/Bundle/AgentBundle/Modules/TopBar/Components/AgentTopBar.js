@@ -156,7 +156,7 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   onSubmit(message) {
-    if (message.trim()) {
+    if (message.replace(/^<p>|<\/p>$/g, '').trim()) {
       const { dispatch, current, me } = this.props;
       dispatch(messagesActions.addMessage(current.get('id'), message, uuid(), me));
     }
@@ -482,8 +482,6 @@ export class AgentTopBar extends React.Component {
             messages={messages}
             current={current}
             onSubmit={onSubmit}
-            onChange={() => console.log('change')}
-            onAttach={() => console.log('attach')}
             clickOut={chatClickOut}
             loadMessages={loadMessages}
             loadingMessages={loadingMessages}
