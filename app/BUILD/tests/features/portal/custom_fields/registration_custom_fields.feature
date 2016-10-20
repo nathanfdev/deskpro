@@ -1,9 +1,12 @@
 @new @custom-fields
 Feature: Registration form custom fields
 
-  Background:
+  Background: Fresh database
     Given I disable anti-abuse rate limiting
     And there are no Person records
+    And the following languages are enabled:
+      | default |
+    And the default brand is using the standard theme
 
   Scenario: I check custom fields exist on the form
     Given only the following custom person fields exist:
