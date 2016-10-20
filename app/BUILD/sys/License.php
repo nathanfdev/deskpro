@@ -28,10 +28,6 @@
 
 namespace DpSys;
 
-//##############################################################################
-// License
-//##############################################################################
-
 final class License
 {
     /**
@@ -230,6 +226,7 @@ final class License
             $license_code      = str_replace($m[0], '', $license_code);
         }
 
+        // legacy : unused
         $opts = null;
         if (strpos($license_code, '#') !== false) {
             $parts        = explode('#', $license_code, 2);
@@ -257,33 +254,6 @@ final class License
         $data = @unserialize($enc);
 
         $this->data = $data;
-
-        if ($opts) {
-            foreach ($opts as $opt) {
-                if (($lid_p = strpos($opt, ':')) === false) {
-                    continue;
-                }
-                $lid = substr($opt, 0, $lid_p);
-                if ($lid != $this->license_id) {
-                    continue;
-                }
-
-                $opt = substr($opt, $lid_p + 1);
-                if (strpos($opt, '=') === false) {
-                    $opt .= '=';
-                }
-                list($opt, $val) = explode('=', $opt);
-
-                switch ($opt) {
-                    case 'XLIC':
-                        $this->options['xlic'] = $val;
-                        break;
-                    case 'MANAGED':
-                        $this->options['managed'] = (bool) $val;
-                        break;
-                }
-            }
-        }
 
         if (!$data) {
             $this->error_code = 'invalid_license_code_2';
@@ -331,6 +301,10 @@ final class License
             }
         }
 
+        if (isset(self::$sysdata['xlic'][$this->getLicenseId()])) {
+            $this->options['xlic'] = true;
+        }
+
         if (isset($this->options['die'])) {
             echo '(#GRNyVvJL3iUOcpqVgkzQ43qGLgnTfSM4QNe0pCPr)';
             die(1);
@@ -339,21 +313,6 @@ final class License
         if (isset($this->options['disable_callhome'])) {
             $GLOBALS['DP_DISABLE_SENDREPORTS'] = true;
         }
-    }
-
-    public function isXlic()
-    {
-        return isset($this->options['xlic']);
-    }
-
-    /**
-     * A managed license is one DeskPRO manages manually. It just disables the license input on the billing page.
-     *
-     * @return bool
-     */
-    public function isManagedLicense()
-    {
-        return isset($this->options['managed']);
     }
 
     /**
@@ -504,6 +463,16 @@ final class License
     public function has($key)
     {
         return isset($this->data[$key]);
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
+    public function hasFlag($id)
+    {
+        return isset($this->options[$id]);
     }
 
     public static function staticGetUserCopyrightHtml()
