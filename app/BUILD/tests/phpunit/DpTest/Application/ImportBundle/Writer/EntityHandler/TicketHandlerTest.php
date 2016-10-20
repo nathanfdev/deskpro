@@ -43,6 +43,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
     public function setUp()
     {
         $this->clearTable('tickets');
+        $this->clearTable('ticket_categories');
         $this->clearTable('people');
         $this->clearTable('organizations');
 

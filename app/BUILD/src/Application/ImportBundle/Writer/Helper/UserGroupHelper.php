@@ -86,6 +86,11 @@ class UserGroupHelper
      */
     public function updateUserGroups($entity, array $modelUserGroups = [])
     {
+        $reflection = new \ReflectionClass($entity);
+        if (!$reflection->hasProperty('usergroups')) {
+            return;
+        }
+
         if (!$modelUserGroups) {
             $modelUserGroups = [Usergroup::EVERYONE];
         }
@@ -113,6 +118,11 @@ class UserGroupHelper
      */
     public function updateAgentGroupsByModel(Model\Person $model, Entity\Person $entity)
     {
+        $reflection = new \ReflectionClass($entity);
+        if (!$reflection->hasProperty('usergroups')) {
+            return;
+        }
+
         // add new agent groups
         foreach ($model->getAgentGroups() as $groupName) {
             $entity->addUsergroup($this->findOrCreateUserGroup($groupName, true));
