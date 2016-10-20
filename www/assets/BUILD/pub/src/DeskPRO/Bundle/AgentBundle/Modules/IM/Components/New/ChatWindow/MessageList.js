@@ -45,16 +45,9 @@ class MessageList extends React.Component {
 
   renderList(msg) {
     let previous = false;
-    const { loadingMessages, agents, searchQuery, me } = this.props;
+    const { agents, searchQuery, me } = this.props;
     return (
       <SegmentsGroup vertical>
-        {
-          loadingMessages
-            ? <div style={{ height: '20px', width: '100%', position: 'relative' }}>
-              <Loader loaded={!loadingMessages} opacity={0} width={4} scale={0.5} color="#4696dc" />
-            </div>
-            : null
-        }
         {
           msg.map((message, index) => {
             const agent = agents.get(message.person);
