@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -49,18 +50,25 @@ class VoiceAssetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('id', EntityType::class, [
+                'mapped'         => false,
+                'class'          => VoiceAsset::class,
+                'error_bubbling' => true,
+            ])
             ->add('name', TextType::class)
             ->add('type', ChoiceType::class, [
                 'choices_as_values' => true,
                 'choices'           => [
-                    'text',
-                    'upload',
-                    'record',
+                    VoiceAsset::TYPE_TEXT,
+                    VoiceAsset::TYPE_UPLOAD,
+                    VoiceAsset::TYPE_RECORD,
                 ],
             ])
         ;
 
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInline'], 100);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetFields']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSetAssetFromId']);
     }
 
     /**
@@ -74,7 +82,20 @@ class VoiceAssetType extends AbstractType
     }
 
     /**
-     * @inheritdoc
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetInline(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (is_scalar($data)) {
+            $event->setData(['id' => $data]);
+        }
+    }
+
+    /**
+     * @internal
      *
      * @param FormEvent $event
      */
@@ -93,6 +114,21 @@ class VoiceAssetType extends AbstractType
             $form->add('language', TextType::class);
         } else {
             $form->add('blob', BlobAuthType::class);
+        }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetAssetFromId(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $data = $form->get('id')->getData();
+
+        if ($data instanceof VoiceAsset) {
+            $event->setData($data);
         }
     }
 }

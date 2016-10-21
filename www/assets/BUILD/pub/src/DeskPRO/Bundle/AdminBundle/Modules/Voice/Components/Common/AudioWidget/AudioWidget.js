@@ -235,10 +235,51 @@ class Tab extends React.Component {
   }
 }
 
+
+class AddButton extends React.Component {
+
+  static propTypes = {
+    onOpen: PropTypes.func
+  };
+
+  render() {
+    const { onOpen } = this.props;
+
+    return (
+      <button onClick={onOpen}>
+        Add
+      </button>
+    );
+  }
+}
+
+class EditButton extends React.Component {
+
+  static propTypes = {
+    value:  PropTypes.object,
+    onOpen: PropTypes.func
+  };
+
+  render() {
+    const { value, onOpen } = this.props;
+
+    return (
+      <div>
+        <a onClick={(event) => { event.preventDefault(); onOpen(); }}>
+          {value.get('name')}
+          <i className="write icon" />
+        </a>
+      </div>
+    );
+  }
+}
+
 class AudioWidget extends React.Component {
 
   static propTypes = {
-    value: PropTypes.object
+    value:               PropTypes.object,
+    addButtonComponent:  PropTypes.func,
+    editButtonComponent: PropTypes.func
   };
 
   constructor(props) {
@@ -260,29 +301,9 @@ class AudioWidget extends React.Component {
     });
   };
 
-  renderAddButton() {
-    return (
-      <button onClick={this.onOpen}>
-        Add
-      </button>
-    );
-  }
-
-  renderEditButton() {
-    const { value } = this.props;
-
-    return (
-      <div>
-        <a onClick={(event) => { event.preventDefault(); this.onOpen(); }}>
-          {value.get('name')}
-          <i className="write icon" />
-        </a>
-      </div>
-    );
-  }
-
   render() {
     const { value } = this.props;
+    const { addButtonComponent = AddButton, editButtonComponent = EditButton } = this.props;
 
     return (
       <div>
@@ -295,7 +316,10 @@ class AudioWidget extends React.Component {
           <AudioWidgetForm {...this.props} />
         </Modal>
 
-        {value ? this.renderEditButton() : this.renderAddButton()}
+        {value
+          ? React.createElement(editButtonComponent, { onOpen: this.onOpen, value })
+          : React.createElement(addButtonComponent, { onOpen: this.onOpen })
+        }
       </div>
     );
   }

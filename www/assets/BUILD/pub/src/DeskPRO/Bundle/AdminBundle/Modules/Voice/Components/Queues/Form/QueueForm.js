@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { Fieldset, Input, createValue } from 'react-forms';
 import { Form, Field, Select, MultiSelect } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
@@ -19,7 +20,8 @@ class QueueForm extends React.Component {
     agents:       PropTypes.array,
     agentsLoaded: PropTypes.bool,
     onSubmit:     PropTypes.func.isRequired,
-    onReturnBack: PropTypes.func.isRequired
+    onReturnBack: PropTypes.func.isRequired,
+    saving:       PropTypes.bool
   };
 
   constructor(props) {
@@ -69,7 +71,7 @@ class QueueForm extends React.Component {
   }
 
   render() {
-    const { queue, agents, agentsLoaded, onReturnBack } = this.props;
+    const { queue, agents, agentsLoaded, onReturnBack, saving } = this.props;
 
     return (
       <div className="page">
@@ -99,17 +101,15 @@ class QueueForm extends React.Component {
                 <Input type="text" />
               </Field>
 
-              <input
-                type="submit"
-                className="ui button"
-                value={queue ? 'Update' : 'Create'}
-              />
-              <input
-                type="submit"
-                className="ui basic button cancel-button"
-                value="Cancel"
+              <button className={classNames('ui button', { loading: saving })}>
+                {queue ? 'Update' : 'Create'}
+              </button>
+              <button
+                className={classNames('ui basic button cancel-button', { disabled: saving })}
                 onClick={this.onCancel}
-              />
+              >
+                Cancel
+              </button>
             </Fieldset>
           </Form>
         </div>

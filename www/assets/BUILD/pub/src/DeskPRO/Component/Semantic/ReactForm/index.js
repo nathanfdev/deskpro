@@ -6,6 +6,8 @@ import Select from './Select';
 import MultiSelect from './MultiSelect';
 import CountryCodeSelect from './CountryCodeSelect';
 import LanguageSelect from './LanguageSelect';
+import Checkbox from './Checkbox';
+import RecordsChoiceWrapper from './RecordsChoiceWrapper';
 
 export {
   Field,
@@ -16,5 +18,7 @@ export {
   Select,
   MultiSelect,
   CountryCodeSelect,
-  LanguageSelect
+  LanguageSelect,
+  Checkbox,
+  RecordsChoiceWrapper
 };

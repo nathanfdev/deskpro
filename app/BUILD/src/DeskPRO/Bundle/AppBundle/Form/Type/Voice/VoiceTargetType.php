@@ -29,10 +29,9 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -57,15 +56,17 @@ class VoiceTargetType extends AbstractType
                 'mapped'            => false,
                 'choices_as_values' => true,
                 'choices'           => [
-                    'queue',
-                    'agent',
+                    AbstractVoiceTarget::TYPE_QUEUE,
+                    AbstractVoiceTarget::TYPE_AGENT,
+                    AbstractVoiceTarget::TYPE_AUTO_ATTENDANT,
                 ],
             ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddTargetField'], 100);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onEnsureTargetFieldSubmission'], 100);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCreateEntityInstance'], 200);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onUnsetTarget']);
     }
 
     /**
@@ -91,13 +92,13 @@ class VoiceTargetType extends AbstractType
         $targetType = isset($data['type']) ? $data['type'] : null;
 
         switch ($targetType) {
-            case 'queue':
+            case AbstractVoiceTarget::TYPE_QUEUE:
                 $form->add('queue', EntityType::class, [
                     'class' => VoiceQueue::class,
                 ]);
 
                 break;
-            case 'agent':
+            case AbstractVoiceTarget::TYPE_AGENT:
                 $form->add('agent', EntityType::class, [
                     'class'         => Person::class,
                     'query_builder' => function (EntityRepository $er) {
@@ -106,6 +107,13 @@ class VoiceTargetType extends AbstractType
                             ->where('u.is_agent = 1')
                         ;
                     },
+                ]);
+
+                break;
+            case AbstractVoiceTarget::TYPE_AUTO_ATTENDANT:
+                $form->add('auto_attendant', EntityType::class, [
+                    'class'         => VoiceAutoAttendant::class,
+                    'property_path' => 'autoAttendant',
                 ]);
 
                 break;
@@ -124,14 +132,7 @@ class VoiceTargetType extends AbstractType
 
         $target = null;
         if (isset($data['type'])) {
-            switch ($data['type']) {
-                case 'queue':
-                    $target = new VoiceQueueTarget();
-                    break;
-                case 'agent':
-                    $target = new VoiceAgentTarget();
-                    break;
-            }
+            $target = AbstractVoiceTarget::createInstanceByType($data['type']);
         }
 
         $form->setData($target);
@@ -142,11 +143,45 @@ class VoiceTargetType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSubmit(FormEvent $event)
+    public function onUnsetTarget(FormEvent $event)
     {
         $data = $event->getData();
         if (!$data instanceof AbstractVoiceTarget) {
             $event->setData(null);
         }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onEnsureTargetFieldSubmission(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (isset($data['type'])) {
+            switch ($data['type']) {
+                case AbstractVoiceTarget::TYPE_QUEUE:
+                    if (!isset($data['queue'])) {
+                        $data['queue'] = null;
+                    }
+
+                    break;
+                case AbstractVoiceTarget::TYPE_AGENT:
+                    if (!isset($data['agent'])) {
+                        $data['agent'] = null;
+                    }
+
+                    break;
+                case AbstractVoiceTarget::TYPE_AUTO_ATTENDANT:
+                    if (!isset($data['auto_attendant'])) {
+                        $data['auto_attendant'] = null;
+                    }
+
+                    break;
+            }
+        }
+
+        $event->setData($data);
     }
 }

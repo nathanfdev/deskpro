@@ -11,7 +11,7 @@ class CountryCodeSelect extends React.Component {
 
   renderValue = option => (
     <span>
-      <div className={classNames('flag-icon', `flag-icon-${option.value.toLowerCase()}`)} />
+      <i className={classNames('flag-icon', `flag-icon-${option.value.toLowerCase()}`)} />
       {option.label}
     </span>
   );

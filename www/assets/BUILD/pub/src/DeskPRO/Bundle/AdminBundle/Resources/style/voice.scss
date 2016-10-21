@@ -54,7 +54,7 @@
         width: 400px;
       }
 
-      &.sid {
+      &.sid, &.auto-attendant-name {
         width: 350px;
       }
 
@@ -97,6 +97,31 @@
           i {
             margin-left: 10px;
             color: #CCCCCC;
+          }
+        }
+      }
+
+      &.auto-attendant-press-options {
+        width: 300px;
+      }
+
+      &.auto-attendant-dial-numbers {
+        width: 500px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+
+        .dial-number {
+          display: inline-block;
+          background-color: #fff;
+          border: 1px solid #E3E3E3;
+          margin: 0 5px;
+          padding: 5px;
+          width: 35px;
+          text-align: center;
+          cursor: pointer;
+
+          &:first-child {
+            margin-left: 0;
           }
         }
       }
@@ -158,7 +183,26 @@
 
           a {
             cursor: pointer;
-            color: #CCCCCC;
+            color: #999999;
+          }
+        }
+
+        &.auto-attendant-press-options {
+          position: relative;
+
+          .press-options {
+            position: absolute;
+            margin-top: -5px;
+
+            .press-option {
+              display: block;
+              font-size: 14px;
+              color: #999999;
+
+              i.icon {
+                color: #3E78B8;
+              }
+            }
           }
         }
 
@@ -380,5 +424,82 @@
         }
       }
     }
+  }
+}
+
+.voice-dial-target {
+  .dial-target-label {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .dial-target-name {
+    margin-left: 10px;
+  }
+}
+
+.voice-auto-attendant-form {
+  width: 500px;
+
+  .field {
+    .dial-number {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      line-height: 36px;
+      background-color: #ffffff;
+      border: 1px solid #e3e3e3;
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+
+      &.dial-number-checkbox {
+        margin-right: 10px;
+      }
+    }
+
+    .dial-number-target {
+      clear: both;
+      margin: 10px 0;
+      height: 36px;
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .dial-number {
+        float: left;
+        border-right: 0;
+      }
+
+      .Select {
+        float: left;
+        width: 200px;
+        height: 35px;
+        margin-right: 10px;
+
+        .Select-control {
+          border: 1px solid #e3e3e3;
+        }
+      }
+    }
+
+    &.audio-asset {
+      button.icon {
+        margin-left: 10px;
+        width: 30px;
+        height: 30px;
+        padding: 0;
+      }
+    }
+  }
+
+  .dial-number-checkbox-group {
+    margin-top: 30px;
+    margin-bottom: 40px;
   }
 }

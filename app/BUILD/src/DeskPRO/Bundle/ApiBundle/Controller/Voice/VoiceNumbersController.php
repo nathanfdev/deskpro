@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
@@ -41,6 +42,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/voice_numbers")
  * @Feature("voice")
+ * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber")
  */
 class VoiceNumbersController extends CrudController
 {

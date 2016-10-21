@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
 import classNames from 'classnames';
 import { Fieldset, createValue } from 'react-forms';
-import { Form, Field, BlurInput, Select, CountryCodeSelect } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, BlurInput, Select, CountryCodeSelect, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import AccountChoiceWrapper from '../AccountChoiceWrapper';
 
 const allowedCountryCodes = [
@@ -169,14 +169,12 @@ class TypesOfNumber extends React.Component {
           const checked = value.indexOf(type.value) !== -1;
 
           return (
-            <div
+            <Checkbox
               key={index}
-              className={classNames('ui', { checked }, 'checkbox')}
-              onClick={() => this.onChange(type.value)}
-            >
-              <input type="checkbox" checked={checked ? 'checked' : ''} className="hidden" />
-              <label htmlFor="checkbox">{type.title}</label>
-            </div>
+              value={checked}
+              label={type.title}
+              onChange={() => this.onChange(type.value)}
+            />
           );
         })}
       </div>

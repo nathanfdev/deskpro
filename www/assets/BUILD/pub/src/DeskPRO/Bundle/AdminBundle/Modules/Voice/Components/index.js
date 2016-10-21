@@ -7,6 +7,9 @@ import NewQueue from './Queues/Form/NewQueueContainer';
 import EditQueue from './Queues/Form/EditQueueContainer';
 import ExistingExtensionList from './Extensions/ExistingList/ExistingExtensionListContainer';
 import NewExtensionList from './Extensions/NewList/NewExtensionListContainer';
+import AutoAttendantList from './AutoAttendants/List/AutoAttendantListContainer';
+import NewAutoAttendant from './AutoAttendants/Form/NewAutoAttendantContainer';
+import EditAutoAttendant from './AutoAttendants/Form/EditAutoAttendantContainer';
 
 export {
   Accounts,
@@ -17,5 +20,8 @@ export {
   NewQueue,
   EditQueue,
   ExistingExtensionList,
-  NewExtensionList
+  NewExtensionList,
+  AutoAttendantList,
+  NewAutoAttendant,
+  EditAutoAttendant
 };

@@ -3,9 +3,11 @@ import React, { PropTypes } from 'react';
 class NumberTarget extends React.Component {
 
   static propTypes = {
-    id:       PropTypes.number,
-    name:     PropTypes.string,
-    onRemove: PropTypes.func
+    id:         PropTypes.number,
+    targetName: PropTypes.string,
+    targetType: PropTypes.string,
+    withType:   PropTypes.bool,
+    onRemove:   PropTypes.func
   };
 
   onRemove = (event) => {
@@ -16,11 +18,14 @@ class NumberTarget extends React.Component {
   };
 
   render() {
-    const { name, onRemove } = this.props;
+    const { targetName, targetType, withType, onRemove } = this.props;
+    if (!targetName) {
+      return null;
+    }
 
     return (
       <div className="target">
-        {name}
+        {withType && `${targetType}: `}{targetName}
         {onRemove &&
           <a onClick={this.onRemove}>
             <i className="remove circle icon" />

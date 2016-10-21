@@ -49,12 +49,19 @@ class VoiceAsset implements EntityInterface, NotifyPropertyChanged, GroupSequenc
 {
     use NotifyPropertyChangedTrait;
 
+    const TYPE_TEXT   = 'text';
+    const TYPE_RECORD = 'record';
+    const TYPE_UPLOAD = 'upload';
+
     /**
      * The unique ID.
      *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */

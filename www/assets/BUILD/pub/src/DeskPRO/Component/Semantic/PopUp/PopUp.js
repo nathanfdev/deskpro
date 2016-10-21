@@ -18,10 +18,11 @@ class PopUp extends React.Component {
     autoClose: PropTypes.bool,
     autoOpen:  PropTypes.bool
   };
+
   static defaultProps = {
     onOpen() {},
-    autoClose: true,
-    autoOpen:  true
+    autoClose: false,
+    autoOpen:  false
   };
 
   constructor(props) {
@@ -29,6 +30,7 @@ class PopUp extends React.Component {
     this.state = {
       isOpen: !!this.props.opened
     };
+
     if (this.props.autoClose) {
       window.document.addEventListener('dpPopupOpen', () => {
         this.closePopup();
@@ -44,7 +46,9 @@ class PopUp extends React.Component {
   };
 
   onMouseLeave = () => {
-    if (this.props.opened) {
+    const { opened, autoClose } = this.props;
+
+    if (opened || !autoClose) {
       return;
     }
 

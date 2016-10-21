@@ -43,7 +43,7 @@ class VoiceQueueTarget extends AbstractVoiceTarget
 {
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
-     * @ORM\JoinColumn(name="queue_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="voice_queue_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceQueue>")

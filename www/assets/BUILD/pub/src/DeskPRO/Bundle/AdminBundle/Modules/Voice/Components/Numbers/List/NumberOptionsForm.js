@@ -1,12 +1,11 @@
 import React, { PropTypes } from 'react';
 import { Fieldset, createValue } from 'react-forms';
-import { Form, Field, BlurInput, Select } from 'DeskPRO/Component/Semantic/ReactForm';
-import QueuesChoiceWrapper from '../../Queues/QueuesChoiceWrapper';
+import { Form, Field, BlurInput } from 'DeskPRO/Component/Semantic/ReactForm';
+import QueuesSelectContainer from '../../Common/NumberTarget/QueuesSelectContainer';
 
 class NumberOptionsForm extends React.Component {
 
   static propTypes = {
-    queues:     PropTypes.object,
     number:     PropTypes.object.isRequired,
     onSubmit:   PropTypes.func,
     onAddQueue: PropTypes.func
@@ -48,7 +47,7 @@ class NumberOptionsForm extends React.Component {
   };
 
   render() {
-    const { queues, onAddQueue } = this.props;
+    const { onAddQueue } = this.props;
 
     return (
       <Form onSubmit={(event) => { event.preventDefault(); }} formValue={this.state.formData}>
@@ -61,9 +60,7 @@ class NumberOptionsForm extends React.Component {
             <BlurInput placeholder="e.g. 'Primary Sales number'" />
           </Field>
           <Field select="target_queue" label="Queue">
-            <QueuesChoiceWrapper queues={queues}>
-              <Select clearable={false} />
-            </QueuesChoiceWrapper>
+            <QueuesSelectContainer />
           </Field>
           <button className="ui basic button" onClick={onAddQueue}>
             Add another queue

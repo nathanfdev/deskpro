@@ -40,6 +40,9 @@ class AppContainer extends React.Component {
               <Route path="queues/:queueId" component={Voice.EditQueue} />
               <Route path="extensions" component={Voice.ExistingExtensionList} />
               <Route path="extensions/new" component={Voice.NewExtensionList} />
+              <Route path="auto_attendants" component={Voice.AutoAttendantList} />
+              <Route path="auto_attendants/new" component={Voice.NewAutoAttendant} />
+              <Route path="auto_attendants/:autoAttendantId" component={Voice.EditAutoAttendant} />
             </Route>}
         </Router>
       </Provider>

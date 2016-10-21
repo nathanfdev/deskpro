@@ -111,7 +111,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $routingModel;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
      *
      * @JMS\Expose()
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
@@ -123,7 +123,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $greetAsset;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
      *
      * @JMS\Expose()
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
@@ -135,7 +135,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $loopAsset;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
      *
      * @JMS\Expose()
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")

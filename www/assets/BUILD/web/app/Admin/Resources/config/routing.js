@@ -2179,15 +2179,29 @@ define(function() {
   });
 
   routes.push({
-    id:           'voice-channel.music_and_greetings',
-    url:          '/music_and_greetings',
+    id:           'voice-channel.auto_attendants',
+    url:          '/auto_attendants',
     templateName: 'VoiceChannel/react_component.html',
     controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
   });
 
   routes.push({
-    id:           'voice-channel.ivr',
-    url:          '/ivr',
+    id:           'voice-channel.auto_attendants_new',
+    url:          '/auto_attendants/new',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.auto_attendants_edit',
+    url:          '/auto_attendants/{id:\\d+}',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.music_and_greetings',
+    url:          '/music_and_greetings',
     templateName: 'VoiceChannel/react_component.html',
     controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
   });

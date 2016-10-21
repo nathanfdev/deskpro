@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import NumberOptionsFormContainer from './NumberOptionsFormContainer';
 import NumberTarget from '../../Common/NumberTarget/NumberTarget';
+import VoiceTargetNameContainer from '../../Common/NumberTarget/VoiceTargetNameContainer';
 
 class NumberHeader extends React.Component {
 
@@ -44,18 +45,6 @@ class NumberRow extends React.Component {
     });
   };
 
-  renderTarget() {
-    const { number, queues } = this.props;
-    const targetType = number.getIn(['target', 'type']);
-
-    switch (targetType) {
-      case 'queue':
-        return <NumberTarget name={`Queue: ${queues.get(number.getIn(['target', 'queue'])).get('name')}`} />;
-      default:
-        return null;
-    }
-  }
-
   render() {
     const { number, queues } = this.props;
 
@@ -69,7 +58,11 @@ class NumberRow extends React.Component {
           {!this.state.expanded && <div className="column nickname">{number.get('nickname')}</div>}
           {!this.state.expanded &&
             <div className="column targets">
-              {!!number.getIn(['target', 'type']) && this.renderTarget()}
+              {number.get('target') &&
+                <VoiceTargetNameContainer target={number.get('target')}>
+                  <NumberTarget withType />
+                </VoiceTargetNameContainer>
+              }
             </div>}
           <div className="column options-button">
             <a onClick={this.onToggleOptions}>

@@ -50,7 +50,8 @@ use JMS\Serializer\Annotation as JMS;
  * @ORM\DiscriminatorMap({
  *   "item" = "AbstractVoiceTarget",
  *   "queue" = "VoiceQueueTarget",
- *   "agent" = "VoiceAgentTarget"
+ *   "agent" = "VoiceAgentTarget",
+ *   "auto_attendant" = "VoiceAutoAttendantTarget"
  * })
  *
  * @JMS\ExclusionPolicy("all")
@@ -58,6 +59,10 @@ use JMS\Serializer\Annotation as JMS;
 abstract class AbstractVoiceTarget implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
+
+    const TYPE_QUEUE          = 'queue';
+    const TYPE_AGENT          = 'agent';
+    const TYPE_AUTO_ATTENDANT = 'auto_attendant';
 
     /**
      * The unique ID.
@@ -76,5 +81,24 @@ abstract class AbstractVoiceTarget implements EntityInterface, NotifyPropertyCha
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return AbstractVoiceTarget
+     */
+    public static function createInstanceByType($type)
+    {
+        switch ($type) {
+            case self::TYPE_QUEUE:
+                return new VoiceQueueTarget();
+            case self::TYPE_AGENT:
+                return new VoiceAgentTarget();
+            case self::TYPE_AUTO_ATTENDANT:
+                return new VoiceAutoAttendantTarget();
+            default:
+                return;
+        }
     }
 }
