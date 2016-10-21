@@ -69,7 +69,13 @@ class Container extends React.Component {
   }
 
   componentDidMount() {
-    this.refresh();
+    this.refresh(this.props);
+  }
+
+  componentWillReceiveProps(props) {
+    if (props.current.get('id') !== this.props.current.get('id')) {
+      this.refresh(props);
+    }
   }
 
   componentDidUpdate() {
@@ -143,12 +149,12 @@ class Container extends React.Component {
     );
   }
 
-  getPath = () => {
+  getPath = (props) => {
     let path;
-    if (!this.props.searchQuery) {
-      path = ['chatMessages', this.props.current.get('id')];
+    if (!props.searchQuery) {
+      path = ['chatMessages', props.current.get('id')];
     } else {
-      path = ['searchMessages', this.props.current.get('id')];
+      path = ['searchMessages', props.current.get('id')];
     }
     return path;
   };
@@ -160,10 +166,10 @@ class Container extends React.Component {
     this.setState({ searching: !this.state.searching, expandedHeader: false });
   }
 
-  refresh() {
+  refresh(props) {
     if (
-      !this.props.messages.hasIn(this.getPath())
-      || (this.props.messages.hasIn(this.getPath()) && this.props.messages.getIn(this.getPath()).messages.size < 1)
+      !props.messages.hasIn(this.getPath(props))
+      || (props.messages.hasIn(this.getPath(props)) && props.messages.getIn(this.getPath(props)).messages.size < 1)
     ) {
       this.props.loadMessages();
     }
