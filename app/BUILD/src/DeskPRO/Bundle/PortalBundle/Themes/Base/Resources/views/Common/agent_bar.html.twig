@@ -82,7 +82,7 @@ if impersonation is OFF "impersonator" is the agent
 
             {% if is_admin %}
             <div class="datb-dropdown-content-container">
-                <a href="{{ path('admin') }}" id="admin-dropdown-arrow" class="clickaway-dropdown" data-clickaway-target="agent-bar-admin-dropdown">
+                <a href="{{ path('agent') }}#admin:/" id="admin-dropdown-arrow" class="clickaway-dropdown" data-clickaway-target="agent-bar-admin-dropdown">
                     <i class="fa fa-columns"></i>
                     <span class="datb-button-content">
                         <span class="datb-interface-button-title">{{ phrase('portal.general.admin') }}</span>
@@ -96,43 +96,43 @@ if impersonation is OFF "impersonator" is the agent
                 <div id="agent-bar-admin-dropdown" class="datb-dropdown-content" style="display: none;">
                     <ul>
                         <li>
-                            <a href="{{ path('admin') }}">
+                            <a href="{{ path('agent') }}#admin:/">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{- phrase('portal.general.admin_home') -}}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin') }}#/portal/{{ active_brand_id }}/portal_editor">
+                            <a href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/portal_editor">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{- phrase('portal.general.agent_bar_admin_portal') -}}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin') }}#/setup/languages/default">
+                            <a href="{{ path('agent') }}#admin:/setup/languages/default">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{- phrase('portal.general.agent_bar_admin_lang') -}}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin') }}#/portal/{{ active_brand_id }}/kb/settings">
+                            <a href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/kb/settings">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{- phrase('portal.general.agent_bar_admin_kb') -}}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin') }}#/portal/{{ active_brand_id }}/news/settings">
+                            <a href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/news/settings">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{- phrase('portal.general.agent_bar_admin_news') -}}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin') }}#/portal/{{ active_brand_id }}/downloads/settings">
+                            <a href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/downloads/settings">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{- phrase('portal.general.agent_bar_admin_dl') -}}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin') }}#/portal/{{ active_brand_id }}/feedback/settings">
+                            <a href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/feedback/settings">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{- phrase('portal.general.agent_bar_admin_feedback') -}}
                             </a>
