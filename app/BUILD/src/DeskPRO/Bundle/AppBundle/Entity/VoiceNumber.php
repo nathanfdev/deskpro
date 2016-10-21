@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -49,9 +49,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class VoiceNumber implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
-
-    const TARGET_QUEUE = 'queue';
-    const TARGET_AGENT = 'agent';
 
     /**
      * The unique ID.
@@ -130,20 +127,16 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     private $countryCode;
 
     /**
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
-     * @ORM\JoinColumn(name="target_queue_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\JoinColumn(name="target_id", referencedColumnName="id", onDelete="CASCADE")
      *
-     * @var VoiceQueue
-     */
-    private $targetQueue;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="target_agent_id", referencedColumnName="id", onDelete="CASCADE")
+     * @JMS\Expose()
      *
-     * @var Person
+     * @Assert\Valid()
+     *
+     * @var AbstractVoiceTarget
      */
-    private $targetAgent;
+    private $target;
 
     /**
      * @return int
@@ -254,79 +247,22 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return mixed
-     */
-    public function getTargetQueue()
-    {
-        return $this->targetQueue;
-    }
-
-    /**
-     * @param VoiceQueue $targetQueue
-     *
-     * @return $this
-     */
-    public function setTargetQueue(VoiceQueue $targetQueue)
-    {
-        $this->setModelField('targetQueue', $targetQueue);
-        $this->setModelField('targetAgent', null);
-
-        return $this;
-    }
-
-    /**
-     * @return Person
-     */
-    public function getTargetAgent()
-    {
-        return $this->targetAgent;
-    }
-
-    /**
-     * @param Person $targetAgent
-     *
-     * @return $this
-     */
-    public function setTargetAgent(Person $targetAgent)
-    {
-        $this->setModelField('targetAgent', $targetAgent);
-        $this->setModelField('targetQueue', null);
-
-        return $this;
-    }
-
-    /**
-     * @JMS\VirtualProperty()
-     * @JMS\Type("entity")
-     * @JMS\SerializedName("target_id")
-     *
-     * @return Person|VoiceQueue
+     * @return AbstractVoiceTarget
      */
     public function getTarget()
     {
-        if ($this->targetQueue) {
-            return $this->targetQueue;
-        } elseif ($this->targetAgent) {
-            return $this->targetAgent;
-        }
-
-        return;
+        return $this->target;
     }
 
     /**
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
+     * @param AbstractVoiceTarget $target
      *
-     * @return string|void
+     * @return $this
      */
-    public function getTargetType()
+    public function setTarget(AbstractVoiceTarget $target = null)
     {
-        if ($this->targetQueue) {
-            return self::TARGET_QUEUE;
-        } elseif ($this->targetAgent) {
-            return self::TARGET_AGENT;
-        }
+        $this->setModelField('target', $target);
 
-        return;
+        return $this;
     }
 }

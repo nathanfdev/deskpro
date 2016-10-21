@@ -103,6 +103,8 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -329,6 +331,8 @@ class ObjectsManager
             'VoiceNumber'            => [Factory\SimpleFactory::class, 'create', VoiceNumber::class],
             'VoiceQueue'             => [Factory\SimpleFactory::class, 'create', VoiceQueue::class],
             'VoiceAsset'             => [Factory\SimpleFactory::class, 'create', VoiceAsset::class],
+            'VoiceQueueTarget'       => [Factory\SimpleFactory::class, 'create', VoiceQueueTarget::class],
+            'VoiceAgentTarget'       => [Factory\SimpleFactory::class, 'create', VoiceAgentTarget::class],
         ];
     }
 
@@ -412,12 +416,14 @@ class ObjectsManager
             'ApiToken'               => [$this, 'find', ApiToken::class],
             'Usersource'             => [$this, 'find', Usersource::class],
             'UsersourceAssoc'        => [$this, 'find', PersonUsersourceAssoc::class],
-            'PersonNote'             => [$this, 'find',  PersonNote::class],
-            'Permission'             => [$this, 'find',  Permission::class],
-            'VoiceAccount'           => [$this, 'find',  VoiceAccount::class],
-            'VoiceNumber'            => [$this, 'find',  VoiceNumber::class],
-            'VoiceQueue'             => [$this, 'find',  VoiceQueue::class],
-            'VoiceAsset'             => [$this, 'find',  VoiceAsset::class],
+            'PersonNote'             => [$this, 'find', PersonNote::class],
+            'Permission'             => [$this, 'find', Permission::class],
+            'VoiceAccount'           => [$this, 'find', VoiceAccount::class],
+            'VoiceNumber'            => [$this, 'find', VoiceNumber::class],
+            'VoiceQueue'             => [$this, 'find', VoiceQueue::class],
+            'VoiceAsset'             => [$this, 'find', VoiceAsset::class],
+            'VoiceQueueTarget'       => [$this, 'find', VoiceQueueTarget::class],
+            'VoiceAgentTarget'       => [$this, 'find', VoiceAgentTarget::class],
         ];
     }
 }

@@ -28,14 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -62,18 +58,12 @@ class VoiceNumberType extends AbstractType
             ->add('country_code', TextType::class, [
                 'property_path' => 'countryCode',
             ])
-            ->add('target_type', ChoiceType::class, [
-                'mapped'            => false,
-                'choices_as_values' => true,
-                'choices'           => [
-                    VoiceNumber::TARGET_QUEUE,
-                    VoiceNumber::TARGET_AGENT,
-                ],
+            ->add('target', VoiceTargetType::class, [
+                'required' => false,
             ])
         ;
 
         $builder->get('country_code')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onLowerCountryCode']);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddTargetField']);
     }
 
     /**
@@ -96,42 +86,6 @@ class VoiceNumberType extends AbstractType
         $data = $event->getData();
         if (is_string($data)) {
             $event->setData(strtolower($data));
-        }
-    }
-
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onAddTargetField(FormEvent $event)
-    {
-        $form = $event->getForm();
-        $data = $event->getData();
-
-        $targetType = isset($data['target_type']) ? $data['target_type'] : null;
-
-        switch ($targetType) {
-            case VoiceNumber::TARGET_QUEUE:
-                $form->add('target_id', EntityType::class, [
-                    'class'         => VoiceQueue::class,
-                    'property_path' => 'target_queue',
-                ]);
-
-                break;
-            case VoiceNumber::TARGET_AGENT:
-                $form->add('target_id', EntityType::class, [
-                    'class'         => Person::class,
-                    'property_path' => 'target_agent',
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er
-                            ->createQueryBuilder('u')
-                            ->where('u.is_agent = 1')
-                        ;
-                    },
-                ]);
-
-                break;
         }
     }
 }

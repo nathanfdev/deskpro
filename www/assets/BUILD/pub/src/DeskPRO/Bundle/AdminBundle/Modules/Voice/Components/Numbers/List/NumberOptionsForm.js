@@ -15,13 +15,13 @@ class NumberOptionsForm extends React.Component {
   constructor(props) {
     super(props);
     const number = props.number;
-    const targetType = number.get('target_type');
+    const targetType = number.getIn(['target', 'type']);
 
     this.state = {
       formData: createValue({
         value: {
           nickname:     number.get('nickname') || '',
-          target_queue: targetType === 'queue' ? number.get('target_id') : null
+          target_queue: targetType === 'queue' ? number.getIn(['target', 'queue']) : null
         },
         errorList: {},
         onChange:  this.onChange
@@ -35,7 +35,13 @@ class NumberOptionsForm extends React.Component {
 
     let submitData = { nickname: value.nickname };
     if (value.target_queue) {
-      submitData = { ...submitData, target_id: value.target_queue, target_type: 'queue' };
+      submitData = {
+        ...submitData,
+        target: {
+          queue: value.target_queue,
+          type:  'queue'
+        }
+      };
     }
 
     this.props.onSubmit(submitData);

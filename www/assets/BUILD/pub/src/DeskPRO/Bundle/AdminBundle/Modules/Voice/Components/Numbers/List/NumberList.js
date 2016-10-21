@@ -46,12 +46,11 @@ class NumberRow extends React.Component {
 
   renderTarget() {
     const { number, queues } = this.props;
-    const targetId = number.get('target_id');
-    const targetType = number.get('target_type');
+    const targetType = number.getIn(['target', 'type']);
 
     switch (targetType) {
       case 'queue':
-        return <NumberTarget name={`Queue: ${queues.get(targetId).get('name')}`} />;
+        return <NumberTarget name={`Queue: ${queues.get(number.getIn(['target', 'queue'])).get('name')}`} />;
       default:
         return null;
     }
@@ -70,7 +69,7 @@ class NumberRow extends React.Component {
           {!this.state.expanded && <div className="column nickname">{number.get('nickname')}</div>}
           {!this.state.expanded &&
             <div className="column targets">
-              {number.get('target_id') > 0 && this.renderTarget()}
+              {!!number.getIn(['target', 'type']) && this.renderTarget()}
             </div>}
           <div className="column options-button">
             <a onClick={this.onToggleOptions}>

@@ -3,6 +3,9 @@ Feature: /voice_numbers endpoint
 
   Background:
     Given I'm authenticated as admin
+    And no VoiceNumber records exist
+    And no VoiceQueueTarget records exist
+    And no VoiceAgentTarget records exist
     And only the following VoiceAccount records exist:
       | #  | AccountName | AccountSid | AuthToken |
       | a1 | Account 1   | Sid1       | Token1    |
@@ -44,10 +47,9 @@ Feature: /voice_numbers endpoint
     And the JSON node "data.nickname" should be equal to the string "nickname"
     And the JSON node "data.number" should be equal to the string "12345"
     And the JSON node "data.country_code" should be equal to the string "gb"
-    And the JSON node "data.target_id" should be null
-    And the JSON node "data.target_type" should be null
+    And the JSON node "data.target" should be null
 
-  Scenario: I update twilio number
+  Scenario: Iset target queue
     Given only the following VoiceNumber records exist:
       | #  | Nickname | Sid  | Number | Country Code |
       | n1 | Number 1 | sid1 | 111111 | gb           |
@@ -58,17 +60,18 @@ Feature: /voice_numbers endpoint
     When I send a PUT request to "/api/v2/voice_numbers/{n1}" with body:
     """
 {
-  "nickname": "new nickname",
-  "target_id": ~q2~,
-  "target_type": "queue"
+  "target": {
+    "type": "queue",
+    "queue": ~q2~
+  }
 }
     """
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/voice_numbers/{n1}"
     Then the response status code should be 200
-    And the JSON node "data.target_type" should be equal to the string "queue"
-    And the JSON node "data.target_id" should be equal to "{q2}"
+    And the JSON node "data.target.type" should be equal to the string "queue"
+    And the JSON node "data.target.queue" should be equal to "{q2}"
 
   Scenario: I set target agent
     Given only the following VoiceNumber records exist:
@@ -79,16 +82,70 @@ Feature: /voice_numbers endpoint
     """
 {
   "nickname": "new nickname",
-  "target_id": ~admin~,
-  "target_type": "agent"
+  "target": {
+    "type": "agent",
+    "agent": ~admin~
+  }
 }
     """
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/voice_numbers/{n1}"
     Then the response status code should be 200
-    And the JSON node "data.target_type" should be equal to the string "agent"
-    And the JSON node "data.target_id" should be equal to "{admin}"
+    And the JSON node "data.target.type" should be equal to the string "agent"
+    And the JSON node "data.target.agent" should be equal to "{admin}"
+
+  Scenario: I change target type
+    Given only the following VoiceQueue records exist:
+      | #  | Name    | Routing Model |
+      | q1 | Queue 1 | round_robin   |
+    And only the following VoiceQueueTarget records exist:
+      | #   | Queue |
+      | qt1 | {q1}  |
+    And only the following VoiceNumber records exist:
+      | #  | Nickname | Sid  | Number | Country Code | Target |
+      | n1 | Number 1 | sid1 | 111111 | gb           | {qt1}  |
+
+    When I send a PUT request to "/api/v2/voice_numbers/{n1}" with body:
+    """
+{
+  "nickname": "new nickname",
+  "target": {
+    "type": "agent",
+    "agent": ~admin~
+  }
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/voice_numbers/{n1}"
+    Then the response status code should be 200
+    And the JSON node "data.target.type" should be equal to the string "agent"
+    And the JSON node "data.target.agent" should be equal to "{admin}"
+
+  Scenario: I delete target
+    Given only the following VoiceQueue records exist:
+      | #  | Name    | Routing Model |
+      | q1 | Queue 1 | round_robin   |
+    And only the following VoiceQueueTarget records exist:
+      | #   | Queue |
+      | qt1 | {q1}  |
+    And only the following VoiceNumber records exist:
+      | #  | Nickname | Sid  | Number | Country Code | Target |
+      | n1 | Number 1 | sid1 | 111111 | gb           | {qt1}  |
+
+    When I send a PUT request to "/api/v2/voice_numbers/{n1}" with body:
+    """
+{
+  "nickname": "new nickname",
+  "target": null
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/voice_numbers/{n1}"
+    Then the response status code should be 200
+    And the JSON node "data.target" should be null
 
   Scenario: I delete twilio number
     Given only the following VoiceNumber records exist:
