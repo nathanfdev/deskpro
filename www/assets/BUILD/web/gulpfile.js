@@ -20,6 +20,7 @@ var gulp         = require('gulp'),
   fs           = require('fs'),
   postcss      = require('gulp-postcss'),
   autoprefixer = require('autoprefixer'),
+  cssnano      = require('cssnano'),
   comments     = require('postcss-discard-comments'),
   deskpro      = {util: {}, taskGen: {}};
 
@@ -40,7 +41,7 @@ gulp.task('default', ['less', 'sass', 'semantic-copy', 'less-dp-semantic', 'sass
     './app/DeskPRO*/**/*.coffee'
   ]);
 });
-gulp.task('prod', ['coffee', 'less', 'sass', 'sassdoc', 'cpjs', 'semantic-copy', 'less-dp-semantic', 'loader', 'rjs', 'rjs-agent']);
+gulp.task('prod', ['coffee', 'less', 'sass', 'sassdoc', 'cpjs', 'semantic-copy-prod', 'less-dp-semantic', 'loader', 'rjs']);
 
 
 //######################################################################################################################
@@ -282,6 +283,18 @@ gulp.task('semantic-copy', ['clean'], function () {
     .pipe(postcss([
       autoprefixer({ browsers: ['last 2 versions'] }),
       comments({})
+    ]))
+    .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
+  gulp.src('./stylesheets-less/semantic-ui/semantic.css.map')
+    .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
+});
+
+gulp.task('semantic-copy-prod', ['clean'], function () {
+  gulp.src('./stylesheets-less/semantic-ui/semantic.css')
+    .pipe(postcss([
+      autoprefixer({ browsers: ['last 2 versions'] }),
+      comments({}),
+      cssnano()
     ]))
     .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
   gulp.src('./stylesheets-less/semantic-ui/semantic.css.map')
