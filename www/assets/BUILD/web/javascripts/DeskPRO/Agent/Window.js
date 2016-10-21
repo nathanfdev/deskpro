@@ -1251,8 +1251,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			})(key);
 		}
 
-		window.document.addEventListener('dpCloseOverlayFrame', (e) => {
-			if (e.detail.id === 'admin') {
+    window.document.addEventListener('dpCloseOverlayFrame', function (e) {
+      if (e.detail.id === 'admin') {
 				if (window.DP_NEED_RELOAD == true) {
 					DeskPRO_Window.showRefreshAlert();
 				}
