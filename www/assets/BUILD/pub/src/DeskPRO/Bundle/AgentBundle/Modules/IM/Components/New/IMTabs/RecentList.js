@@ -19,7 +19,7 @@ class RecentList extends React.Component {
   };
 
   static sortList(list) {
-    return list.sort((first, second) => {
+    return list.toOrderedMap().sort((first, second) => {
       const fDate = Date.parse(first.get('date_last_message'));
       const sDate = Date.parse(second.get('date_last_message'));
       return sDate - fDate;

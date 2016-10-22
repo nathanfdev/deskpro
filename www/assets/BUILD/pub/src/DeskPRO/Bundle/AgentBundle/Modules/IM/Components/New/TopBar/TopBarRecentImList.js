@@ -37,7 +37,7 @@ class TopBarRecentImList extends RecentList {
   constructor(props) {
     super(props);
     this.state = {
-      chats: Immutable.Map({})
+      chats: Immutable.OrderedMap({})
     };
   }
 
