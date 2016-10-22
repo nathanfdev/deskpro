@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
 import { SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
+import Scrollarea from './Scrollarea';
 import Message from './Message';
 
 class MessageList extends React.Component {
@@ -12,7 +13,8 @@ class MessageList extends React.Component {
     current:         PropTypes.object.isRequired,
     loadingMessages: PropTypes.bool.isRequired,
     markNewMessages: PropTypes.func,
-    agents:          PropTypes.object.isRequired
+    agents:          PropTypes.object.isRequired,
+    onScroll:        PropTypes.func
   };
 
   static renderEmpty() {
@@ -25,12 +27,19 @@ class MessageList extends React.Component {
     );
   }
 
+  constructor(props) {
+    super(props);
+    this.firstScroll = null;
+  }
+
   componentDidMount() {
     this.props.markNewMessages();
   }
 
   componentDidUpdate() {
-    this.props.markNewMessages();
+    const { loadingMessages, markNewMessages } = this.props;
+    if (loadingMessages) return;
+    markNewMessages();
   }
 
   getPath = () => {
@@ -71,13 +80,26 @@ class MessageList extends React.Component {
 
   render() {
     const path     = this.getPath();
-    let msg = this.props.messages.hasIn(path) ? this.props.messages.getIn(path).messages : [];
-    msg          = msg.sort((first, second) => first.timestamp - second.timestamp);
-    const loaded = !this.props.loadingMessages || msg.size > 0;
+    const { onScroll, messages, loadingMessages } = this.props;
+    let msg = messages.hasIn(path) ? messages.getIn(path).messages : [];
+    msg     = msg.sort((first, second) => first.timestamp - second.timestamp);
+
+    const loaded = !loadingMessages || msg.size > 0;
+
+
     return (
-      <Loader loaded={loaded} parentClassName="box">
-        {msg.size > 0 ? this.renderList(msg) : MessageList.renderEmpty()}
-      </Loader>
+      <div className="dp-scrollable as-js-scrollbar as-vertical">
+        <Scrollarea
+          className="dpscrollarea"
+          contentClassName="dpscrollarea"
+          vertical="vertical"
+          onScroll={onScroll}
+        >
+          <Loader loaded={loaded} parentClassName="box">
+            {msg.size > 0 ? this.renderList(msg) : MessageList.renderEmpty()}
+          </Loader>
+        </Scrollarea>
+      </div>
     );
   }
 }

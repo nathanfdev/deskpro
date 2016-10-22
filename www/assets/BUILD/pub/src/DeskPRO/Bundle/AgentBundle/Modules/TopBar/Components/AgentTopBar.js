@@ -295,7 +295,8 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   render() {
-    const props = { ...this.props,
+    const props = {
+      ...this.props,
       updateVolume:       AgentTopBarContainer.updateVolume,
       onSearch:           AgentTopBarContainer.onSearch,
       onSearchFocus:      this.onSearchFocus,

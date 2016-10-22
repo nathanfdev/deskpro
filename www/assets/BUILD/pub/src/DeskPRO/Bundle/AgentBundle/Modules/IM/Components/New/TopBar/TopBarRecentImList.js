@@ -50,7 +50,6 @@ class TopBarRecentImList extends RecentList {
         }
       });
     }
-    this.props = props;
     chats = chats.sort((a, b) => b.get('added') - a.get('added'));
     this.setState({ chats });
   }

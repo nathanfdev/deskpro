@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
-import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
+
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
@@ -59,7 +59,6 @@ class Container extends React.Component {
       expandGroupHeader: false,
       searching:         false
     };
-    this.firstScroll = true;
 
     this.openEmoji    = this.openEmoji.bind(this);
     this.closeEmoji   = this.closeEmoji.bind(this);
@@ -76,19 +75,6 @@ class Container extends React.Component {
     if (props.current.get('id') !== this.props.current.get('id')) {
       this.refresh(props);
     }
-  }
-
-  componentDidUpdate() {
-    if (this.props.loadingMessages) return;
-    if (this.scrollarea) {
-      if (!this.props.loadingMessages && this.firstScroll) {
-        this.scrollarea.scrollBottom();
-        this.firstScroll = false;
-        return;
-      }
-    }
-
-    return;
   }
 
   getAgentHeader(chat) {
@@ -170,6 +156,7 @@ class Container extends React.Component {
     if (
       !props.messages.hasIn(this.getPath(props))
       || (props.messages.hasIn(this.getPath(props)) && props.messages.getIn(this.getPath(props)).messages.size < 1)
+      || (props.messages.hasIn(this.getPath(props)) && !props.messages.getIn(this.getPath(props)).page)
     ) {
       this.props.loadMessages();
     }
@@ -265,7 +252,7 @@ class Container extends React.Component {
   }
 
   render() {
-    const { current, isOpen, messages, me, agents, loadingMessages, onScroll, searchQuery } = this.props;
+    const { current, isOpen, messages, me, agents, loadingMessages, onScroll, markNewMessages, searchQuery } = this.props;
 
     return (
       <Detached
@@ -279,18 +266,16 @@ class Container extends React.Component {
             {this.searchHeader()}
             {this.groupHeader()}
             <div className="box">
-              <Scrollable onScroll={onScroll} vertical ref={(c) => { this.scrollarea = c; }}>
-                <MessageList
-                  scrollarea={this.scrollarea}
-                  loadingMessages={loadingMessages}
-                  current={current}
-                  messages={messages}
-                  me={me}
-                  agents={agents}
-                  searchQuery={searchQuery}
-                  markNewMessages={this.props.markNewMessages}
-                />
-              </Scrollable>
+              <MessageList
+                loadingMessages={loadingMessages}
+                current={current}
+                messages={messages}
+                me={me}
+                agents={agents}
+                searchQuery={searchQuery}
+                markNewMessages={markNewMessages}
+                onScroll={onScroll}
+              />
             </div>
             <div className="reply">
               <form onSubmit={this.handleSubmit}>
