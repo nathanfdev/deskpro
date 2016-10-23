@@ -208,9 +208,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        /*
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
-         */
+        /** @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses */
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
         $feedback_statuses->updateDisplayOrders($display_orders);
 

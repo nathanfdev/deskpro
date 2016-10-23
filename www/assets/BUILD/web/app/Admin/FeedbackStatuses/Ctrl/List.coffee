@@ -44,22 +44,30 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           @pingElement('display_orders_' + status_type)
       }
 
+    sort: (values) ->
+      (values || []).sort (a, b) =>
+        orderA = parseInt(a.display_order)
+        orderB = parseInt(b.display_order)
+        return -1 if orderA < orderB
+        return 1 if orderA > orderB
+        return 0
+
     initialLoad: ->
 
       list_promise = @FeedbackStatusesData.loadList().then( (recs) =>
 
-        @feedback_active_statuses = recs.active_statuses.values()
-        @feedback_closed_statuses = recs.closed_statuses.values()
+        @feedback_active_statuses = @sort recs.active_statuses.values()
+        @feedback_closed_statuses = @sort recs.closed_statuses.values()
 
         @addManagedListener(@FeedbackStatusesData.recs.active_statuses, 'changed', =>
 
-          @feedback_active_statuses = @FeedbackStatusesData.recs.active_statuses.values()
+          @feedback_active_statuses = @sort @FeedbackStatusesData.recs.active_statuses.values()
           @ngApply()
         )
 
         @addManagedListener(@FeedbackStatusesData.recs.closed_statuses, 'changed', =>
 
-          @feedback_closed_statuses = @FeedbackStatusesData.recs.closed_statuses.values()
+          @feedback_closed_statuses = @sort @FeedbackStatusesData.recs.closed_statuses.values()
           @ngApply()
         )
       )
