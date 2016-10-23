@@ -125,7 +125,18 @@ class CsvUpload
             'options'          => $options,
         ];
 
-        $this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
+        /** @var \Application\DeskPRO\EntityRepository\TaskQueue $rep */
+        $rep = $this->em->getRepository('DeskPRO:TaskQueue');
+        // cancel all running imports before starting a new one
+        $tasks = $rep->getTasksInGroup('data_import');
+        foreach ($tasks as $task) {
+            $task->status         = 'completed';
+            $task->date_completed = new \DateTime();
+            $task->run_status     = 'Cancelled by user';
+        }
+        $this->em->flush();
+
+        $rep->enqueueTask(
             'Application\\DeskPRO\\TaskQueueJob\\CsvImport',
             $task_data,
             'data_import'
