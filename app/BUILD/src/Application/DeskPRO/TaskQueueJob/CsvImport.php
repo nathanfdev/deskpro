@@ -106,8 +106,12 @@ class CsvImport extends AbstractJob
      */
     public function run($max_time)
     {
-        $em     = App::getOrm();
-        $tmpDir = App::$container->get('deskpro.app_env')->getUserTmpDir();
+        $max_time = 3600;
+        $em       = App::getOrm();
+        $tmpDir   = App::$container->get('deskpro.app_env')->getUserTmpDir();
+        $logger   = App::$container->get('dp.importer_logger');
+        $handler  = new ArrayHandler(0, Logger::ERROR);
+        $logger->pushHandler($handler);
 
         /** @var Blob $blob */
         $blob = $em->find(Blob::class, $this->data['blob_id']);
@@ -153,7 +157,7 @@ class CsvImport extends AbstractJob
 
             ++$this->data['lines_done'];
 
-            if ($this->importRow($row)) {
+            if ($this->importRow($row, $handler)) {
                 ++$this->data['imported'];
                 ++$imported;
             } else {
@@ -267,7 +271,7 @@ class CsvImport extends AbstractJob
      *
      * @return int
      */
-    protected function importRow(array $row)
+    protected function importRow(array $row, ArrayHandler $handler)
     {
         if (isset($row[0]) && $row[0] === null) {
             $this->log(['Empty row']);
@@ -275,13 +279,13 @@ class CsvImport extends AbstractJob
             return false;
         }
 
-        $handler = new ArrayHandler(0, Logger::ERROR);
-        App::$container->get('dp.importer_logger')->pushHandler($handler);
-
         $importer = App::$container->get('dp.importer.csv');
         $result   = $importer->importPerson($this->data['field_maps'], $row, $this->data['ref'], $this->data['welcome_email']);
 
-        $this->log($handler->getMessages());
+        if (!$result) {
+            $this->log($handler->getMessages());
+        }
+        $handler->reset();
 
         return $result;
     }

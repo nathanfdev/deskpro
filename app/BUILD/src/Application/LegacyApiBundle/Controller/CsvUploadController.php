@@ -32,6 +32,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\CsvUpload\CsvUpload;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
@@ -86,9 +87,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
         $filename         = $this->in->getUint('filename');
         $options          = $this->in->getArrayValue('options');
 
-        /*
-         * @var \Application\DeskPRO\CsvUpload\CsvUpload
-         */
+        /** @var CsvUpload $csv_upload */
         $csv_upload = $this->container->getSystemService('csv_upload');
 
         $result = $csv_upload->startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, $update_if_exists, $options);
@@ -102,9 +101,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
 
     public function statusAction()
     {
-        /*
-         * @var \Application\DeskPRO\CsvUpload\CsvUpload
-         */
+        /** @var CsvUpload $csv_upload */
         $csv_upload = $this->container->getSystemService('csv_upload');
 
         $result = $csv_upload->returnStatusOfImport();
@@ -191,5 +188,14 @@ class CsvUploadController extends AbstractController implements ProtectedControl
         }
 
         return $res;
+    }
+
+    public function cancelImportAction(Request $request)
+    {
+        /** @var CsvUpload $csvUpload */
+        $csvUpload = $this->container->getSystemService('csv_upload');
+        $csvUpload->cancelImport();
+
+        return $this->createSuccessResponse();
     }
 }

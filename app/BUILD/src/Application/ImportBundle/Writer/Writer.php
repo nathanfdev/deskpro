@@ -94,7 +94,6 @@ class Writer implements WriterInterface
         try {
             $handler->writeModel($model);
             $this->em->flush();
-            $this->em->clear();
             $this->entityWatcher->flushUpdatesQuiet();
 
             if ($dryRun) {
