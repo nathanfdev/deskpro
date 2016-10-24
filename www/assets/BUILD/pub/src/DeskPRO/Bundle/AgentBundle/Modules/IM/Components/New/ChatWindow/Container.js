@@ -173,6 +173,8 @@ class Container extends React.Component {
 
   clickOut() {
     this.closeEmoji();
+    this.setState({ searching: false, expandedHeader: false });
+    this.props.onChatSearch('');
     this.props.clickOut(this.props.current.get('id'));
   }
 
