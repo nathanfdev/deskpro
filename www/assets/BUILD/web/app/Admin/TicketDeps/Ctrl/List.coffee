@@ -29,7 +29,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     ###
     initialLoad: ->
       promise = @depData.loadList().then( (list) =>
-        @depList = list
+        @depList = (list || []).sort((a, b) =>
+          orderA = parseInt(a.display_order)
+          orderB = parseInt(b.display_order)
+          return -1 if orderA < orderB
+          return 1 if orderA > orderB
+          return 0
+        )
         @deps = @depData.listModels
         @flattenedList = [ { id: '0', title: 'None', has_children: false } ]
         if @depList
