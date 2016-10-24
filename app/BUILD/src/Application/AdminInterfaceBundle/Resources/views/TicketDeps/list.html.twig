@@ -87,10 +87,10 @@
 						ng-change="ListCtrl.changeDefaultDepartment('agent')">
 					<option
 							ng-repeat="dep in ListCtrl.flattenedList"
-							ng-value="dep.id"
-							ng-selected="dep.id === ListCtrl.defaultDepartments[ListCtrl.brandId].agent"
+							value="{{ ng_var('dep.id') }}"
+							ng-selected="dep.id == ListCtrl.defaultDepartments[ListCtrl.brandId].agent"
 					>
-						{{ ng_var('dep.title')}}
+						{{ ng_var('dep.title') }}
 					</option>
 				</select>
 			</div>
@@ -104,8 +104,8 @@
 						ng-change="ListCtrl.changeDefaultDepartment('user')">
 					<option
 							ng-repeat="dep in ListCtrl.flattenedList"
-							ng-value="dep.id"
-							ng-selected="dep.id === ListCtrl.defaultDepartments[ListCtrl.brandId].user"
+							value="{{ ng_var('dep.id') }}"
+							ng-selected="dep.id == ListCtrl.defaultDepartments[ListCtrl.brandId].user"
 					>
 						{{ ng_var('dep.title')}}
 

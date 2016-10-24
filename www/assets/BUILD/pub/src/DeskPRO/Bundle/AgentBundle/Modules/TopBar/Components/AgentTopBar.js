@@ -87,6 +87,10 @@ export class AgentTopBarContainer extends SeparateComponent {
     }
   }
 
+  static onClearSearchInput() {
+    window.$('.dp-omnibox-results').hide();
+  }
+
   static toggleViewMode() {
     if (window.DeskPRO_Window.paneVis.tabs && window.DeskPRO_Window.paneVis.list) {
       window.DeskPRO_Window.$scope.oneColumnView();
@@ -106,15 +110,16 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   render() {
     const props = { ...this.props,
-      updateVolume:      AgentTopBarContainer.updateVolume,
-      onSearch:          AgentTopBarContainer.onSearch,
-      onSearchFocus:     this.onSearchFocus,
-      onSearchBlur:      AgentTopBarContainer.onSearchBlur,
-      toggleViewMode:    AgentTopBarContainer.toggleViewMode,
-      onRecent:          AgentTopBarContainer.onRecent,
-      onNotification:    AgentTopBarContainer.onNotification,
-      closeIframes:      AgentTopBarContainer.closeIframes,
-      notificationCount: this.state.notificationCount
+      updateVolume:       AgentTopBarContainer.updateVolume,
+      onSearch:           AgentTopBarContainer.onSearch,
+      onSearchFocus:      this.onSearchFocus,
+      onSearchBlur:       AgentTopBarContainer.onSearchBlur,
+      toggleViewMode:     AgentTopBarContainer.toggleViewMode,
+      onRecent:           AgentTopBarContainer.onRecent,
+      onNotification:     AgentTopBarContainer.onNotification,
+      onClearSearchInput: AgentTopBarContainer.onClearSearchInput,
+      closeIframes:       AgentTopBarContainer.closeIframes,
+      notificationCount:  this.state.notificationCount
     };
     return <AgentTopBar {...props} ref={(c) => { this.agentTopBar = c; }} />;
   }
@@ -122,18 +127,19 @@ export class AgentTopBarContainer extends SeparateComponent {
 export class AgentTopBar extends React.Component {
 
   static propTypes = {
-    agents:            PropTypes.object.isRequired,
-    chatDepartments:   PropTypes.object.isRequired,
-    me:                PropTypes.object,
-    notificationCount: PropTypes.number,
-    updateVolume:      PropTypes.func,
-    onSearch:          PropTypes.func,
-    onSearchFocus:     PropTypes.func,
-    onSearchBlur:      PropTypes.func,
-    onRecent:          PropTypes.func,
-    onNotification:    PropTypes.func,
-    closeIframes:      PropTypes.func,
-    toggleViewMode:    PropTypes.func,
+    agents:             PropTypes.object.isRequired,
+    chatDepartments:    PropTypes.object.isRequired,
+    me:                 PropTypes.object,
+    notificationCount:  PropTypes.number,
+    updateVolume:       PropTypes.func,
+    onSearch:           PropTypes.func,
+    onSearchFocus:      PropTypes.func,
+    onSearchBlur:       PropTypes.func,
+    onRecent:           PropTypes.func,
+    onNotification:     PropTypes.func,
+    onClearSearchInput: PropTypes.func,
+    closeIframes:       PropTypes.func,
+    toggleViewMode:     PropTypes.func,
   };
 
   onChatVolumeUpdate = (newVal) => {
@@ -151,7 +157,7 @@ export class AgentTopBar extends React.Component {
       img = me.getIn(['avatar', 'url_pattern']);
     }
     if (img) {
-      return img.replace(/\{\{IMG_SIZE}}/, 32);
+      return img.replace(/\{\{IMG_SIZE}}/, 56);
     }
 
     return '';
@@ -166,6 +172,7 @@ export class AgentTopBar extends React.Component {
           onUserInput={this.props.onSearch}
           onFocus={this.props.onSearchFocus}
           onBlur={this.props.onSearchBlur}
+          onClearInput={this.props.onClearSearchInput}
           placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
           ref={(c) => { this.searchBox = c; }}
         />

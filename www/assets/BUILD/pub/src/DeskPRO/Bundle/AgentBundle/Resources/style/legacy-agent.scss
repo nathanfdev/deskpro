@@ -521,6 +521,8 @@ $transition-close-delay: 0.1s;
     padding: 13px;
     transition: width $transition-close-time;
     transition-delay: $transition-close-delay;
+    white-space: nowrap;
+    overflow: hidden;
     &.active {
       background-color: $dp-emerald-primary;
     }
@@ -531,9 +533,6 @@ $transition-close-delay: 0.1s;
         transition: fill $transition-close-time;
         transition-delay: $transition-close-delay;
       }
-    }
-    .logoText svg {
-      display: none;
     }
   }
   .ui.item {
@@ -606,9 +605,6 @@ $transition-close-delay: 0.1s;
     }
   }
   &:hover {
-    .logo .logoText svg {
-      display: inline;
-    }
     .logo svg .text {
       fill: #fff;
       transition: fill $transition-open-time;

@@ -126,7 +126,7 @@ class PersonHelper
 
                 if (!count($errors)) {
                     $entity = new Entity\Person();
-                    $entity->addEmailAddressString($personOidOrEmail);
+                    $entity->setEmail($personOidOrEmail);
 
                     // reset $model to avoid unnecessary import map entities
                     $model = null;
@@ -141,7 +141,7 @@ class PersonHelper
 
             if (!$entity) {
                 $entity = new Entity\Person();
-                $entity->addEmailAddressString($personEmail);
+                $entity->setEmail($personEmail);
             }
         }
 

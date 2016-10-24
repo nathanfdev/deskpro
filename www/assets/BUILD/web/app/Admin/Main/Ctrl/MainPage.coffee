@@ -34,6 +34,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       if !@$scope.brandId
         @$scope.brandId = 1
 
+      @$scope.selectBrandId = @$scope.brandId
+
       @portalSettings.setBrandId(@$scope.brandId)
 
       @$scope.$watch('brand_id', =>
@@ -57,10 +59,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @$scope.brands = res.data.data
 
     changeBrand: ->
-      if typeof @$stateParams.brandId != 'undefined'
-        if @$scope.brandId == '-1'
+        if @$scope.selectBrandId == '-1'
+          @$scope.brandId = 'new';
           @$state.go 'portal.setup', {brandId: 'new'}
-        else if @$scope.brandId
-          @$state.go 'portal.setup', {brandId: @$scope.brandId}
+        else if @$scope.selectBrandId && typeof @$stateParams.brandId != 'undefined'
+          @$scope.brandId = @$scope.selectBrandId
+          @$state.go 'portal.setup', {brandId: @$scope.selectBrandId}
 
   Admin_Main_Ctrl_MainPage.EXPORT_CTRL()

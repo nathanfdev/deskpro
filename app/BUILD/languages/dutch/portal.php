@@ -479,7 +479,7 @@ return [
     'portal.forms.error_upload_general'                     => 'Er was een probleem bij het uploaden van dit bestand. Probeer het nogmaals.',
     'portal.forms.error_upload_html_size'                   => 'Het bestand is te groot.',
     'portal.forms.error_upload_ini_size'                    => 'Het bestand is te groot. Maximum toegestane grootte is {{ limit }} {{ suffix }}.',
-    'portal.forms.extra_fields'                             => 'Sorry, maar er was een fout bij het behandelen van uw aanvraag. Probeer het nogmaals.',
+    'portal.forms.error_extra_fields'                       => 'Sorry, maar er was een fout bij het behandelen van uw aanvraag. Probeer het nogmaals.',
     'portal.forms.label_add_attachment'                     => 'Nog een bijlage toevoegen',
     'portal.forms.label_captcha'                            => 'Om te bewijzen dat u een mens bent, moet u vertellen welke tekst u ziet in de CAPTCHA-afbeelding',
     'portal.forms.label_category'                           => 'Categorie',

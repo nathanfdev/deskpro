@@ -869,6 +869,7 @@ return [
     'agent.general.refresh_required'                           => 'Refresh Required',
     'agent.general.refresh_required_auto'                      => 'Your browser will automatically refresh in {{secs}} seconds unless you click one of the buttons below.',
     'agent.general.refresh_required_explain'                   => 'An administrator ({{name}}) has made changes that require you to refresh your browser.',
+    'agent.general.refresh_required_self'                      => 'You have made changes that require you to refresh your browser.',
     'agent.general.registered'                                 => 'Registered',
     'agent.general.registered_downloads'                       => 'Registered Downloads',
     'agent.general.registered_views'                           => 'Registered Views',

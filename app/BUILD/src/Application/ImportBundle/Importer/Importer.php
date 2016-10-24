@@ -172,13 +172,12 @@ class Importer
      */
     public function validateData(ImporterCollection $collection)
     {
-        // Validate the collection of entities
-        foreach ($this->entityHandlerRegistry->getModelClasses() as $type) {
-            $models = $collection->getByType($type);
-            if (!$models) {
+        $col = $collection->toArray();
+        foreach ($col as $type => $models) {
+            if (!$this->entityHandlerRegistry->hasClass($type)) {
                 continue;
             }
-
+            $this->printHeader("Write `$type` collection");
             foreach ($models as $model) {
                 $errors = $this->validator->validate($model);
                 if (count($errors)) {
@@ -207,15 +206,13 @@ class Importer
      */
     public function writeData(ImporterCollection $collection, $dryRun = false)
     {
-        // Writes entities to a storage
-        foreach ($this->entityHandlerRegistry->getModelClasses() as $type) {
-            $models = $collection->getByType($type);
-            if (!$models) {
+        $col = $collection->toArray();
+        foreach ($col as $type => $models) {
+            if (!$this->entityHandlerRegistry->hasClass($type)) {
                 continue;
             }
-
             $this->printHeader("Write `$type` collection");
-            foreach ($collection->getByType($type) as $model) {
+            foreach ($models as $model) {
                 $this->writer->writeData($model, $dryRun);
             }
         }

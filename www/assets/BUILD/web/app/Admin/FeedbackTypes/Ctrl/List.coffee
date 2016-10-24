@@ -39,15 +39,23 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           @pingElement('display_orders')
       }
 
+    sort: (values) ->
+      (values || []).sort (a, b) =>
+        orderA = parseInt(a.display_order)
+        orderB = parseInt(b.display_order)
+        return -1 if orderA < orderB
+        return 1 if orderA > orderB
+        return 0
+
     initialLoad: ->
 
       list_promise = @FeedbackTypesData.loadList().then( (recs) =>
 
-        @feedback_types = recs.values()
+        @feedback_types = @sort recs.values()
 
         @addManagedListener(@FeedbackTypesData.recs, 'changed', =>
 
-          @feedback_types = @FeedbackTypesData.recs.values()
+          @feedback_types = @sort @FeedbackTypesData.recs.values()
           @ngApply()
         )
       )

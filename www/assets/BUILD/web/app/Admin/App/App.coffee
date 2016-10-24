@@ -40,6 +40,12 @@ define [
         if rejection.status? and rejection.status == 403
           window.location = window.DP_BASE_URL + 'agent/login?timeout=1&return=' + encodeURIComponent(window.DP_BASE_URL + 'admin/' + window.location.hash);
         return $q.reject(rejection)
+      response: (response) ->
+        if response.config.method == 'POST' && response.status >= 200 && response.status < 400 && window.parent
+          if !response.config.url.match(/^\/__serverinfo/)
+            window.parent.DP_NEED_RELOAD = true
+        return response
+
     }
   ])
   AdminModule.config(['$httpProvider', ($httpProvider) ->

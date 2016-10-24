@@ -8,5 +8,5 @@ echo ".. done"
 
 echo ">> Installing deps..."
 cd $DIR_ROOT/pub
-npm install --save-dev
+yarn install
 echo ".. done"

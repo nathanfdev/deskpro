@@ -746,7 +746,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!loadAdmin && !loadReports) {
-			$('#dp_loading').remove();
 			$('#page_loading').remove();
 			$('#loading_css').remove();
 		}
@@ -1180,7 +1179,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if ($('#admin_interface_trigger').data('handler')) {
 					console.log("Loading admin: " + loadAdmin);
 					$('#admin_interface_trigger').data('handler').open(loadAdmin, function () {
-						$('#dp_loading').remove();
 						$('#page_loading').remove();
 						$('#loading_css').remove();
 					});
@@ -1191,7 +1189,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if ($('#reports_interface_trigger').data('handler')) {
 					console.log("Loading reports: " + loadReports);
 					$('#reports_interface_trigger').data('handler').open(loadReports, function () {
-						$('#dp_loading').remove();
 						$('#page_loading').remove();
 						$('#loading_css').remove();
 					});
@@ -1253,6 +1250,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 				});
 			})(key);
 		}
+
+    window.document.addEventListener('dpCloseOverlayFrame', function (e) {
+      if (e.detail.id === 'admin') {
+				if (window.DP_NEED_RELOAD == true) {
+					DeskPRO_Window.showRefreshAlert();
+				}
+			}
+		});
 
 
 		/***************** scrolling handle on drag ******************/
@@ -1984,7 +1989,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}
 
-		$('#refresh_alert_overlay').find('.admin-name').text(admin_name);
+		if (admin_name) {
+			$('#refresh_alert_overlay').find('.admin-name').text(admin_name);
+		} else {
+			var overlay = $('#refresh_alert_overlay');
+			overlay.find('.by_admin').hide();
+			overlay.find('.self').show();
+		}
 
 		var time = 30;
 		var timeShow = $('#refresh_alert_overlay').find('.countdown').text(30);

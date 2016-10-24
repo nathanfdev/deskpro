@@ -16,7 +16,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       ]
       @$scope.brand_id = @$stateParams.brandId
       @$scope.baseUrl  = window.DP_BASE_URL+'brand-'+@$scope.brand_id
-      
+
       @$scope.welcome_box = {
         title: '',
         message: ''
@@ -255,12 +255,14 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @selected_template_info_loaded = false
 
     openCssEditor: (type) =>
+      console.info 'test'
       @css_template_selected = true
       @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits').success((data) =>
         @css_template_info = {
           loaded: true,
           type: type,
-          code: data[type]
+          code: data[type],
+          is_custom: true
         }
       )
 
@@ -286,6 +288,23 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @css_template_info = false
 
       return req
+
+    resetCssEditor: () =>
+      data = {}
+      data[@css_template_info.type] = true
+      req = @$http(
+        method: 'DELETE',
+        url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits',
+        data: angular.toJson(data)
+        headers:
+          "Content-Type": "application/json"
+      )
+      .success(=> @recompiling = false)
+      .error((message) => @recompiling = false; @serverError(message))
+
+      @css_template_selected = null
+      @css_template_info = false
+      req
 
     cancelTemplateEditor: =>
       @selected_template = null

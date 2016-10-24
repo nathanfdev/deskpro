@@ -409,10 +409,12 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		// Tab indicator
 		this.addEvent('watchedTabAdded', function(tab) {
-			var ticketId = parseInt(tab.page.meta.ticket_id);
-			if (ticketId) {
-				$scope.openTickets[ticketId] = true;
-				wrapperEl.find('.ticket-row-' + ticketId).addClass('open');
+			if (tab) {
+				var ticketId = parseInt(tab.page.meta.ticket_id);
+				if (ticketId) {
+					$scope.openTickets[ticketId] = true;
+					wrapperEl.find('.ticket-row-' + ticketId).addClass('open');
+				}
 			}
 		});
 		this.addEvent('watchedTabRemoved', function(tab) {
@@ -1150,7 +1152,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 					}
 					groupingBar.find('li').each(function() {
 						var el = $(this), num = data.group_display.counts[k].total || 0;
-						if (el.data('grouping-option') === k) {
+						if (parseInt(el.data('grouping-option'), 10) === parseInt(k, 10)) {
 							touched.push(this);
 							el.find('span').text(num);
 							if (num === 0) {

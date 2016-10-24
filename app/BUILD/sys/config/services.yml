@@ -4,6 +4,10 @@ services:
     class: DpRun\DpEnv
     factory: [DeskPRO\Bundle\AppBundle\AppEnv\LowDpEnvGetter, getDpEnv]
 
+  deskpro.feature_flags:
+    class: DpSys\Features
+    factory: [DeskPRO\Bundle\AppBundle\AppEnv\FeatureFlagsFactory, create]
+
   deskpro.app_env:
     class: DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface
     factory: [DeskPRO\Bundle\AppBundle\AppEnv\AppEnvFactory, create]

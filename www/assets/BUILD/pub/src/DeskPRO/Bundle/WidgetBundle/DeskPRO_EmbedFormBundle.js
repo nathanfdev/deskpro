@@ -17,6 +17,18 @@ const runEmbed = (helpdeskUrl, options, containerEl) => {
 
   const langSeg = language && language !== '0' ? `/${language}` : '';
 
+  const serialize = (obj, prefix) => {
+    const str = [];
+    for (const p of Object.keys(obj)) {
+      const k = prefix ? `${prefix}[${p}]` : p;
+      const v = obj[p];
+      str.push((v !== null && typeof v === 'object')
+        ? serialize(v, k)
+        : `${encodeURIComponent(k)}=${encodeURIComponent(v)}`);
+    }
+    return str.join('&');
+  };
+
   node.src = (() => {
     let src = `${helpdeskUrl}/focus-win${langSeg}/new-ticket`;
     if (department) {
@@ -24,6 +36,9 @@ const runEmbed = (helpdeskUrl, options, containerEl) => {
       if (hideDepartment) {
         src += '&hide_department=1';
       }
+    }
+    if (options.default_values) {
+      src += `&${serialize(options.default_values)}`;
     }
     return src;
   })();

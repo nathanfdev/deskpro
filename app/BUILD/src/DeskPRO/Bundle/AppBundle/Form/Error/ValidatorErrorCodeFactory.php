@@ -26,14 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\Exception\TransformationFailedException;
+use Symfony\Component\Form\Extension\Validator\Constraints\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -71,6 +68,7 @@ class ValidatorErrorCodeFactory
      * @var array
      */
     private static $errorCodeMapping = [
+        Form::NO_SUCH_FIELD_ERROR                => ErrorsCodes::EXTRA_FIELDS,
         Assert\IsNull::NOT_NULL_ERROR            => ErrorsCodes::NULL,
         Assert\NotNull::IS_NULL_ERROR            => ErrorsCodes::NOT_NULL,
         Assert\NotBlank::IS_BLANK_ERROR          => ErrorsCodes::NOT_NULL,

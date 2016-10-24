@@ -71,7 +71,7 @@ class PersonTypeValidator extends ConstraintValidator
                 ;
             }
         } elseif ($constraint->type === 'user') {
-            if (!$value->isUser() || $value->isAgent()) {
+            if ($value->isAgent()) {
                 $context
                     ->buildViolation($constraint->notUserMessage)
                     ->setParameter('{{ value }}', $this->formatValue($value->getEmailAddress()))

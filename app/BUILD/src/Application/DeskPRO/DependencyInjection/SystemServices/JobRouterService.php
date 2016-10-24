@@ -66,7 +66,8 @@ class JobRouterService
                 $conn,
                 $queue,
                 $container->getSystemService('usersource_manager'),
-                $container->getSystemService('usersource_sync_manager')
+                $container->getSystemService('usersource_sync_manager'),
+                $container->get('dp_sys.alerts.event_logger')
             )
         );
 

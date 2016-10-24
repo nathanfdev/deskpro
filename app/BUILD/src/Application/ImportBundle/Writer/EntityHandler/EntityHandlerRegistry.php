@@ -88,4 +88,9 @@ class EntityHandlerRegistry
     {
         return array_keys($this->handlers);
     }
+
+    public function hasClass($class)
+    {
+        return isset($this->handlers[$class]);
+    }
 }

@@ -15,14 +15,14 @@ const topbar = {
     },
     {
       title: 'Create',
-      text:  'Add new tickets, people, articles etc. to your ' +
-        'helpdesk by clicking the \'create button\' in the header.',
+      text:  'Add new tickets, people, content and tasks to your ' +
+        'helpdesk by clicking the \'+\' button in the header.',
       selector: '#react_dp_agent_top_bar .item.add',
       position: 'bottom'
     },
     {
       title:    'Manage views',
-      text:     'Click the \'views icon\' when you want to change the layout of your screen.',
+      text:     'Click the \'View\' icon when you want to change the layout of your agent screen.',
       selector: '#react_dp_agent_top_bar .item.views',
       position: 'bottom'
     },
@@ -46,8 +46,8 @@ const topbar = {
     },
   ],
   intro: {
-    title:  'New DeskPRO update',
-    text:   'We’ve made a few changes to how you navigate DeskPRO. Let’s take a quick look...',
+    title:  'Welcome to DeskPRO',
+    text:   'Let’s take a quick look...',
     action: 'Start',
     img:    `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/topbar_intro.png`
   }

@@ -90,4 +90,28 @@ class AdvancedEditsController extends AbstractApiController
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
+
+    /**
+     * @Rest\Delete("")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function deleteAdvancedEditsAction(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $this->getManager()->beginTransaction();
+
+        try {
+            $this->getAdvancedEditsManager()->delete($data);
+            $this->getManager()->commit();
+        } catch (ParserException $e) {
+            $this->getManager()->rollback();
+            throw new BadRequestHttpException(PortalStylesCompiler::parseExceptionMessage($e));
+        }
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
 }

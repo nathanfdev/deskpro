@@ -33,6 +33,7 @@ use Application\ImportBundle\Model\PrimaryImportModelInterface;
 use Application\ImportBundle\Writer\EntityHandler\EntityHandlerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
+use JMS\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -59,6 +60,11 @@ class Writer implements WriterInterface
     private $entityWatcher;
 
     /**
+     * @var Serializer
+     */
+    private $serializer;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -69,17 +75,20 @@ class Writer implements WriterInterface
      * @param EntityHandlerRegistry $entityHandlers
      * @param EntityManager         $em
      * @param EntityWatcher         $entityWatcher
+     * @param Serializer            $serializer
      * @param LoggerInterface       $logger
      */
     public function __construct(
         EntityHandlerRegistry $entityHandlers,
         EntityManager         $em,
         EntityWatcher         $entityWatcher,
+        Serializer            $serializer,
         LoggerInterface       $logger
     ) {
         $this->entityHandlers = $entityHandlers;
         $this->em             = $em;
         $this->entityWatcher  = $entityWatcher;
+        $this->serializer     = $serializer;
         $this->logger         = $logger;
     }
 
@@ -94,7 +103,6 @@ class Writer implements WriterInterface
         try {
             $handler->writeModel($model);
             $this->em->flush();
-            $this->em->clear();
             $this->entityWatcher->flushUpdatesQuiet();
 
             if ($dryRun) {
@@ -107,6 +115,7 @@ class Writer implements WriterInterface
                 'Unable to create `%s` with oid `%s`. Reason %s',
                 get_class($model), $model->getOid(), $e->__toString()
             ));
+            $this->logger->error($this->serializer->serialize($model, 'json'));
 
             // Entity manager could become closed if some sql error occurred
             // so no need to keep writing, break the process

@@ -125,3 +125,16 @@ Feature: /tickets/{id}/followers and /tickets/{id}/cc endpoints
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].primary_email" should be equal to "admin@deskpro.dev"
+
+  Scenario: I add not new user as cc
+    When I send a POST request to "/api/v2/tickets/{ticket}/cc" with body:
+    """
+{
+  "person": "new-user@deskpro.dev"
+}
+    """
+    Then the response status code should be 201
+
+    When I send a GET request to "/api/v2/tickets/{ticket}/cc"
+    Then the response status code should be 200
+    And the JSON node "data[0].primary_email" should be equal to "new-user@deskpro.dev"

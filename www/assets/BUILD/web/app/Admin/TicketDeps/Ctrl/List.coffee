@@ -29,9 +29,15 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     ###
     initialLoad: ->
       promise = @depData.loadList().then( (list) =>
-        @depList = list
+        @depList = (list || []).sort((a, b) =>
+          orderA = parseInt(a.display_order)
+          orderB = parseInt(b.display_order)
+          return -1 if orderA < orderB
+          return 1 if orderA > orderB
+          return 0
+        )
         @deps = @depData.listModels
-        @flattenedList = [ { id: 0, title: '', has_children: false } ]
+        @flattenedList = [ { id: '0', title: 'None', has_children: false } ]
         if @depList
           for dep in @depList
             @flattenedList.push dep if !dep.has_children
@@ -45,7 +51,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       brandsSettingsPromise = @Api2.sendGet('/settings/departments/default').then (response) =>
         for setting in response.data.data
           @defaultDepartments[setting.brand] = {} if !@defaultDepartments[setting.brand]
-          @defaultDepartments[setting.brand][setting.type] = setting.department
+          defaultDepartment = 0
+          if setting.department then defaultDepartment = parseInt(setting.department, 10)
+          @defaultDepartments[setting.brand][setting.type] = defaultDepartment
 
       return @$q.all([promise, brandsPromise, brandsSettingsPromise])
 

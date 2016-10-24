@@ -16,6 +16,8 @@ running_tests.trigger
 npm-debug.log
 .jest-cache
 phantomjsdriver.log
+php_errors.log
+yarn-error.log
 
 /dev/scratch/*
 !/dev/scratch/README.md

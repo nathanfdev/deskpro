@@ -34,6 +34,8 @@ namespace Application\DeskPRO\ServerReportFile;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ORM\Util\Util;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\Instructions\InstructionsGenerator;
 use Doctrine\ORM\EntityManager;
 use DpSys\License;
 use Orb\Util\Files;
@@ -88,12 +90,25 @@ class ServerReportFile
         'license.txt'           => '_createLicense',
         'file-integrity.txt'    => '_createFileIntegrity',
         'templates.txt'         => '_createTemplates',
+        'incidents'             => '_createIncidents',
     ];
 
     /**
      * @var OutputInterface
      */
     protected $oi;
+
+    /**
+     * system entity manager.
+     *
+     * @var EntityManager|null
+     */
+    protected $sem;
+
+    /**
+     * @var InstructionsGenerator|null
+     */
+    protected $ig;
 
     /**
      * @param EntityManager $em
@@ -671,5 +686,69 @@ class ServerReportFile
         }
 
         return $content;
+    }
+
+    /**
+     * @param EntityManager $em
+     */
+    public function setSystemEntityManager(EntityManager $em)
+    {
+        $this->sem = $em;
+    }
+
+    /**
+     * @param InstructionsGenerator $ig
+     */
+    public function setInstructionGenerator(InstructionsGenerator $ig)
+    {
+        $this->ig = $ig;
+    }
+
+    /**
+     * @param $file_name
+     *
+     * @return bool
+     */
+    protected function _createIncidents($file_name)
+    {
+        if (!$this->sem || !$this->ig) {
+            return false;
+        }
+
+        try {
+            $ig  = $this->ig;
+            $dir = $this->tmpdir.'/incidents';
+            if (!@mkdir($dir)) {
+                throw new IOException('Could not create incidents directory');
+            }
+
+            $this->sem->transactional(function (EntityManager $em) use ($ig, $dir) {
+                $incidents = [];
+                $qb = $em->createQueryBuilder()
+                    ->select('i, e')
+                    ->from(AbstractIncident::class, 'i')
+                    ->leftJoin('i.events', 'e');
+                $entities = $qb->getQuery()->getResult();
+
+                foreach ($entities as $entity) {
+                    /* @var $entity AbstractIncident */
+                    $incidents[$entity->getId()] = $ig->generate($entity);
+                    $em->remove($entity);
+                }
+
+                foreach ($incidents as $id => $incident) {
+                    $fileName = $dir.'/incident_'.$id.'.html';
+                    if (@file_put_contents($fileName, $incident) === false) {
+                        throw new IOException('Could not create file under location - '.$fileName);
+                    }
+                }
+            });
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+
+            return false;
+        }
+
+        return true;
     }
 }

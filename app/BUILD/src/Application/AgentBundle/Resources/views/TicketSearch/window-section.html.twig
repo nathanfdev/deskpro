@@ -148,7 +148,7 @@
 							>
 								<div class="item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 									<h3>{{ filter.title }}</h3>
-									<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count" data-count="{{ filter_counts[filter.id]|default(0) }}">{{ _self.render_filter_count(filter_counts[filter.id]) }}</em></div>
+									<div class="float-side"><em class="counter list-counter" id="ticket_filter_{{filter.id}}_count" data-count="{{ custom_filter_counts[filter.id]|default(0) }}">{{ _self.render_filter_count(custom_filter_counts[filter.id]) }}</em></div>
 								</div>
 							</li>
 						{% endfor %}

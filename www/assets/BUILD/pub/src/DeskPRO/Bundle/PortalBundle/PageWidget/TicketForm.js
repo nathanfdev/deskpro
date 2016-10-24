@@ -14,7 +14,7 @@ class TicketValueReader {
     this.$formEl = $formEl;
   }
 
-  parseIntSelect(f) {
+  static parseIntSelect(f) {
     return parseInt(f.val() || 0, 10) || 0;
   }
 
@@ -103,6 +103,8 @@ export class TicketForm extends PageWidget {
           const $rElement = $('<div class="dp-react-widget"></div>').insertAfter($subject);
 
           ReactDOM.render(React.createElement(NewTicketSuggestions, { input: $subject }), $rElement.get(0));
+
+          $formEl.find('input:visible, textarea:visible').first().focus();
         }
       },
       fieldFilter: fields => {
@@ -112,6 +114,27 @@ export class TicketForm extends PageWidget {
         }
 
         const layout = window.DESKPRO_TICKET_DISPLAY.getLayout(ticketReader.getDepartmentId());
+
+        let newFields = layout.getMatchingFields(ticketReader);
+        let filterFn;
+
+        switch ($formEl.find('form').data('visibility')) {
+          case 'view':
+            filterFn = i => (!!i.isVisibleOnView) || (!!i.isVisibleOnViewAlways);
+            break;
+          case 'edit':
+            filterFn = i => !!i.isVisibleOnEdit;
+            break;
+          case 'new':
+          default:
+            filterFn = i => !!i.isVisibleOnNew;
+            break;
+        }
+
+        if (filterFn) {
+          newFields = newFields.filter(filterFn);
+        }
+
         const newFields = _.map(layout.getMatchingFields(ticketReader), (v) => {
           const id = v.id;
           switch (id) {

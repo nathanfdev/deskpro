@@ -35,6 +35,6 @@ class Build1475840809 extends AbstractBuild
         $this->out('Add top bar onboarding');
         $this->execDbQuery('default', 'INSERT INTO person_onboarding 
       (`id`, `person_id`, `current_step`, `onboarding_class`, `status`, `application`)
-        SELECT NULL, p.id, 0, \'topbar\', 0, \'Agent\' FROM people p WHERE p.is_agent = 1');
+        SELECT NULL, p.id, 0, \'topbarChanges\', 0, \'Agent\' FROM people p WHERE p.is_agent = 1');
     }
 }

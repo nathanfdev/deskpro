@@ -133,7 +133,7 @@ function refreshWidgetLoader(loaderFilename) {
 
 function refreshPortalDesignerVariables() {
   process.chdir('../web');
-  spawn('npm', ['run', 'sassdoc']);
+  spawn('yarn', ['run', 'sassdoc']);
   process.chdir('../pub');
 }
 
