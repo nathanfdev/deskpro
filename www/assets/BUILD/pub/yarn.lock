@@ -4583,9 +4583,9 @@ jquery-datetimepicker-iframe@2.5.5:
   version "3.1.13"
   resolved "https://registry.yarnpkg.com/jquery-mousewheel/-/jquery-mousewheel-3.1.13.tgz#06f0335f16e353a695e7206bf50503cb523a6ee5"
 
-jquery-serializejson@2.6.2:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/jquery-serializejson/-/jquery-serializejson-2.6.2.tgz#51f1b2926836b289ae03426b7de4c147439f86b0"
+jquery-serializejson@^2.6.2:
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/jquery-serializejson/-/jquery-serializejson-2.7.2.tgz#71c03c64340a41b609fd1a43e74b78ae7f4055b6"
 
 jquery-ui@1.10.5:
   version "1.10.5"
