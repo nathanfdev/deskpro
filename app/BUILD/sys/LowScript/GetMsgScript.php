@@ -663,12 +663,11 @@ class GetMsgScript extends LowScriptAbstract
 
         $filter_info = $filters_api->getGroupedFiltersForPerson($this->_getPerson());
 
-        $filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filter_info['custom_filters'], $this->_getPerson());
-        $filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
+        $filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($filter_info['custom_filters'], $this->_getPerson());
 
         $filter_data = [
-            'ids'    => $filter_id_matches,
-            'counts' => [],
+            'ids'    => [],
+            'counts' => $filter_counts,
         ];
 
         return [[null, 'filters.filter_data', $filter_data]];

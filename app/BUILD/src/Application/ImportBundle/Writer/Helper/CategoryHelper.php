@@ -30,7 +30,9 @@ namespace Application\ImportBundle\Writer\Helper;
 
 use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\ImportMap;
+use Application\DeskPRO\Entity\TicketCategory;
 use Application\ImportBundle\Writer\EntityPersister;
+use Application\ImportBundle\Writer\Mapper\BrandMapper;
 use Application\ImportBundle\Writer\Mapper\CategoryMapperInterface;
 use Application\ImportBundle\Writer\Mapper\ImportMapMapper;
 use Psr\Log\LoggerInterface;
@@ -46,6 +48,16 @@ class CategoryHelper
     private $importMapMapper;
 
     /**
+     * @var BrandMapper
+     */
+    private $brandMapper;
+
+    /**
+     * @var UserGroupHelper
+     */
+    private $userGroupHelper;
+
+    /**
      * @var EntityPersister
      */
     private $persister;
@@ -59,12 +71,21 @@ class CategoryHelper
      * Constructor.
      *
      * @param ImportMapMapper $importMapMapper
+     * @param BrandMapper     $brandMapper
+     * @param UserGroupHelper $userGroupHelper
      * @param EntityPersister $persister
      * @param LoggerInterface $logger
      */
-    public function __construct(ImportMapMapper $importMapMapper, EntityPersister $persister, LoggerInterface $logger)
-    {
+    public function __construct(
+        ImportMapMapper $importMapMapper,
+        BrandMapper     $brandMapper,
+        UserGroupHelper $userGroupHelper,
+        EntityPersister $persister,
+        LoggerInterface $logger
+    ) {
         $this->importMapMapper = $importMapMapper;
+        $this->brandMapper     = $brandMapper;
+        $this->userGroupHelper = $userGroupHelper;
         $this->persister       = $persister;
         $this->logger          = $logger;
     }
@@ -111,6 +132,8 @@ class CategoryHelper
                 /** @var CategoryAbstract $entity */
                 $entity = new $categoryClass();
                 $entity->setTitle($categoryTitle);
+                $this->setDefaultBrand($entity);
+                $this->userGroupHelper->updateUserGroups($entity);
 
                 $this->persister->persistAndFlush($entity);
 
@@ -141,6 +164,8 @@ class CategoryHelper
                     $entity = new $categoryClass();
                     $entity->setTitle($categoryTitle);
                     $entity->setParent($parent);
+                    $this->setDefaultBrand($entity);
+                    $this->userGroupHelper->updateUserGroups($entity);
 
                     if ($parent) {
                         $parent->getChildren()->add($entity);
@@ -154,5 +179,15 @@ class CategoryHelper
         }
 
         return $entity;
+    }
+
+    /**
+     * @param CategoryAbstract|TicketCategory $entity
+     */
+    private function setDefaultBrand($entity)
+    {
+        if (method_exists($entity, 'setBrand')) {
+            $entity->setBrand($this->brandMapper->findOneBy([]));
+        }
     }
 }

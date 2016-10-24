@@ -60,7 +60,7 @@ class DbBackupCommand extends ContainerAwareCommand
         if (!$targetPath) {
             $i = 0;
             do {
-                $targetPath = $this->getContainer()->get('deskpro.app_env')->getUserBackupsDir().DIRECTORY_SEPARATOR.'db-'.date('Y-m-d-His').($i ? "-$i" : '').'.sql';
+                $targetPath = rtrim($this->getContainer()->get('deskpro.app_env')->getUserBackupsDir(), '/\\').DIRECTORY_SEPARATOR.'db-'.date('Y-m-d-His').($i ? "-$i" : '').'.sql';
             } while (file_exists($targetPath));
         }
 

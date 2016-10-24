@@ -9,7 +9,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.buttonEl = $('#tickets_section');
 		this.filterTicketIds = {};
 		this.filterCounts = {};
-		this.archiveTableFilterIds = [13, 14, 15, 16];
+		this.archiveTableFilterIds = [11, 12, 13, 14, 15, 16];
 
 		this.urlFragmentName = 'tickets';
 
@@ -566,8 +566,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			var filterId = parseInt(el.data('filter-id'));
 			if (this.filterTicketIds[filterId]) {
 				this.setFilterCount(filterId, this.filterTicketIds[filterId].length);
-			} else {
-				this.setFilterCount(filterId, 0);
 			}
 		}).bind(this));
 
@@ -774,9 +772,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		var filterId = parseInt(data.filter_id);
 		var ticketId = parseInt(data.ticket_id);
 		var filterOps = {};
+		var hasIds = false;
 
-		if (!this.filterTicketIds[filterId]) {
-			this.filterTicketIds[filterId] = [];
+		if (this.filterTicketIds[filterId]) {
+			hasIds = true;
 		}
 
 		var page = null;
@@ -785,7 +784,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 
 		if (data.op == 'add') {
-			if (this.archiveFilterIds.indexOf(filterId) != -1) {
+			if (!hasIds || this.archiveFilterIds.indexOf(filterId) != -1) {
 				this.modFilterCount(filterId, 'add');
 			} else {
 				this.filterTicketIds[filterId].include(ticketId);
@@ -801,7 +800,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 
 		} else if (data.op == 'del') {
-			if (this.archiveFilterIds.indexOf(filterId) != -1) {
+			if (!hasIds || this.archiveFilterIds.indexOf(filterId) != -1) {
 				this.modFilterCount(filterId, 'del');
 			} else {
 				this.filterTicketIds[filterId].erase(ticketId);

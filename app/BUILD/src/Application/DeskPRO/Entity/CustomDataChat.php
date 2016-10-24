@@ -94,6 +94,34 @@ class CustomDataChat extends CustomDataAbstract
         return $this->conversation;
     }
 
+    /**
+     * Set a field.
+     *
+     * @param CustomDefChat $field
+     *
+     * @return $this
+     */
+    public function setField(CustomDefChat $field = null)
+    {
+        $this->setModelField('field', $field);
+
+        return $this;
+    }
+
+    /**
+     * Set a root field.
+     *
+     * @param CustomDefChat $field
+     *
+     * @return $this
+     */
+    public function setRootField(CustomDefChat $field = null)
+    {
+        $this->setModelField('root_field', $field);
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

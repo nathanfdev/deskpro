@@ -37,20 +37,23 @@ use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @mixin \DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper
  */
 class PortalCacheHelperSpec extends ObjectBehavior
 {
-    public function let(RequestStack $request_stack, Request $request, HeaderBag $headers)
+    public function let(RequestStack $request_stack, TokenStorageInterface $tokenStorage, Request $request, HeaderBag $headers)
     {
         $headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(true);
         $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn('context_hash');
         $request->headers = $headers;
         $request_stack->getMasterRequest()->willReturn($request);
 
-        $this->beConstructedWith($request_stack);
+        $tokenStorage->getToken()->willReturn(null);
+
+        $this->beConstructedWith($request_stack, $tokenStorage);
     }
 
     public function it_can_get_you_the_master_request_user_context_hash_if_exists()

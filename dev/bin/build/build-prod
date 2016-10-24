@@ -126,8 +126,8 @@ if (!$is_quick) {
 
 echo "Placing versions\n";
 
-$build_num  = @$options['with-build'] ?: 0;
-$build_time = @$options['with-build-time'] ?: time();
+$build_num  = intval(@$options['with-build']) ?: 0;
+$build_time = intval(@$options['with-build-time']) ?: time();
 $build_name = @$options['with-build-name'] ?: null;
 
 if (!$build_name) {

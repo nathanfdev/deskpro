@@ -424,7 +424,7 @@ return [
     'portal.forms.error_upload_general'                     => 'При загрузке файла произошла ошибка. Пожалуйста, попробуйте позже.',
     'portal.forms.error_upload_html_size'                   => 'Этот файл слишком большой.',
     'portal.forms.error_upload_ini_size'                    => 'Файл слишком большой. Максимально допустимый размер {{ limit }} {{ suffix }}. ',
-    'portal.forms.extra_fields'                             => 'Извините, но возникла ошибка. Пожалуйста, попробуйте ещё раз.',
+    'portal.forms.error_extra_fields'                       => 'Извините, но возникла ошибка. Пожалуйста, попробуйте ещё раз.',
     'portal.forms.label_add_attachment'                     => 'Добавить ещё один файл',
     'portal.forms.label_captcha'                            => 'Чтобы доказать, что Вы не робот, пожалуйста, напишите текст, который видите на CAPTCHA',
     'portal.forms.label_category'                           => 'Категория',

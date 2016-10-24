@@ -9,7 +9,7 @@ services:
 
   portal_cache_helper:
       class: DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper
-      arguments: ["@request_stack"]
+      arguments: ["@request_stack", "@security.token_storage"]
 
 
   # the fos UserContextSubscriber still runs, this just runs after with our logic

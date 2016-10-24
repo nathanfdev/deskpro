@@ -59,6 +59,7 @@ class CleanupQuarterHourly extends AbstractJob
         $counts                               = [];
         $counts['tickets']                    = App::getDb()->fetchColumn('SELECT COUNT(*) FROM `tickets`');
         $counts['tickets.resolved']           = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'resolved'");
+        $counts['tickets.awaiting_user']      = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'awaiting_user'");
         $counts['tickets.archive_validating'] = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'validating'");
         $counts['tickets.archive_spam']       = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'spam'");
         $counts['tickets.archive_deleted']    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'deleted'");
@@ -91,7 +92,7 @@ class CleanupQuarterHourly extends AbstractJob
                 $filters = App::getOrm()->createQuery("
                     SELECT f
                     FROM DeskPRO:LegacyTicketFilter f
-                    WHERE f.sys_name LIKE 'archive_%' AND f.sys_name != 'archive_resolved' AND f.sys_name != 'archive_awaiting_user'
+                    WHERE f.sys_name LIKE 'archive_%'
                 ")->execute();
 
                 $inserts = [];
@@ -108,6 +109,7 @@ class CleanupQuarterHourly extends AbstractJob
                         /* @var \Application\DeskPRO\Entity\LegacyTicketFilter $filter*/
                         $searcher = $filter->getSearcher();
                         $searcher->setPersonContext($agent);
+                        $searcher->setOrderBy('ticket.date_created');
 
                         $count = $searcher->getCount();
 

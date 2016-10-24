@@ -23,6 +23,7 @@ import {
   liveDemoSelector
 } from '../../../Selectors/dpWindow';
 import { widgetHasChatSelector } from '../../../Selectors/bootstrap';
+import { chatIdSelector } from '../../../../Chat/Selectors/chat';
 import { getLocation } from '../../../../../Services/history';
 
 @connect(state => ({
@@ -38,7 +39,8 @@ import { getLocation } from '../../../../../Services/history';
   textColor:           helpButtonTextColorSelector(state),
   agentsCount:         onlineAgentsCountSelector(state),
   agentPollingTimeout: agentPollingTimeoutSelector(state),
-  liveDemo:            liveDemoSelector(state)
+  liveDemo:            liveDemoSelector(state),
+  chatId:              chatIdSelector(state)
 }))
 export class HelpButtonContainer extends React.Component {
 
