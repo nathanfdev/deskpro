@@ -3,11 +3,14 @@ import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { history } from '../../../Services/history';
-import { ticketDefaultDepartmentSelector, isTicketDepartmentFieldHidden, liveDemoSelector } from '../../Application/Selectors/dpWindow';
+import { ticketDefaultDepartmentSelector, isTicketDepartmentFieldHidden, liveDemoSelector, isTicketSubjectFieldHidden, ticketDefaultSubjectSelector, ticketSelectSubjectTypeSelector } from '../../Application/Selectors/dpWindow';
 
 const getNewTicketQueryParams = state => ({
   department_id:         ticketDefaultDepartmentSelector(state),
-  hide_department_field: isTicketDepartmentFieldHidden(state)
+  hide_department_field: isTicketDepartmentFieldHidden(state),
+  hide_subject_field:    isTicketSubjectFieldHidden(state),
+  subject_type:          ticketSelectSubjectTypeSelector(state),
+  subject:               ticketDefaultSubjectSelector(state)
 });
 
 export const setNewTicketFormContent = createAction('WIDGET_SET_NEW_TICKET_FORM_CONTENT');
@@ -22,7 +25,10 @@ export const loadNewTicketForm = createAction(
   'WIDGET_LOAD_NEW_TICKET_FORM',
   () => (dispatch, getState) => {
     const state = getState();
-    const queryParams = getNewTicketQueryParams(state);
+    const queryParams = {
+      type: 'widget',
+      ...getNewTicketQueryParams(state)
+    };
 
     const promise = widgetApi.sendGet(`DP_API/tickets/new?${compileParams(queryParams)}`, { ...ajaxOptions });
     promise.success(response => dispatch(setNewTicketFormContent(response.data)));
@@ -43,7 +49,7 @@ export const saveNewTicketForm = createAction(
     const queryParams = getNewTicketQueryParams(state);
     const promise = widgetApi.sendPost(`DP_API/tickets/new?${compileParams(queryParams)}`, params, { ...ajaxOptions });
     promise.then(
-      response => {
+      (response) => {
         if (response.data && response.data.ticket_id) {
           history.replace('ticket/form_submitted');
         } else {
@@ -59,11 +65,11 @@ export const saveNewTicketForm = createAction(
 
 export const bootstrapTicketApp = createAction(
   'WIDGET_LOAD_TICKET_APP',
-  () => dispatch => new Promise(resolve => {
+  () => dispatch => new Promise((resolve) => {
     Promise.all([
       dispatch(loadNewTicketForm()),
       dispatch(loadTicketDisplayFields())
-    ]).then(response => {
+    ]).then((response) => {
       resolve(response);
     });
   })

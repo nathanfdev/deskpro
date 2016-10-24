@@ -64,11 +64,11 @@ export class PageWidget {
     if (initVal && initVal.then) {
       initVal.then(() => {
         this.initState = 'done_init';
-        this._runDoneInit();
+        this.runDoneInit();
       });
     } else {
       this.initState = 'done_init';
-      this._runDoneInit();
+      this.runDoneInit();
     }
   }
 
@@ -94,7 +94,7 @@ export class PageWidget {
    *
    * @returns {Promise/undefined}
    */
-  init() {
+  init() { // eslint-disable-line class-methods-use-this
     // Add custom init code in sub-classes.
   }
 
@@ -142,7 +142,7 @@ export class PageWidget {
    *
    * @returns {Promise/undefined}
    */
-  preRender() {
+  preRender() { // eslint-disable-line class-methods-use-this
     // Add custom code here
   }
 
@@ -175,7 +175,7 @@ export class PageWidget {
   /**
    * @private
    */
-  _runDoneInit() {
+  runDoneInit() {
     if (this.waitingRender) {
       const p = this.render();
 
@@ -201,7 +201,7 @@ export class PageWidget {
     this.widgetDefs.push(desc);
 
     if (this.initState === 'done_init') {
-      this._runWidgetDef(desc, null); // todo this.$element as second arg?
+      this.runWidgetDef(desc, null); // todo this.$element as second arg?
     }
   }
 
@@ -212,12 +212,13 @@ export class PageWidget {
    * @param {HTMLElement/jQuery} $el Optionally scope the run to this element
    */
   runWidgets($el = null) {
-    if ($el) {
-      $el = $($el);
+    let el = $el;
+    if (el) {
+      el = $(el);
     }
 
-    this.widgetDefs.forEach(w => {
-      this._runWidgetDef(w, $el);
+    this.widgetDefs.forEach((w) => {
+      this.runWidgetDef(w, el);
     });
   }
 
@@ -226,10 +227,10 @@ export class PageWidget {
    * @param {Object} $el
    * @private
    */
-  _runWidgetDef(widgetDef, $el) {
-    const insts = this._createWidgetInst(widgetDef, $el);
+  runWidgetDef(widgetDef, $el) {
+    const insts = this.createWidgetInst(widgetDef, $el);
 
-    insts.forEach(i => {
+    insts.forEach((i) => {
       this.widgetInsts.push(i);
       i.renderWhenReady();
     });
@@ -241,7 +242,7 @@ export class PageWidget {
    * @returns {Array}
    * @private
    */
-  _createWidgetInst(widgetDef, $parentElement) {
+  createWidgetInst(widgetDef, $parentElement) {
     const { widgetClass, selector, options = {} } = widgetDef;
 
     let matches;

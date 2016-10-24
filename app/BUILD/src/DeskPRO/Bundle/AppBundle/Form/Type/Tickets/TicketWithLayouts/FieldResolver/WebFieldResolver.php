@@ -43,6 +43,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsWebType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -118,10 +119,21 @@ class WebFieldResolver extends AbstractFieldResolver
     /**
      * @return FormField
      */
-    protected function createSubject()
+    protected function createSubject(TicketWithLayoutsContext $context)
     {
+        if ($context->getOption('hide_subject_field')) {
+            $params = [];
+            if ($context->getOption('subject_type') === 'default') {
+                $params['data'] = $context->getOption('default_subject');
+            }
+
+            return new FormField(HiddenType::class, $params);
+        }
+
         return new FormField(TextType::class, [
-            'label'       => $this->phrase('portal.forms.label_subject'),
+            'label' => $context->isWidgetType()
+                ? $this->phrase('portal.widget.label_subject')
+                : $this->phrase('portal.forms.label_subject'),
             'required'    => true,
             'constraints' => [
                 new Assert\NotBlank(),
@@ -148,6 +160,9 @@ class WebFieldResolver extends AbstractFieldResolver
             'data'           => $context->getMessage(),
             'format'         => 'html',
             'required'       => true,
+            'message_label'  => $context->isWidgetType()
+                ? $this->phrase('portal.widget.label_message')
+                : $this->phrase('portal.forms.label_message'),
         ]);
     }
 
@@ -198,9 +213,11 @@ class WebFieldResolver extends AbstractFieldResolver
             'type'    => TextType::class,
             'options' => [
                 'property_path' => 'person.name',
-                'label'         => $this->phrase('portal.forms.label_name'),
-                'empty_data'    => $context->getPerson()->getDisplayName(false),
-                'constraints'   => [
+                'label'         => $context->isWidgetType()
+                    ? $this->phrase('portal.widget.label_name')
+                    : $this->phrase('portal.forms.label_name'),
+                'empty_data'  => $context->getPerson()->getDisplayName(false),
+                'constraints' => [
                     new Assert\NotBlank(),
                 ],
             ],
@@ -232,7 +249,9 @@ class WebFieldResolver extends AbstractFieldResolver
             'type'    => PersonEmailType::class,
             'options' => [
                 'property_path' => 'person.primary_email',
-                'label'         => $this->phrase('portal.forms.label_email'),
+                'label'         => $context->isWidgetType()
+                    ? $this->phrase('portal.widget.label_email')
+                    : $this->phrase('portal.forms.label_email'),
 
                 // ignore the "unique entity" constraint here
                 'constraints' => [],

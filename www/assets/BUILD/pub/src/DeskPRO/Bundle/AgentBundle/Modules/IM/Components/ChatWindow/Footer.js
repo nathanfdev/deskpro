@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { RteEditor } from 'DeskPRO/Component/Rte/RteEditor';
+import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
 import { EmotionButton } from 'DeskPRO/Component/Rte/EmotionButton';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 
@@ -22,7 +22,7 @@ export class Footer extends React.Component {
     this.setState({ message: text });
   };
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     event.preventDefault();
 
     this.props.handleAddMessage(replaceSmileCodes(this.state.message, true));
@@ -35,7 +35,7 @@ export class Footer extends React.Component {
         <form onSubmit={this.handleSubmit}>
           <RteEditor
             inline
-            ref="editor"
+            ref={(e) => { this.refEditor = e; }}
             value={this.state.message}
             onChange={this.handleChange}
             onSubmit={this.handleSubmit}
@@ -59,7 +59,7 @@ export class Footer extends React.Component {
           <EmotionButton
             buttonClassName="emoticon sprite sprite-emoticon-1"
             className="insert-emoticon"
-            getEditor={() => this.refs.editor}
+            getEditor={() => this.refEditor}
             popupPositionAt="left-8 bottom+12"
             popupPositionMy="left top"
           />

@@ -95,7 +95,7 @@ class ApiFieldResolver extends AbstractFieldResolver
     /**
      * @return FormField
      */
-    protected function createSubject()
+    protected function createSubject(TicketWithLayoutsContext $context)
     {
         return new FormField(TextType::class, [
             'constraints' => [

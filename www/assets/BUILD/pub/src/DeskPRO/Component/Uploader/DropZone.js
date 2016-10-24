@@ -1,24 +1,24 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-import { AbstractFileUpload } from './AbstractFileUpload';
 import $ from 'jquery';
 import 'blueimp-file-upload';
+import { AbstractFileUpload } from './AbstractFileUpload';
 
-export class DropZone extends AbstractFileUpload {
+export default class DropZone extends AbstractFileUpload {
 
   static propTypes = {
     getExternalInput: PropTypes.func.isRequired,
+    getDropZoneNode:  PropTypes.func,
     children:         PropTypes.node
   };
 
   getInput() {
-    return ReactDOM.findDOMNode(this.props.getExternalInput());
+    return this.props.getExternalInput();
   }
 
   initializeFileUpload() {
     const { uploadUrl, uploadParams } = this.props;
-    const { onSubmit, onSend, onSuccess, onFail } = this.props;
-    const overlayNode = ReactDOM.findDOMNode(this);
+    const { onSubmit, onSend, onSuccess, onFail, getDropZoneNode } = this.props;
+    const overlayNode = getDropZoneNode ? getDropZoneNode() : this.node;
 
     const $input = $(this.getInput());
     $input.fileupload({
@@ -34,6 +34,6 @@ export class DropZone extends AbstractFileUpload {
   }
 
   render() {
-    return <div>{this.props.children}</div>;
+    return <div ref={(node) => { this.node = node; }}>{this.props.children}</div>;
   }
 }

@@ -1,10 +1,9 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import MediumEditor from 'medium-editor';
 import $ from 'jquery';
 import { getBlobsFromItems, getBlobsFromHtml } from 'DeskPRO/Component/Uploader/PasteCatcher';
 
-export class RteEditor extends React.Component {
+export default class RteEditor extends React.Component {
 
   static propTypes = {
     tag:          PropTypes.string,
@@ -50,7 +49,7 @@ export class RteEditor extends React.Component {
     this.medium.setContent(value);
     this.medium.subscribe('editableInput', onChangeContent);
     this.medium.subscribe('onChange', onChangeContent);
-    this.medium.subscribe('editableKeydownEnter', event => {
+    this.medium.subscribe('editableKeydownEnter', (event) => {
       if (inline && !event.altKey && !event.ctrlKey && !event.shiftKey) {
         onSubmit(event, node.innerHTML);
       }
@@ -60,7 +59,10 @@ export class RteEditor extends React.Component {
     });
 
     this.getDocument().addEventListener('mousemove', this.onMouseMove, true);
-    node.addEventListener('focus', this.onShowToolbar, true);
+
+    if (options.toolbar) {
+      node.addEventListener('focus', this.onShowToolbar, true);
+    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -84,7 +86,7 @@ export class RteEditor extends React.Component {
     this.getDocument().removeEventListener('mousemove', this.onMouseMove, true);
   };
 
-  onPaste = event => {
+  onPaste = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -117,7 +119,7 @@ export class RteEditor extends React.Component {
   }
 
   getNode() {
-    return ReactDOM.findDOMNode(this);
+    return this.node;
   }
 
   getDocument() {
@@ -196,6 +198,10 @@ export class RteEditor extends React.Component {
 
   render() {
     const { tag = 'div' } = this.props;
-    return React.createElement(tag, this.props);
+    const props = {
+      ref: (node) => { this.node = node; },
+      ...this.props
+    };
+    return React.createElement(tag, props);
   }
 }
