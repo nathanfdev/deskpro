@@ -5094,7 +5094,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .dp-menu {
   position: absolute;
-  z-index: 1000;
+  z-index: 199;
   display: none;
   min-width: 160px;
   padding: 0;

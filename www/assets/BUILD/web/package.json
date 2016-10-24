@@ -27,6 +27,7 @@
     "cors": "^2.7.1",
     "cpx": "^1.3.1",
     "css-loader": "^0.23.1",
+    "cssnano": "^3.7.7",
     "del": "1.1.1",
     "exports-loader": "^0.6.3",
     "expose-loader": "^0.7.1",
@@ -75,9 +76,9 @@
     "compile:coffee": "coffee -c -o compiled/ app/",
     "build:sass": "node-sass -r --source-map true -o app-build/styles/Admin app/**/Resources/style/*-style.scss",
     "build:less": "lessc --source-map -rp=app/Admin/Resources/style/../../../ app/**/Resources/style/admin-style.less app-build/styles/Admin/admin-style.css",
-    "build:semantic-less": "lessc --source-map  node_modules/semantic-ui-less/semantic.less stylesheets-less/semantic-ui/semantic.css",
+    "build:semantic-less": "lessc --source-map  node_modules/semantic-ui-less/semantic.less stylesheets-less/semantic-ui/semantic.css && postcss --use autoprefixer --autoprefixer.browsers 'last 2 versions' --use postcss-discard-comments --postcss-discard-comments.removeAll true --use cssnano -d stylesheets-less/semantic-ui/built stylesheets-less/semantic-ui/semantic.css",
     "build:css": "yarn run build:sass && yarn run build:less",
-    "semantic:copy": "postcss --use autoprefixer --autoprefixer.browsers 'last 2 versions' --use postcss-discard-comments --postcss-discard-comments.removeAll true -d app-build/styles/Admin/ stylesheets-less/semantic-ui/semantic.css",
+    "semantic:copy": "cpx \"stylesheets-less/semantic-ui/built/*.{css,map}\" app-build/styles/Admin/ ",
     "semantic": "yarn run semantic:copy",
     "prebuild": "yarn run clean && yarn run copy:js && yarn run compile:coffee && yarn run semantic",
     "postbuild": "yarn run sassdoc",
@@ -87,6 +88,7 @@
     "watch:webpack": "node `./node_modules/.bin/webpack -w`",
     "watch:coffee": "coffee -o compiled/ -cw app/",
     "watch:js": "cpx \"app/**/*.js\" compiled -w -v",
-    "watch": "parallelshell 'yarn run watch:js' 'yarn run watch:coffee' 'yarn run watch:webpack'"
+    "watch": "parallelshell 'yarn run watch:js' 'yarn run watch:coffee' 'yarn run watch:webpack'",
+    "postinstall": "bower install"
   }
 }

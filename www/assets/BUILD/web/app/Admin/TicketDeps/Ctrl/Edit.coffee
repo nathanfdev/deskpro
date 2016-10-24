@@ -188,7 +188,7 @@ define [
           actions:       []
         }
         if @$scope.actions_form
-          for own _, act of @$scope.actions_form
+          for own key, act of @$scope.actions_form
             if act.type
               postData.actions.push(act)
         p1 = @Api.sendPostJson('/ticket_triggers/departments/' + @dep.id, postData)
@@ -197,7 +197,7 @@ define [
           actions:       []
         }
         if @$scope.actions_form2
-          for own _, act of @$scope.actions_form2
+          for own key, act of @$scope.actions_form2
             if act.type
               postData.actions.push(act)
         p2 = @Api.sendPostJson('/ticket_triggers/departments_changed/' + @dep.id, postData)

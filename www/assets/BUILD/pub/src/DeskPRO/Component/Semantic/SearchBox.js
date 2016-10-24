@@ -2,16 +2,18 @@ import React, { PropTypes } from 'react';
 
 class SearchBox extends React.Component {
   static propTypes = {
-    placeholder: PropTypes.string,
-    text:        PropTypes.string,
-    onUserInput: PropTypes.func,
-    onFocus:     PropTypes.func,
-    onBlur:      PropTypes.func
+    placeholder:  PropTypes.string,
+    text:         PropTypes.string,
+    onUserInput:  PropTypes.func,
+    onFocus:      PropTypes.func,
+    onBlur:       PropTypes.func,
+    onClearInput: PropTypes.func
   };
   static defaultProps = {
     onUserInput() {},
     onFocus() {},
-    onBlur() {}
+    onBlur() {},
+    onClearInput() {}
   };
 
   handleChange = () => {
@@ -22,6 +24,9 @@ class SearchBox extends React.Component {
 
   clearInput = () => {
     this.textInput.value = '';
+    if (this.props.onClearInput) {
+      this.props.onClearInput();
+    }
   };
 
   render() {

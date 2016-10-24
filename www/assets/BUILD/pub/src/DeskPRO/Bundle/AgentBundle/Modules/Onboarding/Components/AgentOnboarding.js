@@ -189,7 +189,7 @@ export class AgentOnboarding extends React.Component {
         onboarding = {
           current_step: progress.index
         };
-        this.setState({ currentStep: progress.index });
+        this.setState({ currentStep: progress.index, intro: false });
         if (progress.percentageComplete === 0) {
           onboarding.status = 0;
         } else if (progress.percentageComplete === 100) {
