@@ -699,7 +699,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		if (!textarea.data('redactor')) {
 			DeskPRO_Window.initRteAgentReply(textarea, {
 				defaultIsHtml: true,
-				autoresize: false
+				autoresize: false,
+				focus: true
 			});
 		}
 

@@ -36,9 +36,12 @@ use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\ImageType;
+use Exception;
+use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class LogoController.
@@ -74,7 +77,7 @@ class BrandController extends AbstractApiController
      *
      * @param Request $request
      *
-     * @return ApiWrapper
+     * @return ApiWrapper|View
      */
     public function uploadFaviconAction(Request $request)
     {
@@ -84,9 +87,17 @@ class BrandController extends AbstractApiController
             return $this->generateFormErrorsResponse($form);
         }
 
-        return $this->wrap(
-            $this->getAssetsManager()->uploadBlob($request->files->get('file'), AssetsManager::CUSTOM_FAVICON_TAG)
-        );
+        try {
+            return $this->wrap(
+                $this->getAssetsManager()->uploadBlob($request->files->get('file'), AssetsManager::CUSTOM_FAVICON_TAG)
+            );
+        } catch (Exception $e) {
+            $errors = ['fields' => ['file' => ['errors' => [['code' => 'wrong_type', 'message' => 'This image could not
+             be 
+            processed']]]]];
+
+            return new View($errors, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
