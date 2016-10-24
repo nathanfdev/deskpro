@@ -5,6 +5,7 @@ import classNames from 'classnames';
 export class HelpButton extends React.Component {
 
   static propTypes = {
+    chatId:          PropTypes.string,
     widgetPosition:  PropTypes.string,
     type:            PropTypes.string,
     onClick:         PropTypes.func,
@@ -27,10 +28,10 @@ export class HelpButton extends React.Component {
   };
 
   render() {
-    const { widgetPosition, name, size, disabled, backgroundColor, textColor, locationPath } = this.props;
+    const { chatId, widgetPosition, name, size, disabled, backgroundColor, textColor, locationPath } = this.props;
 
     let buttonCaption;
-    if (locationPath === '/chat/active') {
+    if (chatId && locationPath === '/chat/active') {
       buttonCaption = portalPhrases.get('portal.chat.reopen_chat_action');
     } else {
       buttonCaption = name;

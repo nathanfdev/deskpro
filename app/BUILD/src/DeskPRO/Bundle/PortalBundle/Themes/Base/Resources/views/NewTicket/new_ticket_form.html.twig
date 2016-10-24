@@ -2,9 +2,8 @@
 
     <!-- BEGIN NEW TICKET FORM -->
     <div class="dp_ticket_form dpx-form{% if show_ticket_suggestions %} dpx-with-ticket-deflection{% endif %}">
-
         {# avoid putting an absolute action the GET query is significant for defaults #}
-        <form method="POST" class="form-ticket" novalidate data-save-draft="new_ticket{{ app.user ? '-' ~ app.user.id : '' }}" name="ticket" enctype="multipart/form-data">
+        <form method="POST" class="form-ticket" novalidate data-save-draft="new_ticket{{ app.user ? '-' ~ app.user.id : '' }}" name="ticket" enctype="multipart/form-data" data-visibility="{{ form.vars.visibility }}">
 
         {% if form_errors|length > 0 %}
             <div class="column-full">
@@ -15,7 +14,16 @@
                             {% for error in form_errors %}
                                 {% set error_view = error.origin.createView() %}
                                 <li>
-                                        <span>{{ phrase_form_error(error) }}</span>
+                                    <span>
+                                        {{ phrase_form_error(error) }}
+                                        {% if error.cause %}
+                                            <!--
+                                                code: {{ error.cause.code }}
+                                                message: {{ error.cause.message }}
+                                                parameters: {{ error.cause.parameters|json_encode() }}
+                                            -->
+                                        {% endif %}
+                                    </span>
                                 </li>
                             {% endfor %}
                         </ul>

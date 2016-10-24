@@ -36,6 +36,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\TicketFilter;
+use Application\DeskPRO\Searcher\TicketSearch;
 
 class Filters
 {
@@ -238,12 +239,22 @@ class Filters
             ", [$person_context->id]);
         }
 
+        $total_tickets = App::getSetting('core_tablecounts.tickets.tickets');
+
         foreach ($ticket_filters as $ticket_filter) {
             $count = 0;
 
             switch ($ticket_filter['sys_name']) {
                 case 'archive_archived':
                     $count = isset($prefs['ticket_counts.archive_archived']) ? $prefs['ticket_counts.archive_archived'] : App::getSetting('core_tablecounts.tickets.archive_archived');
+                    break;
+
+                case 'archive_awaiting_user':
+                    $count = isset($prefs['ticket_counts.archive_archived']) ? $prefs['ticket_counts.archive_awaiting_user'] : App::getSetting('core_tablecounts.tickets.awaiting_user');
+                    break;
+
+                case 'archive_resolved':
+                    $count = isset($prefs['ticket_counts.archive_archived']) ? $prefs['ticket_counts.archive_resolved'] : App::getSetting('core_tablecounts.tickets.resolved');
                     break;
 
                 case 'archive_validating':
@@ -259,13 +270,15 @@ class Filters
                     break;
             }
 
-            if (!$count || $count < 10000) {
+            if ((!$count || $count < 10000) && $total_tickets < 1000000) {
+                /** @var TicketSearch $searcher */
                 $searcher = $ticket_filter->getSearcher();
                 $searcher->setPerson($person_context ?: App::getCurrentPerson());
+                $searcher->setOrderBy('ticket.date_created');
                 $count = $searcher->getCount(null);
             }
 
-            $counts[$ticket_filter['id']] = $count;
+            $counts[$ticket_filter['id']] = $count ?: 0;
         }
 
         return $counts;

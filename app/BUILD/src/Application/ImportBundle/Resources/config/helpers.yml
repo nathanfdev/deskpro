@@ -29,7 +29,12 @@ services:
 
   dp.importer.writer.helper.category:
     class: Application\ImportBundle\Writer\Helper\CategoryHelper
-    arguments: ["@dp.importer.writer.mapper.import_map", "@dp.importer.entity_persister", "@dp.importer_logger"]
+    arguments:
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer.writer.mapper.brand"
+      - "@dp.importer.writer.helper.user_group"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
     tags:
       - { name: dp.importer.writer.helper }
 
@@ -75,7 +80,10 @@ services:
 
   dp.importer.writer.helper.user_group:
     class: Application\ImportBundle\Writer\Helper\UserGroupHelper
-    arguments: ["@dp.importer.writer.mapper.usergroup", "@dp.importer.entity_persister", "@dp.importer_logger"]
+    arguments:
+      - "@dp.importer.writer.mapper.usergroup"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
     tags:
       - { name: dp.importer.writer.helper }
 
