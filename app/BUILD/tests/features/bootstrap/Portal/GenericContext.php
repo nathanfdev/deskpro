@@ -181,7 +181,10 @@ class GenericContext extends BasePortalContext
      */
     public function iClickTheEmailVerificationLink()
     {
-        $this->getSession()->visit($this->getFirstLinkInLastEmail());
+        $link = $this->getFirstLinkInLastEmail();
+        $url  = parse_url($link);
+
+        $this->getSession()->visit($url['path']);
     }
 
     /**

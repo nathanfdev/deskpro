@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Writer\Helper;
 
 use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\ImportMap;
+use Application\DeskPRO\Entity\TicketCategory;
 use Application\ImportBundle\Writer\EntityPersister;
 use Application\ImportBundle\Writer\Mapper\BrandMapper;
 use Application\ImportBundle\Writer\Mapper\CategoryMapperInterface;
@@ -181,9 +182,9 @@ class CategoryHelper
     }
 
     /**
-     * @param CategoryAbstract $entity
+     * @param CategoryAbstract|TicketCategory $entity
      */
-    private function setDefaultBrand(CategoryAbstract $entity)
+    private function setDefaultBrand($entity)
     {
         if (method_exists($entity, 'setBrand')) {
             $entity->setBrand($this->brandMapper->findOneBy([]));
