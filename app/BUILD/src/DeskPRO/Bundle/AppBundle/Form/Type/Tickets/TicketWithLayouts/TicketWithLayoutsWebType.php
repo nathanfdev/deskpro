@@ -99,6 +99,7 @@ class TicketWithLayoutsWebType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddUiFields'], -1);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddRerenderField'], -1);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onResetRerenderFormData'], 100);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onHandleCustomSubject'], 210);
     }
 
     /**
@@ -204,5 +205,27 @@ class TicketWithLayoutsWebType extends AbstractType
         }
 
         $event->setData($data);
+    }
+
+    /**
+     * custom subject based on Admin settings or 5 first words.
+     *
+     * @param FormEvent $event
+     */
+    public function onHandleCustomSubject(FormEvent $event)
+    {
+        $data    = $event->getData();
+        $context = TicketWithLayoutsContext::createOnPreSubmit($event);
+        if ($context->getOption('subject_type') === 'default') {
+            $data['subject'] = $context->getOption('default_subject');
+            $event->setData($data);
+        }
+
+        if ($context->getOption('subject_type') === 'message') {
+            $message         = trim(strip_tags(html_entity_decode(@$data['message']['message'])));
+            $parts           = preg_split('/[\s]+/', $message);
+            $data['subject'] = implode(' ', array_slice($parts, 0, 5));
+            $event->setData($data);
+        }
     }
 }

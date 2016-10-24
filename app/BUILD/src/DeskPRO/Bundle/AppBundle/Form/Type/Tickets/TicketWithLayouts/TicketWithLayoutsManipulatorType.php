@@ -138,7 +138,6 @@ class TicketWithLayoutsManipulatorType extends AbstractType
     public function onPreSubmit(FormEvent $event)
     {
         $context = TicketWithLayoutsContext::createOnPreSubmit($event);
-        $form    = $event->getForm();
 
         if ($context->getOption('subject_type') === 'default') {
             $data            = $event->getData();
