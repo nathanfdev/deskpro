@@ -187,7 +187,8 @@ class Container extends React.Component {
     this.props.onChange(text);
   }
 
-  handleSubmit() {
+  handleSubmit(event) {
+    event.preventDefault();
     this.props.onSubmit(this.state.message);
     this.setState({ message: '' });
   }
