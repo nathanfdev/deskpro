@@ -37,6 +37,7 @@ class Headers extends BaseHeaders
         if (substr($headerFieldNameOrLine, 0, 9) === 'Subject: ') {
             $subject               = substr($headerFieldNameOrLine, 9);
             $headerFieldNameOrLine = 'Subject: =?UTF-8?Q?'.quoted_printable_encode($subject).'?=';
+            $headerFieldNameOrLine = str_replace("\r\n", '', $headerFieldNameOrLine);
         }
 
         return parent::addHeaderLine($headerFieldNameOrLine, $fieldValue);
