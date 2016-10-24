@@ -9,6 +9,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @defaultDepartments = {}
       @brandId = 0
       @brandList = []
+      @initiallyLoaded = false
       @sortedListOptions = {
         axis: 'y',
         handle: '.drag-handle',
@@ -54,6 +55,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           defaultDepartment = 0
           if setting.department then defaultDepartment = parseInt(setting.department, 10)
           @defaultDepartments[setting.brand][setting.type] = defaultDepartment
+        @initiallyLoaded = true
 
       return @$q.all([promise, brandsPromise, brandsSettingsPromise])
 
@@ -130,7 +132,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       )
 
     changeDefaultDepartment: (type) =>
-      if @brandId && !!@defaultDepartments[@brandId] && @defaultDepartments[@brandId][type]
+      if @brandId && !!@defaultDepartments[@brandId] && @defaultDepartments[@brandId][type] && @initiallyLoaded
         data = {
           type: type
           department: if @defaultDepartments[@brandId][type] > 0 then @defaultDepartments[@brandId][type] else null
