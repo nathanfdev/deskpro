@@ -149,10 +149,10 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 
 				statusMenu.on('click', 'li', function(ev) {
 					ev.stopPropagation();
-					self.fireEvent('itemSelected', {
+					self.fireEvent('itemSelected', [{
 						menu: self,
 						item: $(this)
-					});
+					}]);
 					closeStatusMenu();
 					closeStatusMenuAll();
 				});
@@ -192,10 +192,10 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 						if (current[0]) {
 
 							if (!openSubmenu(current)) {
-								self.fireEvent('itemSelected', {
+								self.fireEvent('itemSelected', [{
 									menu: self,
 									item: current
-								});
+								}]);
 								closeStatusMenu();
 								closeStatusMenuAll();
 							}
