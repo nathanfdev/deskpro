@@ -92,9 +92,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
           loadingAssets.push(@$http.get(path, { responseType: "text"}).success((data) =>
             @dpTemplateManager.setTemplate(form_template, data)
           ))
-        if getResourcePath('js', 'AdminInterface/Install/settings.js')
+        if path = getResourcePath('js', 'AdminInterface/Install/settings.js')
           jsDeferred = @$q.defer()
-          require(["../../../../../../../../app/BUILD/apps/" + @pack.name + "/js/AdminInterface/Install/settings.js"], (c) ->
+          require([path], (c) ->
             installCtrl = c
             jsDeferred.resolve()
           )
