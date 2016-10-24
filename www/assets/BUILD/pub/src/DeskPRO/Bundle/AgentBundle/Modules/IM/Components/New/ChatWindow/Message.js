@@ -65,7 +65,7 @@ class Message extends React.Component
 
   render() {
     const { searchQuery, message, me, agent } = this.props;
-    const my = message.person === me.get('id');
+    const my = message.person === me.get('id') && !searchQuery;
     return (<Segment className={classNames('row', { search: searchQuery, result: searchQuery, my })}>
       {this.dateSep()}
       {my || searchQuery ? this.timestamp() : null}
