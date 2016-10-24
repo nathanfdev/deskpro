@@ -305,6 +305,7 @@ export class AgentTopBarContainer extends SeparateComponent {
       onRecent:           AgentTopBarContainer.onRecent,
       onNotification:     AgentTopBarContainer.onNotification,
       closeIframes:       AgentTopBarContainer.closeIframes,
+      onClearSearchInput: AgentTopBarContainer.onClearSearchInput,
       notificationCount:  this.state.notificationCount,
       toggleImOverlay:    this.toggleImOverlay,
       chatClickOut:       this.chatClickOut,
@@ -319,7 +320,6 @@ export class AgentTopBarContainer extends SeparateComponent {
       onChatSearch:       this.onChatSearch,
       searchQuery:        this.state.searchQuery,
       shouldScrollBottom: this.state.shouldScrollBottom,
-      onClearSearchInput: AgentTopBarContainer.onClearSearchInput,
       onToggleChat:       this.onToggleChat
     };
     return <AgentTopBar {...props} ref={(c) => { this.agentTopBar = c; }} />;
