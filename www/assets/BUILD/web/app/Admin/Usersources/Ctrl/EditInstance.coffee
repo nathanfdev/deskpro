@@ -5,8 +5,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
     @CTRL_AS   = 'Ctrl'
     @DEPS      = ['$http', 'dpTemplateManager']
 
-
-
     init: ->
       @instanceId = @getInstanceId()
       @$scope.getController = => return this

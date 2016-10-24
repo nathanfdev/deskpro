@@ -68,6 +68,9 @@ rm -rf $DP_DIR/app/BUILD/tests
 # need this because we need it in the interface
 mkdir $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp
 mv $DIR_ROOT/www/assets/BUILD/web/node_modules/Select2 $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/Select2
+mv $DIR_ROOT/www/assets/BUILD/web/node_modules/angular-ui-select2 $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/angular-ui-select2
+mv $DIR_ROOT/www/assets/BUILD/web/node_modules/semantic-ui-less $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/semantic-ui-less
+mv $DIR_ROOT/www/assets/BUILD/web/node_modules/clipboard $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/clipboard
 
 # dont need the rest of web/ node_modules at all
 rm -rf $DIR_ROOT/www/assets/BUILD/web/node_modules

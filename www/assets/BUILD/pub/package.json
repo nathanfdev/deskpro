@@ -189,6 +189,7 @@
     "gulp-dev-agent": "gulp dev:agent && yarn run resources:copy",
     "gulp-dev-all": "gulp dev:all && yarn run resources:copy",
     "gulp-prod": "gulp prod && yarn run resources:copy",
+    "build:prod": "gulp prod && yarn run resources:copy",
     "gulp-refresh-reducers": "gulp refresh-reducers",
     "gulp-docs": "gulp slate",
     "test:unit": "jest",
