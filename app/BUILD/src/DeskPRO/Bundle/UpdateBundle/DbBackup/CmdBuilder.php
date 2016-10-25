@@ -78,9 +78,9 @@ class CmdBuilder implements CmdBuilderInterface
 
         $cmd = array_merge($cmd, [
             '-u '.escapeshellarg($dbInfo['user']),
-            '-p'.escapeshellarg($dbInfo['password']),
+            '-p'.$password,
             '--opt', '-Q', '--hex-blob', '--lock-tables=false', '--single-transaction',
-            $password,
+            escapeshellarg($dbInfo['dbname']),
             '>', escapeshellarg($filename),
         ]);
 
