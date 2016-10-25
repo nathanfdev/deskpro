@@ -32,8 +32,6 @@ use DeskPRO\Bundle\UpdateBundle\Session\UpdateSessionManager;
 use DpRun\LowUtil;
 use Orb\Util\Dates;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Process\PhpProcess;
 
 /**
  * Handles /__serverinfo/ URLs.
@@ -376,11 +374,11 @@ class HttpServerInfoBootTask implements BootTaskInterface
             return;
         }
 
-        $files = [];
-        $dir   = $this->env->getAppDir();
+        $included = array_flip(get_included_files());
+        $dir      = $this->env->getAppDir();
         foreach (require($dir.'/sys/Resources/serverinfo/warmupit.php') as $file) {
-            if (is_file($dir.$file)) {
-                $files[] = $dir.DIRECTORY_SEPARATOR.$file;
+            if (is_file($dir.$file) && !isset($included[$dir.DIRECTORY_SEPARATOR.$file])) {
+                opcache_compile_file($dir.DIRECTORY_SEPARATOR.$file);
             }
         }
 
@@ -394,15 +392,9 @@ class HttpServerInfoBootTask implements BootTaskInterface
         $finder = Finder::create()->in($dirs)->name('*.php');
         /** @var \SplFileInfo $f */
         foreach ($finder as $f) {
-            $files[] = $f->getRealPath();
-        }
-
-        $files   = var_export(array_unique($files), true);
-        $process = new PhpProcess('<?php foreach ('.$files.' as $file) opcache_compile_file($file);');
-
-        // if exitcode !== 0
-        if ($process->run()) {
-            // todo what?
+            if (!isset($included[$f->getRealPath()])) {
+                opcache_compile_file($f->getRealPath());
+            }
         }
     }
 }
