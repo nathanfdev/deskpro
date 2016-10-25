@@ -69,11 +69,18 @@ class CmdBuilder implements CmdBuilderInterface
             $cmd[] = '--port '.$dbInfo['port'];
         }
 
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $password = escapeshellarg(str_replace('%', '{percent}', $dbInfo['password']));
+            $password = str_replace('{percent}', '%', $password);
+        } else {
+            $password = escapeshellarg($dbInfo['password']);
+        }
+
         $cmd = array_merge($cmd, [
             '-u '.escapeshellarg($dbInfo['user']),
             '-p'.escapeshellarg($dbInfo['password']),
             '--opt', '-Q', '--hex-blob', '--lock-tables=false', '--single-transaction',
-            escapeshellarg($dbInfo['dbname']),
+            $password,
             '>', escapeshellarg($filename),
         ]);
 
