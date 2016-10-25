@@ -8,38 +8,36 @@ import { portalApp } from '../PortalApp';
 import { NewTicketSuggestions } from '../React/NewTicketSuggestions';
 import { DynamicForm } from '../../AppBundle/Form/DynamicForm';
 
+const parseIntSelect = f => parseInt(f.val() || 0, 10) || 0;
+
 class TicketValueReader {
 
   constructor($formEl) {
     this.$formEl = $formEl;
   }
 
-  static parseIntSelect(f) {
-    return parseInt(f.val() || 0, 10) || 0;
-  }
-
   getDepartmentId() {
-    return this.parseIntSelect($('#ticket_department', this.$formEl));
+    return parseIntSelect($('#ticket_department', this.$formEl));
   }
 
   getCategoryId() {
-    return this.parseIntSelect($('#ticket_category', this.$formEl));
+    return parseIntSelect($('#ticket_category', this.$formEl));
   }
 
   getPriorityId() {
-    return this.parseIntSelect($('#ticket_priority', this.$formEl));
+    return parseIntSelect($('#ticket_priority', this.$formEl));
   }
 
   getProductId() {
-    return this.parseIntSelect($('#ticket_product', this.$formEl));
+    return parseIntSelect($('#ticket_product', this.$formEl));
   }
 
   getOrganizationId() {
-    return this.parseIntSelect($('#ticket_user_organization', this.$formEl));
+    return parseIntSelect($('#ticket_user_organization', this.$formEl));
   }
 
   getWorkflowId() {
-    return this.parseIntSelect($('#ticket_workflow', this.$formEl));
+    return parseIntSelect($('#ticket_workflow', this.$formEl));
   }
 }
 

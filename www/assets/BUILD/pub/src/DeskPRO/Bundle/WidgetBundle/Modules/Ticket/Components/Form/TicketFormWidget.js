@@ -1,5 +1,5 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import { TicketForm } from 'DeskPRO/Bundle/PortalBundle/PageWidget/TicketForm';
+import TicketForm from 'DeskPRO/Bundle/PortalBundle/PageWidget/TicketForm';
 import { PortalFormWidget } from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 

@@ -272,7 +272,7 @@ export class PageWidget {
       }
 
       const elInsts = $el.data('dpWidgetInsts');
-      if (!elInsts.has(widgetClass)) {
+      if (!elInsts.has(widgetClass) && widgetClass) {
         const i = new widgetClass($el, this, options);
         elInsts.set(widgetClass, i);
         insts.push(i);
