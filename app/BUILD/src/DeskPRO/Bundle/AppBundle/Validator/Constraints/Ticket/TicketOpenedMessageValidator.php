@@ -28,25 +28,40 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
 
+use Application\DeskPRO\Entity\Ticket;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
- * Class TicketDupe.
- *
- * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION", "CLASS"})
+ * Class TicketOpenedMessageValidator.
  */
-class TicketOpened extends Constraint
+class TicketOpenedMessageValidator extends ConstraintValidator
 {
-    const TICKET_OPENED = 'ticket_opened';
-
-    public $message = 'Ticket should not be archived or closed.';
-
     /**
      * {@inheritdoc}
      */
-    public function getTargets()
+    public function validate($value, Constraint $constraint)
     {
-        return [self::CLASS_CONSTRAINT, self::PROPERTY_CONSTRAINT];
+        if (!$constraint instanceof TicketOpenedMessage) {
+            throw new UnexpectedTypeException($constraint, TicketOpenedMessage::class);
+        }
+
+        if (!$value) {
+            return;
+        }
+        if (!$value->getTicket() instanceof Ticket) {
+            throw new UnexpectedTypeException($value, Ticket::class);
+        }
+
+        if ($value->getTicket()->isResolved() || $value->getTicket()->isArchived()) {
+            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+            $context = $this->context;
+            $context
+                ->buildViolation($constraint->message)
+                ->setCode(TicketOpenedMessage::TICKET_OPENED)
+                ->addViolation()
+            ;
+        }
     }
 }
