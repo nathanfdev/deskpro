@@ -223,7 +223,7 @@ class ConfigReader implements ConfigReaderInterface
      *
      * @return mixed
      */
-    private function _fetchFromArray(array $array, array $parts, $default = null)
+    private function _fetchFromArray($array, array $parts, $default = null)
     {
         if (empty($parts)) {
             return $array;
