@@ -221,6 +221,11 @@ class FormSaver
         return $saved_form->getMessage();
     }
 
+    public function getDataType(SavedForm $saved_form)
+    {
+        return $saved_form->getDataType();
+    }
+
     /**
      * Mark the $saved_form as completed. It deletes the saved form and removes
      * it from the session. This is called directly before we send a response
