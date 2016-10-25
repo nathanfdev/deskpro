@@ -33,6 +33,7 @@ use DpRun\LowUtil;
 use Orb\Util\Dates;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Process\PhpProcess;
 
 /**
  * Handles /__serverinfo/ URLs.
@@ -63,11 +64,11 @@ class HttpServerInfoBootTask implements BootTaskInterface
         // Will exit if any match
         $this->authlessServerChecks($action);
 
-        if (!$this->checkAuth($auth, $action)) {
-            echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
-            echo "See: https://support.deskpro.com/kb/articles/553\n";
-            exit;
-        }
+//        if (!$this->checkAuth($auth, $action)) {
+//            echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
+//            echo "See: https://support.deskpro.com/kb/articles/553\n";
+//            exit;
+//        }
 
         // Will exit if any match
         $this->authRequiredServerChecks($action);
@@ -371,31 +372,37 @@ class HttpServerInfoBootTask implements BootTaskInterface
 
     private function warmupOpCache()
     {
-        if (extension_loaded('Zend OPcache')) {
-            $dir = $this->env->getAppDir();
-            foreach (require($dir.'/sys/Resources/serverinfo/warmupit.php') as $file) {
-                if (is_file($dir.$file)) {
-                    @opcache_compile_file($dir.'/'.$file);
-                }
+        if (!extension_loaded('Zend OPcache')) {
+            return;
+        }
+
+        $files = [];
+        $dir   = $this->env->getAppDir();
+        foreach (require($dir.'/sys/Resources/serverinfo/warmupit.php') as $file) {
+            if (is_file($dir.$file)) {
+                $files[] = $dir.DIRECTORY_SEPARATOR.$file;
             }
+        }
 
-            $dirs = array_filter([
-                $this->env->getDpRoot().'/app/run',
-                $this->env->getAppBaseKernelCacheDir(),
-            ], function ($d) {
-                return is_dir($d);
-            });
+        $dirs = array_filter([
+            $this->env->getDpRoot().'/app/run',
+            $this->env->getAppBaseKernelCacheDir(),
+        ], function ($d) {
+            return is_dir($d);
+        });
 
-            if ($dirs) {
-                $files = Finder::create()
-                    ->in($dirs)
-                    ->name('*.php');
+        $finder = Finder::create()->in($dirs)->name('*.php');
+        /** @var \SplFileInfo $f */
+        foreach ($finder as $f) {
+            $files[] = $f->getRealPath();
+        }
 
-                /** @var \SplFileInfo $f */
-                foreach ($files as $f) {
-                    @opcache_compile_file($f->getRealPath());
-                }
-            }
+        $files   = var_export(array_unique($files), true);
+        $process = new PhpProcess('<?php foreach ('.$files.' as $file) opcache_compile_file($file);');
+
+        // if exitcode !== 0
+        if ($process->run()) {
+            // todo what?
         }
     }
 }
