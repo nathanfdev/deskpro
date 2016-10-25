@@ -549,14 +549,14 @@
   top: 0;
   right: 0;
   bottom: 0;
-  left: 0;
+  left: 195px;
   z-index: 9998 !important;
 }
 
 .dp-code-editor {
   position: fixed !important;
   top: 60px;
-  left: 64px;
+  left: 204px;
   bottom: 50px;
   right: 9px;
   z-index: 9999 !important;
@@ -567,7 +567,7 @@
 .dp-code-editor-controls {
   position: fixed !important;
   z-index: 9999 !important;
-  left: 64px;
+  left: 204px;
   bottom: 9px;
   right: 9px;
   text-align: center;
