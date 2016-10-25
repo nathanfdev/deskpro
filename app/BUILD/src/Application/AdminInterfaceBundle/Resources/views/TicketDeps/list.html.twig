@@ -82,7 +82,7 @@
 				<h4>{{ phrase('admin.departments.default_department_for_agents_label') }}</h4>
 				<select
 						style="width: 200px"
-						ui-select2
+						ui-select2="ListCtrl.defaultDepartments[ListCtrl.brandId].agent"
 						ng-model="ListCtrl.defaultDepartments[ListCtrl.brandId].agent"
 						ng-change="ListCtrl.changeDefaultDepartment('agent')">
 					<option
@@ -98,7 +98,7 @@
 			<div style="padding-left: 15px; padding-bottom: 20px;">
 				<h4>{{ phrase('admin.departments.default_department_for_users_label') }}</h4>
 				<select
-						ui-select2
+						ui-select2="ListCtrl.defaultDepartments[ListCtrl.brandId].user"
 						style="width: 200px"
 						ng-model="ListCtrl.defaultDepartments[ListCtrl.brandId].user"
 						ng-change="ListCtrl.changeDefaultDepartment('user')">

@@ -161,10 +161,10 @@ class PortalController extends AbstractController
             }
         }
 
-        $saved_form_message = null;
+        $saved_form_type = null;
         if ($saved_form = $this->getFormSaver()->getByExternalCode($request->get('saved_form'))) {
             // this person just filled out a form and is being asked to login to auto-submit it
-            $saved_form_message = $this->getFormSaver()->getMessage($saved_form);
+            $saved_form_type = $this->getFormSaver()->getDataType($saved_form);
         }
 
         $captcha_form  = null;
@@ -197,7 +197,7 @@ class PortalController extends AbstractController
                 'lockout_error'        => $abuse_check->isLockoutRecommended(),
                 'lockout_time'         => $abuse_check->getLockoutTime(true),
                 'saved_form'           => $saved_form,
-                'saved_form_message'   => $saved_form_message,
+                'saved_form_type'      => $saved_form_type,
                 'captcha_form'         => $captcha_form ? $captcha_form->createView() : null,
                 'last_username'        => $last_username,
                 'reset_success'        => $request->get('reset_success', 0),
