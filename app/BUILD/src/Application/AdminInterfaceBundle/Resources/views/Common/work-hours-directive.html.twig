@@ -2,15 +2,23 @@
 	<div class="dp-wh-time-wrap">
 		<h3>Time</h3>
 		<div class="start-time-wrap">
-			<select ng-model="start_hour" ui-select2 class="start-hour" style="width: 50px;" ng-options="hour.id as hour.label for hour in hours"></select>:
-			<select ng-model="start_min" ui-select2 class="start-min" style="width: 50px;" ng-options="minute.id as minute.label for minute in minutes"></select>
+			<select ng-model="start_hour" ui-select2 class="start-hour" style="width: 50px;">
+				<option ng-repeat="hour in hours" value="{{ ng_var('hour.id') }}">{{ ng_var('hour.label') }}</option>
+			</select>:
+			<select ng-model="start_min" ui-select2 class="start-min" style="width: 50px;">
+				<option ng-repeat="minute in minutes" value="{{ ng_var('minute.id') }}">{{ ng_var('minute.label') }}</option>
+			</select>
 		</div>
 		<div class="sep-time-wrap">
 			to
 		</div>
 		<div class="end-time-wrap">
-			<select ng-model="end_hour" ui-select2 class="end-hour" style="width: 50px;" ng-options="hour.id as hour.label for hour in hours"></select>:
-			<select ng-model="end_min" ui-select2 class="end-min" style="width: 50px;" ng-options="minute.id as minute.label for minute in minutes"></select>
+			<select ng-model="end_hour" ui-select2 class="end-hour" style="width: 50px;">
+				<option ng-repeat="hour in hours" value="{{ ng_var('hour.id') }}">{{ ng_var('hour.label') }}</option>
+			</select>:
+			<select ng-model="end_min" ui-select2 class="end-min" style="width: 50px;">
+				<option ng-repeat="minute in minutes" value="{{ ng_var('minute.id') }}">{{ ng_var('minute.label') }}</option>
+			</select>
 		</div>
 	</div>
 	<div class="dp-wh-tz-wrap">
@@ -36,13 +44,19 @@
 	<div class="dp-wh-holiday-wrap">
 		<h3>Holidays</h3>
 		<div class="holiday-form-wrap">
-			<select ng-model="hol_year" ui-select2 class="holiday-years" style="width: 80px;" ng-options="year.id as year.label for year in years"></select>
+			<select ng-model="hol_year" ui-select2 class="holiday-years" style="width: 80px;">
+				<option ng-repeat="year in years" value="{{ ng_var('year.id') }}">{{ ng_var('year.label') }}</option>
+			</select>
 			<div class="holiday-add-btnwrap" ng-hide="show_newhold">
 				<button class="btn" ng-click="show_newhold = true; $event.preventDefault(); $event.stopPropagation();">Add new holiday</button>
 			</div>
 			<div class="holiday-add-expanded" ng-show="show_newhold">
-				<select ng-model="hol_new_month" ui-select2 class="holiday-new-month" ng-options="month.id as month.label for month in months"></select>
-				<select ng-model="hol_new_day" ui-select2 class="holiday-new-day" ng-options="day.id as day.label for day in days"></select>
+				<select ng-model="hol_new_month" ui-select2 class="holiday-new-month">
+					<option ng-repeat="month in months" value="{{ ng_var('month.id') }}">{{ ng_var('month.label') }}</option>
+				</select>
+				<select ng-model="hol_new_day" ui-select2 class="holiday-new-day">
+					<option ng-repeat="day in days" value="{{ ng_var('day.id') }}">{{ ng_var('day.label') }}</option>
+				</select>
 				<input type="text" ng-model="hol_new_name" class="form-control holiday-new-name input-sm" placeholder="Holiday Name" />
 				<label><input type="checkbox" ng-model="hol_new_repeat" class="holiday-new-repeat" /> Repeats anually</label>
 				<button class="btn btn-primary add-btn">Add</button> <span class="cancel-btn" ng-click="show_newhold = false; $event.preventDefault();">(cancel)</span>
