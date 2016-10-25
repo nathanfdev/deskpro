@@ -64,11 +64,11 @@ class HttpServerInfoBootTask implements BootTaskInterface
         // Will exit if any match
         $this->authlessServerChecks($action);
 
-//        if (!$this->checkAuth($auth, $action)) {
-//            echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
-//            echo "See: https://support.deskpro.com/kb/articles/553\n";
-//            exit;
-//        }
+        if (!$this->checkAuth($auth, $action)) {
+            echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
+            echo "See: https://support.deskpro.com/kb/articles/553\n";
+            exit;
+        }
 
         // Will exit if any match
         $this->authRequiredServerChecks($action);
