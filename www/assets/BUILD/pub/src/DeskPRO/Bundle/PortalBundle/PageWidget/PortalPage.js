@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import { TicketForm } from './TicketForm';
+import TicketForm from './TicketForm';
 import { PortalFormWidget } from './PortalFormWidget';
 import { TicketView } from './TicketView';
 import { TicketList } from './TicketList';

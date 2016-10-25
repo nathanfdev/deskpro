@@ -20,18 +20,18 @@ echo
 
 echo ">> Installing web dependencies"
 cd $DIR_ROOT/www/assets/BUILD/web
-yarn install
+npm install
 bower install --config.interactive=false --allow-root
 echo ".. done"
 
 echo ">> Building web assets"
-yarn run build:dev
+npm run build:dev
 echo ".. done"
 echo
 
 echo ">> Installing new web dependencies (dev)"
 cd $DIR_ROOT/www/assets/BUILD/pub
-yarn install
+npm install
 echo ".. done"
 
 echo ">> Building documentation"
@@ -40,6 +40,6 @@ echo ".. done"
 echo
 
 echo ">> Building new web assets"
-yarn run gulp bundle
+npm run gulp bundle
 echo ".. done"
 echo
