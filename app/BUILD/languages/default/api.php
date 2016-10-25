@@ -35,6 +35,7 @@ return [
     'api.error_codes.dupe_email'                       => 'Email "{{ email }}" is already in use by other user.',
     'api.error_codes.dupe_ticket'                      => 'Duplicate ticket.',
     'api.error_codes.dupe_ticket_message'              => 'Duplicate ticket message.',
+    'api.error_codes.error_ticket_opened'              => 'Ticket should be neither resolved nor archived.',
     'api.error_codes.email_already_validated'          => 'Email is already validated.',
     'api.error_codes.email_wrong_validation_code'      => 'Wrong email validation code.',
     'api.error_codes.empty'                            => 'This value should be blank.',

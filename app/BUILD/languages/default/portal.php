@@ -461,6 +461,7 @@ return [
     'portal.forms.error_dupe_email'                         => 'This email "{{ email }}" is already in use by other user.',
     'portal.forms.error_dupe_ticket'                        => 'Duplicate ticket.',
     'portal.forms.error_dupe_ticket_message'                => 'Duplicate ticket message.',
+    'portal.forms.error_ticket_opened'                      => 'Ticket should be neither resolved nor archived.',
     'portal.forms.error_email_required'                     => 'You must provide your email address',
     'portal.forms.error_invalid_email'                      => 'This email address {{ value }} is not valid',
     'portal.forms.error_length_invalid'                     => 'This value should have exactly {{ limit }} characters.',
