@@ -35,5 +35,6 @@
   "spectrum":                        ["jquery"],
   "angularSpectrumColorpicker":      ["angular", "spectrum"],
   "semanticAccordion":               ["jquery"],
-  "clipboard":                       { "exports": "Clipboard" }
+  "clipboard":                       { "exports": "Clipboard" },
+  "customEventPolyfill":             []
 }
