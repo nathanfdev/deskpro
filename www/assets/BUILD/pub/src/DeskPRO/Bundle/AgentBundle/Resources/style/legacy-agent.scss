@@ -248,6 +248,7 @@
   #notifications {
     svg {
       height: 24px;
+      width: 24px;
     }
     &.active svg .notifications-primary {
       fill: $dp-greyscale-850;
@@ -288,6 +289,7 @@
     text-align: center;
     svg {
       width: 24px;
+      height: 24px;
     }
     &:hover {
       .status, i.icon {
@@ -331,6 +333,7 @@
     cursor: pointer;
     svg {
       width: 24px;
+      height: 24px;
     }
     &:hover svg .views-primary {
       fill: $dp-sonic-primary;
@@ -340,6 +343,7 @@
     cursor: pointer;
     svg {
       width: 22px;
+      height: 22px;
     }
     &:hover svg {
       .recent-primary {
