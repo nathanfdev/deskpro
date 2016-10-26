@@ -37,6 +37,7 @@ use Application\DeskPRO\JIRA\ApiCoreException;
 use Application\DeskPRO\JIRA\Meta;
 use Application\DeskPRO\Tickets\StateChangeRecorder;
 use Application\DeskPRO\Tickets\TicketManager;
+use Composer\CaBundle\CaBundle;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\JiraApiExceptionEvent;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Symfony\Component\DependencyInjection\Container;
@@ -152,11 +153,7 @@ class JIRA
 
         $setting = $app->getSetting(self::SSL_AUTHORITY);
         if ($setting === 'default') {
-            $cert = $this->container->getParameter('kernel.root_dir')
-                .DIRECTORY_SEPARATOR
-                .'Resources'
-                .DIRECTORY_SEPARATOR
-                .'cacert.pem';
+            $cert = CaBundle::getBundledCaBundlePath();
             if (file_exists($cert)) {
                 $setting = $cert;
             }

@@ -34,6 +34,7 @@ namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Composer\CaBundle\CaBundle;
 
 class WidgetController extends AbstractController
 {
@@ -61,11 +62,7 @@ class WidgetController extends AbstractController
         }
 
         $ch     = curl_init($url);
-        $cainfo = $this->getParameter('kernel.root_dir')
-            .DIRECTORY_SEPARATOR
-            .'Resources'
-            .DIRECTORY_SEPARATOR
-            .'cacert.pem';
+        $cainfo = CaBundle::getBundledCaBundlePath();
         if (file_exists($cainfo)) {
             @curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             @curl_setopt($ch, CURLOPT_CAINFO, $cainfo);
