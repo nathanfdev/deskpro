@@ -32,7 +32,6 @@ use DeskPRO\Bundle\UpdateBundle\Session\UpdateSessionManager;
 use DpRun\LowUtil;
 use Orb\Util\Dates;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Handles /__serverinfo/ URLs.
@@ -371,30 +370,30 @@ class HttpServerInfoBootTask implements BootTaskInterface
 
     private function warmupOpCache()
     {
-        if (extension_loaded('Zend OPcache')) {
-            $dir = $this->env->getAppDir();
-            foreach (require($dir.'/sys/Resources/serverinfo/warmupit.php') as $file) {
-                if (is_file($dir.$file)) {
-                    @opcache_compile_file($dir.'/'.$file);
-                }
+        if (!extension_loaded('Zend OPcache')) {
+            return;
+        }
+
+        $included = array_flip(get_included_files());
+        $dir      = $this->env->getAppDir();
+        foreach (require($dir.'/sys/Resources/serverinfo/warmupit.php') as $file) {
+            if (is_file($dir.$file) && !isset($included[$dir.DIRECTORY_SEPARATOR.$file])) {
+                opcache_compile_file($dir.DIRECTORY_SEPARATOR.$file);
             }
+        }
 
-            $dirs = array_filter([
-                $this->env->getDpRoot().'/app/run',
-                $this->env->getAppBaseKernelCacheDir(),
-            ], function ($d) {
-                return is_dir($d);
-            });
+        $dirs = array_filter([
+            $this->env->getDpRoot().'/app/run',
+            $this->env->getAppBaseKernelCacheDir(),
+        ], function ($d) {
+            return is_dir($d);
+        });
 
-            if ($dirs) {
-                $files = Finder::create()
-                    ->in($dirs)
-                    ->name('*.php');
-
-                /** @var \SplFileInfo $f */
-                foreach ($files as $f) {
-                    @opcache_compile_file($f->getRealPath());
-                }
+        $finder = Finder::create()->in($dirs)->name('*.php');
+        /** @var \SplFileInfo $f */
+        foreach ($finder as $f) {
+            if (!isset($included[$f->getRealPath()])) {
+                opcache_compile_file($f->getRealPath());
             }
         }
     }
