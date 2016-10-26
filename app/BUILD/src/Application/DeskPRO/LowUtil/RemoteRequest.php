@@ -157,18 +157,23 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
 
     private function setCaBundle($ch)
     {
-        if (!defined('DP_CURL_USE_SYS_CA_BUNDLE')) {
-            if (defined('DP_ROOT') && file_exists(DP_ROOT.'/sys/Resources/cacert.pem')) {
-                if (@curl_setopt($ch, CURLOPT_CAINFO, DP_ROOT.'/sys/Resources/cacert.pem')) {
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-                } else {
-                    error_log('Could not set DeskPRO CA Bundle');
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                }
+        global $DP_ENV;
+
+        if ($DP_ENV->getConfig('settings.http_client.use_sys_ca_bundle')) {
+            return;
+        }
+
+        $cainfo = \Composer\CaBundle\CaBundle::getBundledCaBundlePath();
+        if (defined('DP_ROOT') && file_exists($cainfo)) {
+            if (@curl_setopt($ch, CURLOPT_CAINFO, $cainfo)) {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             } else {
                 error_log('Could not set DeskPRO CA Bundle');
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             }
+        } else {
+            error_log('Could not set DeskPRO CA Bundle');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
     }
 

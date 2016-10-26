@@ -34,6 +34,8 @@
 
 namespace Orb\Util;
 
+use Composer\CaBundle\CaBundle;
+
 /**
  * A utility class for working with HTTP/Web related tasks such as cookies or sending headers.
  *
@@ -423,18 +425,23 @@ class Web
 
     protected static function initCaCert($ch)
     {
-        if (!defined('DP_CURL_USE_SYS_CA_BUNDLE')) {
-            if (defined('DP_ROOT') && file_exists(DP_ROOT.'/sys/Resources/cacert.pem')) {
-                if (@curl_setopt($ch, CURLOPT_CAINFO, DP_ROOT.'/sys/Resources/cacert.pem')) {
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-                } else {
-                    error_log('Could not set DeskPRO CA Bundle');
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                }
+        global $DP_ENV;
+
+        if ($DP_ENV->getConfig('settings.http_client.use_sys_ca_bundle')) {
+            return;
+        }
+
+        $cainfo = CaBundle::getBundledCaBundlePath();
+        if (defined('DP_ROOT') && file_exists($cainfo)) {
+            if (@curl_setopt($ch, CURLOPT_CAINFO, $cainfo)) {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             } else {
                 error_log('Could not set DeskPRO CA Bundle');
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             }
+        } else {
+            error_log('Could not set DeskPRO CA Bundle');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
     }
 

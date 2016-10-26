@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository\Usersource;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Application\DeskPRO\Routing\Generator\UrlGenerator;
+use Composer\CaBundle\CaBundle;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Component\Filesystem\SafeFile;
@@ -384,11 +385,7 @@ JS;
         }
 
         $ch     = curl_init($url);
-        $cainfo = $this->getParameter('kernel.root_dir')
-            .DIRECTORY_SEPARATOR
-            .'Resources'
-            .DIRECTORY_SEPARATOR
-            .'cacert.pem';
+        $cainfo = CaBundle::getBundledCaBundlePath();
         if (file_exists($cainfo)) {
             @curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             @curl_setopt($ch, CURLOPT_CAINFO, $cainfo);
