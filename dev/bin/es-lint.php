@@ -23,7 +23,7 @@ foreach ($output as $file) {
         }
         $lint_output = [];
         echo "$file ES linting...";
-        exec('yarn run '.$cmd.' '.escapeshellarg($file), $lint_output, $return);
+        exec('npm run-script '.$cmd.' '.escapeshellarg($file), $lint_output, $return);
         if ($return == 0) {
             echo 'OK'.PHP_EOL;
         } else {

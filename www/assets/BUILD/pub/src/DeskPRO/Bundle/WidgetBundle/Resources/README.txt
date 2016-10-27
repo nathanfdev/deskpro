@@ -4,7 +4,7 @@ DEV INSTRUCTIONS
 1. Run the bundle command once to init the loader file:
 
     cd pub/
-    yarn run gulp bundle:widget
+    npm run-script gulp bundle:widget
 
 The 'loader' is what we will give customers to copy+paste onto their websites. Note: If you update widget_loader.js,
 you will need to re-runt he bundle task (because it's not part of our usual webpack process; it's not watched).
@@ -41,7 +41,7 @@ directly. Like this:
 
 3. Start the webpack server:
 
-    yarn run gulp dev:widget
+    npm run-script gulp dev:widget
 
 4. Open that HTML page in your browser.
 
