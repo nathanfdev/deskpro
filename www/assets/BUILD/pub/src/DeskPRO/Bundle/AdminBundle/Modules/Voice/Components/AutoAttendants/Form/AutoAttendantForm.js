@@ -33,7 +33,6 @@ class AutoAttendantForm extends React.Component {
   }
 
   onChange = (formData) => {
-    console.log(formData.value);
     this.setState({ formData });
   };
 

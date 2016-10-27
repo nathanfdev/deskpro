@@ -16,8 +16,9 @@ export class UserPhoto extends React.Component {
   getStyle() {
     const { imageUrl, color, width, height, type } = this.props;
     const style = {
-      width:  `${width}px`,
-      height: `${height}px`
+      width:          `${width}px`,
+      height:         `${height}px`,
+      backgroundSize: '100% 100%'
     };
 
     if (color) {

@@ -1,4 +1,3 @@
-import { Field, SemanticError } from './Field';
 import Form from './Form';
 import BlurInput from './BlurInput';
 import Textarea from './Textarea';
@@ -8,10 +7,10 @@ import CountryCodeSelect from './CountryCodeSelect';
 import LanguageSelect from './LanguageSelect';
 import Checkbox from './Checkbox';
 import RecordsChoiceWrapper from './RecordsChoiceWrapper';
+import Toggle from './Toggle';
 
+export { Field, SemanticError } from './Field';
 export {
-  Field,
-  SemanticError,
   Form,
   BlurInput,
   Textarea,
@@ -20,5 +19,6 @@ export {
   CountryCodeSelect,
   LanguageSelect,
   Checkbox,
-  RecordsChoiceWrapper
+  RecordsChoiceWrapper,
+  Toggle
 };

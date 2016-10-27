@@ -4,23 +4,22 @@ import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Detached } from '../../Positioned/Detached';
 
 class PopUp extends React.Component {
+
   static propTypes = {
     opened:     PropTypes.bool,
-    onOpen:     PropTypes.func,
     elementId:  PropTypes.string,
     positionAt: PropTypes.string,
     content:    PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.node
     ]).isRequired,
-    id:        PropTypes.number.isRequired,
-    children:  PropTypes.any,
+    children:  PropTypes.node,
     autoClose: PropTypes.bool,
-    autoOpen:  PropTypes.bool
+    autoOpen:  PropTypes.bool,
+    className: PropTypes.string
   };
 
   static defaultProps = {
-    onOpen() {},
     autoClose: false,
     autoOpen:  false
   };
@@ -84,11 +83,12 @@ class PopUp extends React.Component {
   };
 
   renderBody() {
-    const { content, positionAt, elementId } = this.props;
+    const { content, positionAt, elementId, className } = this.props;
+    const { isOpen } = this.state;
 
     return (
       <ClickOut onClickOut={this.closePopup}>
-        <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen })}>
+        <div id={elementId} className={classNames('ui', 'popup', positionAt, className, { visible: isOpen })}>
           {content}
         </div>
       </ClickOut>
@@ -120,4 +120,5 @@ class PopUp extends React.Component {
     );
   }
 }
+
 export default PopUp;

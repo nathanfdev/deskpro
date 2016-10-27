@@ -1,6 +1,6 @@
 import './AdminBundle/Modules/Common/sectionHeader';
 import './AdminBundle/Modules/Common/loadingPage';
-import './AdminBundle/Modules/Twilio/index';
+import './AdminBundle/Modules/Voice/index';
 import './AgentBundle/Modules/Application/AppSwitcher';
 import './AgentBundle/Modules/Application/notifications';
 import './AgentBundle/Modules/Application/sidebar';
@@ -10,6 +10,7 @@ import './AgentBundle/Modules/Common/NavFrame/Section';
 import './AgentBundle/Modules/Common/NavFrame/grouping-control';
 import './AgentBundle/Modules/Common/NavFrame/Lists/NestedList';
 import './AgentBundle/Frames/nav';
+import './AgentBundle/Modules/Voice/index';
 import './DemoBundle/Modules/Application/login';
 import './Semantic/Accordion/accordion';
 import './Semantic/Form/form';
