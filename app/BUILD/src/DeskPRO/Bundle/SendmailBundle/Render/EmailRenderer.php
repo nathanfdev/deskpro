@@ -29,9 +29,11 @@
 namespace DeskPRO\Bundle\SendmailBundle\Render;
 
 use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Parser\JmsMetadataParser;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use JMS\Serializer\Serializer;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Templating\EngineInterface;
 
 class EmailRenderer
@@ -46,10 +48,16 @@ class EmailRenderer
      */
     private $templateEngine;
 
-    public function __construct(Serializer $serializer, EngineInterface $engine)
+    /**
+     * @var Container
+     */
+    private $serviceContainer;
+
+    public function __construct(Serializer $serializer, EngineInterface $engine, Container $serviceContainer)
     {
         $this->setSerializer($serializer);
         $this->setTemplateEngine($engine);
+        $this->serviceContainer = $serviceContainer;
     }
 
     /**
@@ -93,6 +101,26 @@ class EmailRenderer
     }
 
     /**
+     * @return JmsMetadataParser
+     */
+    public function getJmsMetadataParser()
+    {
+        return $this->jmsMetadataParser;
+    }
+
+    /**
+     * @param JmsMetadataParser $jmsMetadataParser
+     *
+     * @return EmailRenderer
+     */
+    public function setJmsMetadataParser($jmsMetadataParser)
+    {
+        $this->jmsMetadataParser = $jmsMetadataParser;
+
+        return $this;
+    }
+
+    /**
      * @param string        $templateName
      * @param EmailBaseType $model
      *
@@ -106,19 +134,32 @@ class EmailRenderer
     }
 
     /**
-     * @param EmailBaseType $model
+     * @param EmailBaseType|string $model
      *
      * @return array
      */
-    public function getStructure(EmailBaseType $model)
+    public function getStructure($model)
     {
-        //        $metadataFactory = $this->getSerializer()->getMetadataFactory();
-//        $propertyNamingStrategy = new CamelCaseNamingStrategy();
-//        $docCommentExtractor = new DocCommentExtractor();
-//        $parser = new JmsMetadataParser($metadataFactory, $propertyNamingStrategy, $docCommentExtractor);
-//        return $parser->parse(['class' => get_class($model), 'groups' => []]);
-        $this->get('dp_api_doc.parser.jms_metadata_parser');
+        /** @var JmsMetadataParser $parser */
+        $parser = $this->serviceContainer->get('dp_api_doc.parser.jms_metadata_parser');
+        $class  = is_object($model) ? get_class($model) : $model;
 
-        return $this->getSerializer()->toArray($model, new SideloadSerializationContext());
+        return $this->simplifyStructure($parser->parse(['class' => $class, 'groups' => []]));
+    }
+
+    private function simplifyStructure($parsedModel)
+    {
+        $structure = [];
+        foreach ($parsedModel as $key => $attribute) {
+            $structure[$key] = [
+                'description' => $attribute['description'],
+                'type'        => $attribute['dataType'],
+            ];
+            if (!empty($attribute['children'])) {
+                $structure[$key]['properties'] = $this->simplifyStructure($attribute['children']);
+            }
+        }
+
+        return $structure;
     }
 }

@@ -28,32 +28,9 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Person;
-use JMS\Serializer\Annotation as JMS;
-use ReflectionClass;
-use Zend\Filter\Word\CamelCaseToUnderscore;
-
-abstract class EmailBaseType
+class WelcomeEmail extends EmailBaseType
 {
-    /**
-     * Email recipient.
-     *
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
-     *
-     * @var Person
-     */
-    protected $recipient;
-
-    public function getTemplate()
+    public function __construct()
     {
-        $reflect   = new ReflectionClass($this);
-        $inflector = new CamelCaseToUnderscore();
-
-        return 'SendmailBundle:emails:email.'.strtolower($inflector->filter($reflect->getShortName())).'.html.twig';
-    }
-
-    public function setRecipient(Person $recipient)
-    {
-        $this->recipient = $recipient;
     }
 }

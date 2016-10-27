@@ -1,5 +1,8 @@
 services:
 
+  email.misc_viewmodel_factory:
+    class: DeskPRO\Bundle\SendmailBundle\Factory\ViewModelFactory
+
   email.ticket_viewmodel_factory:
     class: DeskPRO\Bundle\SendmailBundle\Factory\TicketViewModelFactory
 

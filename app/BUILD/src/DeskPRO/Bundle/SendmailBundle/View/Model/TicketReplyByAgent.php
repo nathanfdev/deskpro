@@ -30,15 +30,24 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use JMS\Serializer\Annotation as JMS;
 
 class TicketReplyByAgent extends EmailBaseType
 {
     /**
+     * The ticket.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\Ticket")
+     *
      * @var Ticket
      */
     private $ticket;
 
     /**
+     * Reply written by the agent.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\TicketMessage")
+     *
      * @var TicketMessage
      */
     private $reply;

@@ -26,34 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\SendmailBundle\View\Model;
+namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
-use Application\DeskPRO\Entity\Person;
-use JMS\Serializer\Annotation as JMS;
-use ReflectionClass;
-use Zend\Filter\Word\CamelCaseToUnderscore;
+use DeskPRO\Bundle\SendmailBundle\View\Model\WelcomeEmail;
 
-abstract class EmailBaseType
+class MiscViewModelFactory
 {
-    /**
-     * Email recipient.
-     *
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
-     *
-     * @var Person
-     */
-    protected $recipient;
-
-    public function getTemplate()
+    public static function createWelcomeEmailModel()
     {
-        $reflect   = new ReflectionClass($this);
-        $inflector = new CamelCaseToUnderscore();
-
-        return 'SendmailBundle:emails:email.'.strtolower($inflector->filter($reflect->getShortName())).'.html.twig';
-    }
-
-    public function setRecipient(Person $recipient)
-    {
-        $this->recipient = $recipient;
+        return new WelcomeEmail();
     }
 }
