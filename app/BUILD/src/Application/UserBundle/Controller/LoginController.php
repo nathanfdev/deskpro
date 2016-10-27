@@ -47,6 +47,7 @@ use Application\DeskPRO\EntityRepository\Session as SessionRepository;
 use Application\DeskPRO\EntityRepository\TmpData as TmpDataRepository;
 use Application\DeskPRO\HttpFoundation\Cookie;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
+use Application\DeskPRO\People\EmailAddressValidator;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
@@ -445,8 +446,10 @@ HTML;
             $person->language = $lang;
         }
 
-        if ($person->is_disabled || $this->container->getSystemService('email_address_validator')->personHasBannedEmail($person)) {
-            $this->session->set('account_disabled', $person->id);
+        /** @var EmailAddressValidator $emailValidator */
+        $emailValidator = $this->container->getSystemService('email_address_validator');
+        if ($person->is_disabled || ($email = $emailValidator->personHasBannedEmail($person))) {
+            $this->session->setFlash('email_banned', $email);
             $this->session->save();
 
             return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
