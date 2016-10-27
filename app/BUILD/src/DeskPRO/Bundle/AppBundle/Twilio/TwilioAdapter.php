@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioAvailableNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioExistingNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioPaginate;
 use Doctrine\ORM\EntityManager;
+use Twilio\Rest\Api\V2010\Account\IncomingPhoneNumberInstance;
 use Twilio\Rest\Client;
 use Twilio\Values;
 
@@ -147,6 +148,19 @@ class TwilioAdapter
         } catch (\Exception $e) {
             return new TwilioPaginate([], $pageNum);
         }
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param array        $data
+     *
+     * @return bool|IncomingPhoneNumberInstance
+     */
+    public function buyNumber(VoiceAccount $account, array $data)
+    {
+        $client = new Client($account->getAccountSid(), $account->getAuthToken());
+
+        return $client->incomingPhoneNumbers->create($data);
     }
 
     /**

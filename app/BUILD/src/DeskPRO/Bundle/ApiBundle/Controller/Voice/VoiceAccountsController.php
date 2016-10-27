@@ -33,10 +33,13 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAccountType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceBuyNumberType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use libphonenumber\PhoneNumberUtil;
 use Orb\Data\Countries;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -153,5 +156,45 @@ class VoiceAccountsController extends CrudController
             'pag_num'  => $result->getPageNum(),
             'has_next' => $result->hasNext(),
         ]));
+    }
+
+    /**
+     * @Rest\Post("/{account}/buy_number")
+     *
+     * @param VoiceAccount $account
+     * @param Request      $request
+     *
+     * @return View
+     */
+    public function buyNumberAction(VoiceAccount $account, Request $request)
+    {
+        $form = $this->createForm(VoiceBuyNumberType::class);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        try {
+            $apiNumber = $this->get('twilio_adapter')->buyNumber($account, $form->getData());
+        } catch (\Exception $e) {
+            throw $this->createBadRequestException($e->getMessage());
+        }
+
+        $phoneUtil   = PhoneNumberUtil::getInstance();
+        $phoneNumber = $phoneUtil->parse($apiNumber->phoneNumber, null);
+
+        $number = new VoiceNumber();
+        $number
+            ->setAccount($account)
+            ->setSid($apiNumber->sid)
+            ->setNumber($apiNumber->phoneNumber)
+            ->setNickname($apiNumber->friendlyName)
+            ->setCountryCode(strtolower($phoneUtil->getRegionCodeForNumber($phoneNumber)))
+        ;
+
+        $this->getManager()->persist($number);
+        $this->getManager()->flush();
+
+        return new View($this->wrap($number));
     }
 }

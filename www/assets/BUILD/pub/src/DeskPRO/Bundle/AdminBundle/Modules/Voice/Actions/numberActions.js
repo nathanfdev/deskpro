@@ -51,19 +51,11 @@ export const loadAvailableNumbers = createAction(
 );
 
 export const addAvailableNumber = createAction(
-  'VOICE_LOAD_AVAILABLE_NUMBERS',
-  number => (dispatch) => {
-    const data = {
-      sid:          number.get('number'), // fake sid for now
-      account:      number.get('account'),
-      number:       number.get('number'),
-      nickname:     number.get('nickname'),
-      country_code: number.get('country_code')
-    };
-
-    return repository('VoiceNumber').create(data).success((response) => {
-      dispatch(addToCollection('VoiceNumber', 'all', Immutable.List([Immutable.fromJS(response.data)])));
-      dispatch(expandNumber(response.data.id));
-    });
-  }
+  'VOICE_ADD_AVAILABLE_NUMBER',
+  number => dispatch => api.sendPost(`DP_API/voice_accounts/${number.get('account')}/buy_number`, {
+    number: number.get('number')
+  }).success((response) => {
+    dispatch(addToCollection('VoiceNumber', 'all', Immutable.List([Immutable.fromJS(response.data)])));
+    dispatch(expandNumber(response.data.id));
+  })
 );
