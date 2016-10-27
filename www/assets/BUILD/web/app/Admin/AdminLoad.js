@@ -183,7 +183,8 @@ define([
   'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
   'Admin/VoiceChannel/Ctrl/ReactComponent',
 
-  'CloudAdminLoad'
+  'CloudAdminLoad',
+  window.DP_ADMIN_BUNDLE_PATH
 
 ], function(angular) {
 

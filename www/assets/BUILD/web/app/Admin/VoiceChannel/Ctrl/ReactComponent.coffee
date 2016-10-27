@@ -7,8 +7,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       if (routePath[0] != '/')
         routePath = '/' + routePath;
 
-      @$scope.reactProps = {
+      reactProps = {
         routePath: routePath
       }
+
+      window.AdminBundle.render(reactProps, document.getElementById('react_admin_bundle'));
 
   Admin_VoiceChannel_Ctrl_ReactComponent.EXPORT_CTRL()

@@ -16,11 +16,6 @@
   "angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
   "angularScrollGlue":               "bower_components/angular-scroll-glue/src/scrollglue",
 
-  "react":                           "node_modules/react",
-  "reactDOM":                        "node_modules/react-dom/dist/react-dom",
-  "react-addons-shallow-compare":    "node_modules/react-addons-shallow-compare",
-  "ngReact":                         "node_modules/ngreact",
-
   "bootstrapDatetime":               "bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker",
 
   "ngFileUpload":                    "bower_components/ng-file-upload/angular-file-upload.min",
