@@ -3,21 +3,22 @@ import classNames from 'classnames';
 import { SemanticError } from 'DeskPRO/Component/Semantic/ReactForm';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import BaseUploadTab from './BaseUploadTab';
+import { UploadPlayButton } from './PlayButton';
 
 class UploadTab extends BaseUploadTab {
 
-  onSubmit = () => {
+  onUpload = () => {
+    this.playButton.stopPlaying();
     this.setState({
       blobAuth:    null,
       downloadUrl: null,
       upload:      true,
-      playing:     false,
       uploadError: null
     });
   };
 
   render() {
-    const { downloadUrl, upload, uploadError, playing } = this.state;
+    const { downloadUrl, upload, uploadError } = this.state;
     const baseUrl = window.DP_BASE_URL ? window.DP_BASE_URL.replace(/\/$/, '') : '';
 
     return (
@@ -38,18 +39,16 @@ class UploadTab extends BaseUploadTab {
             name="file"
             uploadUrl={`${baseUrl}/api/v2/blobs/temp`}
             acceptFileTypes={/(\.|\/)(mp3)$/i}
-            onSubmit={this.onSubmit}
+            onSubmit={this.onUpload}
             onSuccess={this.onUploadSuccess}
             onFail={this.onFail}
           />
         </button>
-        <button
-          className={classNames('ui basic icon button', { disabled: !downloadUrl })}
-          onClick={this.onToggleSound}
-        >
-          <i className={classNames(playing ? 'stop' : 'play', 'icon')} />
-        </button>
-        <audio ref={(c) => { this.audio = c; }} />
+        <UploadPlayButton
+          ref={(c) => { this.playButton = c; }}
+          downloadUrl={downloadUrl}
+          iconOnly
+        />
         {uploadError &&
           <div>
             <SemanticError error={{ message: uploadError }} />

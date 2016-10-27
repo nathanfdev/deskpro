@@ -1,7 +1,6 @@
-import React from 'react';
-import classNames from 'classnames';
+import React, { PropTypes } from 'react';
 import { Field, Textarea, Select } from 'DeskPRO/Component/Semantic/ReactForm';
-import BaseAudioWidgetTab from './BaseAudioWidgetTab';
+import { TextPlayButton } from './PlayButton';
 
 const languageChoices = [
   { value: 'da-DK', label: 'Danish, Denmark' },
@@ -32,52 +31,18 @@ const languageChoices = [
   { value: 'zh-TW', label: 'Chinese (Taiwanese Mandarin)' }
 ];
 
-class TextTab extends BaseAudioWidgetTab {
+class TextTab extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      text:    null,
-      playing: false
-    };
+  static propTypes = {
+    value: PropTypes.object
+  };
+
+  stopPlaying() {
+    this.playButton.stopPlaying();
   }
-
-  onTogglePreview = (event) => {
-    event.preventDefault();
-
-    if (!window.speechSynthesis) {
-      return;
-    }
-
-    const { value } = this.props;
-    const voice = this.getLanguageVoice();
-
-    if (voice) {
-      const message = new SpeechSynthesisUtterance(value.text);
-      message.voice = voice;
-
-      window.speechSynthesis.speak(message);
-    }
-  };
-
-  getLanguageVoice = () => {
-    const { value } = this.props;
-    const previewVoices = {};
-
-    if (!window.speechSynthesis) {
-      return null;
-    }
-
-    window.speechSynthesis.getVoices().forEach((voice) => {
-      previewVoices[voice.lang] = voice;
-    });
-
-    return value.language ? previewVoices[value.language] : null;
-  };
 
   render() {
     const { value } = this.props;
-    const { playing } = this.state;
 
     return (
       <div className="text-tab">
@@ -88,18 +53,13 @@ class TextTab extends BaseAudioWidgetTab {
           <Field select="language" className="language-field">
             <Select choices={languageChoices} clearable={false} />
           </Field>
-          {this.getLanguageVoice() &&
-            <button
-              className={classNames('ui basic button preview-button', {
-                disabled: !value.text || !value.language
-              })}
-              onClick={this.onTogglePreview}
-            >
-              <i className={classNames(playing ? 'stop' : 'play', 'icon')} />
-              Preview
-            </button>}
+
+          <TextPlayButton
+            ref={(c) => { this.playButton = c; }}
+            text={value.text}
+            language={value.language}
+          />
         </div>
-        <audio ref={(c) => { this.audio = c; }} />
       </div>
     );
   }

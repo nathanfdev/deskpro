@@ -54,38 +54,6 @@ Feature: Voice queue assets
       | upload |
       | record |
 
-  Scenario Outline: Asset name validation
-    When I send a PUT request to "/api/v2/voice_queues/{q1}" with body:
-    """
-{
-  "greet_asset": {
-    "name": "",
-    "type": "<type>"
-  }
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.greet_asset.fields.name.errors[0].code" should be equal to the string "required"
-
-    Examples:
-      | type   |
-      | text   |
-      | upload |
-      | record |
-
-  Scenario: Asset type required validation
-    When I send a PUT request to "/api/v2/voice_queues/{q1}" with body:
-    """
-{
-  "greet_asset": {
-    "name": "My asset",
-    "type": ""
-  }
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.greet_asset.fields.type.errors[0].code" should be equal to the string "required"
-
   Scenario: Asset type bad choice validation
     When I send a PUT request to "/api/v2/voice_queues/{q1}" with body:
     """

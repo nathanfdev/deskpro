@@ -1,9 +1,11 @@
 import React from 'react';
 import classNames from 'classnames';
 import RecordRTC from 'recordrtc';
-import { SemanticError } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Input } from 'react-forms';
+import { Field, SemanticError } from 'DeskPRO/Component/Semantic/ReactForm';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import BaseUploadTab from './BaseUploadTab';
+import { UploadPlayButton } from './PlayButton';
 
 class RecordTab extends BaseUploadTab {
 
@@ -73,6 +75,9 @@ class RecordTab extends BaseUploadTab {
 
     return (
       <div className="record-tab">
+        <Field select="name" label="Name your audio">
+          <Input type="text" />
+        </Field>
         <button
           className={classNames('ui basic button', { loading: upload, disabled: upload })}
           onClick={this.onToggleRecording}
@@ -80,13 +85,11 @@ class RecordTab extends BaseUploadTab {
           <i className={classNames(recording ? 'mute' : 'unmute', 'icon')} />
           Start recording
         </button>
-        <button
-          className={classNames('ui basic button play-back', { disabled: !downloadUrl })}
-          onClick={this.onToggleSound}
-        >
-          <i className={classNames(playing ? 'stop' : 'play', 'icon')} />
-          Play back
-        </button>
+        <UploadPlayButton
+          ref={(c) => { this.playButton = c; }}
+          downloadUrl={downloadUrl}
+          label="Play back"
+        />
         <UploadButton
           ref={(c) => { this.upload = c; }}
           name="file"
@@ -94,7 +97,6 @@ class RecordTab extends BaseUploadTab {
           onSuccess={this.onUploadSuccess}
           onFail={this.onFail}
         />
-        <audio ref={(c) => { this.audio = c; }} />
         {uploadError &&
           <div>
             <SemanticError error={{ message: uploadError }} />

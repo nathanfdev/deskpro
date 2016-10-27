@@ -73,11 +73,11 @@ class VoiceAsset implements EntityInterface, NotifyPropertyChanged, GroupSequenc
      * @JMS\Expose()
      * @JMS\Type("string")
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"record"})
      *
      * @var string
      */
-    private $name;
+    private $name = '';
 
     /**
      * @ORM\Column(name="type", type="string", length=255)
@@ -150,7 +150,7 @@ class VoiceAsset implements EntityInterface, NotifyPropertyChanged, GroupSequenc
      * @JMS\Expose()
      * @JMS\Type("Application\DeskPRO\Entity\Blob")
      *
-     * @Assert\NotBlank(groups={"blob"})
+     * @Assert\NotBlank(groups={"upload", "record"})
      *
      * @var Blob
      */
@@ -270,11 +270,8 @@ class VoiceAsset implements EntityInterface, NotifyPropertyChanged, GroupSequenc
     public function getGroupSequence()
     {
         $groups = ['VoiceAsset'];
-
-        if ($this->type === 'text') {
-            $groups[] = 'text';
-        } elseif (in_array($this->type, ['upload', 'record'])) {
-            $groups[] = 'blob';
+        if ($this->type) {
+            $groups[] = $this->type;
         }
 
         return $groups;

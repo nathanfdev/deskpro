@@ -2,7 +2,8 @@
 Feature: Twilio extensions
 
   Background:
-    Given no Person records exist
+    Given no VoiceAutoAttendant records exist
+    And no Person records exist
     And I'm authenticated as admin
 
   Scenario: I get agent data

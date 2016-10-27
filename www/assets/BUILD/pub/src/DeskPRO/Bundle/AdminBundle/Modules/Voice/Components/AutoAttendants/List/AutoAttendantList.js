@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import VoiceTargetNameContainer from '../../Common/NumberTarget/VoiceTargetNameContainer';
+import { AssetPlayButton } from '../../Common/AudioWidget/PlayButton';
 
 class AutoAttendantHeader extends React.Component {
 
@@ -80,10 +81,6 @@ class AutoAttendantRow extends React.Component {
     onEdit:        PropTypes.func
   };
 
-  onPlay = (event) => {
-    event.preventDefault();
-  };
-
   onEdit = (event) => {
     event.preventDefault();
     const { autoAttendant, onEdit } = this.props;
@@ -124,11 +121,9 @@ class AutoAttendantRow extends React.Component {
             </a>
           </div>
           {autoAttendant.get('audio_asset') &&
-            <div className="column options-button">
-              <a onClick={this.onPlay}>
-                <i className="play icon" />
-              </a>
-            </div>}
+            <AssetPlayButton value={autoAttendant.get('audio_asset')}>
+              <PlayButton />
+            </AssetPlayButton>}
         </div>
       </div>
     );
@@ -176,6 +171,28 @@ class AutoAttendantDialNumber extends React.Component {
       >
         {this.renderButton()}
       </PopUp>
+    );
+  }
+}
+
+class PlayButton extends React.Component {
+
+  static propTypes = {
+    onClick: PropTypes.func
+  };
+
+  onClick = (event) => {
+    event.preventDefault();
+    this.props.onClick();
+  };
+
+  render() {
+    return (
+      <div className="column options-button">
+        <a onClick={this.onClick}>
+          <i className="play icon" />
+        </a>
+      </div>
     );
   }
 }

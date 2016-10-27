@@ -4,6 +4,7 @@ import $ from 'jquery';
 import Immutable from 'immutable';
 import AudioWidgetForm from '../../Common/AudioWidget/AudioWidget';
 import { createAsset, updateAsset } from '../../../Actions/assetActions';
+import { AssetPlayButton } from '../../Common/AudioWidget/PlayButton';
 
 class AddAudioAsset extends React.Component {
 
@@ -39,15 +40,26 @@ class EditAudioAsset extends React.Component {
     this.props.onOpen();
   };
 
+  renderButtons() {
+    const { value } = this.props;
+
+    return (
+      <div className="audio-asset-buttons">
+        <AssetPlayButton value={value} iconOnly />
+        <button className="ui icon basic button" onClick={this.onClick}>
+          <i className="write icon" />
+        </button>
+      </div>
+    );
+  }
+
   renderText() {
     const { value } = this.props;
 
     return (
       <div>
         <b>Text to audio:</b> {value.get('text')}
-        <button className="ui icon basic button" onClick={this.onClick}>
-          <i className="write icon" />
-        </button>
+        {this.renderButtons()}
       </div>
     );
   }
@@ -57,10 +69,8 @@ class EditAudioAsset extends React.Component {
 
     return (
       <div>
-        <b>Uploaded file:</b> {value.get('name')}
-        <button className="ui icon basic button" onClick={this.onClick}>
-          <i className="write icon" />
-        </button>
+        <b>Uploaded file:</b> {value.getIn(['blob', 'filename'])}
+        {this.renderButtons()}
       </div>
     );
   }
@@ -71,9 +81,7 @@ class EditAudioAsset extends React.Component {
     return (
       <div>
         <b>Record:</b> {value.get('name')}
-        <button className="ui icon basic button" onClick={this.onClick}>
-          <i className="write icon" />
-        </button>
+        {this.renderButtons()}
       </div>
     );
   }
@@ -105,7 +113,7 @@ class AudioWidgetFormContainer extends React.Component {
 
   onSubmit = (data) => {
     const { value, onChange, dispatch } = this.props;
-    const assetId = value && value.get('id');
+    const assetId = value && value.id;
 
     this.setState({
       errors: {},

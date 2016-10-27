@@ -20,3 +20,25 @@ Feature: /voice_assets endpoint
     And the JSON node "data.type" should be equal to the string "text"
     And the JSON node "data.text" should be equal to the string "my text"
     And the JSON node "data.language" should be equal to the string "en-GB"
+
+  Scenario: Asset type required validation
+    When I send a POST request to "/api/v2/voice_assets" with body:
+    """
+{
+  "name": "My asset",
+  "type": ""
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.type.errors[0].code" should be equal to the string "required"
+
+  Scenario: Asset name validation
+    When I send a POST request to "/api/v2/voice_assets" with body:
+    """
+{
+  "name": "",
+  "type": "record"
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.name.errors[0].code" should be equal to the string "required"

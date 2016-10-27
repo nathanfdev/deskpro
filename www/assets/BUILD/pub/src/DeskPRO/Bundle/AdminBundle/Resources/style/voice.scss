@@ -489,11 +489,16 @@
     }
 
     &.audio-asset {
-      button.icon {
+      .audio-asset-buttons {
+        display: inline-block;
         margin-left: 10px;
-        width: 30px;
-        height: 30px;
-        padding: 0;
+
+        button.icon {
+          margin-right: 10px;
+          width: 30px;
+          height: 30px;
+          padding: 0;
+        }
       }
     }
   }

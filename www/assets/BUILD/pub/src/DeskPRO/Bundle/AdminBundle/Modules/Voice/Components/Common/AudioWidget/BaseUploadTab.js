@@ -1,6 +1,11 @@
-import BaseAudioWidgetTab from './BaseAudioWidgetTab';
+import React, { PropTypes } from 'react';
 
-class BaseUploadTab extends BaseAudioWidgetTab {
+class BaseUploadTab extends React.Component {
+
+  static propTypes = {
+    value:    PropTypes.object,
+    onChange: PropTypes.func
+  };
 
   constructor(props) {
     super(props);
@@ -10,7 +15,6 @@ class BaseUploadTab extends BaseAudioWidgetTab {
       blobAuth:    blob ? blob.blob_auth : null,
       downloadUrl: blob ? blob.download_url : null,
       upload:      false,
-      playing:     false,
       uploadError: null
     };
   }
@@ -52,29 +56,9 @@ class BaseUploadTab extends BaseAudioWidgetTab {
     });
   };
 
-  onToggleSound = (event) => {
-    event.preventDefault();
-    const { downloadUrl, playing } = this.state;
-
-    if (!downloadUrl) {
-      return;
-    }
-
-    if (!playing) {
-      this.audio.src = downloadUrl;
-      this.audio.play();
-      this.setState({
-        playing: true
-      });
-    } else {
-      this.audio.pause();
-      this.audio.currentTime = 0;
-      this.setState({
-        playing: false
-      });
-    }
-  };
-
+  stopPlaying() {
+    this.playButton.stopPlaying();
+  }
 }
 
 export default BaseUploadTab;

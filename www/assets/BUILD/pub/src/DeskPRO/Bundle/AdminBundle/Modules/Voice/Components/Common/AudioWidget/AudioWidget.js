@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Fieldset, Input, createValue } from 'react-forms';
+import { Fieldset, createValue } from 'react-forms';
 import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import Modal from 'DeskPRO/Component/Semantic/Modal';
 import classNames from 'classnames';
@@ -64,7 +64,6 @@ class AudioWidgetForm extends React.Component {
     return {
       formData: createValue({
         value: {
-          name: value ? value.get('name') : '',
           blob: {
             type,
             text: {
@@ -78,6 +77,7 @@ class AudioWidgetForm extends React.Component {
               }
             },
             record: {
+              name: value ? value.get('name') : '',
               blob: {
                 blob_auth:    isRecord ? blobAuth : null,
                 download_url: isRecord ? downloadUrl : null
@@ -98,9 +98,6 @@ class AudioWidgetForm extends React.Component {
       <div>
         <Form onSubmit={this.onSubmit} formValue={this.state.formData}>
           <Fieldset>
-            <Field select="name" label="Name your audio">
-              <Input placeholder="Name your audio" />
-            </Field>
             <Field select="blob" label="Choose source">
               <AudioSource />
             </Field>
@@ -175,13 +172,13 @@ class AudioSource extends React.Component {
         </Tab>
         <Tab active={type === 'upload'}>
           <Field select="upload">
-            <UploadTab  ref={(c) => { this.tabs.upload = c; }} />
+            <UploadTab ref={(c) => { this.tabs.upload = c; }} />
           </Field>
         </Tab>
         {isSecure &&
           <Tab active={type === 'record'}>
             <Field select="record">
-              <RecordTab  ref={(c) => { this.tabs.record = c; }} />
+              <RecordTab ref={(c) => { this.tabs.record = c; }} />
             </Field>
           </Tab>}
       </div>
