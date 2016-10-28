@@ -6,6 +6,7 @@ import * as actions from '../Actions/chatsActions';
 
 const initialState = {
   current:        {},
+  editChat:       Immutable.fromJS({}),
   overlayShown:   false,
   chating:        false,
   groupCreation:  false,
@@ -16,7 +17,7 @@ const initialState = {
 export default createReducer(initialState, {
   [actions.openChat]:                 state => state.mergeIn([], { overlayShown: false, chating: true }),
   [actions.closeChat]:                state => state.merge({ chating: false, current: Immutable.fromJS({}) }),
-  [actions.closeGroupDrawer]:         state => state.mergeIn([], { groupCreation: false, checkedAgents: {} }),
+  [actions.closeGroupDrawer]:         state => state.mergeIn([], { groupCreation: false, checkedAgents: {}, editChat: Immutable.fromJS({}) }),
   [actions.markChatAsManuallyClosed]: (state, payload) => {
     if (payload) {
       return state.setIn(['manuallyClosed', payload], true);
@@ -38,10 +39,11 @@ export default createReducer(initialState, {
     const diff = {
       overlayShown:  false,
       groupCreation: true,
-      checkedAgents: {}
+      checkedAgents: {},
+      editChat:      payload.editChat || Immutable.fromJS({})
     };
-    if (payload && Array.isArray(payload)) {
-      payload.forEach((item) => { diff.checkedAgents[item] = true; return null; });
+    if (payload.agentIds && Array.isArray(payload.agentIds)) {
+      payload.agentIds.forEach((item) => { diff.checkedAgents[item] = true; return null; });
     }
     return state.mergeIn([], diff);
   }

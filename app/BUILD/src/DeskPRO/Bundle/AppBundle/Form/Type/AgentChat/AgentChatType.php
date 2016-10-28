@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -217,15 +218,24 @@ class AgentChatType extends AbstractType
         /** @var AgentChat $agentChat */
         $agentChat   = $event->getData();
         $participant = $this->getFormParticipant($event);
+        $person      = $this->getPerson($event);
 
-        if ($participant && (is_array($participant) || $participant instanceof \Traversable || $participant =
-                    [$participant])) {
+        if ($participant &&
+            (is_array($participant) || $participant instanceof \Traversable || $participant = [$participant])
+        ) {
             foreach ($participant as $item) {
                 if (!$agentChat->containsParticipant($item)) {
                     $agentChat->addParticipant($item);
                 }
             }
+            $collection = $participant instanceof ArrayCollection ? $participant : new ArrayCollection($participant);
+            foreach ($agentChat->getAgents() as $agent) {
+                if (!$collection->contains($agent) && $agent != $person) {
+                    $agentChat->removeParticipant($agent);
+                }
+            }
         }
+
         $formType = $this->getFormType($event);
         if (($formType === AgentChat::TYPE_AGENT || $formType === AgentChat::TYPE_GROUP) && !$agentChat->getId()) {
             $agentChat->addParticipant($this->getPerson($event));

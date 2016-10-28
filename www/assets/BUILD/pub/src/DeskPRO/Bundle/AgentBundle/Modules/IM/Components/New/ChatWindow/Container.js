@@ -205,7 +205,14 @@ class Container extends React.Component {
         <Segment vertical className={classNames('group participants', { expanded: this.state.expandGroupHeader })}>
           <i
             className="write icon group-edit"
-            onClick={() => this.setState({ expandGroupHeader: !this.state.expandGroupHeader })}
+            onClick={
+              () => {
+                this.props.openGroupDrawer(
+                  this.props.current.get('agents').filter(item => item !== this.props.me.get('id')).toJS(),
+                  this.props.current
+                );
+              }
+            }
           />
           {agents.map(
             (agentId) => {
@@ -228,7 +235,7 @@ class Container extends React.Component {
               />);
             }
           )}
-          <span className="dots">
+          <span className="dots" onClick={() => this.setState({ expandGroupHeader: !this.state.expandGroupHeader })}>
             {this.props.current.get('agents').size > 9 && !this.state.expandGroupHeader ? '...' : null}
           </span>
         </Segment>

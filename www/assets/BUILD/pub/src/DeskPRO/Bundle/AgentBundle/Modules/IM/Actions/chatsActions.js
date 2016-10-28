@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { addToCollection, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const toggleOverlay = createAction('IM_TOGGLE_OVERLAY');
 
@@ -25,9 +25,9 @@ export const closeChat = createAction(
 
 export const openGroupDrawer = createAction(
   'IM_OPEN_GROUP_ADD_DRAWER',
-  payload => (dispatch) => {
+  (agentIds, editChat) => (dispatch) => {
     dispatch(closeChat());
-    return payload;
+    return { agentIds, editChat };
   }
 );
 
@@ -63,5 +63,18 @@ export const startChat = createAction(
           .error(response => reject(response));
       }
     );
+  }
+);
+
+export const updateChat = createAction(
+  'IM_UPDATE_CHAT',
+  (chatId, ids, name) => (dispatch) => {
+    repository('AgentChat').updateChat(chatId, ids, name).then(() => repository('AgentChat').load(chatId).success((response) => {
+      const records = {};
+      records[response.data.id] = response.data;
+      dispatch(removeFromCollection('AgentChat', 'recent', [parseInt(response.data.id, 10)]));
+      dispatch(addToCollection('AgentChat', 'recent', records, [parseInt(response.data.id, 10)]));
+      dispatch(startChat(null, chatId));
+    }));
   }
 );

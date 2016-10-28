@@ -125,7 +125,8 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      * List of participating in chat entities.
      *
      * @var AgentChatParticipant[] an id array of participants
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat",
+     *     cascade={"persist", "remove"}, orphanRemoval=true)
      */
     protected $participants;
 
@@ -374,6 +375,34 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
         $this->participants->add($chatParticipant);
 
         return $this;
+    }
+
+    /**
+     * @param mixed $participant
+     *
+     * @return $this
+     */
+    public function removeParticipant($participant)
+    {
+        if ($participant instanceof Person) {
+            $this->removePersonParticipant($participant);
+        }
+
+        return $this;
+    }
+
+    private function removePersonParticipant(Person $participant)
+    {
+        $toRemove = $this->participants->filter(
+            function (AgentChatParticipant $item) use ($participant) {
+                return $item->getPerson() === $participant;
+            }
+        );
+        foreach ($toRemove as $participant) {
+            /* @var AgentChatParticipant $participant */
+            $this->participants->removeElement($participant);
+            $participant->setChat(null);
+        }
     }
 
     /**

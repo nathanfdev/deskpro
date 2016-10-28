@@ -34,6 +34,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   me:                  meSelector(state),
   counts:              state.IM.messages.get('counts'),
   current:             state.IM.chats.get('current'),
+  editChat:            state.IM.chats.get('editChat'),
   chating:             state.IM.chats.get('chating'),
   overlayShown:        state.IM.chats.get('overlayShown'),
   groupCreation:       state.IM.chats.get('groupCreation'),
@@ -64,6 +65,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     messages:            PropTypes.object,
     counts:              PropTypes.object,
     current:             PropTypes.object,
+    editChat:            PropTypes.object,
     checkedAgents:       PropTypes.object,
     recentLoaded:        PropTypes.bool.isRequired,
     groupLoaded:         PropTypes.bool.isRequired,
@@ -97,6 +99,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.markNewMessages  = this.markNewMessages.bind(this);
     this.openGroupDrawer  = this.openGroupDrawer.bind(this);
     this.createGroup      = this.createGroup.bind(this);
+    this.updateGroup      = this.updateGroup.bind(this);
     this.onScroll         = this.onScroll.bind(this);
     this.loadMessages     = this.loadMessages.bind(this);
     this.onChatSearch     = this.onChatSearch.bind(this);
@@ -231,12 +234,16 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.props.dispatch(chatsActions.toggleOverlay());
   }
 
-  openGroupDrawer(agentIds = []) {
-    this.props.dispatch(chatsActions.openGroupDrawer(agentIds));
+  openGroupDrawer(agentIds = [], chat = null) {
+    this.props.dispatch(chatsActions.openGroupDrawer(agentIds, chat));
   }
 
   createGroup(agentIds, groupName) {
     this.props.dispatch(chatsActions.startChat({ id: agentIds, type: 'group', name: groupName }));
+  }
+
+  updateGroup(chatId, ids, name) {
+    this.props.dispatch(chatsActions.updateChat(chatId, ids, name));
   }
 
   getPath = () => {
@@ -315,6 +322,7 @@ export class AgentTopBarContainer extends SeparateComponent {
       markNewMessages:    this.markNewMessages,
       openGroupDrawer:    this.openGroupDrawer,
       createGroup:        this.createGroup,
+      updateGroup:        this.updateGroup,
       onScroll:           this.onScroll,
       loadMessages:       this.loadMessages,
       onChatSearch:       this.onChatSearch,
@@ -351,6 +359,7 @@ export class AgentTopBar extends React.Component {
     recentClick:         PropTypes.func,
     participantClick:    PropTypes.func,
     createGroup:         PropTypes.func,
+    updateGroup:         PropTypes.func,
     onSubmit:            PropTypes.func,
     markNewMessages:     PropTypes.func,
     onScroll:            PropTypes.func,
@@ -359,6 +368,7 @@ export class AgentTopBar extends React.Component {
     messages:            PropTypes.object,
     counts:              PropTypes.object,
     current:             PropTypes.object,
+    editChat:            PropTypes.object,
     checkedAgents:       PropTypes.object,
     searchQuery:         PropTypes.string,
     loadingMessages:     PropTypes.bool.isRequired,
@@ -402,7 +412,7 @@ export class AgentTopBar extends React.Component {
     const { groupLoaded, groupCreation, teamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
     const { current, chating, recentClick, messages, chatClickOut, participantClick, dispatch } = this.props;
     const { searchQuery, counts, groupChats, agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
-    const { loadMessages, onChatSearch, onScroll, createGroup, openGroupDrawer, markNewMessages, onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
+    const { editChat, updateGroup, loadMessages, onChatSearch, onScroll, createGroup, openGroupDrawer, markNewMessages, onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
     const { checkedAgents, closeIframes, toggleViewMode, me, myDepartments, teams, recentChats, recentLoaded, overlayShown } = this.props;
 
     const groupDrawerTarget = document.getElementById('im-button');
@@ -472,6 +482,8 @@ export class AgentTopBar extends React.Component {
             checkedAgents={checkedAgents.toJS()}
             clickOut={() => { this.props.dispatch(chatsActions.closeGroupDrawer()); }}
             createGroup={createGroup}
+            updateGroup={updateGroup}
+            editChat={editChat}
           /> : null }
           {current.get('id') ? <Container
             isOpen={chating}

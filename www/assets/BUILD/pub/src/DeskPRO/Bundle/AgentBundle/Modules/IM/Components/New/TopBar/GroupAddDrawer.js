@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import Immutable from 'immutable';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
@@ -19,7 +20,9 @@ class GroupAddDrawer extends React.Component
     agentClick:    PropTypes.func,
     clickOut:      PropTypes.func,
     createGroup:   PropTypes.func,
-    checkedAgents: PropTypes.object
+    updateGroup:   PropTypes.func,
+    checkedAgents: PropTypes.object,
+    editChat:      PropTypes.object
   };
 
   static defaultProps = {
@@ -32,7 +35,11 @@ class GroupAddDrawer extends React.Component
     createGroup() {
 
     },
-    checkedAgents: {}
+    updateGroup() {
+
+    },
+    checkedAgents: {},
+    editChat:      Immutable.fromJS({})
   };
 
   static recalculateChecked(checked) {
@@ -55,14 +62,16 @@ class GroupAddDrawer extends React.Component
     };
     this.agentClick  = this.agentClick.bind(this);
     this.createGroup = this.createGroup.bind(this);
+    this.updateGroup = this.updateGroup.bind(this);
     this.onChange    = this.onChange.bind(this);
+    this.clickOut    = this.clickOut.bind(this);
   }
 
   componentWillReceiveProps(props) {
     this.setState({
       checkedAgents:      props.checkedAgents,
       checkedAgentsCount: GroupAddDrawer.recalculateChecked(props.checkedAgents),
-      groupName:          ''
+      groupName:          props.editChat.get('name') || this.state.groupName
     });
   }
 
@@ -75,6 +84,15 @@ class GroupAddDrawer extends React.Component
       <span>
         <span>Agents</span>
         <span className="selected counter">{this.state.checkedAgentsCount} selected</span>
+      </span>
+    );
+  }
+
+  getHeaderContent() {
+    return (
+      <span>
+        <i className="fa fa-users" />
+        &nbsp;{this.props.editChat.get('id') ? 'Edit group' : 'Create group'}
       </span>
     );
   }
@@ -93,8 +111,19 @@ class GroupAddDrawer extends React.Component
     );
   }
 
+
+  clickOut() {
+    this.setState({ checkedAgents: {}, checkedAgentsCount: 0, groupName: '' }, this.props.clickOut);
+  }
+
   createGroup() {
-    this.props.createGroup(Object.keys(this.state.checkedAgents), this.state.groupName);
+    const agents = Immutable.fromJS(this.state.checkedAgents).filter(item => item).toJS();
+    this.props.createGroup(Object.keys(agents), this.state.groupName);
+  }
+
+  updateGroup() {
+    const agents = Immutable.fromJS(this.state.checkedAgents).filter(item => item).toJS();
+    this.props.updateGroup(this.props.editChat.get('id'), Object.keys(agents), this.state.groupName);
   }
 
   renderAgent(agent) {
@@ -122,7 +151,7 @@ class GroupAddDrawer extends React.Component
   }
 
   render() {
-    const { isOpen, target, agents, clickOut } = this.props;
+    const { isOpen, target, agents, editChat } = this.props;
 
     return (
       <Detached
@@ -130,7 +159,7 @@ class GroupAddDrawer extends React.Component
         positionTarget={target}
         positionMy="center-17 top-2"
       >
-        <ClickOut onClickOut={clickOut} ignoreNodes={['.im.recent .im.wrapper', '.icon.group.add']}>
+        <ClickOut onClickOut={this.clickOut} ignoreNodes={['.im.recent .im.wrapper', '.icon.group.add']}>
           <div className="ui popup im center bottom">
             <div className="header">Agent IM</div>
             <div className="im add group">
@@ -138,7 +167,7 @@ class GroupAddDrawer extends React.Component
                 <Header
                   level={5}
                   className="group add"
-                  content={<span><i className="fa fa-users" />&nbsp;Create group</span>}
+                  content={this.getHeaderContent()}
                 />
                 <Header level={4} className="group name" content="Group name" />
                 <Input name="groupName" value={this.state.groupName} id="groupName" onChange={this.onChange} />
@@ -149,8 +178,8 @@ class GroupAddDrawer extends React.Component
                   </Scrollable>
                 </List>
               </Segment>
-              <button className="ui create-group primary button" onClick={this.createGroup}>
-                Create group
+              <button className="ui create-group primary button" onClick={editChat.get('id') ? this.updateGroup : this.createGroup}>
+                { editChat.get('id') ? 'Save' : 'Create group' }
               </button>
             </div>
           </div>
