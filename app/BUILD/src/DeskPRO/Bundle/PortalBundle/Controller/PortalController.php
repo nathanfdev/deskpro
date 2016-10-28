@@ -52,6 +52,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Exception\DisabledException;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
 /**
  * Class PortalController.
@@ -188,12 +190,17 @@ class PortalController extends AbstractController
             }
         }
 
+        $error = $request->getSession()->get(SecurityContextInterface::AUTHENTICATION_ERROR);
+        if ($error instanceof DisabledException) {
+            $error = 'account_disabled';
+        }
+
         return $this->renderThemeView(
             'Theme:Portal:User/login.html.twig',
             [
                 'auth_manager'         => $this->get('dp_authentication_manager.user'),
                 'login_captcha_failed' => $request->get('retry') == 'captcha',
-                'login_error'          => $request->get('retry') == 'auth',
+                'login_error'          => $error,
                 'lockout_error'        => $abuse_check->isLockoutRecommended(),
                 'lockout_time'         => $abuse_check->getLockoutTime(true),
                 'saved_form'           => $saved_form,

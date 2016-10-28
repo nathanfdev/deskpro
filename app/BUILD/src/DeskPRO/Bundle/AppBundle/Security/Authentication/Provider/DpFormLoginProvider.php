@@ -146,9 +146,9 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
 
     /**
      * @param TokenInterface $token
-     * @param Usersource[]   $usersources
+     * @param DpAuthManager  $auth_manager
      *
-     * @return Result
+     * @return array
      */
     protected function getDpAuthResultForGivenUsersources(TokenInterface $token, AuthenticationManager $auth_manager)
     {
@@ -166,6 +166,10 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 try {
                     $authResult = $adapter->authenticate();
                 } catch (\Exception $e) {
+                    if ($e instanceof AuthenticationException) {
+                        throw $e;
+                    }
+
                     $this->logger->log($e);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
                     $GLOBALS['DP_AUTH_EXCEPTION']         = $e;

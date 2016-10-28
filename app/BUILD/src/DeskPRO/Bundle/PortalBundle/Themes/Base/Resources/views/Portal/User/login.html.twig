@@ -27,7 +27,9 @@
                 {{ macros.user_notice('auth', phrase('portal.account.set-password-success')) }}
             {% endif %}
 
-            {% if login_error %}
+            {% if login_error == 'account_disabled' %}
+                {{ macros.user_notice('auth', phrase('portal.account.login-disabled')) }}
+            {% elseif login_error %}
                 {{ macros.user_notice('auth', phrase('portal.account.login-invalid')) }}
             {% endif %}
 

@@ -48,6 +48,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
 
@@ -115,7 +116,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
         try {
             return $this->authenticationManager->authenticate($tokenOrResponse);
-        } catch (BadCredentialsException $e) {
+        } catch (AuthenticationException $e) {
             if (isset($abuseCheck)) {
                 $this->container->get('anti_abuse')->saveRateLimit($abuseCheck);
             }

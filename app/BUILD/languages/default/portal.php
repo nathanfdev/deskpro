@@ -48,6 +48,7 @@ return [
     'portal.account.login-email'                            => 'Your email',
     'portal.account.login-external'                         => 'Login with an external service',
     'portal.account.login-invalid'                          => 'You have entered the wrong email or password. Please try again.',
+    'portal.account.login-disabled'                         => 'Your email address has been banned.',
     'portal.account.login-lockout'                          => 'You have failed login too many times so you have been locked out. Please try again later.',
     'portal.account.login-password'                         => 'Your password',
     'portal.account.login-password-reminder'                => 'Need a password reminder?',

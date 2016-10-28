@@ -37,7 +37,7 @@ use FOS\HttpCache\UserContext\ContextProviderInterface;
 use FOS\HttpCache\UserContext\UserContext;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * Class PortalUserHashContextProvider.
@@ -107,7 +107,7 @@ class PortalUserHashContextProvider implements ContextProviderInterface
 
                     $cacheKey = "$timestamp-permissions-$userGroups";
                 }
-            } catch (BadCredentialsException $e) {
+            } catch (AuthenticationException $e) {
                 // keep the silence, nothing bad was happened, so we just keep 'guest' cache_key
             }
         }
