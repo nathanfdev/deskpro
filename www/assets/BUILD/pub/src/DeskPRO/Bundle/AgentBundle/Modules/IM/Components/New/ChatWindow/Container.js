@@ -149,7 +149,7 @@ class Container extends React.Component {
     if (this.state.searching) {
       this.props.onChatSearch('');
     }
-    this.setState({ searching: !this.state.searching, expandedHeader: false });
+    this.setState({ searching: !this.state.searching, expandGroupHeader: false });
   }
 
   refresh(props) {
@@ -203,17 +203,20 @@ class Container extends React.Component {
     if (this.props.current.get('chat_type') === 'group' && !this.state.searching) {
       return (
         <Segment vertical className={classNames('group participants', { expanded: this.state.expandGroupHeader })}>
-          <i
-            className="write icon group-edit"
-            onClick={
-              () => {
-                this.props.openGroupDrawer(
-                  this.props.current.get('agents').filter(item => item !== this.props.me.get('id')).toJS(),
-                  this.props.current
-                );
+          <span className="control">
+            <i className="fa fa-times" onClick={() => this.setState({ expandGroupHeader: false })} />
+            <i
+              className="write icon group-edit"
+              onClick={
+                () => {
+                  this.props.openGroupDrawer(
+                    this.props.current.get('agents').filter(item => item !== this.props.me.get('id')).toJS(),
+                    this.props.current
+                  );
+                }
               }
-            }
-          />
+            />
+          </span>
           {agents.map(
             (agentId) => {
               if (agentId === this.props.me.get('id')) {
@@ -235,7 +238,7 @@ class Container extends React.Component {
               />);
             }
           )}
-          <span className="dots" onClick={() => this.setState({ expandGroupHeader: !this.state.expandGroupHeader })}>
+          <span className="dots" onClick={() => this.setState({ expandGroupHeader: true })}>
             {this.props.current.get('agents').size > 9 && !this.state.expandGroupHeader ? '...' : null}
           </span>
         </Segment>

@@ -425,7 +425,7 @@
         margin-right: 3px;
       }
 
-      .icon.write.group-edit, .dots {
+      .control .icon.write.group-edit, .dots {
         font-size: 24px;
         color: $dp-greyscale-450;
         margin-top: 4px;
@@ -433,11 +433,18 @@
         height: 24px;
         position: relative;
         vertical-align: middle;
+        cursor: pointer;
+      }
+
+      .control {
+        .fa.fa-times {
+          display: none;
+          cursor: pointer;
+        }
       }
 
       .icon.write.group-edit {
         float: right;
-        cursor: pointer;
       }
 
       &.expanded {
@@ -450,13 +457,26 @@
           margin-top: 5px;
         }
 
-        .icon.write.group-edit {
-          color: $dp-greyscale-450;
+        .control {
           display: block;
           text-align: right;
           width: 100%;
           float: none;
+
+          .fa.fa-times {
+            color: $dp-greyscale-450;
+            display: inline-block;
+            vertical-align: bottom;
+            font-size: 16px;
+            font-weight: 200;
+            margin-right: 10px;
+          }
+
+          .icon.write.group-edit {
+            color: $dp-greyscale-450;
+          }
         }
+
         .dots {
           display: none;
         }
