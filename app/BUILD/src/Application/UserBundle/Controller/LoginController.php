@@ -448,8 +448,8 @@ HTML;
 
         /** @var EmailAddressValidator $emailValidator */
         $emailValidator = $this->container->getSystemService('email_address_validator');
-        if ($person->is_disabled || ($email = $emailValidator->personHasBannedEmail($person))) {
-            $this->session->setFlash('email_banned', $email);
+        if ($person->is_disabled || $emailValidator->personHasBannedEmail($person)) {
+            $this->session->setFlash('email_banned', true);
             $this->session->save();
 
             return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);

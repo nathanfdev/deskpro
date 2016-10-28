@@ -46,6 +46,7 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\DisabledException;
 
 class DpFormLoginProvider implements AuthenticationProviderInterface
 {
@@ -123,13 +124,17 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             $login_processor = new LoginProcessor($usersource, $authResult->getIdentity());
             $person          = $login_processor->getPerson();
 
+            if ($this->dp_person_provider->personHasBannedEmail($person)) {
+                throw new DisabledException('portal.account.login-disabled');
+            }
+
             $authenticatedToken = new DpFormLoginToken($person, $person->getPassword(), array_merge(['ROLE_USER'], $person->getRoles()));
             $authenticatedToken->setAttributes($token->getAttributes());
 
             return $authenticatedToken;
         }
 
-        throw new BadCredentialsException();
+        throw new BadCredentialsException('portal.account.login-invalid');
     }
 
     /**

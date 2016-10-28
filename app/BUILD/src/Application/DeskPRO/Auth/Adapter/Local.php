@@ -32,7 +32,6 @@
 
 namespace Application\DeskPRO\Auth\Adapter;
 
-use Application\DeskPRO\Entity\BanEmail;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Usersource\Adapter\EntityManagerAwareInterface;
 use Doctrine\ORM\EntityManager;
@@ -42,7 +41,6 @@ use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
-use Symfony\Component\Security\Core\Exception\DisabledException;
 
 /**
  * The Local adapter handles local logins using an email address or username and a password.
@@ -144,12 +142,6 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
             return new Result(Result::FAILURE_INVALID_CREDS);
         }
 
-        if ($email = $this->personHasBannedEmail($person)) {
-            $e = new DisabledException();
-            $e->setUser($person);
-            throw $e;
-        }
-
         $identity = new Identity(
             $person['id'],
             [
@@ -184,25 +176,5 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
     public function setEm(EntityManager $em)
     {
         $this->em = $em;
-    }
-
-    /**
-     * Check if a person has any banned emails.
-     *
-     * @param Person $person
-     *
-     * @return string|null
-     */
-    protected function personHasBannedEmail(Person $person)
-    {
-        /** @var \Application\DeskPRO\EntityRepository\BanEmail $banRep */
-        $banRep = $this->em->getRepository(BanEmail::class);
-        foreach ($person->emails as $email) {
-            if ($banRep->isEmailBanned($email->email)) {
-                return $email->email;
-            }
-        }
-
-        return null;
     }
 }

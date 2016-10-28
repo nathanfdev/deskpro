@@ -119,7 +119,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
                 [
                     'success' => false,
                     'captcha' => $check->isCaptchaRecommended(),
-                    'reason'  => $exception instanceof AuthenticationException ? $exception->getMessageKey() : null,
+                    'reason'  => $exception instanceof AuthenticationException ? $exception->getMessage() : null,
                 ]
             );
         }

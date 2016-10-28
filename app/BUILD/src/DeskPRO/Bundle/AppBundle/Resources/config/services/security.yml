@@ -44,7 +44,7 @@ services:
 
   dp_person_user_provider:
     class: DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider
-    arguments: ["@person_repository"]
+    arguments: ["@person_repository", "@ban_email_repository"]
 
   # use a custom user/password validator
   security.validator.user_password:

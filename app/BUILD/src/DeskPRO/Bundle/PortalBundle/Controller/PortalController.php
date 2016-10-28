@@ -52,7 +52,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Exception\DisabledException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
 /**
@@ -190,9 +190,10 @@ class PortalController extends AbstractController
             }
         }
 
-        $error = $request->getSession()->get(SecurityContextInterface::AUTHENTICATION_ERROR);
-        if ($error instanceof DisabledException) {
-            $error = 'account_disabled';
+        if ($error = $request->getSession()->get(SecurityContextInterface::AUTHENTICATION_ERROR)) {
+            $error = $error instanceof AuthenticationException
+                ? $error->getMessage()
+                : 'portal.account.login-invalid';
         }
 
         return $this->renderThemeView(
