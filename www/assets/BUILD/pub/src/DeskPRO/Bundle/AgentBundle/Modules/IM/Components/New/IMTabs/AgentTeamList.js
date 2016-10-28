@@ -12,7 +12,7 @@ class AgentTeamList extends AbstractList {
   getAvatar = AvatarHelper.renderAgentTeamAvatar;
 
   getItems() {
-    return this.props.teams.map(team => this.getItem(team, 'team', 'name'));
+    return this.filterList(this.props.teams, 'name').map(team => this.getItem(team, 'team', 'name'));
   }
 }
 

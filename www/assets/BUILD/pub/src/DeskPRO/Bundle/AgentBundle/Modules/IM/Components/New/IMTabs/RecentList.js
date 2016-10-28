@@ -15,7 +15,8 @@ class RecentList extends React.Component {
     teams:         PropTypes.object.isRequired,
     counts:        PropTypes.object.isRequired,
     chats:         PropTypes.object.isRequired,
-    onRecentClick: PropTypes.func.isRequired
+    onRecentClick: PropTypes.func.isRequired,
+    filter:        PropTypes.string
   };
 
   static sortList(list) {
@@ -44,7 +45,37 @@ class RecentList extends React.Component {
   }
 
   getItems() {
-    return RecentList.sortList(this.props.chats).map(this.getItem.bind(this));
+    let { chats } = this.props;
+    if (this.props.filter) {
+      chats = chats.filter((chat) => {
+        switch (chat.get('chat_type')) {
+          case 'agent':
+            {
+              let agentId = 0;
+              chat.get('agents').forEach((item) => {
+                if (item !== this.props.me.get('id')) {
+                  agentId = item;
+                }
+              });
+              const agent = this.props.agents.get(agentId);
+              return agent ? agent.get('name').test(new RegExp(this.props.filter, 'gi')) : true;
+            }
+          case 'department':
+            return this.props.departments
+              .get(chat.getIn(['departments', 0, 'title']))
+              .test(new RegExp(this.props.filter, 'gi'));
+          case 'team':
+            return this.props.teams
+              .get(chat.getIn(['agent_teams', 0, 'name']))
+              .test(new RegExp(this.props.filter, 'gi'));
+          case 'group':
+            return chat.get('name').test(new RegExp(this.props.filter, 'gi'));
+          default:
+            return true;
+        }
+      });
+    }
+    return RecentList.sortList(chats).map(this.getItem.bind(this));
   }
 
 

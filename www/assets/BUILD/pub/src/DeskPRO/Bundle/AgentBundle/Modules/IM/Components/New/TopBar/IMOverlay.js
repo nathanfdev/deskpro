@@ -42,6 +42,18 @@ export default class IMOverlay extends React.Component {
     groupLoaded:        PropTypes.bool.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      filter: ''
+    };
+    this.onListFilter = this.onListFilter.bind(this);
+  }
+
+  onListFilter(filter) {
+    this.setState({ filter });
+  }
+
   getRecentTab() {
     const { agentsLoaded, teamsLoaded, departmentsLoaded, recentLoaded } = this.props;
     const { me, agents, departments, teams, counts, chats, onRecentClick } = this.props;
@@ -58,7 +70,7 @@ export default class IMOverlay extends React.Component {
     const content = (
       <Loader loaded={loaded} opacity={0} width={4} color="#4696dc">
         <Scrollable vertical>
-          <RecentList {...props} />
+          <RecentList {...props} filter={this.state.filter} />
         </Scrollable>
       </Loader>
     );
@@ -75,7 +87,12 @@ export default class IMOverlay extends React.Component {
     const content = (
       <Loader loaded={agentsLoaded} opacity={0} width={4} color="#4696dc">
         <Scrollable vertical>
-          <AgentList agents={agents} counts={counts} onParticipantClick={onParticipantClick} me={me} />
+          <AgentList
+            filter={this.state.filter}
+            agents={agents}
+            counts={counts}
+            onParticipantClick={onParticipantClick} me={me}
+          />
         </Scrollable>
       </Loader>
     );
@@ -107,14 +124,31 @@ export default class IMOverlay extends React.Component {
                 {groups.size < 1 ? '+ create new im group' : '+ new'}
               </span>
             </Segment>
-            {groups.size > 0 ? <GroupList agents={agents} onGroupClick={onRecentClick} groups={groups} me={me} /> : null}
+            {groups.size > 0 ? <GroupList
+              agents={agents}
+              onGroupClick={onRecentClick}
+              groups={groups} me={me}
+              filter={this.state.filter}
+            /> : null}
             <div className="ui divider" />
             <Header level={4} className="group-list" content="department" />
-            <DepartmentList agents={agents} departments={departments} me={me} onParticipantClick={onParticipantClick} />
+            <DepartmentList
+              agents={agents}
+              departments={departments}
+              me={me}
+              onParticipantClick={onParticipantClick}
+              filter={this.state.filter}
+            />
             <div className="ui divider" />
             <Header level={4} className="group-list" content="teams" />
             { teams.size > 0
-              ? <AgentTeamList agents={agents} teams={teams} me={me} onParticipantClick={onParticipantClick} />
+              ? <AgentTeamList
+                agents={agents}
+                teams={teams}
+                me={me}
+                onParticipantClick={onParticipantClick}
+                filter={this.state.filter}
+              />
               : null
             }
 
@@ -156,6 +190,7 @@ export default class IMOverlay extends React.Component {
             <SearchBox
               onFocus={onFocus}
               onBlur={onBlur}
+              onUserInput={this.onListFilter}
               placeholder="Search ..."
             />
           </Segment>
