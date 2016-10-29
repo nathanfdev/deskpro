@@ -294,7 +294,7 @@ class OrganizationController extends AbstractController
                         SELECT id
                         FROM usergroups
                         WHERE id IN (?)
-                            AND sys_name IS NULL
+                            AND sys_name NOT IN (\'everyone\', \'registered\') OR `sys_name` IS NULL
                     ', [$usergroupIds], [Connection::PARAM_INT_ARRAY]);
                 }
                 $this->container->getDb()->delete('organization2usergroups', ['organization_id' => $org->getId()]);
