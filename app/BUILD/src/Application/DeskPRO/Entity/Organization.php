@@ -563,6 +563,15 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         return $this->parent;
     }
 
+    public function setParent(Organization $parent = null)
+    {
+        $oldParent = $this->parent;
+        $this->setModelField('parent', $parent);
+        $this->_onPropertyChanged('parent', $oldParent, $parent);
+
+        return $this;
+    }
+
     /**
      * Set organization picture.
      *
