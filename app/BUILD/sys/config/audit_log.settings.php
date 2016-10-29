@@ -46,6 +46,7 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
@@ -58,6 +59,7 @@ use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\Entity\TicketCategory;
+use Application\DeskPRO\Entity\TicketEscalation;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketPriority;
@@ -453,13 +455,13 @@ return [
         AuditListener::ALL => [
             'field_filters' => [
                 'apply_terms' => [
-                    ['object', ['object.serialize()']],
+                    ['object', ['object.exportToArray()']],
                 ],
                 'warn_actions' => [
-                    ['object', ['object.serialize()']],
+                    ['object', ['object.exportToArray()']],
                 ],
                 'fail_actions' => [
-                    ['object', ['object.serialize()']],
+                    ['object', ['object.exportToArray()']],
                 ],
             ],
         ],
@@ -535,10 +537,10 @@ return [
         AuditListener::ALL => [
             'field_filters' => [
                 'terms' => [
-                    ['object', ['object.serialize()']],
+                    ['object', ['object.exportToArray()']],
                 ],
                 'actions' => [
-                    ['object', ['object.serialize()']],
+                    ['object', ['object.exportToArray()']],
                 ],
             ],
         ],
@@ -622,4 +624,23 @@ return [
     ],
 
     WhiteListedIp::class => [AuditListener::INSERT => true],
+
+    LegacyTicketFilter::class => [
+        AuditListener::INSERT => true,
+        AuditListener::REMOVE => true,
+        AuditListener::UPDATE => true,
+    ],
+
+    TicketEscalation::class => [
+        AuditListener::ALL => [
+            'field_filters' => [
+                'actions' => [
+                    ['entity', ['item.exportToArray()']],
+                ],
+            ],
+        ],
+        AuditListener::INSERT => true,
+        AuditListener::REMOVE => true,
+        AuditListener::UPDATE => true,
+    ],
 ];
