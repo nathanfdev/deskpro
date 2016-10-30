@@ -103,8 +103,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
         } elseif (DP_INTERFACE == 'user') {
             $allow_rememberme = (bool) App::getSetting('core.enable_user_rememberme');
         }
-//        unset($_SESSION['_sf2_attributes']['auth_person_id']);
-//        unset($_COOKIE['dpsid-agent']);
         if ((empty($_SESSION['_sf2_attributes']['auth_person_id']) || (!isset($_SESSION['_sf2_attributes']['auth_person_id']) || !$_SESSION['_sf2_attributes']['auth_person_id']))) {
             // See if we should carry an agent session
             if (!empty($_COOKIE['dpsid-agent']) && (DP_INTERFACE == 'user' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {

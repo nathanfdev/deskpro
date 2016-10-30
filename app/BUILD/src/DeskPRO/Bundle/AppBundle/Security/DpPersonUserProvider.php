@@ -49,7 +49,7 @@ class DpPersonUserProvider implements UserProviderInterface
     /**
      * @var \Application\DeskPRO\EntityRepository\BanEmail
      */
-    private $ban_email_repo;
+    private $banEmailRepo;
 
     /**
      * @var array
@@ -63,9 +63,9 @@ class DpPersonUserProvider implements UserProviderInterface
      */
     public function __construct(PersonRepo $person_repo, BanEmail $banEmail)
     {
-        $this->people_refs    = [];
-        $this->person_repo    = $person_repo;
-        $this->ban_email_repo = $banEmail;
+        $this->people_refs  = [];
+        $this->person_repo  = $person_repo;
+        $this->banEmailRepo = $banEmail;
     }
 
     /**
@@ -141,7 +141,7 @@ class DpPersonUserProvider implements UserProviderInterface
     public function personHasBannedEmail(Person $person)
     {
         foreach ($person->emails as $email) {
-            if ($this->ban_email_repo->isEmailBanned($email->email)) {
+            if ($this->banEmailRepo->isEmailBanned($email->email)) {
                 return $email->email;
             }
         }

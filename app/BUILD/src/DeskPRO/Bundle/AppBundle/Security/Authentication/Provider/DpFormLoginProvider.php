@@ -170,11 +170,9 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
 
                 try {
                     $authResult = $adapter->authenticate();
+                } catch (AuthenticationException $e) {
+                    throw $e;
                 } catch (\Exception $e) {
-                    if ($e instanceof AuthenticationException) {
-                        throw $e;
-                    }
-
                     $this->logger->log($e);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
                     $GLOBALS['DP_AUTH_EXCEPTION']         = $e;

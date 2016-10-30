@@ -448,7 +448,7 @@ HTML;
 
         /** @var EmailAddressValidator $emailValidator */
         $emailValidator = $this->container->getSystemService('email_address_validator');
-        if ($person->is_disabled || $emailValidator->personHasBannedEmail($person)) {
+        if ($person->isDisabled() || $emailValidator->personHasBannedEmail($person)) {
             $this->session->setFlash('email_banned', true);
             $this->session->save();
 
