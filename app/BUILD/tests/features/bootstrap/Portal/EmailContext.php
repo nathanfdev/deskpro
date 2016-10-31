@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -108,7 +108,7 @@ class EmailContext extends BaseContext implements KernelAwareContext
         $ticket    = DataContext::getReference('ticket');
         $message   = DataContext::getReference('ticket_message');
         $viewModel = $this->get('email.ticket_viewmodel_factory')
-            ->createTicketReplyModel(
+            ->createTicketReplyByAgentModel(
                 $ticket,
                 $message
             );
