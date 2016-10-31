@@ -23,7 +23,8 @@ export class EmailsAndBlockMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLeft: null
+      selectedLeft: null,
+      filter:       ''
     };
   }
 
@@ -77,22 +78,36 @@ export class EmailsAndBlockMenu extends React.Component {
       return null;
     }
     const subGroups = this.state.selectedLeft.get('subGroups');
-    const primary = subGroups.get('primary').get('templates').valueSeq().map((template, key) =>
-      <EmailTemplateItem
+    const primary = subGroups.get('primary').get('templates').valueSeq().map((template, key) => {
+      if (
+        this.state.filter
+        && template.get('title').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+        && template.get('desc').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+      ) {
+        return null;
+      }
+      return (<EmailTemplateItem
         key={`primary${key}`}
         label={template.get('title')}
         icon="code"
         className="template"
         onClick={() => this.props.selectTemplate(template)}
         desc={template.get('desc')}
-      />
-    );
+      />);
+    });
     const additionalTemplates = subGroups.valueSeq().map((subGroup) => {
       if (subGroup.get('subGroupId') === 'primary') {
         return null;
       }
-      let content = subGroup.get('templates').valueSeq().map((template, key) =>
-        <EmailTemplateItem
+      let content = subGroup.get('templates').valueSeq().map((template, key) => {
+        if (
+          this.state.filter
+          && template.get('title').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+          && template.get('desc').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+        ) {
+          return null;
+        }
+        return (<EmailTemplateItem
           key={`${subGroup.get('subGroupId')}${key}`}
           label={template.get('title')}
           icon="code"
@@ -100,6 +115,7 @@ export class EmailsAndBlockMenu extends React.Component {
           onClick={() => this.props.selectTemplate(template)}
           desc={template.get('desc')}
         />);
+      });
       content = <Menu>{content}</Menu>;
       return (<AccordionPanel
         key={`addEl${subGroup.get('subGroupId')}`}
@@ -122,13 +138,21 @@ export class EmailsAndBlockMenu extends React.Component {
     );
   };
 
+  updateFilter = (value) => {
+    this.setState({
+      filter: value
+    });
+  };
+
   isActive = item => item === this.state.selectedLeft;
 
   render() {
     return (
       <div className="email-and-block two-panels-menu">
         <MenuWrapper>
-          <SearchBox />
+          <SearchBox
+            onUserInput={this.updateFilter}
+          />
           <Menu title="Emails">
             {this.getEmails()}
           </Menu>

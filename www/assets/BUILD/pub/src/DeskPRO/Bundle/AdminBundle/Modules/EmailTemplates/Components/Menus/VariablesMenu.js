@@ -62,9 +62,9 @@ export class VariablesMenu extends React.Component {
       (property, key) => {
         if (
           this.state.filter
-          && property.get('description').indexOf(this.state.filter) === -1
-          && property.get('attribute').indexOf(this.state.filter) === -1
-          && this.state.selectedLeft.get('attribute').indexOf(this.state.filter) === -1
+          && property.get('description').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+          && property.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+          && this.state.selectedLeft.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
         ) {
           return null;
         }
@@ -86,11 +86,11 @@ export class VariablesMenu extends React.Component {
     );
   };
 
-  updateFilter(value) {
+  updateFilter = (value) => {
     this.setState({
       filter: value
     });
-  }
+  };
 
   isActive = item => item === this.state.selectedLeft;
 
@@ -99,8 +99,7 @@ export class VariablesMenu extends React.Component {
       <div className="variables two-panels-menu">
         <MenuWrapper>
           <SearchBox
-            text={this.state.filter}
-            onUserInput={this.updateFilter()}
+            onUserInput={this.updateFilter}
           />
           <Menu>
             {this.getVariables()}
