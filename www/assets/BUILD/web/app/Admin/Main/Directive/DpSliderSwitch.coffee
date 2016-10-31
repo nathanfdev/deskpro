@@ -41,7 +41,7 @@ define ->
       link: (scope, element, attrs, ngModel) ->
 
         ngModel.$render = ->
-          val = ngModel.$viewValue || { checked: false, on: false, locked: false }
+          val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
           if val.on || val.checked
             element.addClass('switch-on')
             element.removeClass('switch-off switch-some')
@@ -58,7 +58,7 @@ define ->
             element.removeClass('locked')
 
         ngModel.$formatters.push( (modelValue) ->
-          val = ngModel.$viewValue || { checked: false, on: false, locked: false }
+          val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
           if modelValue
             val.checked = true
           else
@@ -81,7 +81,7 @@ define ->
           if element.hasClass('locked')
             return
 
-          val = ngModel.$viewValue || { checked: false, on: false, locked: false }
+          val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
           val.checked = !val.checked
           scope.$apply(->
             ngModel.$setViewValue(val)
@@ -91,7 +91,7 @@ define ->
 
         if attrs.isLocked
           scope.$watch(attrs.isLocked, (newVal) ->
-            val = ngModel.$viewValue || { checked: false, on: false, locked: false }
+            val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
             val.locked = newVal
             ngModel.$setViewValue(val)
             ngModel.$render()
@@ -99,7 +99,7 @@ define ->
 
         if attrs.isOn
           scope.$watch(attrs.isOn, (newVal) ->
-            val = ngModel.$viewValue || { checked: false, on: false, locked: false }
+            val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
             val.on = newVal
             ngModel.$setViewValue(val)
             ngModel.$render()
@@ -107,14 +107,14 @@ define ->
 
         if attrs.isSome
           scope.$watch(attrs.isSome, (newVal) ->
-            val = ngModel.$viewValue || { checked: false, on: false, locked: false }
+            val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
             val.some = !!newVal
             ngModel.$setViewValue(val)
             ngModel.$render()
           )
 
         scope.$watch(attrs.ngModel, (newVal) ->
-          val = ngModel.$viewValue || { checked: false, on: false, locked: false }
+          val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
           val.checked = newVal
           ngModel.$setViewValue(val)
           ngModel.$render()
