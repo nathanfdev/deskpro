@@ -35,7 +35,7 @@ mv $DP_DIR/app/BUILD/tmp-Node.php $DP_DIR/app/BUILD/vendor/zendframework/zend-ld
 # re-install npm deps
 cd $DP_DIR/www/assets/BUILD/pub
 rm -rf node_modules/
-yarn install --production
+npm install --production
 
 ########################################################################################################################
 # Cleanup for distro

@@ -30,7 +30,7 @@
                     ng-model="EditCtrl.group.perms.{{ typename }}.{{ permname }}"
                     {% if opts.toggleName %}
                         {% if opts.destructive %}
-                            is-on="EditCtrl.group.perms.{{ opts.toggleName }} || EditCtrl.group.sys_name == 'agent_all_perms'"
+                            is-on="EditCtrl.group.perms.{{ opts.toggleName }} || (EditCtrl.group.sys_name == 'agent_all_perms')"
                         {% else %}
                             is-on="EditCtrl.group.perms.{{ opts.toggleName }} || all_locked_perms"
                         {% endif %}
@@ -38,7 +38,7 @@
                         locked-tip="This permission is locked because the parent permission is enabled"
                     {% else %}
                         {% if opts.destructive %}
-                            is-on="EditCtrl.group.perms.{{ typename }}.{{ permname }} || EditCtrl.group.sys_name == 'agent_all_perms'"
+                            is-on="EditCtrl.group.perms.{{ typename }}.{{ permname }} || (EditCtrl.group.sys_name == 'agent_all_perms')"
                         {% else %}
                             is-on="EditCtrl.group.perms.{{ typename }}.{{ permname }} || all_locked_perms"
                         {% endif %}

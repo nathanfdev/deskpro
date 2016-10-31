@@ -20,7 +20,7 @@ foreach ($output as $file) {
         }
         $lint_output = [];
         echo "linting $file...";
-        exec("yarn run coffeelint ".escapeshellarg($file), $lint_output, $return);
+        exec("npm run-script coffeelint ".escapeshellarg($file), $lint_output, $return);
         if ($return == 0) {
             echo 'OK'.PHP_EOL;
         } else {

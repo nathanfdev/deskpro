@@ -50,9 +50,9 @@ echo "--> Done in $SECONDS seconds"
 
 SECONDS=0
 echo "Running E2E"
-(cd ../../../www/assets/BUILD/pub/ && yarn run test:e2e -- -e cbt --test=src/tests/E2E/tests/rough-agent-availability-test.js &> "$LOGS_DIR/e2e.txt") &
+(cd ../../../www/assets/BUILD/pub/ && npm run-script test:e2e -- -e cbt --test=src/tests/E2E/tests/rough-agent-availability-test.js &> "$LOGS_DIR/e2e.txt") &
 echo "Running Jest"
-(cd ../../../www/assets/BUILD/pub/ && yarn run test:unit &> "$LOGS_DIR/jest.txt") &
+(cd ../../../www/assets/BUILD/pub/ && npm run-script test:unit &> "$LOGS_DIR/jest.txt") &
 wait
 echo "--> Done in $SECONDS seconds"
 

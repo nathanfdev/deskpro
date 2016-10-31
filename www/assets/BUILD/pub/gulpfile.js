@@ -26,21 +26,21 @@ const nodeModulesDir = path.resolve(__dirname, './node_modules');
 // # Task Runners
 // ######################################################################################################################
 
-gulp.task('clean', cb => {
+gulp.task('clean', (cb) => {
   del(['./build']).then(() => {
     cb();
   });
 });
 
-gulp.task('default', ['clean'], cb => {
+gulp.task('default', ['clean'], (cb) => {
   runSeq(['bundle'], cb);
 });
 
-gulp.task('prod', ['clean', 'priv:start-prod'], cb => {
+gulp.task('prod', ['clean', 'priv:start-prod'], (cb) => {
   runSeq(['bundle'], cb);
 });
 
-gulp.task('dev', cb => {
+gulp.task('dev', (cb) => {
   // prefer to use one at a time, build speed is faster
   // and you can still just open up two terminal winodws if you need both
   console.log('Use:');
@@ -52,23 +52,23 @@ gulp.task('dev', cb => {
   cb();
 });
 
-gulp.task('dev:agent', cb => {
+gulp.task('dev:agent', (cb) => {
   runSeq(['bundle:dev-server:agent'], cb);
 });
 
-gulp.task('dev:portal', cb => {
+gulp.task('dev:portal', (cb) => {
   runSeq(['bundle:dev-server:portal'], cb);
 });
 
-gulp.task('dev:widget', cb => {
+gulp.task('dev:widget', (cb) => {
   runSeq(['bundle:dev-server:widget'], cb);
 });
 
-gulp.task('dev:demo', cb => {
+gulp.task('dev:demo', (cb) => {
   runSeq(['bundle:dev-server:demo'], cb);
 });
 
-gulp.task('dev:all', cb => {
+gulp.task('dev:all', (cb) => {
   runSeq(['bundle:dev-server'], cb);
 });
 
@@ -133,7 +133,7 @@ function refreshWidgetLoader(loaderFilename) {
 
 function refreshPortalDesignerVariables() {
   process.chdir('../web');
-  spawn('yarn', ['run', 'sassdoc']);
+  spawn('npm', ['run-script', 'sassdoc']);
   process.chdir('../pub');
 }
 
@@ -412,7 +412,7 @@ gulp.task('refresh-reducers', () => {
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
 });
 
-gulp.task('bundle', callback => {
+gulp.task('bundle', (callback) => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Admin', path.join(__dirname, 'src/DeskPRO/Bundle/AdminBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
@@ -425,18 +425,18 @@ gulp.task('bundle', callback => {
   runWebpackBundle(getWebpackConfig('all', true), callback);
 });
 
-gulp.task('bundle:agent', callback => {
+gulp.task('bundle:agent', (callback) => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('agent', true), callback);
 });
 
-gulp.task('bundle:portal', callback => {
+gulp.task('bundle:portal', (callback) => {
   runWebpackBundle(getWebpackConfig('portal', true), callback);
 });
 
-gulp.task('bundle:widget', callback => {
+gulp.task('bundle:widget', (callback) => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
   refreshWidgetLoader('widget_loader');
@@ -445,7 +445,7 @@ gulp.task('bundle:widget', callback => {
   runWebpackBundle(getWebpackConfig('widget', true), callback);
 });
 
-gulp.task('bundle:demo', callback => {
+gulp.task('bundle:demo', (callback) => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Demo', path.join(__dirname, 'src/DeskPRO/Bundle/DemoBundle'));
   runWebpackBundle(getWebpackConfig('demo', true), callback);

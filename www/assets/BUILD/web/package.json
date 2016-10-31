@@ -5,16 +5,17 @@
   "dependencies": {
     "Select2": "^3.5.7",
     "angular-ui-select2": "0.0.5",
-    "semantic-ui-less": "^2.2.3",
     "clipboard": "^1.5.12",
     "cssnano": "^3.7.7",
+    "custom-event-polyfill": "^0.3.0",
     "fbjs": "^0.8.3",
     "jquery": "^3.1.0",
     "jquery-ui": "^1.12.0",
     "react": "15.1.0",
     "react-dom": "15.1.0",
     "react-tooltip": "^3.1.1",
-    "scriptjs": "^2.5.8"
+    "scriptjs": "^2.5.8",
+    "semantic-ui-less": "^2.2.3"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",

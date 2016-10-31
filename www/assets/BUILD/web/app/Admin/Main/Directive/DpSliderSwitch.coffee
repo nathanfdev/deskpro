@@ -38,29 +38,41 @@ define ->
         </div>
       """,
       replace: true,
-      scope: {
-        isLocked: "=?",
-        isOn: "=?",
-        isSome: "=?",
-        lockedTipE: "=?"
-      }
-      link: (scope, element, attr, ngModel) ->
+      link: (scope, element, attrs, ngModel) ->
 
         ngModel.$render = ->
-          if scope.isOn || ngModel.$viewValue
+          val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
+          if val.on || val.checked
             element.addClass('switch-on')
             element.removeClass('switch-off switch-some')
-          else if scope.isSome
+          else if val.some
             element.removeClass('switch-on switch-off')
             element.addClass('switch-some')
           else
             element.removeClass('switch-on switch-some')
             element.addClass('switch-off')
 
-          if scope.isLocked
+          if val.locked
             element.addClass('locked')
           else
             element.removeClass('locked')
+
+        ngModel.$formatters.push( (modelValue) ->
+          val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
+          if modelValue
+            val.checked = true
+          else
+            val.checked = false
+
+          return val
+        )
+
+        ngModel.$parsers.push( (viewValue) ->
+          if viewValue and viewValue.checked
+            return true
+          else
+            return false
+        )
 
         element.on('click', (ev) ->
           ev.preventDefault()
@@ -69,13 +81,46 @@ define ->
           if element.hasClass('locked')
             return
 
+          val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
+          val.checked = !val.checked
           scope.$apply(->
-            ngModel.$setViewValue(!ngModel.$viewValue)
+            ngModel.$setViewValue(val)
           )
           ngModel.$render()
         )
 
-        if attr.lockedTip or scope.lockedTipE
+        if attrs.isLocked
+          scope.$watch(attrs.isLocked, (newVal) ->
+            val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
+            val.locked = newVal
+            ngModel.$setViewValue(val)
+            ngModel.$render()
+          )
+
+        if attrs.isOn
+          scope.$watch(attrs.isOn, (newVal) ->
+            val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
+            val.on = newVal
+            ngModel.$setViewValue(val)
+            ngModel.$render()
+          )
+
+        if attrs.isSome
+          scope.$watch(attrs.isSome, (newVal) ->
+            val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
+            val.some = !!newVal
+            ngModel.$setViewValue(val)
+            ngModel.$render()
+          )
+
+        scope.$watch(attrs.ngModel, (newVal) ->
+          val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false }
+          val.checked = newVal
+          ngModel.$setViewValue(val)
+          ngModel.$render()
+        )
+
+        if attrs.lockedTip or attrs.lockedTipE
           tipTarget = angular.element('<div class="mouse-target show-on-locked-on"></div>')
           tipTarget.appendTo(element)
           tipTarget.tooltip({
@@ -83,10 +128,10 @@ define ->
             trigger: 'hover',
             container: 'body',
             title: ->
-              if scope.lockedTipE
-                return scope.lockedTipE
+              if attrs.lockedTipE
+                return scope.$eval(attrs.lockedTipE)
               else
-                return attr.lockedTip
+                return attrs.lockedTip
           })
     }
   ]
