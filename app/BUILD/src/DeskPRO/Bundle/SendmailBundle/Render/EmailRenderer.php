@@ -154,6 +154,7 @@ class EmailRenderer
             $structure[$key] = [
                 'description' => $attribute['description'],
                 'type'        => $attribute['dataType'],
+                'attribute'   => $key,
             ];
             if (!empty($attribute['children'])) {
                 $structure[$key]['properties'] = $this->simplifyStructure($attribute['children']);
