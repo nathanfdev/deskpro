@@ -16,11 +16,15 @@
     </div>
 {% endif %}
 
-{% if not ticket.resolved and not ticket.archived %}
+{% if not ticket.archived and not (ticket.resolved and not has_permission('tickets.reopen_resolved'))%}
 
     <div class="ticket-reply dpx-form" id="ticket-reply-form">
         <div class="ticket-reply-header">
-            {{ phrase('portal.tickets.view_reply_or_close', { close_url: portal_path(ticket, 'resolve') }) }}
+            {% if not ticket.resolved %}
+                {{ phrase('portal.tickets.view_reply_or_close', { close_url: portal_path(ticket, 'resolve') }) }}
+            {% else %}
+                {{ phrase('portal.tickets.view_reply') }}
+            {% endif %}
         </div>
         {{ form_errors(form) }}
         {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
@@ -50,7 +54,7 @@
 {% else %}
     <div class="flashes">
         <div class="flash flash-notice">
-            {{ phrase('portal.tickets.view_cant_reply_closed') }}
+            {{ phrase('portal.tickets.view_cant_reply_archived') }}
         </div>
     </div>
     {% if can_view_tickets_link() %}

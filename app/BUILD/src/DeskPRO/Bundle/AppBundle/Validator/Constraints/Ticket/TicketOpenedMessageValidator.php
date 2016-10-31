@@ -54,7 +54,7 @@ class TicketOpenedMessageValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, Ticket::class);
         }
 
-        if ($value->getTicket()->isResolved() || $value->getTicket()->isArchived()) {
+        if ($value->getTicket()->isArchived()) {
             /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
             $context = $this->context;
             $context

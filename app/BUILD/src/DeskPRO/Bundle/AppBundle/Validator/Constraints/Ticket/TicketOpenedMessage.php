@@ -40,7 +40,7 @@ class TicketOpenedMessage extends Constraint
 {
     const TICKET_OPENED = 'ticket_opened';
 
-    public $message = 'Ticket should not be archived or closed.';
+    public $message = 'Ticket should not be archived.';
 
     /**
      * {@inheritdoc}
