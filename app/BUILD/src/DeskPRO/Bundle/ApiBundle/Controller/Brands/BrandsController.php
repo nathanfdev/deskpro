@@ -43,6 +43,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class BrandsController.
@@ -126,7 +127,17 @@ class BrandsController extends CrudController
         /** @var UrlHostChecker $urlHostChecker */
         $urlHostChecker = $this->get('url_host_checker');
 
-        $brand->setUrl($urlHostChecker->simplifyUrl($brand->getUrl()));
+        $url         = $urlHostChecker->simplifyUrl($brand->getUrl());
+        $helpdeskUrl = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
+        $helpdeskUrl = $urlHostChecker->simplifyUrl($helpdeskUrl);
+
+        if (false !== strpos($url, $helpdeskUrl)) {
+            throw new BadRequestHttpException(
+                'Your brand URL must be a completely separate URL, it cannot be a sub-directory of any of your existing brands.'
+            );
+        }
+
+        $brand->setUrl($url);
 
         $themeSet = new ThemeSet();
         $themeSet->setThemeId('standard');
@@ -210,11 +221,17 @@ class BrandsController extends CrudController
      */
     public function checkBrandUrlAction(Request $request)
     {
-        $url   = $this->get('url_host_checker')->simplifyUrl($request->request->get('url'));
-        $brand = $this->getRepository(Brand::class)->findOneBy(['url' => $url]);
+        $url         = $this->get('url_host_checker')->simplifyUrl($request->request->get('url'));
+        $brand       = $this->getRepository(Brand::class)->findOneBy(['url' => $url]);
+        $helpdeskUrl = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
+        $helpdeskUrl = $this->get('url_host_checker')->simplifyUrl($helpdeskUrl);
+        $response    = ['free' => !$brand];
 
-        return new View($this->wrap([
-            'free' => !$brand,
-        ]));
+        if (false !== strpos($url, $helpdeskUrl)) {
+            $response['free']   = false;
+            $response['reason'] = 'Your brand URL must be a completely separate URL, it cannot be a sub-directory of any of your existing brands.';
+        }
+
+        return new View($this->wrap($response));
     }
 }
