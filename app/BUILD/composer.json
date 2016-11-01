@@ -67,7 +67,6 @@
     "google/recaptcha": "~1.1",
     "slushie/recaptcha-secure-token": "^1.1",
     "symfony/proxy-manager-bridge": "~2.3",
-    "gnugat/nomo-spaco": "~0.4",
     "pusher/pusher-php-server": "^2.2",
     "richsage/rms-push-notifications-bundle": "^0.1.9",
     "symfony/assetic-bundle": "^2.7",
