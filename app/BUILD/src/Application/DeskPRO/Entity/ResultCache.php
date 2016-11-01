@@ -130,6 +130,14 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @return array
+     */
+    public function getResults()
+    {
+        return $this->results;
+    }
+
     public function getPersonId()
     {
         if (!$this->person) {

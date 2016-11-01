@@ -179,7 +179,14 @@
 			<div id="{{baseId}}_ug_edit_box" class="contact-list" style="display: none;">
 				<ul>
 					<div>
-						<label><input type="checkbox" checked="checked" onclick="this.checked=true;" /> {{ reg_group.title }}</label>
+						<label>
+							<input
+								type="checkbox"
+								checked="checked"
+								disabled="disabled"
+								onclick="this.checked=true;" />
+							{{ reg_group.title }}
+						</label>
 					</div>
 					{% for id,name in app.usergroups.getUsergroupNames() if id != 2 and id != 1 %}
 						<div>
