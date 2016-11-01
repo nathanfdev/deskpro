@@ -199,7 +199,7 @@ class EditEmailAccount
         $lastEmailAccountTrigger = $em->createQuery('
             SELECT trigger
             FROM DeskPRO:TicketTrigger trigger
-            WHERE trigger.email_account IS NOT NULL and trigger.email_account IS NULL
+            WHERE trigger.email_account IS NOT NULL
             ORDER BY trigger.run_order desc
         ')->setMaxResults(1)->getResult();
         $lastEmailAccountTrigger = reset($lastEmailAccountTrigger) ?: null;
