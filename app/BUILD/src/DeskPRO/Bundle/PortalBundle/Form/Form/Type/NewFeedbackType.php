@@ -161,6 +161,8 @@ class NewFeedbackType extends AbstractType
                 ]);
             }
         });
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
     /**
@@ -217,5 +219,12 @@ class NewFeedbackType extends AbstractType
     protected function phrase($name, array $vars = [])
     {
         return $this->languageManager->phrase($name, $vars);
+    }
+
+    public function onPreSubmit(FormEvent $event)
+    {
+        $data            = $event->getData();
+        $data['content'] = nl2br(htmlspecialchars(@$data['content']));
+        $event->setData($data);
     }
 }

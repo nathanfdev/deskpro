@@ -475,14 +475,6 @@ abstract class ContentAbstract extends DomainObject
         return $this['content'];
     }
 
-    public function getContentPlainHtml()
-    {
-        $content = htmlspecialchars($this['content']);
-        $content = nl2br($content);
-
-        return $content;
-    }
-
     public function getContentPlain()
     {
         $content = $this['content'];
