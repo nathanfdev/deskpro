@@ -73,6 +73,7 @@ class LanguageController extends AbstractApiController
             'portal.account.login-btn',
             'portal.account.login-email',
             'portal.account.login-invalid',
+            'portal.account.login-disabled',
             'portal.account.login-password',
             'portal.account.login-password-reminder',
             'portal.account.login-stay-logged-in',

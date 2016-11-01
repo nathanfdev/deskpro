@@ -407,6 +407,11 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         return $this->type;
     }
 
+    public function getActions()
+    {
+        return $this->actions ?: new ActionsCollection();
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
