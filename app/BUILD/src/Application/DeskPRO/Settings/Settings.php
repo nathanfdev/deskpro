@@ -229,9 +229,19 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
             throw $e;
         }
 
+        $this->reloadSettings();
+
+        $old = $this->get($setting);
+
         $auditLog     = new AuditLog();
         $auditLogData = new AuditLogData();
-        $auditLogData->setContext([])->setDiff([$setting => [$this->get($setting), $value]]);
+
+        // just leave in case $old = "0" and $value = false e.g.
+        if ((is_numeric($old) || is_numeric($value)) && ((int) $old === (int) $value)) {
+            return;
+        }
+
+        $auditLogData->setContext([])->setDiff([$setting => [$old, $value]]);
         $auditLog
             ->setAction(sprintf('settings.%s', $value !== null ? 'replace' : 'delete'))
             ->setPerformerId(App::getCurrentPerson()->getId())
@@ -247,7 +257,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
             ->setPerformerName(App::getCurrentPerson()->getDisplayName());
 
         $this->auditService->write($auditLog);
-        $this->reloadSettings();
     }
 
     /**
