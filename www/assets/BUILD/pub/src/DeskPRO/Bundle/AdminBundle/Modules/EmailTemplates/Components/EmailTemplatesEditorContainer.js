@@ -1,8 +1,17 @@
-import React from 'react';
-import { EmailsAndBlockMenuContainer } from './Menus/EmailsAndBlockMenu';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { EmailsAndBlockMenu } from './Menus/EmailsAndBlockMenu';
 import DropDownMenu from './Menus/DropDownMenu';
 
+@connect(state => ({
+  emailTemplates: collectionSelectorFactory('EmailTemplates')(state)
+}))
 class EmailTemplatesEditorContainer extends React.Component {
+  static propTypes = {
+    emailTemplates: PropTypes.object.isRequired
+  };
+
   render() {
     return (
       <div className="dp-email-templates">
@@ -29,7 +38,9 @@ class EmailTemplatesEditorContainer extends React.Component {
                   icon="mail"
                   label="Register Welcome Email"
                 >
-                  <EmailsAndBlockMenuContainer />
+                  <EmailsAndBlockMenu
+                    emails={this.props.emailTemplates}
+                  />
                 </DropDownMenu>
               </div>
               <div className="menu right floated">

@@ -8,7 +8,7 @@ import EmailTemplateItem from './EmailTemplateItem';
 export class EmailsAndBlockMenuContainer extends React.Component {
 
   render() {
-    return <EmailsAndBlockMenu />;
+    return (<EmailsAndBlockMenu />);
   }
 }
 

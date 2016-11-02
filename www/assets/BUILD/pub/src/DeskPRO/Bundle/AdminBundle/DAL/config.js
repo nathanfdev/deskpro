@@ -1,4 +1,5 @@
 export const repositoriesConfig = {
+  EmailTemplates:     { type: 'api', url: '/email_templates/info' },
   Person:             { type: 'api', url: '/people', allowAll: false },
   Ticket:             { type: 'api', url: '/people', allowAll: false },
   TicketDepartment:   { type: 'api', url: '/ticket_departments', allowAll: true },
