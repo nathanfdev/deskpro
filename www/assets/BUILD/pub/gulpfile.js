@@ -246,6 +246,10 @@ function getWebpackConfig(mode, isProd) {
         'process.env.NODE_ENV': (isProd ? '"production"' : '"development"'),
         __DEV__:                !isProd
       }),
+      new webpack.ProvidePlugin({
+        $:      'jquery',
+        jQuery: 'jquery'
+      }),
       new CopyWebpackPlugin([
         { from: path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle'), to: 'DeskPRO/Bundle/PortalBundle' }
       ])
