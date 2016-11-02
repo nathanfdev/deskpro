@@ -230,10 +230,6 @@ function getWebpackConfig(mode, isProd) {
         {
           test:   /\.json/,
           loader: 'json-loader'
-        },
-        {
-          test:   require.resolve('jquery'),
-          loader: 'expose?jQuery!expose?$'
         }
       ],
       noParse: [/\.min\.js/]
