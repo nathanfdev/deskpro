@@ -285,11 +285,11 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
             $trigger = new TicketTrigger();
         }
 
-        $is_new = !((bool) $trigger->id);
+        $isNew = !((bool) $trigger->id);
 
         $trigger->title = $this->in->getString('title');
 
-        if ($is_new) {
+        if ($isNew) {
             $trigger->event_trigger = $this->in->getString('event_trigger');
         }
 
@@ -305,9 +305,9 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         $trigger->setByUserMode($this->in->getArrayOfStrings('by_user_mode'));
         $trigger->setByAppMode($this->in->getArrayOfStrings('by_app_mode'));
 
-        $error_criteria = [];
-        $error_actions  = [];
-        $error_messages = [];
+        $errorCriteria = [];
+        $errorActions  = [];
+        $errorMessages = [];
 
         $terms = new TriggerTerms();
         foreach ($this->in->getArrayValue('criteria_sets') as $set) {
@@ -318,8 +318,8 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                         $t = $terms->getTermFromArray($ti);
                         $composite->add($t);
                     } catch (\Exception $e) {
-                        $error_criteria[] = $ti['type'];
-                        $error_messages[] = $e->getMessage();
+                        $errorCriteria[] = $ti['type'];
+                        $errorMessages[] = $e->getMessage();
                     }
                 }
                 if ($composite->count()) {
@@ -328,7 +328,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
             }
         }
 
-        $action_defs = $this->container->getTicketActionDefManager();
+        $actionDefs = $this->container->getTicketActionDefManager();
 
         $actions = new TriggerActions();
         foreach ($this->in->getArrayValue('actions') as $act) {
@@ -339,8 +339,8 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                     continue;
                 }
 
-                if ($action_defs->hasNamedDef($type)) {
-                    $act['type_class'] = $action_defs->getNamedDef($type)->getDef()->getTriggerActionClass();
+                if ($actionDefs->hasNamedDef($type)) {
+                    $act['type_class'] = $actionDefs->getNamedDef($type)->getDef()->getTriggerActionClass();
                     if (!$act['type_class']) {
                         continue;
                     }
@@ -349,23 +349,23 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                 try {
                     $actions->addActionFromArray($act);
                 } catch (\Exception $e) {
-                    $error_actions[]  = $act['type'];
-                    $error_messages[] = $e->getMessage();
+                    $errorActions[]  = $act['type'];
+                    $errorMessages[] = $e->getMessage();
                 }
             }
         }
 
         $ret = [];
 
-        if ($error_criteria || $error_actions) {
+        if ($errorCriteria || $errorActions) {
             $ret['errors'] = [];
-            if ($error_criteria) {
-                $ret['errors']['criteria'] = $error_criteria;
+            if ($errorCriteria) {
+                $ret['errors']['criteria'] = $errorCriteria;
             }
-            if ($error_actions) {
-                $ret['errors']['actions'] = $error_actions;
+            if ($errorActions) {
+                $ret['errors']['actions'] = $errorActions;
             }
-            $ret['errors']['error_messages'] = $error_messages;
+            $ret['errors']['error_messages'] = $errorMessages;
 
             return $this->createApiErrorInfoResponse('invalid', 'One or more criteria or actions are invalid', $ret['errors']);
         }
@@ -382,7 +382,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
             $edit->applyToTrigger($trigger);
         }
 
-        if ($is_new) {
+        if ($isNew) {
             $ro = 0;
             if ($trigger->department) {
                 $ro = $this->db->fetchColumn('SELECT run_order FROM ticket_triggers WHERE department_id IS NOT NULL LIMIT 1');
@@ -446,12 +446,12 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
             throw $this->createNotFoundException();
         }
 
-        $old_id = $trigger->id;
+        $oldId = $trigger->id;
 
         $this->em->remove($trigger);
         $this->em->flush();
 
-        return $this->createSuccessResponse(['old_id' => $old_id]);
+        return $this->createSuccessResponse(['old_id' => $oldId]);
     }
 
     //###################################################################################################################
@@ -536,10 +536,10 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      */
     public function saveRunOrderAction()
     {
-        $run_orders = $this->in->getCleanValueArray('run_orders', 'string', 'discard');
+        $runOrders = $this->in->getCleanValueArray('run_orders', 'string', 'discard');
         /** @var TicketTriggerRepository $ticketTriggerRepository */
         $ticketTriggerRepository = $this->em->getRepository('DeskPRO:TicketTrigger');
-        $ticketTriggerRepository->updateRunOrders($run_orders);
+        $ticketTriggerRepository->updateRunOrders($runOrders);
 
         return $this->createSuccessResponse();
     }
@@ -576,10 +576,10 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         $events = [];
 
         foreach ($this->container->getAppManager()->getAllApps() as $app) {
-            $app_events = $app->getTriggerEvents($type);
+            $appEvents = $app->getTriggerEvents($type);
 
-            if ($app_events) {
-                $app_info = [
+            if ($appEvents) {
+                $appInfo = [
                     'id'      => $app->id,
                     'title'   => $app->title,
                     'package' => [
@@ -588,10 +588,10 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                     ],
                 ];
 
-                foreach ($app_events as $ev) {
+                foreach ($appEvents as $ev) {
                     $events[] = [
                         'event' => $ev,
-                        'app'   => $app_info,
+                        'app'   => $appInfo,
                     ];
                 }
             }
