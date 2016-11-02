@@ -21,6 +21,7 @@ $font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   border: 1px solid $dp-sonic-primary;
   border-radius: 2px;
   font-family: $font-family;
+  z-index: 100;
   > .ui.vertical.menu {
     display: table-cell;
     box-shadow: none;

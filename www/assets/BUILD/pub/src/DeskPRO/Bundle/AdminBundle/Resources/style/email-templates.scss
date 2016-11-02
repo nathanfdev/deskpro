@@ -1,3 +1,123 @@
+//######################################################################################################################
+//# Email templates
+//######################################################################################################################
+
+.dp-email-templates {
+  font-family: Open Sans, Helvetica, Arial, sans-serif;
+  .editor {
+    width: 55%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background-color: $dp-greyscale-50;
+    border-right: 1px solid #D4D4D5;
+    .header {
+      height: 120px;
+      .fa-caret-down {
+        margin-left: 3px;
+      }
+      > div:first-child {
+        padding: 20px;
+      }
+      > div {
+        border-bottom: 1px solid #D4D4D5;
+        .menu {
+          display: inline-block;
+          border-left: 1px solid #D4D4D5;
+          padding: 5px 10px 2px;
+          > div {
+            padding: 5px 10px 8px;
+          }
+        }
+        > .right.floated {
+          text-align: center;
+          float: right;
+        }
+      }
+    }
+    .dp-code-editor {
+      position: absolute !important;
+      width: 100%;
+      left: 0;
+      top: 120px;
+      bottom: 60px;
+      background-color: $dp-greyscale-850;
+      color: $dp-greyscale-50;
+      border-radius: 0;
+      padding: 20px;
+      .with-ace-editor {
+        background-color: $dp-greyscale-950;
+        min-height: 40px;
+        width: 100%;
+        margin-bottom: 10px;
+        margin-top: 5px;
+      }
+      .email-body {
+        min-height: 200px;
+      }
+    }
+    .footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      padding: 10px;
+    }
+  }
+  .preview {
+    width: 45%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right:0;
+    background-color: $dp-greyscale-50;
+    .header {
+      padding: 20px 20px 25px;
+      height: 120px;
+      p {
+        margin-bottom: 20px;
+        font-size: 18px;
+      }
+    }
+    .email-preview {
+      background-color: $dp-greyscale-150;
+      position: absolute;
+      top: 140px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      .email {
+        background-color: $dp-greyscale-50;
+        padding: 30px;
+        position: absolute;
+        top: 30px;
+        bottom: 30px;
+        left: 30px;
+        right: 30px;
+        overflow-y: auto;
+      }
+    }
+  }
+}
+.email-dropdown-menu {
+  user-select: none;
+  &.active {
+    border: 1px solid $dp-sonic-primary;
+    border-bottom-color: $dp-greyscale-50;
+    border-radius: 2px 2px 0 0;
+    padding-bottom: 6px !important;
+    z-index: 101;
+    background-color: $dp-greyscale-50;
+  }
+  .ui.bottom.popup {
+    padding: 0;
+    box-shadow: none;
+    border: none;
+    margin-top: 0;
+  }
+}
 .email-and-block {
   width: 600px;
   > div:first-child {
