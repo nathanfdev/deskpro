@@ -2,7 +2,12 @@ import React, { PropTypes } from 'react';
 import moment from 'moment';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import classNames from 'classnames';
+import emojione from 'emojione';
 import AvatarHelper from '../IMTabs/AvatarHelper';
+
+emojione.imagePathSVGSprites = './../assets/BUILD/pub/build/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg';
+emojione.imageType = 'svg';
+emojione.sprites = true;
 
 class Message extends React.Component
 {
@@ -34,7 +39,7 @@ class Message extends React.Component
     if (this.props.searchQuery) {
       message = message.replace(this.props.searchQuery, `<span class="search result">${this.props.searchQuery}</span>`);
     }
-
+    message = emojione.shortnameToImage(message);
     return {
       __html: message
     };

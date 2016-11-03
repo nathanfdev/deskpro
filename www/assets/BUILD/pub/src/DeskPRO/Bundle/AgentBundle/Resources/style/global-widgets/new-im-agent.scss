@@ -1,5 +1,28 @@
 @import '../variables';
 
+img.emojione, svg.emojione {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
+.emoji-dialog .emoji-category-list .emoji svg {
+  width: 22px;
+  height: 22px;
+}
+
+.emoji-dialog .emoji-dialog-header svg {
+  width: 22px;
+  height: 22px;
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+
+.emoji-dialog .emoji-dialog-header li.active svg {
+  -webkit-filter: grayscale(0);
+  filter: grayscale(0);
+}
+
 .ui.im.avatar {
   width: 24px;
   height: 24px;

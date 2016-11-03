@@ -4,12 +4,16 @@ import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
-
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
+import emojione from 'emojione';
 import MessageList from './MessageList';
 import EmojiBox from './EmojiBox';
+
+emojione.imagePathSVGSprites = './../assets/BUILD/pub/build/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg';
+emojione.imageType = 'png';
+emojione.sprites = true;
 
 class Container extends React.Component {
   static propTypes = {
@@ -124,6 +128,7 @@ class Container extends React.Component {
         header = 'some im';
         break;
     }
+
     return (
       <span className="wrapper">
         {header}
@@ -179,7 +184,67 @@ class Container extends React.Component {
   }
 
   addEmoji(emoji) {
-    console.log(emoji, this.state.emojiOpened);
+    emojione.imageType = 'png';
+    emojione.sprites = false;
+
+    const editor = this.editor;
+    const medium = editor.getMediumEditor();
+    medium.stopSelectionUpdates();
+
+    // focus the rte field
+    editor.focus();
+
+    const contentWindow = medium.options.contentWindow;
+    const ownerDocument = medium.options.ownerDocument;
+
+    const html = ` ${emojione.shortnameToImage(emoji.shortname)} `;
+
+    if (contentWindow.getSelection) {
+      // IE9 and non-IE
+      const selection = contentWindow.getSelection();
+      if (selection.getRangeAt && selection.rangeCount) {
+        let range = selection.getRangeAt(0);
+        range.deleteContents();
+
+        // Range.createContextualFragment() would be useful here but is
+        // only relatively recently standardized and is not supported in
+        // some browsers (IE9, for one)
+        const el     = document.createElement('div');
+        el.innerHTML = html;
+        const frag   = document.createDocumentFragment();
+
+        let node;
+        let lastNode;
+
+        do {
+          node = el.firstChild;
+          if (node) {
+            lastNode = frag.appendChild(node);
+          }
+        } while (node);
+
+        range.insertNode(frag);
+
+        // Preserve the selection
+        if (lastNode) {
+          range = ownerDocument.createRange();
+          range.selectNodeContents(lastNode);
+          range.collapse(false);
+
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      }
+    } else if (ownerDocument.selection && ownerDocument.selection.type !== 'Control') {
+      // IE < 9
+      ownerDocument.selection.createRange().pasteHTML(html);
+    }
+
+    medium.saveSelection();
+    medium.trigger('onChange');
+
+    // focus the rte again to correct display caret position
+    editor.focus();
   }
 
   handleChange(text) {
@@ -189,7 +254,7 @@ class Container extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.props.onSubmit(this.state.message);
+    this.props.onSubmit(emojione.toShort(emojione.shortnameToImage(this.state.message)));
     this.setState({ message: '' });
   }
 
@@ -203,10 +268,10 @@ class Container extends React.Component {
     if (this.props.current.get('chat_type') === 'group' && !this.state.searching) {
       return (
         <Segment vertical className={classNames('group participants', { expanded: this.state.expandGroupHeader })}>
-          <span className="control">
+          <span className="con trol">
             <i className="fa fa-times" onClick={() => this.setState({ expandGroupHeader: false })} />
             <i
-              className="write icon group-edit"
+              className="write  icon group-edit"
               onClick={
                 () => {
                   this.props.openGroupDrawer(

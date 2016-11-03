@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
+import EmojiPicker from 'emojione-picker';
 
 class EmojiBox extends React.Component
 {
@@ -16,25 +16,16 @@ class EmojiBox extends React.Component
   render() {
     const { isOpen, emojiNode, clickOut } = this.props;
 
-    const tabsStructure = {
-      items: [
-        {
-          id:      'emoji',
-          content: 'test',
-          title:   <i className="fa fa-smile-o" />
-        },
-        {
-          id:      'emoji2',
-          content: 'test2',
-          title:   <i className="fa fa-smile-o" />
-        }
-      ]
+    const settings = {
+      imageType:           'svg',
+      sprites:             true,
+      imagePathSVGSprites: './../assets/BUILD/pub/build/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg'
     };
 
     return (<Detached isOpen={isOpen} positionTarget={emojiNode} positionMy="right+25 top+35">
       <ClickOut onClickOut={clickOut} ignoreNodes={['.emoji.trigger']}>
         <div className="emoji box">
-          <Tabs {...tabsStructure} />
+          <EmojiPicker emojione={settings} onChange={this.props.emojiClick} />
         </div>
       </ClickOut>
     </Detached>);

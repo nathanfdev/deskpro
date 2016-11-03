@@ -92,7 +92,7 @@ class MessageList extends React.Component {
         <Scrollarea
           className="dpscrollarea"
           contentClassName="dpscrollarea"
-          vertical="vertical"
+          vertical
           onScroll={onScroll}
         >
           <Loader loaded={loaded} parentClassName="box">
