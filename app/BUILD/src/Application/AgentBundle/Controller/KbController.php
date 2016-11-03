@@ -62,7 +62,7 @@ class KbController extends AbstractController
     // Edit article
     //###########################################################################
 
-    public function viewArticleAction($article_id)
+    public function viewArticleAction($article_id, Request $request)
     {
         $isPdf = $this->in->getBool('pdf');
         /** @var Article $article */
@@ -71,7 +71,7 @@ class KbController extends AbstractController
             throw $this->createNotFoundException("Unknown article $article_id");
         }
 
-        if ($this->in->getBool('do_validate') and $article['status_code'] == 'hidden.unpublished' && $this->person->hasPerm('agent_publish.validate')) {
+        if ($request->get('do_validate') and $article['status_code'] == 'hidden.unpublished' && $this->person->hasPerm('agent_publish.validate')) {
             $article['status_code'] = Article::STATUS_PUBLISHED;
             $this->em->persist($article);
             $this->em->flush();
@@ -107,9 +107,11 @@ class KbController extends AbstractController
             $category = current($article->getCategories());
         }
         if ($category && $category->getBrand()) {
-            $brandId = $category->getBrand()->getId();
+            $brand   = $category->getBrand();
+            $brandId = $brand->getId();
         } else {
             $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+            $brand   = $this->em->getRepository(Brand::class)->find($brandId);
         }
         $article_categories = $this->getFilteredCategory($brandId);
         $article_products   = $this->em->getRepository(Product::class)->getInHierarchy();
@@ -137,15 +139,16 @@ class KbController extends AbstractController
 
         $trans_data = $this->container->getObjectLangRepository()->getLoadedRecs($article);
 
-        if (!count($article->getCategories())) {
+        if (!count($article->getCategories()) && $article_categories) {
             $first = Arrays::getFirstKey($article_categories);
-            $cat   = $this->em->getRepository(ArticleCategory::class)->find($first);
-            $article->addToCategory($cat);
-            $this->em->persist($article);
-            $this->em->flush($article);
+            if ($category = $this->em->getRepository(ArticleCategory::class)->find($first)) {
+                $article->addToCategory($category);
+                $this->em->persist($article);
+                $this->em->flush($article);
+            }
         }
 
-        $glossary       = new GlossaryHandler($this->em, $category->getBrand());
+        $glossary       = new GlossaryHandler($this->em, $brand);
         $glossary_words = $glossary->findWords($article->content);
         $word_defs      = $glossary->getWordDefs($glossary_words);
 
