@@ -1,8 +1,14 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
-import { loadAll } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const loadTemplates = createAction(
   'EMAIL_TEMPLATES_LOAD_TEMPLATES',
-  () => dispatch => dispatch(loadAll('EmailTemplates'))
+  () => dispatch => repository('EmailTemplates').loadInfo().then((promise) => {
+    const res = promise.getData();
+
+    dispatch(setCollection('EmailTemplates', 'info', res.data));
+    return res.data;
+  })
 );
 

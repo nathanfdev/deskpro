@@ -21,6 +21,10 @@ class DropDownMenu extends React.Component {
     }
   };
 
+  closeMenu = () => {
+    this.dropdown.closePopup();
+  };
+
   render() {
     return (
       <PopUp

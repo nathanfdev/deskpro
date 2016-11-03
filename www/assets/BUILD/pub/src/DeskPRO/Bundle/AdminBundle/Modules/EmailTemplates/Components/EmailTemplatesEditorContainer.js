@@ -1,18 +1,61 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { EmailsAndBlockMenu } from './Menus/EmailsAndBlockMenu';
 import DropDownMenu from './Menus/DropDownMenu';
+import { loadTemplates } from '../Actions/templatesActions';
 
 @connect(state => ({
-  emailTemplates: collectionSelectorFactory('EmailTemplates')(state)
+  emailTemplates: collectionSelectorFactory('EmailTemplates', 'info')(state)
 }))
 class EmailTemplatesEditorContainer extends React.Component {
   static propTypes = {
+    dispatch:       PropTypes.func.isRequired,
     emailTemplates: PropTypes.object.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      template: null,
+      info:     Immutable.fromJS({})
+    };
+  }
+
+  componentWillMount() {
+    const { dispatch } = this.props;
+
+    dispatch(loadTemplates());
+    console.log(this.props.emailTemplates);
+  }
+
+  componentDidMount() {
+    repository('EmailTemplates').loadInfo().then((promise) => {
+      const res = promise.getData();
+      this.setState({
+        info: Immutable.fromJS(res.data)
+      });
+    });
+  }
+
+  onChangeTemplate = (template) => {
+    this.setState({
+      template
+    });
+    this.templateMenu.closeMenu();
+    console.log(this.templateMenu);
+    console.log(this.templateMenu.dropdown);
+    // this.templateMenu.dropdown.closePop();
+  };
+
   render() {
+    let templates = null;
+    if (this.state.info && this.state.info.get('list')) {
+      templates = this.state.info.get('list').get('user').get('groups');
+    }
+    const currentTemplate = this.state.template ? this.state.template.get('title') : 'Select a template';
     return (
       <div className="dp-email-templates">
         <div className="editor">
@@ -36,10 +79,12 @@ class EmailTemplatesEditorContainer extends React.Component {
               <div className="menu">
                 <DropDownMenu
                   icon="mail"
-                  label="Register Welcome Email"
+                  label={currentTemplate}
+                  ref={(c) => { this.templateMenu = c; }}
                 >
                   <EmailsAndBlockMenu
-                    emails={this.props.emailTemplates}
+                    emails={templates}
+                    selectTemplate={this.onChangeTemplate}
                   />
                 </DropDownMenu>
               </div>

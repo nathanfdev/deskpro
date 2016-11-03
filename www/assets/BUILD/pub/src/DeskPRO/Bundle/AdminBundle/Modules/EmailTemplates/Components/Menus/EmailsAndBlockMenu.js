@@ -19,6 +19,10 @@ export class EmailsAndBlockMenu extends React.Component {
     onChangeMenu:   PropTypes.func,
     selectTemplate: PropTypes.func
   };
+  static defaultProps = {
+    onChangeMenu() {},
+    selectTemplate() {}
+  };
 
   constructor(props) {
     super(props);
