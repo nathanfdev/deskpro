@@ -8,7 +8,7 @@ import DropDownMenu from './Menus/DropDownMenu';
 import { loadTemplates } from '../Actions/templatesActions';
 
 @connect(state => ({
-  emailTemplates: collectionSelectorFactory('EmailTemplates', 'info')(state)
+  emailTemplates: state.EmailTemplates.templates
 }))
 class EmailTemplatesEditorContainer extends React.Component {
   static propTypes = {
@@ -19,8 +19,7 @@ class EmailTemplatesEditorContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      template: null,
-      info:     Immutable.fromJS({})
+      template: null
     };
   }
 
@@ -28,16 +27,6 @@ class EmailTemplatesEditorContainer extends React.Component {
     const { dispatch } = this.props;
 
     dispatch(loadTemplates());
-    console.log(this.props.emailTemplates);
-  }
-
-  componentDidMount() {
-    repository('EmailTemplates').loadInfo().then((promise) => {
-      const res = promise.getData();
-      this.setState({
-        info: Immutable.fromJS(res.data)
-      });
-    });
   }
 
   onChangeTemplate = (template) => {
@@ -45,15 +34,13 @@ class EmailTemplatesEditorContainer extends React.Component {
       template
     });
     this.templateMenu.closeMenu();
-    console.log(this.templateMenu);
-    console.log(this.templateMenu.dropdown);
-    // this.templateMenu.dropdown.closePop();
   };
 
   render() {
+    const info = this.props.emailTemplates;
     let templates = null;
-    if (this.state.info && this.state.info.get('list')) {
-      templates = this.state.info.get('list').get('user').get('groups');
+    if (info && info.get('info') && info.get('info').get('list')) {
+      templates = info.get('info').get('list').get('user').get('groups');
     }
     const currentTemplate = this.state.template ? this.state.template.get('title') : 'Select a template';
     return (
