@@ -107,9 +107,6 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
             $ticket->agent = $agent;
             $rr->last      = $agent;
         }
-
-        $em->flush($entry);
-        $em->flush($rr);
     }
 
     /**
