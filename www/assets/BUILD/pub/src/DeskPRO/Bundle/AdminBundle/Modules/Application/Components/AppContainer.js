@@ -43,6 +43,7 @@ class AppContainer extends React.Component {
               <Route path="auto_attendants" component={Voice.AutoAttendantList} />
               <Route path="auto_attendants/new" component={Voice.NewAutoAttendant} />
               <Route path="auto_attendants/:autoAttendantId" component={Voice.EditAutoAttendant} />
+              <Route path="agents" component={Voice.AgentsVoiceToggle} />
             </Route>}
         </Router>
       </Provider>

@@ -2200,6 +2200,13 @@ define(function() {
   });
 
   routes.push({
+    id:           'voice-channel.agents',
+    url:          '/agents',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
     id:           'voice-channel.music_and_greetings',
     url:          '/music_and_greetings',
     templateName: 'VoiceChannel/react_component.html',

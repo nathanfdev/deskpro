@@ -10,6 +10,7 @@ import NewExtensionList from './Extensions/NewList/NewExtensionListContainer';
 import AutoAttendantList from './AutoAttendants/List/AutoAttendantListContainer';
 import NewAutoAttendant from './AutoAttendants/Form/NewAutoAttendantContainer';
 import EditAutoAttendant from './AutoAttendants/Form/EditAutoAttendantContainer';
+import AgentsVoiceToggle from './Agents/AgentsVoiceToggleContainer';
 
 export {
   Accounts,
@@ -23,5 +24,6 @@ export {
   NewExtensionList,
   AutoAttendantList,
   NewAutoAttendant,
-  EditAutoAttendant
+  EditAutoAttendant,
+  AgentsVoiceToggle
 };

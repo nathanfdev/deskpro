@@ -2,7 +2,7 @@ import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import Immutable from 'immutable';
 import { updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { editPerson } from '../../Application/Actions/peopleActions';
+import { editAgent } from '../../Application/Actions/peopleActions';
 import { allAgentsSelector } from '../../Application/Selectors/people';
 
 export const addExtension = createAction(
@@ -14,7 +14,7 @@ export const addExtension = createAction(
       }
     };
 
-    return dispatch(editPerson(agentId, data));
+    return dispatch(editAgent(agentId, data));
   }
 );
 

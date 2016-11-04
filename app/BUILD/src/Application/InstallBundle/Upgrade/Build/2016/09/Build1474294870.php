@@ -59,6 +59,7 @@ class Build1474294870 extends AbstractBuild
 /*db:default*/ ALTER TABLE voice_targets ADD CONSTRAINT FK_F637E5802E24EDAB FOREIGN KEY (voice_queue_id) REFERENCES voice_queues (id) ON DELETE CASCADE;
 /*db:default*/ ALTER TABLE voice_targets ADD CONSTRAINT FK_F637E5803414710B FOREIGN KEY (agent_id) REFERENCES people (id) ON DELETE CASCADE;
 /*db:default*/ ALTER TABLE voice_targets ADD CONSTRAINT FK_F637E580765D3C52 FOREIGN KEY (voice_auto_attendant_id) REFERENCES voice_auto_attendants (id) ON DELETE CASCADE;
+/*db:default*/ ALTER TABLE agent_data ADD is_voice_enabled TINYINT(1) NOT NULL;
 SQL
         );
     }

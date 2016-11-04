@@ -10,7 +10,7 @@ export const loadAgents = createAction(
   })
 );
 
-export const editPerson = createAction(
+export const editAgent = createAction(
   'ADMIN_EDIT_AGENT',
   (id, data) => dispatch => repository('Person').update(data, id).success(() => {
     const person = Immutable.fromJS({ ...data, id });

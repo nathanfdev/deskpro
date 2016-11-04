@@ -2,27 +2,34 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
 class Toggle extends React.Component {
+
   static propTypes = {
     active:    PropTypes.bool,
+    disabled:  PropTypes.bool,
     onChange:  PropTypes.func,
     elementId: PropTypes.string,
     children:  PropTypes.node,
     className: PropTypes.string
   };
+
   static defaultProps = {
-    onChange() {
-    }
+    onChange: () => {}
   };
 
   onClick = () => {
-    const newState = !this.props.active;
-    this.props.onChange(newState);
+    const { active, disabled, onChange } = this.props;
+    if (disabled) {
+      return;
+    }
+
+    onChange(!active);
   };
 
   render() {
-    const { children, elementId, active, className } = this.props;
+    const { children, elementId, active, disabled, className } = this.props;
+
     return  (
-      <div className={classNames('ui', 'toggle', 'checkbox', className)}>
+      <div className={classNames('ui', 'toggle', 'checkbox', className, { disabled })}>
         <input
           type="checkbox"
           id={elementId}
@@ -37,4 +44,5 @@ class Toggle extends React.Component {
     );
   }
 }
+
 export default Toggle;

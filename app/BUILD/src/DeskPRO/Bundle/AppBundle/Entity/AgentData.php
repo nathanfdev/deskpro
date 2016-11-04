@@ -97,6 +97,16 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     private $voicemailAsset;
 
     /**
+     * @ORM\Column(name="is_voice_enabled", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $isVoiceEnabled = false;
+
+    /**
      * @return int
      */
     public function getId()
@@ -160,6 +170,26 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     public function setVoicemailAsset(VoiceAsset $voicemailAsset = null)
     {
         $this->setModelField('voicemailAsset', $voicemailAsset);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVoiceEnabled()
+    {
+        return $this->isVoiceEnabled;
+    }
+
+    /**
+     * @param bool $isVoiceEnabled
+     *
+     * @return $this
+     */
+    public function setIsVoiceEnabled($isVoiceEnabled)
+    {
+        $this->setModelField('isVoiceEnabled', $isVoiceEnabled);
 
         return $this;
     }

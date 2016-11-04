@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
-import { editPerson } from '../../../../Application/Actions/peopleActions';
+import { editAgent } from '../../../../Application/Actions/peopleActions';
 
 @connect()
 class AudioWidgetContainer extends React.Component {
@@ -28,7 +28,7 @@ class AudioWidgetContainer extends React.Component {
     });
 
     const agentData = agent.get('agent_data').toJS();
-    const promise = dispatch(editPerson(agent.get('id'), {
+    const promise = dispatch(editAgent(agent.get('id'), {
       agent_data: {
         ...agentData,
         voicemail_asset: data

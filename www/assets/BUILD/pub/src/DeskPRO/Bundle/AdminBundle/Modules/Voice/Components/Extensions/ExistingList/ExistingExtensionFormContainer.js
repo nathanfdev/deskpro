@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ExistingExtensionForm from './ExistingExtensionForm';
-import { editPerson } from '../../../../Application/Actions/peopleActions';
+import { editAgent } from '../../../../Application/Actions/peopleActions';
 
 @connect()
 class ExistingExtensionFormContainer extends React.Component {
@@ -32,7 +32,7 @@ class ExistingExtensionFormContainer extends React.Component {
       errors:   {}
     });
 
-    const promise = dispatch(editPerson(agent.get('id'), data));
+    const promise = dispatch(editAgent(agent.get('id'), data));
     promise.success(() => {
       this.setState({
         saving: false
@@ -59,7 +59,7 @@ class ExistingExtensionFormContainer extends React.Component {
     });
 
     const agentData = agent.get('agent_data') ? agent.get('agent_data').toJS() : {};
-    const promise = dispatch(editPerson(agent.get('id'), {
+    const promise = dispatch(editAgent(agent.get('id'), {
       agent_data: {
         ...agentData,
         extension_number: null

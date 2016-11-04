@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -52,6 +53,9 @@ class PersonAgentDataType extends AbstractType
             ->add('voicemail_asset', VoiceAssetType::class, [
                 'property_path' => 'voicemailAsset',
                 'required'      => false,
+            ])
+            ->add('is_voice_enabled', ApiBooleanType::class, [
+                'property_path' => 'isVoiceEnabled',
             ])
         ;
     }
