@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
+import { getFormDataErrors } from 'DeskPRO/Component/Form/FormErrors';
 
 class Form extends React.Component {
 
   static propTypes = {
     formValue: PropTypes.object,
-    children:  PropTypes.any
+    children:  PropTypes.oneOfType([PropTypes.array, PropTypes.node])
   };
 
   renderChild(child, key) {
@@ -19,11 +20,19 @@ class Form extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, formValue } = this.props;
 
     return (
       <form className="ui form" {...this.props}>
         {Array.isArray(children) ? children.map((child, i) => this.renderChild(child, i)) : this.renderChild(children)}
+        {getFormDataErrors(formValue) &&
+          <div className="ui negative message">
+            <ul>
+              {getFormDataErrors(formValue).map((error, index) =>
+                <li key={index}>{error.message}</li>
+              )}
+            </ul>
+          </div>}
       </form>
     );
   }

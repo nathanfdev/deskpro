@@ -4,7 +4,8 @@ import { Fieldset, Input, createValue } from 'react-forms';
 import { Form, Field, Select, MultiSelect } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
-import { AgentChoiceListWrapper } from '../../../../Application/Components/AgentsContainer';
+import AgentChoiceListWrapper from '../../Common/AgentChoiceListWrapper';
+import AccountChoiceWrapper from '../../Common/AccountChoiceWrapper';
 
 const routingModels = [
   { value: 'round_robin', label: 'Round Robin' },
@@ -17,10 +18,11 @@ class QueueForm extends React.Component {
 
   static propTypes = {
     queue:        PropTypes.object,
-    agents:       PropTypes.array,
-    agentsLoaded: PropTypes.bool,
+    accounts:     PropTypes.object,
+    agents:       PropTypes.object,
     onSubmit:     PropTypes.func.isRequired,
     onReturnBack: PropTypes.func.isRequired,
+    onDelete:     PropTypes.func,
     saving:       PropTypes.bool
   };
 
@@ -53,12 +55,25 @@ class QueueForm extends React.Component {
     this.setState(this.getDefaultState());
   };
 
+  onDelete = (event) => {
+    event.preventDefault();
+    this.props.onDelete();
+  };
+
   getDefaultState() {
-    const queue = this.props.queue;
+    const { queue, accounts } = this.props;
+
+    let account = null;
+    if (queue) {
+      account = queue.get('account');
+    } else if (accounts && accounts.size === 1) {
+      account = accounts.first().get('id');
+    }
 
     return {
       formData: createValue({
         value: {
+          account,
           name:           queue ? queue.get('name') : '',
           agents:         queue ? queue.get('agents').toArray() : [],
           routing_model:  queue ? queue.get('routing_model') : 'round_robin',
@@ -71,7 +86,7 @@ class QueueForm extends React.Component {
   }
 
   render() {
-    const { queue, agents, agentsLoaded, onReturnBack, saving } = this.props;
+    const { queue, accounts, agents, onReturnBack, saving } = this.props;
 
     return (
       <div className="page">
@@ -81,14 +96,21 @@ class QueueForm extends React.Component {
         <div className="twilio-queue-form">
           <Form onSubmit={this.onSubmit} formValue={this.state.formData}>
             <Fieldset>
+              {!queue && accounts && accounts.size > 1 &&
+                <Field select="account" label="Choose account *">
+                  <AccountChoiceWrapper accounts={accounts}>
+                    <Select clearable={false} />
+                  </AccountChoiceWrapper>
+                </Field>}
               <Field select="name" label="Queue Name">
                 <Input type="text" placeholder="Queue Name" />
               </Field>
-              <Field select="agents">
-                <AgentChoiceListWrapper agents={agents}>
-                  <MultiSelect loaded={agentsLoaded} />
-                </AgentChoiceListWrapper>
-              </Field>
+              {agents && agents.size > 0 &&
+                <Field select="agents">
+                  <AgentChoiceListWrapper agents={agents}>
+                    <MultiSelect />
+                  </AgentChoiceListWrapper>
+                </Field>}
               <Field select="routing_model" label="Routing model">
                 <Select clearable={false} choices={routingModels} />
               </Field>
@@ -110,6 +132,11 @@ class QueueForm extends React.Component {
               >
                 Cancel
               </button>
+
+              {queue &&
+                <span className="voice-delete-button" onClick={this.onDelete}>
+                  Delete this queue
+                </span>}
             </Fieldset>
           </Form>
         </div>

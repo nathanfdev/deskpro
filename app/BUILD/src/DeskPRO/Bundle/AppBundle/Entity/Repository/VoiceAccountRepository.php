@@ -26,37 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
+namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\Response;
-use Twilio\Twiml;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
+use Doctrine\ORM\EntityRepository;
 
 /**
- * Class VoiceTextToSpeechController.
- *
- * @ApiModes("all")
- * @Rest\Route("/voice_tts")
- * @ApiUserContext("open")
- * @Feature("voice")
+ * Class VoiceAccountRepository.
  */
-class VoiceTextToSpeechController extends BaseController
+class VoiceAccountRepository extends EntityRepository
 {
     /**
-     * @Rest\Get("")
+     * @return VoiceAccount|null
      */
-    public function textToSpeechAction()
+    public function getVoiceAccount()
     {
-        $twiml = new Twiml();
-        $twiml->say('Sample greet message');
-
-        $response = new Response($twiml);
-        $response->headers->set('Content-Type', 'text/xml');
-
-        return $response;
+        return $this->findOneBy([], ['id' => 'asc']);
     }
 }

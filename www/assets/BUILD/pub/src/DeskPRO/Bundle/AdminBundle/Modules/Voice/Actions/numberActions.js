@@ -1,5 +1,6 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import Immutable from 'immutable';
+import toastr from 'toastr';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { loadAll, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -41,6 +42,10 @@ export const addExistingNumber = createAction(
     return repository('VoiceNumber').create(data).success((response) => {
       dispatch(addToCollection('VoiceNumber', 'all', Immutable.List([Immutable.fromJS(response.data)])));
       dispatch(expandNumber(response.data.id));
+    }).error((response) => {
+      if (response.errors && response.errors.errors && response.errors.errors[0]) {
+        toastr.error(response.errors.errors[0].message);
+      }
     });
   }
 );
@@ -57,5 +62,9 @@ export const addAvailableNumber = createAction(
   }).success((response) => {
     dispatch(addToCollection('VoiceNumber', 'all', Immutable.List([Immutable.fromJS(response.data)])));
     dispatch(expandNumber(response.data.id));
+  }).error((response) => {
+    if (response.errors && response.errors.errors && response.errors.errors[0]) {
+      toastr.error(response.errors.errors[0].message);
+    }
   })
 );

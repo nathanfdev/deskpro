@@ -61,6 +61,7 @@ export const loadBatch = createAction(
     return result;
   }
 );
+
 export const loadAll = createAction(
   'RECORDS_STORE_LOAD',
   recordName => (dispatch, getState) => {
@@ -93,23 +94,37 @@ export const loadAll = createAction(
     return result;
   }
 );
+
 export const loadFromApi = createAction(
   'RECORDS_STORE_LOAD',
-  (recordName, url, collectionName) => ({
-    recordName,
-    collectionName,
-    promise: api.sendGet(url).then((response) => {
-      const records = response.getData().data;
-      const ids = records.map(record => record.id);
+  (recordName, url, collectionName) => (dispatch, getState) => {
+    const recordStore = getState().RecordsStore.store.get(recordName);
 
-      return {
+    let result;
+    if (!recordStore || !recordStore.hasIn(['statuses', collectionName])) {
+      result = {
         recordName,
         collectionName,
-        ids,
-        records
+        promise: api.sendGet(url).then((response) => {
+          const records = response.getData().data;
+          const ids = records.map(record => record.id);
+
+          return {
+            recordName,
+            collectionName,
+            ids,
+            records
+          };
+        })
       };
-    })
-  })
+    } else {
+      result = {
+        noUpdates: true
+      };
+    }
+
+    return result;
+  }
 );
 
 // ---------------------------------------------------------------------------------------------------------------------

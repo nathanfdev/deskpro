@@ -55,9 +55,12 @@ Feature: /voice_auto_attendants endpoint
     And the JSON node "data.audio_asset.name" should be equal to the string "My asset"
 
   Scenario: I set targets
-    Given only the following VoiceQueue records exist:
-      | #  | Name    | Routing Model |
-      | q1 | Queue 1 | round_robin   |
+    Given only the following VoiceAccount records exist:
+      | #       | AccountName | AccountSid | AuthToken |
+      | account | Account 1   | Sid1       | Token1    |
+    And only the following VoiceQueue records exist:
+      | #  | Name    | Account   | Routing Model |
+      | q1 | Queue 1 | {account} | round_robin   |
     And only the following VoiceAutoAttendant records exist:
       | #  | Name             |
       | a1 | Auto attendant 1 |

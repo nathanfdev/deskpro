@@ -224,3 +224,14 @@ $flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
     }
   }
 }
+
+.voice-delete-button {
+  margin-left: 15px;
+  color: $dp-greyscale-650;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &.disabled {
+    color: $dp-greyscale-250;
+  }
+}

@@ -5,7 +5,6 @@ import classNames from 'classnames';
 class SemanticMultiSelect extends React.Component {
 
   static propTypes = {
-    loaded:   PropTypes.bool,
     value:    PropTypes.array,
     choices:  PropTypes.array,
     onChange: PropTypes.func
@@ -25,15 +24,7 @@ class SemanticMultiSelect extends React.Component {
   };
 
   render() {
-    const { loaded, choices, value } = this.props;
-
-    if (!loaded) {
-      return (
-        <div className="multi-select">
-          <div className="flat-spinner"><i /></div>
-        </div>
-      );
-    }
+    const { choices, value } = this.props;
 
     return (
       <ScrollArea className="multi-select" vertical>

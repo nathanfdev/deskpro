@@ -46,6 +46,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  */
 class VoiceAutoAttendantsController extends CrudController
 {
-    public static $entity = VoiceAutoAttendant::class;
-    public static $type   = VoiceAutoAttendantType::class;
+    public static $entity       = VoiceAutoAttendant::class;
+    public static $type         = VoiceAutoAttendantType::class;
+    public static $listPaginate = false;
 }

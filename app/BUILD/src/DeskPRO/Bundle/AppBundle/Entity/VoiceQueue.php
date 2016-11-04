@@ -34,15 +34,23 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class VoiceQueue.
  *
  * @ORM\Entity()
- * @ORM\Table(name="voice_queues")
+ * @ORM\Table(name="voice_queues", uniqueConstraints={
+ *   @ORM\UniqueConstraint(name="task_queue_sid", columns={"task_queue_sid"}),
+ *   @ORM\UniqueConstraint(name="name", columns={"name"})
+ * })
+ * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceQueueListener"})
  *
  * @JMS\ExclusionPolicy("all")
+ *
+ * @UniqueEntity("taskQueueSid")
+ * @UniqueEntity("name")
  */
 class VoiceQueue implements EntityInterface, NotifyPropertyChanged
 {
@@ -68,6 +76,19 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAccount", inversedBy="queues")
+     * @ORM\JoinColumn(name="account_id", referencedColumnName="id", onDelete="CASCADE")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceAccount>")
+     *
+     * @Assert\NotNull()
+     *
+     * @var VoiceAccount
+     */
+    private $account;
+
+    /**
      * @ORM\Column(name="name", type="string", length=255)
      *
      * @JMS\Expose()
@@ -80,7 +101,14 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\Column(name="task_queue_sid", type="string", length=100)
+     *
+     * @var string
+     */
+    private $taskQueueSid;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Person", inversedBy="voiceQueues")
      * @ORM\JoinTable(
      *      name="voice_queue_agents",
      *      joinColumns={
@@ -173,6 +201,26 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return VoiceAccount
+     */
+    public function getAccount()
+    {
+        return $this->account;
+    }
+
+    /**
+     * @param VoiceAccount $account
+     *
+     * @return $this
+     */
+    public function setAccount(VoiceAccount $account = null)
+    {
+        $this->setModelField('account', $account);
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getName()
@@ -193,7 +241,27 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return mixed
+     * @return string
+     */
+    public function getTaskQueueSid()
+    {
+        return $this->taskQueueSid;
+    }
+
+    /**
+     * @param string $taskQueueSid
+     *
+     * @return $this
+     */
+    public function setTaskQueueSid($taskQueueSid)
+    {
+        $this->setModelField('taskQueueSid', $taskQueueSid);
+
+        return $this;
+    }
+
+    /**
+     * @return Person[]
      */
     public function getAgents()
     {
@@ -207,8 +275,9 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
      */
     public function addAgent(Person $person)
     {
-        if ($this->agents->contains($person)) {
+        if (!$this->agents->contains($person)) {
             $this->agents->add($person);
+            $person->getVoiceQueues()->add($this);
         }
 
         return $this;
@@ -222,6 +291,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     public function removeAgent(Person $person)
     {
         $this->agents->removeElement($person);
+        $person->getVoiceQueues()->removeElement($this);
 
         return $this;
     }

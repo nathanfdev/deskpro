@@ -4,12 +4,12 @@ import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/Lo
 import ExistingExtensionList from './ExistingExtensionList';
 import { loadAgents } from '../../../../Application/Actions/peopleActions';
 import { loadQueues } from '../../../Actions/queueActions';
-import { allAgentsSelector, isAgentsLoadedSelector } from '../../../../Application/Selectors/people';
+import { voicePeopleSelector, isAgentsLoadedSelector } from '../../../../Application/Selectors/people';
 import { allQueuesSelector, isQueuesLoadedSelector } from '../../../Selectors/queue';
 import { replaceRoute } from '../../../../../Services/history';
 
 @connect(state => ({
-  agents:       allAgentsSelector(state),
+  agents:       voicePeopleSelector(state),
   agentsLoaded: isAgentsLoadedSelector(state),
   queues:       allQueuesSelector(state),
   queuesLoaded: isQueuesLoadedSelector(state)

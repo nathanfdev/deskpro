@@ -6,16 +6,35 @@ import SectionHeader from '../../../Common/Components/SectionHeader';
 class AgentsVoiceToggle extends React.Component {
 
   static propTypes = {
-    agents:   PropTypes.object,
-    onToggle: PropTypes.func
+    accounts:       PropTypes.object,
+    agents:         PropTypes.object,
+    onToggle:       PropTypes.func,
+    onGoToAccounts: PropTypes.func
   };
 
-  render() {
+  renderNoAccount() {
+    const { onGoToAccounts } = this.props;
+
+    return (
+      <div className="page">
+        <SectionHeader title="Agents Voice" dividing />
+
+        You currently have no accounts.
+        <br /><br />
+
+        <button className="ui primary button" onClick={onGoToAccounts}>
+          Open general settings
+        </button>
+      </div>
+    );
+  }
+
+  renderList() {
     const { agents, onToggle } = this.props;
 
     return (
       <div className="page">
-        <SectionHeader title="Agents" dividing />
+        <SectionHeader title="Agents Voice" dividing />
         <div className="voice-agents-table">
           <table>
             <tbody>
@@ -31,6 +50,12 @@ class AgentsVoiceToggle extends React.Component {
         </div>
       </div>
     );
+  }
+
+  render() {
+    const { accounts } = this.props;
+
+    return accounts && accounts.size > 0 ? this.renderList() : this.renderNoAccount();
   }
 }
 

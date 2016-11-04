@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
-import classNames from 'classnames';
 import { Fieldset, createValue } from 'react-forms';
 import { Form, Field, BlurInput, Select, CountryCodeSelect, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
-import AccountChoiceWrapper from '../AccountChoiceWrapper';
+import AccountChoiceWrapper from '../../../Common/AccountChoiceWrapper';
 
 const allowedCountryCodes = [
   'US',

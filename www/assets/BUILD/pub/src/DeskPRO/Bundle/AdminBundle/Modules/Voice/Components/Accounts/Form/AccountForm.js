@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Fieldset, Input, createValue } from 'react-forms';
 import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
-import { getFormDataErrors } from 'DeskPRO/Component/Form/FormErrors';
 import classNames from 'classnames';
 
 class AccountForm extends React.Component {
@@ -94,25 +93,16 @@ class AccountForm extends React.Component {
           </button>
 
           {account &&
-            <button
-              className={classNames('ui right floated red button', { loading: deleting, disabled: saving || testing })}
+            <span
+              className={classNames('voice-delete-button', { disabled: deleting || saving || testing })}
               onClick={this.onDeleteAccount}
             >
-              Delete account
-            </button>}
+              Delete this account
+            </span>}
 
           {displaySuccess &&
             <div className="ui positive message">
               Your settings are correct
-            </div>
-          }
-          {getFormDataErrors(formData) &&
-            <div className="ui negative message">
-              <ul>
-                {getFormDataErrors(formData).map((error, index) =>
-                  <li key={index}>{error.message}</li>
-                )}
-              </ul>
             </div>
           }
         </Fieldset>

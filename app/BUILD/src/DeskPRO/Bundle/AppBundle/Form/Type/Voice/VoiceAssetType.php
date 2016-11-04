@@ -56,6 +56,9 @@ class VoiceAssetType extends AbstractType
                 'error_bubbling' => true,
             ])
             ->add('name', TextType::class)
+            ->add('text', TextType::class)
+            ->add('language', TextType::class)
+            ->add('blob', BlobAuthType::class)
             ->add('type', ChoiceType::class, [
                 'choices_as_values' => true,
                 'choices'           => [
@@ -67,7 +70,6 @@ class VoiceAssetType extends AbstractType
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInline'], 100);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetFields']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSetAssetFromId']);
     }
 
@@ -91,29 +93,6 @@ class VoiceAssetType extends AbstractType
         $data = $event->getData();
         if (is_scalar($data)) {
             $event->setData(['id' => $data]);
-        }
-    }
-
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onSetFields(FormEvent $event)
-    {
-        $form = $event->getForm();
-        $data = $event->getData();
-        $type = isset($data['type']) ? $data['type'] : null;
-
-        if (!$type) {
-            return;
-        }
-
-        if ($type === 'text') {
-            $form->add('text', TextType::class);
-            $form->add('language', TextType::class);
-        } else {
-            $form->add('blob', BlobAuthType::class);
         }
     }
 

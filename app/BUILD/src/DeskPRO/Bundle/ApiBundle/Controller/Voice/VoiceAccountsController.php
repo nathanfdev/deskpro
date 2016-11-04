@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
@@ -42,6 +41,7 @@ use FOS\RestBundle\View\View;
 use libphonenumber\PhoneNumberUtil;
 use Orb\Data\Countries;
 use Symfony\Component\HttpFoundation\Request;
+use Twilio\Exceptions\TwilioException;
 
 /**
  * Class VoiceAccountsController.
@@ -51,11 +51,12 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceAccount")
  * @Feature("voice")
  */
-class VoiceAccountsController extends CrudController
+class VoiceAccountsController extends AbstractVoiceCrudController
 {
-    public static $entity    = VoiceAccount::class;
-    public static $type      = VoiceAccountType::class;
-    public static $listOrder = 'asc';
+    public static $entity       = VoiceAccount::class;
+    public static $type         = VoiceAccountType::class;
+    public static $listOrder    = 'asc';
+    public static $listPaginate = false;
 
     /**
      * @param Request $request
@@ -82,7 +83,6 @@ class VoiceAccountsController extends CrudController
 
         $form = $this->createForm(VoiceAccountType::class, $account);
         $form->submit($request->request->all());
-
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
@@ -175,26 +175,25 @@ class VoiceAccountsController extends CrudController
         }
 
         try {
-            $apiNumber = $this->get('twilio_adapter')->buyNumber($account, $form->getData());
-        } catch (\Exception $e) {
-            throw $this->createBadRequestException($e->getMessage());
+            $apiNumber   = $this->get('twilio_adapter')->buyNumber($account, $form->getData());
+            $phoneUtil   = PhoneNumberUtil::getInstance();
+            $phoneNumber = $phoneUtil->parse($apiNumber->phoneNumber, null);
+
+            $number = new VoiceNumber();
+            $number
+                ->setAccount($account)
+                ->setSid($apiNumber->sid)
+                ->setNumber($apiNumber->phoneNumber)
+                ->setNickname($apiNumber->friendlyName)
+                ->setCountryCode(strtolower($phoneUtil->getRegionCodeForNumber($phoneNumber)))
+            ;
+
+            $this->getManager()->persist($number);
+            $this->getManager()->flush();
+
+            return new View($this->wrap($number));
+        } catch (TwilioException $e) {
+            return $this->getFormErrorResponseFromException('twilio_exception', $e);
         }
-
-        $phoneUtil   = PhoneNumberUtil::getInstance();
-        $phoneNumber = $phoneUtil->parse($apiNumber->phoneNumber, null);
-
-        $number = new VoiceNumber();
-        $number
-            ->setAccount($account)
-            ->setSid($apiNumber->sid)
-            ->setNumber($apiNumber->phoneNumber)
-            ->setNickname($apiNumber->friendlyName)
-            ->setCountryCode(strtolower($phoneUtil->getRegionCodeForNumber($phoneNumber)))
-        ;
-
-        $this->getManager()->persist($number);
-        $this->getManager()->flush();
-
-        return new View($this->wrap($number));
     }
 }

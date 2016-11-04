@@ -1,5 +1,5 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
-import { loadAll, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { loadAll, addToCollection, updateCollection, removeFromCollection, releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import Immutable from 'immutable';
 
@@ -19,5 +19,13 @@ export const updateQueue = createAction(
   'VOICE_UPDATE_QUEUE',
   (id, data) => dispatch => repository('VoiceQueue').update(data, id).success(() => {
     dispatch(updateCollection('VoiceQueue', Immutable.List([Immutable.fromJS({ ...data, id })]), 'merge'));
+  })
+);
+
+export const deleteQueue = createAction(
+  'VOICE_DELETE_QUEUE',
+  id => dispatch => repository('VoiceQueue').remove(id).success(() => {
+    dispatch(removeFromCollection('VoiceQueue', 'all', [id]));
+    dispatch(releaseCollection('VoiceAutoAttendant', 'all'));
   })
 );

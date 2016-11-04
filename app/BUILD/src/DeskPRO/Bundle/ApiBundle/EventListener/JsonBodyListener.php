@@ -26,18 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * Class JsonBodyListener.
+ */
 class JsonBodyListener implements EventSubscriberInterface
 {
     /**
@@ -65,12 +63,18 @@ class JsonBodyListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param GetResponseEvent $event
+     */
     public function onRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
 
         // can accept different requests
         if (preg_match('#^/api/v2/api_tokens/user_sources/\d+/callback#', $request->getPathInfo())) {
+            return;
+        }
+        if (preg_match('#^/api/v2/twilio_callbacks/#', $request->getPathInfo())) {
             return;
         }
 

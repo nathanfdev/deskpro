@@ -1,5 +1,5 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
-import { loadAll, addToCollection, updateCollection, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { loadAll, addToCollection, updateCollection, removeFromCollection, releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import Immutable from 'immutable';
 
@@ -33,5 +33,9 @@ export const deleteAccount = createAction(
   'VOICE_DELETE_ACCOUNT',
   id => dispatch => repository('VoiceAccount').remove(id).success(() => {
     dispatch(removeFromCollection('VoiceAccount', 'all', [id]));
+
+    // reset related data
+    dispatch(releaseCollection('VoiceQueue', 'all'));
+    dispatch(releaseCollection('VoiceAutoAttendant', 'all'));
   })
 );

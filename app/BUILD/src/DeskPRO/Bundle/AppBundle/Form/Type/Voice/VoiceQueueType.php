@@ -29,7 +29,9 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -44,15 +46,34 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class VoiceQueueType extends AbstractType
 {
     /**
+     * @var TwilioAdapter
+     */
+    private $twilioAdapter;
+
+    /**
+     * Constructor.
+     *
+     * @param TwilioAdapter $twilioAdapter
+     */
+    public function __construct(TwilioAdapter $twilioAdapter)
+    {
+        $this->twilioAdapter = $twilioAdapter;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('account', EntityType::class, [
+                'class' => VoiceAccount::class,
+            ])
             ->add('name', TextType::class)
             ->add('agents', EntityType::class, [
-                'class'    => Person::class,
-                'multiple' => true,
+                'class'        => Person::class,
+                'multiple'     => true,
+                'by_reference' => false,
             ])
             ->add('routing_model', ChoiceType::class, [
                 'property_path'     => 'routingModel',

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Fieldset, createValue } from 'react-forms';
 import { Form, Field, Select } from 'DeskPRO/Component/Semantic/ReactForm';
-import AccountChoiceWrapper from '../AccountChoiceWrapper';
+import AccountChoiceWrapper from '../../../Common/AccountChoiceWrapper';
 
 class ExistingListForm extends React.Component {
 

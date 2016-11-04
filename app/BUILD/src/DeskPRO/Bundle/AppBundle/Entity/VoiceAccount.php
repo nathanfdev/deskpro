@@ -33,21 +33,25 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Orb\Util\Strings;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class VoiceAccount.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceAccountRepository")
  * @ORM\Table(name="voice_accounts", uniqueConstraints={
- *   @ORM\UniqueConstraint(name="account_sid", columns={"account_sid"}
- * )})
+ *   @ORM\UniqueConstraint(name="account_sid", columns={"account_sid"}),
+ *   @ORM\UniqueConstraint(name="workspace_sid", columns={"workspace_sid"}),
+ * })
+ * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceAccountListener"})
  *
  * @JMS\ExclusionPolicy("all")
  *
  * @AppAssert\Voice\VoiceAccount()
  * @UniqueEntity("accountSid")
+ * @UniqueEntity("workspaceSid")
  */
 class VoiceAccount implements EntityInterface, NotifyPropertyChanged
 {
@@ -92,6 +96,20 @@ class VoiceAccount implements EntityInterface, NotifyPropertyChanged
     private $accountSid;
 
     /**
+     * @ORM\Column(name="workspace_sid", type="string", length=100)
+     *
+     * @var string
+     */
+    private $workspaceSid;
+
+    /**
+     * @ORM\Column(name="queue_workflow_sid", type="string", length=100, nullable=true)
+     *
+     * @var string
+     */
+    private $queueWorkflowSid;
+
+    /**
      * @ORM\Column(name="auth_token", type="string", length=100)
      *
      * @JMS\Expose()
@@ -102,6 +120,13 @@ class VoiceAccount implements EntityInterface, NotifyPropertyChanged
      * @var string
      */
     private $authToken;
+
+    /**
+     * @ORM\Column(name="account_auth", type="string", length=20)
+     *
+     * @var string
+     */
+    private $accountAuth;
 
     /**
      * @ORM\Column(name="date_created", type="datetime")
@@ -121,12 +146,21 @@ class VoiceAccount implements EntityInterface, NotifyPropertyChanged
     private $numbers;
 
     /**
+     * @ORM\OneToMany(targetEntity="VoiceQueue", mappedBy="account", cascade={"persist", "remove"})
+     *
+     * @var VoiceQueue[]
+     */
+    private $queues;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
         $this->dateCreated = new \DateTime();
         $this->numbers     = new ArrayCollection();
+        $this->queues      = new ArrayCollection();
+        $this->accountAuth = Strings::random(20);
     }
 
     /**
@@ -180,6 +214,46 @@ class VoiceAccount implements EntityInterface, NotifyPropertyChanged
     /**
      * @return string
      */
+    public function getQueueWorkflowSid()
+    {
+        return $this->queueWorkflowSid;
+    }
+
+    /**
+     * @param string $queueWorkflowSid
+     *
+     * @return $this
+     */
+    public function setQueueWorkflowSid($queueWorkflowSid)
+    {
+        $this->setModelField('queueWorkflowSid', $queueWorkflowSid);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkspaceSid()
+    {
+        return $this->workspaceSid;
+    }
+
+    /**
+     * @param string $workspaceSid
+     *
+     * @return $this
+     */
+    public function setWorkspaceSid($workspaceSid)
+    {
+        $this->setModelField('workspaceSid', $workspaceSid);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getAuthToken()
     {
         return $this->authToken;
@@ -195,6 +269,14 @@ class VoiceAccount implements EntityInterface, NotifyPropertyChanged
         $this->setModelField('authToken', $authToken);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountAuth()
+    {
+        return $this->accountAuth;
     }
 
     /**

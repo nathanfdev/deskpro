@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
@@ -44,8 +43,9 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
  */
-class VoiceQueuesController extends CrudController
+class VoiceQueuesController extends AbstractVoiceCrudController
 {
-    public static $entity = VoiceQueue::class;
-    public static $type   = VoiceQueueType::class;
+    public static $entity       = VoiceQueue::class;
+    public static $type         = VoiceQueueType::class;
+    public static $listPaginate = false;
 }

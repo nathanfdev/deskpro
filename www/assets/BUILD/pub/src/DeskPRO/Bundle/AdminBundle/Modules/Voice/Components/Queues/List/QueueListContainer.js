@@ -3,24 +3,37 @@ import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import QueueList from './QueueList';
 import { replaceRoute } from '../../../../../Services/history';
+import { loadAccounts } from '../../../Actions/accountActions';
 import { loadQueues } from '../../../Actions/queueActions';
 import { allQueuesSelector, isQueuesLoadedSelector } from '../../../Selectors/queue';
+import { isAccountsLoadedSelector, allAccountsSelector } from '../../../Selectors/account';
 
 @connect(state => ({
-  queues: allQueuesSelector(state),
-  loaded: isQueuesLoadedSelector(state)
+  accounts:       allAccountsSelector(state),
+  accountsLoaded: isAccountsLoadedSelector(state),
+  queues:         allQueuesSelector(state),
+  queuesLoaded:   isQueuesLoadedSelector(state)
 }))
 class QueueListContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func,
-    queues:   PropTypes.object,
-    loaded:   PropTypes.bool
+    dispatch:       PropTypes.func,
+    accounts:       PropTypes.object,
+    queues:         PropTypes.object,
+    queuesLoaded:   PropTypes.bool,
+    accountsLoaded: PropTypes.bool
   };
 
   componentDidMount() {
-    this.props.dispatch(loadQueues());
+    const { dispatch } = this.props;
+
+    dispatch(loadAccounts());
+    dispatch(loadQueues());
   }
+
+  onGoToAccounts = () => {
+    replaceRoute('/voice_channel/accounts');
+  };
 
   onAddQueue = (event) => {
     event.preventDefault();
@@ -32,17 +45,19 @@ class QueueListContainer extends React.Component {
   };
 
   render() {
-    const { loaded, queues } = this.props;
+    const { queuesLoaded, accountsLoaded, accounts, queues } = this.props;
 
-    if (!loaded) {
+    if (!queuesLoaded || !accountsLoaded) {
       return <LoadingPage />;
     }
 
     return (
       <QueueList
+        accounts={accounts}
         queues={queues}
         onAddQueue={this.onAddQueue}
         onEditQueue={this.onEditQueue}
+        onGoToAccounts={this.onGoToAccounts}
       />
     );
   }

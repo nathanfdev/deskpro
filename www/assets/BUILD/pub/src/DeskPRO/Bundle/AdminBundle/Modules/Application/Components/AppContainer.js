@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Provider } from 'react-redux';
 import { Router, Route } from 'react-router';
+import toastr from 'toastr';
 import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { repositoriesConfig } from 'DeskPRO/Bundle/AdminBundle/DAL/config';
 import store from '../../../Services/store';
@@ -23,6 +24,18 @@ class AppContainer extends React.Component {
 
   componentWillMount() {
     history.replace(this.props.routePath);
+    toastr.options = {
+      closeButton:     true,
+      positionClass:   'toast-bottom-right',
+      showDuration:    250,
+      hideDuration:    500,
+      timeOut:         3000,
+      extendedTimeOut: 600,
+      showEasing:      'swing',
+      hideEasing:      'linear',
+      showMethod:      'slideDown',
+      hideMethod:      'fadeOut'
+    };
   }
 
   render() {

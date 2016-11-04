@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
-import Modal from 'DeskPRO/Component/Semantic/Modal';
 import AvailableList from './AvailableList';
 import { loadAvailableNumbers, addAvailableNumber, changeAvailableNumbersFilter } from '../../../../Actions/numberActions';
 import { isAccountsLoadedSelector, allAccountsSelector } from '../../../../Selectors/account';
@@ -35,8 +34,7 @@ class AvailableListContainer extends BaseSearchContainer {
 
   onAddNumber = (number) => {
     this.setState({
-      loading: true,
-      error:   null
+      loading: true
     });
 
     const promise = this.props.dispatch(addAvailableNumber(number));
@@ -45,10 +43,9 @@ class AvailableListContainer extends BaseSearchContainer {
         loading: false
       }, () => replaceRoute('/voice_channel/numbers'));
     });
-    promise.error((response) => {
+    promise.error(() => {
       this.setState({
-        loading: false,
-        error:   response.message
+        loading: false
       });
     });
   };
@@ -77,34 +74,22 @@ class AvailableListContainer extends BaseSearchContainer {
     }
   };
 
-  onCloseModal = () => {
-    this.setState({
-      error: null
-    });
-  };
-
   render() {
     const { numbersLoaded, accountsLoaded, filter, accounts } = this.props;
-    const { error } = this.state;
 
     if (!numbersLoaded || !accountsLoaded) {
       return <LoadingPage />;
     }
 
     return (
-      <div>
-        <AvailableList
-          {...this.state}
-          filter={filter}
-          accounts={accounts}
-          onClickBack={this.onClickBack}
-          onChangeFilter={this.onChangeFilter}
-          onAddNumber={this.onAddNumber}
-        />
-        <Modal isOpen={error} onClose={this.onCloseModal}>
-          {error}
-        </Modal>
-      </div>
+      <AvailableList
+        {...this.state}
+        filter={filter}
+        accounts={accounts}
+        onClickBack={this.onClickBack}
+        onChangeFilter={this.onChangeFilter}
+        onAddNumber={this.onAddNumber}
+      />
     );
   }
 }

@@ -43,6 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="agent_data", uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_extension_numbers", columns={"extension_number"})
  * })
+ * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceWorkerListener"})
  *
  * @JMS\ExclusionPolicy("all")
  *
@@ -105,6 +106,13 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
      * @var bool
      */
     private $isVoiceEnabled = false;
+
+    /**
+     * @ORM\Column(name="voice_worker_sid", type="string", length=100, nullable=true)
+     *
+     * @var string
+     */
+    private $voiceWorkerSid;
 
     /**
      * @return int
@@ -190,6 +198,26 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     public function setIsVoiceEnabled($isVoiceEnabled)
     {
         $this->setModelField('isVoiceEnabled', $isVoiceEnabled);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVoiceWorkerSid()
+    {
+        return $this->voiceWorkerSid;
+    }
+
+    /**
+     * @param string $voiceWorkerSid
+     *
+     * @return $this
+     */
+    public function setVoiceWorkerSid($voiceWorkerSid)
+    {
+        $this->setModelField('voiceWorkerSid', $voiceWorkerSid);
 
         return $this;
     }

@@ -44,6 +44,7 @@ use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
@@ -126,12 +127,12 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @Assert\GroupSequenceProvider
  */
 class Person extends DomainObject implements
-HighlightableModelInterface,
-UserInterface,
-\Serializable,
+    HighlightableModelInterface,
+    UserInterface,
+    \Serializable,
     EquatableInterface,
-LabelsOwner,
-GroupSequenceProviderInterface
+    LabelsOwner,
+    GroupSequenceProviderInterface
 {
     const CREATED_WEB_PERSON     = 'web.person';
     const CREATED_WEB_AGENT      = 'web.agent';
@@ -612,6 +613,11 @@ GroupSequenceProviderInterface
     protected $agentData;
 
     /**
+     * @var VoiceQueue[]|ArrayCollection
+     */
+    protected $voiceQueues;
+
+    /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
      * a full user.
      *
@@ -692,6 +698,7 @@ GroupSequenceProviderInterface
         $this->project_members        = new ArrayCollection();
         $this->tickets                = new ArrayCollection();
         $this->chats                  = new ArrayCollection();
+        $this->voiceQueues            = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
@@ -3782,6 +3789,14 @@ GroupSequenceProviderInterface
         return $this->agentData;
     }
 
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Entity\VoiceQueue[]|ArrayCollection
+     */
+    public function getVoiceQueues()
+    {
+        return $this->voiceQueues;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -4492,6 +4507,13 @@ GroupSequenceProviderInterface
             'targetEntity' => AgentData::class,
             'mappedBy'     => 'person',
             'cascade'      => ['persist', 'remove'],
+        ]);
+
+        $metadata->mapManyToMany([
+            'fieldName'    => 'voiceQueues',
+            'targetEntity' => VoiceQueue::class,
+            'mappedBy'     => 'agents',
+            'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
         ]);
     }
 

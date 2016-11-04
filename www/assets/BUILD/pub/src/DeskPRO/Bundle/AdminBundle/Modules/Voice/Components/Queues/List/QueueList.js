@@ -66,10 +66,29 @@ class QueueRow extends React.Component {
 class QueueList extends React.Component {
 
   static propTypes = {
-    queues:      PropTypes.object,
-    onAddQueue:  PropTypes.func,
-    onEditQueue: PropTypes.func
+    accounts:       PropTypes.object,
+    queues:         PropTypes.object,
+    onAddQueue:     PropTypes.func,
+    onEditQueue:    PropTypes.func,
+    onGoToAccounts: PropTypes.func
   };
+
+  renderNoAccount() {
+    const { onGoToAccounts } = this.props;
+
+    return (
+      <div className="page">
+        <QueueHeader />
+
+        You currently have no accounts.
+        <br /><br />
+
+        <button className="ui primary button" onClick={onGoToAccounts}>
+          Open general settings
+        </button>
+      </div>
+    );
+  }
 
   renderEmpty() {
     return (
@@ -112,7 +131,11 @@ class QueueList extends React.Component {
   }
 
   render() {
-    const { queues } = this.props;
+    const { queues, accounts } = this.props;
+
+    if (!accounts || !accounts.size) {
+      return this.renderNoAccount();
+    }
 
     return queues && queues.size ? this.renderTable() : this.renderEmpty();
   }
