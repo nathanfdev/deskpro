@@ -1,9 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Immutable from 'immutable';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { EmailsAndBlockMenu } from './Menus/EmailsAndBlockMenu';
+import { Select } from 'DeskPRO/Component/Semantic/Form';
+import { EmailsAndBlockMenuContainer } from './Menus/EmailsAndBlockMenu';
 import DropDownMenu from './Menus/DropDownMenu';
 import { loadTemplates } from '../Actions/templatesActions';
 
@@ -12,16 +10,9 @@ import { loadTemplates } from '../Actions/templatesActions';
 }))
 class EmailTemplatesEditorContainer extends React.Component {
   static propTypes = {
-    dispatch:       PropTypes.func.isRequired,
+    dispatch:       PropTypes.func,
     emailTemplates: PropTypes.object.isRequired
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      template: null
-    };
-  }
 
   componentWillMount() {
     const { dispatch } = this.props;
@@ -29,30 +20,36 @@ class EmailTemplatesEditorContainer extends React.Component {
     dispatch(loadTemplates());
   }
 
-  onChangeTemplate = (template) => {
-    this.setState({
-      template
-    });
+  closeTemplateMenu = () => {
     this.templateMenu.closeMenu();
   };
 
   render() {
-    const info = this.props.emailTemplates;
-    let templates = null;
-    if (info && info.get('info') && info.get('info').get('list')) {
-      templates = info.get('info').get('list').get('user').get('groups');
+    const emailTemplates = this.props.emailTemplates;
+    let templatesGroups = [];
+    if (emailTemplates && emailTemplates.get('info').get('list')) {
+      templatesGroups = emailTemplates.get('info').get('list').map(group => ({
+        value: group.get('typeId'),
+        label: group.get('title')
+      }));
     }
-    const currentTemplate = this.state.template ? this.state.template.get('title') : 'Select a template';
+    let currentTemplate = 'Select a template';
+    if (emailTemplates.get('currentTemplate')) {
+      currentTemplate = emailTemplates.get('currentTemplate').get('title');
+    }
     return (
       <div className="dp-email-templates">
         <div className="editor">
           <div className="header">
             <div>
-              <button className="ui button basic">
-                <i className="icon users" />
-                User email templates
-                <i className="fa fa-caret-down" />
-              </button>
+              <div className="ui form">
+                <div className="ui field">
+                  <Select
+                    options={templatesGroups}
+                    className="group-select basic"
+                  />
+                </div>
+              </div>
               <button className="ui button basic">
                 <i className="flag gb" />
                 English
@@ -63,33 +60,32 @@ class EmailTemplatesEditorContainer extends React.Component {
               </button>
             </div>
             <div>
-              <div className="menu">
+              <div className="top-menu">
                 <DropDownMenu
                   icon="mail"
                   label={currentTemplate}
                   ref={(c) => { this.templateMenu = c; }}
                 >
-                  <EmailsAndBlockMenu
-                    emails={templates}
-                    selectTemplate={this.onChangeTemplate}
+                  <EmailsAndBlockMenuContainer
+                    closeMenu={this.closeTemplateMenu}
                   />
                 </DropDownMenu>
               </div>
-              <div className="menu right floated">
+              <div className="top-menu right floated">
                 <div>
                   <i className="icon dollar" />
                   Variables
                   <i className="fa fa-caret-down" />
                 </div>
               </div>
-              <div className="menu right floated">
+              <div className="top-menu right floated">
                 <div>
                   <i className="icon globe" />
                   Phrases
                   <i className="fa fa-caret-down" />
                 </div>
               </div>
-              <div className="menu right floated">
+              <div className="top-menu right floated">
                 <div>
                   <i className="icon image" />
                   Media

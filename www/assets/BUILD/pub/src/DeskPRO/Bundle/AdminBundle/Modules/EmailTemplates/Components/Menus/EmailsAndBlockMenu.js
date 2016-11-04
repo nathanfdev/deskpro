@@ -1,14 +1,37 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { Accordion, AccordionPanel } from 'DeskPRO/Component/Semantic/Accordion';
 import classNames from 'classnames';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import EmailTemplateItem from './EmailTemplateItem';
+import * as actions from '../../Actions/templatesActions';
 
+@connect(state => ({
+  emailTemplates: state.EmailTemplates.templates
+}))
 export class EmailsAndBlockMenuContainer extends React.Component {
+  static propTypes = {
+    dispatch:       PropTypes.func,
+    emailTemplates: PropTypes.object.isRequired,
+    closeMenu:      PropTypes.func
+  };
+
+  onChangeTemplate = (template) => {
+    this.props.dispatch(actions.setCurrentTemplate(template));
+    this.props.closeMenu();
+  };
 
   render() {
-    return (<EmailsAndBlockMenu />);
+    const info = this.props.emailTemplates;
+    let templates = null;
+    if (info && info.get('info').get('list')) {
+      templates = info.get('info').get('list').get('user').get('groups');
+    }
+    return (<EmailsAndBlockMenu
+      emails={templates}
+      selectTemplate={this.onChangeTemplate}
+    />);
   }
 }
 
@@ -30,6 +53,14 @@ export class EmailsAndBlockMenu extends React.Component {
       selectedLeft: null,
       filter:       ''
     };
+  }
+
+  componentWillMount() {
+    if (this.props.emails) {
+      this.setState({
+        selectedLeft: this.props.emails.first()
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {

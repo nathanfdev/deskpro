@@ -17,15 +17,25 @@
       .fa-caret-down {
         margin-left: 3px;
       }
+      .selection.dropdown.group-select {
+        display: inline-block;
+        margin-right: 10px;
+        width: auto;
+      }
       > div:first-child {
         padding: 20px;
+        height: 80px;
       }
       > div {
         border-bottom: 1px solid #D4D4D5;
-        .menu {
+        > div {
+          display: inline-block;
+        }
+        .top-menu {
+          cursor: pointer;
           display: inline-block;
           border-left: 1px solid #D4D4D5;
-          padding: 5px 10px 2px;
+          padding: 6px 10px 3px;
           > div {
             padding: 5px 10px 8px;
           }
@@ -37,10 +47,11 @@
       }
     }
     .dp-code-editor {
-      position: absolute !important;
+      position: static !important;
       width: 100%;
       left: 0;
-      top: 120px;
+      top: 0;
+      height: calc(100% - 180px);
       bottom: 60px;
       background-color: $dp-greyscale-850;
       color: $dp-greyscale-50;
