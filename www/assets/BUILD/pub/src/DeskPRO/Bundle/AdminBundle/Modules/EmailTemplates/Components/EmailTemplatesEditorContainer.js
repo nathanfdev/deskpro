@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 import { Select } from 'DeskPRO/Component/Semantic/Form';
 import { EmailsAndBlockMenuContainer } from './Menus/EmailsAndBlockMenu';
+import { VariablesMenuContainer } from './Menus/VariablesMenu';
 import DropDownMenu from './Menus/DropDownMenu';
-import { loadTemplates } from '../Actions/templatesActions';
+import LanguageSelector from './Menus/LanguageSelector';
+import * as actions from '../Actions/templatesActions';
 
 @connect(state => ({
   emailTemplates: state.EmailTemplates.templates
@@ -17,18 +20,22 @@ class EmailTemplatesEditorContainer extends React.Component {
   componentWillMount() {
     const { dispatch } = this.props;
 
-    dispatch(loadTemplates());
+    dispatch(actions.loadTemplates());
   }
 
   closeTemplateMenu = () => {
     this.templateMenu.closeMenu();
   };
 
+  closeVariableMenu = () => {
+    this.variableMenu.closeMenu();
+  };
+
   render() {
     const emailTemplates = this.props.emailTemplates;
     let templatesGroups = [];
     if (emailTemplates && emailTemplates.get('info').get('list')) {
-      templatesGroups = emailTemplates.get('info').get('list').map(group => ({
+      templatesGroups = emailTemplates.get('info').get('list').valueSeq().map(group => ({
         value: group.get('typeId'),
         label: group.get('title')
       }));
@@ -50,11 +57,7 @@ class EmailTemplatesEditorContainer extends React.Component {
                   />
                 </div>
               </div>
-              <button className="ui button basic">
-                <i className="flag gb" />
-                English
-                <i className="fa fa-caret-down" />
-              </button>
+              <LanguageSelector languages={window.DP_ENABLED_LANGS} />
               <button className="ui right floated button">
                 + New Template
               </button>
@@ -73,8 +76,8 @@ class EmailTemplatesEditorContainer extends React.Component {
               </div>
               <div className="top-menu right floated">
                 <div>
-                  <i className="icon dollar" />
-                  Variables
+                  <i className="icon image" />
+                  Media
                   <i className="fa fa-caret-down" />
                 </div>
               </div>
@@ -85,20 +88,24 @@ class EmailTemplatesEditorContainer extends React.Component {
                   <i className="fa fa-caret-down" />
                 </div>
               </div>
-              <div className="top-menu right floated">
-                <div>
-                  <i className="icon image" />
-                  Media
-                  <i className="fa fa-caret-down" />
-                </div>
+              <div className={classNames('top-menu right floated', { disabled: !emailTemplates.get('variables') })}>
+                <DropDownMenu
+                  icon="dollar"
+                  label="Variables"
+                  ref={(c) => { this.variableMenu = c; }}
+                >
+                  <VariablesMenuContainer
+                    closeMenu={this.closeVariableMenu}
+                  />
+                </DropDownMenu>
               </div>
             </div>
           </div>
           <div className="dp-code-editor">
             Email subject:
-            <div className="email-subject with-ace-editor" />
+            <textarea className="email-subject" rows="2" />
             Email:
-            <div className="email-body with-ace-editor" />
+            <textarea className="email-body" rows="20" />
           </div>
           <div className="footer">
             <button className="ui primary small button">Save changes</button>

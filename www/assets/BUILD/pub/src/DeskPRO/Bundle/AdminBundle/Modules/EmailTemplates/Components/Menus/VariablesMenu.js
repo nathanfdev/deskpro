@@ -1,18 +1,38 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import classNames from 'classnames';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 
+@connect(state => ({
+  emailTemplates: state.EmailTemplates.templates
+}))
 export class VariablesMenuContainer extends React.Component {
+  static propTypes = {
+    emailTemplates: PropTypes.object.isRequired,
+    closeMenu:      PropTypes.func
+  };
+
+  selectVariable = () => {
+    this.props.closeMenu();
+  };
+
   render() {
-    return <VariablesMenu />;
+    let variables = null;
+    if (this.props.emailTemplates) {
+      variables = this.props.emailTemplates.get('variables');
+    }
+    return (<VariablesMenu
+      viewModel={variables}
+      onSelectVariable={this.selectVariable}
+    />);
   }
 }
 
 export class VariablesMenu extends React.Component {
   static propTypes = {
-    viewModel:    PropTypes.object,
-    onChangeMenu: PropTypes.func
+    viewModel:        PropTypes.object,
+    onSelectVariable: PropTypes.func
   };
   static defaultProps = {
     onChangeMenu() {},
@@ -33,7 +53,6 @@ export class VariablesMenu extends React.Component {
   }
 
   setActive = (item) => {
-    this.props.onChangeMenu(item);
     this.setState({
       selectedLeft: item
     });
@@ -68,7 +87,7 @@ export class VariablesMenu extends React.Component {
         ) {
           return null;
         }
-        return (<MenuItem key={key}>
+        return (<MenuItem key={key} onClick={() => this.selectVariable(property)}>
           <span className="description">{property.get('description')}</span>
           <br />
           <span className="variable-name">
@@ -84,6 +103,10 @@ export class VariablesMenu extends React.Component {
         </Menu>
       </MenuWrapper>
     );
+  };
+
+  selectVariable = (variable) => {
+    this.props.onSelectVariable(variable);
   };
 
   updateFilter = (value) => {

@@ -39,6 +39,10 @@
           > div {
             padding: 5px 10px 8px;
           }
+          &.disabled {
+            cursor: not-allowed;
+            color: $dp-greyscale-550;
+          }
         }
         > .right.floated {
           text-align: center;
@@ -57,12 +61,32 @@
       color: $dp-greyscale-50;
       border-radius: 0;
       padding: 20px;
-      .with-ace-editor {
+      textarea {
         background-color: $dp-greyscale-950;
         min-height: 40px;
         width: 100%;
         margin-bottom: 10px;
         margin-top: 5px;
+        border: 0;
+        resize: none;
+        -webkit-appearance: none;
+        box-shadow: none;
+        padding: 10px 20px;
+        &::selection {
+          color: $dp-greyscale-150;
+        }
+        &::-moz-selection {
+          color: $dp-greyscale-150;
+        }
+      }
+      textarea:focus,
+      textarea:active {
+        -webkit-appearance: none;
+        box-shadow: none;
+        outline:0 !important;
+      }
+      textarea.email-body {
+        height: calc(100% - 115px);
       }
       .email-body {
         min-height: 200px;

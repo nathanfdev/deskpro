@@ -41,7 +41,6 @@ use Symfony\Component\HttpFoundation\Response;
  * API access to feedback comments.
  *
  * @ApiModes("all")
- * @Rest\Route("/email_templates")
  * @ApiDoc(target="all", section="Email Templates")
  **/
 class EmailsBlocksController extends BaseController
@@ -58,7 +57,7 @@ class EmailsBlocksController extends BaseController
      *     }
      * )
      *
-     * @Rest\Get("/info", name="api_email_templates_info")
+     * @Rest\Get("/email_templates/info", name="api_email_templates_info")
      *
      * @return View
      */

@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { Accordion, AccordionPanel } from 'DeskPRO/Component/Semantic/Accordion';
-import classNames from 'classnames';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import EmailTemplateItem from './EmailTemplateItem';
 import * as actions from '../../Actions/templatesActions';
@@ -19,6 +19,11 @@ export class EmailsAndBlockMenuContainer extends React.Component {
 
   onChangeTemplate = (template) => {
     this.props.dispatch(actions.setCurrentTemplate(template));
+    if (template.get('viewModel')) {
+      this.props.dispatch(actions.loadVariables(template.get('viewModel')));
+    } else {
+      this.props.dispatch(actions.removeVariables());
+    }
     this.props.closeMenu();
   };
 

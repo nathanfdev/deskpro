@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Emails;
+namespace DeskPRO\Bundle\ApiBundle\Controller\EmailTemplates;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -41,12 +41,13 @@ use FOS\RestBundle\View\View;
  * API access to person settings.
  *
  * @ApiModes("all")
+ * @Rest\Route("/email_templates/view_model")
  */
 class ViewModelController extends BaseController
 {
     /**
      * @ApiDoc(
-     *     section="Emails",
+     *     section="Email Templates",
      *     description="list of a variables available for a view model",
      *     requirements={
      *         {
@@ -57,7 +58,7 @@ class ViewModelController extends BaseController
      *     },
      *)
      * @ApiUnstable()
-     * @Rest\Get("/emails/view_model/variables/{className}")
+     * @Rest\Get("/variables/{className}")
      *
      * @param $className
      *
