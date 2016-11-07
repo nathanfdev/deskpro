@@ -29,10 +29,12 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Component\Util\MapUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -326,6 +328,46 @@ class LanguagesController extends CrudController
         ];
 
         return $this->getPhrasesResponse($request, $phrases);
+    }
+
+    /**
+     * @ApiDoc(
+     *      section="Languages",
+     *      description="provide agent phrases for frontend",
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      }
+     * )
+     * @Rest\Get("/email_phrases/{languageId}")
+     *
+     * @param $languageId
+     *
+     * @return View
+     *
+     * @internal param Request $request
+     */
+    public function emailPhrasesAction($languageId)
+    {
+        /** @var Translate $translate */
+        $translate = $this->container->get('deskpro.core.translate');
+
+        if (is_numeric($languageId)) {
+            $language = $languageId;
+        } else {
+            $language = $this->getManager()->getRepository(Language::class)->findOneBy(['locale' => $languageId]);
+        }
+
+        $phrases = [
+            'portal.email_subjects.*',
+            'portal.emails.*',
+            'portal.general.*',
+            'portal.error.*',
+        ];
+
+        $phrases = $translate->getArrayPhraseTexts($phrases, $language);
+
+        return new View($phrases);
     }
 
     /**

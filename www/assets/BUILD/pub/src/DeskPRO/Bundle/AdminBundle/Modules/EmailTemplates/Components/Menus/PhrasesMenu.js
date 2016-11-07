@@ -7,36 +7,38 @@ import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 @connect(state => ({
   emailTemplates: state.EmailTemplates.templates
 }))
-export class VariablesMenuContainer extends React.Component {
+export class PhrasesMenuContainer extends React.Component {
   static propTypes = {
     emailTemplates: PropTypes.object.isRequired,
     closeMenu:      PropTypes.func
   };
 
-  selectVariable = () => {
+  selectPhrase = () => {
     this.props.closeMenu();
   };
 
   render() {
-    let variables = null;
+    let phrases = null;
     if (this.props.emailTemplates) {
-      variables = this.props.emailTemplates.get('variables');
+      phrases = this.props.emailTemplates.get('phrases');
     }
-    return (<VariablesMenu
-      viewModel={variables}
-      onSelectVariable={this.selectVariable}
+    return (<PhrasesMenu
+      phrases={phrases}
+      onSelectPhrase={this.selectPhrase}
     />);
   }
 }
 
-export class VariablesMenu extends React.Component {
+export class PhrasesMenu extends React.Component {
   static propTypes = {
-    viewModel:        PropTypes.object,
-    onSelectVariable: PropTypes.func
+    phrases:        PropTypes.object,
+    onSelectPhrase: PropTypes.func
   };
-  static defaultProps = {
-    onChangeMenu() {},
-  };
+
+  static formatTitle(title) {
+    const res = title.replace(/_/, ' ');
+    return res.charAt(0).toUpperCase() + res.slice(1);
+  }
 
   constructor(props) {
     super(props);
@@ -58,40 +60,40 @@ export class VariablesMenu extends React.Component {
     });
   };
 
-  getVariables = () => {
-    if (!this.props.viewModel) {
+  getGroups = () => {
+    if (!this.props.phrases) {
       return null;
     }
-    return this.props.viewModel.valueSeq().map((variable, key) =>
+    return this.props.phrases.valueSeq().map((group, key) =>
       <MenuItem
-        key={`variable${key}`}
-        label={variable.get('description')}
+        key={`phrase${key}`}
+        label={PhrasesMenu.formatTitle(group.get('title'))}
         icon="folder open"
-        className={classNames({ active: this.isActive(variable) })}
-        onClick={() => this.setActive(variable)}
+        className={classNames({ active: this.isActive(group) })}
+        onClick={() => this.setActive(group)}
       />
     );
   };
 
   getRightPanel = () => {
-    if (!this.state.selectedLeft || !this.state.selectedLeft.get('properties')) {
+    if (!this.state.selectedLeft || !this.state.selectedLeft.get('phrases')) {
       return null;
     }
-    const properties = this.state.selectedLeft.get('properties').valueSeq().map(
-      (property, key) => {
+    const properties = this.state.selectedLeft.get('phrases').valueSeq().map(
+      (phrase, key) => {
         if (
           this.state.filter
-          && property.get('description').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-          && property.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-          && this.state.selectedLeft.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+          && phrase.get('phrase').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+          && phrase.get('key').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+          && this.state.selectedLeft.get('title').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
         ) {
           return null;
         }
-        return (<MenuItem key={key} onClick={() => this.selectVariable(property)}>
-          <span className="description">{property.get('description')}</span>
+        return (<MenuItem key={key} onClick={() => this.selectPhrase(phrase)}>
+          <span className="phrase">{phrase.get('phrase')}</span>
           <br />
-          <span className="variable-name">
-            {'{{'} {this.state.selectedLeft.get('attribute')}.{property.get('attribute')} {'}}'}
+          <span className="phrase-key">
+            {phrase.get('key')}
           </span>
 
         </MenuItem>);
@@ -105,8 +107,8 @@ export class VariablesMenu extends React.Component {
     );
   };
 
-  selectVariable = (variable) => {
-    this.props.onSelectVariable(variable);
+  selectPhrase = (phrase) => {
+    this.props.onSelectPhrase(phrase);
   };
 
   updateFilter = (value) => {
@@ -125,12 +127,8 @@ export class VariablesMenu extends React.Component {
             onUserInput={this.updateFilter}
           />
           <Menu>
-            {this.getVariables()}
+            {this.getGroups()}
           </Menu>
-          <footer>
-            Enter a ticket ID for examples
-
-          </footer>
         </MenuWrapper>
         {this.getRightPanel()}
       </div>

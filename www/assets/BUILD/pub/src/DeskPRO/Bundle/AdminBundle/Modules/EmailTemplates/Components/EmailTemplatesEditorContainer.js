@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Select } from 'DeskPRO/Component/Semantic/Form';
 import { EmailsAndBlockMenuContainer } from './Menus/EmailsAndBlockMenu';
+import { PhrasesMenuContainer } from './Menus/PhrasesMenu';
 import { VariablesMenuContainer } from './Menus/VariablesMenu';
 import DropDownMenu from './Menus/DropDownMenu';
 import LanguageSelector from './Menus/LanguageSelector';
@@ -27,8 +28,12 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.templateMenu.closeMenu();
   };
 
-  closeVariableMenu = () => {
-    this.variableMenu.closeMenu();
+  closeVariablesMenu = () => {
+    this.variablesMenu.closeMenu();
+  };
+
+  closePhrasesMenu = () => {
+    this.phrasesMenu.closeMenu();
   };
 
   render() {
@@ -81,21 +86,25 @@ class EmailTemplatesEditorContainer extends React.Component {
                   <i className="fa fa-caret-down" />
                 </div>
               </div>
-              <div className="top-menu right floated">
-                <div>
-                  <i className="icon globe" />
-                  Phrases
-                  <i className="fa fa-caret-down" />
-                </div>
+              <div className={classNames('top-menu right floated', { disabled: !emailTemplates.get('phrases') })}>
+                <DropDownMenu
+                  icon="globe"
+                  label="Phrases"
+                  ref={(c) => { this.phrasesMenu = c; }}
+                >
+                  <PhrasesMenuContainer
+                    closeMenu={this.closePhrasesMenu}
+                  />
+                </DropDownMenu>
               </div>
               <div className={classNames('top-menu right floated', { disabled: !emailTemplates.get('variables') })}>
                 <DropDownMenu
                   icon="dollar"
                   label="Variables"
-                  ref={(c) => { this.variableMenu = c; }}
+                  ref={(c) => { this.variablesMenu = c; }}
                 >
                   <VariablesMenuContainer
-                    closeMenu={this.closeVariableMenu}
+                    closeMenu={this.closeVariablesMenu}
                   />
                 </DropDownMenu>
               </div>

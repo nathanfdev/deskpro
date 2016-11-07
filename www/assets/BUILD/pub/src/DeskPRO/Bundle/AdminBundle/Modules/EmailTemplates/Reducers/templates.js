@@ -5,17 +5,22 @@ import * as actions from '../Actions/templatesActions';
 
 const initialState = {
   info:            {},
-  variables:       null,
   currentTemplate: null,
+  emailPhrases:    null,
+  variables:       null,
 };
 
 export default createReducer(initialState, {
   [actions.loadTemplates]: async({
     success: setFullPayload('info')
   }),
+  [actions.loadPhrases]: async({
+    success: setFullPayload('phrases')
+  }),
   [actions.loadVariables]: async({
     success: setFullPayload('variables')
   }),
   [actions.removeVariables]:    state => state.set('variables', null),
-  [actions.setCurrentTemplate]: (state, payload) => state.set('currentTemplate', payload)
+  [actions.setCurrentTemplate]: (state, payload) => state.set('currentTemplate', payload),
+  [actions.setCurrentLanguage]: (state, payload) => state.set('currentLanguage', payload),
 });

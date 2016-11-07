@@ -12,6 +12,35 @@ export const loadTemplates = createAction(
   })
 );
 
+export const loadPhrases = createAction(
+  'EMAIL_TEMPLATES_LOAD_PHRASES',
+  languageId => new Promise((resolve) => {
+    repository('Languages').loadEmailPhrases(languageId).then((promise) => {
+      const res = promise.getData();
+
+      const phrases = {};
+      Object.keys(res).forEach((key) => {
+        if ({}.hasOwnProperty.call(res, key)) {
+          const keySections = key.split('.');
+          const group = keySections[1];
+          const phraseKey = keySections[2];
+          if (!{}.hasOwnProperty.call(phrases, group)) {
+            phrases[group] = {
+              title:   group,
+              phrases: {}
+            };
+          }
+          phrases[group].phrases[phraseKey] = {
+            key,
+            phrase: res[key]
+          };
+        }
+      });
+      resolve(phrases);
+    });
+  })
+);
+
 export const loadVariables = createAction(
   'EMAIL_TEMPLATES_LOAD_VARIABLES',
   viewModel => new Promise((resolve) => {
@@ -27,5 +56,10 @@ export const removeVariables = createAction('EMAIL_TEMPLATES_REMOVE_VARIABLES');
 
 export const setCurrentTemplate = createAction(
   'EMAIL_TEMPLATES_SET_CURRENT_TEMPLATE',
+  params => params
+);
+
+export const setCurrentLanguage = createAction(
+  'EMAIL_TEMPLATES_SET_CURRENT_LANGUAGE',
   params => params
 );

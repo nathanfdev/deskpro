@@ -460,7 +460,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
             $groups = Arrays::removeFalsey($groups);
 
             if (!isset($this->_loaded_languages[$language_id])) {
-                $this->_loaded_languages[$language_id] = App::getEntityRepository('DeskPRO:Language')->find(
+                $this->_loaded_languages[$language_id] = App::getEntityRepository(Language::class)->find(
                     $language_id
                 );
             }
@@ -611,6 +611,12 @@ class Translate implements PersonContextInterface, TranslatorInterface
             $language_id = $language['id'];
         }
 
+        if ($language_id !== $this->_language->getId()) {
+            $language = $this->_loaded_languages[$language_id] = App::getEntityRepository(Language::class)->find(
+                $language_id
+            );
+        }
+
         $preload_groups = [];
 
         $star_patterns  = [];
@@ -634,7 +640,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
             }
         }
 
-        $this->loadPhraseGroups($preload_groups);
+        $this->loadPhraseGroups($preload_groups, $language);
 
         $phrase_texts = [];
         foreach ($phrase_ids as $phrase_name) {
