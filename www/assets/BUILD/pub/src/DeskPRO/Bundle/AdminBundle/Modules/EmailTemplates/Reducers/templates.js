@@ -5,6 +5,8 @@ import * as actions from '../Actions/templatesActions';
 
 const initialState = {
   info:                 {},
+  phrases:              {},
+  template:             {},
   currentLanguage:      'en',
   currentTemplate:      null,
   currentTemplateGroup: 'user',
@@ -18,6 +20,9 @@ export default createReducer(initialState, {
   }),
   [actions.loadPhrases]: async({
     success: setFullPayload('phrases')
+  }),
+  [actions.loadTemplate]: async({
+    success: setFullPayload('template')
   }),
   [actions.loadVariables]: async({
     success: setFullPayload('variables')

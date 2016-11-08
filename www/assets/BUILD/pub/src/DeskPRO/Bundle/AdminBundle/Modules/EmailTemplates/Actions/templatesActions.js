@@ -41,6 +41,17 @@ export const loadPhrases = createAction(
   })
 );
 
+export const loadTemplate = createAction(
+  'EMAIL_TEMPLATES_LOAD_TEMPLATE',
+  name => new Promise((resolve) => {
+    repository('EmailTemplates').loadTemplate(name).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res);
+    });
+  })
+);
+
 export const loadVariables = createAction(
   'EMAIL_TEMPLATES_LOAD_VARIABLES',
   viewModel => new Promise((resolve) => {

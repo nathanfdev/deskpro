@@ -61,6 +61,12 @@ class EmailTemplatesEditorContainer extends React.Component {
     if (emailTemplates.get('currentTemplate')) {
       currentTemplate = emailTemplates.get('currentTemplate').get('title');
     }
+    let templateSubject = '';
+    let templateBody = '';
+    if (emailTemplates.get('template') && emailTemplates.get('template').get('template_code')) {
+      templateSubject = emailTemplates.get('template').get('template_code').get('subject');
+      templateBody = emailTemplates.get('template').get('template_code').get('body');
+    }
     return (
       <div className="dp-email-templates">
         <div className="editor">
@@ -126,9 +132,9 @@ class EmailTemplatesEditorContainer extends React.Component {
           </div>
           <div className="dp-code-editor">
             Email subject:
-            <textarea className="email-subject" rows="2" />
+            <textarea className="email-subject" rows="2" value={templateSubject} />
             Email:
-            <textarea className="email-body" rows="20" />
+            <textarea className="email-body" rows="20" value={templateBody} />
           </div>
           <div className="footer">
             <button className="ui primary small button">Save changes</button>
