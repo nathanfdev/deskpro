@@ -33,7 +33,6 @@ use DeskPRO\Bundle\AppBundle\Form\DataTransformer\CustomDefHierarchyNodeTransfor
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\StringToIntegerArrayTransformer;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\LazyChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
@@ -64,14 +63,10 @@ class CustomPerFieldChoiceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer(
-            new LazyChoiceList($options['choice_loader']), $options['multiple']),
-            true
-        );
-
         if ($options['multiple']) {
-            $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
+            $builder->addViewTransformer(new StringToIntegerArrayTransformer(','));
         }
+        $builder->addViewTransformer(new CustomDefHierarchyNodeTransformer($options['choice_loader']), true);
     }
 
     /**
@@ -103,12 +98,14 @@ class CustomPerFieldChoiceType extends AbstractType
                 'choice_loader'      => function (Options $options) {
                     return $this->hierarchy
                         ->generateForCustomPerFormField($options['custom_field'], $options['contextual_choices'])
-                        ->getChoiceLoader()
+                        ->getChoiceLoader(true)
                     ;
                 },
+
             ])
             ->setRequired('custom_field')
             ->setAllowedTypes('custom_field', CustomFieldDefinition::class)
+            ->setAllowedTypes('choice_loader', ['DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader'])
         ;
     }
 }

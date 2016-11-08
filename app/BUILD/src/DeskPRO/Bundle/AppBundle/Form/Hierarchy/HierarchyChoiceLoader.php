@@ -47,13 +47,19 @@ class HierarchyChoiceLoader implements ChoiceLoaderInterface
     private $list;
 
     /**
+     * @var bool
+     */
+    private $onlyIds;
+
+    /**
      * HierarchyChoiceLoader constructor.
      *
      * @param Hierarchy $hierarchy
      */
-    public function __construct(Hierarchy $hierarchy)
+    public function __construct(Hierarchy $hierarchy, $onlyIds = false)
     {
         $this->hierarchy = $hierarchy;
+        $this->onlyIds   = (bool) $onlyIds;
     }
 
     /**
@@ -62,7 +68,7 @@ class HierarchyChoiceLoader implements ChoiceLoaderInterface
     public function loadChoiceList($value = null)
     {
         if (!$this->list) {
-            $nodes      = $this->hierarchy->getFlattened()->toArray();
+            $nodes      = $this->hierarchy->getFlattened($this->onlyIds)->toArray();
             $this->list = new ArrayChoiceList($nodes);
         }
 

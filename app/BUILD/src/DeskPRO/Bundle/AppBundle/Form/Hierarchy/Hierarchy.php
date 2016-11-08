@@ -60,13 +60,15 @@ class Hierarchy extends BaseHierarchy
     }
 
     /**
+     * @param bool $onlyIds
+     *
      * @return ArrayCollection
      */
-    public function getFlattened()
+    public function getFlattened($onlyIds = false)
     {
         $collection = new ArrayCollection();
         foreach ($this->getRootNodes() as $root_node) {
-            self::flatten($root_node, $collection);
+            $this->flatten($root_node, $collection, $onlyIds);
         }
 
         return $collection;
@@ -75,26 +77,29 @@ class Hierarchy extends BaseHierarchy
     /**
      * @param HierarchyNode   $node
      * @param ArrayCollection $collection
+     * @param bool            $onlyIds
      *
      * @return ArrayCollection
      */
-    public static function flatten(HierarchyNode $node, ArrayCollection $collection)
+    public function flatten(HierarchyNode $node, ArrayCollection $collection, $onlyIds = false)
     {
-        $collection->add($node);
+        $collection->add($onlyIds ? $this->getNodeId($node) : $node);
 
         foreach ($node as $child) {
-            self::flatten($child, $collection);
+            $this->flatten($child, $collection, $onlyIds);
         }
 
         return $collection;
     }
 
     /**
+     * @param bool $onlyIds
+     *
      * @return HierarchyChoiceLoader
      */
-    public function getChoiceLoader()
+    public function getChoiceLoader($onlyIds = false)
     {
-        return new HierarchyChoiceLoader($this);
+        return new HierarchyChoiceLoader($this, $onlyIds);
     }
 
     public function markOnlyLeafSelections()

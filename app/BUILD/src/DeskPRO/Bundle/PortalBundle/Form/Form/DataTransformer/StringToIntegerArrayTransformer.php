@@ -59,14 +59,11 @@ class StringToIntegerArrayTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        $val = explode($this->delimiter, $value);
-
-        $k = [];
-        foreach ($val as $v) {
-            $k[] = (int) $v;
+        if (!$value) {
+            return $value;
         }
 
-        return $k;
+        return implode($this->delimiter, $value);
     }
 
     /**
@@ -75,9 +72,22 @@ class StringToIntegerArrayTransformer implements DataTransformerInterface
     public function reverseTransform($value)
     {
         if (!$value) {
-            return '';
+            return $value;
         }
 
-        return implode($this->delimiter, $value);
+        // {field_x: '1, 2, 3'} expected. old format, do we still support this?
+        // {field_x: [1, 2, 3]} submitted
+        if (is_array($value)) {
+            return $value;
+        }
+
+        $val = explode($this->delimiter, $value);
+
+        $k = [];
+        foreach ($val as $v) {
+            $k[] = (int) $v;
+        }
+
+        return $k;
     }
 }

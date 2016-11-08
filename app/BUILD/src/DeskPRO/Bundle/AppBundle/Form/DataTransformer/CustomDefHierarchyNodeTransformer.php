@@ -28,10 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
-use DeskPRO\Component\Hierarchy\HierarchyNode;
-use Symfony\Component\Form\ChoiceList\LazyChoiceList;
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;
 
 /**
  * Class CustomDefHierarchyNodeTransformer.
@@ -39,18 +37,24 @@ use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;
 class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
 {
     /**
-     * @var ChoiceListInterface
+     * @var HierarchyChoiceLoader
      */
-    private $choiceList;
+    private $loader;
 
     /**
-     * Constructor.
-     *
-     * @param LazyChoiceList $choiceList
+     * @var bool
      */
-    public function __construct(LazyChoiceList $choiceList)
+    private $multiple;
+
+    /**
+     * CustomDefHierarchyNodeTransformer constructor.
+     *
+     * @param HierarchyChoiceLoader $loader
+     */
+    public function __construct(HierarchyChoiceLoader $loader, $multiple = false)
     {
-        $this->choiceList = $choiceList;
+        $this->loader   = $loader;
+        $this->multiple = $multiple;
     }
 
     /**
@@ -59,19 +63,22 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
     public function transform($value)
     {
         if (!$value) {
-            return '';
+            return $value;
         }
 
+        $hierarchy = $this->loader->getHierarchy();
         if (!is_array($value)) {
-            return $value instanceof HierarchyNode ? $value : $this->findChoiceForValue($value);
+            $ret = $hierarchy->getNodeId($value);
+
+            return $ret;
         }
 
-        $items = [];
+        $ret = [];
         foreach ($value as $item) {
-            $items[] = $item instanceof HierarchyNode ? $item : $this->findChoiceForValue($item);
+            $ret[] = $hierarchy->getNodeId($item);
         }
 
-        return $items;
+        return $ret;
     }
 
     /**
@@ -80,35 +87,19 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
     public function reverseTransform($value)
     {
         if (!$value) {
-            return '';
+            return $value;
         }
 
+        $hierarchy = $this->loader->getHierarchy();
         if (!is_array($value)) {
-            return $value instanceof HierarchyNode ? (string) $value->getData()->getId() : $value;
+            return $hierarchy->findNodeById($value);
         }
 
         $items = [];
         foreach ($value as $item) {
-            $items[] = $item instanceof HierarchyNode ? (string) $item->getData()->getId() : $item;
+            $items[] = $hierarchy->findNodeById($item);
         }
 
         return $items;
-    }
-
-    /**
-     * @param $value
-     *
-     * @return HierarchyNode
-     */
-    protected function findChoiceForValue($value)
-    {
-        /** @var HierarchyNode $choice */
-        foreach ($this->choiceList->getChoices() as $choice) {
-            if ($value == $choice->getData()->getId()) {
-                return $choice;
-            }
-        }
-
-        return false;
     }
 }
