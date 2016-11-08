@@ -502,6 +502,11 @@ class Translate implements PersonContextInterface, TranslatorInterface
             return '__default__';
         }
 
+        if ($phrase_name[0] == '/') {
+            $phrase_name = substr($phrase_name, 1);
+            $phrase_name = str_replace('\.', '.', $phrase_name);
+        }
+
         $parts = Strings::rexplode('.', $phrase_name, 2);
 
         return $parts[0];

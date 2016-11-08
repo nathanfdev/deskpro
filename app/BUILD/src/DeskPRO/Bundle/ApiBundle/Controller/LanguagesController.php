@@ -339,7 +339,7 @@ class LanguagesController extends CrudController
      *          400="Bad Request"
      *      }
      * )
-     * @Rest\Get("/email_phrases/{languageId}")
+     * @Rest\Get("/email_phrases/{group}/{languageId}")
      *
      * @param $languageId
      *
@@ -347,7 +347,7 @@ class LanguagesController extends CrudController
      *
      * @internal param Request $request
      */
-    public function emailPhrasesAction($languageId)
+    public function emailPhrasesAction($group, $languageId)
     {
         /** @var Translate $translate */
         $translate = $this->container->get('deskpro.core.translate');
@@ -358,12 +358,60 @@ class LanguagesController extends CrudController
             $language = $this->getManager()->getRepository(Language::class)->findOneBy(['locale' => $languageId]);
         }
 
-        $phrases = [
-            'portal.email_subjects.*',
-            'portal.emails.*',
-            'portal.general.*',
-            'portal.error.*',
-        ];
+        $phrases = [];
+        switch ($group) {
+            case 'user':
+                $phrases = [
+                    'portal.email_subjects.*',
+                    'user.email_subjects.*',
+                    'portal.emails.*',
+                    'user.emails.*',
+                    'portal.general.*',
+                    'user.general.*',
+                    'portal.error.*',
+                    'user.error.*',
+                    'portal.tickets.*',
+                    'user.tickets.*',
+                    'portal.account.*',
+                    'portal.articles.*',
+                    'portal.chat.*',
+                    'user.chat.*',
+                    'user.defaults.*',
+                    'portal.downloads.*',
+                    'user.downloads.*',
+                    'portal.feedback.*',
+                    'user.feedback.*',
+                    'portal.flashes.*',
+                    'portal.forms.*',
+                    'user.knowledgebase.*',
+                    'user.lang.*',
+                    'portal.news.*',
+                    'user.news.*',
+                    'user.profile.*',
+                    'portal.sidebar.*',
+                    'user.time.*',
+                ];
+                break;
+            case 'agent':
+                $phrases = [
+                    'agent.email_subjects.*',
+                    'agent.emails.*',
+                    'agent.general.*',
+                    'agent.error.*',
+                    'agent.tickets.*',
+                    'agent.account.*',
+                    'agent.articles.*',
+                    'agent.chat.*',
+                    'agent.chrome.*',
+                    'agent.downloads.*',
+                    'agent.feedback.*',
+                    'agent.flashes.*',
+                    'agent.forms.*',
+                    'agent.news.*',
+                    'agent.sidebar.*',
+                ];
+                break;
+        }
 
         $phrases = $translate->getArrayPhraseTexts($phrases, $language);
 

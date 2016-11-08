@@ -4,10 +4,12 @@ import { setFullPayload, async } from 'DeskPRO/Component/Ampliflux/reducers/hand
 import * as actions from '../Actions/templatesActions';
 
 const initialState = {
-  info:            {},
-  currentTemplate: null,
-  emailPhrases:    null,
-  variables:       null,
+  info:                 {},
+  currentLanguage:      'en',
+  currentTemplate:      null,
+  currentTemplateGroup: 'user',
+  emailPhrases:         null,
+  variables:            null,
 };
 
 export default createReducer(initialState, {
@@ -20,7 +22,8 @@ export default createReducer(initialState, {
   [actions.loadVariables]: async({
     success: setFullPayload('variables')
   }),
-  [actions.removeVariables]:    state => state.set('variables', null),
-  [actions.setCurrentTemplate]: (state, payload) => state.set('currentTemplate', payload),
-  [actions.setCurrentLanguage]: (state, payload) => state.set('currentLanguage', payload),
+  [actions.removeVariables]:         state => state.set('variables', null),
+  [actions.setCurrentLanguage]:      (state, payload) => state.set('currentLanguage', payload),
+  [actions.setCurrentTemplate]:      (state, payload) => state.set('currentTemplate', payload),
+  [actions.setCurrentTemplateGroup]: (state, payload) => state.set('currentTemplateGroup', payload),
 });

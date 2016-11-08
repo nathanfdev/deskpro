@@ -22,6 +22,10 @@ class EmailTemplatesEditorContainer extends React.Component {
     const { dispatch } = this.props;
 
     dispatch(actions.loadTemplates());
+    this.props.dispatch(actions.loadPhrases(
+      this.props.emailTemplates.get('currentTemplateGroup'),
+      this.props.emailTemplates.get('currentLanguage')
+    ));
   }
 
   closeTemplateMenu = () => {
@@ -36,14 +40,22 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.phrasesMenu.closeMenu();
   };
 
+  selectTemplateGroup = (group) => {
+    this.props.dispatch(actions.setCurrentTemplateGroup(group));
+    const lang = this.props.emailTemplates.get('currentLanguage');
+    this.props.dispatch(actions.loadPhrases(group, lang));
+  };
+
   render() {
     const emailTemplates = this.props.emailTemplates;
-    let templatesGroups = [];
+    const templatesGroups = [];
     if (emailTemplates && emailTemplates.get('info').get('list')) {
-      templatesGroups = emailTemplates.get('info').get('list').valueSeq().map(group => ({
-        value: group.get('typeId'),
-        label: group.get('title')
-      }));
+      emailTemplates.get('info').get('list').valueSeq().forEach((group) => {
+        templatesGroups.push({
+          value: group.get('typeId'),
+          label: group.get('title')
+        });
+      });
     }
     let currentTemplate = 'Select a template';
     if (emailTemplates.get('currentTemplate')) {
@@ -59,6 +71,8 @@ class EmailTemplatesEditorContainer extends React.Component {
                   <Select
                     options={templatesGroups}
                     className="group-select basic"
+                    onChange={this.selectTemplateGroup}
+                    value={emailTemplates.get('currentTemplateGroup')}
                   />
                 </div>
               </div>
