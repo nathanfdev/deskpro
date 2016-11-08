@@ -122,7 +122,7 @@ class WidgetBrandChatPopupSettings
     /**
      * @return float
      */
-    public function getDelay(): float
+    public function getDelay()
     {
         return $this->delay;
     }
@@ -132,7 +132,7 @@ class WidgetBrandChatPopupSettings
      *
      * @return $this
      */
-    public function setDelay(float $delay)
+    public function setDelay($delay)
     {
         $this->delay = $delay;
 
