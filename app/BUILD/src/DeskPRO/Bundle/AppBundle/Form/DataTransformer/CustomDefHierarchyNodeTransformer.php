@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
-use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
+use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Symfony\Component\Form\ChoiceList\LazyChoiceList;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;
@@ -98,11 +98,11 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
     /**
      * @param $value
      *
-     * @return \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode
+     * @return HierarchyNode
      */
     protected function findChoiceForValue($value)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode $choice */
+        /** @var HierarchyNode $choice */
         foreach ($this->choiceList->getChoices() as $choice) {
             if ($value == $choice->getData()->getId()) {
                 return $choice;

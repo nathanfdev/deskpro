@@ -30,11 +30,10 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader;
 use DeskPRO\Component\Hierarchy\HierarchyNode;
 use DeskPRO\Component\Util\EntityUtils;
-use Symfony\Component\Form\ChoiceList\LazyChoiceList;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;
 
 /**
  * Class HierarchyNodeTransformer.
@@ -42,9 +41,9 @@ use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;
 class HierarchyNodeTransformer implements DataTransformerInterface
 {
     /**
-     * @var ChoiceListInterface
+     * @var HierarchyChoiceLoader
      */
-    private $choiceList;
+    private $loader;
 
     /**
      * @var bool
@@ -52,15 +51,15 @@ class HierarchyNodeTransformer implements DataTransformerInterface
     private $multiple;
 
     /**
-     * Constructor.
+     * HierarchyNodeTransformer constructor.
      *
-     * @param LazyChoiceList $choiceList
-     * @param bool           $multiple
+     * @param HierarchyChoiceLoader $loader
+     * @param bool                  $multiple
      */
-    public function __construct(LazyChoiceList $choiceList, $multiple = false)
+    public function __construct(HierarchyChoiceLoader $loader, $multiple = false)
     {
-        $this->choiceList = $choiceList;
-        $this->multiple   = $multiple;
+        $this->loader   = $loader;
+        $this->multiple = $multiple;
     }
 
     /**
@@ -72,33 +71,16 @@ class HierarchyNodeTransformer implements DataTransformerInterface
             return '';
         }
 
-        $choices = $this->choiceList->getChoices();
-
-        if (count($choices) < 1) {
+        $hierarchy = $this->loader->getHierarchy();
+        if (!$hierarchy->count()) {
             return '';
         }
 
-        /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode $choice */
-        foreach ($choices as $choice) {
-            if (!$choice instanceof HierarchyNode) {
-                continue;
-            }
-
-            $data = $choice->getData();
-            if ($data instanceof DomainObject || $data instanceof EntityInterface) {
-                $data = EntityUtils::getIdentifier($data);
-            }
-
-            if ($value instanceof DomainObject || $value instanceof EntityInterface) {
-                $value = EntityUtils::getIdentifier($value);
-            }
-
-            if ($value === $data) {
-                return $choice;
-            }
+        if ($value instanceof DomainObject || $value instanceof EntityInterface) {
+            $value = EntityUtils::getIdentifier($value);
         }
 
-        return '';
+        return $hierarchy->findNodeById($value);
     }
 
     /**

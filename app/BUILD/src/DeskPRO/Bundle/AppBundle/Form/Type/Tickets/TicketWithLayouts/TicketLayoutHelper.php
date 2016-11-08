@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
-use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
+use DeskPRO\Component\Hierarchy\HierarchyNode;
 use DeskPRO\Component\Util\ListUtils;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 

@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Hierarchy;
 
 use DeskPRO\Component\Hierarchy\Hierarchy as BaseHierarchy;
 use DeskPRO\Component\Hierarchy\HierarchyFormatterInterface;
-use DeskPRO\Component\Hierarchy\HierarchyNode as BaseNode;
+use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -60,7 +60,7 @@ class Hierarchy extends BaseHierarchy
     }
 
     /**
-     * @return HierarchyNode[]
+     * @return ArrayCollection
      */
     public function getFlattened()
     {
@@ -74,23 +74,19 @@ class Hierarchy extends BaseHierarchy
 
     /**
      * @param HierarchyNode   $node
-     * @param ArrayCollection $append_to_collection
+     * @param ArrayCollection $collection
      *
-     * @return ArrayCollection|HierarchyNode[]
+     * @return ArrayCollection
      */
-    public static function flatten(HierarchyNode $node, ArrayCollection $append_to_collection = null)
+    public static function flatten(HierarchyNode $node, ArrayCollection $collection)
     {
-        if (!$append_to_collection) {
-            $append_to_collection = new ArrayCollection();
-        }
-
-        $append_to_collection->add($node);
+        $collection->add($node);
 
         foreach ($node as $child) {
-            self::flatten($child, $append_to_collection);
+            self::flatten($child, $collection);
         }
 
-        return $append_to_collection;
+        return $collection;
     }
 
     /**
@@ -98,24 +94,7 @@ class Hierarchy extends BaseHierarchy
      */
     public function getChoiceLoader()
     {
-        $choices = [];
-
-        if ($this->leaf_selections_only) {
-            /** @var HierarchyNode $node */
-            foreach ($this as $node) {
-                $choices[(string) $node] = $node;
-                foreach ($node->getChoices() as $id => $nid) {
-                    $choices[(string) $nid] = $nid;
-                }
-            }
-        } else {
-            /** @var HierarchyNode $node */
-            foreach ($this->getFlattened() as $node) {
-                $choices[(string) $node] = $node;
-            }
-        }
-
-        return new HierarchyChoiceLoader($choices);
+        return new HierarchyChoiceLoader($this);
     }
 
     public function markOnlyLeafSelections()
@@ -148,11 +127,11 @@ class Hierarchy extends BaseHierarchy
     }
 
     /**
-     * @param BaseNode $node
+     * @param HierarchyNode $node
      *
-     * @return BaseNode
+     * @return HierarchyNode
      */
-    public function findSelectable(BaseNode $node)
+    public function findSelectable(HierarchyNode $node)
     {
         if ($node->isLeaf()) {
             return $node;

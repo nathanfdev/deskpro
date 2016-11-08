@@ -57,19 +57,29 @@ class Hierarchy implements \Countable, \IteratorAggregate
     protected $accessor;
 
     /**
+     * @var [id => node]
+     */
+    protected $map = [];
+
+    /**
      * @param HierarchyNode[]             $root_nodes
      * @param HierarchyFormatterInterface $formatter
      * @param string|null                 $node_id_path
      */
     public function __construct(array $root_nodes, HierarchyFormatterInterface $formatter = null, $node_id_path = null)
     {
-        $this->formatter  = $formatter ?: new Formatter\FlatListFormatter();
-        $this->root_nodes = $root_nodes;
+        $this->formatter    = $formatter ?: new Formatter\FlatListFormatter();
+        $this->root_nodes   = $root_nodes;
+        $this->node_id_path = $node_id_path;
+        $this->accessor     = PropertyAccess::createPropertyAccessor();
+        $hierarchy          = $this;
 
         // suppress the bug in php in some versions for modifying an array in usort
-        @uksort($root_nodes, function ($a, $b) {
-            $order1 = $this->root_nodes[$a]->getOrder();
+        @uksort($root_nodes, function ($a, $b) use ($hierarchy) {
+            $nodeA = $this->root_nodes[$a];
+            $order1 = $nodeA->getOrder();
             $order2 = $this->root_nodes[$b]->getOrder();
+            $this->addNode($nodeA);
 
             if ($order1 === $order2) {
                 return ($a < $b) ? -1 : 1;
@@ -78,13 +88,7 @@ class Hierarchy implements \Countable, \IteratorAggregate
             return ($order2 < $order1) ? -1 : 1;
         });
 
-        $this->root_nodes = array_values($root_nodes);
-        foreach ($root_nodes as $root_node) {
-            $root_node->setHierarchy($this);
-        }
-
-        $this->node_id_path = $node_id_path;
-        $this->accessor     = PropertyAccess::createPropertyAccessor();
+        $this->root_nodes = $root_nodes;
     }
 
     /**
@@ -161,20 +165,16 @@ class Hierarchy implements \Countable, \IteratorAggregate
      */
     public function findNodeById($node_id, $recursive = true)
     {
-        foreach ($this->root_nodes as $node) {
-            if ($node_id == $this->getNodeId($node)) {
-                return $node;
-            }
-        }
+        return isset($this->map[$node_id]) ? $this->map[$node_id] : null;
+    }
 
-        if ($recursive) {
-            foreach ($this->root_nodes as $node) {
-                if ($result = $node->findChildById($node_id)) {
-                    return $result;
-                }
-            }
-        }
-
-        return;
+    /**
+     * @param HierarchyNode $node
+     */
+    public function addNode(HierarchyNode $node)
+    {
+        $node->setHierarchy($this);
+        $id             = $this->getNodeId($node);
+        $this->map[$id] = $node;
     }
 }

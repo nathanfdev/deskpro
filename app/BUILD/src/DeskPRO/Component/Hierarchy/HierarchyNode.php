@@ -85,7 +85,6 @@ class HierarchyNode implements \IteratorAggregate, \Countable
     public function addChild(HierarchyNode $node)
     {
         $node->setParent($this);
-        $node->setHierarchy($this->hierarchy);
         $this->children[] = $node;
 
         // bug in php will throw an exception for modifying arrays in some versions of php during usort
