@@ -1077,7 +1077,11 @@ class SystemErrorHandler
     public static function varToString($var, $_depth = 0)
     {
         if (is_object($var)) {
-            return sprintf('<%s>', get_class($var));
+            if ($var instanceof \Symfony\Component\EventDispatcher\Debug\WrappedListener) {
+                return sprintf('<%s<%s>>', get_class($var), self::varToString($var->getWrappedListener()));
+            } else {
+                return sprintf('<%s>', get_class($var));
+            }
         }
         if (is_array($var)) {
             $a        = [];
