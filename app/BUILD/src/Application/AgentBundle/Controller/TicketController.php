@@ -3559,7 +3559,8 @@ class TicketController extends AbstractController
 
         $top .= '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
         $top .= '--- Forwarded Message ---<br/>';
-        $top .= 'From: '.$message->getPerson()->getDisplayName().' &lt;<a href="mailto:'.$message->getPerson()->getPrimaryEmailAddress().'">'.$message->getPerson()->getPrimaryEmailAddress().'</a>&gt;<br/>';
+        $top .= 'From: '.$message->getPerson()->getDisplayNameUser().' &lt;<a href="mailto:'.$message->getPerson()
+                ->getPrimaryEmailAddress().'">'.$message->getPerson()->getPrimaryEmailAddress().'</a>&gt;<br/>';
 
         if ($message->getPerson()->isAgent()) {
             $to = $ticket->getPerson();
@@ -3622,7 +3623,7 @@ class TicketController extends AbstractController
             $from_email = $account->getUseEmailAddress();
         }
 
-        $from_name = $this->person->getDisplayName();
+        $from_name = $this->person->getDisplayNameUser();
 
         try {
             $email->setFrom($from_email, $from_name);
