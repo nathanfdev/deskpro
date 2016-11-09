@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader;
+use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Symfony\Component\Form\DataTransformerInterface;
 
 /**
@@ -68,14 +69,14 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
 
         $hierarchy = $this->loader->getHierarchy();
         if (!is_array($value)) {
-            $ret = $hierarchy->getNodeId($value);
+            $ret = $value instanceof HierarchyNode ? $hierarchy->getNodeId($value) : $value;
 
             return $ret;
         }
 
         $ret = [];
         foreach ($value as $item) {
-            $ret[] = $hierarchy->getNodeId($item);
+            $ret[] = $item instanceof HierarchyNode ? $hierarchy->getNodeId($item) : $item;
         }
 
         return $ret;
