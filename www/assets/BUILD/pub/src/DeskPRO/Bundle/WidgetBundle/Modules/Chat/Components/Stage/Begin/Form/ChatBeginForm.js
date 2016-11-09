@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
-import { FormItem } from './FormItem';
-import { CustomFieldTemplate } from './CustomFieldTemplate';
+import { Field, Input } from 'react-forms';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
-import { Field, Input } from 'react-forms';
+import { FormItem } from './FormItem';
+import { CustomFieldTemplate } from './CustomFieldTemplate';
 import { ChatBeginLoadingSpinner } from '../ChatBeginLoadingSpinner';
 import { WidgetBodyScrollAreaContainer } from '../../../../../Application/Components/Widget/Parts/Body/WidgetBodyScrollAreaContainer';
 
@@ -12,7 +12,6 @@ export class ChatBeginForm extends React.Component {
   static propTypes = {
     submit:             PropTypes.bool,
     errors:             PropTypes.object,
-    onChange:           PropTypes.func,
     onSubmit:           PropTypes.func,
     customFields:       PropTypes.object,
     customFieldsLoaded: PropTypes.bool
@@ -58,8 +57,7 @@ export class ChatBeginForm extends React.Component {
             <div className="button-label">
               {submit
                 ? <div className="spinner"><i /></div>
-                :
-                <button className="dpdesignportal-button dpdesignportal-button-wide">
+                : <button className="dpdesignportal-button dpdesignportal-button-wide">
                   {portalPhrases.get('portal.chat.start')}
                 </button>
               }
@@ -70,3 +68,5 @@ export class ChatBeginForm extends React.Component {
     );
   }
 }
+
+export default ChatBeginForm;

@@ -1,15 +1,14 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import { Fieldset, createValue } from 'react-forms';
+import $ from 'jquery';
+import { loadAll, isLoadedCollectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { PortalFormWidget } from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
 import { liveDemoSelector } from '../../../../Application/Selectors/dpWindow';
 import { requireChatEmailValidationSelector, requireChatLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
 import { history } from '../../../../../Services/history';
-import { loadAll, isLoadedCollectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { Fieldset, createValue } from 'react-forms';
-import { PortalFormWidget } from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
-import $ from 'jquery';
 
 @connect(state => ({
   liveDemo:               liveDemoSelector(state),
@@ -25,9 +24,7 @@ export class ChatBeginContainer extends React.Component {
     requireLogin:           PropTypes.bool,
     dispatch:               PropTypes.func.isRequired,
     children:               PropTypes.node,
-    isCreated:              PropTypes.bool,
     liveDemo:               PropTypes.bool,
-    customFields:           PropTypes.object
   };
 
   constructor(props) {
@@ -42,6 +39,7 @@ export class ChatBeginContainer extends React.Component {
 
   componentDidMount() {
     this.props.dispatch(loadAll('CustomDefChat'));
+    this.props.dispatch(loadAll('ChatDepartment'));
     this.mounted = true;
   }
 
@@ -55,7 +53,7 @@ export class ChatBeginContainer extends React.Component {
   }
 
   componentDidUpdate() {
-    this.formWidget = new PortalFormWidget($(ReactDOM.findDOMNode(this)), null, {
+    this.formWidget = new PortalFormWidget($(this.node), null, {
       context: [parent.document, window.widgetFrame.document]
     });
 
@@ -66,11 +64,11 @@ export class ChatBeginContainer extends React.Component {
     this.mounted = false;
   }
 
-  onChange = formData => {
+  onChange = (formData) => {
     this.setState({ formData });
   };
 
-  onSubmit = event => {
+  onSubmit = (event) => {
     if (event) {
       event.preventDefault();
     }
@@ -101,7 +99,7 @@ export class ChatBeginContainer extends React.Component {
           });
         }
       },
-      result => {
+      (result) => {
         if (this.mounted) {
           this.setState({
             submit: false,
@@ -128,7 +126,7 @@ export class ChatBeginContainer extends React.Component {
     const childProps = children.props;
 
     return (
-      <Fieldset formValue={this.state.formData}>
+      <Fieldset formValue={this.state.formData} ref={(c) => { this.node = c; }}>
         {React.cloneElement(children, {
           ...this.props,
           ...childProps,
