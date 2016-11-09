@@ -348,15 +348,18 @@ class ObjectLangRepository
         $run_langs = [];
 
         foreach ($run as $lang_id => $refs) {
-            $run_refs    = array_merge($run_refs, array_keys($refs));
-            $run_langs[] = $lang_id;
+            foreach ($refs as $ref => $v) {
+                $run_refs[$ref]      = 1;
+                $run_langs[$lang_id] = 1;
+
+                if (!isset($this->loaded[$ref][$lang_id])) {
+                    $this->loaded[$ref][$lang_id] = [];
+                }
+            }
         }
 
-        $run_refs = array_unique($run_refs);
-        $run_refs = array_values($run_refs);
-
-        $run_langs = array_unique($run_langs);
-        $run_langs = array_values($run_langs);
+        $run_refs  = array_keys($run_refs);
+        $run_langs = array_keys($run_langs);
 
         // Possible we over-fetch some info by getting
         // langs we didnt specify if we are pre-loading two sets at a time
@@ -367,16 +370,6 @@ class ObjectLangRepository
             WHERE o.ref IN (?0) AND o.language IN (?1)
         ')->setParameters([$run_refs, $run_langs])->execute();
 
-        // Mark the refs themselves as "laoded" so we dont attempt to
-        // prelaod empty collections
-        foreach ($run_langs as $lang_id) {
-            foreach ($run_refs as $ref) {
-                if (!isset($this->loaded[$ref][$lang_id])) {
-                    $this->loaded[$ref][$lang_id] = [];
-                }
-            }
-        }
-
         foreach ($recs as $rec) {
             if (!trim($rec->value)) {
                 continue;
@@ -385,9 +378,6 @@ class ObjectLangRepository
             $obj_ref = $rec->ref;
             $lang_id = $rec->language->getId();
 
-            if (!isset($this->loaded[$obj_ref])) {
-                $this->loaded[$obj_ref] = [];
-            }
             if (!isset($this->loaded[$obj_ref][$lang_id])) {
                 $this->loaded[$obj_ref][$lang_id] = [];
             }
