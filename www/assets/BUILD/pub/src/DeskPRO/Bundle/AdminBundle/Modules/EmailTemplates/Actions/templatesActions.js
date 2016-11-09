@@ -100,3 +100,5 @@ export const setCurrentTemplateGroup = createAction(
   'EMAIL_TEMPLATES_SET_CURRENT_TEMPLATE_GROUP',
   params => params
 );
+
+export const cleanState = createAction('EMAIL_TEMPLATES_CLEAN_STATE');

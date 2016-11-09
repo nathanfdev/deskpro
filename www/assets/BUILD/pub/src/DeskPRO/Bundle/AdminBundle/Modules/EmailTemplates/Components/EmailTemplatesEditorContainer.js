@@ -37,6 +37,10 @@ class EmailTemplatesEditorContainer extends React.Component {
     ));
   }
 
+  componentWillUnmount() {
+    this.props.dispatch(actions.cleanState);
+  }
+
   closeTemplateMenu = () => {
     this.templateMenu.closeMenu();
   };
