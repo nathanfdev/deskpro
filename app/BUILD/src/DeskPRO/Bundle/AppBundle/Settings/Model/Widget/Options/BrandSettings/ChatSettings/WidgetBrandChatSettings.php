@@ -69,9 +69,14 @@ class WidgetBrandChatSettings
     private $beginMode = self::BEGIN_MODE_FORM;
 
     /**
-     * @var int
+     * @var bool
      *
-     * @JMS\Type("integer")
+     * @JMS\Type("boolean")
+     */
+    private $allowDepartmentSelection = false;
+
+    /**
+     * @var int
      *
      * @JMS\Type("integer")
      * @Assert\GreaterThanOrEqual(30)
@@ -162,6 +167,26 @@ class WidgetBrandChatSettings
     public function setBeginMode($beginMode)
     {
         $this->beginMode = $beginMode;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllowDepartmentSelection()
+    {
+        return $this->allowDepartmentSelection;
+    }
+
+    /**
+     * @param bool $allowDepartmentSelection
+     *
+     * @return $this
+     */
+    public function setAllowDepartmentSelection($allowDepartmentSelection)
+    {
+        $this->allowDepartmentSelection = (bool) $allowDepartmentSelection;
 
         return $this;
     }
