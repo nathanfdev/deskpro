@@ -139,7 +139,7 @@ class SpecialTriggerEdit
         } else {
             $trigger->event_trigger = 'newticket';
             $trigger->by_agent_mode = ['api', 'email', 'web', 'mobile'];
-            $trigger->by_user_mode  = ['form', 'portal', 'widget'];
+            $trigger->by_user_mode  = ['api', 'form', 'portal', 'widget'];
 
             $terms_set->add(new CheckDepartment('is', ['department_ids' => [$this->obj->id]]));
         }
