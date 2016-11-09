@@ -227,7 +227,6 @@ class DatabaseSourceMapper implements SourceMapperInterface
         if (!$ref) {
             $ref = Numbers::roundToMultiple(time(), 5).'-'.Strings::random(40, Strings::CHARS_ALPHANUM_IU);
             $message->getHeaders()->addTextHeader('X-DeskPRO-MessageRef', $ref);
-            $message->setId($ref.'@deskpro-message');
         }
 
         $message->setBcc([]);
