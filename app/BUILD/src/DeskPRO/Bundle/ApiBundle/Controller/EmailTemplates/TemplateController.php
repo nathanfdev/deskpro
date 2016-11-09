@@ -28,15 +28,18 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\EmailTemplates;
 
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Entity\PortalPageDisplay;
 use Application\DeskPRO\Templating\Templates\TemplateSet;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\EmailTemplateType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * API access to person settings.
@@ -65,7 +68,7 @@ class TemplateController extends BaseController
      *
      * @return View
      */
-    public function variablesAction($name)
+    public function getTemplateAction($name)
     {
         if (strpos($name, 'EDIT_SIDEBAR_BLOCK:') === 0) {
             $block_id = substr($name, strlen('EDIT_SIDEBAR_BLOCK:'));
@@ -92,6 +95,82 @@ class TemplateController extends BaseController
         );
 
         return new View($data);
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Email Templates",
+     *     description="Save a template",
+     *     requirements={
+     *         {
+     *             "name"="name",
+     *             "description"="The template name",
+     *             "dataType"="string"
+     *         }
+     *     },
+     *)
+     * @ApiUnstable()
+     * @Rest\Post("/{name}")
+     *
+     * @param Request $request
+     * @param         $name
+     *
+     * @throws Exception
+     *
+     * @return View
+     */
+    public function setTemplateAction(Request $request, $name)
+    {
+        $set      = $this->getTemplateSet();
+        $template = null;
+
+        $form = $this->createForm(EmailTemplateType::class);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        try {
+            $template = $set->getCustomTemplate($name);
+        } catch (\InvalidArgumentException $e) {
+            if (!$request->request->get('create_new')) {
+                throw $this->createNotFoundException();
+            }
+        }
+
+        if (!$template) {
+            $template = $set->createCustomTemplate($name);
+        }
+
+        $templateCode = $template->getTemplateCode();
+
+        $data = $form->getData();
+        if ($template->getType() == 'email') {
+            $templateCode->setSubject($data['subject']);
+            $templateCode->setBody($data['body']);
+        } else {
+            throw new Exception('Only "email" templates can be updated');
+        }
+
+        try {
+            $set->saveTemplate($template);
+        } catch (\Twig_Error_Syntax $e) {
+            return new View([
+                'error'         => true,
+                'error_syntax'  => true,
+                'error_code'    => $e->getCode(),
+                'error_message' => $e->getMessage(),
+                'error_line'    => $e->getTemplateLine(),
+            ], 400);
+        } catch (\Twig_Error $e) {
+            return new View([
+                'error'         => true,
+                'error_code'    => $e->getCode(),
+                'error_message' => $e->getMessage(),
+            ], 400);
+        }
+
+        return new View(['success' => true, 'name' => $template->getName()]);
     }
 
     /**

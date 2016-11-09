@@ -52,6 +52,27 @@ export const loadTemplate = createAction(
   })
 );
 
+export const updateTemplateSubject = createAction(
+  'EMAIL_TEMPLATES_UPDATE_TEMPLATE_SUBJECT',
+  subject => subject
+);
+
+export const updateTemplateBody = createAction(
+  'EMAIL_TEMPLATES_UPDATE_TEMPLATE_BODY',
+  body => body
+);
+
+export const saveTemplate = createAction(
+  'EMAIL_TEMPLATES_SAVE_TEMPLATE',
+  (name, template) => new Promise((resolve) => {
+    repository('EmailTemplates').saveTemplate(name, template).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res);
+    });
+  })
+);
+
 export const loadVariables = createAction(
   'EMAIL_TEMPLATES_LOAD_VARIABLES',
   viewModel => new Promise((resolve) => {

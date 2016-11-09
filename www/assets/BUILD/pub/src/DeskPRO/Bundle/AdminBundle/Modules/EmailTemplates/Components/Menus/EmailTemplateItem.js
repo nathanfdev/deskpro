@@ -20,7 +20,9 @@ class EmailTemplateItem extends React.Component {
 
   templateToolTip = () => {
     this.toolTipTimeOutId = setTimeout(() => {
-      this.templatePopup.openPopup();
+      if (this.templatePopup) {
+        this.templatePopup.openPopup();
+      }
     }, 500);
   };
 

@@ -78,6 +78,9 @@
         &::-moz-selection {
           color: $dp-greyscale-150;
         }
+        &.disabled {
+          cursor: not-allowed;
+        }
       }
       textarea:focus,
       textarea:active {

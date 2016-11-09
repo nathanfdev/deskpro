@@ -31,4 +31,6 @@ export default createReducer(initialState, {
   [actions.setCurrentLanguage]:      (state, payload) => state.set('currentLanguage', payload),
   [actions.setCurrentTemplate]:      (state, payload) => state.set('currentTemplate', payload),
   [actions.setCurrentTemplateGroup]: (state, payload) => state.set('currentTemplateGroup', payload),
+  [actions.updateTemplateSubject]:   (state, payload) => state.setIn(['template', 'template_code', 'subject'], payload),
+  [actions.updateTemplateBody]:      (state, payload) => state.setIn(['template', 'template_code', 'body'], payload)
 });

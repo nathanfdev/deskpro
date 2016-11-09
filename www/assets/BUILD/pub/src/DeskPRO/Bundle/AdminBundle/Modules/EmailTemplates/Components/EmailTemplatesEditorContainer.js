@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Select } from 'DeskPRO/Component/Semantic/Form';
+import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { EmailsAndBlockMenuContainer } from './Menus/EmailsAndBlockMenu';
 import { PhrasesMenuContainer } from './Menus/PhrasesMenu';
 import { VariablesMenuContainer } from './Menus/VariablesMenu';
@@ -17,6 +18,14 @@ class EmailTemplatesEditorContainer extends React.Component {
     dispatch:       PropTypes.func,
     emailTemplates: PropTypes.object.isRequired
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      saveSubmit: false,
+      undoSubmit: false
+    };
+  }
 
   componentWillMount() {
     const { dispatch } = this.props;
@@ -46,6 +55,45 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.props.dispatch(actions.loadPhrases(group, lang));
   };
 
+  changeTemplateSubject = (event) => {
+    this.props.dispatch(actions.updateTemplateSubject(event.target.value));
+  };
+
+  changeTemplateBody = (event) => {
+    this.props.dispatch(actions.updateTemplateBody(event.target.value));
+  };
+
+  saveTemplate = () => {
+    this.setState({
+      saveSubmit: true
+    });
+    const name = this.props.emailTemplates.get('currentTemplate').get('name');
+    const template = {
+      subject: this.props.emailTemplates.get('template').get('template_code').get('subject'),
+      body:    this.props.emailTemplates.get('template').get('template_code').get('body'),
+    };
+    this.props.dispatch(actions.saveTemplate(name, template)).then(
+      () => {
+        this.setState({
+          saveSubmit: false
+        });
+      }
+    );
+  };
+
+  undoChanges = () => {
+    this.setState({
+      undoSubmit: true
+    });
+    this.props.dispatch(actions.loadTemplate(this.props.emailTemplates.get('currentTemplate').get('name'))).then(
+      () => {
+        this.setState({
+          undoSubmit: false
+        });
+      }
+    );
+  };
+
   render() {
     const emailTemplates = this.props.emailTemplates;
     const templatesGroups = [];
@@ -63,9 +111,11 @@ class EmailTemplatesEditorContainer extends React.Component {
     }
     let templateSubject = '';
     let templateBody = '';
+    let textareaDisabled = true;
     if (emailTemplates.get('template') && emailTemplates.get('template').get('template_code')) {
       templateSubject = emailTemplates.get('template').get('template_code').get('subject');
       templateBody = emailTemplates.get('template').get('template_code').get('body');
+      textareaDisabled = false;
     }
     return (
       <div className="dp-email-templates">
@@ -132,13 +182,37 @@ class EmailTemplatesEditorContainer extends React.Component {
           </div>
           <div className="dp-code-editor">
             Email subject:
-            <textarea className="email-subject" rows="2" value={templateSubject} />
+            <textarea
+              className={classNames('email-subject', { disabled: textareaDisabled })}
+              rows="2"
+              value={templateSubject}
+              disabled={textareaDisabled}
+              onChange={this.changeTemplateSubject}
+            />
             Email:
-            <textarea className="email-body" rows="20" value={templateBody} />
+            <textarea
+              className={classNames('email-body', { disabled: textareaDisabled })}
+              rows="20"
+              value={templateBody}
+              disabled={textareaDisabled}
+              onChange={this.changeTemplateBody}
+            />
           </div>
           <div className="footer">
-            <button className="ui primary small button">Save changes</button>
-            <button className="ui basic small button">Undo changes</button>
+            <Button
+              className={classNames('primary small', { loading: this.state.saveSubmit })}
+              disabled={textareaDisabled}
+              onClick={this.saveTemplate}
+            >
+              Save changes
+            </Button>
+            <Button
+              className={classNames('basic small', { loading: this.state.undoSubmit })}
+              disabled={textareaDisabled}
+              onClick={this.undoChanges}
+            >
+              Undo changes
+            </Button>
             <button className="ui right floated basic small button">Reset template</button>
           </div>
         </div>

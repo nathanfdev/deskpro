@@ -5,8 +5,12 @@ class EmailTemplatesRepository extends ApiRepository {
     return this.api.sendGet(`DP_API/${this.url}/info`);
   }
 
-  loadTemplate(template) {
-    return this.api.sendGet(`DP_API/${this.url}/template/${template}`);
+  loadTemplate(name) {
+    return this.api.sendGet(`DP_API/${this.url}/template/${name}`);
+  }
+
+  saveTemplate(name, template) {
+    return this.api.sendPost(`DP_API/${this.url}/template/${name}`, template);
   }
 
   loadVariables(viewModel) {
