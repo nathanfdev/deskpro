@@ -60,7 +60,7 @@ class EntityHierarchyType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addModelTransformer(new HierarchyNodeTransformer($options['choice_loader'], $options['expanded']));
+        $builder->addViewTransformer(new HierarchyNodeTransformer($options['choice_loader'], $options['expanded']));
     }
 
     /**

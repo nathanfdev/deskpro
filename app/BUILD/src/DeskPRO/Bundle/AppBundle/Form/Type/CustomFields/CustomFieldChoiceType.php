@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\StringToIntegerArrayTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -64,7 +65,9 @@ class CustomFieldChoiceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (!$options['multiple']) {
+        if ($options['multiple']) {
+            $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
+        } else {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onTransformSingleChoice'], 100);
 
             if ($options['expanded']) {
@@ -74,7 +77,7 @@ class CustomFieldChoiceType extends AbstractType
             }
         }
 
-        $builder->addViewTransformer(new CustomDefHierarchyNodeTransformer($options['choice_loader']), true);
+        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_loader']));
     }
 
     /**

@@ -153,7 +153,7 @@ class CustomDataType extends AbstractType
         $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
 
         if ($customDef->isChoiceType()) {
-            $data = $form->get('data')->getNormData();
+            $data = $form->get('data')->getData();
             $data = is_array($data) ? $data : ($data ? [$data] : []);
             $data = array_map(function (HierarchyNode $choiceCustomDef) {
                 return $choiceCustomDef->getData()->getId();
@@ -330,9 +330,7 @@ class CustomDataType extends AbstractType
                     ->toArray()
                 ;
 
-                if (!$customDef->isMulti()) {
-                    $formFieldData = reset($formFieldData);
-                }
+                $formFieldData = implode(',', $formFieldData);
             } elseif ($customDef->isDateType()) {
                 // cast to null
                 if (!$formFieldData) {

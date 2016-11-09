@@ -68,19 +68,28 @@ class HierarchyNodeTransformer implements DataTransformerInterface
     public function transform($value)
     {
         if (!$value) {
-            return '';
+            return $value;
         }
 
         $hierarchy = $this->loader->getHierarchy();
-        if (!$hierarchy->count()) {
-            return '';
+        if (!is_array($value)) {
+            if ($value instanceof DomainObject || $value instanceof EntityInterface) {
+                $value = EntityUtils::getIdentifier($value);
+            }
+            $ret = $value instanceof HierarchyNode ? $hierarchy->getNodeId($value) : $value;
+
+            return $ret;
         }
 
-        if ($value instanceof DomainObject || $value instanceof EntityInterface) {
-            $value = EntityUtils::getIdentifier($value);
+        $ret = [];
+        foreach ($value as $item) {
+            if ($value instanceof DomainObject || $value instanceof EntityInterface) {
+                $value = EntityUtils::getIdentifier($value);
+            }
+            $ret[] = $item instanceof HierarchyNode ? $hierarchy->getNodeId($item) : $item;
         }
 
-        return $hierarchy->findNodeById($value);
+        return $ret;
     }
 
     /**
@@ -88,8 +97,24 @@ class HierarchyNodeTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        if ($value instanceof HierarchyNode) {
-            return $value->getData();
+        if (!$value) {
+            return $value;
         }
+
+        $hierarchy = $this->loader->getHierarchy();
+        if (!is_array($value)) {
+            if ($node = $hierarchy->findNodeById($value)) {
+                return $node->getData();
+            }
+        }
+
+        $items = [];
+        foreach ($value as $item) {
+            if ($node = $hierarchy->findNodeById($item)) {
+                $items[] = $node->getData();
+            }
+        }
+
+        return $items;
     }
 }

@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
  * Class StringToIntegerArrayTransformer.
@@ -59,26 +60,8 @@ class StringToIntegerArrayTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        if (!$value) {
-            return $value;
-        }
-
-        return implode($this->delimiter, $value);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function reverseTransform($value)
-    {
-        if (!$value) {
-            return $value;
-        }
-
-        // {field_x: '1, 2, 3'} expected. old format, do we still support this?
-        // {field_x: [1, 2, 3]} submitted
-        if (is_array($value)) {
-            return $value;
+        if (!is_array($value)) {
+            throw new TransformationFailedException('Expected array');
         }
 
         $val = explode($this->delimiter, $value);
@@ -89,5 +72,17 @@ class StringToIntegerArrayTransformer implements DataTransformerInterface
         }
 
         return $k;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reverseTransform($value)
+    {
+        if (!$value) {
+            return '';
+        }
+
+        return implode($this->delimiter, $value);
     }
 }
