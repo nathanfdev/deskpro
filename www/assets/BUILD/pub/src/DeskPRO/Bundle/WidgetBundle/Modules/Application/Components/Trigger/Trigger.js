@@ -1,6 +1,6 @@
 import React from 'react';
 import { TriggerFrameContainer } from './TriggerFrameContainer';
-import { HelpButtonContainer } from './Button/HelpButtonContainer';
+import HelpButtonContainer from './Button/HelpButtonContainer';
 
 export class Trigger extends React.Component {
 

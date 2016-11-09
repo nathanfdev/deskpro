@@ -14,6 +14,7 @@ import {
   widgetOpenedSelector,
   widgetPositionSelector,
   widgetPopupStyleSelector,
+  widgetPopupDelaySelector,
   helpButtonSizeSelector,
   helpButtonNameSelector,
   helpButtonBackgroundColorSelector,
@@ -30,6 +31,7 @@ import { getLocation } from '../../../../../Services/history';
   hasChat:             widgetHasChatSelector(state),
   proactiveChat:       widgetProactiveChatSelector(state),
   popupStyle:          widgetPopupStyleSelector(state),
+  popupDelay:          widgetPopupDelaySelector(state),
   triggerPopupOpened:  triggerPopupOpenedSelector(state),
   widgetOpened:        widgetOpenedSelector(state),
   widgetPosition:      widgetPositionSelector(state),
@@ -42,7 +44,7 @@ import { getLocation } from '../../../../../Services/history';
   liveDemo:            liveDemoSelector(state),
   chatId:              chatIdSelector(state)
 }))
-export class HelpButtonContainer extends React.Component {
+export default class HelpButtonContainer extends React.Component {
 
   static propTypes = {
     hasChat:             PropTypes.bool,
@@ -50,6 +52,7 @@ export class HelpButtonContainer extends React.Component {
     triggerPopupOpened:  PropTypes.bool,
     widgetOpened:        PropTypes.bool,
     popupStyle:          PropTypes.string,
+    popupDelay:          PropTypes.number,
     size:                PropTypes.string,
     widgetPosition:      PropTypes.string,
     dispatch:            PropTypes.func,
@@ -77,7 +80,7 @@ export class HelpButtonContainer extends React.Component {
   }
 
   componentWillUpdate() {
-    getLocation(location => {
+    getLocation((location) => {
       if (this.state.locationPath !== location.pathname) {
         this.setState({
           locationPath: location.pathname
@@ -106,12 +109,11 @@ export class HelpButtonContainer extends React.Component {
 
     if (!widgetOpened && hasChat && proactiveChat && (liveDemo || (notClosedPopup && agentsCount > 0))) {
       if (!triggerPopupOpened) {
-        dispatch(openTriggerPopup());
+        const delay = Math.abs(parseFloat(this.props.popupDelay)) || 0;
+        setTimeout(() => dispatch(openTriggerPopup), delay * 1000);
       }
-    } else {
-      if (triggerPopupOpened) {
-        dispatch(closeTriggerPopup());
-      }
+    } else if (triggerPopupOpened) {
+      dispatch(closeTriggerPopup());
     }
   }
 
@@ -147,7 +149,7 @@ export class HelpButtonContainer extends React.Component {
       size,
       onClick:   this.onClick,
       onClose:   this.onClosePopup,
-      getButton: () => this.refs.button
+      getButton: () => this.refButton
     };
 
     if (popupStyle === 'agents_button') {
@@ -171,7 +173,7 @@ export class HelpButtonContainer extends React.Component {
       }
       <HelpButton
         {...this.props}
-        ref="button"
+        ref={(node) => { this.refButton = node; }}
         locationPath={this.state.locationPath || null}
         onClick={this.onClick}
       />

@@ -198,6 +198,11 @@ export const widgetPopupStyleSelector = createSelector(
   options => options.get('style')
 );
 
+export const widgetPopupDelaySelector = createSelector(
+  helpPopupSelector,
+  options => options.get('delay')
+);
+
 export const agentAcceptTimeoutSelector = createSelector(
   chatOptionsSelector,
   options => options.get('waiting_timeout') || 120 // 2 minutes
