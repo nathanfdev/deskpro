@@ -94,7 +94,7 @@ class PersonHandler extends AbstractEntityHandler
             }
         }
 
-        // set password
+        // set or reset password if we get it from the import
         if ($model->getPassword()) {
             $entity->setPassword($model->getPassword());
         }
