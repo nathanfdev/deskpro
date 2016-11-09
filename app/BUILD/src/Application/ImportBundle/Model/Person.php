@@ -41,8 +41,6 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
 {
     use PrimaryImportModelTrait, LabelAwareTrait, CustomDataAwareTrait;
 
-    const INITIAL_PASSWORD = 'password';
-
     const PASSWORD_SCHEME_PLAIN  = 'plain';
     const PASSWORD_SCHEME_BCRYPT = 'bcrypt';
 
@@ -439,7 +437,7 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
      */
     public function getPassword()
     {
-        return $this->password ?: self::INITIAL_PASSWORD;
+        return $this->password;
     }
 
     /**
