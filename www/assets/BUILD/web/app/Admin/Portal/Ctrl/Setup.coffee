@@ -81,6 +81,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
               @saveSettings().then(=>
                 @$state.go 'portal.setup', {brandId: @brandId}
               )
+            , (res) =>
+              @Growl.error res.data.message
+          else if res.data.data.reason
+            @Growl.error res.data.data.reason
+            $('#helpdesk_url').focus()
           else
             @Growl.error "Each brand need to have a different url"
             $('#helpdesk_url').focus()
