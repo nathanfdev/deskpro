@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\Auth\Adapter;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Usersource\Adapter\EntityManagerAwareInterface;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Adapter\FormLoginInterface;

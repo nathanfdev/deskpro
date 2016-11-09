@@ -88,5 +88,6 @@
   "Agent":                           "app-build/Agent",
   "Reports":                         "app-build/Reports",
   "ReportsRouting":                  "app/Reports/Resources/config/routing",
-  "semanticAccordion":               "node_modules/semantic-ui-less/definitions/modules/accordion"
+  "semanticAccordion":               "node_modules/semantic-ui-less/definitions/modules/accordion",
+  "customEventPolyfill":             "node_modules/custom-event-polyfill/custom-event-polyfill"
 }

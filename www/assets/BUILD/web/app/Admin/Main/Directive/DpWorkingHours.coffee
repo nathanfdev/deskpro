@@ -15,7 +15,6 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
         scope.end_min        = 0
         scope.work_days      = [null, true, true, true, true, true, false, false] #0=null because valid idx is 1-7 for ISO-8601 days
         scope.hol_year       = (new Date()).getFullYear()
-        scope.hol_year       = (new Date()).getFullYear()
         scope.hol_new_month  = 1
         scope.hol_new_day    = 1
         scope.hol_new_name   = ''
@@ -29,10 +28,10 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
           scope.hours.push {id: i, label: ("0" + i).slice(-2)}
 
         scope.days = []
-        for i in [0..31]
+        for i in [1..31]
           scope.days.push {id: i, label: ("0" + i).slice(-2)}
         scope.months = []
-        for i in [0..12]
+        for i in [1..12]
           scope.months.push {id: i, label: ("0" + i).slice(-2)}
 
         currentYear = new Date().getFullYear();
@@ -215,7 +214,12 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
 
         ngModel.$render = ->
           element.find('.holiday-year-rows').empty()
-          viewValue = ngModel.$viewValue
+          if ngModel.$viewValue
+            viewValue = ngModel.$viewValue
+          else
+            viewValue =
+              start_hour: null
+              end_hour: null
 
           startHour = 9
           endHour = 18

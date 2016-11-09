@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Util;
 
+use Composer\CaBundle\CaBundle;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 
@@ -35,9 +36,17 @@ class HttpClient extends Client
 {
     public function __construct($config = [])
     {
+        global $DP_ENV;
+        $usSysCABundle = (bool) $DP_ENV->getConfig('settings.http_client.use_sys_ca_bundle');
+
+        $proxy = $DP_ENV->getConfig('settings.http_client.proxy');
+        if ($proxy && !$config[RequestOptions::PROXY]) {
+            $config[RequestOptions::PROXY] = $proxy;
+        }
+
         // cp from \DeskPRO_LowUtil_RequestCurl::setCaBundle
-        if (false !== @$config[RequestOptions::VERIFY] && !defined('DP_CURL_USE_SYS_CA_BUNDLE') && defined('DP_ROOT')) {
-            $config[RequestOptions::VERIFY] = DP_ROOT.DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, ['sys', 'Resources', 'cacert.pem']);
+        if (false !== @$config[RequestOptions::VERIFY] && !$usSysCABundle) {
+            $config[RequestOptions::VERIFY] = CaBundle::getBundledCaBundlePath();
         }
         parent::__construct($config);
     }

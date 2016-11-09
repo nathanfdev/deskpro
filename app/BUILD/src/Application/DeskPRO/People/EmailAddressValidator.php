@@ -103,7 +103,7 @@ class EmailAddressValidator
     {
         foreach ($person->emails as $email) {
             if ($this->ban_repos->isEmailBanned($email->email)) {
-                return true;
+                return $email->email;
             }
         }
 

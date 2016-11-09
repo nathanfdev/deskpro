@@ -34,6 +34,7 @@ namespace Application\DeskPRO\ServerReportFile;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ORM\Util\Util;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Instructions\InstructionsGenerator;
 use Doctrine\ORM\EntityManager;
@@ -111,9 +112,14 @@ class ServerReportFile
     protected $ig;
 
     /**
+     * @var AppEnv
+     */
+    protected $appEnv;
+
+    /**
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em, OutputInterface $output = null)
+    public function __construct(EntityManager $em, OutputInterface $output = null, AppEnv $appEnv)
     {
         $this->em = $em;
         $this->oi = $output;
@@ -125,6 +131,7 @@ class ServerReportFile
         }
 
         $this->archive_file = $this->tmpdir.'/deskpro-report.zip';
+        $this->appEnv       = $appEnv;
     }
 
     /**
@@ -601,7 +608,7 @@ class ServerReportFile
         $content = '';
 
         $content .= '### '.App::getContainer()->getBrandSetting('core.deskpro_url')."\n";
-        $content .= '### DeskPRO Build: '.DP_BUILD_TIME."\n";
+        $content .= '### DeskPRO Build: '.$this->appEnv->getVersionName()."\n";
         $content .= '### Generated: '.date('Y-m-d H:i:s')."\n\n";
 
         $content .= 'License ID: '.$license->getLicenseId()."\n";

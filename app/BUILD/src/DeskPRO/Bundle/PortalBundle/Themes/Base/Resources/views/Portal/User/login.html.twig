@@ -28,7 +28,7 @@
             {% endif %}
 
             {% if login_error %}
-                {{ macros.user_notice('auth', phrase('portal.account.login-invalid')) }}
+                {{ macros.user_notice('auth', phrase(login_error)) }}
             {% endif %}
 
             {{  macros.lockout_notice(phrase('portal.account.login-lockout'), lockout_error, lockout_time) }}
@@ -38,7 +38,7 @@
             {% endif %}
 
             {% if saved_form %}
-                {{ macros.user_notice('auth', phrase('portal.account.login-saved-form', { type: saved_form_message })) }}
+                {{ macros.user_notice('auth', phrase('portal.account.login-saved-' ~ saved_form_type)) }}
             {% endif %}
 
             {% if auth_manager.isLoginFormVisible %}

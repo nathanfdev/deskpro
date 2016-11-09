@@ -15,6 +15,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           @$scope.isBillingInterface = true
         else
           @$scope.isBillingInterface = false
+          if @$location?.path().match(/^\/portal/) && @$stateParams.brandId && @$stateParams.brandId != 'new'
+            @$scope.selectBrandId = @$stateParams.brandId
+            @$scope.brandId = @$stateParams.brandId
+
 
         $('.dp-layout-appbody').scrollTop(0);
       )
@@ -62,8 +66,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         if @$scope.selectBrandId == '-1'
           @$scope.brandId = 'new';
           @$state.go 'portal.setup', {brandId: 'new'}
-        else if @$scope.selectBrandId && typeof @$stateParams.brandId != 'undefined'
+        else if @$scope.selectBrandId
           @$scope.brandId = @$scope.selectBrandId
-          @$state.go 'portal.setup', {brandId: @$scope.selectBrandId}
+          if typeof @$stateParams.brandId != 'undefined'
+            @$state.go 'portal.setup', {brandId: @$scope.selectBrandId}
 
   Admin_Main_Ctrl_MainPage.EXPORT_CTRL()

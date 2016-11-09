@@ -36,6 +36,11 @@ namespace Application\DeskPRO\Settings;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\Setting;
+use DeskPRO\Bundle\AuditBundle\Document\AuditLogData;
+use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
+use DeskPRO\Bundle\AuditBundle\Log\AuditLogService;
+use DeskPRO\Component\Util\TypeUtils;
 
 /**
  * DEPRECEATED way of getting settings.
@@ -71,6 +76,11 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     private $db;
 
     /**
+     * @var AuditLogService
+     */
+    private $auditService;
+
+    /**
      * DEPRECEATED way of getting settings.
      *
      * @deprecated get the "settings_resolver" system service and fetch the SettingsBag you want from it instead.
@@ -85,6 +95,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->settings              = $this->new_settings_resolver->getGlobalSettings();
         $this->default_settings      = $this->new_settings_resolver->getDefaultSettings();
         $this->db                    = $db;
+        $this->auditService          = App::get('audit_log.service');
     }
 
     /**
@@ -219,6 +230,33 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         }
 
         $this->reloadSettings();
+
+        $old = $this->get($setting);
+
+        $auditLog     = new AuditLog();
+        $auditLogData = new AuditLogData();
+
+        // just leave in case $old = "0" and $value = false e.g.
+        if ((is_numeric($old) || is_numeric($value)) && ((int) $old === (int) $value)) {
+            return;
+        }
+
+        $auditLogData->setContext([])->setDiff([$setting => [$old, $value]]);
+        $auditLog
+            ->setAction(sprintf('settings.%s', $value !== null ? 'replace' : 'delete'))
+            ->setPerformerId(App::getCurrentPerson()->getId())
+            ->setDescription(sprintf(
+                    'Setting was %s via Setting::setSetting() method',
+                    $value !== null ? 'replaced' : 'deleted'
+                )
+            )
+            ->setDateCreated(new \DateTime())
+            ->setObjectName(sprintf('"%s" setting', $setting))
+            ->setObjectType(TypeUtils::getBaseTypeName(Setting::class))
+            ->setData($auditLogData)
+            ->setPerformerName(App::getCurrentPerson()->getDisplayName());
+
+        $this->auditService->write($auditLog);
     }
 
     /**

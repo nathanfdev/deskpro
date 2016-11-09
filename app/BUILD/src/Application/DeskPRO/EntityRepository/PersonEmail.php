@@ -101,7 +101,8 @@ class PersonEmail extends AbstractEntityRepository
      * Count the number of email addresses at one or more emails where the user belongs to a company
      * that isnt this one.
      *
-     * @param array|string $domains
+     * @param array|string     $domains
+     * @param int|Organization $org
      *
      * @return array|int
      */
@@ -169,7 +170,7 @@ class PersonEmail extends AbstractEntityRepository
         $results = array_combine($domains, array_fill(0, count($domains), 0));
 
         if (!$domains) {
-            if ($is_single) {
+            if ($single) {
                 return 0;
             } else {
                 return $results;

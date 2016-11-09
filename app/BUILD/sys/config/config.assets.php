@@ -84,6 +84,7 @@ $CONFIG['agent_vendors'] = [
     'files' => [
         'vendor/modernizr.min.js',
         'javascripts/Orb/modernizr-ext.js',
+        'node_modules/custom-event-polyfill/custom-event-polyfill.js',
         'vendor/JSON-js/json2.js',
         'vendor/jquery/jquery.min.js',
         'vendor/jquery/jquery-migrate.min.js',
@@ -583,5 +584,6 @@ $CONFIG['agent_vendors_css'] = [
         'vendor/bootstrap/css/table.css',
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-patch.css',
+        'stylesheets/user/content-editor.css',
     ],
 ];

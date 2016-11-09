@@ -22,6 +22,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 
+		setTimeout(this.deferredInit.bind(this), 0);
+	},
+
+	deferredInit: function() {
+		var self = this;
 		this.article_id = this.getMetaData('article_id');
 
 		this._initBasic();

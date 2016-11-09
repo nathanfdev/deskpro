@@ -36,6 +36,7 @@ namespace deskpro_magento\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
+use Composer\CaBundle\CaBundle;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -101,11 +102,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             $url .= '/api?wsdl';
             $handle = @curl_init($url);
             @curl_setopt($handle,  CURLOPT_RETURNTRANSFER, true);
-            $cainfo = $context->getContainer()->getParameter('kernel.root_dir')
-                .DIRECTORY_SEPARATOR
-                .'Resources'
-                .DIRECTORY_SEPARATOR
-                .'cacert.pem';
+            $cainfo = CaBundle::getBundledCaBundlePath();
             if (file_exists($cainfo)) {
                 @curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, true);
                 @curl_setopt($handle, CURLOPT_CAINFO, $cainfo);

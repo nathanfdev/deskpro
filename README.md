@@ -39,13 +39,13 @@ You'll need a web server with the docroot at www/. Or you can just use PHP's web
 You'll need to also run the asset server which serves compiled versions of CSS/JS.
 
     cd /path/to/deskpro/www/assets/BUILD/pub
-    yarn run gulp-dev-all
+    npm run-script gulp-dev-all
 
 The asset server is enabled by default in `config/config.paths.php`. If you disable it, then assets
 must be manually built to the normal filesystem:
 
     cd /path/to/deskpro/www/assets/BUILD/pub
-    yarn run gulp-prod
+    npm run-script gulp-prod
 
 It's almost always desirable to use the asset server in development though. It will set up a file watcher
 and automatically re-compile any changes you make.

@@ -79,8 +79,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
               @portalSettings.setBrandId(res.data.data.id)
               @brandId = res.data.data.id
               @saveSettings().then(=>
-                @$state.go 'portal', {brandId: @brandId}
+                @$state.go 'portal.setup', {brandId: @brandId}
               )
+            , (res) =>
+              @Growl.error res.data.message
+          else if res.data.data.reason
+            @Growl.error res.data.data.reason
+            $('#helpdesk_url').focus()
           else
             @Growl.error "Each brand need to have a different url"
             $('#helpdesk_url').focus()
@@ -92,6 +97,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       if confirm "Are you sure you want to delete this brand? Theme personalization and templates will be lost."
         @Api2.sendDelete('brands/' + @$scope.brand_id).then  =>
           @Growl.success("Brand deleted")
-          @$state.go 'portal', {brandId: @$scope.default_brand.id}
+          @$state.go 'portal.setup', {brandId: @$scope.default_brand.id}
 
   Admin_Portal_Ctrl_Setup.EXPORT_CTRL()

@@ -5,7 +5,7 @@ import { portalPhrases } from './PortalPhrases';
 
 class PortalApp {
   constructor() {
-    window.$ = $;
+    window.jQuery = window.$ = $;
     window.PortalApp = this;
 
     this.phrases = portalPhrases;

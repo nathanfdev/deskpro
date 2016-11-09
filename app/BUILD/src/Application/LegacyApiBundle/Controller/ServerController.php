@@ -444,7 +444,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getReportFileAction()
     {
-        $server_report_file = new ServerReportFile($this->em);
+        $server_report_file = new ServerReportFile($this->em, null, $this->get('deskpro.app_env'));
         $server_report_file->setSystemEntityManager($this->get('doctrine.orm.system_entity_manager'));
         $server_report_file->setInstructionGenerator($this->get('dp_sys.alerts.instructions_generator'));
         $server_report_file->createArchive();
@@ -457,7 +457,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function saveFileCheckResultsAction()
     {
-        $server_report_file = new ServerReportFile($this->em);
+        $server_report_file = new ServerReportFile($this->em, null, $this->get('deskpro.app_env'));
         $file_check_results = $this->in->getValue('file_check_results', 'post');
 
         if (!empty($file_check_results)) {

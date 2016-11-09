@@ -137,7 +137,7 @@ export default class TicketForm extends PageWidget {
           newFields = newFields.filter(filterFn);
         }
 
-        newFields = _.map(layout.getMatchingFields(ticketReader), (v) => {
+        newFields = _.map(newFields, (v) => {
           const id = v.id;
           switch (id) {
             case 'subject': return 'subject';

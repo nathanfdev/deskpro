@@ -271,3 +271,4 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         return $this->redirectRoute('agent');
     }
 }
+//Your email address has been banned.

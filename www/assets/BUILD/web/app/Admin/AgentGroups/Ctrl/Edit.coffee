@@ -98,7 +98,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     changeAllPerms: (type, section) ->
       return if !@group?
 
-      if 'perms' == type and @group.perms[section]
+      if 'perms' == type and @group.perms and @group.perms[section]
         for own perm of @group.perms[section]
           @group.perms[section][perm] = @all_perms[type][section]
 

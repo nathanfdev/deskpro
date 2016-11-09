@@ -1172,7 +1172,6 @@ footer.results-nav ul.pagenav {
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
 	border: 1px solid #b6babf;
 	.border-radius(3px, 3px, 3px, 3px);
-	float: left;
 	color: #626a73;
 	text-shadow: 0 1px 0 #fff;
 	cursor: pointer;
@@ -1212,7 +1211,6 @@ footer.results-nav .more button {
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
 	border: 1px solid #b6babf;
 	.border-radius(3px, 3px, 3px, 3px);
-	float: left;
 	color: #626a73;
 	text-shadow: 0 1px 0 #fff;
 	cursor: pointer;
@@ -1242,7 +1240,6 @@ footer.results-nav .more button {
     	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
     	border: 1px solid #b6babf;
     	.border-radius(3px, 3px, 3px, 3px);
-    	float: right;
     	color: #626a73;
     	text-shadow: 0 1px 0 #fff;
     	cursor: pointer;
@@ -1294,13 +1291,14 @@ footer.results-nav .more button {
 
 .mass-actions-overlay-container.open {
 	display: block;
+	box-sizing: content-box;
 }
 
 section.mass-actions-overlay {
 	position: absolute;
 	top:    13px;
 	bottom: 10px;
-	left:   0px;
+	left:   0;
 	right:  16px;
 
 	background-color: #FAFAFA;
@@ -1308,9 +1306,9 @@ section.mass-actions-overlay {
 	.border-radius(6px, 6px, 6px, 6px);
 	overflow: hidden;
 
-	-webkit-box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
-	-moz-box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
-	box-shadow: 2px 1px 6px 0px rgba(100, 100, 100, 0.7);
+	-webkit-box-shadow: 2px 1px 6px 0 rgba(100, 100, 100, 0.7);
+	-moz-box-shadow: 2px 1px 6px 0 rgba(100, 100, 100, 0.7);
+	box-shadow: 2px 1px 6px 0 rgba(100, 100, 100, 0.7);
 }
 
 section.mass-actions-overlay dd select {
@@ -1393,13 +1391,12 @@ section.mass-actions-overlay > footer button {
 	text-shadow: 0 1px 0 #000;
     font-size: 11px;
     font-weight: bold;
-    margin: 0 auto;
+    margin: 10px auto 0;
     padding: 5px 10px 4px;
     text-align: center;
 	cursor:pointer;
 	position: relative;
 	line-height: 100%;
-	margin-top: 10px;
 }
 
 section.mass-actions-overlay > article {
@@ -1445,7 +1442,6 @@ section.mass-actions-overlay > nav ul li {
 	line-height: 20px;
 	color: #738699;
 	padding: 4px 15px;
-	float: left;
 }
 
 section.mass-actions-overlay > nav ul li.on {
@@ -1529,7 +1525,7 @@ section.dp-overlay {
 	position: absolute;
 	top:    13px;
 	bottom: 10px;
-	left:   0px;
+	left:   0;
 	right:  16px;
 
 	background-color: #fff;

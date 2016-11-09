@@ -93,9 +93,20 @@ class OrganizationFile extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @return mixed
+     */
     public function getNoteHtml()
     {
         return nl2br(htmlspecialchars($this->note), true);
+    }
+
+    /**
+     * @return Organization
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
     }
 
     //###########################################################################

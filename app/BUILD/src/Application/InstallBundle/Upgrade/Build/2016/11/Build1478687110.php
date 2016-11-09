@@ -26,47 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Util;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Finder\Finder;
-
-/**
- * Class ApiControllersFinder.
- */
-class ApiControllersFinder
+class Build1478687110 extends AbstractBuild
 {
-    /**
-     * @var array
-     */
-    protected $classes = [];
-
-    /**
-     * @return array
-     */
-    public function getClasses()
+    public function run()
     {
-        if (!$this->classes) {
-            $finder = Finder::create()
-                ->in([
-                    DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Controller',
-                    DP_ROOT.'/src/Application/LegacyApiBundle/Controller',
-                ])
-                ->name('*.php')
-            ;
-
-            foreach ($finder as $f) {
-                require_once $f->getRealPath();
-            }
-
-            foreach (get_declared_classes() as $class) {
-                if (0 === strpos($class, 'DeskPRO/Bundle/ApiBundle/Controller')) {
-                    $this->classes[] = $class;
-                } elseif (0 === strpos($class, 'Application/LegacyApiBundle/Controller')) {
-                    $this->classes[] = $class;
-                }
-            }
+        $this->out('Updating Feedbacks');
+        $sql     = 'select f.id, f.content from feedback f join people p on p.id = f.person_id and p.is_agent = 0 ';
+        $results = $this->getDbConnection()->fetchAll($sql);
+        foreach ($results as $row) {
+            $content = htmlentities(nl2br($row['content']));
+            $this->getDbConnection()->executeQuery('update feedback set content = :content where id = :id', [
+                'id'      => $row['id'],
+                'content' => $content,
+            ]);
         }
-
-        return $this->classes;
     }
 }

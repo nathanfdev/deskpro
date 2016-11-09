@@ -5,6 +5,10 @@ services:
     factory: ["@doctrine.orm.default_entity_manager", getRepository]
     arguments: ['DeskPRO:Person']
 
+  ban_email_repository:
+    class: Application\DeskPRO\EntityRepository\BanEmail
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
+    arguments: ['DeskPRO:BanEmail']
 
   blob_repository:
     class: Application\DeskPRO\EntityRepository\Blob

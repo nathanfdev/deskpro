@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Security;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\BanEmail;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 use Application\DeskPRO\People\PersonGuest;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -46,6 +47,11 @@ class DpPersonUserProvider implements UserProviderInterface
     private $person_repo;
 
     /**
+     * @var \Application\DeskPRO\EntityRepository\BanEmail
+     */
+    private $banEmailRepo;
+
+    /**
      * @var array
      */
     private $people_refs;
@@ -55,10 +61,11 @@ class DpPersonUserProvider implements UserProviderInterface
      *
      * @param PersonRepo $person_repo
      */
-    public function __construct(PersonRepo $person_repo)
+    public function __construct(PersonRepo $person_repo, BanEmail $banEmail)
     {
-        $this->people_refs = [];
-        $this->person_repo = $person_repo;
+        $this->people_refs  = [];
+        $this->person_repo  = $person_repo;
+        $this->banEmailRepo = $banEmail;
     }
 
     /**
@@ -129,5 +136,16 @@ class DpPersonUserProvider implements UserProviderInterface
         }
 
         return $person;
+    }
+
+    public function personHasBannedEmail(Person $person)
+    {
+        foreach ($person->emails as $email) {
+            if ($this->banEmailRepo->isEmailBanned($email->email)) {
+                return $email->email;
+            }
+        }
+
+        return null;
     }
 }
