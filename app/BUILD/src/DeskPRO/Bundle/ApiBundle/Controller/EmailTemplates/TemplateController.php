@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\EmailTemplates;
 
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Entity\PortalPageDisplay;
+use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use Application\DeskPRO\Templating\Templates\TemplateSet;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
@@ -171,6 +172,59 @@ class TemplateController extends BaseController
         }
 
         return new View(['success' => true, 'name' => $template->getName()]);
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Email Templates",
+     *     description="Delete a custom template and retrieve the original one",
+     *     requirements={
+     *         {
+     *             "name"="name",
+     *             "description"="The template name",
+     *             "dataType"="string"
+     *         }
+     *     },
+     *)
+     * @ApiUnstable()
+     * @Rest\Delete("/{name}")
+     *
+     * @param $name
+     *
+     * @return View
+     */
+    public function resetTemplateAction($name)
+    {
+        if (strpos($name, 'EDIT_SIDEBAR_BLOCK:') === 0) {
+            $block_id = substr($name, strlen('EDIT_SIDEBAR_BLOCK:'));
+            $block    = $this->getManager()->getRepository(PortalPageDisplay::class)->find($block_id);
+            if (!$block || !$block->getData('tpl')) {
+                throw $this->createNotFoundException();
+            }
+
+            $name = $block->getData('tpl');
+        }
+
+        $set = $this->getTemplateSet();
+
+        try {
+            $template = $set->getTemplate($name);
+        } catch (\InvalidArgumentException $e) {
+            throw $this->createNotFoundException();
+        }
+
+        if ($template instanceof TemplateCustom) {
+            $set->deleteTemplate($template);
+            $template = $set->getTemplate($name);
+        }
+
+        $data = $set->exportTemplateToArray(
+            $template,
+            $this->get('translator'),
+            !$this->get('settings_resolver')->getGlobalSettings()->get('core.enable_languages')
+        );
+
+        return new View($data);
     }
 
     /**

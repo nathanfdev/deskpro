@@ -102,6 +102,12 @@
       right: 0;
       height: 60px;
       padding: 10px;
+      div {
+        display: inline-block;
+        &.right.floated {
+          float: right;
+        }
+      }
     }
   }
   .preview {

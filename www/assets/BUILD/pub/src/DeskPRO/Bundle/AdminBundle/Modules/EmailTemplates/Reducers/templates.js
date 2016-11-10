@@ -24,6 +24,9 @@ export default createReducer(initialState, {
   [actions.loadTemplate]: async({
     success: setFullPayload('template')
   }),
+  [actions.resetTemplate]: async({
+    success: setFullPayload('template')
+  }),
   [actions.loadVariables]: async({
     success: setFullPayload('variables')
   }),

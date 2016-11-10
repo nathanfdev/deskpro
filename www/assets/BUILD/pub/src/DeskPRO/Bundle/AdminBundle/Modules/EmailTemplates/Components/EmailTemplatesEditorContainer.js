@@ -22,8 +22,9 @@ class EmailTemplatesEditorContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      saveSubmit: false,
-      undoSubmit: false
+      saveSubmit:  false,
+      undoSubmit:  false,
+      resetSubmit: false
     };
   }
 
@@ -80,6 +81,20 @@ class EmailTemplatesEditorContainer extends React.Component {
       () => {
         this.setState({
           saveSubmit: false
+        });
+      }
+    );
+  };
+
+  resetTemplate = () => {
+    this.setState({
+      resetSubmit: true
+    });
+    const name = this.props.emailTemplates.get('currentTemplate').get('name');
+    this.props.dispatch(actions.resetTemplate(name)).then(
+      () => {
+        this.setState({
+          resetSubmit: false
         });
       }
     );
@@ -214,10 +229,18 @@ class EmailTemplatesEditorContainer extends React.Component {
               className={classNames('basic small', { loading: this.state.undoSubmit })}
               disabled={textareaDisabled}
               onClick={this.undoChanges}
+              confirm
             >
               Undo changes
             </Button>
-            <button className="ui right floated basic small button">Reset template</button>
+            <Button
+              className={classNames('right floated basic small', { loading: this.state.resetSubmit })}
+              disabled={textareaDisabled}
+              onClick={this.resetTemplate}
+              confirm
+            >
+              Reset template
+            </Button>
           </div>
         </div>
         <div className="preview">

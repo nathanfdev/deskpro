@@ -52,16 +52,6 @@ export const loadTemplate = createAction(
   })
 );
 
-export const updateTemplateSubject = createAction(
-  'EMAIL_TEMPLATES_UPDATE_TEMPLATE_SUBJECT',
-  subject => subject
-);
-
-export const updateTemplateBody = createAction(
-  'EMAIL_TEMPLATES_UPDATE_TEMPLATE_BODY',
-  body => body
-);
-
 export const saveTemplate = createAction(
   'EMAIL_TEMPLATES_SAVE_TEMPLATE',
   (name, template) => new Promise((resolve) => {
@@ -71,6 +61,27 @@ export const saveTemplate = createAction(
       resolve(res);
     });
   })
+);
+
+export const resetTemplate = createAction(
+  'EMAIL_TEMPLATES_RESET_TEMPLATE',
+  name => new Promise((resolve) => {
+    repository('EmailTemplates').resetTemplate(name).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res);
+    });
+  })
+);
+
+export const updateTemplateSubject = createAction(
+  'EMAIL_TEMPLATES_UPDATE_TEMPLATE_SUBJECT',
+  subject => subject
+);
+
+export const updateTemplateBody = createAction(
+  'EMAIL_TEMPLATES_UPDATE_TEMPLATE_BODY',
+  body => body
 );
 
 export const loadVariables = createAction(
