@@ -29,15 +29,17 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -120,7 +122,20 @@ class ChatCreateType extends AbstractType
 
         $brand = $this->brandStack->getActive()->getBrand();
         if ($this->settingsResolver->getWidgetBrandOptions($brand)->getChat()->isAllowDepartmentSelection()) {
-            $builder->add('chat_department', IntegerType::class, ['property_path' => 'department_id']);
+            $builder->add(
+                'chat_department',
+                EntityType::class, [
+                'class'         => Department::class,
+                'property_path' => 'department',
+                'query_builder' => function (EntityRepository $er) use ($options) {
+                    $qb = $er
+                        ->createQueryBuilder('d')
+                        ->where('d.is_chat_enabled = true');
+
+                    return $qb;
+                },
+                ]
+            );
         }
 
         $builder->addEventSubscriber($this->personListener);
