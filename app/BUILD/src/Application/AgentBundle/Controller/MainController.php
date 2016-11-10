@@ -203,6 +203,7 @@ class MainController extends AbstractController
         $textSnippetCategoryRepository = $this->em->getRepository(TextSnippetCategory::class);
         $ticket_snippet_cats           = $textSnippetCategoryRepository->getCatsForAgent('tickets', $this->person);
         $chat_snippet_cats             = $textSnippetCategoryRepository->getCatsForAgent('chat', $this->person);
+        $permissionBag                 = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
 
         return $this->render('AgentBundle:Main:index.html.twig', [
             'has_raw_assets'      => $has_raw_assets,
@@ -215,6 +216,7 @@ class MainController extends AbstractController
             'agents'              => $agents,
             'agent_teams'         => $agent_teams,
             'agent_chat_depmap'   => $agent_chat_depmap,
+            'chat_dep_ids'        => $permissionBag->getAllowedChatDepartmentIds(),
             'ticket_snippet_cats' => $ticket_snippet_cats,
             'chat_snippet_cats'   => $chat_snippet_cats,
             'brand_app_settings'  => $this->getBrandAppSettings(),
