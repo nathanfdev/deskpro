@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
+import { agentsSelector, meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { loadQueues } from '../../Actions/queueActions';
 import { allQueuesSelector } from '../../Selectors/queue';
 
 @connect(state => ({
+  me:     meSelector(state),
   queues: allQueuesSelector(state),
   agents: agentsSelector(state)
 }))

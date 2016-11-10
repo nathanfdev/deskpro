@@ -32,16 +32,21 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioAvailableNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioExistingNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioPaginate;
 use Doctrine\ORM\EntityManager;
 use Twilio\Exceptions\RestException;
 use Twilio\Exceptions\TwilioException;
+use Twilio\Jwt\ClientToken;
+use Twilio\Jwt\TaskRouter\WorkerCapability;
 use Twilio\Rest\Api\V2010\Account\IncomingPhoneNumberInstance;
 use Twilio\Rest\Client;
+use Twilio\Rest\Taskrouter\V1\Workspace\ActivityInstance;
 use Twilio\Rest\Taskrouter\V1\Workspace\WorkerInstance;
 use Twilio\Rest\Taskrouter\V1\Workspace\WorkflowInstance;
+use Twilio\Rest\Taskrouter\V1\WorkspaceContext;
 use Twilio\Values;
 
 /**
@@ -181,26 +186,10 @@ class TwilioAdapter
      */
     public function createWorkspace(VoiceAccount $account)
     {
-        $taskRouter    = $this->getClient($account)->taskrouter;
+        $client     = $this->getClient($account);
+        $taskRouter = $client->taskrouter;
+
         $workspaceName = 'DeskPRO Phone';
-        $eventFilters  = [
-            'task.created',
-            'task.canceled',
-            'task.deleted',
-            'task.updated',
-            'task-queue.entered',
-            'task-queue.moved',
-            'reservation.created',
-            'reservation.accepted',
-            'reservation.rejected',
-            'reservation.timeout',
-            'reservation.canceled',
-            'reservation.rescinded',
-            'reservation.rescinded',
-            'workflow.entered',
-            'workflow.timeout',
-            'worker.activity.update',
-        ];
 
         // ensure we don't have workspace with this name
         foreach ($taskRouter->workspaces->read() as $existingWorkspace) {
@@ -212,26 +201,28 @@ class TwilioAdapter
         // create the workspace
         $workspace = $taskRouter->workspaces->create($workspaceName, [
             'multiTaskEnabled' => 'false',
-            'eventsFilter'     => implode(',', $eventFilters),
+            'eventsFilter'     => implode(',', [
+                'task.created',
+                'task.canceled',
+                'task.deleted',
+                'task.updated',
+                'task-queue.entered',
+                'task-queue.moved',
+                'reservation.created',
+                'reservation.accepted',
+                'reservation.rejected',
+                'reservation.timeout',
+                'reservation.canceled',
+                'reservation.rescinded',
+                'reservation.rescinded',
+                'workflow.entered',
+                'workflow.timeout',
+                'worker.activity.update',
+            ]),
         ]);
 
-        $workspaceContext   = $taskRouter->workspaces($workspace->sid);
-        $requiredActivities = [
-            'Offline'      => 'false',
-            'Idle'         => 'true',
-            'Busy'         => 'false',
-            'Reserved'     => 'false',
-            'IdleDisabled' => 'false',
-        ];
-
-        foreach ($workspaceContext->activities->read() as $activityInstance) {
-            $existingActivities[$activityInstance->friendlyName] = $activityInstance;
-        }
-        foreach ($requiredActivities as $activityName => $available) {
-            if (!isset($existingActivities[$activityName])) {
-                $workspaceContext->activities->create($activityName, $available);
-            }
-        }
+        // add additional activity
+        $taskRouter->workspaces($workspace->sid)->activities->create('IdleDisabled', 'false');
 
         return $workspace;
     }
@@ -256,6 +247,34 @@ class TwilioAdapter
     }
 
     /**
+     * @param VoiceAccount $account
+     * @param string       $voiceUrl
+     * @param string       $voiceMethod
+     *
+     * @return \Twilio\Rest\Api\V2010\Account\ApplicationInstance
+     */
+    public function createTwimlApp(VoiceAccount $account, $voiceUrl, $voiceMethod)
+    {
+        $client  = $this->getClient($account);
+        $appName = 'DeskPRO App';
+
+        // ensure we don't have twiml app with this name
+        foreach ($client->applications->read() as $existingApp) {
+            if ($existingApp->friendlyName === $appName) {
+                $existingApp->delete();
+            }
+        }
+
+        // create twiml app
+        $application = $client->applications->create($appName, [
+            'voiceUrl'    => $voiceUrl,
+            'voiceMethod' => $voiceMethod,
+        ]);
+
+        return $application;
+    }
+
+    /**
      * @param VoiceQueue $queue
      *
      * @throws TwilioException
@@ -265,10 +284,7 @@ class TwilioAdapter
     public function createTaskQueue(VoiceQueue $queue)
     {
         $workspace  = $this->getQueueWorkspace($queue);
-        $activities = [];
-        foreach ($workspace->activities->read() as $activityInstance) {
-            $activities[$activityInstance->friendlyName] = $activityInstance;
-        }
+        $activities = $this->getActivitiesMap($workspace);
 
         $reservationSid = $activities['Reserved']->sid;
         $assignmentSid  = $activities['Busy']->sid;
@@ -318,30 +334,44 @@ class TwilioAdapter
     /**
      * @param VoiceAccount $account
      * @param Person       $person
+     * @param string       $activityName
      *
      * @return WorkerInstance
      */
-    public function createWorker(VoiceAccount $account, Person $person)
+    public function createWorker(VoiceAccount $account, Person $person, $activityName = null)
     {
-        return $this->getWorkspace($account)->workers->create(
-            $this->getWorkerName($person),
-            $this->getWorkerOptions($person)
-        );
+        $options = $this->getWorkerOptions($person);
+        if ($activityName) {
+            $options['activitySid'] = $this->getActivitySid($account, $activityName);
+        }
+
+        return $this->getWorkspace($account)->workers->create($this->getWorkerName($person), $options);
     }
 
     /**
      * @param VoiceAccount $account
      * @param Person       $person
+     * @param string       $activityName
+     *
+     * @throws TwilioException
      *
      * @return WorkerInstance
      */
-    public function updateWorker(VoiceAccount $account, Person $person)
+    public function updateWorker(VoiceAccount $account, Person $person, $activityName = null)
     {
-        $workerSid = $person->getAgentData()->getVoiceWorkerSid();
-        $options   = array_merge(
+        $workerSid = $this->getWorkerSid($person);
+        if (!$workerSid) {
+            throw new TwilioException('Unable to update voice worker, worker sid does not exist');
+        }
+
+        $options = array_merge(
             ['friendlyName' => $this->getWorkerName($person)],
             $this->getWorkerOptions($person)
         );
+
+        if ($activityName) {
+            $options['activitySid'] = $this->getActivitySid($account, $activityName);
+        }
 
         return $this->getWorkspace($account)->workers($workerSid)->update($options);
     }
@@ -352,7 +382,86 @@ class TwilioAdapter
      */
     public function deleteWorker(VoiceAccount $account, $workerSid)
     {
-        $this->getWorkspace($account)->workers($workerSid)->delete();
+        $worker = $this->getWorkspace($account)->workers($workerSid);
+        $worker->update([
+            'activitySid' => $this->getActivitySid($account, 'Offline'),
+        ]);
+        $worker->delete();
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return string
+     */
+    public static function getWorkerClientName(Person $person)
+    {
+        return 'deskpro'.$person->getId();
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return string
+     */
+    public static function getWorkerContactUrl(Person $person)
+    {
+        return 'client:'.self::getWorkerClientName($person);
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param Person       $person
+     *
+     * @throws TwilioException
+     *
+     * @return string|null
+     */
+    public function createWorkerToken(VoiceAccount $account, Person $person)
+    {
+        $workerSid = $this->getWorkerSid($person);
+        if (!$workerSid) {
+            return;
+        }
+
+        $capability = new WorkerCapability(
+            $account->getAccountSid(),
+            $account->getAuthToken(),
+            $account->getWorkspaceSid(),
+            $workerSid
+        );
+
+        $capability->allowActivityUpdates();
+        $capability->allowReservationUpdates();
+
+        // By default, tokens are good for one hour.
+        // Override this default timeout by specifying a new value (in seconds).
+        // For example, to generate a token good for 8 hours:
+        $token = $capability->generateToken(28800);  // 60 * 60 * 8
+
+        return $token;
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param Person       $person
+     *
+     * @return string|null
+     */
+    public function createPhoneToken(VoiceAccount $account, Person $person)
+    {
+        $workerSid = $this->getWorkerSid($person);
+        if (!$workerSid) {
+            return;
+        }
+
+        $capability = new ClientToken($account->getAccountSid(), $account->getAuthToken());
+        $capability->allowClientOutgoing($account->getTwimlAppSid());
+        $capability->allowClientIncoming(self::getWorkerClientName($person));
+
+        $token = $capability->generateToken(28800);
+
+        return $token;
     }
 
     /**
@@ -399,6 +508,45 @@ class TwilioAdapter
         }
 
         return $workflow;
+    }
+
+    /**
+     * @param VoiceAccount $account
+     *
+     * @return TwilioActivities
+     */
+    public function getActivities(VoiceAccount $account)
+    {
+        $workspace  = $this->getWorkspace($account);
+        $activities = $this->getActivitiesMap($workspace);
+
+        return new TwilioActivities(
+            $activities['Offline']->sid,
+            $activities['Idle']->sid,
+            $activities['IdleDisabled']->sid,
+            $activities['Busy']->sid,
+            $activities['Reserved']->sid
+        );
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param string       $activityName
+     *
+     * @throws TwilioException
+     *
+     * @return string
+     */
+    public function getActivitySid(VoiceAccount $account, $activityName)
+    {
+        $workspace  = $this->getWorkspace($account);
+        $activities = $this->getActivitiesMap($workspace);
+
+        if (!isset($activities[$activityName])) {
+            throw new TwilioException("Activity $activityName does not found");
+        }
+
+        return $activities[$activityName]->sid;
     }
 
     /**
@@ -494,8 +642,35 @@ class TwilioAdapter
                 'agent_name'        => $person->getName(),
                 'agent_email'       => $person->getPrimaryEmailAddress(),
                 'deskpro_queue_ids' => $queueIds,
-                'contact_uri'       => 'deskpro_browser:'.$person->getId(),
+                'contact_uri'       => self::getWorkerContactUrl($person),
             ]),
         ];
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return string|null
+     */
+    protected function getWorkerSid(Person $person)
+    {
+        $agentData = $person->getAgentData();
+
+        return $agentData && $agentData->isVoiceEnabled() ? $agentData->getVoiceWorkerSid() : null;
+    }
+
+    /**
+     * @param WorkspaceContext $workspace
+     *
+     * @return ActivityInstance[]
+     */
+    protected function getActivitiesMap(WorkspaceContext $workspace)
+    {
+        $activities = [];
+        foreach ($workspace->activities->read() as $activityInstance) {
+            $activities[$activityInstance->friendlyName] = $activityInstance;
+        }
+
+        return $activities;
     }
 }

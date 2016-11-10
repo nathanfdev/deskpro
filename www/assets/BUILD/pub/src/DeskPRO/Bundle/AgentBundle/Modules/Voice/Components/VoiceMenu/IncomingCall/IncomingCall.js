@@ -7,10 +7,11 @@ import CallTarget from './CallTarget';
 class IncomingCall extends React.Component {
 
   static propTypes = {
-    callFrom:   PropTypes.object,
-    callTarget: PropTypes.object,
-    onAccept:   PropTypes.func,
-    onDecline:  PropTypes.func
+    me:          PropTypes.object,
+    reservation: PropTypes.object,
+    onAccept:    PropTypes.func,
+    onDecline:   PropTypes.func,
+    onHangup:    PropTypes.func
   };
 
   static defaultProps = {
@@ -28,34 +29,53 @@ class IncomingCall extends React.Component {
     this.props.onDecline();
   };
 
+  renderAcceptButtons() {
+    return (
+      <div className="buttons">
+        <Button
+          className="green call-button"
+          onClick={this.onAccept}
+        >
+          <i className="icon call" />
+          Answer
+          <span className="waiting-time">
+            <Timer format="waiting_time" />
+          </span>
+        </Button>
+        <a
+          className="ignore-button"
+          href="#ignore"
+          onClick={this.onDecline}
+        >
+          <i className="fa fa-close" />
+          Ignore
+        </a>
+      </div>
+    );
+  }
+
+  renderHangupButton() {
+    const { onHangup } = this.props;
+
+    return (
+      <div className="buttons">
+        <Button className="red" onClick={onHangup}>
+          Hangup
+        </Button>
+      </div>
+    );
+  }
+
   render() {
-    const { callFrom, callTarget } = this.props;
+    const { me, reservation } = this.props;
+    const progress = reservation.reservationStatus === 'accepted';
 
     return (
       <div className="incoming-call">
-        <CallFrom callFrom={callFrom} />
-        <CallTarget target={callTarget} />
+        <CallFrom reservation={reservation} />
+        <CallTarget target={{ type: 'agent', agent: me }} />
 
-        <div className="buttons">
-          <Button
-            className="green call-button"
-            onClick={this.onAccept}
-          >
-            <i className="icon call" />
-            Answer
-            <span className="waiting-time">
-              <Timer format="waiting_time" />
-            </span>
-          </Button>
-          <a
-            className="ignore-button"
-            href="#ignore"
-            onClick={this.onDecline}
-          >
-            <i className="fa fa-close" />
-            Ignore
-          </a>
-        </div>
+        {progress ? this.renderHangupButton() : this.renderAcceptButtons()}
       </div>
     );
   }

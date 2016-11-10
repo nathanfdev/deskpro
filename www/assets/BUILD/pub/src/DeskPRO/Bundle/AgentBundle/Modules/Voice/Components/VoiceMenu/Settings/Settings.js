@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 import { Fieldset, createValue } from 'react-forms';
 import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import Accordion from 'DeskPRO/Component/Semantic/Accordion/Accordion';
-import QueuesContainer from '../../Common/QueuesContainer';
-import Queues from './Queues';
+import QueuesToggleContainer from './QueuesToggleContainer';
 import Volume from './Volume';
 import CallForward from './CallForward';
 
@@ -49,9 +48,7 @@ class Settings extends React.Component {
           content: (
             <div>
               <Field select="queues">
-                <QueuesContainer>
-                  <Queues />
-                </QueuesContainer>
+                <QueuesToggleContainer />
               </Field>
             </div>
           )

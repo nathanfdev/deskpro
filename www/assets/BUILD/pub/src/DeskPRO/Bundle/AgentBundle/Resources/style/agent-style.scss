@@ -40,7 +40,6 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "chrome/positioning";
 @import "chrome/tabpane";
 @import "cards/_index";
-@import "voice";
 
 body {
   font-family: $font-stack;

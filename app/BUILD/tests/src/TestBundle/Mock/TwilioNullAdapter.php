@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use Twilio\Rest\Api\V2010;
+use Twilio\Rest\Api\V2010\Account\ApplicationInstance;
 use Twilio\Rest\Client;
 use Twilio\Rest\Taskrouter;
 use Twilio\Rest\Taskrouter\V1\Workspace\TaskQueueInstance;
@@ -111,6 +112,37 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
+    public function createTwimlApp(VoiceAccount $account, $voiceUrl, $voiceMethod)
+    {
+        $payload = [
+            'sid'                     => 'sid',
+            'account_sid'             => 'account_sid',
+            'api_version'             => 'api_version',
+            'date_created'            => 'date_created',
+            'date_updated'            => 'date_updated',
+            'friendly_name'           => 'friendly_name',
+            'message_status_callback' => 'message_status_callback',
+            'sms_fallback_method'     => 'sms_fallback_method',
+            'sms_fallback_url'        => 'sms_fallback_url',
+            'sms_method'              => 'sms_method',
+            'sms_status_callback'     => 'sms_status_callback',
+            'sms_url'                 => 'sms_url',
+            'status_callback'         => 'status_callback',
+            'status_callback_method'  => 'status_callback_method',
+            'uri'                     => 'uri',
+            'voice_caller_id_lookup'  => 'voice_caller_id_lookup',
+            'voice_fallback_method'   => 'voice_fallback_method',
+            'voice_fallback_url'      => 'voice_fallback_url',
+            'voice_method'            => 'voice_method',
+            'voice_url'               => 'voice_url',
+        ];
+
+        return new ApplicationInstance($this->getVersion(), $payload, 'account_sid');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function createTaskQueue(VoiceQueue $queue)
     {
         $payload = [
@@ -149,14 +181,14 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function createWorker(VoiceAccount $account, Person $person)
+    public function createWorker(VoiceAccount $account, Person $person, $activityName = null)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function updateWorker(VoiceAccount $account, Person $person)
+    public function updateWorker(VoiceAccount $account, Person $person, $activityName = null)
     {
     }
 
@@ -171,6 +203,34 @@ class TwilioNullAdapter extends TwilioAdapter
      * {@inheritdoc}
      */
     public function createOrUpdateWorkflow(VoiceAccount $account, $assignmentCallbackUrl)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createWorkerToken(VoiceAccount $account, Person $person)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createPhoneToken(VoiceAccount $account, Person $person)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getActivities(VoiceAccount $account)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getActivitySid(VoiceAccount $account, $activityName)
     {
     }
 

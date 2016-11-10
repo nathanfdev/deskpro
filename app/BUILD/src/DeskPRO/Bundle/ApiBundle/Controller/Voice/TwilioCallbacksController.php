@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
+use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -73,16 +74,9 @@ class TwilioCallbacksController extends BaseController
             'number' => $query->get('To'),
         ]);
 
-        if (!$number) {
-            throw $this->createBadRequestException();
-        }
-
-        $helpdeskName = $this->getContainer()->getBrandSetting('core.deskpro_name');
-
-        $target = $number->getTarget();
-        if (!$target instanceof VoiceQueueTarget) {
+        if (!$number || !$number->getTarget() instanceof VoiceQueueTarget) {
             $twiml = new Twiml();
-            $twiml->say(sprintf('Thank you for calling, %s', $helpdeskName));
+            $twiml->say(sprintf('Thank you for calling, %s', $this->getHelpdeskName()));
             $twiml->say('Required phone number is out of service.');
         } else {
             $phoneCall = new VoicePhoneCall();
@@ -97,9 +91,11 @@ class TwilioCallbacksController extends BaseController
             $this->getManager()->flush();
 
             $twiml = new Twiml();
-            $twiml->say(sprintf('Thank you for calling, %s', $helpdeskName));
+            $twiml->say(sprintf('Thank you for calling, %s', $this->getHelpdeskName()));
 
             if ($account->getQueueWorkflowSid()) {
+                /** @var VoiceQueueTarget $target */
+                $target = $number->getTarget();
                 $twiml
                     ->enqueue([
                         'workflowSid' => $account->getQueueWorkflowSid(),
@@ -149,7 +145,15 @@ class TwilioCallbacksController extends BaseController
 
         return new JsonResponse([
             'instruction' => 'dequeue',
-            'to'          => 'deskpro_agent:'.$agent->getId(),
+            'to'          => TwilioAdapter::getWorkerContactUrl($agent),
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    private function getHelpdeskName()
+    {
+        return $this->getContainer()->getBrandSetting('core.deskpro_name');
     }
 }

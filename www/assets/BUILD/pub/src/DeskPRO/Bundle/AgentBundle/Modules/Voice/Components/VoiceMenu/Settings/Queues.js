@@ -9,26 +9,37 @@ class Queues extends React.Component {
   static propTypes = {
     agents:   PropTypes.object,
     queues:   PropTypes.object,
-    value:    PropTypes.array,
-    onChange: PropTypes.func
+    me:       PropTypes.object,
+    onChange: PropTypes.func,
+    saving:   PropTypes.bool
   };
 
   onToggleQueue = (queue) => {
-    const { value = [], onChange } = this.props;
-    const queueId = queue.get('id');
+    const { me, onChange } = this.props;
+    const agentId = me.get('id');
 
-    const newValue = [...value];
-    if (newValue.indexOf(queueId) === -1) {
-      newValue.push(queueId);
+    let agents = queue.get('agents') || Immutable.fromJS([]);
+    if (agents.contains(agentId)) {
+      agents = agents.splice(agents.indexOf(agentId), 1);
     } else {
-      newValue.splice(newValue.indexOf(queueId), 1);
+      agents = agents.push(agentId);
     }
 
-    onChange(newValue);
+    onChange(queue, agents.toJS());
   };
 
   render() {
-    const { agents, value = [], queues = Immutable.fromJS({}) } = this.props;
+    const { agents, me, queues = Immutable.fromJS({}), saving } = this.props;
+
+    if (!queues.size) {
+      return (
+        <div className="voice-queue-list">
+          <div className="empty-message">
+            No queues exist.
+          </div>
+        </div>
+      );
+    }
 
     return (
       <ScrollArea className="voice-queue-list">
@@ -37,8 +48,9 @@ class Queues extends React.Component {
             key={index}
             agents={agents}
             queue={queue}
-            active={value.indexOf(queue.get('id')) !== -1}
+            active={queue.get('agents').contains(me.get('id'))}
             onChange={this.onToggleQueue}
+            saving={saving}
           />
         )}
       </ScrollArea>
@@ -52,7 +64,8 @@ class QueueItem extends React.Component {
     agents:   PropTypes.object,
     queue:    PropTypes.object,
     active:   PropTypes.bool,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    saving:   PropTypes.bool
   };
 
   onClick = () => {
@@ -61,13 +74,14 @@ class QueueItem extends React.Component {
   };
 
   render() {
-    const { agents, queue, active } = this.props;
+    const { agents, queue, active, saving } = this.props;
     const queueAgentIds = queue.get('agents') || Immutable.fromJS([]);
     const queueAgents = agents.filter(agent => queueAgentIds.contains(agent.get('id')));
 
     return (
       <div className="queue-item">
         <Toggle
+          disabled={saving}
           className="small"
           active={active}
           onChange={this.onClick}
@@ -80,9 +94,9 @@ class QueueItem extends React.Component {
           {queueAgents.size} agents
           {queueAgents.map((agent, index) => <Avatar key={index} person={agent} size={20} />)}
         </div>
-        <div className="queue-users">
+        {/* <div className="queue-users">
           3 users in queue (average wait 2m)
-        </div>
+        </div> */}
       </div>
     );
   }

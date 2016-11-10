@@ -32,8 +32,11 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -57,7 +60,23 @@ class PersonAgentDataType extends AbstractType
             ->add('is_voice_enabled', ApiBooleanType::class, [
                 'property_path' => 'isVoiceEnabled',
             ])
+            ->add('available_status', ChoiceType::class, [
+                'property_path'     => 'availableStatus',
+                'choices_as_values' => true,
+                'choices'           => [
+                    AgentData::AVAILABLE_STATUS_IDLE,
+                    AgentData::AVAILABLE_STATUS_IDLE_DISABLED,
+                    AgentData::AVAILABLE_STATUS_BUSY,
+                    AgentData::AVAILABLE_STATUS_RESERVED,
+                    AgentData::AVAILABLE_STATUS_OFFLINE,
+                ],
+            ])
+            ->add('agent_calls_enabled', ApiBooleanType::class, [
+                'property_path' => 'agentCallsEnabled',
+            ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onChangeAvailableStatus']);
     }
 
     /**
@@ -68,5 +87,20 @@ class PersonAgentDataType extends AbstractType
         $resolver->setDefaults([
             'data_class' => AgentData::class,
         ]);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onChangeAvailableStatus(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (isset($data['available_status']) && $data['available_status'] === AgentData::AVAILABLE_STATUS_OFFLINE) {
+            $data['agent_calls_enabled'] = false;
+        }
+
+        $event->setData($data);
     }
 }

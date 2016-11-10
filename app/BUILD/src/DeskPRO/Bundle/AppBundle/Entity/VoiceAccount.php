@@ -110,6 +110,13 @@ class VoiceAccount implements EntityInterface, NotifyPropertyChanged
     private $queueWorkflowSid;
 
     /**
+     * @ORM\Column(name="twiml_app_sid", type="string", length=100, nullable=true)
+     *
+     * @var string
+     */
+    private $twimlAppSid;
+
+    /**
      * @ORM\Column(name="auth_token", type="string", length=100)
      *
      * @JMS\Expose()
@@ -247,6 +254,26 @@ class VoiceAccount implements EntityInterface, NotifyPropertyChanged
     public function setWorkspaceSid($workspaceSid)
     {
         $this->setModelField('workspaceSid', $workspaceSid);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTwimlAppSid()
+    {
+        return $this->twimlAppSid;
+    }
+
+    /**
+     * @param string $twimlAppSid
+     *
+     * @return $this
+     */
+    public function setTwimlAppSid($twimlAppSid)
+    {
+        $this->setModelField('twimlAppSid', $twimlAppSid);
 
         return $this;
     }

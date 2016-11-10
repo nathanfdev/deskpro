@@ -1,24 +1,12 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 import Immutable from 'immutable';
-import VoiceProfile from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/Profile/VoiceProfile';
 import VoiceMenuDropdown from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/VoiceMenu/VoiceMenuDropdown';
 import { css, redux } from '../../../decorators';
 import demoState from './demoState';
 
 storiesOf('Agent Voice', module)
   .addDecorator(story => css(story()))
-  .add(
-    'Profile popup',
-    () => redux({}, (
-      <VoiceProfile
-        onChange={action('onChange')}
-        onClickPreferences={action('onClickPreferences')}
-        onClickHelp={action('onClickHelp')}
-        onClickLogout={action('onClickLogout')}
-      />
-    ))
-  )
   .add(
     'Dialpad',
     () => redux(demoState, (

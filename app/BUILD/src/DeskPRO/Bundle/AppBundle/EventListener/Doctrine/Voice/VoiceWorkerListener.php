@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
+use Orb\Util\Strings;
 
 /**
  * Class VoiceWorkerListener.
@@ -67,37 +68,14 @@ class VoiceWorkerListener
      *
      * @param AgentData $agentData
      */
-    public function onCreate(AgentData $agentData)
+    public function createWorker(AgentData $agentData)
     {
-        if ($agentData->isVoiceEnabled()) {
-            $this->createWorker($agentData);
-        }
-    }
-
-    /**
-     * @ORM\PreUpdate()
-     *
-     * @param AgentData          $agentData
-     * @param PreUpdateEventArgs $args
-     */
-    public function onUpdate(AgentData $agentData, PreUpdateEventArgs $args)
-    {
-        if (!$args->hasChangedField('isVoiceEnabled')) {
+        // voice disabled
+        if (!$agentData->isVoiceEnabled()) {
             return;
         }
 
-        if ($agentData->isVoiceEnabled()) {
-            $this->createWorker($agentData);
-        } else {
-            $this->deleteWorker($agentData);
-        }
-    }
-
-    /**
-     * @param AgentData $agentData
-     */
-    private function createWorker(AgentData $agentData)
-    {
+        // already created
         if ($agentData->getVoiceWorkerSid()) {
             return;
         }
@@ -107,15 +85,48 @@ class VoiceWorkerListener
             return;
         }
 
-        $worker = $this->twilioAdapter->createWorker($account, $agentData->getPerson());
+        $worker = $this->twilioAdapter->createWorker($account, $agentData->getPerson(), 'Offline');
         $agentData->setVoiceWorkerSid($worker->sid);
+        $agentData->setAvailableStatus(AgentData::AVAILABLE_STATUS_OFFLINE);
     }
 
     /**
+     * @ORM\PreUpdate()
+     *
+     * @param AgentData          $agentData
+     * @param PreUpdateEventArgs $args
+     */
+    public function updateWorker(AgentData $agentData, PreUpdateEventArgs $args)
+    {
+        $account = $this->getVoiceAccount();
+        if (!$account) {
+            return;
+        }
+
+        if ($args->hasChangedField('isVoiceEnabled')) {
+            // create or delete worker
+            if ($agentData->isVoiceEnabled()) {
+                $this->createWorker($agentData);
+            } else {
+                $this->deleteWorker($agentData);
+            }
+        } elseif ($args->hasChangedField('availableStatus') || $args->hasChangedField('agentCallsEnabled')) {
+            // change activity
+            if ($agentData->getVoiceWorkerSid()) {
+                $activity = $this->getActivityStatus($agentData);
+                $this->twilioAdapter->updateWorker($account, $agentData->getPerson(), $activity);
+            }
+        }
+    }
+
+    /**
+     * @ORM\PreRemove()
+     *
      * @param AgentData $agentData
      */
-    private function deleteWorker(AgentData $agentData)
+    public function deleteWorker(AgentData $agentData)
     {
+        // no worker
         if (!$agentData->getVoiceWorkerSid()) {
             return;
         }
@@ -149,5 +160,20 @@ class VoiceWorkerListener
     private function getVoiceAccount()
     {
         return $this->em->getRepository(VoiceAccount::class)->getVoiceAccount();
+    }
+
+    /**
+     * @param AgentData $agentData
+     *
+     * @return string
+     */
+    private function getActivityStatus(AgentData $agentData)
+    {
+        $status = $agentData->getAvailableStatus();
+        if (!$agentData->isAgentCallsEnabled()) {
+            $status = AgentData::AVAILABLE_STATUS_OFFLINE;
+        }
+
+        return ucfirst(Strings::dashToCamelCase($status));
     }
 }

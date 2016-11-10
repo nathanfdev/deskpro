@@ -53,6 +53,12 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
+    const AVAILABLE_STATUS_IDLE          = 'idle';
+    const AVAILABLE_STATUS_IDLE_DISABLED = 'idle_disabled';
+    const AVAILABLE_STATUS_BUSY          = 'busy';
+    const AVAILABLE_STATUS_RESERVED      = 'reserved';
+    const AVAILABLE_STATUS_OFFLINE       = 'offline';
+
     /**
      * The unique ID.
      *
@@ -113,6 +119,29 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
      * @var string
      */
     private $voiceWorkerSid;
+
+    /**
+     * @ORM\Column(name="available_status", type="string",length=100)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
+     * @Assert\Choice(choices={"idle", "idle_disabled", "busy", "reserved", "offline"})
+     *
+     * @var bool
+     */
+    private $availableStatus = self::AVAILABLE_STATUS_OFFLINE;
+
+    /**
+     * @ORM\Column(name="agent_calls_enabled", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $agentCallsEnabled = false;
 
     /**
      * @return int
@@ -218,6 +247,46 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     public function setVoiceWorkerSid($voiceWorkerSid)
     {
         $this->setModelField('voiceWorkerSid', $voiceWorkerSid);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAvailableStatus()
+    {
+        return $this->availableStatus;
+    }
+
+    /**
+     * @param bool $availableStatus
+     *
+     * @return $this
+     */
+    public function setAvailableStatus($availableStatus)
+    {
+        $this->setModelField('availableStatus', $availableStatus);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgentCallsEnabled()
+    {
+        return $this->agentCallsEnabled;
+    }
+
+    /**
+     * @param bool $agentCallsEnabled
+     *
+     * @return $this
+     */
+    public function setAgentCallsEnabled($agentCallsEnabled)
+    {
+        $this->setModelField('agentCallsEnabled', $agentCallsEnabled);
 
         return $this;
     }

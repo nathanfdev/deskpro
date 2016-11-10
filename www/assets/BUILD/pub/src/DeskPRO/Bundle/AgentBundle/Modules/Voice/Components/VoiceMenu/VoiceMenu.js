@@ -7,18 +7,27 @@ import IncomingCall from './IncomingCall/IncomingCall';
 class VoiceMenu extends React.Component {
 
   static propTypes = {
-    callFrom:         PropTypes.object,
-    callTarget:       PropTypes.object,
+    me:               PropTypes.object,
+    reservation:      PropTypes.object,
     onChangeSettings: PropTypes.onChange,
     onAcceptCall:     PropTypes.func,
-    onDeclineCall:    PropTypes.func
+    onDeclineCall:    PropTypes.func,
+    onHangup:         PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      tabName: 'settings'
+      tabName: props.reservation ? 'phone' : 'settings'
     };
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.reservation) {
+      this.setState({
+        tabName: 'phone'
+      });
+    }
   }
 
   onChangeTab = (tabName) => {
@@ -26,27 +35,23 @@ class VoiceMenu extends React.Component {
   };
 
   getPhoneTabName() {
-    return this.hasIncomingCall() ? 'Incoming call ...' : 'Dialpad';
+    return this.props.reservation ? 'Incoming call ...' : 'Dialpad';
   }
 
   getPhoneTabIcon() {
-    return this.hasIncomingCall() ? 'fa-phone' : 'fa-th';
-  }
-
-  hasIncomingCall() {
-    const { callFrom, callTarget  } = this.props;
-    return callFrom || callTarget;
+    return this.props.reservation ? 'fa-phone' : 'fa-th';
   }
 
   renderPhoneTab() {
-    const { callFrom, callTarget, onAcceptCall, onDeclineCall  } = this.props;
-    if (this.hasIncomingCall()) {
+    const { me, reservation, onAcceptCall, onDeclineCall, onHangup } = this.props;
+    if (reservation) {
       return (
         <IncomingCall
-          callFrom={callFrom}
-          callTarget={callTarget}
+          me={me}
+          reservation={reservation}
           onAccept={onAcceptCall}
           onDecline={onDeclineCall}
+          onHangup={onHangup}
         />
       );
     }

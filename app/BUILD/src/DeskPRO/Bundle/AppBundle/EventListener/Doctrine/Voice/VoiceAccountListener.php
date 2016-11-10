@@ -33,6 +33,8 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Twilio\Exceptions\TwilioException;
 
 /**
@@ -51,15 +53,22 @@ class VoiceAccountListener
     private $em;
 
     /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
      * Constructor.
      *
-     * @param TwilioAdapter $twilioAdapter
-     * @param EntityManager $em
+     * @param TwilioAdapter   $twilioAdapter
+     * @param EntityManager   $em
+     * @param RouterInterface $router
      */
-    public function __construct(TwilioAdapter $twilioAdapter, EntityManager $em)
+    public function __construct(TwilioAdapter $twilioAdapter, EntityManager $em, RouterInterface $router)
     {
         $this->twilioAdapter = $twilioAdapter;
         $this->em            = $em;
+        $this->router        = $router;
     }
 
     /**
@@ -69,14 +78,40 @@ class VoiceAccountListener
      *
      * @throws TwilioException
      */
-    public function onCreate(VoiceAccount $account)
+    public function createWorkspace(VoiceAccount $account)
     {
+        // create workspace
         $workspace = $this->twilioAdapter->createWorkspace($account);
         if (!$workspace) {
             throw new TwilioException('Unable to create Twilio workspace');
         }
 
         $account->setWorkspaceSid($workspace->sid);
+    }
+
+    /**
+     * @ORM\PostPersist()
+     *
+     * @param VoiceAccount $account
+     *
+     * @throws TwilioException
+     */
+    public function createTwimlApp(VoiceAccount $account)
+    {
+        // create twiml app
+        $voiceUrl = $this->router->generate('twilio_phone_number_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $twimlApp = $this->twilioAdapter->createTwimlApp($account, $voiceUrl, 'GET');
+        if (!$twimlApp) {
+            throw new TwilioException('Unable to create Twiml app');
+        }
+
+        $account->setTwimlAppSid($twimlApp->sid);
+        $this->em->persist($account);
+        $this->em->flush();
     }
 
     /**

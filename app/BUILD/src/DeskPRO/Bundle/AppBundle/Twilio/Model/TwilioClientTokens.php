@@ -26,58 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice;
+namespace DeskPRO\Bundle\AppBundle\Twilio\Model;
 
-use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
-use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
-use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class VoiceNumberListener.
+ * Class TwilioClientTokens.
  */
-class VoiceNumberListener
+class TwilioClientTokens
 {
     /**
-     * @var TwilioAdapter
+     * @var string
+     *
+     * @JMS\Type("string")
      */
-    private $twilioAdapter;
+    private $workerToken;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $phoneToken;
 
     /**
      * Constructor.
      *
-     * @param TwilioAdapter $twilioAdapter
+     * @param string $workerToken
+     * @param string $phoneToken
      */
-    public function __construct(TwilioAdapter $twilioAdapter)
+    public function __construct($workerToken, $phoneToken)
     {
-        $this->twilioAdapter = $twilioAdapter;
-    }
-
-    /**
-     * @ORM\PrePersist()
-     *
-     * @param VoiceNumber $number
-     */
-    public function onCreate(VoiceNumber $number)
-    {
-        $account = $number->getAccount();
-        if (!$account) {
-            return;
-        }
-
-        $this->twilioAdapter->updateNumber($number, [
-            'voiceApplicationSid' => $account->getTwimlAppSid(),
-        ]);
-    }
-
-    /**
-     * @ORM\PreRemove()
-     *
-     * @param VoiceNumber $number
-     */
-    public function onRemove(VoiceNumber $number)
-    {
-        $this->twilioAdapter->updateNumber($number, [
-            'voiceApplicationSid' => '',
-        ]);
+        $this->workerToken = $workerToken;
+        $this->phoneToken  = $phoneToken;
     }
 }

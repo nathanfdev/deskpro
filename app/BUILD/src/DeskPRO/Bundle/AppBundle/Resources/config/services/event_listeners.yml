@@ -36,7 +36,7 @@ services:
 
   event_listener.voice_account:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceAccountListener
-    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager"]
+    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@router"]
     tags:
       - { name: doctrine.entity_listener }
 
@@ -54,7 +54,7 @@ services:
 
   event_listener.voice_number:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceNumberListener
-    arguments: ["@twilio_adapter", "@router"]
+    arguments: ["@twilio_adapter"]
     tags:
       - { name: doctrine.entity_listener }
 

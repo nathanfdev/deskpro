@@ -10,15 +10,20 @@ import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortc
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
+import VoiceMenu from '../../Voice/Components/VoiceMenu/VoiceMenuContainer';
+import { isVoiceEnabled } from '../../Voice/Selectors/client';
+
 // import { IMContainer } from '../IM/Components/IMContainer';
 // import { HeaderWidget } from '../IM/Components/HeaderWidget';
 
 @connect(state => ({
   agents:          collectionSelectorFactory('Person', 'agents')(state),
   chatDepartments: collectionSelectorFactory('Department', 'all_chat')(state),
-  me:              meSelector(state)
+  me:              meSelector(state),
+  voiceEnabled:    isVoiceEnabled(state)
 }))
 export class AgentTopBarContainer extends SeparateComponent {
+
   static propTypes = {
     agents:          PropTypes.object.isRequired,
     chatDepartments: PropTypes.object.isRequired,
@@ -43,7 +48,6 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   static updateVolume(volume) {
     window.DeskPRO_Window.volume = volume;
-
     window.$('audio').each(function changeVolume() {
       this.volume = volume;
     });
@@ -128,7 +132,7 @@ export class AgentTopBarContainer extends SeparateComponent {
       onNotification:     AgentTopBarContainer.onNotification,
       onClearSearchInput: AgentTopBarContainer.onClearSearchInput,
       closeIframes:       AgentTopBarContainer.closeIframes,
-      notificationCount:  this.state.notificationCount
+      notificationCount:  this.state.notificationCount,
     };
     return <AgentTopBar {...props} ref={(c) => { this.agentTopBar = c; }} />;
   }
@@ -149,6 +153,7 @@ export class AgentTopBar extends React.Component {
     onClearSearchInput: PropTypes.func,
     closeIframes:       PropTypes.func,
     toggleViewMode:     PropTypes.func,
+    voiceEnabled:       PropTypes.bool
   };
 
   onChatVolumeUpdate = (newVal) => {
@@ -173,63 +178,69 @@ export class AgentTopBar extends React.Component {
   };
 
   render() {
-    const { agents, chatDepartments, notificationCount } = this.props;
+    const { me, agents, chatDepartments, notificationCount, voiceEnabled } = this.props;
+    const { onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification } = this.props;
+    const { closeIframes, toggleViewMode } = this.props;
 
-    return (<TopBar>
-      <TopBarItem className="search-box legacy-omnibox">
-        <SearchBox
-          onUserInput={this.props.onSearch}
-          onFocus={this.props.onSearchFocus}
-          onBlur={this.props.onSearchBlur}
-          onClearInput={this.props.onClearSearchInput}
-          placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
-          ref={(c) => { this.searchBox = c; }}
-        />
-      </TopBarItem>
-      <TopBarItem
-        className="legacy-omnibox recent"
-        onClick={this.props.onRecent}
-        title={agentPhrases.get('agent.chrome.recent_tooltip')}
-      >
-        <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
-      </TopBarItem>
-      {/* <TopBarItem className='z-index-stub'>*/}
-      {/* <HeaderWidget />*/}
-      {/* <IMContainer />*/}
-      {/* </TopBarItem>*/}
-
-      <AddButton closeIframes={this.props.closeIframes} />
-      <TopBarRightMenu>
-        <TopBarItem
-          className="views"
-          onClick={this.props.toggleViewMode}
-          title={agentPhrases.get('agent.chrome.view_tooltip')}
-        >
-          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
-        </TopBarItem>
-        <TopBarItem
-          className="legacy-omnibox notifications"
-          onClick={this.props.onNotification}
-          title={agentPhrases.get('agent.chrome.notification_tooltip')}
-        >
-          <TopBarNotificationIcon
-            elementId="notifications"
-            svg={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg`}
-            count={notificationCount}
+    return (
+      <TopBar>
+        <TopBarItem className="search-box legacy-omnibox">
+          <SearchBox
+            onUserInput={onSearch}
+            onFocus={onSearchFocus}
+            onBlur={onSearchBlur}
+            onClearInput={onClearSearchInput}
+            placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
+            ref={(c) => { this.searchBox = c; }}
           />
         </TopBarItem>
-        <TopBarItem>
-          <Chat
-            agents={agents.toArray()}
-            chatDepartments={chatDepartments.toArray()}
-            updateVolume={this.onChatVolumeUpdate}
-            me={this.props.me}
-            volume={8}
-          />
-          <User src={this.getUserPicture()} />
+        <TopBarItem
+          className="legacy-omnibox recent"
+          onClick={onRecent}
+          title={agentPhrases.get('agent.chrome.recent_tooltip')}
+        >
+          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
         </TopBarItem>
-      </TopBarRightMenu>
-    </TopBar>);
+        {/* <TopBarItem className='z-index-stub'>*/}
+        {/* <HeaderWidget />*/}
+        {/* <IMContainer />*/}
+        {/* </TopBarItem>*/}
+
+        <AddButton closeIframes={closeIframes} />
+        <TopBarRightMenu>
+          <TopBarItem
+            className="views"
+            onClick={toggleViewMode}
+            title={agentPhrases.get('agent.chrome.view_tooltip')}
+          >
+            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
+          </TopBarItem>
+          <TopBarItem
+            className="legacy-omnibox notifications"
+            onClick={onNotification}
+            title={agentPhrases.get('agent.chrome.notification_tooltip')}
+          >
+            <TopBarNotificationIcon
+              elementId="notifications"
+              svg={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg`}
+              count={notificationCount}
+            />
+          </TopBarItem>
+          <TopBarItem>
+            {voiceEnabled && <VoiceMenu />}
+            <User src={this.getUserPicture()} />
+            <Chat
+              agents={agents.toArray()}
+              chatDepartments={chatDepartments.toArray()}
+              updateVolume={this.onChatVolumeUpdate}
+              me={me}
+              volume={8}
+            />
+          </TopBarItem>
+        </TopBarRightMenu>
+      </TopBar>
+    );
   }
 }
+
 export default AgentTopBar;

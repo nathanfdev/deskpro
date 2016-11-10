@@ -22,7 +22,7 @@ class CallToAgent extends React.Component {
 
   render() {
     const { agents, target } = this.props;
-    const agentId = target && target.get('agent');
+    const agentId = target && target.agent;
     const agent = agents && agentId > 0 && agents.get(agentId);
 
     return (
@@ -64,7 +64,7 @@ class CallTarget extends React.Component {
 
   render() {
     const { target } = this.props;
-    const type = target && target.get('type');
+    const type = target && target.type;
 
     if (type === 'queue') {
       return <CallToQueue target={target} />;

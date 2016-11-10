@@ -7,16 +7,14 @@ import Avatar from '../../Common/Avatar';
 class CallFrom extends React.Component {
 
   static propTypes = {
-    agents:   PropTypes.object,
-    callFrom: PropTypes.object
+    reservation: PropTypes.object
   };
 
   render() {
-    const { callFrom, agents } = this.props;
-    const number = callFrom && callFrom.number;
-    const personId = callFrom && callFrom.person;
-
-    const person = agents && personId > 0 && agents.get(personId);
+    const { reservation } = this.props;
+    const attributes = reservation && reservation.task ? reservation.task.attributes : {};
+    const number = attributes.from;
+    const person = null;
 
     return (
       <div className="call-from">
