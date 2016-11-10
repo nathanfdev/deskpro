@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader;
 use DeskPRO\Component\Hierarchy\HierarchyNode;
 use DeskPRO\Component\Util\EntityUtils;
 use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
  * Class HierarchyNodeTransformer.
@@ -46,20 +47,13 @@ class HierarchyNodeTransformer implements DataTransformerInterface
     private $loader;
 
     /**
-     * @var bool
-     */
-    private $multiple;
-
-    /**
      * HierarchyNodeTransformer constructor.
      *
      * @param HierarchyChoiceLoader $loader
-     * @param bool                  $multiple
      */
-    public function __construct(HierarchyChoiceLoader $loader, $multiple = false)
+    public function __construct(HierarchyChoiceLoader $loader)
     {
-        $this->loader   = $loader;
-        $this->multiple = $multiple;
+        $this->loader = $loader;
     }
 
     /**
@@ -101,18 +95,20 @@ class HierarchyNodeTransformer implements DataTransformerInterface
             return $value;
         }
 
-        $hierarchy = $this->loader->getHierarchy();
         if (!is_array($value)) {
-            if ($node = $hierarchy->findNodeById($value)) {
-                return $node->getData();
+            if (!$value instanceof HierarchyNode) {
+                throw new TransformationFailedException('Expected HierarchyNode');
             }
+
+            return $value->getData();
         }
 
         $items = [];
         foreach ($value as $item) {
-            if ($node = $hierarchy->findNodeById($item)) {
-                $items[] = $node->getData();
+            if (!$item instanceof HierarchyNode) {
+                throw new TransformationFailedException('Expected HierarchyNode');
             }
+            $items[] = $item->getData();
         }
 
         return $items;

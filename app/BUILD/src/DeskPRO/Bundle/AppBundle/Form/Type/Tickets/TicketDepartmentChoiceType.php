@@ -64,7 +64,7 @@ class TicketDepartmentChoiceType extends AbstractType
                     $generator = $options['hierarchy_generator'];
 
                     return $generator->generateTicketDepartmentsHierarchy($options['person'], $options['ticket'])
-                        ->getChoiceLoader(true);
+                        ->getChoiceLoader();
                 },
             ])
             ->setRequired('person')

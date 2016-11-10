@@ -39,7 +39,6 @@ use DeskPRO\Bundle\AppBundle\Form\Type\DpDateType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType;
-use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
@@ -155,8 +154,8 @@ class CustomDataType extends AbstractType
         if ($customDef->isChoiceType()) {
             $data = $form->get('data')->getData();
             $data = is_array($data) ? $data : ($data ? [$data] : []);
-            $data = array_map(function (HierarchyNode $choiceCustomDef) {
-                return $choiceCustomDef->getData()->getId();
+            $data = array_map(function (CustomDefAbstract $choiceCustomDef) {
+                return $choiceCustomDef->getId();
             }, $data);
 
             $exist = $customDefData

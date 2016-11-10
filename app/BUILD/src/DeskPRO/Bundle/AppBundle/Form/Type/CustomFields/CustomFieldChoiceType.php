@@ -29,8 +29,8 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\HierarchyNodeTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -74,7 +74,7 @@ class CustomFieldChoiceType extends AbstractType
             }
         }
 
-        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_loader']));
+        $builder->addModelTransformer(new HierarchyNodeTransformer($options['choice_loader']));
     }
 
     /**
@@ -96,7 +96,7 @@ class CustomFieldChoiceType extends AbstractType
                 'choices_as_values' => true,
                 'choice_loader'     => function (Options $options) {
                     return $this->hierarchyGenerator->generateForCustomFormField($options['custom_field'])
-                        ->getChoiceLoader(true);
+                        ->getChoiceLoader();
                 },
                 'placeholder' => '',
                 'help'        => '',
@@ -128,7 +128,7 @@ class CustomFieldChoiceType extends AbstractType
         $form   = $event->getForm();
         $config = $form->getConfig();
 
-        $transformer = new CustomDefHierarchyNodeTransformer($config->getOption('choice_loader'));
+        $transformer = new HierarchyNodeTransformer($config->getOption('choice_loader'));
         $event->setData($transformer->transform($event->getData()));
     }
 }
