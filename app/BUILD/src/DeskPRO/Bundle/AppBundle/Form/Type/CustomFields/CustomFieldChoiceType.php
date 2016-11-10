@@ -98,6 +98,9 @@ class CustomFieldChoiceType extends AbstractType
                     return $this->hierarchyGenerator->generateForCustomFormField($options['custom_field'])
                         ->getChoiceLoader();
                 },
+                'choice_label' => function ($value) {
+                    return (string) $value;
+                },
                 'placeholder' => '',
                 'help'        => '',
             ])

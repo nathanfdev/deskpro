@@ -97,7 +97,9 @@ class CustomPerFieldChoiceType extends AbstractType
                         ->getChoiceLoader()
                     ;
                 },
-
+                'choice_label' => function ($value) {
+                    return (string) $value;
+                },
             ])
             ->setRequired('custom_field')
             ->setAllowedTypes('custom_field', CustomFieldDefinition::class)

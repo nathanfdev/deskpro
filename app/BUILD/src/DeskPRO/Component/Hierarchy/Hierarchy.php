@@ -76,10 +76,10 @@ class Hierarchy implements \Countable, \IteratorAggregate
 
         // suppress the bug in php in some versions for modifying an array in usort
         @uksort($root_nodes, function ($a, $b) use ($hierarchy) {
-            $nodeA = $this->root_nodes[$a];
-            $order1 = $nodeA->getOrder();
+            $order1 = $this->root_nodes[$a]->getOrder();
             $order2 = $this->root_nodes[$b]->getOrder();
-            $this->addNode($nodeA);
+            $this->addNode($this->root_nodes[$a]);
+            $this->addNode($this->root_nodes[$b]);
 
             if ($order1 === $order2) {
                 return ($a < $b) ? -1 : 1;
@@ -173,8 +173,12 @@ class Hierarchy implements \Countable, \IteratorAggregate
      */
     public function addNode(HierarchyNode $node)
     {
+        $id = $this->getNodeId($node);
+        if (isset($this->map[$id])) {
+            return;
+        }
+
         $node->setHierarchy($this);
-        $id             = $this->getNodeId($node);
         $this->map[$id] = $node;
     }
 }
