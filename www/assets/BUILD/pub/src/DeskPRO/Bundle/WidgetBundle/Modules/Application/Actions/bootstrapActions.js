@@ -4,7 +4,6 @@ import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { loadOnlineAgents } from './peopleActions';
 import { loadOptions, fetchOptions, openWidget, reopenWidget, closeWidget } from './dpWindowActions';
 import { pollingChat, setChatId, unsetChatId, setLastAgentId } from '../../Chat/Actions/chatActions';
@@ -118,10 +117,6 @@ export const loadPortalPhraseTranslations = createAction(
     }
   })
 );
-
-export const loadChatDepartments = createAction(
-  'WIDGET_LOAD_CHAT_DEPARTMENTS',
-  () => repository('ChatDepartment').loadAll());
 
 export const chatResume = createAction(
   'WIDGET_CHAT_RESUME',

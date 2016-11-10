@@ -164,6 +164,7 @@ return [
     'portal.chat.ident_unconfirmed'                         => 'Identity not confirmed, email has not been validated',
     'portal.chat.label-email'                               => 'Your Email',
     'portal.chat.label-name'                                => 'Your Name',
+    'portal.chat.label-department'                          => 'Select department',
     'portal.chat.list_agent'                                => 'Agent',
     'portal.chat.list_chat'                                 => 'Chat',
     'portal.chat.list_date'                                 => 'Date',

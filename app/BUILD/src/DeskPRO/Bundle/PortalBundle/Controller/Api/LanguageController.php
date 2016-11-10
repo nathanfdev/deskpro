@@ -124,6 +124,7 @@ class LanguageController extends AbstractApiController
             'portal.chat.not_helpful',
             'portal.chat.label-name',
             'portal.chat.label-email',
+            'portal.chat.label-department',
             'portal.chat.message_type',
             'portal.chat.message_wait-pending',
             'portal.chat.message_wait-long',

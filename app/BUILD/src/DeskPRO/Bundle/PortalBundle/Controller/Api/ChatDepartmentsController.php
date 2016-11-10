@@ -41,7 +41,7 @@ class ChatDepartmentsController extends AbstractApiController
     /**
      * @Rest\Get("")
      */
-    public function getChatDepartmentsActionAction()
+    public function getChatDepartmentsAction()
     {
         $qb                   = $this->getManager()->createQueryBuilder();
         $permissionBag        = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
