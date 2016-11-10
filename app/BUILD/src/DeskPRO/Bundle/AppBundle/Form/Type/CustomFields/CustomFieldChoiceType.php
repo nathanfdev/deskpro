@@ -74,7 +74,7 @@ class CustomFieldChoiceType extends AbstractType
             }
         }
 
-        $builder->addModelTransformer(new HierarchyNodeTransformer($options['choice_loader']));
+        $builder->addModelTransformer(new HierarchyNodeTransformer());
     }
 
     /**
@@ -125,10 +125,9 @@ class CustomFieldChoiceType extends AbstractType
      */
     public function onTransformRadioData(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
+        $form = $event->getForm();
 
-        $transformer = new HierarchyNodeTransformer($config->getOption('choice_loader'));
+        $transformer = new HierarchyNodeTransformer();
         $event->setData($transformer->transform($event->getData()));
     }
 }

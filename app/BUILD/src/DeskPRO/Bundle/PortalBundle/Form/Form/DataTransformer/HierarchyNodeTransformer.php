@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
-use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader;
 use DeskPRO\Component\Hierarchy\HierarchyNode;
 use DeskPRO\Component\Util\EntityUtils;
 use Symfony\Component\Form\DataTransformerInterface;
@@ -42,21 +41,6 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 class HierarchyNodeTransformer implements DataTransformerInterface
 {
     /**
-     * @var HierarchyChoiceLoader
-     */
-    private $loader;
-
-    /**
-     * HierarchyNodeTransformer constructor.
-     *
-     * @param HierarchyChoiceLoader $loader
-     */
-    public function __construct(HierarchyChoiceLoader $loader)
-    {
-        $this->loader = $loader;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function transform($value)
@@ -65,12 +49,11 @@ class HierarchyNodeTransformer implements DataTransformerInterface
             return $value;
         }
 
-        $hierarchy = $this->loader->getHierarchy();
         if (!is_array($value)) {
             if ($value instanceof DomainObject || $value instanceof EntityInterface) {
                 $value = EntityUtils::getIdentifier($value);
             }
-            $ret = $value instanceof HierarchyNode ? $hierarchy->getNodeId($value) : $value;
+            $ret = $value instanceof HierarchyNode ? $value->getId() : $value;
 
             return $ret;
         }
@@ -80,7 +63,7 @@ class HierarchyNodeTransformer implements DataTransformerInterface
             if ($value instanceof DomainObject || $value instanceof EntityInterface) {
                 $value = EntityUtils::getIdentifier($value);
             }
-            $ret[] = $item instanceof HierarchyNode ? $hierarchy->getNodeId($item) : $item;
+            $ret[] = $item instanceof HierarchyNode ? $item->getId() : $item;
         }
 
         return $ret;

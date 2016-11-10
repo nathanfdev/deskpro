@@ -62,7 +62,7 @@ class CustomPerFieldChoiceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addModelTransformer(new HierarchyNodeTransformer($options['choice_loader']), true);
+        $builder->addModelTransformer(new HierarchyNodeTransformer());
     }
 
     /**

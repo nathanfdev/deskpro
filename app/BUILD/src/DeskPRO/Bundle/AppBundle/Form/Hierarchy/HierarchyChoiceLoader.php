@@ -89,9 +89,4 @@ class HierarchyChoiceLoader implements ChoiceLoaderInterface
     {
         return $this->loadChoiceList()->getChoicesForValues($values);
     }
-
-    public function getHierarchy()
-    {
-        return $this->hierarchy;
-    }
 }
