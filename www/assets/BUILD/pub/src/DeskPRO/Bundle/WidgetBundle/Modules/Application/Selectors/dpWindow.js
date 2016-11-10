@@ -1,6 +1,6 @@
+import Immutable from 'immutable';
 import { createSelector } from 'reselect';
 import { widgetLanguageSelector } from './bootstrap';
-import Immutable from 'immutable';
 
 export const translationsSelectorFactory = (property, defaultValue) => (options, language) => {
   const translations = options.get('translations') || [];
@@ -154,6 +154,11 @@ export const chatOptionsSelector = createSelector(
 export const widgetProactiveChatSelector = createSelector(
   chatOptionsSelector,
   options => (options.get('proactive') !== undefined ? options.get('proactive') : true)
+);
+
+export const widgetAllowDepartmentSelection = createSelector(
+  chatOptionsSelector,
+  options => (options.get('allow_department_selection') !== undefined ? options.get('allow_department_selection') : false)
 );
 
 export const chatBeginModeSelector = createSelector(

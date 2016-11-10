@@ -34,8 +34,10 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -65,17 +67,28 @@ class ChatCreateType extends AbstractType
     private $fieldManager;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * Constructor.
      *
      * @param SetPersonListener      $personListener
      * @param WidgetSettingsResolver $settingsResolver
      * @param CustomFieldManager     $fieldManager
+     * @param BrandStack             $brandStack
      */
-    public function __construct(SetPersonListener $personListener, WidgetSettingsResolver $settingsResolver, CustomFieldManager $fieldManager)
-    {
+    public function __construct(
+        SetPersonListener $personListener,
+        WidgetSettingsResolver $settingsResolver,
+        CustomFieldManager $fieldManager,
+        BrandStack $brandStack
+    ) {
         $this->personListener   = $personListener;
         $this->settingsResolver = $settingsResolver;
         $this->fieldManager     = $fieldManager;
+        $this->brandStack       = $brandStack;
     }
 
     /**
@@ -104,6 +117,11 @@ class ChatCreateType extends AbstractType
                 'error_bubbling' => false,
             ])
         ;
+
+        $brand = $this->brandStack->getActive()->getBrand();
+        if ($this->settingsResolver->getWidgetBrandOptions($brand)->getChat()->isAllowDepartmentSelection()) {
+            $builder->add('chat_department', IntegerType::class, ['property_path' => 'department_id']);
+        }
 
         $builder->addEventSubscriber($this->personListener);
         $builder->addEventSubscriber(new AutoSetShouldSentTranscriptListener());

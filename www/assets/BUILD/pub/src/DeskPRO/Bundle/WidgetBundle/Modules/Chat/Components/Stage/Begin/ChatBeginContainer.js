@@ -2,29 +2,33 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Fieldset, createValue } from 'react-forms';
 import $ from 'jquery';
-import { loadAll, isLoadedCollectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { loadAll, isLoadedCollectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { PortalFormWidget } from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
-import { liveDemoSelector } from '../../../../Application/Selectors/dpWindow';
+import { liveDemoSelector, widgetAllowDepartmentSelection } from '../../../../Application/Selectors/dpWindow';
 import { requireChatEmailValidationSelector, requireChatLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
 import { history } from '../../../../../Services/history';
 
 @connect(state => ({
-  liveDemo:               liveDemoSelector(state),
-  requireEmailValidation: requireChatEmailValidationSelector(state),
-  requireLogin:           requireChatLoginSelector(state),
-  customFieldsLoaded:     isLoadedCollectionSelectorFactory('CustomDefChat', 'all')(state),
-  customFields:           customChatFieldsOrderedSelector(state)
+  liveDemo:                 liveDemoSelector(state),
+  requireEmailValidation:   requireChatEmailValidationSelector(state),
+  requireLogin:             requireChatLoginSelector(state),
+  customFieldsLoaded:       isLoadedCollectionSelectorFactory('CustomDefChat', 'all')(state),
+  customFields:             customChatFieldsOrderedSelector(state),
+  allowDepartmentSelection: widgetAllowDepartmentSelection(state),
+  chatDepartments:          allSelectorFactory('ChatDepartment')(state),
+  chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state)
 }))
 export class ChatBeginContainer extends React.Component {
 
   static propTypes = {
-    requireEmailValidation: PropTypes.bool,
-    requireLogin:           PropTypes.bool,
-    dispatch:               PropTypes.func.isRequired,
-    children:               PropTypes.node,
-    liveDemo:               PropTypes.bool,
+    requireEmailValidation:   PropTypes.bool,
+    requireLogin:             PropTypes.bool,
+    dispatch:                 PropTypes.func.isRequired,
+    children:                 PropTypes.node,
+    liveDemo:                 PropTypes.bool,
+    allowDepartmentSelection: PropTypes.bool
   };
 
   constructor(props) {
@@ -39,7 +43,9 @@ export class ChatBeginContainer extends React.Component {
 
   componentDidMount() {
     this.props.dispatch(loadAll('CustomDefChat'));
-    this.props.dispatch(loadAll('ChatDepartment'));
+    if (this.props.allowDepartmentSelection) {
+      this.props.dispatch(loadAll('ChatDepartment'));
+    }
     this.mounted = true;
   }
 

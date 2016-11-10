@@ -117,7 +117,11 @@ services:
 
   form.api.chat_create:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType
-    arguments: ["@form.api.chat.set_person_listener", "@widget_settings_resolver", "@custom_field_manager"]
+    arguments:
+      - "@form.api.chat.set_person_listener"
+      - "@widget_settings_resolver"
+      - "@custom_field_manager"
+      - "@brand_stack"
     tags:
       - { name: form.type }
 
