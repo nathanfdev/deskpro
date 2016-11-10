@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\HierarchyNodeTransformer;
 use Symfony\Component\Form\AbstractType;
@@ -106,7 +107,7 @@ class CustomFieldChoiceType extends AbstractType
             ])
             ->setRequired('custom_field')
             ->setAllowedTypes('custom_field', CustomDefAbstract::class)
-            ->setAllowedTypes('choice_loader', ['DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader'])
+            ->setAllowedTypes('choice_loader', [HierarchyChoiceLoader::class])
         ;
     }
 

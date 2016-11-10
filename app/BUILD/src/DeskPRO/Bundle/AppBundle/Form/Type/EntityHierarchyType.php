@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\HierarchyNodeTransformer;
 use Symfony\Component\Form\AbstractType;
@@ -78,7 +79,7 @@ class EntityHierarchyType extends AbstractType
     {
         $resolver
             ->setRequired('choice_loader')
-            ->setAllowedTypes('choice_loader', ['DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader'])
+            ->setAllowedTypes('choice_loader', [HierarchyChoiceLoader::class])
             ->setDefaults([
                 'choices_as_values'   => true,
                 'hierarchy_generator' => $this->hierarchyGenerator,

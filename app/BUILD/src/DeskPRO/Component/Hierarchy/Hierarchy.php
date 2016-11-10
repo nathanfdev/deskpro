@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Component\Hierarchy;
 
+use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Traversable;
 
@@ -72,10 +73,9 @@ class Hierarchy implements \Countable, \IteratorAggregate
         $this->root_nodes   = $root_nodes;
         $this->node_id_path = $node_id_path;
         $this->accessor     = PropertyAccess::createPropertyAccessor();
-        $hierarchy          = $this;
 
         // suppress the bug in php in some versions for modifying an array in usort
-        @uksort($root_nodes, function ($a, $b) use ($hierarchy) {
+        @uksort($root_nodes, function ($a, $b) {
             $order1 = $this->root_nodes[$a]->getOrder();
             $order2 = $this->root_nodes[$b]->getOrder();
             $this->addNode($this->root_nodes[$a]);
@@ -88,7 +88,7 @@ class Hierarchy implements \Countable, \IteratorAggregate
             return ($order2 < $order1) ? -1 : 1;
         });
 
-        $this->root_nodes = $root_nodes;
+        $this->root_nodes = array_values($root_nodes);
     }
 
     /**
@@ -170,10 +170,16 @@ class Hierarchy implements \Countable, \IteratorAggregate
 
     /**
      * @param HierarchyNode $node
+     *
+     * @throws \Exception
      */
     public function addNode(HierarchyNode $node)
     {
-        $id = $this->getNodeId($node);
+        try {
+            $id = $this->getNodeId($node);
+        } catch (UnexpectedTypeException $e) {
+            throw new \Exception('HierarchyNode data should have an identifier');
+        }
         if (isset($this->map[$id])) {
             return;
         }

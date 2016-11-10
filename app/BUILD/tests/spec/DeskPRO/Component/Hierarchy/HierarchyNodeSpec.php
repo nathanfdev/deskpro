@@ -89,8 +89,8 @@ class HierarchyNodeSpec extends ObjectBehavior
         $child2->setHierarchy($hierarchy)->shouldBeCalled();
 
         $this->setHierarchy($hierarchy);
-        $this->addChild($child1);
-        $this->addChild($child2);
+        $hierarchy->addNode($child1);
+        $hierarchy->addNode($child2);
 
         $children = [];
         foreach ($this->getWrappedObject() as $child) {
