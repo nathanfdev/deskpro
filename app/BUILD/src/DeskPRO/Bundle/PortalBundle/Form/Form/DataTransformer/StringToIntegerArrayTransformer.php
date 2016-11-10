@@ -60,10 +60,6 @@ class StringToIntegerArrayTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        if (!is_array($value)) {
-            throw new TransformationFailedException('Expected array');
-        }
-
         $val = explode($this->delimiter, $value);
 
         $k = [];
@@ -81,6 +77,10 @@ class StringToIntegerArrayTransformer implements DataTransformerInterface
     {
         if (!$value) {
             return '';
+        }
+
+        if (!is_array($value)) {
+            throw new TransformationFailedException('Expected array');
         }
 
         return implode($this->delimiter, $value);
