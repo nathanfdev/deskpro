@@ -330,7 +330,9 @@ class CustomDataType extends AbstractType
                     ->toArray()
                 ;
 
-                $formFieldData = implode(',', $formFieldData);
+                if (!$customDef->isMulti()) {
+                    $formFieldData = reset($formFieldData);
+                }
             } elseif ($customDef->isDateType()) {
                 // cast to null
                 if (!$formFieldData) {
