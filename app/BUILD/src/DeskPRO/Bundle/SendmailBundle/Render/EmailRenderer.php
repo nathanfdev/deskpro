@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Render;
 
-use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
+use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Parser\JmsMetadataParser;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;

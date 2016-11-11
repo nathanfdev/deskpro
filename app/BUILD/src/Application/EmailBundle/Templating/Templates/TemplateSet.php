@@ -68,7 +68,7 @@ class TemplateSet
      */
     public function getTemplate($name)
     {
-        $custom = $this->em->getRepository('DeskPRO:Template')->getTemplateByName($name);
+        $custom = $this->em->getRepository(TemplateEntity::class)->getTemplateByName($name);
         if ($custom) {
             $template = TemplateCustom::createFromEntity($custom);
         } else {

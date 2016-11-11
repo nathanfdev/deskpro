@@ -77,7 +77,7 @@ class EmailTemplateCode extends TemplateCode
     }
 
     /**
-     * @param $subject
+     * @param $body
      */
     public function setBody($body)
     {
