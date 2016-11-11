@@ -492,17 +492,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       $(this).addClass('on');
 
       if ($(this).data('is-note')) {
-
+				$('.hide-note').hide();
+				$('.hide-reply').show();
         self.isNote = true;
         emailCheckboxState = $input.prop('checked');
-        replyAsState = self.getEl('reply_as_type').data('type');
+				replyAsState = this.getEl('reply_as_type').data('type');
 				storedReplyText = self.textarea.getCode();
 				self.textarea.setCode(storedNoteText || '');
-
         $input.prop('checked', false).parent().hide();
-        self.shortcutReplySetAwaitingAgent();
 
       } else {
+				$('.hide-note').show();
+				$('.hide-reply').hide();
         self.isNote = false;
         $input.prop('checked', emailCheckboxState).parent().show();
         self.setReplyAsOptionName(replyAsState, true);
