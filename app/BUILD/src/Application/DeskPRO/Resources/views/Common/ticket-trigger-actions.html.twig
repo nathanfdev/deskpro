@@ -53,6 +53,7 @@
 		<div class="builder-options">
 			<select name="agent_team">
 				<option value="-1">My Team</option>
+				<option value="0">None</option>
 				<optgroup label="Teams">
 					{% for id,title in app.agent_teams.getTeamNames() %}
 						<option value="{{id}}">{{title}}</option>
