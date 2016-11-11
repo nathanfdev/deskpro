@@ -93,8 +93,6 @@
 		}
 		#dp_login #wrapper .client-logo {
 			position: relative;
-			height: 110px;
-			background: #fff;
 			-webkit-border-radius: 3px;
 			-moz-border-radius: 3px;
 			-ms-border-radius: 3px;
@@ -739,13 +737,12 @@
 
 		#client_logo_img {
 			position: relative;
+			text-align: center;
 		}
 
-		#client_logo_img > div.img {
-			width: 360px;
-			height: 110px;
-			background-position: 50% 50%;
-			background-repeat: no-repeat;
+		#client_logo_img > img {
+			max-width: 360px;
+			max-height: 110px;
 		}
 
 		.dp-usersource-list {
@@ -821,7 +818,7 @@
 		{% if logo_blob %}
 			<div class="client-logo">
 				<div id="client_logo_img">
-					<div class="img" style="background-image: url({{ logo_blob.getThumbnailUrl('360x100') }}&size-fit=1)"></div>
+					<img src="{{ logo_blob.getThumbnailUrl(null) }}" />
 				</div>
 			</div>
 		{% endif %}
