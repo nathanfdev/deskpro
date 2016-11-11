@@ -73,7 +73,7 @@ class WidgetBrandChatSettings
      *
      * @JMS\Type("boolean")
      */
-    private $allowDepartmentSelection = true;
+    private $allowDepartmentSelection = false;
 
     /**
      * @var int
