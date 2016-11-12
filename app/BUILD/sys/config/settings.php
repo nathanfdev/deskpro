@@ -469,8 +469,8 @@ return [
 
     'core_tickets.web_require_validation'   => false,
     'core_tickets.email_require_validation' => false,
-
-    'core_tickets.use_ref' => false,
+    'core_tickets.enable_email_preview'     => true,
+    'core_tickets.use_ref'                  => false,
 
     'core_tickets.email_history_limit' => 11, // 10 + 1 for the original message at top
 
