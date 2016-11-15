@@ -142,7 +142,7 @@
                             style="width: 194px"
                             class="no-search"
                     >
-                        <option ng-repeat="brand in brands | orderBy: 'name'" value="{{ ng_var('brand.id') }}">{{ ng_var('brand.name') }}</option>
+                        <option ng-repeat="brand in brands | orderBy: 'name'" value="{{ ng_var('brand.id') }}">{{ ng_var('(brand.id == default_brand.id ? "*" : "") + brand.name') }}</option>
                         <option class="new-brand"value="-1">{{ phrase('admin.setup.new_brand') }}</option>
                     </select>
                     {{ nav.list_subitem('Setup', ng_href('portal.setup', '{brandId: brandId}'), 'portal.setup', 'fa-th-large') }}

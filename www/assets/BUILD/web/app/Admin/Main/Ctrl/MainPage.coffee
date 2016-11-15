@@ -61,6 +61,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     getBrands: ->
       @Api2.sendGet('brands').then (res) =>
         @$scope.brands = res.data.data
+      @Api2.sendGet('brands/default').then (res) =>
+        @$scope.default_brand = res.data.data
 
     changeBrand: ->
         if @$scope.selectBrandId == '-1'

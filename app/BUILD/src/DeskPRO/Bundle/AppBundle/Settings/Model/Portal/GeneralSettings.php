@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Portal;
 
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use JMS\Serializer\Annotation as JMS;
 
@@ -37,7 +38,7 @@ use JMS\Serializer\Annotation as JMS;
 class GeneralSettings extends AbstractBrandAwareSettings
 {
     /**
-     * {@inheritdoc}
+     * @var Brand
      *
      * @JMS\Exclude()
      */
@@ -253,6 +254,29 @@ class GeneralSettings extends AbstractBrandAwareSettings
         }
 
         return 'tickets';
+    }
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("brand_name")
+     *
+     * @return string
+     */
+    public function getBrandName()
+    {
+        return $this->brand->getName();
+    }
+
+    /**
+     * @param string $brandName
+     *
+     * @return $this
+     */
+    public function setBrandName($brandName)
+    {
+        $this->brand->setName($brandName);
+
+        return $this;
     }
 
     /**
