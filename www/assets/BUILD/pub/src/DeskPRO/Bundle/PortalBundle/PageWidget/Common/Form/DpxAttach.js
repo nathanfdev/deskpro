@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { PortalAttach } from '../../../React/Form/DropZone/PortalAttach';
-import $ from 'jquery';
 
 export class DpxAttach extends PageWidget {
 
@@ -30,11 +30,13 @@ export class DpxAttach extends PageWidget {
 
     const $input = this.$element.find('input[type=file]');
     const inputName = $input.attr('name').replace('[0][upload]', '');
+    const maxFileSize = this.$element.data('maxFileSize') || null;
     const component = React.createElement(PortalAttach, {
       widgetOptions: this.options,
       files,
       $input,
-      inputName
+      inputName,
+      maxFileSize
     });
 
     ReactDOM.render(component, this.$rElement.get(0));

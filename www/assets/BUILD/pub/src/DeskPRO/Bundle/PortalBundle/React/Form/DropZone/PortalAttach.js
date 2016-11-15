@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
-import { AttachedList } from './AttachedList';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { AttachedList } from './AttachedList';
 
 export class PortalAttach extends React.Component {
 
@@ -11,7 +11,8 @@ export class PortalAttach extends React.Component {
     files:         PropTypes.array,
     widgetOptions: PropTypes.object,
     $input:        PropTypes.object,
-    inputName:     PropTypes.string
+    inputName:     PropTypes.string,
+    maxFileSize:   PropTypes.string
   };
 
   constructor(props) {
@@ -44,7 +45,7 @@ export class PortalAttach extends React.Component {
   }
 
   onRteFileUpload = (file) => {
-    this.refs.dropZone.pushFileToQueue(file);
+    this.dropZone.pushFileToQueue(file);
   };
 
   onUploadStarted = (event, data) => {
@@ -63,10 +64,10 @@ export class PortalAttach extends React.Component {
   onUploadSuccess = (event, data) => {
     const { $input } = this.props;
     const file = data.files[0];
-    const info = data.result && data.result.blob || {};
+    const info = (data.result && data.result.blob) || {};
     const newFiles = [];
 
-    this.state.files.forEach(f => {
+    this.state.files.forEach((f) => {
       if (f.file !== file) {
         newFiles.push(f);
       } else {
@@ -91,6 +92,9 @@ export class PortalAttach extends React.Component {
     }
     if (data.jqXHR.status === 413) {
       lastError = portalPhrases.get('portal.forms.error_upload_html_size');
+      if (this.props.maxFileSize) {
+        lastError =  `${lastError} Maximum allowed size is ${this.props.maxFileSize}`;
+      }
     }
 
     this.setState({
@@ -99,7 +103,7 @@ export class PortalAttach extends React.Component {
     });
   };
 
-  onDelete = file => {
+  onDelete = (file) => {
     const { $input } = this.props;
     const newFiles = this.state.files.filter(f => f.info !== file.info);
 
@@ -121,8 +125,8 @@ export class PortalAttach extends React.Component {
     return (
       <div className="new-ticket-attachments">
         <DropZone
-          ref="dropZone"
-          getExternalInput={() => this.refs.fileUpload}
+          ref={(c) => { this.dropZone = c; }}
+          getExternalInput={() => this.fileUpload}
           uploadUrl={`${portalUrlGenerator.path('/')}dpblob`}
           uploadParams={params}
           context={context}
@@ -134,7 +138,7 @@ export class PortalAttach extends React.Component {
             <i className="fa fa-upload" />
             <span className="text">{portalPhrases.get('portal.forms.label_drag')}</span>
             <span className="fake-button">{portalPhrases.get('portal.forms.label_choose')}</span>
-            <input type="file" ref="fileUpload" name="file[blob]" />
+            <input type="file" ref={(c) => { this.fileUpload = c; }} name="file[blob]" />
           </span>
         </DropZone>
 

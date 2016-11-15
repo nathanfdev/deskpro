@@ -30,13 +30,17 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Orb\Util\Numbers;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -45,6 +49,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TicketMessageAttachmentCollectionType extends AbstractType
 {
+    /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
+     * TicketMessageAttachmentCollectionType constructor.
+     *
+     * @param SettingsResolver $settingsResolver
+     */
+    public function __construct(SettingsResolver $settingsResolver)
+    {
+        $this->settingsResolver = $settingsResolver;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -60,6 +79,7 @@ class TicketMessageAttachmentCollectionType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        $maxFileSize = $this->settingsResolver->getGlobalSettings()->get('core.attach_user_maxsize');
         $resolver
             ->setDefaults([
                 'entry_type'    => TicketMessageAttachmentType::class,
@@ -74,6 +94,7 @@ class TicketMessageAttachmentCollectionType extends AbstractType
                 'allow_delete'   => true,
                 'label'          => false,
                 'error_bubbling' => false,
+                'max_file_size'  => Numbers::filesizeDisplay($maxFileSize),
             ])
             ->setRequired([
                 'ticket_message',
@@ -152,5 +173,13 @@ class TicketMessageAttachmentCollectionType extends AbstractType
         }
 
         $event->setData(new ArrayCollection($data->getValues()));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['max_file_size'] = $options['max_file_size'];
     }
 }
