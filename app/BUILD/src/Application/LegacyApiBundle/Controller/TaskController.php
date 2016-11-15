@@ -561,12 +561,12 @@ class TaskController extends AbstractController
     {
         $task = $this->_getTaskOr404($task_id);
 
-        if ($task->person->getId() != $this->person->getId()) {
-            throw $this->createNotFoundException();
+        if ($task->person->getId() != $this->person->getId() || $this->api_user->isSuperAdmin()) {
+            return $this->createApiErrorResponse(403, 'Only task owner can do this', 403);
         }
 
-        $this->em->remove($task);
-        $this->em->flush();
+//        $this->em->remove($task);
+//        $this->em->flush();
 
         return $this->createSuccessResponse();
     }
