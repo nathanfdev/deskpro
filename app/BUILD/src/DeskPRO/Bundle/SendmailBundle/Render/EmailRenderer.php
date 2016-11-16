@@ -101,26 +101,6 @@ class EmailRenderer
     }
 
     /**
-     * @return JmsMetadataParser
-     */
-    public function getJmsMetadataParser()
-    {
-        return $this->jmsMetadataParser;
-    }
-
-    /**
-     * @param JmsMetadataParser $jmsMetadataParser
-     *
-     * @return EmailRenderer
-     */
-    public function setJmsMetadataParser($jmsMetadataParser)
-    {
-        $this->jmsMetadataParser = $jmsMetadataParser;
-
-        return $this;
-    }
-
-    /**
      * @param string        $templateName
      * @param EmailBaseType $model
      *

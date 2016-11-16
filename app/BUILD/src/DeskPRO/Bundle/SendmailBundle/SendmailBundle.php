@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle;
 
+use DeskPRO\Bundle\SendmailBundle\DependencyInjection\Compiler\TwigEnvironmentPass;
 use DeskPRO\Bundle\SendmailBundle\DependencyInjection\SendmailExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -44,6 +45,6 @@ class SendmailBundle extends Bundle
 
     public function build(ContainerBuilder $container)
     {
-        parent::build($container);
+        $container->addCompilerPass(new TwigEnvironmentPass());
     }
 }

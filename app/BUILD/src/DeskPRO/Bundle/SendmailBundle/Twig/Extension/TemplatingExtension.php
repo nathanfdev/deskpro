@@ -84,7 +84,8 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     public function getGlobals()
     {
         return [
-            'app' => new GlobalVariables($this->container),
+            'app'         => new GlobalVariables($this->container),
+            'default_css' => 'test',
         ];
     }
 
@@ -172,12 +173,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             new \Twig_SimpleFunction('include_php_file', [$this, 'includePhpFile'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('var_dump', [$this, 'dumpVar']),
             new \Twig_SimpleFunction('dp_copyright', [$this, 'staticGetUserCopyrightHtml'], ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('dp_widgets', [$this, 'getWidgets'], ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('dp_widgets_raw', [$this, 'getWidgetsRaw']),
-            new \Twig_SimpleFunction('dp_widget_id', [$this, 'getWidgetHtmlId']),
-            new \Twig_SimpleFunction('dp_widget_tabs_header', [$this, 'getWidgetTabsHeader'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('dp_app_loc', [$this, 'getDpAppLocation'], ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('dp_widget_tabs', [$this, 'getWidgetTabsBody'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('dp_js_sso_loader', [$this, 'getJsSsoLoader'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('dp_js_sso_share', [$this, 'getJsSsoShare'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('base_template_name', [$this, 'getBaseTemplateName'], ['is_safe' => ['html']]),
@@ -260,16 +256,14 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function getTokenParsers()
     {
-        $token_parsers = [
-            new CalloutParser($this),
-            new ColumnParser($this),
-            new ContainerParser($this),
-            new RowParser($this),
-            new SpacerParser($this),
-            new WrapperParser($this),
+        return [
+            new CalloutParser(),
+            new ColumnParser(),
+            new ContainerParser(),
+            new RowParser(),
+            new SpacerParser(),
+            new WrapperParser(),
         ];
-
-        return $token_parsers;
     }
 
     /**
@@ -481,21 +475,21 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     /**
      * @param string $name
      * @param array  $params
-     * @param array  $named_params
+     * @param array  $namedParams
      * @param bool   $html
      *
      * @return mixed
      */
-    public function getServiceUrl($name, $params = null, $named_params = null, $html = true)
+    public function getServiceUrl($name, $params = null, $namedParams = null, $html = true)
     {
         if (!$params || !is_array($params)) {
             $params = null;
         }
-        if (!$named_params || !is_array($named_params)) {
+        if (!$namedParams || !is_array($namedParams)) {
             $params = null;
         }
 
-        return $this->container->get('deskpro.service_urls')->get($name, $params, $named_params, $html);
+        return $this->container->get('deskpro.service_urls')->get($name, $params, $namedParams, $html);
     }
 
     /**
@@ -644,7 +638,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function linkAgentShortCodeHtml($html)
     {
-        $id_map = [
+        $idMap = [
             't'  => ['Ticket', 'agent/#app.tickets,t.o:'],
             'p'  => ['Person', 'agent/#app.people,p.o:'],
             'o'  => ['Organization', 'agent/#app.people.orgs,o.o:'],
@@ -657,7 +651,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
         $url = $this->container->getBrandSetting('core.deskpro_url');
 
-        foreach ($id_map as $prefix => $info) {
+        foreach ($idMap as $prefix => $info) {
             $html = RegexUtils::safePregReplace(
                 '/\{\{\s*'.$prefix.'-(\d+)\s*\}\}/',
                 '<a href="'.$url.$info[1].'$1">'.$info[0].' #$1</a>',
@@ -767,10 +761,10 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             $urls = [$this->getAssetic($name)];
         }
 
-        $qs_append = ($disableClientCache ? time() : DP_BUILD_TIME);
+        $qsAppend = ($disableClientCache ? time() : DP_BUILD_TIME);
 
         if (App::getConfig('asset_version_id')) {
-            $qs_append = App::getConfig('asset_version_id');
+            $qsAppend = App::getConfig('asset_version_id');
         }
 
         $html = [];
@@ -778,7 +772,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         foreach ($urls as $url) {
             $type = Strings::getExtension($url);
 
-            $url .= '?'.$qs_append;
+            $url .= '?'.$qsAppend;
 
             switch ($type) {
                 case 'js':
@@ -958,17 +952,17 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
                 $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             } else {
                 try {
-                    $date_str = $date;
-                    $date     = new \DateTime($date_str);
+                    $dateStr = $date;
+                    $date    = new \DateTime($dateStr);
                 } catch (\Exception $e) {
                 }
             }
         }
 
         if (!($date instanceof \DateTime)) {
-            $date_str = (string) $date;
+            $dateStr = (string) $date;
 
-            return "invalid_date($date_str)";
+            return "invalid_date($dateStr)";
         }
 
         if ($timezone === null && $context && isset($context['context']['person_timezone'])) {
@@ -1735,10 +1729,10 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         $hex = preg_replace('/[^0-9A-Fa-f]/', '', $hex);
         $rgb = [];
         if (strlen($hex) == 6) {
-            $color_val    = hexdec($hex);
-            $rgb['red']   = 0xFF & ($color_val >> 0x10);
-            $rgb['green'] = 0xFF & ($color_val >> 0x8);
-            $rgb['blue']  = 0xFF & $color_val;
+            $colorVal     = hexdec($hex);
+            $rgb['red']   = 0xFF & ($colorVal >> 0x10);
+            $rgb['green'] = 0xFF & ($colorVal >> 0x8);
+            $rgb['blue']  = 0xFF & $colorVal;
         } elseif (strlen($hex) == 3) {
             $rgb['red']   = hexdec(str_repeat(substr($hex, 0, 1), 2));
             $rgb['green'] = hexdec(str_repeat(substr($hex, 1, 1), 2));
@@ -1873,185 +1867,6 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         }
 
         return $name;
-    }
-
-    /**
-     * @var array
-     */
-    protected $_widgetCache = [];
-
-    /**
-     * @param        $baseId
-     * @param        $page
-     * @param        $location
-     * @param string $position
-     * @param array  $data
-     *
-     * @return string
-     */
-    public function getWidgets($baseId, $page, $location, $position = '*', $data = [])
-    {
-        return '';
-        $widgets = $this->_getPageLocationWidgets($page, $location, $position);
-        if (!$widgets) {
-            return '';
-        }
-
-        $output = '';
-        foreach ($widgets as $widget) {
-            $output .= $this->_insertWidget($baseId, $widget,
-                '<div class="profile-box-container" id="{id}_container">'
-                .'<header><h4 id="{id}_tab">{title}</h4></header>'
-                .'<section class="widget-content" id="{id}" data-widget="{widget}">{html}</section>'
-                .'</div>',
-                $data
-            );
-        }
-
-        return $output;
-    }
-
-    /**
-     * @param        $page
-     * @param        $location
-     * @param string $position
-     *
-     * @return array|string
-     */
-    public function getWidgetsRaw($page, $location, $position = '')
-    {
-        return '';
-
-        return $this->_getPageLocationWidgets($page, $location, $position);
-    }
-
-    /**
-     * @param        $page
-     * @param        $location
-     * @param string $position
-     *
-     * @return array
-     */
-    protected function _getPageLocationWidgets($page, $location, $position = '')
-    {
-        return [];
-        if (!array_key_exists($page, $this->_widgetCache)) {
-            $this->_widgetCache[$page] = $this->container->getEm()->getRepository(Widget::class)
-                ->getEnabledPageWidgetsGrouped($page);
-        }
-
-        if (empty($this->_widgetCache[$page][$location])) {
-            return [];
-        } else {
-            if ($position === '') {
-                $output = [];
-                foreach ($this->_widgetCache[$page][$location] as $widgets) {
-                    foreach ($widgets as $widget) {
-                        $output[] = $widget;
-                    }
-                }
-
-                return $output;
-            } elseif (!empty($this->_widgetCache[$page][$location][$position])) {
-                return $this->_widgetCache[$page][$location][$position];
-            } else {
-                return [];
-            }
-        }
-    }
-
-    /**
-     * @param $baseId
-     * @param $widget
-     *
-     * @return string
-     */
-    public function getWidgetHtmlId($baseId, $widget)
-    {
-        return '';
-    }
-
-    /**
-     * @param       $baseId
-     * @param       $widget
-     * @param       $wrapper
-     * @param array $data
-     *
-     * @return string
-     */
-    protected function _insertWidget($baseId, $widget, $wrapper, $data = [])
-    {
-        return '';
-    }
-
-    /**
-     * @param $content
-     * @param $data
-     * @param $context
-     *
-     * @return mixed
-     */
-    protected function _replaceWidgetPlaceholders($content, $data, $context)
-    {
-        return $content;
-    }
-
-    /**
-     * @param       $baseId
-     * @param       $page
-     * @param       $location
-     * @param array $tabs
-     *
-     * @return string
-     */
-    public function getWidgetTabsHeader($baseId, $page, $location, array $tabs)
-    {
-        $originalCount = count($tabs);
-
-        foreach ($this->_getPageLocationWidgets($page, $location, 'tab') as $widget) {
-            $htmlId        = $this->getWidgetHtmlId($baseId, $widget);
-            $tabs[$htmlId] = $widget->title;
-        }
-
-        foreach ($tabs as $key => $title) {
-            if ($title === false) {
-                unset($tabs[$key]);
-            }
-        }
-
-        if (!$tabs) {
-            return '';
-        } elseif (count($tabs) == 1 && $originalCount == 1) {
-            return '<h4>'.reset($tabs).'</h4>';
-        } else {
-            $tabHtml = [];
-            $on      = false;
-            foreach ($tabs as $id => $title) {
-                if (!$on) {
-                    $onHtml = ' class="on"';
-                    $on     = true;
-                } else {
-                    $onHtml = '';
-                }
-                $tabHtml[] = '<li data-tab-for="#'.$id.'" id="'.$id.'_tab"'.$onHtml.'>'.$title.'</li>';
-            }
-
-            return '<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs"><ul>'.implode('', $tabHtml).'</ul></nav>';
-        }
-    }
-
-    /**
-     * @param       $baseId
-     * @param       $page
-     * @param       $location
-     * @param       $wrapper
-     * @param array $data
-     *
-     * @return string
-     */
-    public function getWidgetTabsBody($baseId, $page, $location, $wrapper, $data = [])
-    {
-        return '';
     }
 
     /**
@@ -2439,9 +2254,9 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function getDpAppLocation($baseId, $locName)
     {
-        $loc_id = preg_replace('#[^a-zA-Z0-9_]#', '_', $locName);
+        $locId = preg_replace('#[^a-zA-Z0-9_]#', '_', $locName);
 
-        return '<div id="'.$baseId.'_'.$loc_id.'" class="dp-app-context-container as-default-hidden" data-location-name="'.$locName.'"></div>';
+        return '<div id="'.$baseId.'_'.$locId.'" class="dp-app-context-container as-default-hidden" data-location-name="'.$locName.'"></div>';
     }
 
     /**

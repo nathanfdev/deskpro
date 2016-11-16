@@ -43,16 +43,16 @@ class Twig_Tests_Node_ContainerTest extends Twig_Test_NodeTestCase
         $tests   = [];
         $body    = new Twig_Node([new Twig_Node_Print(new Twig_Node_Expression_Name('foo', 1), 1)], [], 1);
         $tests[] = [new ContainerNode(['body' => $body], []), <<<'EOF'
-<table align="center" class="container">
-    <tbody>
-        <tr>
-            <td>
-                // line 1
-                echo (isset($context["foo"]) ? $context["foo"] : null);
-            </td>
-        </tr>
-    </tbody>
-</table>
+'// line 1
+echo "<table align=\"center\" class=\"container\">";
+echo "<tbody>";
+echo "<tr>";
+echo "<td>";
+echo (isset($context["foo"]) ? $context["foo"] : null);
+echo "</td>";
+echo "</tr>";
+echo "</tbody>";
+echo "</table>";
 EOF
     ,
         ];

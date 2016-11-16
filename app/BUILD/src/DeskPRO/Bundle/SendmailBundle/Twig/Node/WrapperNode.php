@@ -28,6 +28,9 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Twig\Node;
 
+use Twig_Node_Expression_Constant;
+use Twig_Node_Print;
+
 class WrapperNode extends \Twig_Node
 {
     public function compile(\Twig_Compiler $compiler)
@@ -42,24 +45,13 @@ class WrapperNode extends \Twig_Node
         }
         $compiler
             ->addDebugInfo($this)
-            ->write('<table '.$bgColor.'class="wrapper'.$class.'" align="center">')
-            ->raw("\n")
-            ->indent()
-            ->write('<tr>')
-            ->raw("\n")
-            ->indent()
-            ->write('<td class="wrapper-inner">')
-            ->raw("\n")
-            ->indent()
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<table '.$bgColor.'class="wrapper'.$class.'" align="center">', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<tr>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<td class="wrapper-inner">', 0), 1))
             ->subcompile($this->getNode('body'))
-            ->outdent()
-            ->write('</td>')
-            ->raw("\n")
-            ->outdent()
-            ->write('</tr>')
-            ->raw("\n")
-            ->outdent()
-            ->write('</table>')
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('</td>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('</tr>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('</table>', 0), 1))
         ;
     }
 }

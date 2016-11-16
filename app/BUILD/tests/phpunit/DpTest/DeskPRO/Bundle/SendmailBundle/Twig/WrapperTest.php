@@ -43,26 +43,26 @@ class Twig_Tests_Node_WrapperTest extends Twig_Test_NodeTestCase
         $tests   = [];
         $body    = new Twig_Node([new Twig_Node_Print(new Twig_Node_Expression_Name('foo', 1), 1)], [], 1);
         $tests[] = [new WrapperNode(['body' => $body], []), <<<'EOF'
-<table class="wrapper" align="center">
-    <tr>
-        <td class="wrapper-inner">
-            // line 1
-            echo (isset($context["foo"]) ? $context["foo"] : null);
-        </td>
-    </tr>
-</table>
+// line 1
+echo "<table class=\"wrapper\" align=\"center\">";
+echo "<tr>";
+echo "<td class=\"wrapper-inner\">";
+echo (isset($context["foo"]) ? $context["foo"] : null);
+echo "</td>";
+echo "</tr>";
+echo "</table>";
 EOF
     ,
         ];
         $tests[] = [new WrapperNode(['body' => $body, 'class' => 'header', 'bgcolor' => '#8a8a8a'], []), <<<'EOF'
-<table bgcolor="#8a8a8a" class="wrapper header" align="center">
-    <tr>
-        <td class="wrapper-inner">
-            // line 1
-            echo (isset($context["foo"]) ? $context["foo"] : null);
-        </td>
-    </tr>
-</table>
+// line 1
+echo "<table bgcolor=\"#8a8a8a\" class=\"wrapper header\" align=\"center\">";
+echo "<tr>";
+echo "<td class=\"wrapper-inner\">";
+echo (isset($context["foo"]) ? $context["foo"] : null);
+echo "</td>";
+echo "</tr>";
+echo "</table>";
 EOF
     ,
         ];

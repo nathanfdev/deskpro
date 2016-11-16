@@ -40,8 +40,9 @@ class ContainerParser extends \Twig_TokenParser
 
         $body = '';
         if ($stream->nextIf(Twig_Token::BLOCK_END_TYPE)) {
-            $body = $this->parser->subparse([$this, 'decideBlockEnd'], true);
+            $body = $this->parser->subparse([$this, 'decideContainerEnd'], true);
         }
+        $stream->expect(Twig_Token::BLOCK_END_TYPE);
 
         $nodes['body'] = $body;
 
@@ -51,6 +52,11 @@ class ContainerParser extends \Twig_TokenParser
             $token->getLine(),
             $this->getTag()
         );
+    }
+
+    public function decideContainerEnd(Twig_Token $token)
+    {
+        return $token->test('endcontainer');
     }
 
     public function getTag()

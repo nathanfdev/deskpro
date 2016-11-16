@@ -32,32 +32,28 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Twig\Node;
 
+use Twig_Node_Expression_Constant;
+use Twig_Node_Print;
+
 class SpacerNode extends \Twig_Node
 {
     public function compile(\Twig_Compiler $compiler)
     {
         $compiler
             ->addDebugInfo($this)
-            ->write('<table class="spacer">')
-            ->raw("\n")
-            ->indent()
-            ->write('<tbody>')
-            ->raw("\n")
-            ->indent()
-            ->write('<tr>')
-            ->raw("\n")
-            ->indent()
-            ->write('<td height="'.$this->getNode('size').'px" style="font-size:'.$this->getNode('size').'px;line-height:'.$this->getNode('size').'px;">&#xA0;</td>')
-            ->raw("\n")
-            ->outdent()
-            ->write('</tr>')
-            ->raw("\n")
-            ->outdent()
-            ->write('</tbody>')
-            ->raw("\n")
-            ->outdent()
-            ->write('</table>')
-            ->raw("\n")
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<table class="spacer">', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<tbody>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<tr>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<td height="', 0), 1))
+            ->subcompile($this->getNode('size'), 1)
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('px" style="font-size:', 0), 1))
+            ->subcompile($this->getNode('size'))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('px;line-height:', 0), 1))
+            ->subcompile($this->getNode('size'))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('px;">&#xA0;</td>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('</tr>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('</tbody>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('</table>', 0), 1))
         ;
     }
 }

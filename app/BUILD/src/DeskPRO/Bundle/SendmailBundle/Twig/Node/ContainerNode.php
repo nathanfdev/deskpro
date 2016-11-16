@@ -28,36 +28,24 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Twig\Node;
 
+use Twig_Node_Expression_Constant;
+use Twig_Node_Print;
+
 class ContainerNode extends \Twig_Node
 {
     public function compile(\Twig_Compiler $compiler)
     {
         $compiler
             ->addDebugInfo($this)
-            ->write('<table align="center" class="container">')
-            ->raw("\n")
-            ->indent()
-            ->write('<tbody>')
-            ->raw("\n")
-            ->indent()
-            ->write('<tr>')
-            ->raw("\n")
-            ->indent()
-            ->write('<td>')
-            ->raw("\n")
-            ->indent()
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<table align="center" class="container">', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<tbody>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<tr>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<td>', 0), 1))
             ->subcompile($this->getNode('body'))
-            ->outdent()
-            ->write('</td>')
-            ->raw("\n")
-            ->outdent()
-            ->write('</tr>')
-            ->raw("\n")
-            ->outdent()
-            ->write('</tbody>')
-            ->raw("\n")
-            ->outdent()
-            ->write('</table>')
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('</td>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('</tr>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('</tbody>', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('</table>', 0), 1))
         ;
     }
 }

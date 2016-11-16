@@ -26,44 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\SendmailBundle\Templating;
 
-namespace DeskPRO\Bundle\SendmailBundle\DependencyInjection;
+use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
+use Symfony\Component\Config\FileLocator as BaseFileLocator;
+use Symfony\Component\HttpKernel\KernelInterface;
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\Finder\Finder;
-
-class YamlDirectoryLoader
+class FileLocator extends BaseFileLocator
 {
-    /**
-     * @var ContainerBuilder
-     */
-    private $container;
+    /** @var \Symfony\Component\HttpKernel\KernelInterface */
+    private $kernel;
 
-    public function __construct(ContainerBuilder $container)
+    public function __construct(KernelInterface $kernel, $path = null, array $paths = [])
     {
-        $this->container = $container;
+        $this->kernel = $kernel;
+
+        parent::__construct($path, $paths);
     }
 
     /**
-     * Loads all .yml files into the container from this directory.
-     *
-     * @param $servicesDir
+     * {@inheritdoc}
      */
-    public function loadDir($servicesDir)
+    public function locate($file, $currentPath = null, $first = true)
     {
-        $loader = new YamlFileLoader($this->container, new FileLocator($servicesDir));
-
-        $serviceFiles = new Finder();
-        $serviceFiles->files()->in($servicesDir)->name('*.yml');
-
-        /** @var \SplFileInfo $file */
-        foreach ($serviceFiles as $file) {
-            $loader->load($file->getFilename());
+        if ($file instanceof TemplateReference) {
+            return $this->kernel->locateResource($file->getPath());
         }
+
+        if (is_string($file) && '@' === $file[0]) {
+            if (!$currentPath and strpos($file, '@TwigBundle') === 0) {
+                $currentPath = DP_ROOT.'/sys/Resources';
+            }
+
+            return $this->kernel->locateResource($file, $currentPath, $first);
+        }
+
+        $file = str_replace('%DP_ROOT%', DP_ROOT, $file);
+
+        return parent::locate($file, $currentPath, $first);
     }
 }

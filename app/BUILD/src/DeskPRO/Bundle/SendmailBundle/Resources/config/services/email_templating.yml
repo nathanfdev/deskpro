@@ -1,0 +1,35 @@
+services:
+  templating.new_email.twig:
+    class: DeskPRO\Bundle\SendmailBundle\Twig\Environment
+    arguments:
+      - "@templating.new_email.twig.loader"
+      - []
+
+  templating.new_email.twig.loader:
+    class: DeskPRO\Bundle\SendmailBundle\Twig\Loader\HybridLoader
+    arguments:
+      - "@templating.new_email.twig.file_locator"
+      - "@templating.new_email.twig.template_name_parser"
+
+  templating.new_email.twig.template_name_parser:
+    class: DeskPRO\Bundle\SendmailBundle\Templating\TemplateNameParser
+    arguments:
+      - "@kernel"
+
+  templating.new_email.twig.engine:
+    class: DeskPRO\Bundle\SendmailBundle\Twig\TwigEngine
+    arguments:
+      - "@templating.new_email.twig"
+      - "@templating.new_email.twig.template_name_parser"
+      - "@templating.new_email.twig.file_locator"
+
+  templating.new_email.twig.file_locator:
+    class: DeskPRO\Bundle\SendmailBundle\Templating\FileLocator
+    arguments:
+      - "@kernel"
+
+  templating.new_email.twig.extension.templating:
+    class: DeskPRO\Bundle\SendmailBundle\Twig\Extension\TemplatingExtension
+    arguments: ["@service_container"]
+    tags:
+      - { name: new_email.templating.twig.extension  }

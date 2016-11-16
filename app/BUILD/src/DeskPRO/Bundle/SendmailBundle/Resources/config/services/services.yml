@@ -8,7 +8,7 @@ services:
 
   email.email_renderer:
     class: DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer
-    arguments: ["@serializer", "@templating", "@service_container"]
+    arguments: ["@serializer", "@templating.new_email.twig.engine", "@service_container"]
 
   email.email_sender:
     class: DeskPRO\Bundle\SendmailBundle\Sender\EmailSender

@@ -43,16 +43,16 @@ class Twig_Tests_Node_ColumnTest extends Twig_Test_NodeTestCase
         $tests   = [];
         $body    = new Twig_Node([new Twig_Node_Print(new Twig_Node_Expression_Name('foo', 1), 1)], [], 1);
         $tests[] = [new ColumnNode(['body' => $body], []), <<<'EOF'
-<th class="columns">
-    <table>
-        <tr>
-            <th>
-                // line 1
-                echo (isset($context["foo"]) ? $context["foo"] : null);
-            </th>
-        </tr>
-    </table>
-</th>
+// line 1
+echo "<th class=\"columns\">";
+echo "<table>";
+echo "<tr>";
+echo "<th>";
+echo (isset($context["foo"]) ? $context["foo"] : null);
+echo "</th>";
+echo "</tr>";
+echo "</table>";
+echo "</th>";
 EOF
     ,
         ];

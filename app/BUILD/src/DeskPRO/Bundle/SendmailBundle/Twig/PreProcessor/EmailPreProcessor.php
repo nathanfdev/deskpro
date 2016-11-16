@@ -26,35 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-use DeskPRO\Bundle\SendmailBundle\Twig\Node\RowNode;
+namespace DeskPRO\Bundle\SendmailBundle\Twig\PreProcessor;
 
-class Twig_Tests_Node_RowTest extends Twig_Test_NodeTestCase
+class EmailPreProcessor extends AbstractPreProcessor
 {
-    public function testConstructor()
+    public function process($source, $name = null)
     {
-        $body = new Twig_Node([new Twig_Node_Print(new Twig_Node_Expression_Name('foo', 1), 1)], [], 1);
-        $node = new RowNode(['body' => $body], []);
+        $source = preg_replace(
+            '/<(wrapper|container|row|columns|spacer)\s*([^>]*)>/',
+            '{% $1 $2 %}',
+            $source
+        );
+        $source = preg_replace(
+            '/<\/(wrapper|container|row|columns|spacer)\s*>/',
+            '{% end$1 %}',
+            $source
+        );
 
-        $this->assertEquals($body, $node->getNode('body'));
-    }
-
-    public function getTests()
-    {
-        $tests   = [];
-        $body    = new Twig_Node([new Twig_Node_Print(new Twig_Node_Expression_Name('foo', 1), 1)], [], 1);
-        $tests[] = [new RowNode(['body' => $body], []), <<<'EOF'
-// line 1
-echo "<table class=\"row\">";
-echo "<tbody>";
-echo "<tr>";
-echo (isset($context["foo"]) ? $context["foo"] : null);
-echo "</tr>";
-echo "</tbody>";
-echo "</table>";
-EOF
-    ,
-        ];
-
-        return $tests;
+        return $source;
     }
 }

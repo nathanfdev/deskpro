@@ -28,8 +28,10 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Twig;
 
+use Application\DeskPRO\Twig\Loader\DbStreamWrapper;
+use Application\DeskPRO\Twig\Template;
 use Application\EmailBundle\Twig\Extension\TemplatingExtension;
-use Application\EmailBundle\Twig\Loader\HybridLoader;
+use DeskPRO\Bundle\SendmailBundle\Twig\Loader\HybridLoader;
 use DpSys\LowError\SystemErrorHandler;
 
 class Environment extends \Twig_Environment
@@ -51,12 +53,12 @@ class Environment extends \Twig_Environment
 
         if (!$hasDone) {
             if (!in_array('dptpl', stream_get_wrappers())) {
-                stream_wrapper_register('dptpl', 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
+                stream_wrapper_register('dptpl', DbStreamWrapper::class, 0);
             }
             $hasDone = true;
         }
 
-        $options['base_template_class'] = '\\Application\\DeskPRO\\Twig\\Template';
+        $options['base_template_class'] = Template::class;
 
         parent::__construct($loader, $options);
     }
@@ -138,7 +140,7 @@ class Environment extends \Twig_Environment
                 eval('?>'.$this->compileSource($this->loader->getSource($name), $name));
             } else {
                 if (strpos($cache, 'dptpl://') === 0) {
-                    $tplinfo = \Application\DeskPRO\Twig\Loader\DbStreamWrapper::getTemplateInfo(str_replace('dptpl://load/', '', $cache));
+                    $tplinfo = DbStreamWrapper::getTemplateInfo(str_replace('dptpl://load/', '', $cache));
                     eval('?>'.$tplinfo['template_compiled']);
                 } else {
                     if (!is_file($cache) || ($this->isAutoReload() && !$this->isTemplateFresh($name, filemtime($cache)))) {
@@ -159,7 +161,7 @@ class Environment extends \Twig_Environment
                                     $prev = $e;
                                 }
 
-                                $name_str = (string) $name;
+                                $nameStr = (string) $name;
                             }
 
                             $source = $this->compileSource($this->loader->getSource($name), $name);
@@ -243,11 +245,11 @@ class Environment extends \Twig_Environment
         $oldLoader = $this->getLoader();
         $oldCache  = $this->getCache();
 
-        $arr_loader = new \Twig_Loader_Array([
+        $arrLoader = new \Twig_Loader_Array([
             'template' => $templateCode,
         ]);
 
-        $this->setLoader($arr_loader);
+        $this->setLoader($arrLoader);
         $this->setCache(false);
 
         $result    = null;
