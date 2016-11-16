@@ -137,12 +137,16 @@ class KbController extends AbstractController
 
         $trans_data = $this->container->getObjectLangRepository()->getLoadedRecs($article);
 
-        if (!count($article->getCategories())) {
+        if (!count($article->getCategories()) && $article_categories) {
             $first = Arrays::getFirstKey($article_categories);
-            $cat   = $this->em->getRepository(ArticleCategory::class)->find($first);
-            $article->addToCategory($cat);
-            $this->em->persist($article);
-            $this->em->flush($article);
+            if (isset($article_categories[$first]['id'])) {
+                $cat = $this->em->getRepository(ArticleCategory::class)->find($article_categories[$first]['id']);
+                if ($cat) {
+                    $article->addToCategory($cat);
+                    $this->em->persist($article);
+                    $this->em->flush($article);
+                }
+            }
         }
 
         $glossary       = new GlossaryHandler($this->em, $category->getBrand());
