@@ -52,23 +52,18 @@ class TicketSla extends AbstractEntityRepository
         if (!$person_context->is_agent) {
             throw new \InvalidArgumentException('Person must be an agent');
         }
+
+        $conn       = App::getDbRead();
+        $slaQueries = $queryParams = $queryTypes = [];
+
         $ids = [];
         foreach ($slas as $sla) {
-            $ids[] = $sla->id;
+            $id    = (int) $sla->id;
+            $ids[] = $id;
+            // first map sla types to ids
+            $queryParams[$sla->sla_type][] = $id;
         }
 
-        $conn = App::getDbRead();
-
-        // first convert sla types to ids
-        $slaQueries = $queryParams = $queryTypes = [];
-        $results    = $conn->fetchAll(
-            'select id, sla_type from slas where id in (:ids)',
-            ['ids' => $ids],
-            ['ids' => Connection::PARAM_INT_ARRAY]
-        );
-        foreach ($results as $row) {
-            $queryParams[$row['sla_type']][] = (int) $row['id'];
-        }
         if (isset($queryParams['waiting_time'])) {
             $slaQueries[]               = '(ts.sla_id IN (:waiting_time) AND t.status = "awaiting_agent")';
             $queryTypes['waiting_time'] = Connection::PARAM_INT_ARRAY;
@@ -103,7 +98,6 @@ class TicketSla extends AbstractEntityRepository
         // builds query for a single perm condition
         $buildSlaQueryPart = function ($condition, $p = 'none') use ($slaQueriesCombined, &$parts, $pid) {
             $participantSubQuery = [
-                'none'    => '',
                 'include' => 'AND t.id IN (SELECT ticket_id FROM tickets_participants WHERE person_id = '.$pid.')',
                 'exclude' => 'AND t.id NOT IN (SELECT ticket_id FROM tickets_participants WHERE person_id = '.$pid.')',
             ];
