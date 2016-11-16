@@ -415,7 +415,13 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             return;
         }
 
-        return App::get('router')->generate('serve_blob', ['blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe(), 's' => $size], $absolute);
+        $params = ['blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()];
+
+        if ($size) {
+            $params['s'] = $size;
+        }
+
+        return App::get('router')->generate('serve_blob', $params, $absolute);
     }
 
     /**
