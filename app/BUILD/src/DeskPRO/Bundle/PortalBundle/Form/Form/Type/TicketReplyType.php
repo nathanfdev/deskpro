@@ -78,6 +78,7 @@ class TicketReplyType extends AbstractType
                 'format'         => 'html',
                 'constraints'    => [
                     new AppAssert\Ticket\TicketDupeMessage(),
+                    new AppAssert\Ticket\TicketOpenedMessage(),
                 ],
                 'message_constraints' => [
                     new NotBlank(),
