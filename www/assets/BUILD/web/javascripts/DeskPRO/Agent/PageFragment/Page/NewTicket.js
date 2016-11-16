@@ -24,6 +24,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	initPage: function(el) {
 		var self = this;
+		this.signatureSet = false;
 		this.wrapper = el;
 		this.el = el;
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
@@ -303,6 +304,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			});
 		};
 
+		var storedNoteText = '';
+		var storedReplyText = '';
+
 		var openStatusMenu = function() {
 			statusListItems = statusMenu.find('li[data-type]').not('.off');
 
@@ -488,20 +492,27 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       $(this).addClass('on');
 
       if ($(this).data('is-note')) {
-
+				$('.hide-note').hide();
+				$('.hide-reply').show();
         self.isNote = true;
         emailCheckboxState = $input.prop('checked');
-        replyAsState = self.getEl('reply_as_type').data('type');
-        self.removeSignature();
-
+				replyAsState = this.getEl('reply_as_type').data('type');
+				storedReplyText = self.textarea.getCode();
+				self.textarea.setCode(storedNoteText || '');
         $input.prop('checked', false).parent().hide();
-        self.shortcutReplySetAwaitingAgent();
 
       } else {
+				$('.hide-note').show();
+				$('.hide-reply').hide();
         self.isNote = false;
         $input.prop('checked', emailCheckboxState).parent().show();
         self.setReplyAsOptionName(replyAsState, true);
-        self.addSignature();
+				storedNoteText = self.textarea.getCode();
+				self.textarea.setCode(storedReplyText || '');
+				if(!self.signatureSet) {
+					self.addSignature();
+					self.signatureSet = true;
+				}
       }
     });
 
@@ -551,7 +562,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     } else {
 
-      sig = this.getEl('signature_value').val()
+      sig = this.getEl('signature_value').val();
 			var text = textarea.val();
 
       if (!text.match(new RegExp(sig + '$'))) {
@@ -567,7 +578,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     if (api) {
 
-      sig = api.$editor.find('.dp-signature-start:first')
+      sig = api.$editor.find('.dp-signature-start:first');
 			var p;
       if (!sig.length) {
 				return;
@@ -1718,7 +1729,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				selectDepartment.children().remove();
 				$(res).find('option').appendTo(selectDepartment);
 				selectDepartment.select2('val', '');
-			})
+			});
 		});
 	},
 
