@@ -37,7 +37,7 @@ class CalloutNode extends \Twig_Node
     {
         $class = '';
         if ($this->hasNode('class')) {
-            $class = ' '.$this->getNode('class');
+            $class = ' '.$this->getNode('class')->getAttribute('value');
         }
         $compiler
             ->addDebugInfo($this)

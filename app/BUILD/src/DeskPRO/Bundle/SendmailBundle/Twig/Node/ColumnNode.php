@@ -35,9 +35,13 @@ class ColumnNode extends \Twig_Node
 {
     public function compile(\Twig_Compiler $compiler)
     {
+        $small = '';
+        if ($this->hasNode('small')) {
+            $small = 'small-'.$this->getNode('small')->getAttribute('value').' ';
+        }
         $compiler
             ->addDebugInfo($this)
-            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<th class="columns">', 0), 1))
+            ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<th class="'.$small.'columns">', 0), 1))
             ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<table>', 0), 1))
             ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<tr>', 0), 1))
             ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<th>', 0), 1))

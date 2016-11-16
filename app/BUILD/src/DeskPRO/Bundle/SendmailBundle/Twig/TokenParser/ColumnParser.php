@@ -38,14 +38,21 @@ class ColumnParser extends \Twig_TokenParser
         $parser = $this->parser;
         $stream = $parser->getStream();
 
-        $size = null;
-        if ($stream->nextIf(Twig_Token::NAME_TYPE, 'size')) {
-            $size = $this->parser->getExpressionParser()->parseExpression();
+        $small = null;
+        if ($stream->nextIf(Twig_Token::NAME_TYPE, 'small')) {
+            $stream->expect(Twig_Token::OPERATOR_TYPE, '=');
+            $small = $this->parser->getExpressionParser()->parseExpression();
         }
 
-        $nodes = [];
-        if ($size) {
-            $nodes['size'] = $size;
+        $body = '';
+        if ($stream->nextIf(Twig_Token::BLOCK_END_TYPE)) {
+            $body = $this->parser->subparse([$this, 'decideColumnEnd'], true);
+        }
+        $stream->expect(Twig_Token::BLOCK_END_TYPE);
+
+        $nodes['body'] = $body;
+        if ($small) {
+            $nodes['small'] = $small;
         }
 
         return new ColumnNode(
@@ -56,8 +63,13 @@ class ColumnParser extends \Twig_TokenParser
         );
     }
 
+    public function decideColumnEnd(Twig_Token $token)
+    {
+        return $token->test('endcolumns');
+    }
+
     public function getTag()
     {
-        return 'column';
+        return 'columns';
     }
 }

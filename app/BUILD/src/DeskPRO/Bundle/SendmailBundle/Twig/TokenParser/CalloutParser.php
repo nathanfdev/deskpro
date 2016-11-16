@@ -40,6 +40,7 @@ class CalloutParser extends \Twig_TokenParser
 
         $class = null;
         if ($stream->nextIf(Twig_Token::NAME_TYPE, 'class')) {
+            $stream->expect(Twig_Token::OPERATOR_TYPE, '=');
             $class = $this->parser->getExpressionParser()->parseExpression();
         }
 
@@ -47,6 +48,7 @@ class CalloutParser extends \Twig_TokenParser
         if ($stream->nextIf(Twig_Token::BLOCK_END_TYPE)) {
             $body = $this->parser->subparse([$this, 'decideBlockEnd'], true);
         }
+        $stream->expect(Twig_Token::BLOCK_END_TYPE);
 
         $nodes['body'] = $body;
         if ($class) {

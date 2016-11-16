@@ -40,19 +40,13 @@ class Twig_Tests_Node_SpacerTest extends Twig_Test_NodeTestCase
     public function getTests()
     {
         $tests   = [];
-        $tests[] = [new SpacerNode(['size' => new Twig_Node_Print(new Twig_Node_Expression_Constant(50, 1), 1)], []),
+        $tests[] = [new SpacerNode(['size' => new Twig_Node_Expression_Constant(50, 1)], []),
                     <<<'EOF'
 // line 1
 echo "<table class=\"spacer\">";
 echo "<tbody>";
 echo "<tr>";
-echo "<td height=\"";
-echo 50;
-echo "px\" style=\"font-size:";
-echo 50;
-echo "px;line-height:";
-echo 50;
-echo "px;\">&#xA0;</td>";
+echo "<td height=\"50px\" style=\"font-size:50px;line-height:50px;\">&#xA0;</td>";
 echo "</tr>";
 echo "</tbody>";
 echo "</table>";

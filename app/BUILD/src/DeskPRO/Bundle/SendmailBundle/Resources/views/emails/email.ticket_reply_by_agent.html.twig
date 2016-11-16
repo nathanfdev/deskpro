@@ -3,7 +3,14 @@
 </dp:subject>
 
 <container>
-    Email Body
-    <spacer size="100"></spacer>
-    {{ ticket.agent.name }}
+    <row>
+        <columns small="6">
+            <p>Not in a callout :(</p>
+        </columns>
+        <columns small="6">
+            <callout class="secondary">
+                <p>I'm in a callout!</p>
+            </callout>
+        </columns>
+    </row>
 </container>

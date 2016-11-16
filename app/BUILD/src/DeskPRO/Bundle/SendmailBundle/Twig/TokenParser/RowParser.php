@@ -45,8 +45,9 @@ class RowParser extends \Twig_TokenParser
 
         $body = '';
         if ($stream->nextIf(Twig_Token::BLOCK_END_TYPE)) {
-            $body = $this->parser->subparse([$this, 'decideBlockEnd'], true);
+            $body = $this->parser->subparse([$this, 'decideRowEnd'], true);
         }
+        $stream->expect(Twig_Token::BLOCK_END_TYPE);
 
         $nodes['body'] = $body;
         if ($class) {
@@ -59,6 +60,11 @@ class RowParser extends \Twig_TokenParser
             $token->getLine(),
             $this->getTag()
         );
+    }
+
+    public function decideRowEnd(Twig_Token $token)
+    {
+        return $token->test('endrow');
     }
 
     public function getTag()
