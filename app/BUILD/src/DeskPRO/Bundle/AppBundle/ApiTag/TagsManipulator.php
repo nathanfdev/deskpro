@@ -137,7 +137,7 @@ class TagsManipulator
                 }
                 $this->flatten($node, $flattened);
             }
-        } elseif ($hierarchy->getValue() !== $hierarchy->getParent()->getValue()) {
+        } elseif ($hierarchy->getParent() && $hierarchy->getValue() !== $hierarchy->getParent()->getValue()) {
             $path             = ($hierarchy->getValue() < 0 ? '-' : '').$hierarchy->getPath();
             $flattened[$path] = true; // (sic!)
         }
