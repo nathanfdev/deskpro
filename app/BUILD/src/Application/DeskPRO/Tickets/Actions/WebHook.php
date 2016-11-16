@@ -84,15 +84,13 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         $password    = $renderer->renderTicketTemplate($this->getActionOption('password') ?: '', $ticket, $context);
 
         $http_client = new Client(['timeout' => $timeout]);
+        $method      = strtoupper($this->getActionOption('method')) ?: 'POST';
+        $options     = [];
 
         if ($headers) {
-            $headers = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
-        } else {
-            $headers = [];
+            $headers                          = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
+            $options[RequestOptions::HEADERS] = $headers;
         }
-
-        $method  = strtoupper($this->getActionOption('method')) ?: 'POST';
-        $options = [];
 
         if ($method == 'POST' || $method == 'PUT') {
             $data                    = [];
