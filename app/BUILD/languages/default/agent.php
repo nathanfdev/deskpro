@@ -429,6 +429,7 @@ return [
     'agent.general.chat'                                       => 'Chat',
     'agent.general.chat_ended'                                 => 'Chat ended',
     'agent.general.chats'                                      => 'Chats',
+    'agent.general.billing'                                    => 'Billing',
     'agent.general.choose_a_person'                            => 'Choose a person',
     'agent.general.choose_a_type'                              => 'Choose a type',
     'agent.general.choose_criteria'                            => 'Choose criteria...',

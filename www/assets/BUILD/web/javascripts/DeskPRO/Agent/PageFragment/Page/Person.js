@@ -397,7 +397,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		} // can edit
 
-		var self = this;
 		$('.create-ticket', this.getEl('action_buttons')).on('click', function() {
 			DeskPRO_Window.newTicketLoader.open(function(page) {
 				var data = {
@@ -610,11 +609,17 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 
 			self.ownObject(simpleTabs);
+			simpleTabs.addEvent('beforeTabSwitch', function(eventData) {
+				if(eventData.tabEl) {
+					var classShow = eventData.tabEl.data('classShow');
+					self.wrapper.find('.tabs-control').hide();
+					self.wrapper.find('.' + classShow).show();
+				}
+			});
 		});
 
 		this._initOrgEdit();
 
-		var self = this;
 		this.getEl('tickets_viewall').on('click', function(ev){
 			var row = $(this).closest('tr').remove();
 			self.getEl('tickets_rest').slideDown('fast', function() { self.updateUi(); });
