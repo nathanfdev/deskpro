@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Session;
+namespace DeskPRO\Bundle\AppBundle\Session;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
@@ -78,8 +78,10 @@ class DbalSessionHandler implements \SessionHandlerInterface
     /**
      * Constructor.
      *
-     * @param Connection $con       A connection
-     * @param string     $tableName Table name
+     * @param Connection                    $con                 A connection
+     * @param string                        $tableName           Table name
+     * @param VisitorIdentificationProvider $visitor_id_provider
+     * @param TokenStorage                  $token_storage
      */
     public function __construct(Connection $con, $tableName, VisitorIdentificationProvider $visitor_id_provider, TokenStorage $token_storage)
     {

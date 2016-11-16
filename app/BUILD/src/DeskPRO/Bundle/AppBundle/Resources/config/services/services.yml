@@ -1,5 +1,17 @@
 services:
 
+  visitor_identification_provider:
+    class: DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider
+    arguments: ["@request_stack", "@logger"]
+
+  session.handler.dbal:
+    class: DeskPRO\Bundle\AppBundle\Session\DbalSessionHandler
+    arguments:
+      - "@doctrine.dbal.default_connection"
+      - "%portal.session.name%"
+      - "@visitor_identification_provider"
+      - "@security.token_storage"
+
   brand_aware_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver
     arguments: ["@settings_resolver", "@doctrine.orm.default_entity_manager", "@?brand_stack"]
