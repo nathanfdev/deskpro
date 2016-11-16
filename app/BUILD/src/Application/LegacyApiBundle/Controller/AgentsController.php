@@ -602,13 +602,15 @@ class AgentsController extends AbstractController implements ProtectedController
             $error_info = ['existing' => []];
 
             foreach ($existPersons as $person) {
+                /** @var $person Person */
                 if ((int) $person['id'] === (int) $id) {
                     continue;
                 }
 
                 $error_info['existing'][] = [
-                    'person_id'   => $person['id'],
-                    'person_name' => $person['display_name'],
+                    'person_id'   => $person->getId(),
+                    'person_name' => $person->getDisplayName(),
+                    'is_deleted'  => $person->isDeleted(),
                     'email'       => implode(', ', $person->getEmailAddresses()),
                 ];
             }
