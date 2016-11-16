@@ -585,6 +585,8 @@ return [
     'adm.ticket_accounts.outgoing_log'                                                     => 'Outgoing Email Log',
     'adm.ticket_accounts.saved'                                                            => 'Settings saved successfully',
     'adm.ticket_accounts.user_attachments'                                                 => 'User Attachments',
+    'admin.ticket_accounts.email_preview'                                                  => 'Enable email preview',
+    'admin.ticket_accounts.email_preview_help'                                             => 'When enabled preview text will appear in email. Enabled by default',
     'adm.ticket_escalations.count_escalations'                                             => '{{count}} Escalation|{{count}} Escalations',
     'adm.ticket_escalations.delete_confirm'                                                => 'Are you sure you want to delete this escalations? Any actions this escalation used to perform will no longer work.',
     'adm.ticket_escalations.escalations'                                                   => 'Escalations',
