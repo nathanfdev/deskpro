@@ -108,7 +108,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *     description="Save portal general settings",
      *
      *     statusCodes={
-     *         200="Returned if request was successful",
+     *         204="Returned if request was successful",
      *         400="In case your request was malformed",
      *     },
      *     input= {

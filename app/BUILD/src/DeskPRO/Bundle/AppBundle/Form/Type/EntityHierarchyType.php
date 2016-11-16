@@ -28,10 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\HierarchyNodeTransformer;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\LazyChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -61,7 +61,7 @@ class EntityHierarchyType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addModelTransformer(new HierarchyNodeTransformer(new LazyChoiceList($options['choice_loader']), $options['expanded']));
+        $builder->addModelTransformer(new HierarchyNodeTransformer());
     }
 
     /**
@@ -79,9 +79,13 @@ class EntityHierarchyType extends AbstractType
     {
         $resolver
             ->setRequired('choice_loader')
+            ->setAllowedTypes('choice_loader', [HierarchyChoiceLoader::class])
             ->setDefaults([
                 'choices_as_values'   => true,
                 'hierarchy_generator' => $this->hierarchyGenerator,
+                'choice_label'        => function ($value) {
+                    return (string) $value;
+                },
             ])
         ;
     }

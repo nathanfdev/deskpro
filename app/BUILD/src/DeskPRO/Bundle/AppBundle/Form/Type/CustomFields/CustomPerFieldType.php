@@ -217,7 +217,9 @@ class CustomPerFieldType extends AbstractType
                 ->toArray()
             ;
 
-            $formFieldData = implode(',', $formFieldData);
+            if (!$customDef->isMultiple()) {
+                $formFieldData = reset($formFieldData);
+            }
         }
 
         return $formFieldData;

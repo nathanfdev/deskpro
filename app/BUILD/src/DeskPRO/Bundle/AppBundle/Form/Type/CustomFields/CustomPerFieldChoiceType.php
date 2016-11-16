@@ -29,11 +29,10 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
 use Application\DeskPRO\Entity\CustomFieldDefinition;
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
-use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\StringToIntegerArrayTransformer;
+use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\HierarchyNodeTransformer;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\LazyChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
@@ -64,14 +63,7 @@ class CustomPerFieldChoiceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer(
-            new LazyChoiceList($options['choice_loader']), $options['multiple']),
-            true
-        );
-
-        if ($options['multiple']) {
-            $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
-        }
+        $builder->addModelTransformer(new HierarchyNodeTransformer());
     }
 
     /**
@@ -106,9 +98,13 @@ class CustomPerFieldChoiceType extends AbstractType
                         ->getChoiceLoader()
                     ;
                 },
+                'choice_label' => function ($value) {
+                    return (string) $value;
+                },
             ])
             ->setRequired('custom_field')
             ->setAllowedTypes('custom_field', CustomFieldDefinition::class)
+            ->setAllowedTypes('choice_loader', [HierarchyChoiceLoader::class])
         ;
     }
 }

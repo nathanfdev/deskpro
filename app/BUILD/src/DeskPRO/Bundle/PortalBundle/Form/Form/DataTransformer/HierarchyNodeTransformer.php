@@ -32,9 +32,8 @@ use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Component\Hierarchy\HierarchyNode;
 use DeskPRO\Component\Util\EntityUtils;
-use Symfony\Component\Form\ChoiceList\LazyChoiceList;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
  * Class HierarchyNodeTransformer.
@@ -42,63 +41,32 @@ use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;
 class HierarchyNodeTransformer implements DataTransformerInterface
 {
     /**
-     * @var ChoiceListInterface
-     */
-    private $choiceList;
-
-    /**
-     * @var bool
-     */
-    private $multiple;
-
-    /**
-     * Constructor.
-     *
-     * @param LazyChoiceList $choiceList
-     * @param bool           $multiple
-     */
-    public function __construct(LazyChoiceList $choiceList, $multiple = false)
-    {
-        $this->choiceList = $choiceList;
-        $this->multiple   = $multiple;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function transform($value)
     {
         if (!$value) {
-            return '';
+            return $value;
         }
 
-        $choices = $this->choiceList->getChoices();
-
-        if (count($choices) < 1) {
-            return '';
-        }
-
-        /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode $choice */
-        foreach ($choices as $choice) {
-            if (!$choice instanceof HierarchyNode) {
-                continue;
-            }
-
-            $data = $choice->getData();
-            if ($data instanceof DomainObject || $data instanceof EntityInterface) {
-                $data = EntityUtils::getIdentifier($data);
-            }
-
+        if (!is_array($value)) {
             if ($value instanceof DomainObject || $value instanceof EntityInterface) {
                 $value = EntityUtils::getIdentifier($value);
             }
+            $ret = $value instanceof HierarchyNode ? $value->getId() : $value;
 
-            if ($value === $data) {
-                return $choice;
-            }
+            return $ret;
         }
 
-        return '';
+        $ret = [];
+        foreach ($value as $item) {
+            if ($value instanceof DomainObject || $value instanceof EntityInterface) {
+                $value = EntityUtils::getIdentifier($value);
+            }
+            $ret[] = $item instanceof HierarchyNode ? $item->getId() : $item;
+        }
+
+        return $ret;
     }
 
     /**
@@ -106,8 +74,26 @@ class HierarchyNodeTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        if ($value instanceof HierarchyNode) {
+        if (!$value) {
+            return $value;
+        }
+
+        if (!is_array($value)) {
+            if (!$value instanceof HierarchyNode) {
+                throw new TransformationFailedException('Expected HierarchyNode');
+            }
+
             return $value->getData();
         }
+
+        $items = [];
+        foreach ($value as $item) {
+            if (!$item instanceof HierarchyNode) {
+                throw new TransformationFailedException('Expected HierarchyNode');
+            }
+            $items[] = $item->getData();
+        }
+
+        return $items;
     }
 }

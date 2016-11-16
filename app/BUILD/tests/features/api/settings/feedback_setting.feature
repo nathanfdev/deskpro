@@ -20,8 +20,7 @@ Feature: Feedback brand settings Setup
   "subscriptions":true
 }
     """
-    Then the response should be in JSON
-    And the response status code should be 204
+    Then the response status code should be 204
 
     When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/feedback"
     Then the response should be in JSON
@@ -47,8 +46,7 @@ Feature: Feedback brand settings Setup
   "subscriptions":false
 }
     """
-    Then the response should be in JSON
-    And the response status code should be 204
+    Then the response status code should be 204
 
     When I send a GET request to "/api/v2/settings/brands/{lastCreatedId}/portal/feedback"
     Then the response should be in JSON

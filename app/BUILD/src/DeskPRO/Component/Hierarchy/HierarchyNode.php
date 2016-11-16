@@ -77,6 +77,11 @@ class HierarchyNode implements \IteratorAggregate, \Countable
         $this->children = [];
     }
 
+    public function getId()
+    {
+        return $this->hierarchy->getNodeId($this);
+    }
+
     public function __toString()
     {
         return $this->hierarchy->getFormatter()->format($this);
@@ -85,8 +90,10 @@ class HierarchyNode implements \IteratorAggregate, \Countable
     public function addChild(HierarchyNode $node)
     {
         $node->setParent($this);
-        $node->setHierarchy($this->hierarchy);
         $this->children[] = $node;
+        if ($this->hierarchy) {
+            $this->hierarchy->addNode($node);
+        }
 
         // bug in php will throw an exception for modifying arrays in some versions of php during usort
         @usort($this->children, function ($node1, $node2) {
@@ -167,33 +174,6 @@ class HierarchyNode implements \IteratorAggregate, \Countable
     public function count()
     {
         return count($this->children);
-    }
-
-    /**
-     * Able to recursively find a child with a given ID (ID as defined by the hierarchy property accessor).
-     *
-     * @param $node_id
-     * @param bool $recursive
-     *
-     * @return HierarchyNode|null
-     */
-    public function findChildById($node_id, $recursive = false)
-    {
-        foreach ($this->children as $child) {
-            if ($node_id == $this->hierarchy->getNodeId($child)) {
-                return $child;
-            }
-        }
-
-        if ($recursive) {
-            foreach ($this->children as $child) {
-                if ($response = $child->getChildById($node_id)) {
-                    return $response;
-                }
-            }
-        }
-
-        return;
     }
 
     private function setParent(HierarchyNode $node)

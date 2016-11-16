@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
-use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType;
@@ -153,10 +152,10 @@ class CustomDataType extends AbstractType
         $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
 
         if ($customDef->isChoiceType()) {
-            $data = $form->get('data')->getNormData();
+            $data = $form->get('data')->getData();
             $data = is_array($data) ? $data : ($data ? [$data] : []);
-            $data = array_map(function (HierarchyNode $choiceCustomDef) {
-                return $choiceCustomDef->getData()->getId();
+            $data = array_map(function (CustomDefAbstract $choiceCustomDef) {
+                return $choiceCustomDef->getId();
             }, $data);
 
             $exist = $customDefData
@@ -330,7 +329,9 @@ class CustomDataType extends AbstractType
                     ->toArray()
                 ;
 
-                $formFieldData = implode(',', $formFieldData);
+                if (!$customDef->isMulti()) {
+                    $formFieldData = reset($formFieldData);
+                }
             } elseif ($customDef->isDateType()) {
                 // cast to null
                 if (!$formFieldData) {
