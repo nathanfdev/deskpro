@@ -428,8 +428,26 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 			}
 		});
-
 		this.ownObject(this.sortTicketsMenu);
+
+		this.sortChatsMenu = new DeskPRO.UI.Menu({
+			triggerElement: this.getEl('sort_chats_menu_trigger'),
+			menuElement: this.getEl('sort_chats_menu'),
+			onItemClicked: function(info) {
+				var itemEl = $(info.itemEl), orderBy = itemEl.data('order-by'), orderDir = itemEl.data('order-dir');
+
+				$.ajax({
+					url: BASE_URL + 'agent/person/' + person_id + '/chats',
+					data: {order_by: orderBy, order_dir: orderDir},
+					type: 'get',
+					dataType: 'html',
+					success: function(html) {
+						self.getEl('chats_initial').html(html);
+					}
+				});
+			}
+		});
+		this.ownObject(this.sortChatsMenu);
 
 		this.moreactionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.more', this.getEl('action_buttons')),

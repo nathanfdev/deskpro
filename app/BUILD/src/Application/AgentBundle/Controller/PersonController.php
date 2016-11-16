@@ -35,15 +35,16 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\EntityRepository\ChatConversation as ChatConversationRepository;
 use Application\DeskPRO\EntityRepository\Person;
 use Application\DeskPRO\EntityRepository\Ticket;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
-use Application\DeskPRO\Mail\Mailer;
 use Application\DeskPRO\People\PersonEditManager;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
@@ -192,8 +193,10 @@ class PersonController extends AbstractController
             }
         }
 
-        $person_chats       = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForPerson($person);
-        $person_chats_count = count($person_chats);
+        /** @var ChatConversationRepository $chatConversationRepository */
+        $chatConversationRepository = $this->em->getRepository(ChatConversation::class);
+        $person_chats               = $chatConversationRepository->getPastChatsForPerson($person);
+        $person_chats_count         = count($person_chats);
 
         $is_editable = $this->isPersonEditable($person);
         $perms       = [
@@ -1559,6 +1562,22 @@ class PersonController extends AbstractController
 
         return $this->render('AgentBundle:Person:view-tickets.html.twig', [
             'tickets' => $person_tickets,
+        ]);
+    }
+
+    public function getPersonChatsAction($person_id)
+    {
+        $person = $this->getPersonOr404($person_id);
+
+        /** @var ChatConversationRepository $chatConversationRepository */
+        $chatConversationRepository = $this->em->getRepository(ChatConversation::class);
+
+        $orderBy  = $this->in->getString('order_by');
+        $orderDir = $this->in->getString('order_dir');
+        $chats    = $chatConversationRepository->getPastChatsForPerson($person, $orderBy, $orderDir);
+
+        return $this->render('AgentBundle:Person:view-chats.html.twig', [
+            'chats' => $chats,
         ]);
     }
 
