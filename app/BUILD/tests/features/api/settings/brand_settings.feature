@@ -15,6 +15,7 @@ Feature: Brand Settings Setup
     When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/portal/general" with body:
     """
 {
+  "brand_name": "Test site (same)",
   "deskpro_name":"Test site",
   "deskpro_url":"http://testsite.com",
   "apps_feedback":true,
@@ -58,6 +59,7 @@ Feature: Brand Settings Setup
     Then I send a POST request to "/api/v2/settings/brands/{lastCreatedId}/portal/general" with body:
     """
 {
+  "brand_name": "My new Brand",
   "deskpro_name":"Other Brand",
   "deskpro_url":"http://otherbrand.com",
   "apps_feedback":false,
@@ -77,6 +79,7 @@ Feature: Brand Settings Setup
     When I send a GET request to "/api/v2/settings/brands/{lastCreatedId}/portal/general"
     Then the response should be in JSON
     And the response status code should be 200
+    And the JSON node "data.brand_name" should be equal to "My new Brand"
     And the JSON node "data.deskpro_name" should be equal to "Other Brand"
     And the JSON node "data.deskpro_url" should be equal to "http://otherbrand.com"
     And the JSON node "data.apps_feedback" should be false
@@ -92,7 +95,7 @@ Feature: Brand Settings Setup
     When I send a GET request to "/api/v2/brands/{lastCreatedId}"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data.name" should be equal to "Other Brand"
+    And the JSON node "data.name" should be equal to "My new Brand"
     And the JSON node "data.url" should be equal to "otherbrand.com"
 
     When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/general"
