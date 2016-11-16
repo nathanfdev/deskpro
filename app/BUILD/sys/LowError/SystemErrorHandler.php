@@ -134,7 +134,7 @@ class SystemErrorHandler
 
         self::$isHandlingException = false;
 
-        $message = 'An server error occurred.';
+        $message = 'A server error occurred.';
         $info    = 'Refer to the error log for full details (var/logs/error.log inside of the root DeskPRO directory).';
 
         if ($exception instanceof \PDOException) {
