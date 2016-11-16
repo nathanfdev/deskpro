@@ -95,6 +95,8 @@ define [
 
             inputOptions =
               dropdownAutoWidth: true
+              formatInputTooShort: (input, min) ->
+                "Please enter " + min + " or more characters"
               minimumInputLength: 1
               multiple: options.isMulti
               initSelection: (item) -> item

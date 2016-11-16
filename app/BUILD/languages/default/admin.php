@@ -1852,7 +1852,7 @@ return [
     'admin.settings.portal_rate_limit_upload_attempted'                                    => 'After a user has submitted attachment',
     'admin.settings.portal_rate_limit_upload_rate_limit'                                   => 'Upload Attachment Rate Limiting',
     'admin.settings.portal_rate_limit_whitelist_text'                                      => 'If many agents/users are coming from a shared IP address and are seeing CAPTCHAs all the time, whitelist the address. Separate multiple addresses with commas.',
-    'admin.settings.portal_rate_limit_within'                                              => 'within',
+    'admin.settings.portal_rate_limit_for'                                                 => 'for',
     'admin.settings.re_captcha_secret_key'                                                 => 'Secret Key',
     'admin.settings.re_captcha_site_key'                                                   => 'Site Key',
     'admin.settings.restrict_file_types'                                                   => 'Only allow these file types',
