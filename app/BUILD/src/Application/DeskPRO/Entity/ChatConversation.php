@@ -1360,6 +1360,25 @@ class ChatConversation extends DomainObject implements LabelsOwner
     }
 
     /**
+     * @return null|string
+     */
+    public function getVisitorId()
+    {
+        return $this->visitor_id;
+    }
+
+    /**
+     * @param null|string $visitor_id
+     *
+     * @return $this
+     */
+    public function setVisitorId($visitor_id)
+    {
+        $this->setModelField('visitor_id', $visitor_id);
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function getEmailValidated()

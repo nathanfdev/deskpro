@@ -68,6 +68,7 @@ class UserChatClientListener implements EventSubscriberInterface
             UserChatEvent::ASSIGNED       => 'onAssigned',
             UserChatEvent::UNASSIGNED     => 'onUnassigned',
             UserChatEvent::SEND_MESSAGE   => 'onSendMessage',
+            UserChatEvent::USER_TRACK     => 'onUserTrack',
             UserChatEvent::ACK_MESSAGES   => 'onAckMessages',
             UserChatEvent::USER_TYPING    => 'onUserTyping',
         ];
@@ -149,6 +150,18 @@ class UserChatClientListener implements EventSubscriberInterface
         $conversation = $event->getChat();
         $message      = $event->getData();
         $channel      = $conversation->getChannelId('newmessage');
+
+        $this->send($event, $channel, $message);
+    }
+
+    /**
+     * @param UserChatEvent $event
+     */
+    public function onUserTrack(UserChatEvent $event)
+    {
+        $conversation = $event->getChat();
+        $message      = $event->getData();
+        $channel      = $conversation->getChannelId('hidden_newmessage');
 
         $this->send($event, $channel, $message);
     }
