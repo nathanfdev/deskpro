@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router, Route, Redirect } from 'react-router';
-import { WidgetFrameContainer } from './WidgetFrameContainer';
+import WidgetFrameContainer from './WidgetFrameContainer';
 import { WidgetContent } from './Parts/WidgetContent';
 import { WidgetHeaderContainer } from './Parts/Header/WidgetHeaderContainer';
 import { WidgetBodyContainer } from './Parts/Body/WidgetBodyContainer';
@@ -15,13 +15,12 @@ import {
   ChatEmailValidationContainer,
   ChatLoginContainer,
   ChatPollingContainer,
-  ChatActive,
-  ChatWaiting
+  ChatActive
 } from '../../../Chat/Components/index';
 import { TicketApp, TicketForm, TicketFormSubmitted } from '../../../Ticket/Components/index';
 import { history } from '../../../../Services/history';
 
-export class Widget extends React.Component {
+export default class Widget extends React.Component {
 
   componentDidMount() {
     window.widgetFrame = parent.window.widget_iframe;

@@ -1,20 +1,14 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { Trigger } from './Trigger/Trigger';
-import { Widget } from './Widget/Widget';
-import { windowResize } from '../Actions/dpWindowActions';
-import { widgetLoadedSelector } from '../Selectors/bootstrap';
 import $ from 'jquery';
 import debounce from 'lodash/function/debounce';
+import { Trigger } from './Trigger/Trigger';
+import Widget from './Widget/Widget';
+import { windowResize } from '../Actions/dpWindowActions';
 
-@connect(state => ({
-  widgetLoaded: widgetLoadedSelector(state)
-}))
 export class AppContainer extends React.Component {
 
   static propTypes = {
-    widgetLoaded: PropTypes.bool,
-    dispatch:     PropTypes.func
+    dispatch: PropTypes.func
   };
 
   constructor(props) {
