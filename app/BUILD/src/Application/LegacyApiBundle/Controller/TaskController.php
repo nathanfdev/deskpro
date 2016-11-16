@@ -565,8 +565,8 @@ class TaskController extends AbstractController
             return $this->createApiErrorResponse(403, 'Only task owner can do this', 403);
         }
 
-//        $this->em->remove($task);
-//        $this->em->flush();
+        $this->em->remove($task);
+        $this->em->flush();
 
         return $this->createSuccessResponse();
     }
