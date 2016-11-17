@@ -53,6 +53,10 @@ class PortalPhrases {
     // https://facebook.github.io/react/tips/dangerously-set-inner-html.html
     return { __html: phrase };
   }
+
+  getTextDirection() {
+    return this.direction;
+  }
 }
 
 export const portalPhrases = new PortalPhrases;
