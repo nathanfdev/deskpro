@@ -210,7 +210,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
         }
 
         // Offline setting applies to all but admin
-        if ($this->getBrandSetting('core.helpdesk_disabled')) {
+        if ($this->getGlobalSetting('core.helpdesk_disabled')) {
             // exclude admin interface
             if ($this->interfaceInfo->isAdminInterface()) {
                 return false;
@@ -222,7 +222,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
             }
 
             // exclude legacy api for admin interface
-            if ($this->container->has('deskpro.api.request_auth')) {
+            if ($request && $this->container->has('deskpro.api.request_auth')) {
                 $apiUser = $this->container->get('deskpro.api.request_auth')->getApiUser();
                 if ($apiUser && $apiUser->person && $apiUser->person->isAdmin()) {
                     return false;
@@ -240,7 +240,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
      */
     private function isUpgradePending()
     {
-        $build = $this->getBrandSetting('core.deskpro_build');
+        $build = $this->getGlobalSetting('core.deskpro_build');
 
         if (!$build) {
             // no build info: no db conn, not installed yet, etc
@@ -267,6 +267,16 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
     }
 
     /**
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function getGlobalSetting($name)
+    {
+        return $this->container->get('settings_resolver')->getGlobalSettings()->get($name);
+    }
+
+    /**
      * @return string
      */
     private function getOfflineMessage()
@@ -275,7 +285,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
         if (file_exists($this->data_dir.'/helpdesk-offline-message.txt')) {
             $offline_message = file_get_contents($this->data_dir.'/helpdesk-offline-message.txt');
         } else {
-            $offline_message = $this->getBrandSetting('core.helpdesk_disabled_message');
+            $offline_message = $this->getGlobalSetting('core.helpdesk_disabled_message');
         }
 
         if (!$offline_message) {
