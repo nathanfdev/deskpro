@@ -35,12 +35,12 @@ class CalloutNode extends \Twig_Node
 {
     public function compile(\Twig_Compiler $compiler)
     {
+        $compiler->addDebugInfo($this);
         $class = '';
         if ($this->hasNode('class')) {
             $class = ' '.$this->getNode('class')->getAttribute('value');
         }
         $compiler
-            ->addDebugInfo($this)
             ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<table class="callout">', 0), 1))
             ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<tr>', 0), 1))
             ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<th class="callout-inner'.$class.'">', 0), 1))

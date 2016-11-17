@@ -40,13 +40,12 @@ class RowParser extends \Twig_TokenParser
 
         $class = null;
         if ($stream->nextIf(Twig_Token::NAME_TYPE, 'class')) {
+            $stream->expect(Twig_Token::OPERATOR_TYPE, '=');
             $class = $this->parser->getExpressionParser()->parseExpression();
         }
 
-        $body = '';
-        if ($stream->nextIf(Twig_Token::BLOCK_END_TYPE)) {
-            $body = $this->parser->subparse([$this, 'decideRowEnd'], true);
-        }
+        $stream->expect(Twig_Token::BLOCK_END_TYPE);
+        $body = $this->parser->subparse([$this, 'decideRowEnd'], true);
         $stream->expect(Twig_Token::BLOCK_END_TYPE);
 
         $nodes['body'] = $body;
