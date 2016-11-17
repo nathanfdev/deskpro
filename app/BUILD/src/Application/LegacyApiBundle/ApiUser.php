@@ -34,6 +34,8 @@
 
 namespace Application\LegacyApiBundle;
 
+use Application\DeskPRO\Entity\ApiKey;
+
 class ApiUser
 {
     /**
@@ -47,7 +49,7 @@ class ApiUser
     public $session;
 
     /**
-     * @var \Application\DeskPRO\Entity\ApiKey
+     * @var ApiKey
      */
     public $api_key;
 
@@ -60,4 +62,11 @@ class ApiUser
      * @var string
      */
     public $request_token;
+
+    public function isSuperAdmin()
+    {
+        return $this->api_key
+            ? $this->api_key->isFlagSet(ApiKey::FLAG_SUPER_KEY)
+            : false;
+    }
 }
