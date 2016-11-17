@@ -40,15 +40,16 @@ export class WidgetContent extends React.Component {
     }
 
     return (
-      <div className={classNames(
-        'widget-container',
-        'dpdesignportal', {
-          'chat-bubble':   isBubble,
-          mobile:          !isBubble,
-          'position-left': widgetPosition === 'bottom.left' && !isBubble
-        })}
+      <div
+        className={classNames(
+          'widget-container',
+          'dpdesignportal', {
+            'chat-bubble':   isBubble,
+            mobile:          !isBubble,
+            'position-left': widgetPosition === 'bottom.left' && !isBubble
+          }
+        )}
       >
-
         {children}
       </div>
     );
