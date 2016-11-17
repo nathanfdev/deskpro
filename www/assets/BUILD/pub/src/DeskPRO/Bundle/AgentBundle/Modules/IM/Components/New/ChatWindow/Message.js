@@ -5,10 +5,6 @@ import classNames from 'classnames';
 import emojione from 'emojione';
 import AvatarHelper from '../IMTabs/AvatarHelper';
 
-emojione.imagePathSVGSprites = './../assets/BUILD/pub/build/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg';
-emojione.imageType = 'svg';
-emojione.sprites = true;
-
 class Message extends React.Component
 {
   static propTypes = {
@@ -35,6 +31,9 @@ class Message extends React.Component
 
   getMessage() {
     let message = this.props.message.message;
+    emojione.imagePathSVGSprites = './../assets/BUILD/pub/build/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg';
+    emojione.imageType = 'svg';
+    emojione.sprites = true;
 
     if (this.props.searchQuery) {
       message = message.replace(this.props.searchQuery, `<span class="search result">${this.props.searchQuery}</span>`);

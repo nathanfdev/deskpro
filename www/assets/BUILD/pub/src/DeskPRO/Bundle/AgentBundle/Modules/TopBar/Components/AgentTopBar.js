@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Isvg from 'react-inlinesvg';
 import uuid from 'node-uuid';
+import striptags from 'striptags';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Container } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow';
 import * as chatsActions from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/chatsActions';
@@ -161,7 +162,13 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   onSubmit(message) {
-    if (message.replace(/^<p>|<\/p>$/g, '').trim()) {
+    let testMessage = striptags(message);
+    testMessage = testMessage.replace(/(&nbsp;\s)+$/g, '');
+    testMessage = testMessage.replace(/(&nbsp;|\s)+$/g, '');
+    testMessage = testMessage.replace(/^(&nbsp;|\s)+/g, '');
+    testMessage = testMessage.replace(/(&nbsp;|\s)+$/g, '');
+
+    if (testMessage.trim()) {
       const { dispatch, current, me } = this.props;
       dispatch(messagesActions.addMessage(current.get('id'), message, uuid(), me));
     }

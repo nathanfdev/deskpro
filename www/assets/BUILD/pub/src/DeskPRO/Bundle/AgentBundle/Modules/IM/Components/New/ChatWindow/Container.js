@@ -197,7 +197,7 @@ class Container extends React.Component {
     const contentWindow = medium.options.contentWindow;
     const ownerDocument = medium.options.ownerDocument;
 
-    const html = ` ${emojione.shortnameToImage(emoji.shortname)} `;
+    const html = emoji.shortname;
 
     if (contentWindow.getSelection) {
       // IE9 and non-IE
@@ -254,7 +254,7 @@ class Container extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.props.onSubmit(emojione.toShort(emojione.shortnameToImage(this.state.message)));
+    this.props.onSubmit(this.state.message);
     this.setState({ message: '' });
   }
 
