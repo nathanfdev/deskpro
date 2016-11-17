@@ -6,8 +6,7 @@ export class WidgetContent extends React.Component {
   static propTypes = {
     isBubble:       PropTypes.bool,
     widgetPosition: PropTypes.string,
-    children:       PropTypes.any,
-    triggerResize:  PropTypes.func
+    children:       PropTypes.any // eslint-disable-line react/forbid-prop-types
   };
 
   constructor(props) {
@@ -29,10 +28,6 @@ export class WidgetContent extends React.Component {
     }
   }
 
-  componentDidUpdate() {
-    setTimeout(() => this.props.triggerResize(), 0);
-  }
-
   render() {
     const { isBubble, widgetPosition, children } = this.props;
     if (this.state.rerender) {
@@ -40,7 +35,8 @@ export class WidgetContent extends React.Component {
     }
 
     return (
-      <div className={classNames(
+      <div
+        className={classNames(
         'widget-container',
         'dpdesignportal', {
           'chat-bubble':   isBubble,
