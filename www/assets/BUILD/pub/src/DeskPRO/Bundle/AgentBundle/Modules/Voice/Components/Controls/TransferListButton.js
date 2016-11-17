@@ -26,7 +26,7 @@ class TransferListButton extends React.Component {
     return (
       <a className={classNames('voice-list-button', { disabled })} onClick={this.onClick}>
         <span className="voice-list-button-item-title">
-          <i className={classNames('icon', icon)} />
+          <i className={classNames('ui', 'icon', icon)} />
           {title}
 
           <span className="voice-list-button-item-help">

@@ -1,22 +1,35 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { TabButton, Tab } from 'DeskPRO/Component/Tab/Tab';
 import TransferListButton from '../TransferListButton';
 import TransferSearch from '../TransferSearch';
 import Queues from './Queues';
 import Dialpad from './Dialpad';
 import QueuesContainer from '../../Common/QueuesContainer';
-import AgentListContainer from '../AgentList/AgentListContainer';
+import AgentList from '../AgentList';
 import TransferStatus from '../TransferStatus';
 
 class TransferList extends React.Component {
+
+  static propTypes = {
+    transferTarget:     PropTypes.object,
+    transferTargetType: PropTypes.string,
+    onlineAgents:       PropTypes.object,
+    participants:       PropTypes.array,
+    connection:         PropTypes.object,
+    onTransferCall:     PropTypes.func,
+    onCancelInvite:     PropTypes.func
+  };
+
+  static defaultProps = {
+    onTransferCall: () => {},
+    onCancelInvite: () => {}
+  };
 
   constructor(props) {
     super(props);
     this.state = {
       tabName:        'agents',
-      selectedTarget: null,
-      type:           null,
-      target:         null
+      selectedTarget: null
     };
   }
 
@@ -29,28 +42,27 @@ class TransferList extends React.Component {
   };
 
   onWarmTransfer = () => {
-    setTimeout(() => this.setState({
-      target: this.state.selectedTarget,
-      type:   'warm'
-    }), 1);
+    const { onTransferCall } = this.props;
+    const { selectedTarget } = this.state;
+
+    setTimeout(() => onTransferCall(selectedTarget, 'warm'), 1);
   };
 
   onColdTransfer = () => {
-    setTimeout(() => this.setState({
-      target: this.state.selectedTarget,
-      type:   'cold'
-    }), 1);
+    const { onTransferCall } = this.props;
+    const { selectedTarget } = this.state;
+
+    setTimeout(() => onTransferCall(selectedTarget, 'cold'), 1);
   };
 
-  onCancel = (event) => {
-    event.preventDefault();
-    setTimeout(() => this.setState({
-      target: null,
-      type:   null
-    }), 1);
+  onCancel = (target, type) => {
+    const { onCancelInvite } = this.props;
+
+    setTimeout(() => onCancelInvite(target, type), 1);
   };
 
   renderList() {
+    const { onlineAgents, participants } = this.props;
     const { tabName, selectedTarget } = this.state;
 
     return (
@@ -82,7 +94,9 @@ class TransferList extends React.Component {
         </div>
 
         <Tab active={tabName === 'agents'}>
-          <AgentListContainer
+          <AgentList
+            agents={onlineAgents}
+            participants={participants}
             target={selectedTarget}
             onClick={this.onChangeTarget}
           />
@@ -119,16 +133,17 @@ class TransferList extends React.Component {
   }
 
   render() {
-    const { target, type } = this.state;
+    const { connection, transferTarget, transferTargetType } = this.props;
 
-    if (target) {
+    if (transferTarget) {
       return (
         <div className="voice-ticket-transfer-list">
           <TransferStatus
+            connection={connection}
             title="Transferring..."
             cancelLabel="Cancel transfer"
-            type={type}
-            target={target}
+            type={transferTargetType}
+            target={transferTarget}
             onCancel={this.onCancel}
           />
         </div>

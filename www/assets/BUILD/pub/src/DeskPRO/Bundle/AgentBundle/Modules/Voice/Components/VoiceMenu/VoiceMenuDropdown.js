@@ -6,27 +6,31 @@ import VoiceMenu from './VoiceMenu';
 class VoiceMenuDropdown extends React.Component {
 
   static propTypes = {
-    reservation: PropTypes.object
+    incomingCall: PropTypes.object
   };
 
   componentDidMount() {
-    this.openPopup();
-  }
+    const { incomingCall } = this.props;
 
-  componentDidUpdate() {
-    this.openPopup();
-  }
-
-  openPopup = () => {
-    const { reservation } = this.props;
-
-    if (reservation) {
+    if (incomingCall) {
       this.popup.openPopup();
     }
+  }
+
+  componentWillReceiveProps(newProps) {
+    const { incomingCall } = this.props;
+
+    if (!incomingCall && newProps.incomingCall) {
+      this.popup.openPopup();
+    }
+  }
+
+  closePopup = () => {
+    this.popup.closePopup();
   };
 
   render() {
-    const { reservation } = this.props;
+    const { incomingCall } = this.props;
 
     return (
       <div className="voice">
@@ -36,7 +40,7 @@ class VoiceMenuDropdown extends React.Component {
           positionAt="right bottom"
           zIndex={99999}
           content={<VoiceMenu {...this.props} />}
-          className={classNames('voice-menu-popup', { green: reservation })}
+          className={classNames('voice-menu-popup', { green: incomingCall })}
         >
           <i className="ui call icon voice-menu-icon" />
         </PopUp>

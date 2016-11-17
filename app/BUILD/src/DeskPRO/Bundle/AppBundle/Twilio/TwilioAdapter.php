@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Twilio;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioAvailableNumber;
@@ -481,7 +482,8 @@ class TwilioAdapter
             $filters[] = [
                 'targets' => [
                     [
-                        'queue' => $queue->getTaskQueueSid(),
+                        'queue'      => $queue->getTaskQueueSid(),
+                        'expression' => 'worker.agent_id NOT IN task.rejected_workers',
                     ],
                 ],
                 'filter_friendly_name' => $queue->getName(),
@@ -547,6 +549,141 @@ class TwilioAdapter
         }
 
         return $activities[$activityName]->sid;
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param string       $taskSid
+     * @param Person       $person
+     *
+     * @throws TwilioException
+     */
+    public function rejectTaskWorker(VoiceAccount $account, $taskSid, Person $person)
+    {
+        $task = $this->getWorkspace($account)->tasks($taskSid)->fetch();
+        if (!$task) {
+            throw new TwilioException('Task not found');
+        }
+
+        $attributes = json_decode($task->attributes, true);
+        $task->update([
+            'attributes' => json_encode(array_merge($attributes, [
+                'rejected_workers' => array_merge(
+                    $attributes['rejected_workers'],
+                    [$person->getId()]
+                ),
+            ])),
+        ]);
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param string       $taskSid
+     *
+     * @throws TwilioException
+     */
+    public function endTask(VoiceAccount $account, $taskSid)
+    {
+        $task = $this->getWorkspace($account)->tasks($taskSid)->fetch();
+        if (!$task) {
+            throw new TwilioException('Task not found');
+        }
+
+        if ($task->assignmentStatus === 'reserved') {
+            $task->update([
+                'assignmentStatus' => 'canceled',
+            ]);
+        }
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param string       $conferenceSid
+     *
+     * @return \Twilio\Rest\Api\V2010\Account\ConferenceInstance
+     */
+    public function getConference(VoiceAccount $account, $conferenceSid)
+    {
+        return $this->getConferenceContext($account, $conferenceSid)->fetch();
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     * @param bool           $isHold
+     */
+    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold)
+    {
+        $account      = $phoneCall->getNumber()->getAccount();
+        $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
+
+        foreach ($participants as $participant) {
+            if ($participant->callSid === $phoneCall->getCallSid()) {
+                $participant->update([
+                    'hold' => $isHold ? 'true' : 'false',
+                ]);
+            }
+        }
+
+        unset($this->cache[$phoneCall->getConferenceSid()]['participants']);
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     */
+    public function tryEndConference(VoicePhoneCall $phoneCall)
+    {
+        $account      = $phoneCall->getNumber()->getAccount();
+        $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
+
+        if (count($participants) < 2) {
+            foreach ($participants as $participant) {
+                if ($participant->callSid === $phoneCall->getCallSid()) {
+                    $participant->delete();
+                }
+            }
+        }
+
+        unset($this->cache[$phoneCall->getConferenceSid()]['participants']);
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     *
+     * @return Person[]
+     */
+    public function getPhoneCallParticipants(VoicePhoneCall $phoneCall)
+    {
+        $account      = $phoneCall->getNumber()->getAccount();
+        $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
+
+        $agents = [];
+        foreach ($participants as $participant) {
+            $agent = $phoneCall->getPersonByCallSid($participant->callSid);
+            if ($agent) {
+                $agents[] = $agent;
+            }
+        }
+
+        return $agents;
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     *
+     * @return bool
+     */
+    public function isConferenceOnHold(VoicePhoneCall $phoneCall)
+    {
+        $account      = $phoneCall->getNumber()->getAccount();
+        $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
+
+        foreach ($participants as $participant) {
+            if ($participant->callSid === $phoneCall->getCallSid()) {
+                return $participant->hold;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -672,5 +809,34 @@ class TwilioAdapter
         }
 
         return $activities;
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param string       $conferenceSid
+     *
+     * @return \Twilio\Rest\Api\V2010\Account\ConferenceContext
+     */
+    protected function getConferenceContext(VoiceAccount $account, $conferenceSid)
+    {
+        return $this->getClient($account)->conferences($conferenceSid);
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param string       $conferenceSid
+     *
+     * @return \Twilio\Rest\Api\V2010\Account\Conference\ParticipantInstance[]
+     */
+    protected function getConferenceParticipants(VoiceAccount $account, $conferenceSid)
+    {
+        if (!isset($this->cache[$conferenceSid]['participants'])) {
+            $conference   = $this->getConferenceContext($account, $conferenceSid);
+            $participants = $conference->participants->read();
+
+            $this->cache[$conferenceSid]['participants'] = $participants;
+        }
+
+        return $this->cache[$conferenceSid]['participants'];
     }
 }

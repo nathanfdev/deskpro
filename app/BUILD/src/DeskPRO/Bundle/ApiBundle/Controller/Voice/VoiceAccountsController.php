@@ -59,6 +59,13 @@ class VoiceAccountsController extends AbstractVoiceCrudController
     public static $listPaginate = false;
 
     /**
+     * @ApiDoc(
+     *     description="Check if account credentials are correct",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
      * @param Request $request
      *
      * @Rest\Post("/test_credentials")
@@ -93,6 +100,13 @@ class VoiceAccountsController extends AbstractVoiceCrudController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Returns a list of available numbers to buy",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
      * @Rest\Get("/{account}/available_numbers")
      *
      * @param VoiceAccount $account
@@ -140,6 +154,13 @@ class VoiceAccountsController extends AbstractVoiceCrudController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Returns a list of existing (bought) numbers",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
      * @Rest\Get("/{account}/existing_numbers")
      *
      * @param VoiceAccount $account
@@ -159,6 +180,13 @@ class VoiceAccountsController extends AbstractVoiceCrudController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Buy number",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
      * @Rest\Post("/{account}/buy_number")
      *
      * @param VoiceAccount $account

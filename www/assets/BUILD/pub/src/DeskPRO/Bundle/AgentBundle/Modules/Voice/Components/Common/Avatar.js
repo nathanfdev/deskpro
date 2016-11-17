@@ -4,7 +4,7 @@ import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 class Avatar extends React.Component {
 
   static propTypes = {
-    size:   PropTypes.size,
+    size:   PropTypes.number,
     person: PropTypes.object
   };
 

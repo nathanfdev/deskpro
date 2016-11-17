@@ -71,8 +71,7 @@ final class Features
      */
     public function hasVoice()
     {
-        return true;
-//        return $this->getLicense()->hasFlag('has_voice') || $this->getLicense()->hasFlag('is_dev');
+        return $this->getLicense()->hasFlag('has_voice') || $this->getLicense()->hasFlag('is_dev');
     }
 
     /**

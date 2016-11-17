@@ -1,29 +1,14 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import Avatar from '../../Common/Avatar';
-
-@connect(state => ({
-  agents: agentsSelector(state)
-}))
-class CallToAgentContainer extends React.Component {
-
-  render() {
-    return <CallToAgent {...this.props} />;
-  }
-}
 
 class CallToAgent extends React.Component {
 
   static propTypes = {
-    target: PropTypes.object,
-    agents: PropTypes.object
+    agent: PropTypes.object
   };
 
   render() {
-    const { agents, target } = this.props;
-    const agentId = target && target.agent;
-    const agent = agents && agentId > 0 && agents.get(agentId);
+    const { agent } = this.props;
 
     return (
       <div  className="call-to">
@@ -69,7 +54,7 @@ class CallTarget extends React.Component {
     if (type === 'queue') {
       return <CallToQueue target={target} />;
     } else if (type === 'agent') {
-      return <CallToAgentContainer target={target} />;
+      return <CallToAgent agent={target.agent} />;
     }
 
     return null;

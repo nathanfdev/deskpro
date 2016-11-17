@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import TransferListButton from '../TransferListButton';
 import TransferSearch from '../TransferSearch';
-import AgentListContainer from '../AgentList/AgentListContainer';
+import AgentList from '../AgentList';
 import TransferStatus from '../TransferStatus';
 
 class AddList extends React.Component {
+
+  static propTypes = {
+    addTarget:      PropTypes.object,
+    addTargetType:  PropTypes.string,
+    onlineAgents:   PropTypes.object,
+    participants:   PropTypes.array,
+    connection:     PropTypes.object,
+    onAddAgent:     PropTypes.func,
+    onCancelInvite: PropTypes.func
+  };
+
+  static defaultProps = {
+    onAddAgent:     () => {},
+    onCancelInvite: () => {}
+  };
 
   constructor(props) {
     super(props);
@@ -19,28 +34,20 @@ class AddList extends React.Component {
   };
 
   onWarmAdd = () => {
-    setTimeout(() => this.setState({
-      target: this.state.selectedTarget,
-      type:   'warm'
-    }), 1);
+    const { onAddAgent } = this.props;
+    const { selectedTarget } = this.state;
+
+    setTimeout(() => onAddAgent(selectedTarget, 'warm'), 1);
   };
 
-  onColdAdd = () => {
-    setTimeout(() => this.setState({
-      target: this.state.selectedTarget,
-      type:   'cold'
-    }), 1);
-  };
+  onCancel = (target, type) => {
+    const { onCancelInvite } = this.props;
 
-  onCancel = (event) => {
-    event.preventDefault();
-    setTimeout(() => this.setState({
-      target: null,
-      type:   null
-    }), 1);
+    setTimeout(() => onCancelInvite(target, type), 1);
   };
 
   renderList() {
+    const { onlineAgents, participants } = this.props;
     const { selectedTarget } = this.state;
 
     return (
@@ -52,24 +59,20 @@ class AddList extends React.Component {
           Agents online
         </div>
 
-        <AgentListContainer
+        <AgentList
+          agents={onlineAgents}
+          participants={participants}
           target={selectedTarget}
           onClick={this.onChangeTarget}
         />
 
         <div className="voice-ticket-list-buttons">
           <TransferListButton
-            title="Warm add"
+            title="Warm Add"
             icon="call"
             help="Places caller on hold"
             disabled={!selectedTarget}
             onClick={this.onWarmAdd}
-          />
-          <TransferListButton
-            title="Cold add"
-            icon="share"
-            disabled={!selectedTarget}
-            onClick={this.onColdAdd}
           />
         </div>
       </div>
@@ -77,16 +80,17 @@ class AddList extends React.Component {
   }
 
   render() {
-    const { target, type } = this.state;
+    const { connection, addTarget, addTargetType } = this.props;
 
-    if (target) {
+    if (addTarget) {
       return (
         <div className="voice-ticket-add-list">
           <TransferStatus
+            connection={connection}
             title="Adding..."
             cancelLabel="Cancel add"
-            type={type}
-            target={target}
+            type={addTargetType}
+            target={addTarget}
             onCancel={this.onCancel}
           />
         </div>

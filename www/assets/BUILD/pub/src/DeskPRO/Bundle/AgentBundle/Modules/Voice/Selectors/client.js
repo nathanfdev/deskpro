@@ -1,19 +1,12 @@
 import { createSelector } from 'reselect';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 
+const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
 const stateSelector = state => state.Voice.client;
 
-export const reservationSelector = createSelector(
-  stateSelector,
-  state => state.get('reservation')
-);
-
-export const isVoiceEnabled = createSelector(
+export const isVoiceEnabledSelector = createSelector(
   meSelector,
-  (me) => {
-    const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
-    return isSecure && me.getIn(['agent_data', 'is_voice_enabled']);
-  }
+  me => isSecure && me.getIn(['agent_data', 'is_voice_enabled'])
 );
 
 // tokens
@@ -61,4 +54,20 @@ export const reservedActivitySidSelector = createSelector(
 export const offlineActivitySidSelector = createSelector(
   activitiesSelector,
   activities => activities && activities.get('offline_sid')
+);
+
+// connections
+export const incomingCallsSelector = createSelector(
+  stateSelector,
+  state => state.get('incomingCalls')
+);
+
+export const incomingCallSelector = createSelector(
+  incomingCallsSelector,
+  incomingCalls => incomingCalls.first()
+);
+
+export const connectionsSelector = createSelector(
+  stateSelector,
+  state => state.get('connections')
 );

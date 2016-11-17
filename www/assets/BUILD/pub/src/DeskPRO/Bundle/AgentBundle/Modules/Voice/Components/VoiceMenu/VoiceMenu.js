@@ -7,23 +7,22 @@ import IncomingCall from './IncomingCall/IncomingCall';
 class VoiceMenu extends React.Component {
 
   static propTypes = {
-    me:               PropTypes.object,
-    reservation:      PropTypes.object,
-    onChangeSettings: PropTypes.onChange,
-    onAcceptCall:     PropTypes.func,
-    onDeclineCall:    PropTypes.func,
-    onHangup:         PropTypes.func
+    me:            PropTypes.object,
+    agents:        PropTypes.object,
+    incomingCall:  PropTypes.object,
+    onAcceptCall:  PropTypes.func,
+    onDeclineCall: PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      tabName: props.reservation ? 'phone' : 'settings'
+      tabName: props.incomingCall ? 'phone' : 'settings'
     };
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.reservation) {
+    if (newProps.incomingCall) {
       this.setState({
         tabName: 'phone'
       });
@@ -35,23 +34,24 @@ class VoiceMenu extends React.Component {
   };
 
   getPhoneTabName() {
-    return this.props.reservation ? 'Incoming call ...' : 'Dialpad';
+    return this.props.incomingCall ? 'Incoming call ...' : 'Dialpad';
   }
 
   getPhoneTabIcon() {
-    return this.props.reservation ? 'fa-phone' : 'fa-th';
+    return this.props.incomingCall ? 'fa-phone' : 'fa-th';
   }
 
   renderPhoneTab() {
-    const { me, reservation, onAcceptCall, onDeclineCall, onHangup } = this.props;
-    if (reservation) {
+    const { me, agents, incomingCall, onAcceptCall, onDeclineCall } = this.props;
+
+    if (incomingCall) {
       return (
         <IncomingCall
           me={me}
-          reservation={reservation}
+          agents={agents}
+          incomingCall={incomingCall}
           onAccept={onAcceptCall}
           onDecline={onDeclineCall}
-          onHangup={onHangup}
         />
       );
     }
@@ -60,7 +60,6 @@ class VoiceMenu extends React.Component {
   }
 
   render() {
-    const { onChangeSettings } = this.props;
     const { tabName } = this.state;
 
     return (
@@ -85,7 +84,7 @@ class VoiceMenu extends React.Component {
           />
         </div>
         <Tab active={tabName === 'settings'}>
-          <Settings onChange={onChangeSettings} />
+          <Settings />
         </Tab>
         <Tab active={tabName === 'phone'}>
           {this.renderPhoneTab()}

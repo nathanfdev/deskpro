@@ -4,18 +4,13 @@ import { Button } from 'DeskPRO/Component/Semantic/Button';
 import Timer from 'DeskPRO/Component/Timer';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import TransferListContainer from './TransferList/TransferListContainer';
-import AddListContainer from './AddList/AddListContainer';
+import TransferList from './TransferList/TransferList';
+import AddList from './AddList/AddList';
 
-class TicketHeader extends React.Component {
+class VoiceControls extends React.Component {
 
   static propTypes = {
-    status:    PropTypes.string,
-    hold:      PropTypes.bool,
-    onRedial:  PropTypes.func,
-    onHold:    PropTypes.func,
-    onMute:    PropTypes.func,
-    onEndCall: PropTypes.func
+    status: PropTypes.string
   };
 
   static defaultProps = {
@@ -26,27 +21,25 @@ class TicketHeader extends React.Component {
   };
 
   render() {
-    const { status, hold } = this.props;
-    const { onRedial, onHold, onMute, onEndCall } = this.props;
+    const { status } = this.props;
 
     switch (status) {
-      case 'dial':
-        return <Connecting title="Dialling ..." />;
-      case 'connect':
+      case 'dialing':
+        return <Connecting title="Dialing ..." />;
+      case 'connecting':
         return <Connecting title="Connecting ..." />;
-      case 'ring':
+      case 'ringing':
         return <Connecting title="Ringing ..." />;
       case 'connected':
         return <Connecting title="Connected" className="active" />;
       case 'busy':
-        return <Busy onRedial={onRedial} />;
+        return <Busy {...this.props} />;
       case 'active':
+      case 'closed':
         return (
           <Active
-            hold={hold}
-            onHold={onHold}
-            onMute={onMute}
-            onEndCall={onEndCall}
+            {...this.props}
+            ended={status === 'closed'}
           />
         );
       default:
@@ -66,7 +59,7 @@ class Connecting extends React.Component {
     const { title, className } = this.props;
 
     return (
-      <div className={classNames('voice-ticket-header', className)}>
+      <div className={classNames('voice-controls', className)}>
         <Title>
           {title}
         </Title>
@@ -88,7 +81,7 @@ class Busy extends React.Component {
 
   render() {
     return (
-      <div className="voice-ticket-header busy">
+      <div className="voice-controls busy">
         <Title>
           Busy
         </Title>
@@ -104,10 +97,13 @@ class Busy extends React.Component {
 class Active extends React.Component {
 
   static propTypes = {
-    hold:      PropTypes.bool,
-    onHold:    PropTypes.func,
-    onMute:    PropTypes.func,
-    onEndCall: PropTypes.func
+    mute:         PropTypes.bool,
+    hold:         PropTypes.bool,
+    ended:        PropTypes.bool,
+    onlineAgents: PropTypes.object,
+    onHold:       PropTypes.func,
+    onMute:       PropTypes.func,
+    onEndCall:    PropTypes.func
   };
 
   constructor(props) {
@@ -160,46 +156,55 @@ class Active extends React.Component {
   };
 
   render() {
-    const { hold } = this.props;
+    const { hold, mute, ended, onlineAgents } = this.props;
     const { transferMenuOpened, addMenuOpened } = this.state;
+    const noAgents = !onlineAgents || !onlineAgents.size;
 
     return (
-      <div className={classNames('voice-ticket-header active', { hold })}>
+      <div className={classNames('voice-controls active', { hold, ended })}>
         <Title>
-          Duration: <Timer />
+          Duration: <Timer paused={ended} />
         </Title>
 
-        <span className="voice-ticket-header-recording">
+        <span className="voice-controls-recording">
           <i className="fa fa-dot-circle-o" />
           Recording
         </span>
 
-        <Button className={classNames('basic', { active: hold })} onClick={this.onHold}>
+        <Button
+          className={classNames('basic', { active: hold, disabled: ended })}
+          onClick={this.onHold}
+        >
           <i className="pause icon" />
           Hold
         </Button>
-        <Button className={classNames('basic', { disabled: hold })} onClick={this.onMute}>
-          <i className="mute icon" />
+        <Button
+          className={classNames('basic', { active: mute, disabled: hold || ended })}
+          onClick={this.onMute}
+        >
+          <i className={classNames(mute ? 'mute' : 'unmute', 'icon')} />
           Mute
         </Button>
         <Button
           ref={(c) => { this.transferButton = c; }}
-          className={classNames('basic caret-button', { active: transferMenuOpened })}
+          className={classNames('basic caret-button', { active: transferMenuOpened, disabled: ended || noAgents })}
           onClick={this.onClickTransfer}
         >
           <i className="share icon" />
           Transfer
-          <i className="caret down icon" />
         </Button>
         <Button
           ref={(c) => { this.addButton = c; }}
-          className={classNames('basic', { active: addMenuOpened })}
+          className={classNames('basic', { active: addMenuOpened, disabled: ended || noAgents })}
           onClick={this.onClickAdd}
         >
-          <i className="add user icon" />
+          <i className="add icon" />
           Add
         </Button>
-        <Button className="red" onClick={this.onEndCall}>
+        <Button
+          className={classNames('red', { disabled: ended })}
+          onClick={this.onEndCall}
+        >
           End call
         </Button>
 
@@ -210,7 +215,7 @@ class Active extends React.Component {
           positionTarget={this.transferButton}
         >
           <ClickOut onClickOut={this.onCloseTransferMenu}>
-            <TransferListContainer {...this.props} />
+            <TransferList {...this.props} />
           </ClickOut>
         </Detached>
         <Detached
@@ -220,7 +225,7 @@ class Active extends React.Component {
           positionTarget={this.addButton}
         >
           <ClickOut onClickOut={this.onCloseAddMenu}>
-            <AddListContainer {...this.props} />
+            <AddList {...this.props} />
           </ClickOut>
         </Detached>
       </div>
@@ -241,11 +246,11 @@ class Title extends React.Component {
     const { children } = this.props;
 
     return (
-      <span className="voice-ticket-header-title">
+      <span className="voice-controls-title">
         <i className="fa fa-phone" /> {children}
       </span>
     );
   }
 }
 
-export default TicketHeader;
+export default VoiceControls;

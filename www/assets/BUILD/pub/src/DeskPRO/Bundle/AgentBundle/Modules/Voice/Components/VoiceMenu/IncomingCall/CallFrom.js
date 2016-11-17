@@ -1,20 +1,29 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Timer from 'DeskPRO/Component/Timer';
-import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
+import { voiceAgentsSelector } from '../../../Selectors/agents';
 import Avatar from '../../Common/Avatar';
 
 class CallFrom extends React.Component {
 
   static propTypes = {
-    reservation: PropTypes.object
+    incomingCall: PropTypes.object
   };
 
   render() {
-    const { reservation } = this.props;
-    const attributes = reservation && reservation.task ? reservation.task.attributes : {};
-    const number = attributes.from;
+    const { incomingCall } = this.props;
     const person = null;
+
+    let number;
+
+    if (incomingCall && incomingCall.task) {
+      // twilio reservation props
+      const attributes = incomingCall && incomingCall.task ? incomingCall.task.attributes : {};
+      number = attributes.from;
+    } else {
+      // participant invite props
+      number = incomingCall.get('number');
+    }
 
     return (
       <div className="call-from">
@@ -43,7 +52,7 @@ class CallFrom extends React.Component {
 }
 
 @connect(state => ({
-  agents: agentsSelector(state)
+  agents: voiceAgentsSelector(state)
 }))
 class CallFromContainer extends React.Component {
 

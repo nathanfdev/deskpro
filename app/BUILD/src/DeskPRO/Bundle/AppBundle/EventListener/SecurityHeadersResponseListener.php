@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Component\Util\ListUtils;
@@ -38,6 +34,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Class SecurityHeadersResponseListener.
+ */
 class SecurityHeadersResponseListener implements EventSubscriberInterface
 {
     /**

@@ -223,26 +223,29 @@ class Chat extends React.Component {
     if (!window.DESKPRO_APP_SETTINGS['core.apps_chat'] || !window.DESKPRO_PERSON_PERMS['agent_chat.use']) {
       return null;
     }
-    return (<div className="chat" onClick={this.togglePopup}>
-      <PopUp
-        positionMy="right top"
-        positionAt="right bottom"
-        id={2}
-        elementId="chat-menu-popup"
-        zIndex={99999}
-        autoOpen={false}
-        ref={(c) => { this.chatPopup = c; }}
-        className="chat_popup"
-        content={this.getPopupContent()}
-      >
-        <Isvg
-          className={classNames({ on: activeChat, others: onlineAgents.length })}
-          src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/chat.svg`}
-        />
-        <br />
-        {this.getStatus()}
-      </PopUp>
-    </div>);
+
+    return (
+      <div className="chat" onClick={this.togglePopup}>
+        <PopUp
+          positionMy="right top"
+          positionAt="right bottom"
+          id={2}
+          elementId="chat-menu-popup"
+          zIndex={99999}
+          autoOpen={false}
+          ref={(c) => { this.chatPopup = c; }}
+          className="chat_popup"
+          content={this.getPopupContent()}
+        >
+          <Isvg
+            className={classNames({ on: activeChat, others: onlineAgents.length })}
+            src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/chat.svg`}
+          />
+          <br />
+          {this.getStatus()}
+        </PopUp>
+      </div>
+    );
   }
 }
 export default Chat;

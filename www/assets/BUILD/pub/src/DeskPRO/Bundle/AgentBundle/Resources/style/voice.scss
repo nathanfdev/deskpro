@@ -287,6 +287,11 @@ $voice-green-border-color: #47BF61;
             top: 0;
             border-radius: 30px;
             border: 5px solid #FFFFFF;
+
+            .text {
+              margin: -5px;
+              font-size: 24px;
+            }
           }
         }
 
@@ -357,7 +362,7 @@ $voice-green-border-color: #47BF61;
           padding: 30px;
 
           .call-button {
-            margin-right: 30px;
+            margin-right: 25px;
             width: 190px;
 
             .waiting-time {
@@ -377,6 +382,24 @@ $voice-green-border-color: #47BF61;
               margin-right: 10px;
               color: #D4145A;
               font-size: 20px;
+            }
+          }
+        }
+
+        .incoming-call-type {
+          position: relative;
+
+          > div {
+            position: absolute;
+            top: -12px;
+            width: 100%;
+
+            span {
+              padding: 3px 10px;
+              background-color: $voice-green-border-color;
+              font-weight: 400;
+              font-size: 12px;
+              color: $dp-greyscale-50;
             }
           }
         }
@@ -410,8 +433,8 @@ $voice-green-border-color: #47BF61;
   }
 }
 
-.voice-ticket-header {
-  height: 80px;
+.voice-controls {
+  margin: 10px;
   padding: 20px;
   font-family: 'Open Sans';
   font-weight: 600;
@@ -425,7 +448,7 @@ $voice-green-border-color: #47BF61;
     font-size: 18px;
   }
 
-  .voice-ticket-header-title {
+  .voice-controls-title {
     line-height: 40px;
 
     i {
@@ -437,7 +460,7 @@ $voice-green-border-color: #47BF61;
   &.busy {
     border-color: #FBB03B;
 
-    .voice-ticket-header-title {
+    .voice-controls-title {
       i {
         color: #FBB03B;
       }
@@ -451,13 +474,13 @@ $voice-green-border-color: #47BF61;
   &.active {
     border-color: #47BF61;
 
-    .voice-ticket-header-title {
+    .voice-controls-title {
       i {
         color: #47BF61;
       }
     }
 
-    .voice-ticket-header-recording {
+    .voice-controls-recording {
       margin: 0 20px;
 
       i {
@@ -484,8 +507,10 @@ $voice-green-border-color: #47BF61;
 
     &.hold {
       border-color: #D4145A;
+    }
 
-      .voice-ticket-header-title, .voice-ticket-header-recording {
+    &.hold, &.ended {
+      .voice-controls-title, .voice-controls-recording {
         opacity: 0.45;
       }
     }
@@ -506,6 +531,10 @@ $voice-green-border-color: #47BF61;
     input {
       border-radius: 0;
       width: 100%;
+    }
+
+    .icon {
+      left: inherit !important;
     }
   }
 
@@ -588,6 +617,12 @@ $voice-green-border-color: #47BF61;
         color: $dp-greyscale-850;
       }
 
+      .agent-participant {
+        margin-left: 10px;
+        font-size: 12px;
+        color: $dp-greyscale-450;
+      }
+
       .avatar {
         display: inline-block;
         position: relative;
@@ -617,6 +652,10 @@ $voice-green-border-color: #47BF61;
       &.active {
         color: $dp-sonic-primary;
         background-color: $dp-morning-sky;
+      }
+
+      &.participant {
+        cursor: default;
       }
     }
   }

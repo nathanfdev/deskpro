@@ -1,2 +1,2 @@
 import './voice';
-import './ticketHeader';
+import './controls';

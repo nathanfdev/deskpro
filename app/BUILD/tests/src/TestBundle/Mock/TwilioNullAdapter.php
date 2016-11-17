@@ -31,7 +31,9 @@ namespace DpTestSrc\TestBundle\Mock;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities;
 use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use Twilio\Rest\Api\V2010;
 use Twilio\Rest\Api\V2010\Account\ApplicationInstance;
@@ -225,6 +227,7 @@ class TwilioNullAdapter extends TwilioAdapter
      */
     public function getActivities(VoiceAccount $account)
     {
+        return new TwilioActivities('', '', '', '', '');
     }
 
     /**
@@ -232,6 +235,50 @@ class TwilioNullAdapter extends TwilioAdapter
      */
     public function getActivitySid(VoiceAccount $account, $activityName)
     {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rejectTaskWorker(VoiceAccount $account, $taskSid, Person $person)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConference(VoiceAccount $account, $conferenceSid)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function tryEndConference(VoicePhoneCall $phoneCall)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPhoneCallParticipants(VoicePhoneCall $phoneCall)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isConferenceOnHold(VoicePhoneCall $phoneCall)
+    {
+        return false;
     }
 
     /**

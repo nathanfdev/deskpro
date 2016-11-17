@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import StatusForm from './StatusForm';
 import { editAgent } from '../../../Agent/Actions/agentActions';
-import { isVoiceEnabled } from '../../../Voice/Selectors/client';
+import { isVoiceEnabledSelector } from '../../../Voice/Selectors/client';
 
 @connect(state => ({
   me:           meSelector(state),
-  voiceEnabled: isVoiceEnabled(state)
+  voiceEnabled: isVoiceEnabledSelector(state)
 }))
 class StatusFormContainer extends React.Component {
 

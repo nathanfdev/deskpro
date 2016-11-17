@@ -19,7 +19,7 @@ class UserProfile extends React.Component {
           {agentPhrases.get('agent.general.your_profile')}
         </div>
         <div>
-          <StatusFormContainer />
+          {window.DP_HAS_VOICE && <StatusFormContainer />}
           <div className="voice-profile-menu">
             <div className="voice-profile-menu-item" onClick={onClickPreferences}>
               <i className="fa fa-gear" />

@@ -2753,6 +2753,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}).bind(this), 'chat_ids', { recurring: true });
 
 		this.getTabWatcher().addTabTypeWatcher('userchat', new DeskPRO.Agent.WindowElement.TabWatcher.UserChat());
+		this.getTabWatcher().addTabTypeWatcher('voice-call', new DeskPRO.Agent.WindowElement.TabWatcher.VoiceCallInProgress());
 	},
 
 	_initRoutes: function() {
@@ -2795,6 +2796,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('kb_article_view', this.loadRoute.bind(this));
 		this.addPageRouteLoader('kb_article_new', this.loadRoute.bind(this));
 		this.addPageRouteLoader('kb_article_edit', this.loadRoute.bind(this));
+		this.addPageRouteLoader('voice', this.loadRoute.bind(this));
 		this.addPageRouteLoader('poppage', this.loadRouteOverlay.bind(this));
 
 		var self = this;

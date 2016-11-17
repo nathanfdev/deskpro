@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioClientTokens;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class VoiceTokenController.
@@ -49,7 +50,16 @@ use FOS\RestBundle\View\View;
 class VoiceClientController extends BaseController
 {
     /**
+     * @ApiDoc(
+     *     description="Returns client voice auth tokens",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
      * @Rest\Get("/tokens")
+     *
+     * @return View
      */
     public function createWorkerTokenAction()
     {
@@ -66,7 +76,16 @@ class VoiceClientController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Returns voice worker activity sids",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
      * @Rest\Get("/activities")
+     *
+     * @return View
      */
     public function getActivitiesAction()
     {
@@ -74,6 +93,30 @@ class VoiceClientController extends BaseController
         $account = $this->getVoiceAccount();
 
         return new View($this->wrap($adapter->getActivities($account)));
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Declines and ignores incoming phone call",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Put("/reject_call/{taskSid}")
+     *
+     * @param string $taskSid
+     *
+     * @return View
+     */
+    public function rejectCallAction($taskSid)
+    {
+        $adapter = $this->get('twilio_adapter');
+        $account = $this->getVoiceAccount();
+
+        $adapter->rejectTaskWorker($account, $taskSid, $this->getUser());
+
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

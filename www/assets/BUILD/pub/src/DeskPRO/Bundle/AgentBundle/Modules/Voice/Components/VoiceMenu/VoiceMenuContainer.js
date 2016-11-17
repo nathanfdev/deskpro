@@ -1,39 +1,52 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { voiceAgentsSelector } from '../../Selectors/agents';
 import VoiceMenuDropdown from './VoiceMenuDropdown';
-import { acceptPhoneCall, declinePhoneCall, hangup } from '../../Actions/clientActions';
-import { reservationSelector } from '../../Selectors/client';
+import { acceptPhoneCall, declinePhoneCall } from '../../Actions/clientActions';
+import { incomingCallSelector } from '../../Selectors/client';
 
 @connect(state => ({
-  agents:      agentsSelector(state),
-  reservation: reservationSelector(state)
+  me:           meSelector(state),
+  agents:       voiceAgentsSelector(state),
+  incomingCall: incomingCallSelector(state)
 }))
 class VoiceMenuContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func
+    dispatch:     PropTypes.func,
+    incomingCall: PropTypes.object
   };
 
+  componentWillReceiveProps(newProps) {
+    const { incomingCall } = this.props;
+
+    if (!newProps.incomingCall && incomingCall) {
+      this.popup.closePopup();
+    }
+  }
+
   onAcceptCall = () => {
-    this.props.dispatch(acceptPhoneCall());
+    const { incomingCall, dispatch } = this.props;
+
+    dispatch(acceptPhoneCall(incomingCall));
+    this.popup.closePopup();
   };
 
   onDeclineCall = () => {
-    this.props.dispatch(declinePhoneCall());
-  };
+    const { incomingCall, dispatch } = this.props;
 
-  onHangup = () => {
-    this.props.dispatch(hangup());
+    dispatch(declinePhoneCall(incomingCall));
+    this.popup.closePopup();
   };
 
   render() {
     return (
       <VoiceMenuDropdown
+        ref={(c) => { this.popup = c; }}
         {...this.props}
         onAcceptCall={this.onAcceptCall}
         onDeclineCall={this.onDeclineCall}
-        onHangup={this.onHangup}
       />
     );
   }

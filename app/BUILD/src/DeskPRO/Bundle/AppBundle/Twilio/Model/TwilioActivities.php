@@ -61,7 +61,7 @@ class TwilioActivities
      *
      * @JMS\Type("string")
      */
-    private $busySId;
+    private $busySid;
 
     /**
      * @var string
@@ -84,7 +84,7 @@ class TwilioActivities
         $this->offlineSid      = $offlineSid;
         $this->idleSid         = $idleSid;
         $this->idleDisabledSid = $idleDisabledSid;
-        $this->busySId         = $busySId;
+        $this->busySid         = $busySId;
         $this->reservedSid     = $reservedSid;
     }
 
@@ -115,9 +115,9 @@ class TwilioActivities
     /**
      * @return string
      */
-    public function getBusySId()
+    public function getBusySid()
     {
-        return $this->busySId;
+        return $this->busySid;
     }
 
     /**

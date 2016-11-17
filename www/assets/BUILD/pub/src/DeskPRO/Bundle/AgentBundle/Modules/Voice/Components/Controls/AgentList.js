@@ -1,18 +1,20 @@
 import React, { PropTypes } from 'react';
 import ScrollArea from 'react-scrollbar-versioned';
 import classNames from 'classnames';
-import Avatar from '../../Common/Avatar';
+import Avatar from '../Common/Avatar';
 
-class Agents extends React.Component {
+class AgentList extends React.Component {
 
   static propTypes = {
-    target:  PropTypes.object,
-    agents:  PropTypes.object,
-    onClick: PropTypes.func
+    target:       PropTypes.object,
+    agents:       PropTypes.object,
+    participants: PropTypes.array,
+    onClick:      PropTypes.func
   };
 
   static defaultProps = {
-    onClick: () => {}
+    onClick:      () => {},
+    participants: []
   };
 
   onSelect = (agent) => {
@@ -20,7 +22,7 @@ class Agents extends React.Component {
   };
 
   render() {
-    const { agents, target } = this.props;
+    const { agents, target, participants } = this.props;
 
     return (
       <ScrollArea className="voice-agent-list">
@@ -29,6 +31,7 @@ class Agents extends React.Component {
             key={index}
             agent={agent}
             active={agent === target}
+            participant={participants.indexOf(agent.get('id')) !== -1}
             onClick={this.onSelect}
           />
         )}
@@ -40,33 +43,41 @@ class Agents extends React.Component {
 class Agent extends React.Component {
 
   static propTypes = {
-    agent:   PropTypes.object,
-    active:  PropTypes.bool,
-    onClick: PropTypes.func
+    agent:       PropTypes.object,
+    active:      PropTypes.bool,
+    participant: PropTypes.bool,
+    onClick:     PropTypes.func
   };
 
   onClick = (event) => {
     event.preventDefault();
 
-    const { agent, onClick } = this.props;
+    const { agent, participant, onClick } = this.props;
+
+    // already in conference, skipping
+    if (participant) {
+      return;
+    }
+
     onClick(agent);
   };
 
   render() {
-    const { agent, active } = this.props;
+    const { agent, active, participant } = this.props;
 
     return (
       <div
-        className={classNames('voice-agent-list-item', { active })}
+        className={classNames('voice-agent-list-item', { active, participant })}
         onClick={this.onClick}
       >
         <Avatar person={agent} size={24} />
         <span className="agent-name">
           {agent.get('name')}
+          {participant && <span className="agent-participant">(participant)</span>}
         </span>
       </div>
     );
   }
 }
 
-export default Agents;
+export default AgentList;

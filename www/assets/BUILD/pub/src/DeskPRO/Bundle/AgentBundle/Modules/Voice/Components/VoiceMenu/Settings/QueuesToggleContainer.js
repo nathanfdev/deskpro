@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { voiceAgentsSelector } from '../../../Selectors/agents';
 import { loadQueues, updateQueue } from '../../../Actions/queueActions';
 import { allQueuesSelector } from '../../../Selectors/queue';
 import Queues from './Queues';
@@ -9,7 +9,7 @@ import Queues from './Queues';
 @connect(state => ({
   me:     meSelector(state),
   queues: allQueuesSelector(state),
-  agents: agentsSelector(state)
+  agents: voiceAgentsSelector(state)
 }))
 class QueuesToggleContainer extends React.Component {
 

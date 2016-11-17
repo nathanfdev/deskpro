@@ -454,6 +454,15 @@ $contrast: 5% !default;
     }
   }
 }
+button.ui {
+  i.icon {
+    padding: 0;
+  }
+}
+i.ui.icon {
+  padding: 0;
+}
+
 #user-menu-popup {
   &:before {
     right: 30px;

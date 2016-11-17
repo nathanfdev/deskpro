@@ -11,7 +11,7 @@ import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
 import VoiceMenu from '../../Voice/Components/VoiceMenu/VoiceMenuContainer';
-import { isVoiceEnabled } from '../../Voice/Selectors/client';
+import { isVoiceEnabledSelector } from '../../Voice/Selectors/client';
 
 // import { IMContainer } from '../IM/Components/IMContainer';
 // import { HeaderWidget } from '../IM/Components/HeaderWidget';
@@ -20,7 +20,7 @@ import { isVoiceEnabled } from '../../Voice/Selectors/client';
   agents:          collectionSelectorFactory('Person', 'agents')(state),
   chatDepartments: collectionSelectorFactory('Department', 'all_chat')(state),
   me:              meSelector(state),
-  voiceEnabled:    isVoiceEnabled(state)
+  voiceEnabled:    isVoiceEnabledSelector(state)
 }))
 export class AgentTopBarContainer extends SeparateComponent {
 
@@ -227,7 +227,7 @@ export class AgentTopBar extends React.Component {
             />
           </TopBarItem>
           <TopBarItem>
-            {voiceEnabled && <VoiceMenu />}
+            {window.DP_HAS_VOICE && voiceEnabled && <VoiceMenu />}
             <User src={this.getUserPicture()} />
             <Chat
               agents={agents.toArray()}

@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Ticket;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -39,16 +41,23 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity()
  * @ORM\Table(name="voice_phone_calls", uniqueConstraints={
- *   @ORM\UniqueConstraint(name="call_sid", columns={"sid"})
+ *   @ORM\UniqueConstraint(name="call_sid", columns={"call_sid"}),
+ *   @ORM\UniqueConstraint(name="conference_sid", columns={"conference_sid"})
  * })
  *
  * @JMS\ExclusionPolicy("all")
  *
  * @UniqueEntity("sid")
+ * @UniqueEntity("conferenceSid")
  */
 class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
+
+    const STATUS_PENDING       = 'pending';
+    const STATUS_COLD_TRANSFER = 'cold_transfer';
+    const STATUS_ACTIVE        = 'active';
+    const STATUS_ENDED         = 'ended';
 
     /**
      * The unique ID.
@@ -65,14 +74,34 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $id;
 
     /**
-     * @ORM\Column(name="sid", type="string", length=50)
+     * @ORM\Column(name="task_sid", type="string", length=50, nullable=true)
      *
      * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var string
      */
-    private $sid;
+    private $taskSid;
+
+    /**
+     * @ORM\Column(name="call_sid", type="string", length=50)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $callSid;
+
+    /**
+     * @ORM\Column(name="conference_sid", type="string", length=50, nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $conferenceSid;
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber")
@@ -98,6 +127,16 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $fromNumber;
 
     /**
+     * @ORM\Column(name="status", type="string", length=50)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $status = self::STATUS_PENDING;
+
+    /**
      * @ORM\Column(name="data", type="json_array")
      *
      * @JMS\Expose()
@@ -106,6 +145,29 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      * @var array
      */
     private $data;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Ticket", mappedBy="voicePhoneCalls", fetch="EXTRA_LAZY")
+     *
+     * @var Ticket[]|ArrayCollection
+     */
+    private $tickets;
+
+    /**
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipant", mappedBy="phoneCall", cascade={"persist"}, orphanRemoval=true)
+     *
+     * @var VoicePhoneCallParticipant[]|ArrayCollection
+     */
+    private $agentParticipants;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->tickets           = new ArrayCollection();
+        $this->agentParticipants = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -138,19 +200,59 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @return string
      */
-    public function getSid()
+    public function getTaskSid()
     {
-        return $this->sid;
+        return $this->taskSid;
     }
 
     /**
-     * @param string $sid
+     * @param string $taskSid
      *
      * @return $this
      */
-    public function setSid($sid)
+    public function setTaskSid($taskSid)
     {
-        $this->setModelField('sid', $sid);
+        $this->setModelField('taskSid', $taskSid);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCallSid()
+    {
+        return $this->callSid;
+    }
+
+    /**
+     * @param string $callSid
+     *
+     * @return $this
+     */
+    public function setCallSid($callSid)
+    {
+        $this->setModelField('callSid', $callSid);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConferenceSid()
+    {
+        return $this->conferenceSid;
+    }
+
+    /**
+     * @param string $conferenceSid
+     *
+     * @return $this
+     */
+    public function setConferenceSid($conferenceSid)
+    {
+        $this->setModelField('conferenceSid', $conferenceSid);
 
         return $this;
     }
@@ -176,6 +278,26 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     *
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->setModelField('status', $status);
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getData()
@@ -193,5 +315,88 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         $this->setModelField('data', $data);
 
         return $this;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\Ticket[]|ArrayCollection
+     */
+    public function getTickets()
+    {
+        return $this->tickets;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function addTicket(Ticket $ticket)
+    {
+        $this->tickets->add($ticket);
+
+        return $this;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function removeTicket(Ticket $ticket)
+    {
+        $this->tickets->removeElement($ticket);
+
+        return $this;
+    }
+
+    /**
+     * @return VoicePhoneCallParticipant[]|ArrayCollection
+     */
+    public function getAgentParticipants()
+    {
+        return $this->agentParticipants;
+    }
+
+    /**
+     * @param VoicePhoneCallParticipant $participant
+     *
+     * @return $this
+     */
+    public function addAgentParticipant(VoicePhoneCallParticipant $participant)
+    {
+        $this->agentParticipants->add($participant);
+        $participant->setPhoneCall($this);
+
+        return $this;
+    }
+
+    /**
+     * @param VoicePhoneCallParticipant $participant
+     *
+     * @return $this
+     */
+    public function removeAgentParticipant(VoicePhoneCallParticipant $participant)
+    {
+        $this->agentParticipants->removeElement($participant);
+        $participant->setPhoneCall(null);
+
+        return $this;
+    }
+
+    /**
+     * @param string $callSid
+     *
+     * @return \Application\DeskPRO\Entity\Person|null
+     */
+    public function getPersonByCallSid($callSid)
+    {
+        $person = null;
+        foreach ($this->agentParticipants as $participant) {
+            if ($participant->getCallSid() === $callSid) {
+                $person = $participant->getPerson();
+            }
+        }
+
+        return $person;
     }
 }

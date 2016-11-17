@@ -8,7 +8,7 @@ import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Applicatio
 import { setImMe } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { setVoiceTokens, setVoiceActivities, voiceBootstrap } from '../../Voice/Actions/clientActions';
-import { isVoiceEnabled } from '../../Voice/Selectors/client';
+import { isVoiceEnabledSelector } from '../../Voice/Selectors/client';
 
 export const loadAgentPhraseTranslations = createAction(
   'AGENT_LOAD_PHRASE_TRANSLATIONS',
@@ -92,7 +92,7 @@ export const preloadData    = createAction(
           dispatch(setVoiceActivities(data.voice_activities));
 
           const state = getState();
-          const voiceEnabled = isVoiceEnabled(state);
+          const voiceEnabled = isVoiceEnabledSelector(state);
 
           if (voiceEnabled) {
             dispatch(voiceBootstrap());

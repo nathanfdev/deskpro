@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 class Timer extends React.Component {
 
   static propTypes = {
+    paused: PropTypes.bool,
     format: PropTypes.string
   };
 
@@ -14,6 +15,30 @@ class Timer extends React.Component {
   }
 
   componentDidMount() {
+    const { paused } = this.props;
+
+    if (!paused) {
+      this.startTimer();
+    }
+  }
+
+  componentWillReceiveProps(newProps) {
+    const { paused } = this.props;
+
+    if (paused !== newProps.paused) {
+      if (newProps.paused) {
+        this.stopTimer();
+      } else {
+        this.startTimer();
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    this.stopTimer();
+  }
+
+  startTimer() {
     this.interval = setInterval(() => {
       this.setState({
         time: this.state.time + 1
@@ -21,7 +46,7 @@ class Timer extends React.Component {
     }, 1000);
   }
 
-  componentWillUnmount() {
+  stopTimer() {
     clearInterval(this.interval);
   }
 
