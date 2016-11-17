@@ -155,7 +155,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			$('#' + this.selected_id).addClass('nav-selected');
 		}
 
-		$('#publish_brand_id').select2().on('change', function() {
+		$('select#publish_brand_id').select2().on('change', function() {
 			self.reload();
 		});
 
@@ -226,7 +226,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		var self = this;
 
 		searchPane.find('.brand_id').on('change', function(e) {
-			$('#publish_brand_id').select2('val', $(e.target).val());
+			$('select#publish_brand_id').select2('val', $(e.target).val());
 			self.reload();
 		});
 

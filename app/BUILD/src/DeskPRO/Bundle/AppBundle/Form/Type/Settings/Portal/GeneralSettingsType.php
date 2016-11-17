@@ -49,6 +49,7 @@ class GeneralSettingsType extends AbstractType
     {
         $builder
             ->add('site_name', TextType::class)
+            ->add('brand_name', TextType::class)
             ->add('site_url', UrlType::class)
             ->add('deskpro_name', TextType::class)
             ->add('deskpro_url', UrlType::class)

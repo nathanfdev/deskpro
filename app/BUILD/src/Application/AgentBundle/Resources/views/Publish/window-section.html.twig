@@ -59,6 +59,8 @@
 				{% endfor %}
 			</select>
 		</section>
+	{% else %}
+		<input type="hidden" name="brand_id" id="publish_brand_id" value="{{ brands[0].id }}" />
 	{% endif %}
 
 	{% if app_settings['core.apps_kb'] %}

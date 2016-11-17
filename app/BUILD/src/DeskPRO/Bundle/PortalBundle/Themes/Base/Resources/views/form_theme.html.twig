@@ -354,7 +354,7 @@
     {% endif %}
     <div class="attach-field">
        <div class="with-dpx">
-            <div class="dpx-attach">
+            <div class="dpx-attach" data-max-file-size="{{ form.vars.max_file_size }}">
                 <div {{ block('widget_container_attributes') }}>
                     {%- if form.parent is empty -%}
                         {{ form_errors(form) }}
@@ -404,7 +404,7 @@
         {% endif %}
         <div class="attach-field">
             <div class="with-dpx">
-                <div class="dpx-attach">
+                <div class="dpx-attach" data-max-file-size="{{ form.vars.max_file_size }}">
                     <div {{ block('widget_container_attributes') }}>
                         {%- if form.parent is empty -%}
                             {{ form_errors(form) }}
