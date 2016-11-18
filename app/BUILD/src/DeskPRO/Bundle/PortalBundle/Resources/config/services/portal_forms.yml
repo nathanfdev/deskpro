@@ -122,6 +122,7 @@ services:
       - "@widget_settings_resolver"
       - "@custom_field_manager"
       - "@brand_stack"
+      - "@permissions_manager"
     tags:
       - { name: form.type }
 

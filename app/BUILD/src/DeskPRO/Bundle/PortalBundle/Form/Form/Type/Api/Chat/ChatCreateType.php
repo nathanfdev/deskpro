@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityRepository;
@@ -74,23 +75,31 @@ class ChatCreateType extends AbstractType
     private $brandStack;
 
     /**
+     * @var PermissionsManager
+     */
+    private $permissionsManager;
+
+    /**
      * Constructor.
      *
      * @param SetPersonListener      $personListener
      * @param WidgetSettingsResolver $settingsResolver
      * @param CustomFieldManager     $fieldManager
      * @param BrandStack             $brandStack
+     * @param PermissionsManager     $permissionsManager
      */
     public function __construct(
         SetPersonListener $personListener,
         WidgetSettingsResolver $settingsResolver,
         CustomFieldManager $fieldManager,
-        BrandStack $brandStack
+        BrandStack $brandStack,
+        PermissionsManager $permissionsManager
     ) {
-        $this->personListener   = $personListener;
-        $this->settingsResolver = $settingsResolver;
-        $this->fieldManager     = $fieldManager;
-        $this->brandStack       = $brandStack;
+        $this->personListener     = $personListener;
+        $this->settingsResolver   = $settingsResolver;
+        $this->fieldManager       = $fieldManager;
+        $this->brandStack         = $brandStack;
+        $this->permissionsManager = $permissionsManager;
     }
 
     /**
@@ -122,15 +131,24 @@ class ChatCreateType extends AbstractType
 
         $brand = $this->brandStack->getActive()->getBrand();
         if ($this->settingsResolver->getWidgetBrandOptions($brand)->getChat()->isAllowDepartmentSelection()) {
+            $permissionsBag = $this->permissionsManager->getPortalPermissionsBag(
+                $builder->getFormConfig()->getOption('person')
+            );
+            $allowedDepartmentIds = $permissionsBag->getAllowedChatDepartmentIds();
+
             $builder->add(
                 'chat_department',
                 EntityType::class, [
                 'class'         => Department::class,
                 'property_path' => 'department',
-                'query_builder' => function (EntityRepository $er) use ($options) {
+                'query_builder' => function (EntityRepository $er) use ($allowedDepartmentIds) {
                     $qb = $er
                         ->createQueryBuilder('d')
-                        ->where('d.is_chat_enabled = true');
+                        ->where(
+                            'd.is_chat_enabled = true',
+                            'd.id IN (:allowed_department_ids)'
+                        )
+                        ->setParameter('allowed_department_ids', $allowedDepartmentIds);
 
                     return $qb;
                 },
