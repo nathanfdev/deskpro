@@ -268,10 +268,10 @@ class Container extends React.Component {
     if (this.props.current.get('chat_type') === 'group' && !this.state.searching) {
       return (
         <Segment vertical className={classNames('group participants', { expanded: this.state.expandGroupHeader })}>
-          <span className="con trol">
+          <span className="control">
             <i className="fa fa-times" onClick={() => this.setState({ expandGroupHeader: false })} />
             <i
-              className="write  icon group-edit"
+              className="write icon group-edit"
               onClick={
                 () => {
                   this.props.openGroupDrawer(
