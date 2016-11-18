@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import Immutable from 'immutable';
 import { Field, Input } from 'react-forms';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
@@ -7,6 +6,7 @@ import { CustomFieldSingleChoice } from 'DeskPRO/Component/CustomField/CustomFie
 import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 import { UserInfoForm } from './UserInfoForm';
 import { ChatBeginLoadingSpinner } from '../ChatBeginLoadingSpinner';
+import { ChatBeginContainer } from '../ChatBeginContainer';
 import { CustomFieldTemplate } from './CustomFieldTemplate';
 
 export class ChatBeginConversation extends React.Component {
@@ -59,48 +59,6 @@ export class ChatBeginConversation extends React.Component {
   };
 
   getChatDepartmentField(props) {
-    const config = {
-      id:      0,
-      choices: []
-    };
-
-    const processed = {};
-
-    const rec = (department, choices) => {
-      if (processed[department.get('id')]) {
-        return;
-      }
-      const choice = {
-        is_selectable: true,
-        id:            department.get('id'),
-        title:         department.get('user_title') || department.get('title')
-      };
-      props.chatDepartments.map((dep) => {
-        if (dep.get('parent') === department.get('id')) {
-          choice.children = [];
-          rec(dep, choice.children);
-        }
-
-        return dep;
-      });
-
-      choices.push(choice);
-      processed[department.get('id')] = true;
-    };
-
-    props.chatDepartments.map((department) => {
-      if (!department.get('parent')) {
-        rec(department, config.choices);
-      }
-      return department;
-    });
-
-    const widgetOptions = {
-      context:       [parent.document, window.widgetFrame.document],
-      contentWindow: window.widgetFrame,
-      ownerDocument: window.widgetFrame.document
-    };
-
     return (
       <UserInfoForm
         title={portalPhrases.get('portal.chat.label-department')}
@@ -111,8 +69,7 @@ export class ChatBeginConversation extends React.Component {
       >
         <CustomFieldSingleChoice
           name="chat_department"
-          config={Immutable.fromJS(config)}
-          widgetOptions={widgetOptions}
+          {...ChatBeginContainer.getWidgetConfig(props.chatDepartments)}
         />
       </UserInfoForm>
     );

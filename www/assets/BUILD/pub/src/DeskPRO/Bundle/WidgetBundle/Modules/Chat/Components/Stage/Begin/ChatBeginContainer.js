@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Fieldset, createValue } from 'react-forms';
 import $ from 'jquery';
+import Immutable from 'immutable';
 import { loadAll, isLoadedCollectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { PortalFormWidget } from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
@@ -31,6 +32,53 @@ export class ChatBeginContainer extends React.Component {
     allowDepartmentSelection: PropTypes.bool
   };
 
+  static getWidgetConfig(chatDepartments) {
+    const config = {
+      id:      0,
+      choices: []
+    };
+
+    const processed = {};
+
+    const rec = (department, choices) => {
+      if (processed[department.get('id')]) {
+        return;
+      }
+      const choice = {
+        is_selectable: true,
+        id:            department.get('id'),
+        title:         department.get('user_title') || department.get('title')
+      };
+      chatDepartments.map((dep) => {
+        if (dep.get('parent') === department.get('id')) {
+          choice.children = [];
+          rec(dep, choice.children);
+        }
+
+        return dep;
+      });
+
+      choices.push(choice);
+      processed[department.get('id')] = true;
+    };
+
+    chatDepartments.map((department) => {
+      if (!department.get('parent')) {
+        rec(department, config.choices);
+      }
+      return department;
+    });
+
+    return {
+      widgetOptions: {
+        context:       [parent.document, window.widgetFrame.document],
+        contentWindow: window.widgetFrame,
+        ownerDocument: window.widgetFrame.document
+      },
+      config: Immutable.fromJS(config)
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -42,9 +90,11 @@ export class ChatBeginContainer extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(loadAll('CustomDefChat'));
-    if (this.props.allowDepartmentSelection) {
-      this.props.dispatch(loadAll('ChatDepartment'));
+    const { allowDepartmentSelection, dispatch } = this.props;
+
+    dispatch(loadAll('CustomDefChat'));
+    if (allowDepartmentSelection) {
+      dispatch(loadAll('ChatDepartment'));
     }
     this.mounted = true;
   }
@@ -144,3 +194,5 @@ export class ChatBeginContainer extends React.Component {
     );
   }
 }
+
+export default ChatBeginContainer;
