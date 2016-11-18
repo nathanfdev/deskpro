@@ -1,0 +1,11 @@
+<dp:subject>{{ phrase('user.email_subjects.new-ticket-guest') }}</dp:subject>
+
+<container>
+    {{ phrase('user.emails.greeting') }}
+
+    <br/><br/>
+
+    {{ phrase('user.emails.new-ticket-guest-link') }}
+
+    <a href="{{ ticket_view_url }}">{{ ticket_view_url }}</a>
+</container>

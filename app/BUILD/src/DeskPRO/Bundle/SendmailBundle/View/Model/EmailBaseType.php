@@ -44,10 +44,16 @@ abstract class EmailBaseType
      */
     protected $recipient;
 
+    protected static $templateFile = '';
+
     public function getTemplate()
     {
         $reflect   = new ReflectionClass($this);
         $inflector = new CamelCaseToUnderscore();
+
+        if (self::$templateFile) {
+            return 'SendmailBundle:emails:'.self::$templateFile;
+        }
 
         return 'SendmailBundle:emails:email.'.strtolower($inflector->filter($reflect->getShortName())).'.html.twig';
     }

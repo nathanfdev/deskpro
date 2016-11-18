@@ -1,0 +1,29 @@
+<dp:subject>{{ phrase('user.email_subjects.tickets_re') }}</dp:subject>
+
+<container>
+	{{ phrase('user.emails.greeting') }}
+
+	<br /><br />
+
+	{{ phrase('user.emails.reject_resolved') }}
+
+	<br /><br />
+
+	{% if app.getSetting('user.portal_enabled') %}
+		{{ phrase('user.emails.reject_resolved-new', {
+			email_to: email_to,
+			link: url_full('portal_new_ticket')
+		}, true) }}
+	{% else %}
+		{{ phrase('user.emails.reject_resolved-newemail', {
+			email_to: email_to
+		}, true) }}
+	{% endif %}
+
+	{% if app.isPortalEnabled() %}
+		<br /><br />
+
+		{{ phrase('user.emails.ticket_access_ticket_online') }}
+		<a href="{{ portal_url(ticket) }}">{{ portal_url(ticket) }}</a>
+	{% endif %}
+</container>

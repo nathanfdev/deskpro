@@ -42,6 +42,8 @@ class TicketNewByAgent extends EmailBaseType
      */
     private $ticket;
 
+    protected static $templateFile = 'emails_user:ticket_new_by_agent.html.twig';
+
     public function __construct(Ticket $ticket)
     {
         $this->ticket = $ticket;

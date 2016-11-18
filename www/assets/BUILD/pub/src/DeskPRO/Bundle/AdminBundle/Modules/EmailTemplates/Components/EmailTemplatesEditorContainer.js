@@ -72,7 +72,7 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.setState({
       saveSubmit: true
     });
-    const name = this.props.emailTemplates.get('currentTemplate').get('name');
+    const name = this.props.emailTemplates.get('currentTemplate').get('newTemplate');
     const template = {
       subject: this.props.emailTemplates.get('template').get('template_code').get('subject'),
       body:    this.props.emailTemplates.get('template').get('template_code').get('body'),

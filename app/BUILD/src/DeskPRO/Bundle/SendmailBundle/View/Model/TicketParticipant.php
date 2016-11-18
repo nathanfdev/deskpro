@@ -42,6 +42,8 @@ class TicketParticipant extends EmailBaseType
      */
     private $ticket;
 
+    protected static $templateFile = 'emails_user:ticket_participant.html.twig';
+
     public function __construct(Ticket $ticket)
     {
         $this->ticket = $ticket;

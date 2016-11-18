@@ -42,6 +42,8 @@ class NewReplyRejectResolved extends EmailBaseType
      */
     private $ticket;
 
+    protected static $templateFile = 'emails_user:new_reply_reject_resolved.html.twig';
+
     public function __construct(Ticket $ticket)
     {
         $this->ticket = $ticket;

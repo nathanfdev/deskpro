@@ -19,7 +19,7 @@ export class EmailsAndBlockMenuContainer extends React.Component {
 
   onChangeTemplate = (template) => {
     this.props.dispatch(actions.setCurrentTemplate(template));
-    this.props.dispatch(actions.loadTemplate(template.get('name')));
+    this.props.dispatch(actions.loadTemplate(template.get('newTemplate')));
     if (template.get('viewModel')) {
       this.props.dispatch(actions.loadVariables(template.get('viewModel')));
     } else {

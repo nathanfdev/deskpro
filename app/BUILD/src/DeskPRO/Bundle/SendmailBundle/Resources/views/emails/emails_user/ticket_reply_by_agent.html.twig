@@ -1,0 +1,18 @@
+<dp:subject>{{ phrase('user.email_subjects.tickets_re') }}</dp:subject>
+
+<container>
+	<dp:agent-reply />
+
+	{% if show_rating_link and app.isPortalEnabled() %}<dp:ticket-rating-links />{% endif %}
+
+	<br /><br />
+
+	<dp:ticket-history />
+
+	{% if app.isPortalEnabled() %}
+		<br /><br />
+
+		{{ phrase('user.emails.ticket_access_ticket_online') }}
+		<a href="{{ portal_url(ticket) }}">{{ portal_url(ticket) }}</a>
+	{% endif %}
+</container>

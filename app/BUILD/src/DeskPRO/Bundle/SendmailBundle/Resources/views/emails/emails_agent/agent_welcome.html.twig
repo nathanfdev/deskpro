@@ -1,0 +1,45 @@
+<dp:subject>{{ phrase('agent.emails.subject_new_agent') }}</dp:subject>
+
+<container>
+	{{ phrase('agent.emails.newagent-created-account', {
+		admin_name: app.user.display_name,
+		admin_email: app.user.primary_email_address,
+		helpdesk_url: brand_setting('core.deskpro_url')
+	}) }}
+
+	<br/><br/>
+
+	{% if app.isCloud() %}
+		{% if app.isDemo() %}
+			{{ phrase('agent.emails.newagent-about-cloud-demo') }}
+		{% else %}
+			{{ phrase('agent.emails.newagent-about-cloud') }}
+		{% endif %}
+	{% else %}
+		{% if app.isDemo() %}
+			{{ phrase('agent.emails.newagent-about-demo') }}
+		{% else %}
+			{{ phrase('agent.emails.newagent-about') }}
+		{% endif %}
+	{% endif %}
+
+	<br/><br/>
+
+	{{ phrase('agent.emails.newagent-login-link', { link: brand_setting('core.deskpro_url') ~ 'agent/' }) }}<br/>
+	{{ phrase('agent.emails.newagent-login-your-email', { email: agent.email_address }) }}<br/>
+	{%  if agent.getPlaintextPassword() %}
+		{{ phrase('agent.emails.newagent-login-initial-password', { password: agent.getPlaintextPassword() }) }}<br/><br/>
+	{% else %}
+		{{ phrase('agent.emails.newagent-login-your-password') }}<br/><br/>
+	{% endif %}
+
+	{{ phrase('agent.emails.newagent-about-pdf') }}
+
+	<br/><br/>
+
+	{{ phrase('agent.emails.newagent-help') }}
+
+	<br/><br/>
+
+	{{ phrase('agent.emails.newagent-welcome-to-deskpro') }}
+</container>

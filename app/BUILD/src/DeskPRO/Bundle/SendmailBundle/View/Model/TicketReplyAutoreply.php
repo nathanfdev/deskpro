@@ -42,6 +42,8 @@ class TicketReplyAutoreply extends EmailBaseType
      */
     private $ticket;
 
+    protected static $templateFile = 'emails_user:ticket_reply_autoreply.html.twig';
+
     public function __construct(Ticket $ticket)
     {
         $this->ticket = $ticket;

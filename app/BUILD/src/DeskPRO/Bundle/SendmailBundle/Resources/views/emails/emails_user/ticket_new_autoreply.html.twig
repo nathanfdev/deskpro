@@ -1,0 +1,20 @@
+<dp:subject>{{ phrase('user.email_subjects.tickets_re') }}</dp:subject>
+
+<container>
+	{{ phrase('user.emails.greeting') }}
+
+	<br /><br />
+
+	{{ phrase('user.emails.ticket_received') }}
+
+	<br /><br />
+
+	<dp:ticket-messages />
+
+	{% if app.isPortalEnabled() %}
+		<br /><br />
+
+		{{ phrase('user.emails.ticket_access_ticket_online') }}
+		<a href="{{ portal_url(ticket) }}">{{ portal_url(ticket) }}</a>
+	{% endif %}
+</container>

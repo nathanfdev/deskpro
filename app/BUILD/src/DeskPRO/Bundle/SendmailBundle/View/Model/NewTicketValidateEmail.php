@@ -42,6 +42,8 @@ class NewTicketValidateEmail extends EmailBaseType
      */
     private $ticket;
 
+    protected static $templateFile = 'emails_user:new_ticket_validate_email.html.twig';
+
     public function __construct(Ticket $ticket)
     {
         $this->ticket = $ticket;

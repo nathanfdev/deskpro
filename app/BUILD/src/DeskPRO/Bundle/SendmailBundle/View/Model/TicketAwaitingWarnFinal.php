@@ -42,6 +42,8 @@ class TicketAwaitingWarnFinal extends EmailBaseType
      */
     private $ticket;
 
+    protected static $templateFile = 'emails_user:ticket_awaiting_warn_final.html.twig';
+
     public function __construct(Ticket $ticket)
     {
         $this->ticket = $ticket;
