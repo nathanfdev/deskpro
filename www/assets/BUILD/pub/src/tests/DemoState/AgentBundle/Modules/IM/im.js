@@ -271,7 +271,9 @@ const chats = {
 };
 
 export const imState = {
-  me: Immutable.Map({
+  groups: Immutable.fromJS({}),
+  counts: { nested: 0 },
+  me:     Immutable.Map({
     id:   1,
     name: 'Jon Snow'
   }),
@@ -325,13 +327,15 @@ const messageTwo = {
   chat:         1,
   date_created: moment().subtract(70, 'minutes').format(),
   id:           2,
-  message:      '<p>Zombie ipsum brains reversus ab cerebellum viral inferno, brein nam rick mend grimes malum cerveau cerebro. De carne cerebro lumbering animata cervello corpora quaeritis. Summus thalamus brains sit​​, morbo basal ganglia vel maleficia?</p>',
-  metadata:     [],
-  person:       6,
-  person_name:  'Daenerys Targaryen',
-  status:       1,
-  timestamp:    1472383154,
-  uuid:         'a6e789a6-cd72-4a1b-888c-c93e1868c6b4'
+  message:      '<p>Zombie ipsum brains reversus ab cerebellum viral inferno, brein nam rick mend grimes malum ' +
+                'cerveau cerebro. De carne cerebro lumbering animata cervello corpora quaeritis. Summus thalamus ' +
+                'brains sit​​, morbo basal ganglia vel maleficia?</p>',
+  metadata:    [],
+  person:      6,
+  person_name: 'Daenerys Targaryen',
+  status:      1,
+  timestamp:   1472383154,
+  uuid:        'a6e789a6-cd72-4a1b-888c-c93e1868c6b4'
 };
 
 const messageThree = {
@@ -351,13 +355,15 @@ const messageFour = {
   chat:         1,
   date_created: moment().subtract(12, 'minutes').format(),
   id:           4,
-  message:      '<p>Hi brains mindless mortuis limbic cortex soulless creaturas optic nerve, imo evil braaiinns stalking monstra hypothalamus adventus resi hippocampus dentevil vultus brain comedat cerebella pitiutary gland viventium.</p>',
-  metadata:     [],
-  person:       6,
-  person_name:  'Daenerys Targaryen',
-  status:       1,
-  timestamp:    1472383156,
-  uuid:         'c6e789a6-cd72-4a1b-888c-c93e1868c6b6'
+  message:      '<p>Hi brains mindless mortuis limbic cortex soulless creaturas optic nerve, imo evil braaiinns ' +
+                'stalking monstra hypothalamus adventus resi hippocampus dentevil vultus brain comedat cerebella ' +
+                'pitiutary gland viventium.</p>',
+  metadata:    [],
+  person:      6,
+  person_name: 'Daenerys Targaryen',
+  status:      1,
+  timestamp:   1472383156,
+  uuid:        'c6e789a6-cd72-4a1b-888c-c93e1868c6b6'
 };
 
 export const messages = Immutable.Map({
