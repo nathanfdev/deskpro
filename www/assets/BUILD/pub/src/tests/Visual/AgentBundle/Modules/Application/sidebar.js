@@ -9,18 +9,18 @@ storiesOf('App: side bar', module)
     'Side bar',
     () => <div>
       <SideBar
-        canUseTicket
-        canUseChat
-        canUseFeedback
-        canUsePeople
-        canUsePublish
-        canUseReports={false}
-        canUseTasks
-        canUseAdmin
-        canUseBilling={false}
-        canUsePortal
+        canUseTicket={() => true}
+        canUseChat={() => true}
+        canUseFeedback={() => true}
+        canUsePeople={() => true}
+        canUsePublish={() => true}
+        canUseReports={() => false}
+        canUseTasks={() => true}
+        canUseAdmin={() => true}
+        canUseBilling={() => false}
+        canUsePortal={() => true}
         changeSection={action('Change section')}
-
+        sectionsBadges={[]}
       />
     </div>
   )
@@ -28,17 +28,18 @@ storiesOf('App: side bar', module)
     'Side bar selected',
     () => <div>
       <SideBar
-        canUseTicket
-        canUseChat
-        canUseFeedback
-        canUsePeople
-        canUsePublish
-        canUseReports={false}
-        canUseTasks
-        canUseAdmin
-        canUseBilling={false}
-        canUsePortal
+        canUseTicket={() => true}
+        canUseChat={() => true}
+        canUseFeedback={() => true}
+        canUsePeople={() => true}
+        canUsePublish={() => true}
+        canUseReports={() => false}
+        canUseTasks={() => true}
+        canUseAdmin={() => true}
+        canUseBilling={() => false}
+        canUsePortal={() => true}
         currentSection={'menu_tickets'}
+        sectionsBadges={[]}
       />
     </div>
   )
@@ -46,19 +47,20 @@ storiesOf('App: side bar', module)
     'Side bar with onboarding',
     () => <div>
       <SideBar
-        canUseTicket
-        canUseChat
-        canUseFeedback={false}
-        canUsePeople
-        canUsePublish
-        canUseReports={false}
-        canUseTasks={false}
-        canUseAdmin={false}
-        canUseBilling={false}
-        canUsePortal
+        canUseTicket={() => true}
+        canUseChat={() => true}
+        canUseFeedback={() => false}
+        canUsePeople={() => true}
+        canUsePublish={() => true}
+        canUseReports={() => false}
+        canUseTasks={() => false}
+        canUseAdmin={() => false}
+        canUseBilling={() => false}
+        canUsePortal={() => true}
         currentSection={'menu_tickets'}
         logoActive
         logoCallback={action('Click logo')}
+        sectionsBadges={[]}
       />
     </div>
   )
