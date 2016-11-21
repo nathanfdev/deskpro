@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
@@ -38,7 +38,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class LeafDepartment extends Constraint
 {
-    const NOT_ASSIGNABLE_TICKET_DEPARTMENT = 'not_assignable_ticket_department';
+    const NOT_ASSIGNABLE_DEPARTMENT = 'not_assignable_department';
 
     public $message = 'Unable to select parent department.';
 

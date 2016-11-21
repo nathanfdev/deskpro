@@ -15,7 +15,7 @@ services:
       - { name: validator.constraint_validator, alias: 'free_email_validator' }
 
   validator.leaf_department_validator:
-    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\LeafDepartmentValidator
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\LeafDepartmentValidator
     arguments:
       - "@=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:Department')"
     tags:

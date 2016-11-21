@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\LeafDepartment;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -138,20 +139,24 @@ class ChatCreateType extends AbstractType
 
             $builder->add(
                 'chat_department',
-                EntityType::class, [
-                'class'         => Department::class,
-                'property_path' => 'department',
-                'query_builder' => function (EntityRepository $er) use ($allowedDepartmentIds) {
-                    $qb = $er
-                        ->createQueryBuilder('d')
-                        ->where(
-                            'd.is_chat_enabled = true',
-                            'd.id IN (:allowed_department_ids)'
-                        )
-                        ->setParameter('allowed_department_ids', $allowedDepartmentIds);
+                EntityType::class,
+                [
+                    'class'         => Department::class,
+                    'property_path' => 'department',
+                    'query_builder' => function (EntityRepository $er) use ($allowedDepartmentIds) {
+                        $qb = $er
+                            ->createQueryBuilder('d')
+                            ->where(
+                                'd.is_chat_enabled = true',
+                                'd.id IN (:allowed_department_ids)'
+                            )
+                            ->setParameter('allowed_department_ids', $allowedDepartmentIds);
 
-                    return $qb;
-                },
+                        return $qb;
+                    },
+                    'constraints' => [
+                        new LeafDepartment(),
+                    ],
                 ]
             );
         }
