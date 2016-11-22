@@ -34,7 +34,7 @@ class Build1479817820 extends AbstractBuild
     {
         $this->out('Upgrade Usersources');
         $con = $this->getDbConnection();
-        //$con->exec("ALTER TABLE usersources ADD actions LONGTEXT NOT NULL COMMENT '(DC2Type:dp_json_obj)'");
+        $con->exec("ALTER TABLE usersources ADD actions LONGTEXT NOT NULL COMMENT '(DC2Type:dp_json_obj)'");
 
         $q = 'select u.id, u.app_id, u.agent_permission_group_id pgid, u.user_permission_group_id ugid, ai.settings from usersources u left join app_instances ai on ai.id = u.app_id';
         foreach ($con->fetchAll($q) as $row) {
