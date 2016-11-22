@@ -182,6 +182,22 @@ abstract class AbstractApiController extends FOSRestController
     }
 
     /**
+     * @return ChatConversation
+     */
+    protected function getLastChat()
+    {
+        $storedChatId = $this->getWidgetOption('chat_id');
+        if ($storedChatId) {
+            $conversation = $this->getManager()->getRepository(ChatConversation::class)->find($storedChatId);
+            if ($conversation && !$conversation->getDateEnded()) {
+                return $conversation;
+            }
+        }
+
+        return;
+    }
+
+    /**
      * @return int|null
      */
     protected function getLastChatId()

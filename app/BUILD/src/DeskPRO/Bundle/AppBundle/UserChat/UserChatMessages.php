@@ -119,6 +119,44 @@ class UserChatMessages
     }
 
     /**
+     * @param ChatConversation $chat
+     * @param                  $url
+     *
+     * @return ChatMessage
+     */
+    public static function createUserTrackMessage(ChatConversation $chat, $url)
+    {
+        $phraseId = 'msg_new_user_track';
+
+        $urlShow = preg_replace('#^https?://(www\.)?#i', '', $url);
+        if (strlen($urlShow) > 50) {
+            $urlShow = substr($urlShow, 0, 50).'...';
+        }
+
+        $url     = htmlspecialchars($url);
+        $urlShow = htmlspecialchars($urlShow);
+
+        $label = "<a href=\"$url\" target=\"_blank\" title=\"$url\">$urlShow</a>";
+
+        $metadata = [
+            'phrase_id' => $phraseId,
+            'label' => $label,
+            'url' => $url,
+        ];
+
+        $chatMessage = new ChatMessage();
+        $chatMessage
+            ->setIsSys(true)
+            ->setIsUserHidden(true)
+            ->setIsHtml(true)
+            ->setContent(json_encode($metadata))
+            ->setMetadata($metadata)
+        ;
+
+        return $chatMessage;
+    }
+
+    /**
      * Is html sys message.
      *
      * @param string $eventName

@@ -96,7 +96,7 @@ function refreshWidgetLoader(loaderFilename) {
   console.log(`Writing ${loaderFilePath}`);
 
   const loaderCode = fs.readFileSync(widgetBundlePath + loaderFilePath).toString()
-    .replace('// #include deskpro_loader_utils.js', utilCode);
+    .replace('// #include deskpro_loader_util.js', utilCode);
 
   const transformedLoaderCode = babel.transform(
     loaderCode,

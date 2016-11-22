@@ -39,7 +39,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\HitRecordRepository")
  * @ORM\Table(name="hit_record", indexes={
  *     @ORM\Index(name="visitor_id_idx", columns={"visitor_id"}),
  *     @ORM\Index(name="page_type_idx", columns={"page_type", "page_id"})
