@@ -397,7 +397,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		} // can edit
 
-		var self = this;
 		$('.create-ticket', this.getEl('action_buttons')).on('click', function() {
 			DeskPRO_Window.newTicketLoader.open(function(page) {
 				var data = {
@@ -429,8 +428,26 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 			}
 		});
-
 		this.ownObject(this.sortTicketsMenu);
+
+		this.sortChatsMenu = new DeskPRO.UI.Menu({
+			triggerElement: this.getEl('sort_chats_menu_trigger'),
+			menuElement: this.getEl('sort_chats_menu'),
+			onItemClicked: function(info) {
+				var itemEl = $(info.itemEl), orderBy = itemEl.data('order-by'), orderDir = itemEl.data('order-dir');
+
+				$.ajax({
+					url: BASE_URL + 'agent/person/' + person_id + '/chats',
+					data: {order_by: orderBy, order_dir: orderDir},
+					type: 'get',
+					dataType: 'html',
+					success: function(html) {
+						self.getEl('chats_initial').html(html);
+					}
+				});
+			}
+		});
+		this.ownObject(this.sortChatsMenu);
 
 		this.moreactionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.more', this.getEl('action_buttons')),
@@ -610,11 +627,17 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 
 			self.ownObject(simpleTabs);
+			simpleTabs.addEvent('beforeTabSwitch', function(eventData) {
+				if(eventData.tabEl) {
+					var classShow = eventData.tabEl.data('classShow');
+					self.wrapper.find('.tabs-control').hide();
+					self.wrapper.find('.' + classShow).show();
+				}
+			});
 		});
 
 		this._initOrgEdit();
 
-		var self = this;
 		this.getEl('tickets_viewall').on('click', function(ev){
 			var row = $(this).closest('tr').remove();
 			self.getEl('tickets_rest').slideDown('fast', function() { self.updateUi(); });

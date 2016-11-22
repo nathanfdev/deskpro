@@ -348,13 +348,20 @@ class ChatConversation extends AbstractEntityRepository
         ")->setParameter(1, $visitor_id)->execute();
     }
 
-    public function getPastChatsForPerson($person)
+    /**
+     * @param PersonEntity $person
+     * @param string       $orderBy
+     * @param string       $orderDir
+     *
+     * @return mixed
+     */
+    public function getPastChatsForPerson(PersonEntity $person, $orderBy = 'date_created', $orderDir = 'DESC')
     {
         return $this->getEntityManager()->createQuery("
             SELECT c
             FROM DeskPRO:ChatConversation c INDEX BY c.id
             WHERE (c.person = ?1 OR c.person_email = ?2) AND c.status = 'ended'
-            ORDER BY c.id ASC
+            ORDER BY c.{$orderBy} {$orderDir}
         ")->setParameter(1, $person)
           ->setParameter(2, $person->getPrimaryEmailAddress())
           ->execute();

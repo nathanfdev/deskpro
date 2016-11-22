@@ -514,6 +514,12 @@ $collection->create('agent_person_get_tickets', [
     'requirements' => ['person_id' => '\\d+'],
 ]);
 
+$collection->create('agent_person_get_chats', [
+    'path'         => '/person/{person_id}/chats',
+    'controller'   => 'AgentBundle:Person:getPersonChats',
+    'requirements' => ['person_id' => '\\d+'],
+]);
+
 $collection->create('agent_person_ajax_labels_save', [
     'path'         => '/person/{person_id}/ajax-save-labels',
     'controller'   => 'AgentBundle:Person:ajaxSaveLabels',

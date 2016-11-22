@@ -1,0 +1,13 @@
+{% for chat in chats %}
+	<tr>
+		<td>
+			<div class="fade-container">
+				<div class="line">
+					{{ chat.date_created|date('day_short') }}
+					<a data-route="page:{{ path('agent_userchat_view', {'conversation_id': chat.id}) }}" data-route-notabreload="1" data-route-title="@text">{{ chat.getSubjectLine() }}</a>
+				</div>
+				<div class="bound-fade"></div>
+			</div>
+		</td>
+	</tr>
+{% endfor %}
