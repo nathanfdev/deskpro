@@ -14,7 +14,6 @@ const uglify                = require('uglify-js');
 const fs                    = require('fs');
 const sass                  = require('node-sass');
 const reducerRefresh        = require('./build-tools/app-reducer-gen/loader').refreshBundle;
-const slate                 = require('gulp-slate');
 const spawn                 = require('child_process').spawn;
 const webpackDevMiddleware  = require('webpack-dev-middleware');
 const webpackHotMiddleware  = require('webpack-hot-middleware');
@@ -486,30 +485,3 @@ gulp.task('bundle:dev-server:demo', () => {
   reducerRefresh('Demo', path.join(__dirname, 'src/DeskPRO/Bundle/DemoBundle'));
   startWebpackServer(getWebpackConfig('demo', false));
 });
-
-
-gulp.task('slate', () => new Promise(
-  (resolve, reject) => {
-    const options = {
-      scss:     '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/slate.scss',
-      style:    'androidstudio',
-      logo:     'static/Common/deskpro-logo_2x.png',
-      template: '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/layouts/layout.html'
-    };
-    gulp.src(
-      [
-        '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/source/index.html.twig.md'
-      ]
-    )
-      .pipe(slate(options))
-      .on('erorr', reject)
-      .pipe(gulp.dest('build/apidocs'))
-      .on('end', () => {
-        gulp.src(['build/apidocs/index.html.twig'])
-          .pipe(gulp.dest(
-            '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/views/apidocs/'
-          ))
-          .on('end', resolve);
-      });
-  })
-);

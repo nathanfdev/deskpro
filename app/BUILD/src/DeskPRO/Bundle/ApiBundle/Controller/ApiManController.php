@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -42,15 +43,20 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 class ApiManController extends BaseController
 {
     /**
+     * @Rest\Get("/", name="api_landing")
+     */
+    public function v2Landing(Request $request)
+    {
+        // This is LegacyApiBundle:Docs:about
+        return new RedirectResponse($request->getUriForPath('/api'));
+    }
+
+    /**
      * @Rest\Get("/man", name="api_man")
      */
     public function manAction(Request $request)
     {
-        $request->setFormat('html', 'text/html');
-        $response = $this->render('ApiBundle::apidocs.html.twig');
-        $response->headers->set('Content-Type', 'text/html');
-
-        return $response;
+        return new RedirectResponse('https://deskpro.github.io/api-reference/');
     }
 
     /**
