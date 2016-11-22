@@ -1,0 +1,10 @@
+<dp:subject>{{ phrase('portal.email_subjects.feedback_new') }}</dp:subject>
+<container>
+    {{ phrase('portal.emails.feedback_thank-you', {'title':feedback.title}) }}
+
+    <br /><br />
+
+    {% if feedback.status == 'hidden' and not feedback.is_reviewed %}
+    {{ phrase('user.emails.feedback_agent-validation') }}
+    {% endif %}
+</container>

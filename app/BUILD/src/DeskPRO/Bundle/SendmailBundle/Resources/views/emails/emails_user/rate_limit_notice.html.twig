@@ -1,0 +1,12 @@
+<dp:subject>{{ phrase('portal.email_subjects.too-many-emails') }}</dp:subject>
+
+<container>
+    {{ phrase('portal.emails.ratelimit_explain') }}
+
+    {% if app.isPortalEnabled() %}
+        <br /><br />
+
+        {{ phrase('portal.emails.ratelimit_submit-online') }}
+        <a href="{{ deskpro_url }}new-ticket">{{ deskpro_url }}new-ticket</a>
+    {% endif %}
+</container>

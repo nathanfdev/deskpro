@@ -49,7 +49,7 @@ class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
         if (!$isCustomTemplate) {
             $code = parent::render($name, $parameters);
 
-            if (strpos($name, 'DeskPRO:emails_') !== false) {
+            if (strpos($name, 'SendmailBundle:emails_') !== false) {
                 $proc = new EmailPostRenderFilter();
                 $code = $proc->process($name, $code);
             }

@@ -1,0 +1,7 @@
+<dp:subject>{{ phrase('user.email_subjects.comment-deleted') }}</dp:subject>
+<container>
+    {% set content = comment.getObject() %}
+    {% set phrase_link %}<a href="{{ content.getLink(true) }}">{{ content.title }}</a>{% endset %}
+    {{ phrase('user.emails.comment_thank-you', {'link': phrase_link}, true) }}
+    {{ phrase('user.emails.comment_deleted') }}
+</container>

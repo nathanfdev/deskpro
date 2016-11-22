@@ -1,0 +1,18 @@
+<dp:subject>{{ phrase('user.email_subjects.register-welcome') }}</dp:subject>
+
+<container>
+	{{ phrase('user.emails.greeting') }}
+
+	<br/><br/>
+
+	{% if verify_url is null %}
+		{{ phrase('user.emails.register-welcome') }}<br/>
+		{% if portal_url is not defined %}
+			{% set portal_url = url_full('portal_home') %}
+		{% endif %}
+		<a href="{{ portal_url }}">{{ portal_url }}</a>
+	{% else %}
+		{{ phrase('user.emails.register-confirm') }}<br/>
+		<a href="{{ verify_url }}">{{ verify_url }}</a>
+	{% endif %}
+</container>

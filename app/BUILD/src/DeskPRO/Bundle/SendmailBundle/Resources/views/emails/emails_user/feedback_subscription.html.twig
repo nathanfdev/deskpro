@@ -1,0 +1,15 @@
+<dp:subject>
+	{{ phrase('user.email_subjects.feedback_sub_updated') }}
+</dp:subject>
+
+<container>
+	<h1>{{ phrase('user.emails.feedback-updated-items', {count: updated_items|length}) }}</h1>
+	<ul>
+		{% for item in updated_items %}
+			<li><a href="{{ url_full('portal_feedback_view', {slug: item.getSlug()}) }}">{{ item.title }}</a></li>
+		{% endfor %}
+	</ul>
+
+	<div class="dp-hr">&nbsp;</div>
+	{{ phrase('user.emails.feedback-explain', {unsubscribe_url: url_full('portal_feedback_unsubscribe_all'), deskpro_url: url_full('portal_home') }) }}
+</container>

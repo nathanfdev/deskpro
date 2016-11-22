@@ -1,0 +1,32 @@
+<dp:subject>
+	{% if new_news and updated_news %}
+		{{ phrase('user.email_subjects.news_sub_new_and_updated') }}
+	{% elseif new_news %}
+		{{ phrase('user.email_subjects.news_sub_new') }}
+	{% else %}
+		{{ phrase('user.email_subjects.news_sub_updated') }}
+	{% endif %}
+</dp:subject>
+
+<container>
+	{% if new_news %}
+		<h1>{{ phrase('user.emails.news-new-news', {count: new_news|length}) }}</h1>
+		<ul>
+			{% for news in new_news %}
+				<li><a href="{{ url_full('portal_news_view', {slug: news.getSlug()}) }}">{{ news.title }}</a></li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+	{% if updated_news %}
+		<h1>{{ phrase('user.emails.news-updated-news', {count: updated_news|length}) }}</h1>
+		<ul>
+			{% for news in updated_news %}
+				<li><a href="{{ url_full('portal_news_view', {slug: news.getSlug()}) }}">{{ news.title }}</a></li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+	<div class="dp-hr">&nbsp;</div>
+	{{ phrase('user.emails.news-explain', {unsubscribe_url: url_full('portal_news_unsubscribe_all'), deskpro_url: url_full('portal_home') }) }}
+</container>
