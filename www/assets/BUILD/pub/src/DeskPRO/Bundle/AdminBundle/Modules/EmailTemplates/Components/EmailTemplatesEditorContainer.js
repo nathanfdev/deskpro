@@ -65,6 +65,7 @@ class EmailTemplatesEditorContainer extends React.Component {
   };
 
   changeTemplateBody = (event) => {
+    this.props.dispatch(actions.previewTemplate(event.target.value));
     this.props.dispatch(actions.updateTemplateBody(event.target.value));
   };
 
@@ -130,10 +131,12 @@ class EmailTemplatesEditorContainer extends React.Component {
     }
     let templateSubject = '';
     let templateBody = '';
+    let preview = 'Preview';
     let textareaDisabled = true;
     if (emailTemplates.get('template') && emailTemplates.get('template').get('template_code')) {
       templateSubject = emailTemplates.get('template').get('template_code').get('subject');
       templateBody = emailTemplates.get('template').get('template_code').get('body');
+      preview = emailTemplates.get('preview');
       textareaDisabled = false;
     }
     return (
@@ -271,9 +274,7 @@ class EmailTemplatesEditorContainer extends React.Component {
 
           </div>
           <div className="email-preview">
-            <div className="email">
-              Test preview email
-            </div>
+            <div className="email" dangerouslySetInnerHTML={{ __html: preview }} />
           </div>
         </div>
       </div>

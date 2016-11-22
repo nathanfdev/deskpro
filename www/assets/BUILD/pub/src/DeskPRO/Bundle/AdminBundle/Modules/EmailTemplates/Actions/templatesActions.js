@@ -74,6 +74,17 @@ export const resetTemplate = createAction(
   })
 );
 
+export const previewTemplate = createAction(
+  'EMAIL_TEMPLATES_PREVIEW_TEMPLATE',
+  template => new Promise((resolve) => {
+    repository('EmailTemplates').previewTemplate(template).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res);
+    });
+  })
+);
+
 export const updateTemplateSubject = createAction(
   'EMAIL_TEMPLATES_UPDATE_TEMPLATE_SUBJECT',
   subject => subject

@@ -46,7 +46,7 @@ use Symfony\Component\HttpFoundation\Request;
  * API access to person settings.
  *
  * @ApiModes("all")
- * @Rest\Route("/email_templates/template")
+ * @Rest\Route("/email_templates")
  */
 class TemplateController extends BaseController
 {
@@ -63,7 +63,7 @@ class TemplateController extends BaseController
      *     },
      *)
      * @ApiUnstable()
-     * @Rest\Get("/{name}")
+     * @Rest\Get("/template/{name}")
      *
      * @param $name
      *
@@ -111,7 +111,7 @@ class TemplateController extends BaseController
      *     },
      *)
      * @ApiUnstable()
-     * @Rest\Post("/{name}")
+     * @Rest\Post("/template/{name}")
      *
      * @param Request $request
      * @param         $name
@@ -187,7 +187,7 @@ class TemplateController extends BaseController
      *     },
      *)
      * @ApiUnstable()
-     * @Rest\Delete("/{name}")
+     * @Rest\Delete("/template/{name}")
      *
      * @param $name
      *
@@ -225,6 +225,29 @@ class TemplateController extends BaseController
         );
 
         return new View($data);
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Email Templates",
+     *     description="Render a template to preview",
+     *)
+     * @ApiUnstable()
+     * @Rest\Post("/render_template")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function postRenderTemplateAction(Request $request)
+    {
+        $template = $request->request->get('template');
+        $tplName  = uniqid('string_template_', true);
+        $twig     = clone $this->get('templating.new_email.twig');
+        $twig->setCache(false);
+        $twig->setLoader(new \Twig_Loader_Array([$tplName => $template]));
+
+        return new View($twig->render($tplName, []));
     }
 
     /**
