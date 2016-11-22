@@ -28,13 +28,13 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1475840809 extends AbstractBuild
+class Build1479817817 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Add top bar onboarding');
-        $this->execDbQuery('default', 'INSERT INTO person_onboarding 
-      (`id`, `person_id`, `current_step`, `onboarding_class`, `status`, `application`)
-        SELECT NULL, p.id, 0, \'topbarChanges\', 0, \'Agent\' FROM people p WHERE p.is_agent = 1');
+        $this->out('Update system alerts tables');
+        $this->execDbQuery('system', 'ALTER TABLE system_alerts_incidents DROP event_dates');
+        $this->execDbQuery('system', 'DELETE FROM `system_alerts_incidents` WHERE `type` LIKE \'%email%\'');
+        $this->execDbQuery('system', 'DELETE FROM `system_alerts_events` WHERE `type` LIKE \'%email%\'');
     }
 }

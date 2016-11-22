@@ -28,13 +28,26 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1475024916 extends AbstractBuild
+class Build1479817816 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Update system alerts tables');
-        $this->execDbQuery('system', 'ALTER TABLE system_alerts_incidents DROP event_dates');
-        $this->execDbQuery('system', 'DELETE FROM `system_alerts_incidents` WHERE `type` LIKE \'%email%\'');
-        $this->execDbQuery('system', 'DELETE FROM `system_alerts_events` WHERE `type` LIKE \'%email%\'');
+        $this->out('Cleanup empty labels');
+        $pattern = "DELETE FROM %s WHERE label = ''";
+        $tables  = [
+            'labels_blobs',
+            'labels_chat_conversations',
+            'labels_downloads',
+            'labels_feedback',
+            'labels_news',
+            'labels_organizations',
+            'labels_people',
+            'labels_tasks',
+            'labels_tickets',
+            'label_defs',
+        ];
+        foreach ($tables as $table) {
+            $this->execDbQuery('default', sprintf($pattern, $table));
+        }
     }
 }

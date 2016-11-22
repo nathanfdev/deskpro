@@ -28,26 +28,19 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1473175621 extends AbstractBuild
+class Build1479817823 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Cleanup empty labels');
-        $pattern = "DELETE FROM %s WHERE label = ''";
-        $tables  = [
-            'labels_blobs',
-            'labels_chat_conversations',
-            'labels_downloads',
-            'labels_feedback',
-            'labels_news',
-            'labels_organizations',
-            'labels_people',
-            'labels_tasks',
-            'labels_tickets',
-            'label_defs',
-        ];
-        foreach ($tables as $table) {
-            $this->execDbQuery('default', sprintf($pattern, $table));
+        $this->out('Updating Feedbacks');
+        $sql     = 'select f.id, f.content from feedback f join people p on p.id = f.person_id and p.is_agent = 0 ';
+        $results = $this->getDbConnection()->fetchAll($sql);
+        foreach ($results as $row) {
+            $content = htmlentities(nl2br($row['content']));
+            $this->getDbConnection()->executeQuery('update feedback set content = :content where id = :id', [
+                'id'      => $row['id'],
+                'content' => $content,
+            ]);
         }
     }
 }

@@ -28,11 +28,21 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1475238742 extends AbstractBuild
+class Build1479817818 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Upgrade ApiLog');
-        $this->execDbQuery('default', 'ALTER TABLE api_log ADD is_request_truncated TINYINT(1) NOT NULL, ADD is_response_truncated TINYINT(1) NOT NULL');
+        $this->out('Upgrade portal.widget.enabled');
+
+        $connection = $this->getDbConnection('default');
+
+        $brands = $connection->fetchAllCol('select `id` from `brands`');
+
+        $sql = 'insert ignore into `settings_brand` (`brand_id`, `name`, `value`) values (:brand_id, "portal.widget.enabled", 1)';
+
+        $stmnt = $connection->prepare($sql);
+        foreach ($brands as $brand) {
+            $stmnt->execute(['brand_id' => $brand]);
+        }
     }
 }
