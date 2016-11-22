@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class WidgetContent extends React.Component {
 
@@ -40,15 +41,17 @@ export class WidgetContent extends React.Component {
     }
 
     return (
-      <div className={classNames(
-        'widget-container',
-        'dpdesignportal', {
-          'chat-bubble':   isBubble,
-          mobile:          !isBubble,
-          'position-left': widgetPosition === 'bottom.left' && !isBubble
-        })}
+      <div
+        className={classNames(
+          'widget-container',
+          'dpdesignportal', {
+            'chat-bubble':   isBubble,
+            mobile:          !isBubble,
+            'position-left': widgetPosition === 'bottom.left' && !isBubble,
+            'rtl-language':  portalPhrases.getTextDirection() === 'RTL'
+          }
+        )}
       >
-
         {children}
       </div>
     );

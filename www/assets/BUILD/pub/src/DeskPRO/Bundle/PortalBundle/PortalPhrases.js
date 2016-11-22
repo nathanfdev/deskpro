@@ -4,33 +4,32 @@ import assign from 'lodash/object/assign';
 
 class PortalPhrases {
   constructor() {
-    this.phrases = {};
-    this.isLoaded = false;
+    this.phrases   = {};
+    this.direction = 'LTR';
+    this.isLoaded  = false;
   }
 
   setPhrases(phrases) {
-    Object.assign(this.phrases, phrases);
+    Object.assign(this.phrases, phrases.phrases);
+    this.direction = phrases.direction || 'LTR';
   }
 
   get(phraseId, vars) {
     // Prevent to complain before getting any translation
-    if (Object.keys(this.phrases).length == 0) {
+    if (Object.keys(this.phrases).length === 0) {
       return '';
     }
 
     if (!this.phrases[phraseId]) {
-      console.error('Missing phrase: ' + phraseId);
-      return '[missing phrase ' + phraseId + ']';
+      console.error(`Missing phrase: ${phraseId}`);
+      return `[missing phrase ${phraseId}]`;
     }
 
     let text = this.phrases[phraseId];
-
     if (vars) {
-      for (var k in vars) {
-        if (vars.hasOwnProperty(k)) {
-          text = text.replace(`{${k}}`, vars[k]);
-        }
-      }
+      Object.keys(vars).forEach((k) => {
+        text = text.replace(`{${k}}`, vars[k]);
+      });
     }
 
     return text;
@@ -44,15 +43,19 @@ class PortalPhrases {
    * @returns {{__html: *}}
      */
   getHtml(phraseId, vars, safeVars) {
-    vars = mapValues(vars, escape);
+    let preparedVars = vars;
+    preparedVars = mapValues(preparedVars, escape);
+    preparedVars = assign(preparedVars, safeVars);
 
-    vars = assign(vars, safeVars);
-
-    const phrase = this.get(phraseId, vars);
+    const phrase = this.get(phraseId, preparedVars);
 
     // Special object representing HTML in react
     // https://facebook.github.io/react/tips/dangerously-set-inner-html.html
     return { __html: phrase };
+  }
+
+  getTextDirection() {
+    return this.direction;
   }
 }
 
