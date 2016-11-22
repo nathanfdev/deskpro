@@ -205,11 +205,11 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function setSetting($setting, $value)
     {
-
         // it is not an option in the new settings resolver to SET settings directly. This is left for BC.
 
         $this->db->beginTransaction();
-
+        $this->reloadSettings();
+        $old = $this->get($setting);
         try {
             if ($value !== null) {
                 if ($value === true) {
@@ -228,16 +228,11 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
             $this->db->rollback();
             throw $e;
         }
-
-        $this->reloadSettings();
-
-        $old = $this->get($setting);
-
         $auditLog     = new AuditLog();
         $auditLogData = new AuditLogData();
 
         // just leave in case $old = "0" and $value = false e.g.
-        if ((is_numeric($old) || is_numeric($value)) && ((int) $old === (int) $value)) {
+        if ($old === $value || ((is_numeric($old) || is_numeric($value)) && ((int) $old === (int) $value))) {
             return;
         }
 
