@@ -57,7 +57,7 @@ class EnvironmentService
     public function getGeoIp()
     {
         if (!$this->geo_reader) {
-            $this->geo_reader = new Reader(DP_ROOT.'/vendor-src/geoip-db/GeoLite2-City.mmdb');
+            $this->geo_reader = new Reader(DP_ROOT.'/vendor-src/geoip-db/GeoLite2-Country.mmdb');
         }
 
         $result = [
@@ -71,7 +71,7 @@ class EnvironmentService
 
         $ip = $this->getUserIp();
         try {
-            $record = $this->geo_reader->city($ip);
+            $record = $this->geo_reader->country($ip);
         } catch (\Exception $e) {
             return $result;
         }
