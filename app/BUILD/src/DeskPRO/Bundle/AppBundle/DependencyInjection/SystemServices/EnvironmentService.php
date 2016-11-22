@@ -81,7 +81,7 @@ class EnvironmentService
             $result['country_code']   = $record->country->isoCode;
         }
 
-        if ($record->city && $record->city->name) {
+        if (isset($record->city) && !empty($record->city->name)) {
             $result['city']      = $record->city;
             $result['latitude']  = $record->location->latitude;
             $result['longitude'] = $record->location->longitude;
