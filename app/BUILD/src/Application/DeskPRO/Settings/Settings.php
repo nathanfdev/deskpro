@@ -244,7 +244,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         $auditLogData->setContext([])->setDiff([$setting => [$old, $value]]);
         $auditLog
             ->setAction(sprintf('settings.%s', $value !== null ? 'replace' : 'delete'))
-            ->setPerformerId(App::getCurrentPerson()->getId())
+            ->setPerformerId(App::getCurrentPerson() ? App::getCurrentPerson()->getId() : 0)
             ->setDescription(sprintf(
                     'Setting was %s via Setting::setSetting() method',
                     $value !== null ? 'replaced' : 'deleted'
@@ -254,7 +254,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
             ->setObjectName(sprintf('"%s" setting', $setting))
             ->setObjectType(TypeUtils::getBaseTypeName(Setting::class))
             ->setData($auditLogData)
-            ->setPerformerName(App::getCurrentPerson()->getDisplayName());
+            ->setPerformerName(App::getCurrentPerson() ? App::getCurrentPerson()->getDisplayName() : '');
 
         $this->auditService->write($auditLog);
     }
