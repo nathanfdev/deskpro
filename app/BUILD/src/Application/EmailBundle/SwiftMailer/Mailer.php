@@ -91,7 +91,6 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
     {
         $ref = Numbers::roundToMultiple(time(), 5).'-'.Strings::random(40, Strings::CHARS_ALPHANUM_IU);
         $message->getHeaders()->addTextHeader('X-DeskPRO-MessageRef', $ref);
-        $message->setId($ref.'@deskpro-message');
 
         $this->logger->debug(sprintf('Preprocessing: %s', $message->getId()));
 

@@ -156,16 +156,51 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
             }
         }
 
-        if ($this->options['use_referer'] && ($targetUrl = $request->headers->get(
-                'Referer'
-            )) && $targetUrl !== $this->httpUtils->generateUri($request, $this->options['login_path'])
-        ) {
-            if ($targetUrl != $login_url) {
+        if ($this->options['use_referer'] && ($targetUrl = $request->headers->get('Referer'))) {
+            if (
+                $targetUrl !== $login_url
+                && $targetUrl !== $this->httpUtils->generateUri($request, $this->options['login_path'])
+                && $this->isValidRedirectUrl($targetUrl, $request)
+            ) {
                 return $targetUrl;
             }
         }
 
         return $this->options['default_target_path'];
+    }
+
+    /**
+     * Verify that the target redirect (e.g. from referer) is a local redirect and not
+     * offsite. This is important to prevent loops (eg. redirect back to an sso site).
+     *
+     * @param string  $url
+     * @param Request $request
+     *
+     * @return bool
+     */
+    private function isValidRedirectUrl($url, Request $request)
+    {
+        $hostChecker = $this->container->get('url_host_checker');
+
+        // matches curent request, this is ok
+        if ($hostChecker->isMatch(
+            $url,
+            $request->getHost(),
+            $request->getPort()
+        )) {
+            return true;
+        }
+
+        $brandStack  = $this->container->get('brand_stack');
+        $activeBrand = $brandStack->getActive();
+        $brandUrl    = $activeBrand->getSetting('core.deskpro_url');
+
+        // matches brand url
+        if ($brandUrl && $hostChecker->isMatchUrl($url, $brandUrl)) {
+            return true;
+        }
+
+        return false;
     }
 
     public function setContainer(ContainerInterface $container = null)

@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class WidgetContent extends React.Component {
 
   static propTypes = {
     isBubble:       PropTypes.bool,
     widgetPosition: PropTypes.string,
-    children:       PropTypes.any // eslint-disable-line react/forbid-prop-types
+    children:       PropTypes.any, // eslint-disable-line react/forbid-prop-types
+    triggerResize:  PropTypes.func
   };
 
   constructor(props) {
@@ -28,6 +30,10 @@ export class WidgetContent extends React.Component {
     }
   }
 
+  componentDidUpdate() {
+    setTimeout(() => this.props.triggerResize(), 0);
+  }
+
   render() {
     const { isBubble, widgetPosition, children } = this.props;
     if (this.state.rerender) {
@@ -37,14 +43,15 @@ export class WidgetContent extends React.Component {
     return (
       <div
         className={classNames(
-        'widget-container',
-        'dpdesignportal', {
-          'chat-bubble':   isBubble,
-          mobile:          !isBubble,
-          'position-left': widgetPosition === 'bottom.left' && !isBubble
-        })}
+          'widget-container',
+          'dpdesignportal', {
+            'chat-bubble':   isBubble,
+            mobile:          !isBubble,
+            'position-left': widgetPosition === 'bottom.left' && !isBubble,
+            'rtl-language':  portalPhrases.getTextDirection() === 'RTL'
+          }
+        )}
       >
-
         {children}
       </div>
     );

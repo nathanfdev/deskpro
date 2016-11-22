@@ -1,16 +1,8 @@
 services:
 
   person_manipulator:
-      class: DeskPRO\Bundle\PortalBundle\Person\PersonManipulator
-      arguments: ["@router", "@security.token_storage"]
-
-  session.handler.dbal:
-    class: DeskPRO\Bundle\PortalBundle\Session\DbalSessionHandler
-    arguments: ["@doctrine.dbal.default_connection", %portal.session.name%, "@visitor_identification_provider", "@security.token_storage"]
-
-  visitor_identification_provider:
-    class: DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider
-    arguments: ["@request_stack", "@logger"]
+    class: DeskPRO\Bundle\PortalBundle\Person\PersonManipulator
+    arguments: ["@router", "@security.token_storage"]
 
   pagerfanta.view.deskpro:
     class: DeskPRO\Bundle\PortalBundle\View\Pagerfanta\DeskproView
@@ -19,8 +11,8 @@ services:
       - { name: pagerfanta.view, alias: deskpro }
 
   portal_search_serializer:
-      class: DeskPRO\Bundle\PortalBundle\Search\SimplePortalEntitySerializer
-      arguments: ["@object_router", "@icon_factory"]
+    class: DeskPRO\Bundle\PortalBundle\Search\SimplePortalEntitySerializer
+    arguments: ["@object_router", "@icon_factory"]
 
   tickets.new_ticket:
     class: DeskPRO\Bundle\PortalBundle\Ticket\NewTicket

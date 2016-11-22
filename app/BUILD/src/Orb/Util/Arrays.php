@@ -1484,7 +1484,7 @@ class Arrays
      *
      * @param array $array
      *
-     * @return index
+     * @return int index
      */
     public static function getFirstKey($array)
     {
