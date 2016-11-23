@@ -5,7 +5,8 @@ class TopBarItem extends React.Component {
   static propTypes = {
     onClick:   PropTypes.func,
     children:  PropTypes.node,
-    className: PropTypes.string
+    className: PropTypes.string,
+    title:     PropTypes.string
   };
   static defaultProps = {
     onClick() {}
@@ -16,8 +17,12 @@ class TopBarItem extends React.Component {
   };
 
   render() {
-    const { children, className } = this.props;
-    return (<div className={classNames('item', className)} onClick={this.handleClick}>
+    const { children, className, title } = this.props;
+    return (<div
+      className={classNames('item', className)}
+      onClick={this.handleClick}
+      title={title}
+    >
       <div>
         {children}
       </div>

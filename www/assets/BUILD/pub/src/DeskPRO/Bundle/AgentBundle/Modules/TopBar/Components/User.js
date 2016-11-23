@@ -64,7 +64,7 @@ class User extends React.Component {
   render() {
     const { src } = this.props;
     return (
-      <div className="user" onClick={this.togglePopup}>
+      <div className="user" onClick={this.togglePopup} title={agentPhrases.get('agent.chrome.user_tooltip')}>
         <PopUp
           positionMy="right top"
           positionAt="right bottom"

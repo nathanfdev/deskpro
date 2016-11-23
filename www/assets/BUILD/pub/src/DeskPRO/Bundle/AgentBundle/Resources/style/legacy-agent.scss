@@ -300,7 +300,6 @@
       fill: $dp-knuckles-primary;
     }
     .status {
-      padding-top: 5px;
       font-size: 8px;
       .count {
         color: $dp-greyscale-350;
@@ -382,7 +381,7 @@
     .item {
       font-size: 14px;
       color: $dp-greyscale-850;
-      font-weight: 600;
+      font-weight: 400;
       padding-top: 9px;
       padding-bottom: 9px;
       padding-left: 20px;
@@ -522,7 +521,7 @@ $transition-close-delay: 0.1s;
     width: 52px;
     background-color: $dp-sonic-primary;
     cursor: pointer;
-    padding: 13px;
+    padding: 9px 13px;
     transition: width $transition-close-time;
     transition-delay: $transition-close-delay;
     white-space: nowrap;
@@ -537,6 +536,9 @@ $transition-close-delay: 0.1s;
         transition: fill $transition-close-time;
         transition-delay: $transition-close-delay;
       }
+    }
+    .logo-text svg {
+      height: 30px;
     }
   }
   .ui.item {
