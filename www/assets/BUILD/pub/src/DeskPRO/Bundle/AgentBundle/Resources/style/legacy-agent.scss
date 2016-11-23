@@ -522,7 +522,7 @@ $transition-close-delay: 0.1s;
     width: 52px;
     background-color: $dp-sonic-primary;
     cursor: pointer;
-    padding: 13px;
+    padding: 9px 13px;
     transition: width $transition-close-time;
     transition-delay: $transition-close-delay;
     white-space: nowrap;
@@ -537,6 +537,9 @@ $transition-close-delay: 0.1s;
         transition: fill $transition-close-time;
         transition-delay: $transition-close-delay;
       }
+    }
+    .logo-text svg {
+      height: 30px;
     }
   }
   .ui.item {
