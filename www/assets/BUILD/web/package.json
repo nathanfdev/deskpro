@@ -61,6 +61,7 @@
     "clean": "rimraf app-build && rimraf loader-build",
     "build:prod": "gulp prod",
     "build:dev": "gulp",
+    "dev": "gulp && gulp watch",
     "watch": "gulp watch",
     "postinstall": "bower install"
   }
