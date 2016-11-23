@@ -56,7 +56,7 @@ class ApiManController extends BaseController
      */
     public function manAction(Request $request)
     {
-        return new RedirectResponse('https://deskpro.github.io/api-reference/');
+        return new RedirectResponse('http://api.deskpro.com/');
     }
 
     /**
