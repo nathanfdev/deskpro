@@ -738,7 +738,10 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function htmlGetAssetic($name, $options = [])
     {
-        $raw_packs            = $this->container->get('settings_resolver')->getGlobalSettings()->get('raw_assets');
+        $raw_packs = $this->container->get('deskpro.app_env')->getConfig('settings.raw_assets')
+            ?: $this->container->get('deskpro.app_env')->getConfig('paths.raw_assets')
+            ?: [];
+
         $less_use_css         = App::getConfig('debug.less_use_css_dir', false);
         $disable_client_cache = App::getConfig('debug.disable_client_cache', false);
 
