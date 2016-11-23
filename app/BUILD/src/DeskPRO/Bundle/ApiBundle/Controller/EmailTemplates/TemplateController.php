@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\EmailTemplates;
 
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Entity\PortalPageDisplay;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
@@ -37,6 +38,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\EmailTemplateType;
+use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -150,7 +152,7 @@ class TemplateController extends BaseController
             $templateCode->setSubject($data['subject']);
             $templateCode->setBody($data['body']);
         } else {
-            throw new Exception('Only "email" templates can be updated');
+            throw new Exception('Only "email" templates can be updated '.$template->getType());
         }
 
         try {
@@ -241,13 +243,21 @@ class TemplateController extends BaseController
      */
     public function postRenderTemplateAction(Request $request)
     {
-        $template = $request->request->get('template');
-        $tplName  = uniqid('string_template_', true);
-        $twig     = clone $this->get('templating.new_email.twig');
+        $code    = $request->request->get('code');
+        $tplName = uniqid('string_template_', true);
+        $twig    = clone $this->get('templating.new_email.twig');
         $twig->setCache(false);
-        $twig->setLoader(new \Twig_Loader_Array([$tplName => $template]));
+        $twig->setLoader(new \Twig_Loader_Array([$tplName => $code]));
 
-        return new View($twig->render($tplName, []));
+        /** @var EmailRenderer $renderer */
+        $renderer = $this->get('email.email_renderer');
+        $renderer->setTemplateEngine($twig);
+
+        $viewModel = $request->request->get('template');
+        $className = 'DeskPRO\Bundle\SendmailBundle\View\Model\\'.$viewModel;
+        $model     = new $className(new Ticket());
+
+        return new View($renderer->render($tplName, $model));
     }
 
     /**
@@ -257,7 +267,7 @@ class TemplateController extends BaseController
     {
         $set = new TemplateSet(
             $this->getManager(),
-            $this->container->get('templating.email.twig')
+            $this->container->get('templating.new_email.twig')
         );
 
         return $set;

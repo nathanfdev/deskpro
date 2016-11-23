@@ -76,8 +76,8 @@ export const resetTemplate = createAction(
 
 export const previewTemplate = createAction(
   'EMAIL_TEMPLATES_PREVIEW_TEMPLATE',
-  template => new Promise((resolve) => {
-    repository('EmailTemplates').previewTemplate(template).then((promise) => {
+  (template, code, variables) => new Promise((resolve) => {
+    repository('EmailTemplates').previewTemplate(template, code, variables).then((promise) => {
       const res = promise.getData();
 
       resolve(res);
@@ -121,6 +121,17 @@ export const setCurrentTemplate = createAction(
 export const setCurrentTemplateGroup = createAction(
   'EMAIL_TEMPLATES_SET_CURRENT_TEMPLATE_GROUP',
   params => params
+);
+
+export const loadExampleTicket = createAction(
+  'EMAIL_TEMPLATES_EXAMPLE_TICKET',
+  ticketId => new Promise((resolve) => {
+    repository('Tickets').loadTicket(ticketId).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res.data);
+    });
+  })
 );
 
 export const cleanState = createAction('EMAIL_TEMPLATES_CLEAN_STATE');

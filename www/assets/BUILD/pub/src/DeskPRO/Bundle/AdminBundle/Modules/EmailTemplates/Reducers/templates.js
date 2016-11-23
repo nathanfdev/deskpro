@@ -11,8 +11,9 @@ const initialState = {
   currentTemplate:      null,
   currentTemplateGroup: 'user',
   emailPhrases:         null,
-  variables:            null,
+  exampleTicket:        null,
   preview:              null,
+  variables:            null,
 };
 
 export default createReducer(initialState, {
@@ -33,6 +34,9 @@ export default createReducer(initialState, {
   }),
   [actions.previewTemplate]: async({
     success: setFullPayload('preview')
+  }),
+  [actions.loadExampleTicket]: async({
+    success: setFullPayload('exampleTicket')
   }),
   [actions.removeVariables]:         state => state.set('variables', null),
   [actions.setCurrentLanguage]:      (state, payload) => state.set('currentLanguage', payload),

@@ -209,6 +209,16 @@
     footer {
       padding: 20px;
       font-size: 14px;
+      bottom: 0;
+      left: 0;
+      position: absolute;
+      height: 100px;
+      .ui.action input {
+        width: 80px;
+      }
+      .ui.action {
+        margin-right: 10px;
+      }
     }
   }
   > .right-panel.ui.vertical.menu {
@@ -235,6 +245,10 @@
     .variable-name {
       font-size: 14px;
       color: $dp-knuckles-primary;
+    }
+    .example {
+      font-size: 14px;
+      color: $dp-greyscale-850;
     }
   }
 }

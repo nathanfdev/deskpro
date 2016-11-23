@@ -1,5 +1,6 @@
 import EmailTemplatesRepository from './Repositories/EmailTemplatesRepository';
 import LanguagesRepository from './Repositories/LanguagesRepository';
+import TicketsRepository from './Repositories/TicketsRepository';
 
 export const repositoriesConfig = {
   EmailTemplates:     { type: 'api', url: '/email_templates', repositoryClass: EmailTemplatesRepository },
@@ -8,6 +9,7 @@ export const repositoriesConfig = {
   Ticket:             { type: 'api', url: '/people', allowAll: false },
   TicketDepartment:   { type: 'api', url: '/ticket_departments', allowAll: true },
   AgentTeam:          { type: 'api', url: '/agent_teams', allowAll: true },
+  Tickets:            { type: 'api', url: '/tickets', repositoryClass: TicketsRepository },
   VoiceAccount:       { type: 'api', url: '/voice_accounts', allowAll: true },
   VoiceNumber:        { type: 'api', url: '/voice_numbers', allowAll: true },
   VoiceQueue:         { type: 'api', url: '/voice_queues', allowAll: true },

@@ -3,14 +3,44 @@ import { connect } from 'react-redux';
 import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import classNames from 'classnames';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
+import * as actions from '../../Actions/templatesActions';
 
 @connect(state => ({
   emailTemplates: state.EmailTemplates.templates
 }))
 export class VariablesMenuContainer extends React.Component {
   static propTypes = {
+    dispatch:       PropTypes.func,
     emailTemplates: PropTypes.object.isRequired,
     closeMenu:      PropTypes.func
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      exampleLoading: false,
+      exampleError:   false,
+    };
+  }
+
+  setTicketId = (ticketId) => {
+    this.setState({
+      exampleLoading: true
+    });
+    this.props.dispatch(actions.loadExampleTicket(ticketId)).then(
+      () => {
+        this.setState({
+          exampleLoading: false
+        });
+      }
+    ).catch(
+      () => {
+        this.setState({
+          exampleLoading: false,
+          exampleError:   false
+        });
+      }
+    );
   };
 
   selectVariable = () => {
@@ -19,12 +49,18 @@ export class VariablesMenuContainer extends React.Component {
 
   render() {
     let variables = null;
+    let exampleTicket = null;
     if (this.props.emailTemplates) {
       variables = this.props.emailTemplates.get('variables');
+      exampleTicket = this.props.emailTemplates.get('exampleTicket');
     }
     return (<VariablesMenu
       viewModel={variables}
+      exampleTicket={exampleTicket}
       onSelectVariable={this.selectVariable}
+      setTicketId={this.setTicketId}
+      exampleLoading={this.state.exampleLoading}
+      exampleError={this.state.exampleError}
     />);
   }
 }
@@ -32,10 +68,14 @@ export class VariablesMenuContainer extends React.Component {
 export class VariablesMenu extends React.Component {
   static propTypes = {
     viewModel:        PropTypes.object,
-    onSelectVariable: PropTypes.func
+    exampleTicket:    PropTypes.object,
+    onSelectVariable: PropTypes.func,
+    setTicketId:      PropTypes.func,
+    exampleLoading:   PropTypes.bool,
+    exampleError:     PropTypes.bool,
   };
   static defaultProps = {
-    onChangeMenu() {},
+    setTicketId() {},
   };
 
   constructor(props) {
@@ -47,9 +87,11 @@ export class VariablesMenu extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      selectedLeft: nextProps.viewModel.first()
-    });
+    if (nextProps.viewModel !== this.props.viewModel) {
+      this.setState({
+        selectedLeft: nextProps.viewModel.first()
+      });
+    }
   }
 
   setActive = (item) => {
@@ -73,6 +115,23 @@ export class VariablesMenu extends React.Component {
     );
   };
 
+  getVariableExample = (property, attribute) => {
+    let example = null;
+    switch (property) {
+      case 'ticket':
+        if (this.props.exampleTicket) {
+          example = this.props.exampleTicket.get(attribute);
+        }
+        break;
+      default:
+        return null;
+    }
+    if (typeof example !== 'undefined' && example !== null) {
+      return <span className="example"> e.g. {example}</span>;
+    }
+    return null;
+  };
+
   getRightPanel = () => {
     if (!this.state.selectedLeft || !this.state.selectedLeft.get('properties')) {
       return null;
@@ -93,6 +152,7 @@ export class VariablesMenu extends React.Component {
           <span className="variable-name">
             {'{{'} {this.state.selectedLeft.get('attribute')}.{property.get('attribute')} {'}}'}
           </span>
+          { this.getVariableExample(this.state.selectedLeft.get('attribute'), property.get('attribute')) }
 
         </MenuItem>);
       });
@@ -103,6 +163,43 @@ export class VariablesMenu extends React.Component {
         </Menu>
       </MenuWrapper>
     );
+  };
+
+  getLeftFooter = () => {
+    if (this.state.selectedLeft && this.state.selectedLeft.get('attribute') === 'ticket') {
+      return (<footer>
+        Enter a ticket ID for examples <br />
+        <div className="ui action input small">
+          <input
+            type="text"
+            placeholder="ID"
+            ref={(c) => { this.ticketIdField = c; }}
+          />
+          <button
+            className={classNames(
+              'ui button basic small',
+              { loading: this.props.exampleLoading, error: this.props.exampleError }
+            )}
+            onClick={() => this.props.setTicketId(this.ticketIdField.value)}
+          >
+            Use
+          </button>
+        </div>
+        <button
+          className={classNames('ui button basic small')}
+          onClick={this.clearTicketIdField}
+        >
+          Clear
+        </button>
+
+      </footer>);
+    }
+    return null;
+  };
+
+  clearTicketIdField = () => {
+    this.ticketIdField.value = '';
+    this.ticketIdField.focus();
   };
 
   selectVariable = (variable) => {
@@ -127,10 +224,7 @@ export class VariablesMenu extends React.Component {
           <Menu>
             {this.getVariables()}
           </Menu>
-          <footer>
-            Enter a ticket ID for examples
-
-          </footer>
+          {this.getLeftFooter()}
         </MenuWrapper>
         {this.getRightPanel()}
       </div>

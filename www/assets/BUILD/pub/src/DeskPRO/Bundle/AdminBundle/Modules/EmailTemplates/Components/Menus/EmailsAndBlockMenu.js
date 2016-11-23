@@ -31,8 +31,9 @@ export class EmailsAndBlockMenuContainer extends React.Component {
   render() {
     const info = this.props.emailTemplates;
     let templates = null;
+    const group = info.get('currentTemplateGroup');
     if (info && info.get('info').get('list')) {
-      templates = info.get('info').get('list').get('user').get('groups');
+      templates = info.get('info').get('list').get(group).get('groups');
     }
     return (<EmailsAndBlockMenu
       emails={templates}

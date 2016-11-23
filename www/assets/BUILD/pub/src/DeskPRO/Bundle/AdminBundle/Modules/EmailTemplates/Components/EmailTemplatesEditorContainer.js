@@ -42,18 +42,6 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.props.dispatch(actions.cleanState);
   }
 
-  closeTemplateMenu = () => {
-    this.templateMenu.closeMenu();
-  };
-
-  closeVariablesMenu = () => {
-    this.variablesMenu.closeMenu();
-  };
-
-  closePhrasesMenu = () => {
-    this.phrasesMenu.closeMenu();
-  };
-
   selectTemplateGroup = (group) => {
     this.props.dispatch(actions.setCurrentTemplateGroup(group));
     const lang = this.props.emailTemplates.get('currentLanguage');
@@ -65,7 +53,12 @@ class EmailTemplatesEditorContainer extends React.Component {
   };
 
   changeTemplateBody = (event) => {
-    this.props.dispatch(actions.previewTemplate(event.target.value));
+    const variables = [];
+    if (this.props.emailTemplates.get('exampleTicket')) {
+      variables.push({ ticket: this.props.emailTemplates.get('exampleTicket') });
+    }
+    const viewModel = this.props.emailTemplates.get('currentTemplate').get('viewModel');
+    this.props.dispatch(actions.previewTemplate(viewModel, event.target.value, variables));
     this.props.dispatch(actions.updateTemplateBody(event.target.value));
   };
 
@@ -91,7 +84,7 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.setState({
       resetSubmit: true
     });
-    const name = this.props.emailTemplates.get('currentTemplate').get('name');
+    const name = this.props.emailTemplates.get('currentTemplate').get('newTemplate');
     this.props.dispatch(actions.resetTemplate(name)).then(
       () => {
         this.setState({
@@ -105,13 +98,52 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.setState({
       undoSubmit: true
     });
-    this.props.dispatch(actions.loadTemplate(this.props.emailTemplates.get('currentTemplate').get('name'))).then(
+    this.props.dispatch(actions.loadTemplate(this.props.emailTemplates.get('currentTemplate').get('newTemplate'))).then(
       () => {
         this.setState({
           undoSubmit: false
         });
       }
     );
+  };
+
+  render() {
+    return (<EmailTemplatesEditor
+      emailTemplates={this.props.emailTemplates}
+      selectTemplateGroup={this.selectTemplateGroup}
+      changeTemplateBody={this.changeTemplateBody}
+      saveTemplate={this.saveTemplate}
+      resetTemplate={this.resetTemplate}
+      undoChanges={this.undoChanges}
+      resetSubmit={this.state.resetSubmit}
+      saveSubmit={this.state.saveSubmit}
+      undoSubmit={this.state.undoSubmit}
+    />);
+  }
+}
+class EmailTemplatesEditor extends React.Component {
+  static propTypes = {
+    emailTemplates:      PropTypes.object,
+    selectTemplateGroup: PropTypes.func,
+    changeTemplateBody:  PropTypes.func,
+    saveTemplate:        PropTypes.func,
+    resetTemplate:       PropTypes.func,
+    undoChanges:         PropTypes.func,
+    resetSubmit:         PropTypes.bool,
+    saveSubmit:          PropTypes.bool,
+    undoSubmit:          PropTypes.bool,
+  };
+
+  closeTemplateMenu = () => {
+    this.templateMenu.closeMenu();
+  };
+
+  closeVariablesMenu = () => {
+    this.variablesMenu.closeMenu();
+  };
+
+  closePhrasesMenu = () => {
+    this.phrasesMenu.closeMenu();
   };
 
   render() {
@@ -149,7 +181,7 @@ class EmailTemplatesEditorContainer extends React.Component {
                   <Select
                     options={templatesGroups}
                     className="group-select basic"
-                    onChange={this.selectTemplateGroup}
+                    onChange={this.props.selectTemplateGroup}
                     value={emailTemplates.get('currentTemplateGroup')}
                   />
                 </div>
@@ -217,29 +249,29 @@ class EmailTemplatesEditorContainer extends React.Component {
               rows="20"
               value={templateBody}
               disabled={textareaDisabled}
-              onChange={this.changeTemplateBody}
+              onChange={this.props.changeTemplateBody}
             />
           </div>
           <div className="footer">
             <Button
-              className={classNames('primary small', { loading: this.state.saveSubmit })}
+              className={classNames('primary small', { loading: this.props.saveSubmit })}
               disabled={textareaDisabled}
-              onClick={this.saveTemplate}
+              onClick={this.props.saveTemplate}
             >
               Save changes
             </Button>
             <Button
-              className={classNames('basic small', { loading: this.state.undoSubmit })}
+              className={classNames('basic small', { loading: this.props.undoSubmit })}
               disabled={textareaDisabled}
-              onClick={this.undoChanges}
+              onClick={this.props.undoChanges}
               confirm
             >
               Undo changes
             </Button>
             <Button
-              className={classNames('right floated basic small', { loading: this.state.resetSubmit })}
+              className={classNames('right floated basic small', { loading: this.props.resetSubmit })}
               disabled={textareaDisabled}
-              onClick={this.resetTemplate}
+              onClick={this.props.resetTemplate}
               confirm
             >
               Reset template
