@@ -72,8 +72,9 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
             'object-src'  => '*',
             'child-src'   => '*',
             'form-action' => '*',
-            'referrer'    => 'no-referrer-when-downgrade',
         ];
+
+        $referrerPolicy = 'no-referrer-when-downgrade';
 
         if (strpos($path, '/frame-embed') === 0 || strpos($path, '/focus-win') === 0) {
             // these portal modes can be framed,
@@ -88,10 +89,11 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
         if (strpos($path, '/agent') || strpos($path, '/admin')) {
             $csp['form-action'] = 'self';
             $csp['child-src']   = 'self';
-            $csp['referrer']    = 'no-referrer';
+            $referrerPolicy     = 'no-referrer';
         }
 
         $response->headers->add(['Content-Security-Policy' => $this->buildCspString($csp)]);
+        $response->headers->add(['Referrer-Policy' => $referrerPolicy]);
     }
 
     /**
