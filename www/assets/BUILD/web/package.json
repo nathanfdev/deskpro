@@ -62,6 +62,7 @@
     "build:prod": "gulp prod",
     "build:dev": "gulp",
     "dev": "gulp && gulp watch",
+    "prod": "gulp prod",
     "watch": "gulp watch",
     "postinstall": "bower install"
   }
