@@ -203,6 +203,13 @@ export class SideBar extends React.Component {
     window.open('http://deskpro.com', '_blank');
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      ready: true
+    };
+  }
+
   getMenus = () => {
     const menus = [];
     if (this.props.canUseTicket()) {
@@ -337,6 +344,7 @@ export class SideBar extends React.Component {
   };
 
   clickMenu = (item) => {
+    this.setState({ ready: false });
     if (item.callback) {
       this.props.changeSection(item.key);
       item.callback();
@@ -358,7 +366,8 @@ export class SideBar extends React.Component {
     const { logoActive } = this.props;
     return (
       <div
-        className={classNames('sidebar-menu', 'ui', 'vertical', 'menu')}
+        className={classNames('sidebar-menu ui vertical menu', { ready: this.state.ready })}
+        onMouseMove={() => { this.setState({ ready: true }); }}
       >
         <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo}>
           <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logo.svg`} />

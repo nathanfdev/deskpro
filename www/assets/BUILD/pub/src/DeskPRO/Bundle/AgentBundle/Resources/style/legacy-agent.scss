@@ -610,7 +610,7 @@ $transition-close-delay: 0.1s;
       }
     }
   }
-  &:hover {
+  &.ready:hover {
     .logo svg .text {
       fill: #fff;
       transition: fill $transition-open-time;
