@@ -54,9 +54,32 @@
             text-decoration: none;
             cursor:          text;
         }
+
+        #admin_loading {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: #eceef0;
+            z-index: 9999999;
+        }
+
+        #admin_loading .inner {
+            border-radius: 3px;
+            border: 1px solid #d0d9e6;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            bottom: 15px;
+            left: 15px;
+
+            background: #fff url({{ asset('images/spinners/loading-big-circle.gif') }}) no-repeat center center;
+        }
     </style>
 </head>
 <body ng-controller="Admin_Main_Ctrl_MainBody">
+    <div id="admin_loading"><div class="inner"></div></div>
     <div id="dp_main_view" ng-controller="Admin_Main_Ctrl_MainPage">
         <!-- Left Navigation Column -->
         <nav class="dp-layout-appnav" ng-hide="isBillingInterface">
