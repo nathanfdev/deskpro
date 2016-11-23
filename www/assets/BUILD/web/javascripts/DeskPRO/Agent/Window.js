@@ -1971,6 +1971,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			popoverEl.data('popover-handler').close(true);
 		}
 
+		this.backToAgent();
 		this.runPageRoute(el.data('route'), extraData);
 	},
 
@@ -4061,5 +4062,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	isSingleColMode: function() {
 		return !(this.paneVis.tabs && this.paneVis.list);
+	},
+
+	backToAgent: function() {
+		if (window['DP_FRAME_OVERLAYS']) {
+			for (var k in window['DP_FRAME_OVERLAYS']) {
+				if (window['DP_FRAME_OVERLAYS'].hasOwnProperty(k) && window['DP_FRAME_OVERLAYS'][k].opened) {
+					window['DP_FRAME_OVERLAYS'][k].close();
+				}
+			}
+		}
 	}
 });
