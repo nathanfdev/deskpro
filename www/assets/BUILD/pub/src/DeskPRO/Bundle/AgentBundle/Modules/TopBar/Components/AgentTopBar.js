@@ -177,7 +177,11 @@ export class AgentTopBar extends React.Component {
           ref={(c) => { this.searchBox = c; }}
         />
       </TopBarItem>
-      <TopBarItem className="legacy-omnibox recent" onClick={this.props.onRecent}>
+      <TopBarItem
+        className="legacy-omnibox recent"
+        onClick={this.props.onRecent}
+        title={agentPhrases.get('agent.chrome.recent_tooltip')}
+      >
         <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
       </TopBarItem>
       {/* <TopBarItem className='z-index-stub'>*/}
@@ -187,10 +191,18 @@ export class AgentTopBar extends React.Component {
 
       <AddButton closeIframes={this.props.closeIframes} />
       <TopBarRightMenu>
-        <TopBarItem className="views" onClick={this.props.toggleViewMode}>
+        <TopBarItem
+          className="views"
+          onClick={this.props.toggleViewMode}
+          title={agentPhrases.get('agent.chrome.view_tooltip')}
+        >
           <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
         </TopBarItem>
-        <TopBarItem className="legacy-omnibox notifications" onClick={this.props.onNotification}>
+        <TopBarItem
+          className="legacy-omnibox notifications"
+          onClick={this.props.onNotification}
+          title={agentPhrases.get('agent.chrome.notification_tooltip')}
+        >
           <TopBarNotificationIcon
             elementId="notifications"
             svg={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg`}
