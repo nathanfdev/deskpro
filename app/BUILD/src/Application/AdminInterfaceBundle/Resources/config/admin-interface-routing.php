@@ -39,6 +39,11 @@ $collection = new RouteCollection();
 
 $collection->create('admin', [
     'path'       => '/',
+    'controller' => 'AdminInterfaceBundle:Index:redirectToAdmin',
+]);
+
+$collection->create('admin_interface', [
+    'path'       => '/admin-interface',
     'controller' => 'AdminInterfaceBundle:Index:interface',
 ]);
 

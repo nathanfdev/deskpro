@@ -220,12 +220,6 @@
     <link rel="stylesheet" href="{{ asset('vendor/redactor/redactor.css') }}" type="text/css" />
 
     <link href='https://fonts.googleapis.com/css?family=Lato:400,700,900,100,300' rel='stylesheet' type='text/css'>
-    {% if is_first_load %}
-        <!-- to preload JS -->
-        <iframe src="{{ path('agent') }}"
-                style="opacity: 0.01; width: 1px; height: 1px; border: none; padding: 0; margin: 0;" frameborder="0"
-                width="1" height="1"></iframe>
-    {% endif %}
 
     <!-- legacy: portal editor -->
     <link rel="stylesheet" href="{{ asset('vendor/colorpicker/css/colorpicker.css') }}" type="text/css" />
