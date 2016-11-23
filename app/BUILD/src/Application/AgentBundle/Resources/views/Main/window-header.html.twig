@@ -15,16 +15,5 @@
 
 	<div id="dp_header_contentpane_aligned" class="contentpane-aligned" style="display:none">
 		{% include 'AgentBundle:Main:window-header-chat.html.twig' %}
-
-		<div class="group pull-right" id="dp_header_logo_wrap">
-			<a href="https://www.deskpro.com/" target="_blank" class="logo"></a>
-		</div>
-
-		<div class="panevis-switcher pull-right">
-			<ul>
-            	<li ng-click="twoColumnsView()" ng-class="paneVis.list && paneVis.tabs && 'active'" class="view2" title="{{ phrase('agent.interface.viewbtn-2col') }}"></li>
-				<li ng-click="oneColumnView()" ng-class="!(paneVis.list && paneVis.tabs) && 'active'" class="view3" title="{{ phrase('agent.interface.viewbtn-1col') }}"></li>
-			</ul>
-		</div>
 	</div>
 </div>
