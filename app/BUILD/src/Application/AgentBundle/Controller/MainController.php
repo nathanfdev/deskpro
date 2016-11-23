@@ -190,7 +190,8 @@ class MainController extends AbstractController
             $is_first_login_name = $this->person->getPref('agent.first_login_name');
         }
 
-        if ($this->container->get('settings_resolver')->getGlobalSettings()->get('raw_assets')) {
+        if ($this->container->get('deskpro.app_env')->getConfig('settings.raw_assets')
+            || $this->container->get('deskpro.app_env')->getConfig('paths.raw_assets')) {
             $has_raw_assets = true;
         } else {
             $has_raw_assets = false;

@@ -35,9 +35,31 @@ namespace Application\AdminInterfaceBundle\Controller;
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Entity\ApiToken;
 use DpSys\License;
+use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends AbstractController
 {
+    public function redirectToAdminAction()
+    {
+        $to = str_replace("'", "\\'", $this->generateUrl('agent').'#admin:/');
+
+        $html = <<<HTML
+<html>
+<head>
+<script>
+var target = '{$to}';
+if (window.location.hash && window.location.hash.length) {
+    target += window.location.hash.substring(1).replace(/^\//, '');
+}
+window.location = target;
+</script>
+</head>
+</html>
+HTML;
+
+        return new Response($html);
+    }
+
     public function interfaceAction()
     {
         $token               = new ApiToken();

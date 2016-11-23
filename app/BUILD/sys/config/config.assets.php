@@ -126,8 +126,6 @@ $CONFIG['agent_vendors'] = [
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
         'bower_components/jquery-qrcode/dist/jquery.qrcode.js',
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
-        'bower_components/react/react.js',
-        'bower_components/react/react-dom.js',
     ],
 ];
 
@@ -144,9 +142,6 @@ $CONFIG['agent_settingswin'] = [
         'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Filters.js',
         'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/FilterEdit.js',
         'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/TicketSlas.js',
-        'javascripts/DeskPRO/Agent/ElementHandler/MediaManagerWindow.js',
-        'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Upload.js',
-        'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Browse.js',
     ],
 ];
 
@@ -161,7 +156,6 @@ $CONFIG['agent_window_sections'] = [
         'javascripts/DeskPRO/Agent/WindowElement/Section/UserChat.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Feedback.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Tasks.js',
-        'javascripts/DeskPRO/Agent/WindowElement/Section/Twitter.js',
     ],
 ];
 
@@ -200,9 +194,6 @@ $CONFIG['agent_pages_lists'] = [
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackContentValidating.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/Search.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterFollowers.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterSearch.js',
         'javascripts/DeskPRO/Agent/PageFragment/List/TicketList.js',
     ],
 ];
@@ -210,14 +201,10 @@ $CONFIG['agent_pages_lists'] = [
 $CONFIG['agent_pages'] = [
     'out'   => 'js/agent-pages.js',
     'files' => [
-        'javascripts/DeskPRO/Agent/PageHelper/NewUserOverlay.js',
-        'javascripts/DeskPRO/Agent/PageHelper/ListColDrag.js',
-        'javascripts/DeskPRO/Agent/PageHelper/ListColResize.js',
         'javascripts/DeskPRO/Agent/PageHelper/TicketFields.js',
         'javascripts/DeskPRO/Agent/PageHelper/TicketFieldDisplay.js',
         'javascripts/DeskPRO/Agent/PageHelper/ChatFields.js',
         'javascripts/DeskPRO/Agent/PageHelper/ChatFieldDisplay.js',
-        'javascripts/DeskPRO/Agent/PageHelper/ListSearchForm.js',
         'javascripts/DeskPRO/Agent/PageHelper/CategoryEdit.js',
         'javascripts/DeskPRO/Agent/PageHelper/DisplayOptions.js',
         'javascripts/DeskPRO/Agent/PageHelper/SelectionBar.js',
@@ -229,7 +216,6 @@ $CONFIG['agent_pages'] = [
         'javascripts/DeskPRO/Agent/PageHelper/Comments.js',
         'javascripts/DeskPRO/Agent/PageHelper/MiscContent.js',
         'javascripts/DeskPRO/Agent/PageHelper/ListNav.js',
-        'javascripts/DeskPRO/Agent/PageHelper/AutoSave.js',
         'javascripts/DeskPRO/Agent/PageHelper/StateSaver.js',
         'javascripts/DeskPRO/Agent/PageHelper/Results.js',
         'javascripts/DeskPRO/Agent/PageHelper/MassActions.js',
@@ -238,7 +224,6 @@ $CONFIG['agent_pages'] = [
         'javascripts/DeskPRO/Agent/PageHelper/EditTitle.js',
         'javascripts/DeskPRO/Agent/PageHelper/TaskListControl.js',
         'javascripts/DeskPRO/Agent/PageHelper/TicketBilling.js',
-        'javascripts/DeskPRO/Agent/PageHelper/Twitter.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/TicketHelper/LinkTicket.js',
@@ -269,12 +254,8 @@ $CONFIG['agent_pages'] = [
         'javascripts/DeskPRO/Agent/PageFragment/Page/FeedbackView.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/NewsView.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/DownloadsView.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/DpNews.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/NewTweet.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterUser.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterStatusOverlay.js',
 
     ],
 ];
@@ -291,14 +272,12 @@ $CONFIG['agent_element_handlers'] = [
         'javascripts/DeskPRO/Agent/ElementHandler/OrgSearchBox.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TicketSearchBox.js',
         'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
-        'javascripts/DeskPRO/Agent/ElementHandler/QuickSearch.js',
         'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
         'javascripts/DeskPRO/Agent/ElementHandler/OverlayFrame.js',
         'javascripts/DeskPRO/Agent/ElementHandler/GoToBilling.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',
         'javascripts/DeskPRO/Agent/ElementHandler/RadioExpander.js',
         'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
-        'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
         'javascripts/DeskPRO/Agent/SourcePane/SearchForm.js',
     ],
 ];
@@ -353,7 +332,6 @@ $CONFIG['agent_agent_ui'] = [
         'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/UserChat.js',
         'javascripts/DeskPRO/Agent/WindowElement/TabBar.js',
         'javascripts/DeskPRO/Agent/WindowElement/TabBarOverflow.js',
-        'javascripts/DeskPRO/Agent/TextSnippetClientDbDriver.js',
         'javascripts/DeskPRO/Agent/TextSnippetAjaxDriver.js',
     ],
 ];
@@ -385,9 +363,6 @@ $CONFIG['agent_misc'] = [
         'javascripts/DeskPRO/Form/InlineEdit.js',
         'javascripts/DeskPRO/Form/RuleBuilder.js',
         'javascripts/DeskPRO/FaviconBadge.js',
-        'javascripts/DeskPRO/Agent/InterfaceEffects.js',
-        'javascripts/DeskPRO/Agent/Widget/FindPerson.js',
-        'javascripts/DeskPRO/Agent/Widget/AgentSelector.js',
         'javascripts/DeskPRO/Agent/Widget/SnippetViewer.js',
         'javascripts/DeskPRO/Agent/Widget/TicketChangeUser.js',
         'javascripts/DeskPRO/Agent/Widget/Merge.js',
