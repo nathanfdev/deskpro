@@ -202,6 +202,11 @@ class CategoryHierarchy
 
         $this->_cat_ids = [];
         foreach ($cats as &$c) {
+            foreach (['id', 'parent_id', 'brand_id'] as $k) {
+                if (!empty($c[$k])) {
+                    $c[$k] = (int) $c[$k];
+                }
+            }
             $c['url_slug'] = $c['id'].'-'.Strings::slugifyTitle($c['title']);
 
             if (!isset($c['user_title']) || !$c['user_title']) {
