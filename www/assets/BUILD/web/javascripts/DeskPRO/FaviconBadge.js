@@ -22,10 +22,18 @@ DeskPRO.FaviconBadge = new Orb.Class({
 
 		this.setOptions(options);
 
-		this.tinyconOptions = {
-			font: '10px arial',
-			fallback: false
-		};
+		if (this.isHighDensity()) {
+			this.tinyconOptions = {
+				font: '20px arial',
+				fallback: false
+			};
+		} else {
+      this.tinyconOptions = {
+        font: '10px arial',
+        fallback: false
+      };
+		}
+		console.log(this.tinyconOptions);
 
 		this.animateTimeout = null;
 		this.animateCount = 0;
@@ -135,5 +143,9 @@ DeskPRO.FaviconBadge = new Orb.Class({
 			Tinycon.setOptions(self.tinyconOptions);
 			Tinycon.setBubble(num+'');
 		}
+	},
+
+  isHighDensity: function(){
+  	return ((window.matchMedia && (window.matchMedia('only screen and (min-resolution: 124dpi), only screen and (min-resolution: 1.3dppx), only screen and (min-resolution: 48.8dpcm)').matches || window.matchMedia('only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (min-device-pixel-ratio: 1.3)').matches)) || (window.devicePixelRatio && window.devicePixelRatio > 1.3));
 	}
 });
