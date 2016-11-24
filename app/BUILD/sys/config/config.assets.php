@@ -142,6 +142,9 @@ $CONFIG['agent_settingswin'] = [
         'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Filters.js',
         'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/FilterEdit.js',
         'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/TicketSlas.js',
+        'javascripts/DeskPRO/Agent/ElementHandler/MediaManagerWindow.js',
+        'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Upload.js',
+        'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Browse.js',
     ],
 ];
 
