@@ -119,7 +119,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         save_assets: []
       }
 
-      for own _, group of @asset_groups
+      for own _x, group of @asset_groups
         for asset in group
           if asset.js_id
             postData.save_assets.push({id: asset.js_id, content: asset.js})

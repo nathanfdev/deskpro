@@ -69,7 +69,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
               terms[Util.uid('t')] = t
             options.criteria.terms = terms
 
-          for own _ of options.criteria.terms
+          for own _x of options.criteria.terms
             $scope.formOptions.with_criteria = true
             break
 
