@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -66,12 +65,9 @@ class PreflightChecksListener implements EventSubscriberInterface
 
     public function onPreRequest(GetResponseEvent $event)
     {
-        $request = $event->getRequest();
-
         // Missing PDO
         if (!extension_loaded('pdo')) {
-            $r = new RedirectResponse($request->getBasePath().'/index.php/install/');
-            $r->headers->set('X-DeskPRO-InstallRedirectReason', 'Missing PDO ext');
+            $r = new Response("DeskPRO is not installed.\nError: missing_pdo_extension", 423, ['Content-Type' => 'text/plain']);
             $event->setResponse($r);
             $event->stopPropagation();
 
@@ -86,8 +82,7 @@ class PreflightChecksListener implements EventSubscriberInterface
             global $DP_ENV;
 
             if (!$DP_ENV->getConfig('database.host') && !$DP_ENV->getConfig('database.0.host')) {
-                $r = new Response('DeskPRO is not installed.');
-                $r->headers->set('X-DeskPRO-InstallRedirectReason', 'Database error: '.$e->getMessage().' -- '.$e->getCode());
+                $r = new Response("DeskPRO is not installed.\nError: missing_config", 423, ['Content-Type' => 'text/plain']);
                 $event->setResponse($r);
                 $event->stopPropagation();
 
@@ -99,8 +94,7 @@ class PreflightChecksListener implements EventSubscriberInterface
 
         // Not installed yet
         if (!$settings->get('core.install_build')) {
-            $r = new RedirectResponse($request->getBasePath().'/index.php/install/');
-            $r->headers->set('X-DeskPRO-InstallRedirectReason', 'Missing build number');
+            $r = new Response("DeskPRO is not installed.\nError: install_incomplete", 423, ['Content-Type' => 'text/plain']);
             $event->setResponse($r);
             $event->stopPropagation();
 
