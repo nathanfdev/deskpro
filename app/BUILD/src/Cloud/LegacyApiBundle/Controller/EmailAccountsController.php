@@ -135,7 +135,7 @@ class EmailAccountsController extends BaseEmailAccountsController
      *
      * @return bool
      */
-    private function validateCustomEmailAddress($email)
+    protected function validateCustomEmailAddress($email)
     {
         $email = strtolower(trim($email));
 

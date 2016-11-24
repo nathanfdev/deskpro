@@ -190,7 +190,7 @@ define [
       form_data = @form_model.getFormData()
       form_data.test_email = @test_email
 
-      return @Api.sendPostJson('/email_accounts/test-outgoing-account', form_data)
+      return @Api.sendPostJson('/email_accounts/test-outgoing-account', form_data, null, { timeout: 12000})
 
 
     ###
@@ -254,6 +254,9 @@ define [
           @saveAccount()
       )
 
+    setupTestModalScope: ($scope) ->
+      return
+
     ###
       # Show the test account modal
     ###
@@ -274,6 +277,7 @@ define [
             $scope.showing_log = true
 
           $scope.test_email = test_email
+          me.setupTestModalScope($scope)
 
           testNow = =>
             $scope.testing_started = true
@@ -288,12 +292,19 @@ define [
               $scope.is_success    = result.is_success
               $scope.log           = result.log
               $scope.message_count = result.message_count
-            ).error(=>
-              $scope.showing_log   = true
-              $scope.is_testing    = false
-              $scope.is_success    = false
-              $scope.log           = "Server Error"
-              $scope.message_count = 0
+            ).error( (result) =>
+              if result.status == 0 or result.status == 524
+                $scope.showing_log   = true
+                $scope.is_testing    = false
+                $scope.is_success    = false
+                $scope.log           = "The test failed due to a network problem. For example, the test may have timed out due to a firewall blocking it."
+                $scope.message_count = 0
+              else
+                $scope.showing_log   = true
+                $scope.is_testing    = false
+                $scope.is_success    = false
+                $scope.log           = "Server Error"
+                $scope.message_count = 0
             )
 
           resetTest = =>

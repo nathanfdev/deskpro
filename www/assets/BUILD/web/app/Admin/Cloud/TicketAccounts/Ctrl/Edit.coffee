@@ -19,4 +19,12 @@ define [
     getFormModel: ->
       return new EditTicketAccountModel(@account || {}, @deps || [], @trigger || {})
 
+    setupTestModalScope: ($scope) ->
+      if @form_model.form.use_custom_email_address
+        $scope.test_email.from = @form_model.form.custom_email_address
+      else
+        $scope.test_email.from = @form_model.form.address
+
+      $scope.test_email.from_is_fixed = true
+
   Admin_Cloud_TicketAccounts_Ctrl_Edit.EXPORT_CTRL()
