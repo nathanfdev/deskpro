@@ -76,6 +76,7 @@ class PersonTest extends AbstractModelTest
             'first_name'            => 'First Name',
             'last_name'             => 'Last Name',
             'name'                  => 'Person Name',
+            'title_prefix'          => 'Dr',
             'emails'                => ['email_1@deskpro.dev'],
             'override_display_name' => 'Override name',
             'password'              => 'password',
