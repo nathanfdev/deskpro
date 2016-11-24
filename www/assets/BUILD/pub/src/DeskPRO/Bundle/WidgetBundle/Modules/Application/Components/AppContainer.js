@@ -1,10 +1,13 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import $ from 'jquery';
 import debounce from 'lodash/function/debounce';
 import { Trigger } from './Trigger/Trigger';
 import Widget from './Widget/Widget';
 import { windowResize } from '../Actions/dpWindowActions';
 
+
+@connect()
 export class AppContainer extends React.Component {
 
   static propTypes = {
