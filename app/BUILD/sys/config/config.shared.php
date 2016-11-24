@@ -73,6 +73,11 @@ $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\SecurityHeadersRes
 $definition->addTag('kernel.event_subscriber');
 $container->setDefinition('listener.security_headers', $definition);
 
+$definition = new Definition();
+$definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\RequestIdResponseListener');
+$definition->addTag('kernel.event_subscriber');
+$container->setDefinition('listener.response_id_header', $definition);
+
 //###########################################################################
 // Form Type
 //###########################################################################
