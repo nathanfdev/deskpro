@@ -164,8 +164,6 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
       document.title = this.originalTitle;
     }
 
-    var frameWindow = this.getFrameWindow();
-    frameWindow.parent.location.hash = '';
     DeskPRO_Window.enableHashPath();
   },
 

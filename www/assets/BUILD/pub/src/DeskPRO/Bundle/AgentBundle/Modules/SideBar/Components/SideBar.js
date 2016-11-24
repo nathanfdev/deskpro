@@ -55,6 +55,9 @@ export class SideBarContainer extends SeparateComponent {
         }
       }
     });
+    window.document.addEventListener('dpChangeSection', (e) => {
+      this.changeSection(`menu_${e.detail.section}`);
+    });
   }
 
   componentWillMount = () => {

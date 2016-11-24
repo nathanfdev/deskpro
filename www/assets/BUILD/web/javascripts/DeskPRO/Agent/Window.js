@@ -3062,6 +3062,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		DP.console.debug('Switching to %s', section_id);
 
+		var event = new CustomEvent('dpChangeSection', { 'detail': { section: section_id.replace(/_section/, '') } });
+		window.document.dispatchEvent(event);
+
 		var handler = this.sections[section_id];
 		if (!handler) {
 			if (section_id != 'test_section') {
