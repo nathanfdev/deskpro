@@ -38,6 +38,39 @@ use DeskPRO\Component\Util\ListUtils;
 class TicketLayoutHelper
 {
     /**
+     * Submitted choice values are not submitted with the entity Id. Instead we are given the choice list key.
+     *
+     * This inspects the submitted data on our form and gives us data we're interested in.
+     *
+     * @param array                    $submitted_data
+     * @param TicketWithLayoutsContext $context
+     *
+     * @return array the form key and its selected entity ID (or null if not submitted)
+     */
+    public static function getExtractedData(array $submitted_data, TicketWithLayoutsContext $context)
+    {
+        $form      = $context->getForm();
+        $finalData = [];
+        $keys      = [
+            FormFields::DEPARTMENT,
+            FormFields::PRODUCT,
+            FormFields::CATEGORY,
+            FormFields::WORKFLOW,
+            FormFields::PRIORITY,
+        ];
+
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $submitted_data) && $form->has($key)) {
+                $finalData[$key] = $submitted_data[$key];
+            } else {
+                $finalData[$key] = null;
+            }
+        }
+
+        return $finalData;
+    }
+
+    /**
      * @param TicketWithLayoutsContext $context
      *
      * @return LayoutField[]

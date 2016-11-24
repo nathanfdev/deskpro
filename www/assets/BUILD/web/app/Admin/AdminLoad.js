@@ -232,6 +232,8 @@ define([
         }
 
         angular.bootstrap($html, ['Admin_App']);
+
+        $('#admin_loading').remove();
       });
     }
   };

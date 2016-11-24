@@ -5,9 +5,6 @@ $SETTINGS['disable_portal_http_cache'] = true;
 $SETTINGS['disable_url_corrections']   = false;
 $SETTINGS['disable_outgoing_email']    = true;
 
-// raw assets in agent interface
-$SETTINGS['raw_assets'] = ['all'];
-
 ######################################################
 # Basic settings for logging and dupe system         #
 ######################################################

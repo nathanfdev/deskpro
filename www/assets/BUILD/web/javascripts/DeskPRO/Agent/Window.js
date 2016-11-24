@@ -733,13 +733,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initSections();
 		this._initInterfaceServices();
 
-		if (window.DESKPRO_SNIPPETS_USE_CLIENT_DB) {
-			this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetClientDbDriver('tickets');
-			this.chatSnippetDriver   = new DeskPRO.Agent.TextSnippetClientDbDriver('chat');
-		} else {
-			this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetAjaxDriver('tickets');
-			this.chatSnippetDriver   = new DeskPRO.Agent.TextSnippetAjaxDriver('chat');
-		}
+    this.ticketSnippetDriver = new DeskPRO.Agent.TextSnippetAjaxDriver('tickets');
+    this.chatSnippetDriver   = new DeskPRO.Agent.TextSnippetAjaxDriver('chat');
 
 		if (window.devicePixelRatio && window.devicePixelRatio >= 2) {
 			$('body').addClass('dp-is-retina');
@@ -820,146 +815,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 			fn();
 		}
 
-		$('#user_settings_link_profile').on('click', function(ev) {
-			ev.preventDefault();
-			$('#settingswin').trigger('dp_open', 'profile');
-		});
-		$('#user_settings_link_signature').on('click', function(ev) {
-			ev.preventDefault();
-			$('#settingswin').trigger('dp_open', 'signature');
-		});
-		$('#user_settings_link_ticketnotify').on('click', function(ev) {
-			ev.preventDefault();
-			$('#settingswin').trigger('dp_open', 'ticket-notify');
-		});
-		$('#user_settings_link_othernotify').on('click', function(ev) {
-			ev.preventDefault();
-			$('#settingswin').trigger('dp_open', 'notify');
-		});
-		$('#user_settings_link_macros').on('click', function(ev) {
-			ev.preventDefault();
-			$('#settingswin').trigger('dp_open', 'macros');
-		});
-		$('#user_settings_link_filters').on('click', function(ev) {
-			ev.preventDefault();
-			$('#settingswin').trigger('dp_open', 'filters');
-		});
-		$('#user_settings_link_snippets').on('click', function(ev) {
-			ev.preventDefault();
-
-			// Open it for the current ticket if we are viewing one
-			var currentTab = DeskPRO_Window.TabBar.getActiveTab();
-			if (currentTab && currentTab.page && currentTab.page.TYPENAME && currentTab.page.TYPENAME == 'ticket') {
-				currentTab.page.shortcutOpenSnippets();
-			} else {
-				var snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
-					viewUrl: $(this).data('snippet-viewer-url'),
-					destroyOnClose: true,
-					onSnippetClick: function(evData) {
-						evData.cancelClose = true;
-						evData.snippetEl.find('.edit-trigger').click();
-					}
-				});
-				snippetsViewer.open();
-			}
-		});
-
-		$('#dp_nav_sections').find('ul').find('li').find('a').each(function() {
-			$(this).qtip({
-				position: {
-					my: 'left center',
-					at: 'right center',
-					target: $(this)
-				},
-				content: {attr: 'title'},
-				style: {
-					classes: 'qtip-dark qtip-rounded'
-				}
-			});
-		});
-		$('#agent_chat_section').each(function() {
-			$(this).qtip({
-				position: {
-					my: 'bottom center',
-					at: 'top center',
-					target: $(this)
-				},
-				content: {attr: 'title'},
-				style: {
-					classes: 'qtip-dark qtip-rounded'
-				}
-			});
-		});
-
-		$('.panevis-switcher').find('li').each(function() {
-			$(this).qtip({
-				position: {
-					my: 'top center',
-					at: 'bottom center',
-					target: $(this)
-				},
-				content: {attr: 'title'},
-				style: {
-					classes: 'qtip-dark qtip-rounded'
-				}
-			});
-		});
-
 		$(document).on('click', '.click-confirm', function(ev) {
 			if (!confirm($(this).data('confirm'))) {
 				ev.preventDefault();
 			}
 		});
 
-		$(document).on('click', '.twitter-user-find', function(ev) {
-			var name = $(this).data('name');
-			if (name.indexOf('@') != 0) {
-				name = '@' + name;
-			}
-			if (name.length > 1) {
-				ev.preventDefault();
-
-				$.ajax({
-					url: BASE_URL + 'agent/twitter/user/find',
-					data: {name: name},
-					type: 'GET',
-					dataType: 'json',
-					success: function(data) {
-						if (data.success) {
-							var route = 'page:' + data.url;
-							DeskPRO_Window.runPageRoute(route);
-						} else {
-							alert("There is no Twitter user named " + name);
-						}
-					}
-				});
-			}
-		});
-
 		// Used by the poller to send flag to update the last active time
 		$(document).on('click mousemove keypress', function() {
 			self.activityTime = new Date();
-		});
-
-		if (document.getElementById('notice_trigger')) {
-			this._noticeIndex = -1;
-			this._noticeIds = $('#notice_trigger').data('ids').split(',');
-			$('#notice_trigger').on('click', function(ev) {
-				ev.preventDefault();
-				ev.stopPropagation();
-				self.openNotices();
-			});
-		}
-
-		$('#dp_header_userchat_btn').on('click', function() {
-			var wrap = $(this).parent();
-			wrap.addClass('active');
-
-			var closeFn = function() {
-				wrap.removeClass('active');
-			};
-
-			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 
 		$('#dp_tab_list_btn').on('click', function(ev) {
@@ -986,163 +850,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#dp_tab_list_menu').detach().appendTo('body');
 
 		var isIe = $('html').hasClass('browser-ie');
-
-		$('#dp_header').find('.btn-group-actions, .btn-group-wrap').find('.btn, .dp-recent-btn').on('click', function() {
-			var wrap = $(this).parent();
-			var btnMenu = wrap.find('.btn-menu');
-
-			if (wrap.hasClass('active')) {
-				return;
-			}
-
-			// Bug in IE10 means the li's dont render properly
-			// until you force a repaint somehow while they are displayed
-			// So we show with no opacity, toggle the display on li's
-			// which does the trick of repainting them, then set the opacity
-			// back to 1. The user doesnt see anything amiss and we solve the bug :)
-			if (isIe) {
-				btnMenu.css('opacity', 0);
-			}
-
-			wrap.addClass('active');
-			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
-
-			if (isIe) {
-				window.setTimeout(function() {
-					btnMenu.find('li').css('display', 'block');
-					btnMenu.css('opacity', 1);
-				}, 10);
-			}
-
-			var closeFn = function() {
-				wrap.removeClass('active');
-			};
-
-			if (!wrap.data('has-init')) {
-				btnMenu.on('click', function(ev) {
-					Orb.cancelEvent(ev);
-					Orb.shimClickCallbackPop();
-				});
-			}
-
-			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
-
-			if ($(this).hasClass('dp-recent-btn')) {
-
-				DeskPRO_Window.recentTabs.idW = 0;
-				var maxw = 0;
-				DeskPRO_Window.recentTabs.list.find('strong').each(function() {
-					var w = $(this).width();
-					if (w > maxw) {
-						maxw = w;
-					}
-				});
-
-				DeskPRO_Window.recentTabs.idW = maxw;
-				DeskPRO_Window.recentTabs.list.find('strong').css('min-width', maxw);
-
-				$('#recent_tabs_list_filter').focus();
-				$('#recent_tabs_list').parent().scrollTop(0);
-			}
-		});
-
-		$('#dp_create_btn').on('click mouseover', function(){
-			if ($('body').hasClass('with-tabresizing')) return;
-
-			var wrap = $(this);
-			var btnMenu = $('#create-menu');
-			var isActive = false;
-			var isClosingTimeout = false;
-
-			if (!btnMenu.find('li').length) {
-				wrap.hide();
-				return;
-			}
-
-			// Bug in IE10 means the li's dont render properly
-			// until you force a repaint somehow while they are displayed
-			// So we show with no opacity, toggle the display on li's
-			// which does the trick of repainting them, then set the opacity
-			// back to 1. The user doesnt see anything amiss and we solve the bug :)
-			if (isIe) {
-				btnMenu.css('opacity', 0);
-			}
-
-			wrap.addClass('active');
-			btnMenu.addClass('active');
-			isActive = true;
-			btnMenu.css({left:  wrap.offset().left + 1, top: wrap.offset().top + wrap.height() + 6});
-
-			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
-
-			if (isIe) {
-				window.setTimeout(function() {
-					btnMenu.find('li').css('display', 'block');
-					btnMenu.css('opacity', 1);
-				}, 10);
-			}
-
-			var closeFn = function() {
-				wrap.removeClass('active');
-				btnMenu.removeClass('active');
-				isActive = false;
-				$(document).off('mousemove.create-menu');
-				if (isClosingTimeout) {
-					window.clearTimeout(isClosingTimeout);
-				}
-			};
-
-			var isOutCoords1 = function(e) {
-				var left = btnMenu.offset().left,
-					top = btnMenu.offset().top,
-					right = left + btnMenu.outerWidth(),
-					bottom = top + btnMenu.outerHeight();
-
-				if (e.pageX < left || e.pageX > right || e.pageY < top || e.pageY > bottom) {
-					return true;
-				} else {
-					return false;
-				}
-			};
-
-			var isOutCoords2 = function(e) {
-				var left = wrap.offset().left,
-					top = wrap.offset().top,
-					right = left + wrap.outerWidth(),
-					bottom = top + wrap.outerHeight();
-
-				if (e.pageX < left || e.pageX > right || e.pageY < top || e.pageY > bottom) {
-					return true;
-				} else {
-					return false;
-				}
-			};
-			$(document).on('mousemove.create-menu', function(e){
-				if (!isActive) return;
-				if (isOutCoords1(e) && isOutCoords2(e)) {
-					if (!isClosingTimeout) {
-						isClosingTimeout = window.setTimeout(function () {
-							isClosingTimeout = null;
-							$('.zindex-chrome0').trigger('click');
-						}, 350);
-					}
-				} else {
-					if (isClosingTimeout) {
-						window.clearTimeout(isClosingTimeout);
-						isClosingTimeout = null;
-					}
-				}
-			});
-
-			if (!wrap.data('has-init')) {
-				btnMenu.on('click', function(ev) {
-					Orb.cancelEvent(ev);
-					Orb.shimClickCallbackPop();
-				});
-			}
-
-			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
-		});
 
 		$('#dp_header_help_trigger').on('click', function(ev) {
 			ev.preventDefault();
@@ -1747,34 +1454,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		};
 	},
 
-
-	/**
-	 * Get information about a team
-	 *
-	 * @param {Integer} agent_team_id
-	 * @return {Object}
-	 */
-	getTeamInfo: function(team_id) {
-
-		team_id = parseInt(team_id);
-
-		// chat list always has teams and info
-		var teamEl = $('#agent_team_list .team-' + team_id);
-
-		if (!teamEl.length) {
-			DP.console.warn('Unknown team %i', team_id);
-			return null;
-		}
-
-		return {
-			id: team_id,
-			name: teamEl.data('team-name'),
-			pictureUrl: teamEl.data('picture-url'),
-			pictureUrlSizable: teamEl.data('picture-url-sizable')
-		};
-	},
-
-
 	/**
 	 * Get a URL pattern
 	 */
@@ -2052,8 +1731,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			sectionId = 'tickets_section';
 		} else if (testcl('.Task')) {
 			sectionId = 'tasks_section';
-		} else if (testcl('.Twitter')) {
-			sectionId = 'twitter_section';
 		}
 
 		if (sectionId) {
@@ -2294,6 +1971,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			popoverEl.data('popover-handler').close(true);
 		}
 
+		this.backToAgent();
 		this.runPageRoute(el.data('route'), extraData);
 	},
 
@@ -2673,33 +2351,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	getMessageChanneler: function() {
 		return this.messageChanneler;
-	},
-
-
-	/**
-	 * Dismiss a help message. This removes the help element, and sends an ajax
-	 * request to the server to record the dismiss so it doesnt show again.
-	 *
-	 * The element must have a data-message-id attribute.
-	 *
-	 * @param el
-	 */
-	dismissHelpMessage: function(el) {
-		el = $(el);
-
-		var messageId = el.data('message-id');
-
-		el.remove();
-
-		if (!messageId) {
-			return;
-		}
-
-		$.ajax({
-			dataType: 'json',
-			url: BASE_URL + 'agent/misc/dismiss-help-message/' + escape(messageId),
-			type: 'GET'
-		});
 	},
 
 
@@ -3163,11 +2814,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.notifications = new DeskPRO.Agent.Notifications();
 
-		// Settings is a window
-		$('#user_settings_link').on('click', function() {
-			$('#settingswin').trigger('dp_open');
-		});
-
 		// Global AJAX handler for errors if no error handler is attached
 		$(document).ajaxError(this._globalHandleAjaxError.bind(this));
 		$(document).ajaxComplete(this._globalHandleAjaxComplete.bind(this));
@@ -3188,16 +2834,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self.faviconBadge.updateBadge(count, true);
 		});
 
-		// Create menu
-		this.createMenu = new DeskPRO.UI.Menu({
-			triggerElement: '#create_content_trigger',
-			menuElement: '#create_content_menu'
-		});
-
 		var autostart = false;
-		if (DeskPRO_Window.DEBUG.disableSectionHandlers) {
-			autostart = false;
-		}
 
 		if (DESKPRO_PERSON_PERMS['agent_tickets.create']) {
 			var self = this;
@@ -3213,7 +2850,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				};
 				self.newTicketLoader.open();
 			};
-			$('#create_ticket_btn').on('click', function() { DeskPRO_Window.newTicketLoader.toggle(); });
 		}
 
 		if (DESKPRO_PERSON_PERMS['agent_people.create']) {
@@ -3222,7 +2858,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				tabRoute: 'page:' + BASE_URL + 'agent/people/new',
 				autostart: autostart
 			});
-			$('#create_person_btn').on('click', function() { DeskPRO_Window.newPersonLoader.toggle(); });
 		}
 
 		if (DESKPRO_PERSON_PERMS['agent_org.create']) {
@@ -3231,7 +2866,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				tabRoute: 'page:' + BASE_URL + 'agent/organizations/new',
 				autostart: autostart
 			});
-			$('#create_organization_btn').on('click', function() { DeskPRO_Window.newOrganizationLoader.toggle(); });
 		}
 
 		if (DESKPRO_PERSON_PERMS['agent_publish.create']) {
@@ -3255,106 +2889,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 				tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
 				autostart: autostart
 			});
-
-			$('#create_article_btn').on('click', function() { DeskPRO_Window.newArticleLoader.toggle(); });
-			$('#create_news_btn').on('click', function() { DeskPRO_Window.newNewsLoader.toggle(); });
-			$('#create_download_btn').on('click', function() { DeskPRO_Window.newDownloadLoader.toggle(); });
-			$('#create_feedback_btn').on('click', function() { DeskPRO_Window.newFeedbackLoader.toggle(); });
 		}
 
 		this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/tasks/new',
 			tabRoute: 'page:' + BASE_URL + 'agent/tasks/new',
 			autostart: autostart
-		});
-		$('#create_task_btn').on('click', function() { $('form#newTaskForm input, form#newTaskForm select').val(''); DeskPRO_Window.newTaskLoader.toggle(); });
-
-		if ($('#twitter_section').length) {
-			this.newTweetLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-				loadUrl: BASE_URL + 'agent/twitter/new',
-				autostart: autostart
-			});
-			$('#create_tweet_btn').on('click', function() { DeskPRO_Window.newTweetLoader.toggle(); });
-		}
-
-		// Create toggle
-		$('#createContentTrigger').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			var pos = $(this).offset();
-			var w = $(this).outerWidth();
-			var h= $(this).outerHeight();
-
-			var list = $('#createTicketToggle');
-			list.hide().detach().appendTo('body');
-			list.css({
-				top: pos.top,
-				left: pos.left
-			});
-			list.show();
-
-			var backdrop = $('<div class="backdrop" />').appendTo('body');
-
-			var close = function() {
-				list.hide();
-				backdrop.remove();
-			};
-			backdrop.on('click', close);
-			list.on('click', close);
-		});
-
-
-		// Interface toggle
-		$('#DP-InterfaceSwitcher > .DP-adminSwitch > .adminSwitcher').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			var list = $('#interfacesToggle');
-			list.hide().detach().appendTo('body');
-			list.css({
-				top: 7,
-				right: 69
-			});
-			list.show();
-
-			var backdrop = $('<div class="backdrop" />').appendTo('body');
-
-			var close = function() {
-				list.hide();
-				backdrop.remove();
-			};
-			backdrop.on('click', close);
-			list.find('a').on('click', close);
-			$('ul', list).on('click', function(ev) {
-				ev.stopPropagation();
-			});
-		});
-
-		// User menu
-		$('#userSetting_trigger').on('click', function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			var list = $('#userSetting');
-			list.hide().detach().appendTo('body');
-			list.css({
-				top: 41,
-				left: 4
-			});
-			list.show();
-
-			var backdrop = $('<div class="backdrop" />').appendTo('body');
-
-			var close = function() {
-				list.hide();
-				backdrop.remove();
-			};
-			backdrop.on('click', close);
-			list.find('a').on('click', close);
-			$('ul', list).on('click', function(ev) {
-				ev.stopPropagation();
-			});
 		});
 
 		var getkbbackdrop = function() {
@@ -3516,20 +3056,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		this.getSectionDataSendQueued();
-
-		if (this.openDpNews && this.openDpNews.length) {
-			$.ajax({
-				url: 'https://support.deskpro.com/?_sys=ping&type=jsonp',
-				dataType: 'jsonp',
-				success: function() {
-					var focus = true;
-					for (var i = 0; i < self.openDpNews.length; i++) {
-						self.loadPage(BASE_URL + 'agent/misc/view-dp-news/' + self.openDpNews[i].id, { noToggle: true, focus: focus });
-						focus = false;
-					}
-				}
-			});
-		}
 	},
 
 	switchToSection: function(section_id, no_load_list) {
@@ -3994,10 +3520,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				url = BASE_URL + 'agent/chat/get-section-data.json';
 				break;
 
-			case 'twitter_section':
-				url = BASE_URL + 'agent/twitter/get-section-data.json';
-				break;
-
 			case 'people_section':
 				url = BASE_URL + 'agent/people/get-section-data.json';
 				break;
@@ -4067,18 +3589,29 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
+		var sectionDataQueued = this._getSectionDataQueued;
+    this._getSectionDataQueued = null;
+
 		var callback_map = {};
 		var data = [];
-		Array.each(this._getSectionDataQueued, function(info) {
-			data.push({
-				name: 'section_ids[]',
-				value: info[0]
-			});
+		Array.each(sectionDataQueued, function(info) {
+      if (info[0] === 'tickets_section') {
+        // tickets done itself
+        self.loadingSections['tickets_section'] = false;
+        self.getSectionData('tickets_section', function(d) { info[1](d); });
+      } else {
+        data.push({
+          name: 'section_ids[]',
+          value: info[0]
+        });
 
-			callback_map[info[0]] = info[1];
+        callback_map[info[0]] = info[1];
+      }
 		});
 
-		this._getSectionDataQueued = null;
+    if (!data.length) {
+      return;
+    }
 
 		$.ajax({
 			url: BASE_URL + 'agent/get-combined-section-data.json',
@@ -4100,9 +3633,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				self.loadingSections = {};
 			},
 			success: function(data) {
-				self.loadingSections = {};
-
 				Object.each(data, function(sectionData, sectionId) {
+          self.loadingSections[sectionId] = false;
 					if (sectionData === null || !sectionData.section_html) {
 						// Means an error, send it normally
 						self.getSectionData(sectionId);
@@ -4504,192 +4036,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 	},
 
-
-	dumpDom: function() {
-		var zindexRules = [];
-		var zindexGot = {};
-		$('*').each(function() {
-			var zindex = $(this).css('z-index');
-			if (zindex != 'auto') {
-				if (!zindexGot[zindex]) {
-					zindexRules.push('.zindex'+ zindex + ' { z-index: ' + zindex + ' !important; }');
-					zindexGot[zindex] = true;
-				}
-				$(this).addClass('zindex'+zindex);
-			}
-		});
-
-		zindexRules = zindexRules.join("\n");
-
-		var css = ["<!-- DP_DUMP_CSS_BEGIN -->", "<style type=\"text/css\">"];
-		$.each(document.styleSheets, function(sheetIndex, sheet) {
-			$.each(sheet.cssRules || sheet.rules, function(ruleIndex, rule) {
-				css.push(rule.cssText);
-			});
-		});
-
-		css.push(zindexRules);
-		css.push("</style>")
-		css.push("<!-- DP_DUMP_CSS_END -->")
-		css = css.join("\n");
-
-		var html = $('html').html();
-		html = html.replace('</head>', css + '</head>');
-		html = html.replace('DP_IS_DOMDUMP_VIEW = false', 'DP_IS_DOMDUMP_VIEW = true');
-
-		$.ajax({
-			type: 'POST',
-			url: BASE_URL + 'agent/save-dom.json',
-			data: {html: html}
-		});
-	},
-
 	//##################################################################################################################
 	// Notices Window
 	//##################################################################################################################
-
-	openNotices: function() {
-		var first = false;
-		if (!this._noticeEl) {
-			first = true;
-		}
-		this.getNoticeEl().show();
-		if (first) {
-			this.loadNextNotice();
-		}
-	},
-
-	_updateNoticeEl: function() {
-		var left = ($(window).width() / 2) - (this._noticeEl.outerWidth() / 2);
-		this._noticeEl.css('left', left);
-
-		if (this._noticeIds.length == 1) {
-			$('#notices_control').remove();
-			$('#notices_content').css('padding-bottom', 0);
-		}
-	},
-
-	getNoticeEl: function() {
-		var self = this;
-
-		if (this._noticeEl) {
-			this._updateNoticeEl();
-			return this._noticeEl;
-		}
-
-		var html = '<div class="dark-overlay-box dp-notices-box">' +
-				'<em class="close-trigger"></em>' +
-				'<form>' +
-					'<div class="title">' +
-						'<div style="float:right">' +
-							'<button class="clean-white dismiss">Dismiss</button>' +
-							'<button class="clean-white dismiss-all">Dismiss All</button>' +
-						'</div>' +
-						'New Version Notes</div>' +
-					'<div id="notices_content"></div>' +
-					'<div id="notices_control">' +
-						'<button class="clean-white prev">&larr;</button>' +
-						'<button class="clean-white next">&rarr;</button>' +
-					'</div>' +
-				'</form>' +
-			'</div>';
-
-		this._noticeEl = $(html);
-		this._noticeEl.hide();
-		this._noticeEl.appendTo('body');
-
-		this._noticeEl.find('.close-trigger').on('click', function(ev) {
-			ev.preventDefault();
-			self._noticeEl.hide();
-		});
-		this._noticeEl.find('.dismiss-all').on('click', function(ev) {
-			ev.preventDefault();
-			self.dismissAllNotices();
-		});
-		this._noticeEl.find('.dismiss').on('click', function(ev) {
-			ev.preventDefault();
-			var current = self._noticeIds[self._noticeIndex];
-			self.dismissNotice(current);
-
-			self._noticeIndex--;
-			self.loadNextNotice();
-		});
-		this._noticeEl.find('.prev').on('click', function(ev) {
-			ev.preventDefault();
-			self.loadPrevNotice();
-		});
-		this._noticeEl.find('.next').on('click', function(ev) {
-			ev.preventDefault();
-			self.loadNextNotice();
-		});
-
-		this._updateNoticeEl();
-
-		return this._noticeEl;
-	},
-
-	dismissAllNotices: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/misc/version-notices/ALL/dismiss.json',
-			dataType: 'json'
-		});
-
-		this._noticeEl.hide();
-		$('#notice_trigger').hide();
-	},
-
-	dismissNotice: function(id) {
-		$.ajax({
-			url: BASE_URL + 'agent/misc/version-notices/' + id + '/dismiss.json',
-			dataType: 'json'
-		});
-
-		this._noticeIds.erase(id);
-
-		if (!this._noticeIds.length) {
-			this._noticeEl.hide();
-			$('#notice_trigger').hide();
-			return;
-		}
-
-		this._updateNoticeEl();
-		$('#notice_trigger').find('.badge').text(this._noticeIds.length);
-	},
-
-	loadNotice: function(id) {
-		$('#notices_content').html('<div class="loading-icon-big"></div>');
-		$.ajax({
-			url: BASE_URL + 'agent/misc/version-notices/' + id + '/log.html',
-			dataType: 'html',
-			success: function(html) {
-				$('#notices_content').html(html);
-			}
-		});
-	},
-
-	loadNextNotice: function() {
-		this._noticeIndex++;
-		if (this._noticeIds.length == this._noticeIndex) {
-			this._noticeIndex = 0;
-		}
-
-		if (!this._noticeIds.length) {
-			this._noticeEl.hide();
-			$('.DP-version-notes').hide();
-			return;
-		}
-
-		this.loadNotice(this._noticeIds[this._noticeIndex]);
-	},
-
-	loadPrevNotice: function() {
-		this._noticeIndex--;
-		if (this._noticeIndex < 0) {
-			this._noticeIndex = this._noticeIds.length - 1;
-		}
-
-		this.loadNotice(this._noticeIds[this._noticeIndex]);
-	},
 
 	setPaneVis: function(id, vis) {
 		this.paneVis[id] = vis;
@@ -4713,5 +4062,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	isSingleColMode: function() {
 		return !(this.paneVis.tabs && this.paneVis.list);
+	},
+
+	backToAgent: function() {
+		if (window['DP_FRAME_OVERLAYS']) {
+			for (var k in window['DP_FRAME_OVERLAYS']) {
+				if (window['DP_FRAME_OVERLAYS'].hasOwnProperty(k) && window['DP_FRAME_OVERLAYS'][k].opened) {
+					window['DP_FRAME_OVERLAYS'][k].close();
+				}
+			}
+		}
 	}
 });

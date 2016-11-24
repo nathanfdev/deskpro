@@ -72,6 +72,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @JMS\ExclusionPolicy("all")
  * @AppAssert\Ticket\TicketDupeMessage()
+ * @AppAssert\Ticket\TicketOpenedMessage()
  */
 class TicketMessage extends DomainObject
 {

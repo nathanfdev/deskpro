@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect, Provider } from 'react-redux';
+import { Frame } from 'Ampliflux/common/components/Frame';
 import { widgetResize } from '../../Actions/dpWindowActions';
 import {
   windowDimensionsSelector,
@@ -9,7 +10,6 @@ import {
   helpButtonSizeSelector
 } from '../../Selectors/dpWindow';
 import { widgetLoadedSelector } from '../../Selectors/bootstrap';
-import { Frame } from 'Ampliflux/common/components/Frame';
 import { store } from '../../../../Services/store';
 
 @connect(state => ({
@@ -20,16 +20,17 @@ import { store } from '../../../../Services/store';
   isBubble:         isBubbleSelector(state),
   size:             helpButtonSizeSelector(state)
 }))
-export class WidgetFrameContainer extends React.Component {
+export default class WidgetFrameContainer extends React.Component {
 
   static propTypes = {
-    dispatch:       PropTypes.func,
-    widgetOpened:   PropTypes.bool,
-    widgetLoaded:   PropTypes.bool,
-    widgetPosition: PropTypes.string,
-    isBubble:       PropTypes.bool,
-    children:       PropTypes.any,
-    size:           PropTypes.string
+    dispatch:         PropTypes.func,
+    windowDimensions: PropTypes.object,
+    widgetOpened:     PropTypes.bool,
+    widgetLoaded:     PropTypes.bool,
+    widgetPosition:   PropTypes.string,
+    isBubble:         PropTypes.bool,
+    children:         PropTypes.any, // eslint-disable-line react/forbid-prop-types
+    size:             PropTypes.string
   };
 
   componentDidMount() {
@@ -41,15 +42,18 @@ export class WidgetFrameContainer extends React.Component {
   }
 
   triggerResize() {
-    this.refs.frame.autoFrameDimensions();
+    this.refFrame.autoFrameDimensions();
     this.props.dispatch(widgetResize());
   }
 
   render() {
-    const { widgetOpened, widgetLoaded, widgetPosition, isBubble, children, size } = this.props;
+    const { widgetOpened, widgetLoaded, widgetPosition, isBubble, children, size, windowDimensions } = this.props;
     const childProps = children.props;
 
-    const frameStyles = {};
+    const windowWidth = windowDimensions.get('width');
+    const width = windowWidth < 450 ? windowWidth : 340;
+
+    const frameStyles = { width };
     const containerStyles = {};
     if (isBubble) {
       if (size === 'small') {
@@ -72,7 +76,7 @@ export class WidgetFrameContainer extends React.Component {
 
     return (
       <Frame
-        ref="frame"
+        ref={(node) => { this.refFrame = node; }}
         name="widget_iframe"
         frameStyles={frameStyles}
         containerStyles={containerStyles}
@@ -84,8 +88,7 @@ export class WidgetFrameContainer extends React.Component {
             ...childProps,
 
             widgetPosition,
-            isBubble,
-            triggerResize: () => this.triggerResize()
+            isBubble
           })}
         </Provider>
       </Frame>

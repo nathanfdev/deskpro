@@ -108,7 +108,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *     description="Save portal general settings",
      *
      *     statusCodes={
-     *         200="Returned if request was successful",
+     *         204="Returned if request was successful",
      *         400="In case your request was malformed",
      *     },
      *     input= {
@@ -129,10 +129,9 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
         $model = $this->getModel($brand);
         $this->handleForm($request, $model);
 
+        $em = $this->getManager();
         if ($brand->getId() != $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand')) {
             $url = $model->getDeskproUrl();
-            $em  = $this->getManager();
-
             /** @var UrlHostChecker $urlHostChecker */
             $urlHostChecker = $this->get('url_host_checker');
             $helpdeskUrl    = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
@@ -145,11 +144,10 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
             }
 
             $brand->setUrl($urlHostChecker->simplifyUrl($url));
-            $brand->setName($url = $model->getDeskproName());
-
-            $em->persist($brand);
-            $em->flush();
         }
+        $brand->setName($model->getBrandName());
+        $em->persist($brand);
+        $em->flush();
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }

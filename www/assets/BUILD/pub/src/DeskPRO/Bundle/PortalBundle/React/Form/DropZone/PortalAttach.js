@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
+import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
-import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
-import DropZone from 'DeskPRO/Component/Uploader/DropZone';
 import { AttachedList } from './AttachedList';
 
 export default class PortalAttach extends React.Component {
@@ -11,7 +11,8 @@ export default class PortalAttach extends React.Component {
     files:         PropTypes.array,
     widgetOptions: PropTypes.object,
     $input:        PropTypes.object,
-    inputName:     PropTypes.string
+    inputName:     PropTypes.string,
+    maxFileSize:   PropTypes.string
   };
 
   constructor(props) {
@@ -91,6 +92,9 @@ export default class PortalAttach extends React.Component {
     }
     if (data.jqXHR.status === 413) {
       lastError = portalPhrases.get('portal.forms.error_upload_html_size');
+      if (this.props.maxFileSize) {
+        lastError =  `${lastError} Maximum allowed size is ${this.props.maxFileSize}`;
+      }
     }
 
     this.setState({

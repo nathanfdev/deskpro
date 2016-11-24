@@ -62,6 +62,9 @@ class AbstractCategoryRepository extends AbstractEntityRepository
         return $this->_cat_helper;
     }
 
+    /**
+     * @return string
+     */
     public function getPermissionTableName()
     {
         return;

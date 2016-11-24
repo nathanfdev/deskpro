@@ -54,9 +54,32 @@
             text-decoration: none;
             cursor:          text;
         }
+
+        #admin_loading {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: #eceef0;
+            z-index: 9999999;
+        }
+
+        #admin_loading .inner {
+            border-radius: 3px;
+            border: 1px solid #d0d9e6;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            bottom: 15px;
+            left: 15px;
+
+            background: #fff url({{ asset('images/spinners/loading-big-circle.gif') }}) no-repeat center center;
+        }
     </style>
 </head>
 <body ng-controller="Admin_Main_Ctrl_MainBody">
+    <div id="admin_loading"><div class="inner"></div></div>
     <div id="dp_main_view" ng-controller="Admin_Main_Ctrl_MainPage">
         <!-- Left Navigation Column -->
         <nav class="dp-layout-appnav" ng-hide="isBillingInterface">
@@ -142,7 +165,7 @@
                             style="width: 194px"
                             class="no-search"
                     >
-                        <option ng-repeat="brand in brands | orderBy: 'name'" value="{{ ng_var('brand.id') }}">{{ ng_var('brand.name') }}</option>
+                        <option ng-repeat="brand in brands | orderBy: 'name'" value="{{ ng_var('brand.id') }}">{{ ng_var('(brand.id == default_brand.id ? "*" : "") + brand.name') }}</option>
                         <option class="new-brand"value="-1">{{ phrase('admin.setup.new_brand') }}</option>
                     </select>
                     {{ nav.list_subitem('Setup', ng_href('portal.setup', '{brandId: brandId}'), 'portal.setup', 'fa-th-large') }}
@@ -220,12 +243,6 @@
     <link rel="stylesheet" href="{{ asset('vendor/redactor/redactor.css') }}" type="text/css" />
 
     <link href='https://fonts.googleapis.com/css?family=Lato:400,700,900,100,300' rel='stylesheet' type='text/css'>
-    {% if is_first_load %}
-        <!-- to preload JS -->
-        <iframe src="{{ path('agent') }}"
-                style="opacity: 0.01; width: 1px; height: 1px; border: none; padding: 0; margin: 0;" frameborder="0"
-                width="1" height="1"></iframe>
-    {% endif %}
 
     <!-- legacy: portal editor -->
     <link rel="stylesheet" href="{{ asset('vendor/colorpicker/css/colorpicker.css') }}" type="text/css" />

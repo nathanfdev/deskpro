@@ -34,18 +34,23 @@ namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\EntityRepository\AbstractCategoryRepository;
 use Orb\Util\Arrays;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Helps fetch info related to structure of Publish.
  */
 class CategoryEdit
 {
-    const ARTICLES  = 'articles';
+    const ARTICLES = 'articles';
+
     const DOWNLOADS = 'downloads';
-    const NEWS      = 'news';
+
+    const NEWS = 'news';
 
     /**
      * Add a new category to the systme.
@@ -78,12 +83,14 @@ class CategoryEdit
 
         App::getOrm()->persist($obj);
 
-        App::getOrm()->getRepository(get_class($obj))->repair();
+        /** @var AbstractCategoryRepository $categoryRepository */
+        $categoryRepository = App::getOrm()->getRepository(get_class($obj));
+        $categoryRepository->repair();
         App::getOrm()->flush();
 
         // By default also add 'Everyone' permission
-        $perm_table = App::getOrm()->getRepository(get_class($obj))->getPermissionTableName();
-        App::getDb()->insert($perm_table, [
+        $permissionsTable = $categoryRepository->getPermissionTableName();
+        App::getDb()->insert($permissionsTable, [
             'category_id'  => $obj->getId(),
             'usergroup_id' => '1',
         ]);
@@ -94,10 +101,10 @@ class CategoryEdit
     }
 
     /**
-     * Update titles for categoryes. $titles is id=>title.
+     * Update titles for categories. $titles is id=>title.
      *
-     * @param $type
-     * @param array $titles
+     * @param string $type
+     * @param array  $titles
      *
      * @return array
      */
@@ -137,37 +144,50 @@ class CategoryEdit
         return $cats;
     }
 
-    public static function update($type, $category_id, $title, array $usergroup_ids)
+    /**
+     * @param       $type
+     * @param       $categoryId
+     * @param       $title
+     * @param array $usergroupIds
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
+     */
+    public static function update($type, $categoryId, $title, array $usergroupIds)
     {
-        $entity     = self::getEntityNameFor($type);
-        $perm_table = App::getEntityRepository($entity)->getPermissionTableName();
-        $cat        = App::getOrm()->find($entity, $category_id);
+        $entity = self::getEntityNameFor($type);
+        /** @var AbstractCategoryRepository $categoryRepository */
+        $categoryRepository = App::getEntityRepository($entity);
+        $permissionsTable   = $categoryRepository->getPermissionTableName();
+        $category           = App::getOrm()->find($entity, $categoryId);
 
-        if (!$cat) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        if (!$category) {
+            throw new NotFoundHttpException();
         }
 
-        $usergroup_ids = Arrays::castToType($usergroup_ids, 'integer');
-        $usergroup_ids = Arrays::removeFalsey($usergroup_ids);
-        $usergroup_ids = array_unique($usergroup_ids);
+        $usergroupIds = Arrays::castToType($usergroupIds, 'integer');
+        $usergroupIds = Arrays::removeFalsey($usergroupIds);
+        $usergroupIds = array_unique($usergroupIds);
 
         App::getOrm()->beginTransaction();
 
         try {
-            $cat->title = $title;
+            $category->title = $title;
 
-            if ($perm_table) {
-                App::getDb()->delete($perm_table, ['category_id' => $cat->id]);
+            if ($permissionsTable) {
+                App::getDb()->delete($permissionsTable, ['category_id' => $category->id]);
 
-                foreach ($usergroup_ids as $uid) {
-                    App::getDb()->insert($perm_table, [
-                        'category_id'  => $cat->id,
+                foreach ($usergroupIds as $uid) {
+                    App::getDb()->insert($permissionsTable, [
+                        'category_id'  => $category->id,
                         'usergroup_id' => $uid,
                     ]);
                 }
             }
 
-            App::getOrm()->persist($cat);
+            App::getOrm()->persist($category);
             App::getOrm()->flush();
             App::getOrm()->commit();
 
@@ -182,8 +202,10 @@ class CategoryEdit
     /**
      * Update orders. $orders is an array of ID's in the order you want them.
      *
-     * @param $type
-     * @param array $orders
+     * @param string $type
+     * @param array  $orders
+     *
+     * @throws \Exception
      */
     public static function updateOrders($type, array $orders)
     {
@@ -217,7 +239,9 @@ class CategoryEdit
 
             App::getOrm()->flush();
 
-            App::getOrm()->getRepository($entity)->repair();
+            /** @var AbstractCategoryRepository $categoryRepository */
+            $categoryRepository = App::getOrm()->getRepository($entity);
+            $categoryRepository->repair();
 
             App::getContainer()->getSystemService('publish_structure_cache')->flush();
             App::getOrm()->flush();
@@ -231,36 +255,41 @@ class CategoryEdit
     /**
      * Update the structure based off a map of ids to categories.
      *
-     * @param $type
-     * @param array $map
+     * @param string $type
+     * @param array  $map
      *
      * @return array
      */
-    public static function updateStructure($type, array $map, array $check_map = null)
+    public static function updateStructure($type, array $map, array $checkMap = null)
     {
         $entity = self::getEntityNameFor($type);
 
-        $cats = App::getOrm()->createQuery("
+        $entityManager = App::getOrm();
+        $cats          = $entityManager->createQuery("
             SELECT c
             FROM $entity c INDEX BY c.id
         ")->execute();
 
+        /** @var AbstractCategoryRepository $categoryRepository */
+        $categoryRepository = $entityManager->getRepository($entity);
         // If theres a check map then we want to verify that the current tree is the same,
         // or else error out
-        if ($check_map) {
-            $conn         = App::getDb();
-            $table        = App::getOrm()->getRepository($entity)->getTableName();
-            $current_tree = $conn->fetchAllKeyValue('SELECT id, parent_id FROM '.$conn->quoteIdentifier($table));
+        if ($checkMap) {
+            $connection  = App::getDb();
+            $table       = $categoryRepository->getTableName();
+            $currentTree = $connection->fetchAllKeyValue(
+                'SELECT id, parent_id FROM '.$connection->quoteIdentifier($table)
+            );
 
             $accurate = true;
-            foreach ($check_map as $id => $parent_id) {
-                if (array_key_exists($parent_id, $current_tree)) {
-                    $current_parent_id = isset($current_tree[$id]) ? $current_tree[$id] : null;
-                    if ($current_parent_id === null) {
-                        $current_parent_id = 0;
+            foreach ($checkMap as $id => $parentId) {
+                if (array_key_exists($parentId, $currentTree)) {
+                    $currentParentId = isset($currentTree[$id]) ? $currentTree[$id] : null;
+                    if ($currentParentId === null) {
+                        $currentParentId = 0;
                     }
 
-                    if ($current_parent_id != $parent_id) {
+                    if ($currentParentId != $parentId) {
                         $accurate = false;
                         break;
                     }
@@ -272,31 +301,27 @@ class CategoryEdit
             }
         }
 
-        App::getOrm()->beginTransaction();
+        $entityManager->beginTransaction();
 
-        foreach ($map as $id => $parent_id) {
+        foreach ($map as $id => $parentId) {
             if (!isset($cats[$id])) {
                 continue;
             }
-
-            if (!$parent_id) {
+            if (!$parentId) {
                 $cats[$id]['parent'] = null;
             } else {
-                if (!isset($cats[$parent_id])) {
+                if (!isset($cats[$parentId])) {
                     continue;
                 }
-                $cats[$id]['parent'] = $cats[$parent_id];
+                $cats[$id]['parent'] = $cats[$parentId];
             }
-
-            App::getOrm()->persist($cats[$id]);
+            $entityManager->persist($cats[$id]);
         }
 
-        App::getOrm()->getRepository($entity)->repair();
-
-        App::getOrm()->flush();
-
+        $categoryRepository->repair();
+        $entityManager->flush();
         App::getContainer()->getSystemService('publish_structure_cache')->flush();
-        App::getOrm()->commit();
+        $entityManager->commit();
 
         return $cats;
     }
@@ -304,20 +329,21 @@ class CategoryEdit
     /**
      * Deletes a category and all its children if they are empty.
      *
-     *
-     * @param $type
-     * @param $category_id
+     * @param string $type
+     * @param int    $categoryId
      *
      * @throws \InvalidArgumentException
+     *
+     * @return CategoryAbstract
      */
-    public static function deleteCategory($type, $category_id)
+    public static function deleteCategory($type, $categoryId)
     {
-        $entity = self::getEntityNameFor($type);
-        $repos  = App::getOrm()->getRepository($entity);
-        $cat    = $repos->find($category_id);
+        $entity             = self::getEntityNameFor($type);
+        $categoryRepository = App::getOrm()->getRepository($entity);
+        $category           = $categoryRepository->find($categoryId);
 
-        if (!$cat) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        if (!$category) {
+            throw new NotFoundHttpException();
         }
 
         switch ($type) {
@@ -326,9 +352,17 @@ class CategoryEdit
                     SELECT COUNT(*)
                     FROM article_to_categories
                     LEFT JOIN articles ON articles.id = article_to_categories.article_id
-                    WHERE category_id = ? AND (articles.hidden_status IS NULL OR (articles.hidden_status != 'deleted' AND articles.hidden_status != 'draft'))
+                    WHERE category_id = ? 
+                    AND (
+                      articles.hidden_status IS NULL OR 
+                      (
+                          articles.hidden_status != 'deleted' 
+                      AND articles.hidden_status != 'draft'
+                      AND articles.hidden_status != 'spam'
+                      )
+                    )
                     LIMIT 1
-                ", [$category_id]);
+                ", [$categoryId]);
                 break;
             case 'downloads':
                 $counts = App::getDb()->fetchColumn("
@@ -336,7 +370,7 @@ class CategoryEdit
                     FROM downloads
                     WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
                     LIMIT 1
-                ", [$category_id]);
+                ", [$categoryId]);
                 break;
             case 'news':
                 $counts = App::getDb()->fetchColumn("
@@ -344,7 +378,7 @@ class CategoryEdit
                     FROM news
                     WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
                     LIMIT 1
-                ", [$category_id]);
+                ", [$categoryId]);
                 break;
             case 'feedback':
                 $counts = App::getDb()->fetchColumn("
@@ -352,13 +386,14 @@ class CategoryEdit
                     FROM feedback
                     WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
                     LIMIT 1
-                ", [$category_id]);
+                ", [$categoryId]);
                 break;
             default:
+                $counts = 0;
                 break;
         }
 
-        if (count($cat->children) || $counts) {
+        if (count($category->children) || $counts) {
             throw new \OutOfBoundsException('Category is not empty');
         }
 
@@ -374,15 +409,15 @@ class CategoryEdit
             App::getOrm()->remove($delcat);
         };
 
-        $fn($cat);
+        $fn($category);
 
         App::getOrm()->flush();
 
-        App::getOrm()->getRepository($entity)->repair();
+        $categoryRepository->repair();
         App::getContainer()->getSystemService('publish_structure_cache')->flush();
         App::getOrm()->commit();
 
-        return $cat;
+        return $category;
     }
 
     /**

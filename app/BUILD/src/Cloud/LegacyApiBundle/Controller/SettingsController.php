@@ -53,6 +53,8 @@ class SettingsController extends BaseSettingsController
 
             // If the URL should be https or not
             'cloud_url_ssl' => $this->settings->get('core.cloud_url_ssl') ? true : false,
+
+            'deskpro_url_autocorrect' => $this->settings->get('core.deskpro_url_autocorrect') ? true : false,
         ];
 
         $settings['domain_choice'] = 'default';
@@ -70,7 +72,9 @@ class SettingsController extends BaseSettingsController
     public function saveUrlSettingsAction()
     {
         $in_settings  = new OptionsArray($this->in->getArrayValue('settings'));
-        $set_settings = [];
+        $set_settings = [
+            'core.deskpro_url_autocorrect' => $in_settings->get('deskpro_url_autocorrect', false),
+        ];
 
         if ($in_settings->get('domain_choice') == 'custom') {
             $domain = preg_replace('#^https?://#', '', strtolower($in_settings->get('cloud_custom_domain')));

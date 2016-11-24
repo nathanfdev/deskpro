@@ -45,6 +45,7 @@ use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Component\Hierarchy\Formatter\FlatListLanguageAwareFormatter;
 use DeskPRO\Component\Hierarchy\Formatter\ParentListLanguageAwareFormatter;
+use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 
@@ -143,7 +144,8 @@ class HierarchyGenerator
                 $hierarchy = new Hierarchy($rootNodes, $formatter);
                 $hierarchy->markOnlyLeafSelections();
 
-                $iterator = function (HierarchyNode $parentNode) use ($def, &$iterator) {
+                $iterator = function (HierarchyNode $parentNode) use ($def, &$iterator, $hierarchy) {
+                    $hierarchy->addNode($parentNode);
                     $subChoices = $def->getSubChoices($parentNode->getData());
                     foreach ($subChoices as $subChoiceDef) {
                         $subChoiceNode = new HierarchyNode(
@@ -225,10 +227,11 @@ class HierarchyGenerator
                 $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->languageManager));
                 $hierarchy->markOnlyLeafSelections();
 
-                $recursive = function (Product $prod, HierarchyNode $parent, $depth) use (&$recursive) {
+                $recursive = function (Product $prod, HierarchyNode $parent, $depth) use (&$recursive, $hierarchy) {
+                    $hierarchy->addNode($parent);
                     foreach ($prod->getChildren() as $child) {
-                        $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));
-                        $recursive($child, $child_node, $depth + 1);
+                        $parent->addChild($childNode = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));
+                        $recursive($child, $childNode, $depth + 1);
                     }
                 };
 
@@ -318,8 +321,10 @@ class HierarchyGenerator
 
                 $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (
                     &$recursive,
-                    $allowedDepartments
+                    $allowedDepartments,
+                    $hierarchy
                 ) {
+                    $hierarchy->addNode($parent);
                     /** @var \Application\DeskPRO\Entity\Department $child */
                     foreach ($dep->getChildren() as $child) {
                         if (!$allowedDepartments->contains($child)) {
@@ -366,10 +371,11 @@ class HierarchyGenerator
                 $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->languageManager));
                 $hierarchy->markOnlyLeafSelections();
 
-                $recursive = function (TicketCategory $category, HierarchyNode $parent, $depth) use (&$recursive) {
+                $recursive = function (TicketCategory $category, HierarchyNode $parent, $depth) use (&$recursive, $hierarchy) {
+                    $hierarchy->addNode($parent);
                     foreach ($category->getChildren() as $child) {
-                        $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));
-                        $recursive($child, $child_node, $depth + 1);
+                        $parent->addChild($childNode = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));
+                        $recursive($child, $childNode, $depth + 1);
                     }
                 };
 
@@ -411,10 +417,11 @@ class HierarchyGenerator
                 $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->languageManager));
                 $hierarchy->markOnlyLeafSelections();
 
-                $recursive = function (FeedbackCategory $cat, HierarchyNode $parent, $depth) use (&$recursive) {
+                $recursive = function (FeedbackCategory $cat, HierarchyNode $parent, $depth) use (&$recursive, $hierarchy) {
+                    $hierarchy->addNode($parent);
                     foreach ($cat->getChildren() as $child) {
-                        $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));
-                        $recursive($child, $child_node, $depth + 1);
+                        $parent->addChild($childNode = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));
+                        $recursive($child, $childNode, $depth + 1);
                     }
                 };
 

@@ -26,13 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\PortalBundle\Model\WidgetPhrases;
 use DeskPRO\Component\Util\MapUtils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -234,26 +231,28 @@ class LanguageController extends AbstractApiController
         $translate = $this->container->get('deskpro.core.translate');
         $language  = $this->container->get('language_stack')->getActiveOrDefault();
 
-        if ($request->get('language')) {
-            $language = $this->getManager()->getRepository(Language::class)->find($request->get('language'));
+        $languageId = $request->query->getInt('language');
+        if ($languageId) {
+            $language = $this->getManager()->getRepository(Language::class)->find($languageId);
         }
 
-        $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
+        $translatedPhrases = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
             return [$id, $translate->phrase($id, [], $language)];
         });
 
-        $res = new JsonResponse($output);
+        $serialized = $this->get('serializer')->toArray(new WidgetPhrases($translatedPhrases, $language));
+        $response   = new JsonResponse($serialized);
 
         if ($request->getRequestFormat('json') === 'js') {
-            $res->headers->set('Content-Type', 'application/javascript');
+            $response->headers->set('Content-Type', 'application/javascript');
             $cb = $request->request->get('callback', 'DP_SET_PHRASES');
-            $res->setCallback($cb);
+            $response->setCallback($cb);
         }
 
         // TODO proper caching headers here, phrases should reload:
         // - new version
         // - when langs are updated (need some global uid that changes when admin edits phrase)
 
-        return $res;
+        return $response;
     }
 }

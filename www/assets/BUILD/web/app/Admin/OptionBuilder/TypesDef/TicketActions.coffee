@@ -1,9 +1,11 @@
 define [
   'Admin/OptionBuilder/TypesDef/BaseActionTypesDef',
-  'DeskPRO/Util/Numbers'
+  'DeskPRO/Util/Numbers',
+  '../../../../bower_components/moment/moment'
 ], (
   BaseActionTypesDef,
-  Numbers
+  Numbers,
+  moment
 ) ->
   class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseActionTypesDef
     init: ->

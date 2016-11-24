@@ -158,7 +158,7 @@ export default class HelpButtonContainer extends React.Component {
 
     return (
       <AgentMessagePopupContainer {...popupProps}>
-        {popupStyle.match(/_button$/) ? <ReplyButtons {...popupProps} /> : <ReplyForm {...popupProps} />}
+        {popupStyle && popupStyle.match(/_button$/) ? <ReplyButtons {...popupProps} /> : <ReplyForm {...popupProps} />}
       </AgentMessagePopupContainer>
     );
   }

@@ -1,5 +1,5 @@
 ((window, document) => {
-  // #include deskpro_loader_utils.js
+  // #include deskpro_loader_util.js
 
   const options = window.DESKPRO_WIDGET_OPTIONS;
 
@@ -82,7 +82,7 @@
   });
 
   // Widget app loader
-  getInstInfo(options.helpdeskUrl, window, document, options.instId || 'default').then(instInfo => {
+  getInstInfo(options.helpdeskUrl, options.instId || 'default').then(instInfo => {
     const helpdeskUrl = instInfo.helpdeskUrl;
     const appSrc = instInfo.assetUrl + '/pub/build/DeskPRO_WidgetBundle.js';
 
@@ -123,12 +123,11 @@
         // Asset URLs
         frameWin.DESKPRO_APP_ASSETS_URL = instInfo.assetUrl;
 
+        frameWin.DP_SEND_VISITOR_TRACK = getPageHitProperties();
+
         const linkNode = document.createElement('link');
         linkNode.setAttribute('type', 'text/css');
         linkNode.setAttribute('rel', 'stylesheet');
-
-
-
         linkNode.setAttribute('href', `${frameWin.DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO_WidgetBundle_style.css`);
 
         doc.body.appendChild(linkNode);
@@ -149,6 +148,6 @@
       doc.close();
     };
 
-    onReadyState(loadFn, window, document);
+    onReadyState(loadFn);
   });
 })(window, document);

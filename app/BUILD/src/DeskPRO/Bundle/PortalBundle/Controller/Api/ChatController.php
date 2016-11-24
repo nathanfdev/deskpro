@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CustomDefChat;
+use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatMessages;
@@ -105,6 +106,21 @@ class ChatController extends AbstractApiController
 
         $this->setWidgetOption('chat_id', $conversation->getId());
 
+        if ($session->visitor_id) {
+            $hit = $this->getDoctrine()->getRepository(HitRecord::class)->findLastForVisitorId($session->visitor_id);
+            if ($hit && $hit->getUrl()) {
+                $trackMsg = UserChatMessages::createUserTrackMessage($conversation, $hit->getUrl());
+                $conversation->addMessage($trackMsg);
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($trackMsg);
+                $em->persist($conversation);
+                $em->flush();
+
+                $this->dispatch(UserChatEvent::USER_TRACK, new UserChatEvent($conversation, $trackMsg));
+            }
+        }
+
         return View::create($this->wrap($conversation));
     }
 
@@ -173,7 +189,8 @@ class ChatController extends AbstractApiController
             ->from(ChatMessage::class, 'm')
             ->where(
                 'm.conversation = :conversation_id',
-                'm.id > :last_message_id'
+                'm.id > :last_message_id',
+                'm.is_user_hidden = false'
             )
             ->setParameters([
                 'conversation_id' => $conversation->getId(),

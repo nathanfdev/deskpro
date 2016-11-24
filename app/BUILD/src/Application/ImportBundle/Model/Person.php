@@ -42,7 +42,8 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
 {
     use PrimaryImportModelTrait, LabelAwareTrait, CustomDataAwareTrait;
 
-    const INITIAL_PASSWORD = 'password';
+    const PASSWORD_SCHEME_PLAIN  = 'plain';
+    const PASSWORD_SCHEME_BCRYPT = 'bcrypt';
 
     /**
      * @var bool
@@ -412,6 +413,26 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     }
 
     /**
+     * @return string
+     */
+    public function getTitlePrefix()
+    {
+        return $this->titlePrefix;
+    }
+
+    /**
+     * @param string $titlePrefix
+     *
+     * @return $this
+     */
+    public function setTitlePrefix($titlePrefix)
+    {
+        $this->titlePrefix = $titlePrefix;
+
+        return $this;
+    }
+
+    /**
      * Returns custom display name.
      *
      * @return string
@@ -436,33 +457,13 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     }
 
     /**
-     * @return string
-     */
-    public function getTitlePrefix()
-    {
-        return $this->titlePrefix;
-    }
-
-    /**
-     * @param string $titlePrefix
-     *
-     * @return $this
-     */
-    public function setTitlePrefix($titlePrefix)
-    {
-        $this->titlePrefix = $titlePrefix;
-
-        return $this;
-    }
-
-    /**
      * Returns password.
      *
      * @return string
      */
     public function getPassword()
     {
-        return $this->password ?: self::INITIAL_PASSWORD;
+        return $this->password;
     }
 
     /**

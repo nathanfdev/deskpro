@@ -4,7 +4,6 @@ imports:
 
 # Keeping all parameter changes here rather than in various bundles
 parameters:
-  portal.session.name: sess_data
   doctrine.orm.proxy_dir: "%kernel.cache_dir%/doctrine-proxies"
   fos_rest.routing.loader.reader.controller.class: DeskPRO\Bundle\ApiBundle\Routing\ApiRestControllerReader
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
@@ -36,8 +35,8 @@ framework:
         engines: ['twig', 'php']
     default_locale:  "%locale%"
     trusted_hosts:   ~
-    session: ~
-#        handler_id:  session.handler.dbal
+    session:
+      handler_id:  session.handler.dbal
     fragments:       ~
     http_method_override: true
 
@@ -123,6 +122,10 @@ security:
             id: dp_person_user_provider
 
     firewalls:
+        api_anonymous_home:
+          pattern: ^/api/v2/?$
+          stateless: true
+          anonymous: ~
         api_anonymous:
             pattern: ^/api/v2/(doc|man|api_tokens|get_session|helpdesk/discover|get_session$)
             stateless: true

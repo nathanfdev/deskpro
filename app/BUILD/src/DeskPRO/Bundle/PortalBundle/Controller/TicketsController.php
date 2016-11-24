@@ -171,6 +171,7 @@ class TicketsController extends AbstractController
             'settings'       => $this->getBrandContainer()->getSettings(),
         ]);
 
+        $form->setData(['ticket' => $ticket]);
         $form->handleRequest($request);
 
         if ($form->isValid()) {

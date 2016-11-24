@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
-use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType;
@@ -60,8 +59,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class CustomDataType extends AbstractType
 {
-    const KEY = 'data';
-
     /**
      * @var ValidatorInterface
      */
@@ -134,7 +131,7 @@ class CustomDataType extends AbstractType
         // child field is not mapped so the form tries to get data from the options
         // so we should pass stored value via its options
         $options['data'] = $this->getFormData($event->getData() ?: new ArrayCollection(), $customDef);
-        $form->add(self::KEY, $field->getType(), $options);
+        $form->add('data', $field->getType(), $options);
     }
 
     /**
@@ -155,10 +152,10 @@ class CustomDataType extends AbstractType
         $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
 
         if ($customDef->isChoiceType()) {
-            $data = $form->get(self::KEY)->getNormData();
+            $data = $form->get('data')->getData();
             $data = is_array($data) ? $data : ($data ? [$data] : []);
-            $data = array_map(function (HierarchyNode $choiceCustomDef) {
-                return $choiceCustomDef->getData()->getId();
+            $data = array_map(function (CustomDefAbstract $choiceCustomDef) {
+                return $choiceCustomDef->getId();
             }, $data);
 
             $exist = $customDefData
@@ -186,7 +183,7 @@ class CustomDataType extends AbstractType
                 }
             }
         } else {
-            $data = $form->get(self::KEY)->getData();
+            $data = $form->get('data')->getData();
 
             if ($customDefData->count()) {
                 $customData = $customDefData->first();
@@ -332,7 +329,9 @@ class CustomDataType extends AbstractType
                     ->toArray()
                 ;
 
-                $formFieldData = implode(',', $formFieldData);
+                if (!$customDef->isMulti()) {
+                    $formFieldData = reset($formFieldData);
+                }
             } elseif ($customDef->isDateType()) {
                 // cast to null
                 if (!$formFieldData) {

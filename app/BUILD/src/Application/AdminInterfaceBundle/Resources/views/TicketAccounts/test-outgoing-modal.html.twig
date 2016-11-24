@@ -37,7 +37,10 @@
 			<table class="inner-form-table" width="100%">
 				<tr>
 					<th width="80">From:</th>
-					<td><input type="text" class="form-control" ng-model="test_email.from" style="width: 70%;" required /></td>
+					<td>
+						<input ng-if="!test_email.from_is_fixed" type="text" class="form-control" ng-model="test_email.from" style="width: 70%;" required />
+						<span ng-if="test_email.from_is_fixed" ng-bind="test_email.from"></span>
+					</td>
 				</tr>
 				<tr>
 					<th>To:</th>

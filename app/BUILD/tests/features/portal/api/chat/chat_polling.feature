@@ -32,14 +32,6 @@ Feature: Widget Chat
     And the JSON node "chat_info.data.date_created" should exist
     And the JSON node "chat_info.data.date_ended" should exist
     And the JSON node "chat_info.data.ended_by" should exist
-    And the JSON node "new_messages.data[0].author" should be equal to 0
-    And the JSON node "new_messages.data[0].content" should contain "phrase_id"
-    And the JSON node "new_messages.data[0].content" should contain "message_started"
-    And the JSON node "new_messages.data[0].date_created" should exist
-    And the JSON node "new_messages.data[0].is_html" should be equal to 0
-    And the JSON node "new_messages.data[0].is_sys" should be equal to 1
-    And the JSON node "new_messages.data[0].is_user" should be equal to 0
-    And the JSON node "new_messages.data[1].id" should not exist
 
   Scenario: I send empty message
     Given only the following Chat records exist:
