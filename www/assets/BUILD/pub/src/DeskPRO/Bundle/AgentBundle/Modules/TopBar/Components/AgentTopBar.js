@@ -15,8 +15,8 @@ import User from './User';
 
 @connect(state => ({
   agents:          collectionSelectorFactory('Person', 'agents')(state),
-  chatDepartments: collectionSelectorFactory('Department', 'all_tickets')(state),
-  me:              meSelector(state),
+  chatDepartments: collectionSelectorFactory('Department', 'all_chat')(state),
+  me:              meSelector(state)
 }))
 export class AgentTopBarContainer extends SeparateComponent {
   static propTypes = {

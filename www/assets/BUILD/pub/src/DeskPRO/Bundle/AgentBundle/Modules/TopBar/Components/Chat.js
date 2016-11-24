@@ -77,7 +77,7 @@ class Chat extends React.Component {
       this.props.chatDepartments.map((department, index) => {
         const agents = [];
         onlineAgents.map((agent) => {
-          if (agent.get('user_groups').toArray().indexOf(department.get('id')) !== -1) {
+          if (department.has('agents') && department.get('agents').toArray().indexOf(agent.get('id')) !== -1) {
             agents.push(agent);
           }
           return true;
