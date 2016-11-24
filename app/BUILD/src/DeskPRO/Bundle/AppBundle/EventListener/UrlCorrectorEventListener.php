@@ -32,11 +32,11 @@ use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\AppBundle\Request\UrlCorrector;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Component\Util\DebugUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -132,7 +132,7 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
                 case self::MODE_REDIRECT:
                     $this->logger->debug('[UrlCorrector] Redirecting...');
                     $redirectResponse = new RedirectResponse($url, 301);
-                    $redirectResponse->headers->setCookie(new Cookie('dp_autocorrect_url', 1));
+                    $redirectResponse->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
                     $event->setController(function () use ($redirectResponse) {
                         return $redirectResponse;
                     });
