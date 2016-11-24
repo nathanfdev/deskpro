@@ -66,4 +66,50 @@ class StringUtilsTest extends DeskProTestCase
             ['QuickBrownFoxJumpsOverTheLazyDog', 'quick_brown_fox_jumps_over_the_lazy_dog'],
         ];
     }
+
+    /**
+     * @dataProvider getTestStartsWith
+     */
+    public function testStartsWith($needle, $haystack, $ignoreCase, $expected)
+    {
+        $this->assertEquals(StringUtils::startsWith($needle, $haystack, $ignoreCase), $expected);
+    }
+
+    public function getTestStartsWith()
+    {
+        // $needle, $haystack, $ignoreCase, $expected
+        return [
+            ['foo', 'foobar', false, true],
+            ['foo', 'foo', false, true],
+            ['ABC', 'abcde', false, false],
+            ['ABC', 'abcde', true, true],
+            ['123', '123', false, true],
+            ['foo', ' foobar', false, false],
+            ['', 'x', false, false],
+            ['x', '', false, false],
+        ];
+    }
+
+    /**
+     * @dataProvider getTestEndsWith
+     */
+    public function testEndsWith($needle, $haystack, $ignoreCase, $expected)
+    {
+        $this->assertEquals(StringUtils::endsWith($needle, $haystack, $ignoreCase), $expected);
+    }
+
+    public function getTestEndsWith()
+    {
+        // $needle, $haystack, $ignoreCase, $expected
+        return [
+            ['bar', 'foobar', false, true],
+            ['foo', 'foo', false, true],
+            ['CDE', 'abcde', false, false],
+            ['CDE', 'abcde', true, true],
+            ['123', '123', false, true],
+            ['bar', 'foobar ', false, false],
+            ['', 'x', false, false],
+            ['x', '', false, false],
+        ];
+    }
 }
