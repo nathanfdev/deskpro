@@ -161,7 +161,10 @@ define [
       )
       promise.error( (info, code) =>
         @stopSpinner('saving_account', true)
-        @applyErrorResponseToView(info)
+        if info?.error_code == 'invalid_data' and info?.error_message
+          @showAlert(info.error_message)
+        else
+          @applyErrorResponseToView(info)
       )
 
       return promise

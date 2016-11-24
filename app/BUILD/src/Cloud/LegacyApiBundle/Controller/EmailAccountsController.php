@@ -34,11 +34,15 @@ namespace Cloud\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\LegacyApiBundle\Controller\EmailAccountsController as BaseEmailAccountsController;
+use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Arrays;
+use Orb\Validator\StringEmail;
 
 class EmailAccountsController extends BaseEmailAccountsController
 {
     /**
+     * @param EmailAccount $account
+     *
      * @return array
      */
     protected function getSaveFormData(EmailAccount $account = null)
@@ -71,17 +75,31 @@ class EmailAccountsController extends BaseEmailAccountsController
                 });
             }
 
+            $invalidEmails = [];
+            foreach ($data['other_addresses'] as $e) {
+                if (!$this->validateCustomEmailAddress($e)) {
+                    $invalidEmails[] = $e;
+                }
+            }
+
             // All custom emails are also aliases
             if ($data['use_custom_email_address'] && !empty($data['custom_email_address'])) {
                 array_unshift($data['other_addresses'], $data['custom_email_address']);
                 if ($account) {
                     $account->setOption('custom_email_address', $data['custom_email_address']);
                 }
+                if (!$this->validateCustomEmailAddress($data['custom_email_address'])) {
+                    $invalidEmails[] = $data['custom_email_address'];
+                }
             } else {
                 $data['use_custom_email_address'] = false;
                 if ($account) {
                     $account->setOption('custom_email_address', null);
                 }
+            }
+
+            if ($invalidEmails) {
+                return $this->createApiErrorResponse('invalid_data', 'The following email addresses are invalid: '.implode(', ', $invalidEmails));
             }
 
             $data['other_addresses'] = implode(',', $data['other_addresses']);
@@ -110,5 +128,25 @@ class EmailAccountsController extends BaseEmailAccountsController
     protected function getTestOutgoingFormData()
     {
         return $this->getSaveFormData();
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return bool
+     */
+    private function validateCustomEmailAddress($email)
+    {
+        $email = strtolower(trim($email));
+
+        if (preg_match('/@deskpro\.[a-z]+$/', $email)) {
+            return false;
+        }
+
+        if (preg_match('/@\w+\.deskpro\.[a-z]+$/', $email) && !StringUtils::endsWith('@'.DPC_SITE_DOMAIN, $email)) {
+            return false;
+        }
+
+        return StringEmail::isValueValid($email) && !StringEmail::isExampleEmail($email);
     }
 }

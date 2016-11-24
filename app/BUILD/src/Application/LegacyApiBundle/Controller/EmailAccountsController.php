@@ -46,6 +46,7 @@ use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Env;
 use Orb\Validator\StringEmail;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @ApiModes("all")
@@ -145,6 +146,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         );
 
         $data = $this->getSaveFormData($account);
+
+        if ($data instanceof Response) {
+            return $data;
+        }
 
         // Copy gmail config into the transport
         if ($data['incoming_type'] == 'gmail') {

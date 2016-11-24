@@ -93,4 +93,59 @@ class StringUtils
 
         return $upper ? $result : lcfirst($result);
     }
+
+    /**
+     * Check if $needle is at the beginning of $haystack.
+     *
+     * @param string $needle     The string to search for
+     * @param string $haystack   The string to search in
+     * @param bool   $ignoreCase True to ignore case
+     *
+     * @return bool
+     */
+    public static function startsWith($needle, $haystack, $ignoreCase = false)
+    {
+        if ($needle === $haystack) {
+            return true;
+        }
+
+        if ($needle === '' || $haystack === '') {
+            return false;
+        }
+
+        if ($ignoreCase) {
+            return stripos($haystack, $needle) === 0;
+        } else {
+            return strpos($haystack, $needle) === 0;
+        }
+    }
+
+    /**
+     * Check if $needle is at the end of $haystack.
+     *
+     * @param string $needle     The string to search for
+     * @param string $haystack   The string to search in
+     * @param bool   $ignoreCase True to ignore case
+     *
+     * @return bool
+     */
+    public static function endsWith($needle, $haystack, $ignoreCase = false)
+    {
+        if ($needle === $haystack) {
+            return true;
+        }
+
+        if ($needle === '' || $haystack === '') {
+            return false;
+        }
+
+        $haystackLen = strlen($haystack);
+        $needleLen   = strlen($needle);
+
+        if ($needleLen > $haystackLen) {
+            return false;
+        }
+
+        return substr_compare($haystack, $needle, $haystackLen - $needleLen, $needleLen, $ignoreCase) === 0;
+    }
 }
