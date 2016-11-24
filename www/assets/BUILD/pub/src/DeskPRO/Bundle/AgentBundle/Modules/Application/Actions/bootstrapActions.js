@@ -1,7 +1,7 @@
 import lscache from 'lscache';
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
+import { flattenBatchResponses, getLinkedData } from 'DeskPRO/Component/Util/Api';
 import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
@@ -32,14 +32,13 @@ export const loadAgentPhraseTranslations = createAction(
     }
   })
 );
-
 export const donePreloading = createAction('APP_BOOTSTRAP_DONE_PRELOADING');
 export const preloadData    = createAction(
   'BOOTSTRAP_PRELOAD_DATA',
   () => dispatch => new Promise(
     (resolve) => {
       const batchComponents = {
-        chat_departments:      { endpoint: 'chat_departments' },
+        chat_departments:      { endpoint: 'chat_departments', query: 'include=agents' },
         agents:                { endpoint: 'agents' },
         languages:             { endpoint: 'languages' },
         user_groups:           { endpoint: 'user_groups' },
@@ -60,6 +59,14 @@ export const preloadData    = createAction(
         .success(({ responses }) => {
           const data = flattenBatchResponses(responses);
           dispatch(setCollection('Department', 'all_tickets', data.ticket_departments));
+          const linked = getLinkedData(responses, 'chat_departments', 'agents');
+          for (const dep of data.chat_departments) {
+            if (linked[dep.id]) {
+              dep.agents = linked[dep.id];
+            } else {
+              dep.agents = [];
+            }
+          }
           dispatch(setCollection('Department', 'all_chat', data.chat_departments));
           dispatch(setCollection('Department', 'my_tickets', data.my_ticket_departments));
           dispatch(setCollection('Person', 'agents', data.agents));
@@ -83,3 +90,4 @@ export const preloadData    = createAction(
     }
   )
 );
+
