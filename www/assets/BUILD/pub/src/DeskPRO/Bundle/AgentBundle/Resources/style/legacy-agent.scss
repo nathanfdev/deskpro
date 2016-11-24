@@ -498,10 +498,10 @@
 $folded-width: 52px;
 $expanded-width: 150px;
 $transition-open-time: 0.2s;
-$transition-open-delay: 0.1s;
+$transition-open-delay: 0.5s;
 $transition-delayed-delay: 2s;
 $transition-close-time: 0.2s;
-$transition-close-delay: 0.1s;
+$transition-close-delay: 0.05s;
 .sidebar-menu.ui.vertical.menu {
   background-color: $dp-night-sky;
   font-family: 'Open Sans', Helvetica, sans-serif;
@@ -610,7 +610,7 @@ $transition-close-delay: 0.1s;
       }
     }
   }
-  &:hover {
+  &.ready:hover {
     .logo svg .text {
       fill: #fff;
       transition: fill $transition-open-time;

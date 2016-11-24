@@ -203,12 +203,20 @@ export class SideBar extends React.Component {
     window.open('http://deskpro.com', '_blank');
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      ready: true
+    };
+  }
+
   getMenus = () => {
     const menus = [];
     if (this.props.canUseTicket()) {
       menus.push({
         className: 'tickets',
         label:     'Tickets',
+        link:      '/agent/#app.tickets',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tickets.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('tickets_section');
@@ -220,6 +228,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'chats',
         label:     'Chats',
+        link:      '/agent/#app.userchat',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/chat.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('chat_section');
@@ -231,6 +240,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'crm',
         label:     'CRM',
+        link:      '/agent/#app.people',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/crm.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('people_section');
@@ -242,6 +252,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'feedback',
         label:     'Feedback',
+        link:      '/agent/#app.feedback',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/feedback.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('feedback_section');
@@ -253,6 +264,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'publish',
         label:     'Publish',
+        link:      '/agent/#app.publish',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/publishing.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('publish_section');
@@ -264,6 +276,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'tasks',
         label:     'Tasks',
+        link:      '/agent/#app.tasks',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tasks.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('tasks_section');
@@ -275,6 +288,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'reports',
         label:     'Reports',
+        link:      '/agent/#reports:/',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
         callback:  () => {
           this.props.openReports();
@@ -285,6 +299,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'admin',
         label:     'Admin',
+        link:      '/agent/#admin:/',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/settings.svg`,
         callback:  () => {
           this.props.openAdmin();
@@ -295,6 +310,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'billing',
         label:     'Billing',
+        link:      '/agent/#admin:/license',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/billing.svg`,
         callback:  () => {
           this.props.openBilling();
@@ -306,7 +322,8 @@ export class SideBar extends React.Component {
         className: 'portal',
         label:     <span>Portal <i className="icon external" /></span>,
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/portal.svg`,
-        href:      window.DESKPRO_PORTAL_HOME
+        href:      window.DESKPRO_PORTAL_HOME,
+        link:      window.DESKPRO_PORTAL_HOME
       });
     }
     return menus;
@@ -321,6 +338,7 @@ export class SideBar extends React.Component {
       const badge = sectionsBadges.indexOf(`${menuItem.className}_section`) > -1;
       menus.push(
         <MenuItem
+          link={menuItem.link}
           key={menuItem.key}
           className={classNames(menuItem.className, { active: currentSection === menuItem.key, badge })}
           onClick={() => this.clickMenu(menuItem)}
@@ -337,6 +355,7 @@ export class SideBar extends React.Component {
   };
 
   clickMenu = (item) => {
+    this.setState({ ready: false });
     if (item.callback) {
       this.props.changeSection(item.key);
       item.callback();
@@ -358,7 +377,8 @@ export class SideBar extends React.Component {
     const { logoActive } = this.props;
     return (
       <div
-        className={classNames('sidebar-menu', 'ui', 'vertical', 'menu')}
+        className={classNames('sidebar-menu ui vertical menu', { ready: this.state.ready })}
+        onMouseMove={() => { this.setState({ ready: true }); }}
       >
         <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo}>
           <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logo.svg`} />
