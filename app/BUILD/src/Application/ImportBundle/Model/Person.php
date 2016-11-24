@@ -413,6 +413,26 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     }
 
     /**
+     * @return string
+     */
+    public function getTitlePrefix()
+    {
+        return $this->titlePrefix;
+    }
+
+    /**
+     * @param string $titlePrefix
+     *
+     * @return $this
+     */
+    public function setTitlePrefix($titlePrefix)
+    {
+        $this->titlePrefix = $titlePrefix;
+
+        return $this;
+    }
+
+    /**
      * Returns custom display name.
      *
      * @return string
