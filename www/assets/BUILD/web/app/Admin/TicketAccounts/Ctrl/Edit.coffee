@@ -128,7 +128,7 @@ define [
           actions:       []
         }
         if @$scope.actions_form
-          for own _, act of @$scope.actions_form
+          for own _x, act of @$scope.actions_form
             if act.type
               postData.actions.push(act)
         @Api.sendPostJson('/ticket_triggers/email_accounts/' + @account.id, postData)

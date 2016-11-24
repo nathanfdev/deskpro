@@ -164,9 +164,9 @@ define [
           if enabled
             postData.by_app_mode.push(mode)
 
-      for own _, crit_set of @$scope.form.terms_set
+      for own _x, crit_set of @$scope.form.terms_set
         set = []
-        for own _, crit of crit_set
+        for own _x, crit of crit_set
           if crit.type
             set.push(crit)
         if set.length
@@ -175,7 +175,7 @@ define [
       has_stop_triggers_action = false
       has_delete_ticket_action = false
       if @$scope.form.actions
-        for own _, act of @$scope.form.actions
+        for own _x, act of @$scope.form.actions
           if act.type
             postData.actions.push(act)
             if act.type == 'ModStopTriggers'
