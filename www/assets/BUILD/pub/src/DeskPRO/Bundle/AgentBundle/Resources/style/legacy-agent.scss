@@ -299,6 +299,12 @@
     span:not(.on) svg .chat-primary {
       fill: $dp-knuckles-primary;
     }
+    span.others svg .chat-primary {
+      fill: $dp-tails-primary;
+    }
+    span.on svg .chat-primary {
+      fill: $dp-emerald-primary;
+    }
     .status {
       font-size: 8px;
       .count {

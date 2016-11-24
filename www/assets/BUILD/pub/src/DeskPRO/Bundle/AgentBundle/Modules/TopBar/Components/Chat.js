@@ -216,7 +216,7 @@ class Chat extends React.Component {
   };
 
   render() {
-    const { activeChat } = this.state;
+    const { activeChat, onlineAgents } = this.state;
     return (<div className="chat" onClick={this.togglePopup}>
       <PopUp
         positionMy="right top"
@@ -230,7 +230,7 @@ class Chat extends React.Component {
         content={this.getPopupContent()}
       >
         <Isvg
-          className={classNames({ on: activeChat })}
+          className={classNames({ on: activeChat, others: onlineAgents.length })}
           src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/chat.svg`}
         />
         <br />
