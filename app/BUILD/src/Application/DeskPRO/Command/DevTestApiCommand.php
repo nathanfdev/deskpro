@@ -167,10 +167,10 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             }
 
             $apiKey = $key->getKeyString();
+        }
 
-            if ($isV2) {
-                $apiKey = 'key '.$apiKey;
-            }
+        if ($isV2) {
+            $apiKey = 'key '.$apiKey;
         }
 
         //------------------------------
