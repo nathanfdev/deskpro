@@ -219,7 +219,6 @@ export class AgentTopBar extends React.Component {
           />
         </TopBarItem>
         <TopBarItem>
-          <User src={this.getUserPicture()} />
           <Chat
             agents={agents.toArray()}
             chatDepartments={chatDepartments.toArray()}
@@ -227,6 +226,7 @@ export class AgentTopBar extends React.Component {
             me={this.props.me}
             volume={8}
           />
+          <User src={this.getUserPicture()} />
         </TopBarItem>
       </TopBarRightMenu>
     </TopBar>);
