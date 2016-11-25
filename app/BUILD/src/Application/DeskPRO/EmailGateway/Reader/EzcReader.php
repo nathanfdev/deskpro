@@ -53,6 +53,16 @@ class EzcReader extends AbstractReader
     protected $mail = null;
 
     /**
+     * @var \ezcMail
+     */
+    protected $decryptedMail = null;
+
+    /**
+     * @var bool
+     */
+    protected $isSigned = false;
+
+    /**
      * EzcReader constructor.
      */
     public function __construct()
@@ -93,6 +103,15 @@ class EzcReader extends AbstractReader
         }
 
         $this->mail = $this->mail[0];
+
+        foreach ($this->mail->fetchParts() as $part) {
+            if (isset($part->mimeType) && $part->mimeType === 'pkcs7-mime') {
+                $this->decryptEmail();
+            }
+            if (isset($part->mimeType) && $part->mimeType === 'pkcs7-signature') {
+                $this->validateSignature();
+            }
+        }
     }
 
     /**
@@ -305,7 +324,9 @@ class EzcReader extends AbstractReader
     {
         $attachments = [];
 
-        foreach ($this->mail->fetchParts() as $part) {
+        $mail = $this->decryptedMail ? $this->decryptedMail : $this->mail;
+
+        foreach ($mail->fetchParts() as $part) {
             if (
                 $part instanceof \ezcMailFile
                 || ($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')
@@ -440,7 +461,9 @@ class EzcReader extends AbstractReader
     {
         $rawParts = [];
 
-        foreach ($this->mail->fetchParts(['ezcMailText']) as $part) {
+        $mail = $this->decryptedMail ? $this->decryptedMail : $this->mail;
+
+        foreach ($mail->fetchParts(['ezcMailText']) as $part) {
             if (
                 $part->subType == 'html'
                 && !($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')
@@ -458,7 +481,7 @@ class EzcReader extends AbstractReader
 
         //we're going append technical detail to html body if it exists.
         if ($rawParts) {
-            foreach ($this->mail->fetchParts(['ezcMailDeliveryStatus']) as $part) {
+            foreach ($mail->fetchParts(['ezcMailDeliveryStatus']) as $part) {
                 /* @var \ezcMailDeliveryStatus $part */
                 $generatedBody   = Strings::standardEol($part->generateBody());
                 $body            = new Item\BodyHtml();
@@ -527,7 +550,9 @@ class EzcReader extends AbstractReader
     {
         $rawParts = [];
 
-        foreach ($this->mail->fetchParts(['ezcMailText']) as $part) {
+        $mail = $this->decryptedMail ? $this->decryptedMail : $this->mail;
+
+        foreach ($mail->fetchParts(['ezcMailText']) as $part) {
             if ($part->subType == 'plain') {
                 $originalCharset = $this->getOriginalCharset($part);
 
@@ -540,7 +565,7 @@ class EzcReader extends AbstractReader
             }
         }
 
-        foreach ($this->mail->fetchParts(['ezcMailDeliveryStatus']) as $part) {
+        foreach ($mail->fetchParts(['ezcMailDeliveryStatus']) as $part) {
             /* @var \ezcMailDeliveryStatus $part */
             $generatedBody   = Strings::standardEol($part->generateBody());
             $body            = new Item\BodyHtml();
@@ -659,5 +684,53 @@ class EzcReader extends AbstractReader
         }
 
         return $attachments;
+    }
+
+    public function decryptEmail()
+    {
+        $keys = [
+            'public'  => '/Users/julien/repositories/vagrant-deskpro-dev/docker/deskpro/var/julien.cer',
+            'private' => '/Users/julien/repositories/vagrant-deskpro-dev/docker/deskpro/var/julien.pem',
+        ];
+        if (!file_exists($keys['public'])) {
+            var_dump('Public Key not found');
+        }
+        if (!file_exists($keys['private'])) {
+            var_dump('Private Key not found');
+        }
+        $public    = file_get_contents($keys['public']);
+        $private   = file_get_contents($keys['private']);
+        $encrypted = '/Users/julien/repositories/vagrant-deskpro-dev/docker/deskpro/var/encrypted.txt';
+        file_put_contents($encrypted, $this->raw_source);
+        $outfilename = '/Users/julien/repositories/vagrant-deskpro-dev/docker/deskpro/var/decrypted.txt';
+        if (openssl_pkcs7_decrypt($encrypted, $outfilename, $public, [$private, 1234])) {
+            $set                 = new \ezcMailVariableSet(file_get_contents($outfilename));
+            $this->decryptedMail = $this->parser->parseMail($set);
+
+            if (!$this->decryptedMail || !isset($this->decryptedMail[0])) {
+                throw new \InvalidArgumentException('Bad mail source, could not decode');
+            }
+
+            $this->decryptedMail = $this->decryptedMail[0];
+
+            foreach ($this->decryptedMail->fetchParts() as $part) {
+                if (isset($part->mimeType) && $part->mimeType === 'pkcs7-signature') {
+                    $this->validateSignature($outfilename);
+                }
+            }
+        } else {
+            echo "failed to decrypt!\n";
+        }
+        @unlink($encrypted);
+        @unlink($outfilename);
+    }
+
+    public function validateSignature($file = null)
+    {
+        if (!$file) {
+            $file = '/Users/julien/repositories/vagrant-deskpro-dev/docker/deskpro/var/encrypted.txt';
+            file_put_contents($file, $this->raw_source);
+        }
+        $this->isSigned = openssl_pkcs7_verify($file, 0);
     }
 }
