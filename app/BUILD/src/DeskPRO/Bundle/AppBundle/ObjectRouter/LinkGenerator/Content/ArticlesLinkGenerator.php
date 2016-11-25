@@ -53,9 +53,10 @@ class ArticlesLinkGenerator extends AbstractContentLinkGenerator
     protected function getBrand(ContentAbstract $object)
     {
         /* @var Article $object */
+
         /** @var ArticleCategory $category */
         $category = current($object->getCategories()->toArray());
 
-        return $category->getBrand();
+        return $category ? $category->getBrand() : null;
     }
 }
