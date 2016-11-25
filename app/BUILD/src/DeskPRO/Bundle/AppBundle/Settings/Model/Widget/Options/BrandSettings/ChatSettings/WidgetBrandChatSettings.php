@@ -106,7 +106,7 @@ class WidgetBrandChatSettings
      */
     public function setRequestUserInfo($requestUserInfo)
     {
-        $this->requestUserInfo = $requestUserInfo;
+        $this->requestUserInfo = (bool) $requestUserInfo;
 
         return $this;
     }
@@ -126,7 +126,7 @@ class WidgetBrandChatSettings
      */
     public function setProactive($proactive)
     {
-        $this->proactive = $proactive;
+        $this->proactive = (bool) $proactive;
 
         return $this;
     }
