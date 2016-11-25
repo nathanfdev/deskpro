@@ -184,20 +184,20 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         // Rate limit
         //-------------------------
 
-        $rate_limit    = $this->container->getSetting('core.emails.rate_count', EmailAccountsSettings::DEFAULT_RATE_COUNT);
-        $rate_time     = $this->container->getSetting('core.emails.rate_time', EmailAccountsSettings::DEFAULT_RATE_TIME);
-        $rate_locktime = $this->container->getSetting('core.emails.rate_locktime', EmailAccountsSettings::DEFAULT_RATE_LOCK_TIME);
-        $real_from     = $this->reader->getRealFromAddress()->getEmail();
-        $source_repos  = $this->container->getEm()->getRepository('DeskPRO:EmailSource');
+        $rateLimit    = $this->container->getSetting('core.emails.rate_count', EmailAccountsSettings::DEFAULT_RATE_COUNT);
+        $rateTime     = $this->container->getSetting('core.emails.rate_time', EmailAccountsSettings::DEFAULT_RATE_TIME);
+        $rateLocktime = $this->container->getSetting('core.emails.rate_locktime', EmailAccountsSettings::DEFAULT_RATE_LOCK_TIME);
+        $realFrom     = $this->reader->getRealFromAddress()->getEmail();
+        $sourceRepos  = $this->container->getEm()->getRepository(EmailSource::class);
 
-        if ($rate_limit && !($tac_person && $tac_person->is_agent)) {
-            $is_rate_reject = false;
+        if ($rateLimit && !($tac_person && $tac_person->is_agent)) {
+            $isRateReject = false;
 
-            if ($source_repos->isEmailAddressRateLimited($real_from, $rate_locktime)) {
-                $is_rate_reject = true;
+            if ($sourceRepos->isEmailAddressRateLimited($realFrom, $rateLocktime)) {
+                $isRateReject = true;
                 $this->logMessage('Rate limited -- currently locked out');
-            } elseif ($source_repos->countEmailsWithinTime($real_from, $rate_time) >= $rate_limit) {
-                $is_rate_reject = true;
+            } elseif ($sourceRepos->countEmailsWithinTime($realFrom, $rateTime) >= $rateLimit) {
+                $isRateReject = true;
                 $this->logMessage('Rate limited -- this is the first message over the threshold');
 
                 $message = App::getMailer()->createMessage();
@@ -205,10 +205,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                     'ticket'        => $ticket,
                     'subject'       => $this->reader->getSubject()->getSubjectUtf8(),
                     'name'          => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                    'num_messagess' => $rate_limit,
-                    'time_limit'    => Dates::secsToReadable($rate_time),
-                    'time_lock'     => Dates::secsToReadable($rate_locktime),
-                    'date_lock_end' => date($this->container->getSetting('core.date_time'), time() + $rate_locktime),
+                    'num_messagess' => $rateLimit,
+                    'time_limit'    => Dates::secsToReadable($rateTime),
+                    'time_lock'     => Dates::secsToReadable($rateLocktime),
+                    'date_lock_end' => date($this->container->getSetting('core.date_time'), time() + $rateLocktime),
                 ]);
                 $message->setTo($this->reader->getFromAddress()->getEmail());
 
@@ -224,7 +224,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 App::getMailer()->send($message);
             }
 
-            if ($is_rate_reject) {
+            if ($isRateReject) {
                 $this->logMessage('Rate limited, message is rejected');
                 $this->error      = 'rate_limit';
                 $this->error_type = 'rejected';
