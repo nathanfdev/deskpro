@@ -131,6 +131,16 @@ class EmailAccount extends DomainObject
     protected $is_read_active = false;
 
     /**
+     * @var \Application\DeskPRO\Entity\Blob
+     */
+    protected $cert_blob = null;
+
+    /**
+     * @var \Application\DeskPRO\Entity\Blob
+     */
+    protected $key_blob = null;
+
+    /**
      * @param string $account_type
      */
     public function __construct($account_type)
@@ -427,6 +437,34 @@ class EmailAccount extends DomainObject
             'fieldName'  => 'is_read_active',
             'type'       => 'boolean',
             'nullable'   => false,
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'cert_blob',
+            'targetEntity' => Blob::class,
+            'dpApi'        => true,
+            'dpApiDeep'    => true,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'cert_blob_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'key_blob',
+            'targetEntity' => Blob::class,
+            'dpApi'        => true,
+            'dpApiDeep'    => true,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'key_blob_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                ],
+            ],
         ]);
     }
 }
