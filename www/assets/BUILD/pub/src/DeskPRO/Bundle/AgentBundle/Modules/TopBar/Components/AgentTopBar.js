@@ -58,6 +58,15 @@ export class AgentTopBarContainer extends SeparateComponent {
     }
   }
 
+  componentWillMount = () => {
+    const oldNotifIcon = document.getElementById('notifs_counts');
+    if (oldNotifIcon.innerHTML > 0) {
+      this.setState({
+        notificationCount: parseInt(oldNotifIcon.innerHTML, 10)
+      });
+    }
+  }
+
   onSearchFocus = () => {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
     if (this.agentTopBar.searchBox.textInput.value) {
