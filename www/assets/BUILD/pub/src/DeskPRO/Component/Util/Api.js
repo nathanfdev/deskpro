@@ -6,10 +6,14 @@
  */
 export function flattenBatchResponses(responses) {
   const result = {};
-  Object.keys(responses).forEach(key => {
+  Object.keys(responses).forEach((key) => {
     result[key] = responses[key].data;
     return null;
   });
 
   return result;
+}
+
+export function getLinkedData(responses, key, linkedKey) {
+  return responses[key].linked[linkedKey];
 }

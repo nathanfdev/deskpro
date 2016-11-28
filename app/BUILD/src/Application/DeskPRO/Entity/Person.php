@@ -4304,6 +4304,7 @@ GroupSequenceProviderInterface
             [
                 'fieldName'    => 'usergroups',
                 'targetEntity' => Usergroup::class,
+                'inversedBy'   => 'people',
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [
                     'name'        => 'person2usergroups',
