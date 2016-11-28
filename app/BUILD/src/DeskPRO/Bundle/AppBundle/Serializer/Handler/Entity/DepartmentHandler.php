@@ -122,7 +122,8 @@ class DepartmentHandler extends AbstractEntityHandler
         if ($ids) {
             $usergroups = implode(',', $ids);
             $sql        = "SELECT DISTINCT(person_id) FROM person2usergroups WHERE usergroup_id IN ({$usergroups})";
-            $personIds  = (array) $this->em->getConnection()->fetchColumn($sql);
+            $personIds  = $this->em->getConnection()->fetchAll($sql);
+            $personIds  = array_column($personIds, 'person_id');
         } else {
             $personIds = [];
         }
@@ -137,7 +138,7 @@ class DepartmentHandler extends AbstractEntityHandler
             }
         }
 
-        return array_values(array_unique(array_merge($this->mightyUsers, $personIds)));
+        return array_unique(array_merge($this->mightyUsers, $personIds), SORT_NUMERIC);
     }
 
     /**
