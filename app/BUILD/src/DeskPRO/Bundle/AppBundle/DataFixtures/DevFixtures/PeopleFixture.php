@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
+use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -44,11 +45,11 @@ use Orb\Util\Strings;
 
 class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    private $num_people = 500;
-    private $num_agents = 10;
-    private $num_orgs   = 75;
-    private $num_labels = 100;
-    private $max_notes  = 3;
+    private $numPeople = 500;
+    private $numAgents = 10;
+    private $numOrgs   = 75;
+    private $numLabels = 100;
+    private $maxNotes  = 3;
 
     /**
      * @var string[]
@@ -58,27 +59,27 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
     /**
      * @var array
      */
-    private $agent_ids = [];
+    private $agentIds = [];
 
     /**
      * @var array
      */
-    private $people_ids = [];
+    private $peopleIds = [];
 
     /**
      * @var array
      */
-    private $org_ids = [];
+    private $orgIds = [];
 
     /**
      * @var RandomFileFromDir
      */
-    private $ava_files;
+    private $avaFiles;
 
     /**
      * @var RandomFileFromDir
      */
-    private $ava_people_files;
+    private $avaPeopleFiles;
 
     /** @var Usergroup[] */
     private $userGroups;
@@ -96,11 +97,11 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
      */
     public function load(ObjectManager $manager)
     {
-        $this->manager   = $manager;
-        $this->ava_files = new RandomFileFromDir(
+        $this->manager  = $manager;
+        $this->avaFiles = new RandomFileFromDir(
             DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars'
         );
-        $this->ava_people_files = new RandomFileFromDir(
+        $this->avaPeopleFiles = new RandomFileFromDir(
             DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars_people'
         );
         $this->userGroups = $this->getExtraUserGroups();
@@ -108,32 +109,32 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $this->loadLabels();
         $this->loadOrgs($manager);
 
-        $this->loadPeople($this->num_agents, true);
-        $this->agent_ids = $this->fetchIds(self::TABLE_PEOPLE);
+        $this->loadPeople($this->numAgents, true);
+        $this->agentIds = $this->fetchIds(self::TABLE_PEOPLE);
 
-        $this->loadPeople($this->num_people, false);
-        $this->people_ids = $this->fetchIds(self::TABLE_PEOPLE);
+        $this->loadPeople($this->numPeople, false);
+        $this->peopleIds = $this->fetchIds(self::TABLE_PEOPLE);
 
         $this->loadOrgProps($manager);
         $this->addExtraGroups();
-        $this->loadPeopleProps();
+        $this->loadPeopleProps($manager);
 
         $this->createOrgExample();
     }
 
     private function loadLabels()
     {
-        $label_type = LabelDef::TYPE_PEOPLE;
+        $labelType = LabelDef::TYPE_PEOPLE;
         $this->faker->unique(true);
 
         $batch = [];
 
-        for ($i = 0; $i < $this->num_labels; ++$i) {
+        for ($i = 0; $i < $this->numLabels; ++$i) {
             $l = $this->faker->unique()->company;
             if ($l) {
                 $l       = strtolower($l);
                 $batch[] = [
-                    'label_type' => $label_type,
+                    'label_type' => $labelType,
                     'label'      => $l,
                     'color'      => $this->faker->hexColor,
                     'total'      => 0,
@@ -143,45 +144,45 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
 
         $this->db->batchInsert('label_defs', $batch, true);
 
-        $this->labels = $this->db->fetchAllCol('SELECT label FROM label_defs WHERE label_type = ?', [$label_type]);
+        $this->labels = $this->db->fetchAllCol('SELECT label FROM label_defs WHERE label_type = ?', [$labelType]);
     }
 
     private function loadPeople($num, $is_agent)
     {
         $batch = [];
 
-        $creation_string = 'api.dev.'.time();
+        $creationString = 'api.dev.'.time();
 
         for ($i = 0; $i < $num; ++$i) {
             $fname = $this->faker->firstName;
             $lname = $this->faker->lastName;
 
-            $ava_file = null;
+            $avaFile = null;
             if ($is_agent) {
-                $ava_file = $this->ava_people_files->next();
+                $avaFile = $this->avaPeopleFiles->next();
             } elseif ($this->faker->boolean(30)) {
-                $ava_file = $this->ava_files->next();
+                $avaFile = $this->avaFiles->next();
             }
 
-            $ava_id = null;
-            if ($ava_file) {
+            $avaId = null;
+            if ($avaFile) {
                 $ava = $this->container->get('deskpro.blob_storage')->createBlobRowFromFile(
-                    $ava_file->getRealPath(),
-                    $ava_file->getFilename(),
-                    ContentTypes::getContentTypeFromFilename($ava_file->getFilename())
+                    $avaFile->getRealPath(),
+                    $avaFile->getFilename(),
+                    ContentTypes::getContentTypeFromFilename($avaFile->getFilename())
                 );
-                $ava_id = $ava['id'];
+                $avaId = $ava['id'];
             }
 
             $batch[] = [
-                'organization_id'   => $this->faker->randomElement($this->org_ids),
-                'picture_blob_id'   => $ava_id,
+                'organization_id'   => $this->faker->randomElement($this->orgIds),
+                'picture_blob_id'   => $avaId,
                 'is_contact'        => 1,
                 'is_user'           => 1,
                 'is_agent'          => (int) $is_agent,
                 'can_agent'         => (int) 1,
                 'is_confirmed'      => 1,
-                'creation_system'   => $creation_string,
+                'creation_system'   => $creationString,
                 'name'              => "$fname $lname",
                 'first_name'        => $fname,
                 'last_name'         => $lname,
@@ -197,10 +198,10 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
 
         $this->db->batchInsert('people', $batch);
 
-        $people_ids = $this->db->fetchAllCol('SELECT id FROM people WHERE creation_system = ?', [$creation_string]);
+        $peopleIds = $this->db->fetchAllCol('SELECT id FROM people WHERE creation_system = ?', [$creationString]);
 
         $batch = [];
-        foreach ($people_ids as $pid) {
+        foreach ($peopleIds as $pid) {
             $email          = $this->faker->safeEmail;
             list(, $domain) = explode('@', $email);
 
@@ -245,7 +246,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
 
     private function loadOrgs(ObjectManager $manager)
     {
-        for ($i = 0; $i < $this->num_orgs; ++$i) {
+        for ($i = 0; $i < $this->numOrgs; ++$i) {
             $org = new Organization();
             $org
                 ->setName($this->faker->company)
@@ -266,7 +267,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         }
 
         $manager->flush();
-        $this->org_ids = $this->fetchIds(self::TABLE_ORGANIZATIONS);
+        $this->orgIds = $this->fetchIds(self::TABLE_ORGANIZATIONS);
     }
 
     private function loadOrgProps(ObjectManager $manager)
@@ -285,7 +286,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
                 $manager->persist($labelEntity);
             }
 
-            for ($i = 0; $i < $this->faker->numberBetween(1, $this->max_notes); ++$i) {
+            for ($i = 0; $i < $this->faker->numberBetween(1, $this->maxNotes); ++$i) {
                 $orgNote = new OrganizationNote();
                 $orgNote
                     ->setAgent($this->faker->randomElement($agents))
@@ -301,41 +302,50 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $manager->flush();
     }
 
-    private function loadPeopleProps()
+    private function loadPeopleProps(ObjectManager $manager)
     {
-        $labels_batch = [];
-        $notes_batch  = [];
-        $onboardings  = [];
+        $labelsBatch = [];
+        $notesBatch  = [];
+        $onboardings = [];
 
-        foreach ($this->people_ids as $people_id) {
+        /** @var PersonOnboarding[] $existingOnboardings */
+        $existingOnboardings = $manager->getRepository(PersonOnboarding::class)
+            ->findBy(['onboardingClass' => 'topbar']);
+
+        foreach ($this->peopleIds as $peopleId) {
             foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
-                $labels_batch[] = ['person_id' => $people_id, 'label' => $l];
+                $labelsBatch[] = ['person_id' => $peopleId, 'label' => $l];
             }
 
-            $num = $this->faker->numberBetween(1, $this->max_notes);
+            $num = $this->faker->numberBetween(1, $this->maxNotes);
             for ($i = 0; $i < $num; ++$i) {
-                $notes_batch[] = [
-                    'person_id'    => $people_id,
-                    'agent_id'     => $this->faker->randomElement($this->agent_ids),
+                $notesBatch[] = [
+                    'person_id'    => $peopleId,
+                    'agent_id'     => $this->faker->randomElement($this->agentIds),
                     'date_created' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                     'note'         => $this->faker->realText($this->faker->numberBetween(10, 500)),
                 ];
             }
         }
 
-        foreach ($this->agent_ids as $agent_id) {
-            $onboardings[] = [
-                'person_id'        => $agent_id,
+        foreach ($this->agentIds as $agentId) {
+            foreach ($existingOnboardings as $onboarding) {
+                if ($onboarding->getPerson()->getId() == $agentId) {
+                    continue 2;
+                }
+            }
+            $onboardings[$agentId] = [
+                'person_id'        => $agentId,
                 'onboarding_class' => 'topbar',
                 'application'      => 'Agent',
             ];
         }
 
-        if ($labels_batch) {
-            $this->db->batchInsert('labels_people', $labels_batch, true);
+        if ($labelsBatch) {
+            $this->db->batchInsert('labels_people', $labelsBatch, true);
         }
-        if ($notes_batch) {
-            $this->db->batchInsert('people_notes', $notes_batch);
+        if ($notesBatch) {
+            $this->db->batchInsert('people_notes', $notesBatch);
         }
         if ($onboardings) {
             $this->db->batchInsert('person_onboarding', $onboardings);
