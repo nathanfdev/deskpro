@@ -5,6 +5,7 @@ import $ from 'jquery';
 import moment from 'moment';
 import Isvg from 'react-inlinesvg';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/onboardingActions';
 import * as Tours from '../Tours';
@@ -125,9 +126,11 @@ export class AgentOnboarding extends React.Component {
           <div className="joyride-hole" />
           <div className="joyride-intro" style={style}>
             <img src={intro.img} role="presentation" />
-            <h3>{intro.title}</h3>
-            <p>{intro.text}</p>
-            <footer><button className="ui button" onClick={this.closeIntro}>{intro.action}</button></footer>
+            <h3>{agentPhrases.get(intro.title)}</h3>
+            <p>{agentPhrases.get(intro.text)}</p>
+            <footer>
+              <button className="ui button" onClick={this.closeIntro}>{agentPhrases.get(intro.action)}</button>
+            </footer>
           </div>
         </div>
       </div>
@@ -146,6 +149,13 @@ export class AgentOnboarding extends React.Component {
     if (!Array.isArray(stepsArray)) {
       stepsArray = [steps];
     }
+
+    stepsArray = stepsArray.map((step) => {
+      const newStep = step;
+      newStep.title = agentPhrases.get(step.title);
+      newStep.text = agentPhrases.get(step.text);
+      return newStep;
+    });
 
     if (!stepsArray.length) {
       return false;
@@ -226,6 +236,7 @@ export class AgentOnboarding extends React.Component {
       type,
       disableOverlay: force
     };
+    const back = `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/back-arrow.svg`;
     return (<div>
       <Joyride
         ref={(c) => { this.joyride = c; }}
@@ -234,7 +245,7 @@ export class AgentOnboarding extends React.Component {
         locale={{
           back: (
             <Isvg
-              src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/back-arrow.svg`}
+              src={back}
             />
            ),
           close: (<span>Close</span>),

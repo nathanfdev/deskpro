@@ -33,7 +33,6 @@ DeskPRO.FaviconBadge = new Orb.Class({
         fallback: false
       };
 		}
-		console.log(this.tinyconOptions);
 
 		this.animateTimeout = null;
 		this.animateCount = 0;
