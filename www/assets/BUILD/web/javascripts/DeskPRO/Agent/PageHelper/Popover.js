@@ -368,7 +368,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 				this.popoverOuter.css({
 					'position': 'absolute',
-					'z-index': 30001,
+					'z-index': 1800,
 					'overflow': 'auto',
 					'top': pagePos.top,
 					'left': pagePos.left + 11,
@@ -388,7 +388,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 				this.popoverOuter.css({
 					'position': 'absolute',
-					'z-index': 30001,
+					'z-index': 1800,
 					'width': width+2+6, //2px for thi sborder, 6px for the popover border
 					'overflow': 'auto',
 					'top': top ? top-3 : '',
@@ -400,7 +400,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 				width = $(window).width() / 2;
 				this.popoverOuter.css({
 					'position': 'absolute',
-					'z-index': 30001,
+					'z-index': 1800,
 					'width': width+2+6, //2px for thi sborder, 6px for the popover border
 					'overflow': 'auto',
 					'top': top ? top-3 : '',
@@ -414,7 +414,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		} else {
 			this.popoverOuter.css({
 				'position': 'absolute',
-				'z-index': 30001,
+				'z-index': 1800,
 				'overflow': 'auto',
 				top: pos.top - 4,
 				left: pos.left + 8,

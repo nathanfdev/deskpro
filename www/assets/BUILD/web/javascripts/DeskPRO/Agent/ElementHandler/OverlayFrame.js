@@ -39,7 +39,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
         right:           0,
         bottom:          0,
         left:            '52px',
-        zIndex:          200,
+        zIndex:          2000,
         backgroundColor: '#F5F7FA'
       }
     });
