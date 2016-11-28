@@ -2850,6 +2850,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				};
 				self.newTicketLoader.open();
 			};
+			$('#create_ticket_btn').on('click', function() { DeskPRO_Window.newTicketLoader.toggle(); });
 		}
 
 		if (DESKPRO_PERSON_PERMS['agent_people.create']) {
