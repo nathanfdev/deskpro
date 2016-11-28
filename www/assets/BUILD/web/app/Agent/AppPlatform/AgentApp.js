@@ -881,7 +881,7 @@ define([
 					scope.notifsOpen = true;
 					var wrap = $('#dp_header_notify_wrap');
 					wrap.addClass('active').show();
-					wrap.width(Math.max($el.width() - 2, 560));
+					wrap.width(Math.max($el.width() - 2, 450));
 					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
 					DeskPRO_Window.notifications.resetElements();
