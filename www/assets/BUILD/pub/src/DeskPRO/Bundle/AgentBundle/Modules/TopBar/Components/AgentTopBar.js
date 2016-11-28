@@ -65,7 +65,7 @@ export class AgentTopBarContainer extends SeparateComponent {
         notificationCount: parseInt(oldNotifIcon.innerHTML, 10)
       });
     }
-  }
+  };
 
   onSearchFocus = () => {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
