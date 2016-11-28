@@ -59,6 +59,9 @@ class WidgetBrandChatSettingsType extends AbstractType
                     WidgetBrandChatSettings::BEGIN_MODE_FORM,
                 ],
             ])
+            ->add('allow_department_selection', ApiBooleanType::class, [
+                'property_path' => 'allowDepartmentSelection',
+            ])
             ->add('waiting_timeout', IntegerType::class, [
                 'property_path' => 'waitingTimeout',
             ])

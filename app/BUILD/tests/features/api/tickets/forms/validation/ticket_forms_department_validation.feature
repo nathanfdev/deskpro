@@ -48,7 +48,7 @@ Feature: /ticket_forms validation
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.department.errors" should have 1 element
-    And the JSON node "errors.fields.department.errors[0].code" should be equal to "not_assignable_ticket_department"
+    And the JSON node "errors.fields.department.errors[0].code" should be equal to "not_assignable_department"
 
   Scenario: I check layout extra fields
     Given only the following custom ticket fields exist:

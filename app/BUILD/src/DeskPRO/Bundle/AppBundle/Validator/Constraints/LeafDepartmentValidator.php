@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Application\DeskPRO\Entity\Department;
 use Doctrine\ORM\EntityRepository;
@@ -74,7 +74,7 @@ class LeafDepartmentValidator extends ConstraintValidator
             $context = $this->context;
             $context
                 ->buildViolation($constraint->message)
-                ->setCode(LeafDepartment::NOT_ASSIGNABLE_TICKET_DEPARTMENT)
+                ->setCode(LeafDepartment::NOT_ASSIGNABLE_DEPARTMENT)
                 ->addViolation()
             ;
         }

@@ -29,11 +29,17 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\LeafDepartment;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -65,17 +71,36 @@ class ChatCreateType extends AbstractType
     private $fieldManager;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
+     * @var PermissionsManager
+     */
+    private $permissionsManager;
+
+    /**
      * Constructor.
      *
      * @param SetPersonListener      $personListener
      * @param WidgetSettingsResolver $settingsResolver
      * @param CustomFieldManager     $fieldManager
+     * @param BrandStack             $brandStack
+     * @param PermissionsManager     $permissionsManager
      */
-    public function __construct(SetPersonListener $personListener, WidgetSettingsResolver $settingsResolver, CustomFieldManager $fieldManager)
-    {
-        $this->personListener   = $personListener;
-        $this->settingsResolver = $settingsResolver;
-        $this->fieldManager     = $fieldManager;
+    public function __construct(
+        SetPersonListener $personListener,
+        WidgetSettingsResolver $settingsResolver,
+        CustomFieldManager $fieldManager,
+        BrandStack $brandStack,
+        PermissionsManager $permissionsManager
+    ) {
+        $this->personListener     = $personListener;
+        $this->settingsResolver   = $settingsResolver;
+        $this->fieldManager       = $fieldManager;
+        $this->brandStack         = $brandStack;
+        $this->permissionsManager = $permissionsManager;
     }
 
     /**
@@ -104,6 +129,37 @@ class ChatCreateType extends AbstractType
                 'error_bubbling' => false,
             ])
         ;
+
+        $brand = $this->brandStack->getActive()->getBrand();
+        if ($this->settingsResolver->getWidgetBrandOptions($brand)->getChat()->isAllowDepartmentSelection()) {
+            $permissionsBag = $this->permissionsManager->getPortalPermissionsBag(
+                $builder->getFormConfig()->getOption('person')
+            );
+            $allowedDepartmentIds = $permissionsBag->getAllowedChatDepartmentIds();
+
+            $builder->add(
+                'chat_department',
+                EntityType::class,
+                [
+                    'class'         => Department::class,
+                    'property_path' => 'department',
+                    'query_builder' => function (EntityRepository $er) use ($allowedDepartmentIds) {
+                        $qb = $er
+                            ->createQueryBuilder('d')
+                            ->where(
+                                'd.is_chat_enabled = true',
+                                'd.id IN (:allowed_department_ids)'
+                            )
+                            ->setParameter('allowed_department_ids', $allowedDepartmentIds);
+
+                        return $qb;
+                    },
+                    'constraints' => [
+                        new LeafDepartment(),
+                    ],
+                ]
+            );
+        }
 
         $builder->addEventSubscriber($this->personListener);
         $builder->addEventSubscriber(new AutoSetShouldSentTranscriptListener());
