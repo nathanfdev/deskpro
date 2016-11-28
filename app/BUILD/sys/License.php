@@ -63,7 +63,7 @@ final class License
     /**
      * @var array
      */
-    private $data;
+    private $data = [];
 
     /**
      * When non-null, then it means there was a problem with the license (ie bad format).
@@ -189,7 +189,7 @@ final class License
     private function __construct($license_code, $install_key = '')
     {
         // "no license" mode
-        if ($license_code === null) {
+        if ($license_code === null || $license_code === false || trim($license_code) === '') {
             $this->data = ['no_license' => true];
 
             return;

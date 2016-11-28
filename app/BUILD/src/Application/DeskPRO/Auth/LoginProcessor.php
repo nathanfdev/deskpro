@@ -438,7 +438,10 @@ class LoginProcessor
      */
     public static function tryAutoAgent(Usersource $usersource, Person $person)
     {
-        if (Usersource::TYPE_AGENT == $usersource->type && $usersource->auto_agent) {
+        if (Usersource::TYPE_AGENT === $usersource->type
+            && $usersource->auto_agent
+            && !$person->isAgent()
+        ) {
             $agentChecker = App::getSystemService('agent_checker');
             /** @var $agentChecker AgentCheckerService */
             if ($agentChecker->addAgentSeat($person)) {
@@ -461,8 +464,6 @@ class LoginProcessor
         foreach ($usersource->actions as $action) {
             /* @var $action AbstractAction */
             $action->handle(App::$container, $person, $raw_info);
-
-            // todo how to handle exceptions here?
         }
     }
 }
