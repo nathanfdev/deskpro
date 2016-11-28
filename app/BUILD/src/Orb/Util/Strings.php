@@ -501,7 +501,7 @@ class Strings
     public static function getExtension($string)
     {
         $matches = null;
-        if (preg_match('#\.([a-zA-Z0-9]+)$#', $string, $matches)) {
+        if (preg_match('#\.([a-zA-Z0-9_\-]+)$#', $string, $matches)) {
             return strtolower($matches[1]);
         }
 
