@@ -157,14 +157,15 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 
     window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
 
-    var event = new CustomEvent('dpCloseOverlayFrame', { 'detail': { id: this.frameId } });
-    window.document.dispatchEvent(event);
-
     if (this.frameTitle) {
       document.title = this.originalTitle;
     }
 
     DeskPRO_Window.enableHashPath();
+
+    DeskPRO_Window.updateWindowUrlFragment();
+    var event = new CustomEvent('dpCloseOverlayFrame', { 'detail': { id: this.frameId } });
+    window.document.dispatchEvent(event);
   },
 
   getFrameWindow: function() {
