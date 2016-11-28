@@ -421,6 +421,7 @@ class Usergroup extends DomainObject
                 'fieldName'    => 'people',
                 'targetEntity' => Person::class,
                 'mappedBy'     => 'usergroups',
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
