@@ -163,7 +163,7 @@ return [
     'agent.chrome.quicksearch_title-tickets'                   => 'Tickets',
     'agent.chrome.recent_list-filter-info'                     => 'Type to filter recent results',
     'agent.chrome.recent_list-none'                            => 'You have not opened any tabs yet',
-    'agent.chrome.recent_tooltip'                              => 'Recent Activity: Easily find what you were just working on with this list of your recent activity',
+    'agent.chrome.recent_tooltip'                              => 'Easily find what you were just working on with this list of your recent activity',
     'agent.chrome.search-show-more'                            => 'Show {{count}} more|Show {{count}} more',
     'agent.chrome.user_tooltip'                                => 'View your agent profile, notifications and settings and manage your filters, macros and SLAs',
     'agent.chrome.view_tooltip'                                => 'Change the view of your helpdesk\'s interface to a 2 column view without the list pane',
