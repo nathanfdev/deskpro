@@ -15,25 +15,21 @@ const statusChoices = [
 class StatusForm extends React.Component {
 
   static propTypes = {
-    me:           PropTypes.object,
     voiceEnabled: PropTypes.bool,
     onChange:     PropTypes.func
   };
 
   constructor(props) {
     super(props);
-    const agentData = props.me.get('agent_data') || Immutable.fromJS({});
-
     this.state = {
-      formData: createValue({
-        value: {
-          status: agentData.get('available_status') || 'offline',
-          chats:  false,
-          calls:  agentData.get('agent_calls_enabled')
-        },
-        onChange: this.onChange
-      })
+      formData: this.getDefaultValue(props)
     };
+  }
+
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      formData: this.getDefaultValue(newProps)
+    });
   }
 
   onChange = (formData, changedFields) => {
@@ -53,6 +49,19 @@ class StatusForm extends React.Component {
     this.setState({ formData });
     onChange(value);
   };
+
+  getDefaultValue(props) {
+    const agentData = props.me.get('agent_data') || Immutable.fromJS({});
+
+    return createValue({
+      value: {
+        status: agentData.get('available_status') || 'offline',
+        chats:  props.userChatEnabled,
+        calls:  agentData.get('agent_calls_enabled')
+      },
+      onChange: this.onChange
+    });
+  }
 
   renderSelectValue = option => (
     <span>

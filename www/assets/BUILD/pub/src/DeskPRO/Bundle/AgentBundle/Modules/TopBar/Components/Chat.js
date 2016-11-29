@@ -7,148 +7,126 @@ import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { Toggle, Range } from 'DeskPRO/Component/Semantic/Form';
 
 class Chat extends React.Component {
+
   static propTypes = {
     agents:          PropTypes.array,
     chatDepartments: PropTypes.array,
-    onlineAgents:    PropTypes.array,
+    onlineAgents:    PropTypes.object,
+    activeChat:      PropTypes.bool,
     volume:          PropTypes.number,
-    me:              PropTypes.object,
-    updateVolume:    PropTypes.func
+    updateVolume:    PropTypes.func,
+    onToggleChat:    PropTypes.func
   };
 
   static defaultProps = {
     onlineAgents: [],
-    onToggleChat() {},
-    updateVolume() {}
+    onToggleChat: () => {},
+    updateVolume: () => {}
   };
 
   static getAgentsList(agents, key) {
-    return (<List key={`list${key}`} className="agents">
-      {
-        agents.map((agent) => {
+    return (
+      <List key={`list${key}`} className="agents">
+        {agents.map((agent) => {
           let img = agent.get('avatar').get('default_url_pattern');
           if (agent.get('avatar').get('url_pattern')) {
             img = agent.get('avatar').get('url_pattern');
           }
           img = img.replace(/\{\{IMG_SIZE}}/, 15);
           return <ListElement key={`agent${String(agent.get('id'))}`} label={agent.get('name')} image={img} />;
-        })
-      }
-    </List>);
+        })}
+      </List>
+    );
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      onlineAgents:   this.props.onlineAgents,
-      activeChat:     false,
       volume:         this.props.volume || 8,
       departmentMode: false,
       previousVolume: 8
     };
   }
 
-  componentDidMount() {
-    const self = this;
-    if (window.DeskPRO_Window) {
-      window.DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents-userchat', (info) => {
-        self.setState({
-          onlineAgents: info.online_agents
-        });
-        self.refreshOnlineAgentsList();
-      });
-    }
-  }
-
   getStatus() {
-    const { activeChat, onlineAgents } = this.state;
+    const { activeChat, onlineAgents } = this.props;
     const status = activeChat ? agentPhrases.get('agent.general.on') : agentPhrases.get('agent.general.off');
-    return (<div className="status">
-      {status} <span className="count">({onlineAgents.length})</span>
-    </div>);
+
+    return (
+      <div className="status">
+        {status} <span className="count">({onlineAgents.size})</span>
+      </div>
+    );
   }
 
   getAgents() {
-    const onlineAgents = this.props.agents.filter(agent =>
-      this.state.onlineAgents.indexOf(String(agent.get('id'))) !== -1
-    );
+    const { agents, onlineAgents, chatDepartments } = this.props;
+    const { departmentMode } = this.state;
+
     let result = [];
-    if (this.state.departmentMode) {
-      this.props.chatDepartments.map((department, index) => {
-        const agents = [];
-        onlineAgents.map((agent) => {
-          if (department.has('agents') && department.get('agents').toArray().indexOf(agent.get('id')) !== -1) {
-            agents.push(agent);
-          }
-          return true;
-        });
-        if (agents.length) {
+    if (departmentMode) {
+      chatDepartments.forEach((department, index) => {
+        const departmentAgents = agents.filter(agent =>
+          department.has('agents')
+          && department.get('agents').contains(agent.get('id'))
+          && onlineAgents.contains(agent.get('id'))
+        );
+
+        if (departmentAgents.length) {
           result.push(<h4 key={`dep${index}`}>{department.get('title')}</h4>);
           result.push(<hr key={`hr${index}`} />);
-          result.push(Chat.getAgentsList(agents, department.get('id')));
+          result.push(Chat.getAgentsList(departmentAgents, department.get('id')));
         }
-        return true;
       });
     } else {
-      result = Chat.getAgentsList(onlineAgents, 0);
+      result = Chat.getAgentsList(agents.filter(agent => onlineAgents.contains(agent.get('id'))), 0);
     }
+
     return result;
   }
 
   getPopupContent() {
-    const { chatDepartments } = this.props;
-    const { activeChat, onlineAgents, departmentMode } = this.state;
+    const { chatDepartments, activeChat, onlineAgents, onToggleChat } = this.props;
+    const { departmentMode } = this.state;
     const volume = parseInt(this.state.volume, 10);
 
-    return (<div id="chat-menu">
-      <div className="header">
-        {agentPhrases.get('agent.general.chat')}&nbsp;
-        <span className="count">
-          ({agentPhrases.get('agent.tickets.count_agents', { count: onlineAgents.length })})
-        </span>
+    return (
+      <div id="chat-menu">
+        <div className="header">
+          {agentPhrases.get('agent.general.chat')}&nbsp;
+          <span className="count">
+            ({agentPhrases.get('agent.tickets.count_agents', { count: onlineAgents.size })})
+          </span>
+        </div>
+        <div className="description">
+          <Toggle active={activeChat} onChange={onToggleChat} className="small">
+            {agentPhrases.get('agent.chat.online_for_chat')}
+          </Toggle>
+          <hr className="full" />
+          <i
+            onClick={this.toggleVolume}
+            className={classNames(
+              'icon',
+              'volume',
+              { off: volume === 0, up: volume > 7, down: (volume <= 7 && volume > 0) }
+            )}
+          /> {agentPhrases.get('agent.chat.notification_volume')}<br />
+          <Range min={0} max={10} value={volume} onChange={this.updateAudioVolume} />
+          <hr className="full" />
+          {agentPhrases.get('agent.tickets.count_agents', { count: onlineAgents.size })}
+          {chatDepartments && chatDepartments.length > 1 &&
+            <button
+              className={classNames('ui button basic tiny compact right department-filter', { active: departmentMode })}
+              onClick={this.toggleDepartmentMode}
+            >
+              <i className="icon users" />
+              {agentPhrases.get('agent.chat.by_department')}
+            </button>}
+          {this.getAgents()}
+        </div>
       </div>
-      <div className="description">
-        <Toggle active={activeChat} onChange={this.toggleChat} className="small">
-          {agentPhrases.get('agent.chat.online_for_chat')}
-        </Toggle>
-        <hr className="full" />
-        <i
-          onClick={this.toggleVolume}
-          className={classNames(
-            'icon',
-            'volume',
-            { off: volume === 0, up: volume > 7, down: (volume <= 7 && volume > 0) }
-          )}
-        /> {agentPhrases.get('agent.chat.notification_volume')}<br />
-        <Range min={0} max={10} value={volume} onChange={this.updateAudioVolume} />
-        <hr className="full" />
-        {agentPhrases.get('agent.tickets.count_agents', { count: onlineAgents.length })}
-        {chatDepartments && chatDepartments.length > 1 &&
-          <button
-            className={classNames('ui', 'button', 'basic', 'tiny', 'compact', 'right', 'department-filter',
-              { active: departmentMode })}
-            onClick={this.toggleDepartmentMode}
-          >
-            <i className="icon users" />
-            {agentPhrases.get('agent.chat.by_department')}
-          </button>}
-        {this.getAgents()}
-      </div>
-    </div>);
+    );
   }
-
-  refreshOnlineAgentsList = () => {
-    const { onlineAgents } = this.state;
-    let hasMe = false;
-    for (const agentId of onlineAgents) {
-      if (parseInt(agentId, 10) === window.DESKPRO_PERSON_ID) {
-        hasMe = true;
-      }
-    }
-    this.setState({
-      activeChat: hasMe
-    });
-  };
 
   toggleDepartmentMode = () => {
     this.setState({
@@ -161,65 +139,30 @@ class Chat extends React.Component {
   };
 
   toggleVolume = () => {
-    if (this.state.volume === 0) {
-      this.updateAudioVolume(this.state.previousVolume);
+    const { updateVolume } = this.props;
+    const { volume, previousVolume } = this.state;
+
+    if (volume === 0) {
+      this.updateAudioVolume(previousVolume);
     } else {
+      updateVolume(0);
       this.setState({
-        previousVolume: this.state.volume,
+        volume:         0,
+        previousVolume: volume
       });
-      this.updateAudioVolume(0);
     }
   };
 
   updateAudioVolume = (newVal) => {
+    const { updateVolume } = this.props;
     const volume = parseInt(newVal, 10);
-    this.props.updateVolume(volume);
-    this.setState({
-      volume
-    });
-  };
 
-  toggleChat = (status) => {
-    const postData = [];
-    const url = `${window.BASE_URL}agent/misc/set-agent-status/available`;
-    const onlineAgents = this.state.onlineAgents;
-
-    if (status) {
-      onlineAgents.push(`${this.props.me.get('id')}`);
-      postData.push({
-        name:  'is_chat_available',
-        value: 1
-      });
-    } else {
-      onlineAgents.splice(onlineAgents.indexOf(`${this.props.me.get('id')}`), 1);
-      postData.push({
-        name:  'is_chat_available',
-        value: 0
-      });
-    }
-    this.setState({
-      activeChat: status,
-      onlineAgents
-    });
-
-    const self = this;
-    window.$.ajax({
-      url,
-      type: 'POST',
-      data: postData,
-      complete() {
-        self.setState({
-          activeChat: status
-        });
-        if (self.props.onToggleChat) {
-          self.props.onToggleChat();
-        }
-      }
-    });
+    updateVolume(volume);
+    this.setState({ volume });
   };
 
   render() {
-    const { activeChat, onlineAgents } = this.state;
+    const { activeChat, onlineAgents } = this.props;
     if (!window.DESKPRO_APP_SETTINGS['core.apps_chat'] || !window.DESKPRO_PERSON_PERMS['agent_chat.use']) {
       return null;
     }
@@ -238,7 +181,7 @@ class Chat extends React.Component {
           content={this.getPopupContent()}
         >
           <Isvg
-            className={classNames({ on: activeChat, others: onlineAgents.length })}
+            className={classNames({ on: activeChat, others: onlineAgents.size })}
             src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/chat.svg`}
           />
           <br />
@@ -248,4 +191,5 @@ class Chat extends React.Component {
     );
   }
 }
+
 export default Chat;

@@ -15,7 +15,7 @@ import VoiceControlsContainer from './Modules/Voice/Components/Controls/VoiceCon
 import AgentReducers from './AgentApp_Reducers';
 import AppReducers from '../AppBundle/AppApp_Reducers';
 import { preloadData } from './Modules/Application/Actions/bootstrapActions';
-import { setOnlineAgents } from './Modules/Agent/Actions/agentActions';
+import { setOnlineAgents, setOnlineUserChatAgents } from './Modules/Agent/Actions/agentActions';
 
 class AgentLegacyApp {
 
@@ -44,12 +44,10 @@ class AgentLegacyApp {
 
       const messageBroker = window.DeskPRO_Window.getMessageBroker();
       messageBroker.addMessageListener('agent.online-agents', (event) => {
-        const onlineAgentIds = [];
-        event.online_agents.forEach((id) => {
-          onlineAgentIds.push(parseInt(id, 10));
-        });
-
-        this.store.dispatch(setOnlineAgents(onlineAgentIds));
+        this.store.dispatch(setOnlineAgents(event.online_agents));
+      });
+      messageBroker.addMessageListener('agent.online-agents-userchat', (event) => {
+        this.store.dispatch(setOnlineUserChatAgents(event.online_agents));
       });
     }
   }

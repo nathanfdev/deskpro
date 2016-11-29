@@ -2,12 +2,14 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import StatusForm from './StatusForm';
-import { editAgent } from '../../../Agent/Actions/agentActions';
+import { toggleUserChat, editAgent } from '../../../Agent/Actions/agentActions';
 import { isVoiceEnabledSelector } from '../../../Voice/Selectors/client';
+import { userChatEnabledSelector } from '../../../Agent/Selectors/agents';
 
 @connect(state => ({
-  me:           meSelector(state),
-  voiceEnabled: isVoiceEnabledSelector(state)
+  me:              meSelector(state),
+  voiceEnabled:    isVoiceEnabledSelector(state),
+  userChatEnabled: userChatEnabledSelector(state)
 }))
 class StatusFormContainer extends React.Component {
 
@@ -20,6 +22,7 @@ class StatusFormContainer extends React.Component {
     const { me, dispatch } = this.props;
     const agentData = me.get('agent_data') ? me.get('agent_data').toJS() : {};
 
+    dispatch(toggleUserChat(data.chats));
     dispatch(editAgent(me.get('id'), {
       agent_data: {
         ...agentData,

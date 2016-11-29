@@ -12,6 +12,8 @@ import Chat from './Chat';
 import User from './User';
 import VoiceMenu from '../../Voice/Components/VoiceMenu/VoiceMenuContainer';
 import { isVoiceEnabledSelector } from '../../Voice/Selectors/client';
+import { onlineUserChatAgentsSelector, userChatEnabledSelector } from '../../Agent/Selectors/agents';
+import { toggleUserChat } from '../../Agent/Actions/agentActions';
 
 // import { IMContainer } from '../IM/Components/IMContainer';
 // import { HeaderWidget } from '../IM/Components/HeaderWidget';
@@ -20,11 +22,14 @@ import { isVoiceEnabledSelector } from '../../Voice/Selectors/client';
   agents:          collectionSelectorFactory('Person', 'agents')(state),
   chatDepartments: collectionSelectorFactory('Department', 'all_chat')(state),
   me:              meSelector(state),
-  voiceEnabled:    isVoiceEnabledSelector(state)
+  voiceEnabled:    isVoiceEnabledSelector(state),
+  userChatEnabled: userChatEnabledSelector(state),
+  onlineAgents:    onlineUserChatAgentsSelector(state)
 }))
 export class AgentTopBarContainer extends SeparateComponent {
 
   static propTypes = {
+    dispatch:        PropTypes.func,
     agents:          PropTypes.object.isRequired,
     chatDepartments: PropTypes.object.isRequired,
     me:              PropTypes.object
@@ -121,20 +126,28 @@ export class AgentTopBarContainer extends SeparateComponent {
     }
   }
 
+  onToggleChat = (enabled) => {
+    this.props.dispatch(toggleUserChat(enabled));
+  };
+
   render() {
-    const props = { ...this.props,
-      updateVolume:       AgentTopBarContainer.updateVolume,
-      onSearch:           AgentTopBarContainer.onSearch,
-      onSearchFocus:      this.onSearchFocus,
-      onSearchBlur:       AgentTopBarContainer.onSearchBlur,
-      toggleViewMode:     AgentTopBarContainer.toggleViewMode,
-      onRecent:           AgentTopBarContainer.onRecent,
-      onNotification:     AgentTopBarContainer.onNotification,
-      onClearSearchInput: AgentTopBarContainer.onClearSearchInput,
-      closeIframes:       AgentTopBarContainer.closeIframes,
-      notificationCount:  this.state.notificationCount,
-    };
-    return <AgentTopBar {...props} ref={(c) => { this.agentTopBar = c; }} />;
+    return (
+      <AgentTopBar
+        {...this.props}
+        ref={(c) => { this.agentTopBar = c; }}
+        updateVolume={AgentTopBarContainer.updateVolume}
+        onSearch={AgentTopBarContainer.onSearch}
+        onSearchFocus={this.onSearchFocus}
+        onSearchBlur={AgentTopBarContainer.onSearchBlur}
+        toggleViewMode={AgentTopBarContainer.toggleViewMode}
+        onRecent={AgentTopBarContainer.onRecent}
+        onNotification={AgentTopBarContainer.onNotification}
+        onClearSearchInput={AgentTopBarContainer.onClearSearchInput}
+        closeIframes={AgentTopBarContainer.closeIframes}
+        notificationCount={this.state.notificationCount}
+        onToggleChat={this.onToggleChat}
+      />
+    );
   }
 }
 export class AgentTopBar extends React.Component {
@@ -153,7 +166,10 @@ export class AgentTopBar extends React.Component {
     onClearSearchInput: PropTypes.func,
     closeIframes:       PropTypes.func,
     toggleViewMode:     PropTypes.func,
-    voiceEnabled:       PropTypes.bool
+    voiceEnabled:       PropTypes.bool,
+    userChatEnabled:    PropTypes.bool,
+    onlineAgents:       PropTypes.object,
+    onToggleChat:       PropTypes.func
   };
 
   onChatVolumeUpdate = (newVal) => {
@@ -178,8 +194,8 @@ export class AgentTopBar extends React.Component {
   };
 
   render() {
-    const { me, agents, chatDepartments, notificationCount, voiceEnabled } = this.props;
-    const { onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification } = this.props;
+    const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
+    const { onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat } = this.props;
     const { closeIframes, toggleViewMode } = this.props;
 
     return (
@@ -230,11 +246,13 @@ export class AgentTopBar extends React.Component {
             {window.DP_HAS_VOICE && voiceEnabled && <VoiceMenu />}
             <User src={this.getUserPicture()} />
             <Chat
+              activeChat={userChatEnabled}
+              onlineAgents={onlineAgents}
               agents={agents.toArray()}
               chatDepartments={chatDepartments.toArray()}
               updateVolume={this.onChatVolumeUpdate}
-              me={me}
               volume={8}
+              onToggleChat={onToggleChat}
             />
           </TopBarItem>
         </TopBarRightMenu>
