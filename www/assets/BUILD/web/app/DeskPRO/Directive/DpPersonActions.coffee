@@ -116,8 +116,14 @@ define ['angular'], (angular) ->
       $scope.agentGroups = agentGroups
       $scope.teams  = teams
       $scope.userGroups = userGroups
+
+      type = $scope.$parent.$eval($attr.type)
+      if type == 'agent'
+        _actions = ['AddToAgentGroup', 'AddToTeam', 'AddToUserGroup', 'MakeAnAdmin', 'AddLabel', 'AddLabelExpression']
+      if type == 'user'
+        _actions = ['AddToUserGroup', 'AddToOrg', 'AddToOrgExpression', 'AddLabel', 'AddLabelExpression']
+
       $scope.allowedActions = {}
 
-      _actions = $scope.$parent.$eval($attr.actions) || []
       _actions.map (action) -> $scope.allowedActions[action] = true
       if _actions[0] then $scope.defaultAction = _actions[0]
