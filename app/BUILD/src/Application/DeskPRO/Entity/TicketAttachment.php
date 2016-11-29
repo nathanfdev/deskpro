@@ -216,6 +216,22 @@ class TicketAttachment extends DomainObject
         return $this->is_inline;
     }
 
+    /**
+     * @return bool
+     */
+    public function isAgentNote()
+    {
+        return $this->is_agent_note;
+    }
+
+    /**
+     * @return TicketMessage
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

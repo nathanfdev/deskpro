@@ -153,11 +153,11 @@
                                 </ul>
                             </div>
 
-                            {% if ticket.attachments|length > 0 %}
+                            {% if ticket_view.getAttachments()|length > 0 %}
                                 <div class="ticket-sidebar-container ticket-sidebar-media">
                                     <h1>{{ phrase('portal.tickets.view_media') }}</h1>
                                     <ul>
-                                        {% for attachment in ticket.attachments %}
+                                        {% for attachment in ticket_view.getAttachments() %}
                                             <li>
                                                 {{ macros.attachment_inline(attachment) }}
                                             </li>
