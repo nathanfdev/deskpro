@@ -132,7 +132,15 @@ class TwilioCallbacksController extends BaseController
             'accountAuth' => $accountAuth,
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
+        if (!isset($task['deskpro_call_id']) || !isset($task['call_sid'])) {
+            throw $this->createBadRequestException('Unable to get task attributes');
+        }
+
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($task['deskpro_call_id']);
+        if (!$phoneCall) {
+            throw $this->createBadRequestException('Phone call not found');
+        }
+
         $phoneCall->setTaskSid($request->request->get('TaskSid'));
 
         $this->getManager()->persist($phoneCall);
@@ -226,6 +234,10 @@ class TwilioCallbacksController extends BaseController
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy(['conferenceSid' => $conferenceSid]);
 
         if ($eventName === 'conference-start') {
+            if (!$phoneCall) {
+                throw $this->createBadRequestException('Phone call not found');
+            }
+
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
 
             $em->persist($phoneCall);
@@ -234,17 +246,27 @@ class TwilioCallbacksController extends BaseController
             if (!$phoneCall) {
                 // store conference sid
                 $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy(['callSid' => $callSid]);
+                if (!$phoneCall) {
+                    throw $this->createBadRequestException('Phone call not found');
+                }
+
                 $phoneCall->setConferenceSid($conferenceSid);
 
                 $em->persist($phoneCall);
                 $em->flush();
             } else {
+                if (!$phoneCall) {
+                    throw $this->createBadRequestException('Phone call not found');
+                }
                 if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_PENDING) {
                     // unhold the conference, could be on cold transfer
                     $adapter->holdConferenceEndUser($phoneCall, false);
                 }
             }
         } elseif ($eventName === 'participant-leave') {
+            if (!$phoneCall) {
+                throw $this->createBadRequestException('Phone call not found');
+            }
             if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
                 // original agent was disconnected, change status to pending
                 $phoneCall->setStatus(VoicePhoneCall::STATUS_PENDING);
@@ -255,6 +277,10 @@ class TwilioCallbacksController extends BaseController
                 $adapter->tryEndConference($phoneCall);
             }
         } elseif ($eventName === 'conference-end') {
+            if (!$phoneCall) {
+                throw $this->createBadRequestException('Phone call not found');
+            }
+
             // ensure that we completed the end-user task if the phone call was not established
             // to avoid new reservation creations
             $adapter->endTask($account, $phoneCall->getTaskSid());
@@ -320,6 +346,10 @@ class TwilioCallbacksController extends BaseController
         }
 
         $conference = $this->get('twilio_adapter')->getConference($account, $phoneCall->getConferenceSid());
+        if (!$conference) {
+            throw $this->createBadRequestException('Conference not found');
+        }
+
         if ($conference->status === 'completed') {
             $twiml = new Twiml();
             $twiml->hangup();

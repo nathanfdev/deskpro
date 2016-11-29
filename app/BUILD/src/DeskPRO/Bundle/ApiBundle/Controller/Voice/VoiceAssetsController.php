@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetType;
@@ -43,6 +44,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @Rest\Route("/voice_assets")
  * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
  * @Feature("voice")
+ * @ApiUserContext("admin")
  */
 class VoiceAssetsController extends CrudController
 {

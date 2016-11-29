@@ -3790,7 +3790,7 @@ class Person extends DomainObject implements
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\Entity\VoiceQueue[]|ArrayCollection
+     * @return VoiceQueue[]|ArrayCollection
      */
     public function getVoiceQueues()
     {

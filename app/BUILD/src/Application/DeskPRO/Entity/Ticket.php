@@ -4583,7 +4583,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall[]|ArrayCollection
+     * @return VoicePhoneCall[]|ArrayCollection
      */
     public function getVoicePhoneCalls()
     {

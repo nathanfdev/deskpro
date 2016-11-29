@@ -28,11 +28,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1474294870 extends AbstractBuild
+class Build1481019554 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Twilio');
+        $this->out('Voice');
         $this->execDbQuery('default', <<<'SQL'
 /*db:default*/ CREATE TABLE agent_data (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, voicemail_asset_id INT DEFAULT NULL, extension_number INT DEFAULT NULL, is_voice_enabled TINYINT(1) NOT NULL, voice_worker_sid VARCHAR(100) DEFAULT NULL, UNIQUE INDEX UNIQ_684980217BBB47 (person_id), UNIQUE INDEX UNIQ_6849807D165057 (voicemail_asset_id), UNIQUE INDEX unique_extension_numbers (extension_number), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*db:default*/ CREATE TABLE voice_accounts (id INT AUTO_INCREMENT NOT NULL, account_name VARCHAR(255) NOT NULL, account_sid VARCHAR(100) NOT NULL, workspace_sid VARCHAR(100) NOT NULL, queue_workflow_sid VARCHAR(100) DEFAULT NULL, auth_token VARCHAR(100) NOT NULL, account_auth VARCHAR(20) NOT NULL, date_created DATETIME NOT NULL, UNIQUE INDEX account_sid (account_sid), UNIQUE INDEX workspace_sid (workspace_sid), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
