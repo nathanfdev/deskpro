@@ -82,14 +82,24 @@ class DeskproBlobStorage implements Loggable
     protected $logger;
 
     /**
-     * @param EntityManager $em
+     * @var bool
      */
-    public function __construct(EntityManager $em)
+    protected $disable_physical_delete = false;
+
+    /**
+     * @param EntityManager $em
+     * @param array         $options
+     */
+    public function __construct(EntityManager $em, array $options = [])
     {
         $this->adapters = [];
         $this->em       = $em;
         $this->db       = $em->getConnection();
         $this->logger   = new Logger();
+
+        if (isset($options['disable_physical_delete']) && $options['disable_physical_delete']) {
+            $this->disable_physical_delete = true;
+        }
     }
 
     /**
@@ -107,6 +117,22 @@ class DeskproBlobStorage implements Loggable
     public function setAdapterForTag($tag, $adapter_id)
     {
         $this->tag_to_adapter[$tag] = $adapter_id;
+    }
+
+    /**
+     * Checks to see if physical delete is enabled (it usually is).
+     *
+     * A "physical delete" means that the underlying datastore for a blob is removed.
+     * For example, the actual file on the filesystem or object in S3.
+     *
+     * It's useful to disable it in cases where you dont want deletes to affect the real
+     * data store for some reason (e.g. testing).
+     *
+     * @return bool
+     */
+    public function isPhysicalDeleteEnabled()
+    {
+        return $this->disable_physical_delete;
     }
 
     /**
@@ -753,9 +779,14 @@ class DeskproBlobStorage implements Loggable
     {
         $this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Deleting {$blob->getPath()} from $adapter_id");
 
-        $adapter = $this->getAdapter($adapter_id);
+        if (!$this->isPhysicalDeleteEnabled()) {
+            $this->logger->logDebug('[DeskproBlobStorage] (deleteBlob) Delete request ignored because disable_physical_delete option is on');
+
+            return;
+        }
 
         try {
+            $adapter = $this->getAdapter($adapter_id);
             $adapter->deleteBlob($blob);
         } catch (\Exception $e) {
             $this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Delete failed: {$e->getCode()} {$e->getMessage()}");
