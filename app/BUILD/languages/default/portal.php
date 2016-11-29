@@ -751,7 +751,7 @@ return [
     'portal.tickets.view_ticket_info'                       => 'Ticket info:',
     'portal.tickets.view_unassigned'                        => 'Unassigned',
     'portal.tickets.view_unassigned_more'                   => 'An agent will be assigned',
-    'portal.tickets.view_will_notify_you'                   => 'We have received your message and will send you n email notification as soon as an agent has added a comment.',
+    'portal.tickets.view_will_notify_you'                   => 'We have received your message and will send you an email notification as soon as an agent has added a comment.',
     'portal.tickets.view_you_created'                       => 'You created this ticket {{ ago }}.',
     'portal.tickets.new_ticket_button'                      => 'Create a new ticket',
     'user.chat.email'                                       => 'Your Email Address',
