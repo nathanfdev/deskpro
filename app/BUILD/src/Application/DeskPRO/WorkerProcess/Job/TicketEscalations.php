@@ -107,6 +107,10 @@ class TicketEscalations extends AbstractJob
             $matcher = new EscalationTicketMatcher(App::$container->getEm(), App::$container->getDb());
         }
 
+        if ($this->getContainer()->get('deskpro.app_env')->getConfig('settings.escalation_double_check')) {
+            $matcher->enableDoubleCheck();
+        }
+
         $matcher->setLogger($logger);
 
         $executor = new EscalationExecutor(App::$container->getDb(), App::$container->getTicketManager(), new ActionApplicator(App::$container));
