@@ -280,7 +280,7 @@ class TicketSearchActive extends DomainObject
         static $cols;
 
         if ($cols === null) {
-            $cols = '`'.implode('`, `', $c).'`';
+            $cols = '`'.implode('`, `', self::getFieldNames()).'`';
         }
 
         return $cols;
