@@ -1704,6 +1704,12 @@ $collection->create('agent_publish_cats_newform_save', [
     'controller' => 'AgentBundle:Publish:addCategoryFormSave',
 ]);
 
+$collection->create('agent_public_pending_approval', [
+    'path'       => '/publish/pending_approval/{type}',
+    'controller' => 'AgentBundle:Publish:listPendingApproval',
+    'options'    => ['fragment_name' => 'pending_approval', 'fragment_type' => 'list'],
+]);
+
 $collection->create('agent_public_drafts', [
     'path'       => '/publish/drafts/{type}',
     'controller' => 'AgentBundle:Publish:listDrafts',

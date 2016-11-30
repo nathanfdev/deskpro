@@ -29,6 +29,14 @@
 						<em class="counter list-counter" id="kb_pending_count">{{ counts.pending|default(0) }}</em>
 					</div>
 				</li>
+				{% if counts.pending_approval and app.user.hasPerm('agent_publish.validate')%}
+					<li class="is-nav-item" data-route="listpane:{{ path('agent_public_pending_approval', {'type': 'mine'}) }}">
+						<div class="item">
+							<h3>{{ phrase('agent.publish.pending_approval_content') }}</h3>
+							<em class="counter list-counter" id="publish_drafts_count">{{ counts.pending_approval }}</em>
+						</div>
+					</li>
+				{% endif %}
 				{% if counts.drafts %}
 				<li class="is-nav-item" data-route="listpane:{{ path('agent_public_drafts', {'type': 'mine'}) }}">
 					<div class="item">
