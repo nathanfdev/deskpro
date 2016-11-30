@@ -9069,6 +9069,10 @@ table .form-help {
   font-style: italic;
   font-size: $font-size-base;
   line-height: 1em;
+
+  &.form-meta-top {
+    top: -56px;
+  }
 }
 
 .form-meta-grey {
