@@ -84,7 +84,7 @@ class DeskproBlobStorage implements Loggable
     /**
      * @var bool
      */
-    protected $disable_physical_delete = false;
+    protected $enable_physical_delete = true;
 
     /**
      * @param EntityManager $em
@@ -98,7 +98,7 @@ class DeskproBlobStorage implements Loggable
         $this->logger   = new Logger();
 
         if (isset($options['disable_physical_delete']) && $options['disable_physical_delete']) {
-            $this->disable_physical_delete = true;
+            $this->enable_physical_delete = false;
         }
     }
 
@@ -132,7 +132,7 @@ class DeskproBlobStorage implements Loggable
      */
     public function isPhysicalDeleteEnabled()
     {
-        return $this->disable_physical_delete;
+        return $this->enable_physical_delete;
     }
 
     /**
@@ -780,7 +780,7 @@ class DeskproBlobStorage implements Loggable
         $this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Deleting {$blob->getPath()} from $adapter_id");
 
         if (!$this->isPhysicalDeleteEnabled()) {
-            $this->logger->logDebug('[DeskproBlobStorage] (deleteBlob) Delete request ignored because disable_physical_delete option is on');
+            $this->logger->logDebug('[DeskproBlobStorage] (deleteBlob) Delete request ignored because enable_physical_delete option is off');
 
             return;
         }
