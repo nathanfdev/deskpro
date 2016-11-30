@@ -32,11 +32,6 @@
 class DpShutdown
 {
     /**
-     * @var \DpShutdown
-     */
-    private static $inst;
-
-    /**
      * @var \SplPriorityQueue[]
      */
     private static $stack = null;
@@ -124,35 +119,48 @@ class DpShutdown
 
     /**
      * Run all shutdown functions.
+     *
+     * @param array|string $tags a tag or multiple tags to run
      */
-    public static function run($tag = null)
+    public static function run($tags = null)
     {
-        if ($tag === null) {
-            $tag = 'shutdown';
+        if ($tags === null) {
+            $tags = 'shutdown';
         }
 
-        if (!isset(self::$stack[$tag])) {
-            return;
+        if (!is_array($tags)) {
+            $tags = [$tags];
         }
 
-        $proc_stack = self::$stack[$tag];
-        unset(self::$stack[$tag]);
+        // shutdown needs to run all others too
+        if (in_array('shutdown', $tags)) {
+            $tags = array_keys(self::$stack);
+        }
 
-        foreach ($proc_stack as $id) {
-            if (!isset(self::$callbacks[$id])) {
-                continue;
+        foreach ($tags as $tag) {
+            if (!isset(self::$stack[$tag])) {
+                return;
             }
 
-            $info = self::$callbacks[$id];
-            unset(self::$callbacks[$id]);
-            $callback = $info[0];
+            $proc_stack = self::$stack[$tag];
+            unset(self::$stack[$tag]);
 
-            $pass_params = self::$params;
-            if ($info[1]) {
-                $pass_params = array_merge($pass_params, $info[1]);
+            foreach ($proc_stack as $id) {
+                if (!isset(self::$callbacks[$id])) {
+                    continue;
+                }
+
+                $info = self::$callbacks[$id];
+                unset(self::$callbacks[$id]);
+                $callback = $info[0];
+
+                $pass_params = self::$params;
+                if ($info[1]) {
+                    $pass_params = array_merge($pass_params, $info[1]);
+                }
+
+                call_user_func($callback, $pass_params);
             }
-
-            call_user_func($callback, $pass_params);
         }
     }
 }
