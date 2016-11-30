@@ -444,6 +444,7 @@ $contrast: 5% !default;
   }
 }
 #chat-menu-popup {
+  max-width: 280px;
   #chat-menu {
     width: 280px;
     .description {
