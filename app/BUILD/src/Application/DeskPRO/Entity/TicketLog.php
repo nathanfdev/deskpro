@@ -162,6 +162,18 @@ class TicketLog extends DomainObject
         return $this->id;
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
     public function getPersonId()
     {
         return $this->person['id'];

@@ -1827,6 +1827,7 @@ return [
     'agent.tasks.completed_tasks'                              => 'Completed Tasks',
     'agent.tasks.count'                                        => 'Count',
     'agent.tasks.creator'                                      => 'Creator',
+    'agent.tasks.task_created'                                 => 'Task created',
     'agent.tasks.delete_confirm'                               => 'Are you sure you want to delete this task?',
     'agent.tasks.due_in_future'                                => 'Due In Future',
     'agent.tasks.due_today'                                    => 'Due Today',

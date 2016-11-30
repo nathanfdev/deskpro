@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\Form\Type\TaskType;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
@@ -154,6 +155,8 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
         $em = $this->getContainer()->getEm();
         $em->persist($task);
         $em->flush();
+        $em->persist($this->getLogEntry($ticket, $task, $context));
+        $em->flush();
 
         // todo postPersist event
         $notify = new \Application\DeskPRO\Notifications\TaskAssignNotification($task);
@@ -195,5 +198,28 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
         $this->applyAction($ticket, $context);
+    }
+
+    /**
+     * @param Ticket                   $ticket
+     * @param Task                     $task
+     * @param ExecutorContextInterface $context
+     *
+     * @return TicketLog
+     */
+    private function getLogEntry(Ticket $ticket, Task $task, ExecutorContextInterface $context)
+    {
+        $log = new TicketLog();
+        $log
+            ->setTicket($ticket)
+            ->setPerson($context->getPersonContext())
+            ->setActionType('task_created')
+            ->setDetails([
+                'id_after'   => $task->getId(),
+                'task_id'    => $task->getId(),
+                'task_title' => $task->getTitle(),
+            ]);
+
+        return $log;
     }
 }
