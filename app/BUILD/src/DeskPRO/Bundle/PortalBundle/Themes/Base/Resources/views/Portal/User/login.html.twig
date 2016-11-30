@@ -60,12 +60,15 @@
 
                     <div class="column-half omega">
                         <div class="bucket">
-
-                            {% if auth_manager.isForgotPasswordVisible %}
-                                <div class="form-meta form-meta-grey"><a href="{{ path('portal_reset_password', {'email': last_username}) }}">{{ phrase('portal.account.login-password-reminder') }}</a></div>
-                            {% endif %}
                             <label class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-password') }}</label>
                             <input type="password" placeholder="{{ phrase('portal.account.login-password') }}" name="password" id="login_password">
+                            {% if auth_manager.isForgotPasswordVisible %}
+                                <div class="form-meta form-meta-grey form-meta-top">
+                                    <a href="{{ path('portal_reset_password', {'email': last_username}) }}">
+                                        {{ phrase('portal.account.login-password-reminder') }}
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
 
