@@ -66,11 +66,7 @@ export class SideBarContainer extends SeparateComponent {
         this.changeSection('menu_reports');
       }
       if (window.DP_FRAME_OVERLAYS.admin.opened) {
-        if (window.DP_FRAME_OVERLAYS.admin.frame[0].baseURI.match(/#admin:\/license$/)) {
-          this.changeSection('menu_billing');
-        } else {
-          this.changeSection('menu_admin');
-        }
+        this.changeSection('menu_admin');
       }
     }
   };
