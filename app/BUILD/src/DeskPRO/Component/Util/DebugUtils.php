@@ -111,7 +111,9 @@ class DebugUtils
     }
 
     /**
-     * @param mixed $var
+     * @param mixed $var      The var to dump
+     * @param int   $maxDepth Max depth to descend to within arrays
+     * @param int   $_depth   Internal. Current depth
      *
      * @return string
      */
@@ -144,12 +146,12 @@ class DebugUtils
                     }
                 } else {
                     if ($is_array) {
-                        $a[] = self::varToString($v, $_depth + 1);
+                        $a[] = self::varToString($v, $maxDepth, $_depth + 1);
                     } else {
                         if (!is_numeric($k)) {
                             $k = "'$k'";
                         }
-                        $a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth + 1));
+                        $a[] = sprintf('%s => %s', $k, self::varToString($v, $maxDepth, $_depth + 1));
                     }
                 }
             }
