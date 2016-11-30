@@ -2603,7 +2603,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
 			contentAjax: { url: BASE_URL + 'agent/tickets/' + this.meta.ticket_id + '/forward/' + messageId },
-			zIndex: 40000, // Above floating people windows
+			zIndex: 1900, // Above floating people windows
 			destroyOnClose: true,
 			onAjaxDone: function() {
 				var wrapper = overlay.getWrapper(),
