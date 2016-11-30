@@ -17,9 +17,9 @@ import $ from 'jquery';
 export class ClickOut extends React.Component {
 
   static propTypes = {
-    context:         PropTypes.any,
+    context:         PropTypes.array,
     ignoreNodes:     PropTypes.array,
-    additionalNodes: PropTypes.any,
+    additionalNodes: PropTypes.array,
     children:        PropTypes.node,
     onClickOut:      PropTypes.func.isRequired,
     onClick:         PropTypes.func,
