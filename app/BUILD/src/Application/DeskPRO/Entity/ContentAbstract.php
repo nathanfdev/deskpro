@@ -55,8 +55,9 @@ abstract class ContentAbstract extends DomainObject
     const HIDDEN_STATUS_UNPUBLISHED = 'unpublished';
     const HIDDEN_STATUS_DELETED     = 'deleted';
 
-    const HIDDEN_STATUS_SPAM  = 'spam';
-    const HIDDEN_STATUS_DRAFT = 'draft';
+    const HIDDEN_STATUS_SPAM    = 'spam';
+    const HIDDEN_STATUS_DRAFT   = 'draft';
+    const HIDDEN_STATUS_PENDING = 'pending';
 
     /**
      * The unqique ID.

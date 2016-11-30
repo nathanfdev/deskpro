@@ -191,8 +191,9 @@ class PublishController extends AbstractController
 
         $counts                        = [];
         $counts['validating_comments'] = $this->publishHelper->getValidatingCommentsCount();
-        $counts['drafts']              = $this->publishHelper->getDraftsCount();
-        $counts['all_drafts']          = $this->publishHelper->getDraftsCount(false);
+        $counts['drafts']              = $this->publishHelper->getCountsByHiddenStatus();
+        $counts['all_drafts']          = $this->publishHelper->getCountsByHiddenStatus(false);
+        $counts['pending_approval']    = $this->publishHelper->getCountsByHiddenStatus(false, 'pending');
         $counts['pending']             = $this->db->fetchColumn('SELECT COUNT(*) FROM article_pending_create');
 
         /** @var UsergroupDataService $usergroupsService */
@@ -587,7 +588,7 @@ class PublishController extends AbstractController
         $pageinfo = null;
         $total    = null;
         if (!@$_REQUEST['_partial']) {
-            $total    = $this->publishHelper->getDraftsCount();
+            $total    = $this->publishHelper->getCountsByHiddenStatus();
             $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
         }
 
@@ -603,6 +604,36 @@ class PublishController extends AbstractController
             'total'    => $total,
             'pageinfo' => $pageinfo,
             'all'      => $get_all,
+        ]);
+    }
+
+    public function listPendingApprovalAction($type)
+    {
+        $perPage = 25;
+
+        $currentPage = $this->in->getUInt('page');
+        if (!$currentPage) {
+            $currentPage = 1;
+        }
+
+        $pageinfo = null;
+        $total    = null;
+        if (!@$_REQUEST['_partial']) {
+            $total    = $this->publishHelper->getCountsByHiddenStatus('pending_approval');
+            $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
+        }
+
+        $drafts = $this->publishHelper->getDraftContent(null, 'ASC', true, 'pending');
+
+        $tpl = 'AgentBundle:Publish:pending-approval.html.twig';
+        if (@$_REQUEST['_partial']) {
+            $tpl = 'AgentBundle:Publish:drafts-page.html.twig';
+        }
+
+        return $this->render($tpl, [
+            'drafts'   => $drafts,
+            'total'    => $total,
+            'pageinfo' => $pageinfo,
         ]);
     }
 
@@ -622,7 +653,9 @@ class PublishController extends AbstractController
 
             $results = $this->em->getRepository($entity)->getByIds($ids);
             foreach ($results as $r) {
-                if ($r['status_code'] != 'hidden.draft' || $r->person['id'] != $this->person['id'] && !$this->person['can_admin']) {
+                if (($r['status_code'] != 'hidden.draft' && $r['status_code'] != 'hidden.pending')
+                    || ($r->person['id'] != $this->person['id'] && !$this->person['can_admin'])
+                ) {
                     continue;
                 }
                 if ($action == 'delete') {
