@@ -688,3 +688,6 @@ $transition-close-delay: 0.05s;
     transition-delay: $transition-delayed-delay;
   }
 }
+.joyride-overlay {
+  z-index: 2100;
+}
