@@ -93,6 +93,7 @@ abstract class TermIntegrationTest extends ApiTestCase
         if (!$this->get(self::LOG_SERVICE) instanceof TermEngineBufferHandler) {
             $this->getContainer()->set(self::LOG_SERVICE, new TermEngineBufferHandler());
         }
+
         $this->em = $this->get('doctrine.orm.entity_manager');
     }
 
@@ -116,7 +117,8 @@ abstract class TermIntegrationTest extends ApiTestCase
      */
     protected function dummyTicket($data = [])
     {
-        $ticket          = new Ticket();
+        $ticket = new Ticket();
+        $ticket->disableAutoTicketProcess();
         $ticket->subject = $this->faker->text();
         foreach ($data as $prop => $value) {
             if ($prop === 'problems' && !$value instanceof ArrayCollection) {
