@@ -217,7 +217,7 @@ class Chat extends React.Component {
 
   render() {
     const { activeChat, onlineAgents } = this.state;
-    if (!window.DESKPRO_PERSON_PERMS['agent_chat.use']) {
+    if (!window.DESKPRO_APP_SETTINGS['core.apps_chat'] || !window.DESKPRO_PERSON_PERMS['agent_chat.use']) {
       return null;
     }
     return (<div className="chat" onClick={this.togglePopup}>
