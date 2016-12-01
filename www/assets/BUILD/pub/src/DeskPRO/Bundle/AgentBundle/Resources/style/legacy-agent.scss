@@ -51,94 +51,127 @@
     }
   }
 }
-.ui.range {
-  &[type=range] {
-    -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-    width: 100%; /* Specific width is required for Firefox. */
-    background: transparent; /* Otherwise white in Chrome */
+$track-color: $dp-greyscale-550 !default;
+$thumb-color: $dp-sonic-primary !default;
+
+$thumb-radius: 10px !default;
+$thumb-height: 20px !default;
+$thumb-width: 20px !default;
+$thumb-shadow-size: 0 !default;
+$thumb-shadow-blur: 0 !default;
+$thumb-shadow-color: #111 !default;
+$thumb-border-width: 0 !default;
+$thumb-border-color: #fff !default;
+
+$track-width: 100% !default;
+$track-height: 5px !default;
+$track-shadow-size: 0 !default;
+$track-shadow-blur: 0 !default;
+$track-shadow-color: #222 !default;
+$track-border-width: 0 !default;
+$track-border-color: #000 !default;
+
+$track-radius: 2.5px !default;
+$contrast: 5% !default;
+
+@mixin shadow($shadow-size, $shadow-blur, $shadow-color) {
+  box-shadow: $shadow-size $shadow-size $shadow-blur $shadow-color, 0 0 $shadow-size lighten($shadow-color, 5%);
+}
+
+@mixin track() {
+  width: $track-width;
+  height: $track-height;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+@mixin thumb() {
+  @include shadow($thumb-shadow-size, $thumb-shadow-blur, $thumb-shadow-color);
+  border: $thumb-border-width solid $thumb-border-color;
+  height: $thumb-height;
+  width: $thumb-width;
+  border-radius: $thumb-radius;
+  background: $thumb-color;
+  cursor: pointer;
+}
+
+.ui.range[type=range] {
+  -webkit-appearance: none;
+  margin: $thumb-height / 2 0;
+  width: $track-width;
+
+  &:focus {
+    outline: none;
   }
 
-  &[type=range]:focus {
-    outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+  &::-webkit-slider-runnable-track {
+    @include track();
+    @include shadow($track-shadow-size, $track-shadow-blur, $track-shadow-color);
+    background: $track-color;
+    border: $track-border-width solid $track-border-color;
+    border-radius: $track-radius;
   }
 
-  &[type=range]::-ms-track {
-    width: 100%;
-    cursor: pointer;
+  &::-webkit-slider-thumb {
+    @include thumb();
+    -webkit-appearance: none;
+    margin-top: ((-$track-border-width * 2 + $track-height) / 2) - ($thumb-height / 2);
+  }
 
-    /* Hides the slider so custom styles can be added */
+  &:focus::-webkit-slider-runnable-track {
+    background: lighten($track-color, $contrast);
+  }
+
+  &::-moz-range-track {
+    @include track();
+    @include shadow($track-shadow-size, $track-shadow-blur, $track-shadow-color);
+    background: $track-color;
+    border: $track-border-width solid $track-border-color;
+    border-radius: $track-radius;
+  }
+
+  &::-moz-range-thumb {
+    @include thumb();
+  }
+
+  &::-ms-track {
+    @include track();
     background: transparent;
     border-color: transparent;
+    border-width: $thumb-width / 2 0;
     color: transparent;
   }
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    background-color: $dp-sonic-primary;
-    height: 20px;
-    width: 20px;
-    border-radius: 10px;
-    margin-top: -7.5px;
-    cursor: pointer;
-  }
-  &::-moz-range-thumb {
-    background-color: $dp-sonic-primary;
-    height: 20px;
-    width: 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    border: 0;
-  }
-  &::-ms-thumb {
-    background-color: $dp-sonic-primary;
-    height: 20px;
-    width: 20px;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  &::-webkit-slider-runnable-track {
-    -webkit-appearance: none;
-    background: $dp-greyscale-350;
-    height: 5px;
-    border-radius: 2.5px;
-    cursor: pointer;
-    margin: 10px 0;
-  }
-  &:focus::-webkit-slider-runnable-track {
-    background: $dp-greyscale-550;
-  }
-  &::-moz-range-track {
-    background: $dp-greyscale-350;
-    height: 5px;
-    border-radius: 2.5px;
-    cursor: pointer;
-    margin-top: 20px;
-  }
-  &:-moz-focusring{
-    outline: 1px solid white;
-    outline-offset: -1px;
-  }
-  &:focus::-moz-range-track {
-    background: $dp-greyscale-550;
-  }
-  &::-ms-track {
-    height: 5px;
-    background-color: transparent;
-    border-color: transparent;
-    color: transparent;
-  }
+
   &::-ms-fill-lower {
-    background: $dp-greyscale-350;
-    border: 0;
+    @include shadow($track-shadow-size, $track-shadow-blur, $track-shadow-color);
+    background: darken($track-color, $contrast);
+    border: $track-border-width solid $track-border-color;
+    border-radius: $track-radius * 2;
   }
-  &:focus::-ms-fill-lower {
-    background: $dp-greyscale-550;
-  }
+
   &::-ms-fill-upper {
-    background: $dp-greyscale-350;
-    border: 0;
+    @include shadow($track-shadow-size, $track-shadow-blur, $track-shadow-color);
+    background: $track-color;
+    border: $track-border-width solid $track-border-color;
+    border-radius: $track-radius * 2;
   }
+
+  &::-ms-thumb {
+    @include thumb();
+  }
+
+  &:focus::-ms-fill-lower {
+    background: $track-color;
+  }
+
   &:focus::-ms-fill-upper {
-    background: $dp-greyscale-550;
+    background: lighten($track-color, $contrast);
+  }
+}
+// Hack to fix misplaced handle in Edge
+@supports (-ms-ime-align:auto) {
+  .ui.range[type=range]::-ms-thumb {
+    margin-top: -2px;
   }
 }
 
@@ -411,6 +444,7 @@
   }
 }
 #chat-menu-popup {
+  max-width: 280px;
   #chat-menu {
     width: 280px;
     .description {
@@ -520,7 +554,7 @@ $transition-close-delay: 0.05s;
   width: $folded-width;
   transition: width $transition-close-time;
   transition-delay: $transition-close-delay;
-  z-index: 1000;
+  z-index: 2001;
   box-shadow: none;
   .logo {
     height: 51px;
@@ -653,4 +687,7 @@ $transition-close-delay: 0.05s;
   .ui.item span.menu-label {
     transition-delay: $transition-delayed-delay;
   }
+}
+.joyride-overlay {
+  z-index: 2100;
 }

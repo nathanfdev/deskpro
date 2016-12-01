@@ -21,6 +21,8 @@ class AgentLegacyApp {
   store;
 
   run() {
+    // IE/Edge Hack http://stackoverflow.com/questions/1481251/what-does-document-domain-document-domain-do
+    document.domain = document.domain;
     this.store = AgentLegacyApp.createStore();
     this.store.dispatch(preloadData()).then(() => {
       window.$(document).on('ready', () => this.start());
