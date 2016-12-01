@@ -519,13 +519,17 @@ abstract class AbstractFieldResolver
     }
 
     /**
-     * @param CustomDefAbstract|null $def
+     * @param CustomDefAbstract|null   $def
+     * @param TicketWithLayoutsContext $context
      *
      * @return bool
      */
-    protected function canRenderCustomDef(CustomDefAbstract $def = null)
+    protected function canRenderCustomDef(CustomDefAbstract $def = null, TicketWithLayoutsContext $context)
     {
-        return $def && $def->isEnabled() && $def->getType();
+        return $def
+            && $def->isEnabled()
+            && $def->getType()
+            && (!$def->isAgentField() || ($def->isAgentField() && $context->isAgentView()));
     }
 
     /**

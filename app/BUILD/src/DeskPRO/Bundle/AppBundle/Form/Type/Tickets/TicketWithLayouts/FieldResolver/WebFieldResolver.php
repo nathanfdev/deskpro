@@ -156,7 +156,7 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     protected function createCustomField(TicketWithLayoutsContext $context, $propertyPath, CustomDefAbstract $def = null)
     {
-        if (!$this->canRenderCustomDef($def)) {
+        if (!$this->canRenderCustomDef($def, $context)) {
             return false;
         }
 

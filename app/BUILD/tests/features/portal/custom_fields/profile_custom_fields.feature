@@ -9,8 +9,8 @@ Feature: User profile form custom fields
       | #              | Type     | Title          |
       | text_field     | text     | Text field     |
       | textarea_field | textarea | Textarea field |
-    And I go to "/profile"
 
+    When I go to "/profile"
     Then I should see the "person_profile[{text_field}][data]" field
     Then I should see the "person_profile[{textarea_field}][data]" field
 
