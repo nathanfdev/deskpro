@@ -86,19 +86,18 @@ class TicketSearchController extends AbstractController
         $filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($sys_filters, $this->person);
         $filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
 
-        $archive_filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($archive_filters, $this->person);
-        $custom_filter_counts  = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($custom_filters, $this->person);
-
-        // Summary of terms for all filters
-        $filters_summary = [];
         $problem_filters = [];
         foreach ($all_filters as $filter) {
             if (Entity\Problem::FILTER_PREFIX === substr($filter->sys_name, 0, 8)) {
                 $problem_filters[substr($filter->sys_name, 8)] = $filter;
             }
-            $searcher                       = $filter->getSearcher();
-            $filters_summary[$filter['id']] = $searcher->getSummary();
         }
+
+        $archive_filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($archive_filters, $this->person);
+        $custom_filter_counts  = App::getApi('tickets.filters')->getAllCountsForFiltersCollection(
+            array_merge($custom_filters, $problem_filters),
+            $this->person
+        );
 
         //agent.ui.filter
         $filter_show_options = $this->db->fetchAllKeyValue("
@@ -164,7 +163,6 @@ class TicketSearchController extends AbstractController
             'archive_filter_counts'  => $archive_filter_counts,
             'custom_filter_counts'   => $custom_filter_counts,
             'filter_id_matches'      => $filter_id_matches,
-            'filters_summary'        => $filters_summary,
             'custom_filters'         => $custom_filters,
             'flags'                  => $flags,
             'flag_counts'            => $flag_counts,
