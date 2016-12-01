@@ -5007,7 +5007,7 @@ CSS;
     {
         /** @var Entity\Department[] $departments */
         $departments = $this->em->getRepository(Entity\Department::class)->findBy(
-            ['id' => $this->person->AgentPermissions->getAllowedDepartments('tickets')]
+            ['id' => $this->person->AgentPermissions->getAllowedDepartments('tickets', false, 'assign')]
         );
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
