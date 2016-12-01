@@ -221,6 +221,9 @@ class PersonEditProfileType extends AbstractType
             if (!$def->isEnabled()) {
                 continue;
             }
+            if ($def->isAgentField()) {
+                continue;
+            }
 
             $form->add($def->getId(), CustomDataType::class, [
                 'custom_def'      => $def,

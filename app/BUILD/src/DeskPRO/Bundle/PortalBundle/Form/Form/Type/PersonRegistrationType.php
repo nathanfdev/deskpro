@@ -56,30 +56,30 @@ class PersonRegistrationType extends AbstractType
     /**
      * @var \DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
      */
-    private $field_manager;
+    private $fieldManager;
 
     /**
      * @var LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
     /**
      * @var CaptchaDecider
      */
-    private $captcha_decider;
+    private $captchaDecider;
 
     /**
      * Constructor.
      *
-     * @param CustomFieldManager $field_manager
-     * @param LanguageManager    $language_manager
-     * @param CaptchaDecider     $captcha_decider
+     * @param CustomFieldManager $fieldManager
+     * @param LanguageManager    $languageManager
+     * @param CaptchaDecider     $captchaDecider
      */
-    public function __construct(CustomFieldManager $field_manager, LanguageManager $language_manager, CaptchaDecider $captcha_decider)
+    public function __construct(CustomFieldManager $fieldManager, LanguageManager $languageManager, CaptchaDecider $captchaDecider)
     {
-        $this->field_manager    = $field_manager;
-        $this->language_manager = $language_manager;
-        $this->captcha_decider  = $captcha_decider;
+        $this->fieldManager    = $fieldManager;
+        $this->languageManager = $languageManager;
+        $this->captchaDecider  = $captchaDecider;
     }
 
     /**
@@ -89,24 +89,24 @@ class PersonRegistrationType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label'       => $this->language_manager->phrase('portal.forms.label_name'),
+                'label'       => $this->languageManager->phrase('portal.forms.label_name'),
                 'required'    => true,
                 'constraints' => [
                     new NotBlank(),
                 ],
             ])
             ->add('primary_email', PersonEmailType::class, [
-                'label'    => $this->language_manager->phrase('portal.forms.label_email'),
+                'label'    => $this->languageManager->phrase('portal.forms.label_email'),
                 'required' => true,
             ])
             ->add('password', RepeatedType::class, [
                 'first_name'    => 'password',
                 'first_options' => [
-                    'label' => $this->language_manager->phrase('portal.forms.label_password'),
+                    'label' => $this->languageManager->phrase('portal.forms.label_password'),
                 ],
                 'second_name'    => 'confirm',
                 'second_options' => [
-                    'label' => $this->language_manager->phrase('portal.forms.label_password_confirm'),
+                    'label' => $this->languageManager->phrase('portal.forms.label_password_confirm'),
                 ],
                 'type'        => PasswordType::class,
                 'mapped'      => false,
@@ -117,32 +117,34 @@ class PersonRegistrationType extends AbstractType
                 ],
             ])
             ->add('timezone', TimezoneType::class, [
-                'label' => $this->language_manager->phrase('portal.forms.label_timezone'),
+                'label' => $this->languageManager->phrase('portal.forms.label_timezone'),
             ])
         ;
 
-        $field_manager   = $this->field_manager;
-        $captcha_decider = $this->captcha_decider;
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($field_manager, $captcha_decider) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
-            foreach ($field_manager->getAvailablePersonDefs() as $field_def) {
-                if (!$field_def->isEnabled()) {
+
+            foreach ($this->fieldManager->getAvailablePersonDefs() as $def) {
+                if (!$def->isEnabled()) {
+                    continue;
+                }
+                if ($def->isAgentField()) {
                     continue;
                 }
 
-                $form->add($field_def->getId(), CustomDataType::class, [
-                    'custom_def'      => $field_def,
+                $form->add($def->getId(), CustomDataType::class, [
+                    'custom_def'      => $def,
                     'property_path'   => 'custom_data',
                     'agent_interface' => false,
                 ]);
             }
 
-            if ($captcha_decider->shouldRequireRegistrationCaptchaForCurrentPerson()) {
+            if ($this->captchaDecider->shouldRequireRegistrationCaptchaForCurrentPerson()) {
                 $event->getForm()->add('captcha', DpCaptchaType::class);
             }
         });
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($field_manager) {
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $event->getData()->setPassword($event->getForm()->get('password')->getData());
         });
     }
