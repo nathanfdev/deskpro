@@ -82,35 +82,35 @@ class UserSearch implements UserSearchInterface
      */
     public function search(SearchContextInterface $context, $query, array $options = null)
     {
-        $options      = new OptionsArray($options ?: []);
-        $per_page     = Numbers::bound($options->get('per_page', self::LIMIT), 1, self::LIMIT);
-        $page         = max($options->get('page', 1), 1);
-        $ignore_perms = $options->get('ignore_perms');
+        $options     = new OptionsArray($options ?: []);
+        $perPage     = Numbers::bound($options->get('per_page', self::LIMIT), 1, self::LIMIT);
+        $page        = max($options->get('page', 1), 1);
+        $ignorePerms = $options->get('ignore_perms');
 
-        $limit_types = isset($options['limit_types']) ? $options['limit_types'] : null;
-        if ($limit_types && !is_array($limit_types)) {
-            $limit_types = explode(',', $limit_types);
-            $limit_types = Arrays::func($limit_types, 'trim');
+        $limitTypes = isset($options['limit_types']) ? $options['limit_types'] : null;
+        if ($limitTypes && !is_array($limitTypes)) {
+            $limitTypes = explode(',', $limitTypes);
+            $limitTypes = Arrays::func($limitTypes, 'trim');
         }
-        if ($limit_types) {
-            $limit_types = Arrays::removeFalsey($limit_types);
+        if ($limitTypes) {
+            $limitTypes = Arrays::removeFalsey($limitTypes);
         }
 
-        $limit_types_array = $limit_types;
+        $limitTypesArray = $limitTypes;
 
-        $context_params = $this->buildParams($context, $limit_types);
-        $types          = $context_params['types'];
+        $contextParams = $this->buildParams($context, $limitTypes);
+        $types         = $contextParams['types'];
 
         if (!$types) {
             // the following allows us to do a search for ONLY "ticket" types, because $types would be empty
             // if $limit_types only contained "ticket"
-            if (in_array('ticket', $limit_types)) {
+            if (in_array('ticket', $limitTypes)) {
                 $query2 = Strings::decodeHtmlEntities($query);
                 $query2 = Strings::decodeUnicodeEntities($query2);
                 $query2 = Strings::utf8_accents_to_ascii($query2);
 
-                $query_words           = Arrays::removeEmptyString(explode(' ', trim($query.' '.$query2)));
-                list($total, $results) = $this->findTicketResults($context, $limit_types_array, $page, $query_words, 0, []);
+                $queryWords            = Arrays::removeEmptyString(explode(' ', trim($query.' '.$query2)));
+                list($total, $results) = $this->findTicketResults($context, $limitTypesArray, $page, $queryWords, 0, []);
 
                 $objects = $this->transformer->transform($results);
 
@@ -120,23 +120,23 @@ class UserSearch implements UserSearchInterface
             return new ResultSet([]);
         }
 
-        $limit_types = "'".implode('\',\'', $types)."'";
+        $limitTypes = "'".implode('\',\'', $types)."'";
 
         $query2 = Strings::decodeHtmlEntities($query);
         $query2 = Strings::decodeUnicodeEntities($query2);
         $query2 = Strings::utf8_accents_to_ascii($query2);
 
-        $query_words = Arrays::removeEmptyString(explode(' ', trim($query.' '.$query2)));
+        $queryWords = Arrays::removeEmptyString(explode(' ', trim($query.' '.$query2)));
 
-        if (!$query_words) {
+        if (!$queryWords) {
             return new ResultSet();
         }
 
-        $query_words = array_unique($query_words);
+        $queryWords = array_unique($queryWords);
 
         $params = [];
         $likes  = [];
-        foreach ($query_words as $w) {
+        foreach ($queryWords as $w) {
             if (strlen($w) <= 2) {
                 continue;
             }
@@ -150,12 +150,12 @@ class UserSearch implements UserSearchInterface
         }
 
         if (count($likes) < self::MAX_WORDS) {
-            $exist_labels = $this->db->fetchAllCol('
+            $existLabels = $this->db->fetchAllCol('
                 SELECT DISTINCT label
                 FROM label_defs
                 WHERE label IN (?)
-            ', [$query_words], [Connection::PARAM_STR_ARRAY]);
-            foreach ($exist_labels as $l) {
+            ', [$queryWords], [Connection::PARAM_STR_ARRAY]);
+            foreach ($existLabels as $l) {
                 $l = MysqlAdapter::encodeLabel($l);
                 if ($l) {
                     $likes[]  = 'content_search.content LIKE ?';
@@ -170,41 +170,41 @@ class UserSearch implements UserSearchInterface
 
         if ($likes) {
             $where = "
-                content_search.object_type IN ($limit_types)
+                content_search.object_type IN ($limitTypes)
                 AND (".implode(' OR ', $likes).')
             ';
 
-            if (!$ignore_perms) {
-                $perm_join  = $context_params['join'];
-                $perm_where = $context_params['where'];
-                if (!$perm_where) {
-                    $perm_where = '1';
+            if (!$ignorePerms) {
+                $permJoin  = $contextParams['join'];
+                $permWhere = $contextParams['where'];
+                if (!$permWhere) {
+                    $permWhere = '1';
                 }
             } else {
-                $perm_join  = '';
-                $perm_where = '1';
+                $permJoin  = '';
+                $permWhere = '1';
             }
 
-            $count_query = "
+            $countQuery = "
                 SELECT COUNT(*)
                 FROM content_search
-                $perm_join
-                WHERE $perm_where AND $where
-                LIMIT $per_page
+                $permJoin
+                WHERE $permWhere AND $where
+                LIMIT $perPage
             ";
 
-            $start        = ($page - 1) * $per_page;
-            $select_query = "
+            $start       = ($page - 1) * $perPage;
+            $selectQuery = "
                 SELECT content_search.object_type, content_search.object_id
                 FROM content_search
-                $perm_join
-                WHERE $perm_where AND $where
+                $permJoin
+                WHERE $permWhere AND $where
                 ORDER BY content_search.object_id DESC
-                LIMIT $start, $per_page
+                LIMIT $start, $perPage
             ";
 
-            $total   = $this->db->fetchColumn($count_query, $params);
-            $results = $this->db->fetchAll($select_query, $params);
+            $total   = $this->db->fetchColumn($countQuery, $params);
+            $results = $this->db->fetchAll($selectQuery, $params);
         } else {
             $total   = 0;
             $results = [];
@@ -214,7 +214,7 @@ class UserSearch implements UserSearchInterface
             $total = count($results);
         }
 
-        list($total, $results) = $this->findTicketResults($context, $limit_types_array, $page, $query_words, $total, $results);
+        list($total, $results) = $this->findTicketResults($context, $limitTypesArray, $page, $queryWords, $total, $results);
 
         $objects = $this->transformer->transform($results);
 
