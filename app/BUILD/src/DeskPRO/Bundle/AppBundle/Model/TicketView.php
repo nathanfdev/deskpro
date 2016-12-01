@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\Model;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 
@@ -134,5 +135,15 @@ class TicketView
     public function getProperties()
     {
         return $this->properties;
+    }
+
+    /**
+     * @return TicketAttachment[]
+     */
+    public function getAttachments()
+    {
+        return $this->ticket->getAttachments()->filter(function (TicketAttachment $attachment) {
+            return !$attachment->isAgentNote() && $attachment->getMessage() && $attachment->getMessage()->getId();
+        });
     }
 }

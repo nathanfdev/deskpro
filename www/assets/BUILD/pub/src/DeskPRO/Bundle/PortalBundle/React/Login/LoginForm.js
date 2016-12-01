@@ -148,14 +148,12 @@ export class LoginForm extends React.Component {
 
         <button type="submit">{portalPhrases.get('portal.account.login-btn')}</button>
 
-        {
-          window.IS_FORGOT_PASSWORD_VISIBLE &&
-            <div className="secondary-action">
-              <a href={this.state.reset_path}>
-                {portalPhrases.get('portal.account.login-password-reminder')}
-              </a>
-            </div>
-        }
+        {window.DESKPRO_IS_FORGOT_PASSWORD_VISIBLE &&
+          <div className="secondary-action">
+            <a href={this.state.reset_path}>
+              {portalPhrases.get('portal.account.login-password-reminder')}
+            </a>
+          </div>}
       </form>
     );
   }
