@@ -25,7 +25,7 @@ class AgentLegacyApp {
     document.domain = document.domain;
     this.store = AgentLegacyApp.createStore();
     this.store.dispatch(preloadData()).then(() => {
-      window.$(document).on('ready', () => this.start());
+      window.$(document).ready(() => this.start());
     });
   }
 
