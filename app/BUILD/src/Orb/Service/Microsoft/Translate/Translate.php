@@ -112,7 +112,7 @@ class Translate
             return $this->access_token;
         }
 
-        $response = $this->getOauthHttpClient()->post('/', [
+        $response = $this->getOauthHttpClient()->post('', [
             RequestOptions::FORM_PARAMS => [
                 'grant_type'    => 'client_credentials',
                 'scope'         => self::OAUTH_SCOPE_URL,
