@@ -199,6 +199,10 @@ class DpTransferSessionAuthListener implements ListenerInterface
         // not logged in to portal
         foreach (['dpsid-agent', 'dpsid-admin'] as $cookie) {
             if ($sid = $request->cookies->get($cookie)) {
+                if (strpos($sid, '-') === false) {
+                    continue;
+                }
+
                 $session_id    = Session::getIdFromCode($sid);
                 $agent_session = App::getDb()->fetchAssoc(
                     '

@@ -87,12 +87,12 @@ class CustomPerDataListener implements EventSubscriber
      */
     public function postPersist(LifecycleEventArgs $args)
     {
-        if (!$args->getEntity() instanceof CustomPerDataOwnerInterface) {
+        $entity = $args->getEntity();
+        if (!$entity instanceof CustomPerDataOwnerInterface) {
             return;
         }
 
-        $this->updateCustomPerData($args->getEntity(), $args->getEntityManager());
-        $args->getEntityManager()->flush();
+        $this->updateQueue[spl_object_hash($entity)] = $entity;
     }
 
     /**

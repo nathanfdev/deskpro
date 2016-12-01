@@ -1679,6 +1679,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return TicketAttachment[]|ArrayCollection
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
      * Add a ticket attachment.
      *
      * @param TicketAttachment $attach
