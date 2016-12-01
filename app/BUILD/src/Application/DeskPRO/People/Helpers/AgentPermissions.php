@@ -186,7 +186,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
             ];
         } else {
             $raw = App::$container->getEm()
-                ->getRepository('DeskPRO:DepartmentPermission')
+                ->getRepository(Entity\DepartmentPermission::class)
                 ->getPermsForAgent($this->person->getId(), $uids, $permType);
 
             /** @var DepartmentDataService $departmentDataService */
