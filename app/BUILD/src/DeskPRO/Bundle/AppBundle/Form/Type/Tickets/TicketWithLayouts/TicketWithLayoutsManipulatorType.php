@@ -81,6 +81,7 @@ class TicketWithLayoutsManipulatorType extends AbstractType
             ->setAllowedTypes('field_resolver', AbstractFieldResolver::class)
             ->setAllowedTypes('field_renderer', FieldRendererInterface::class)
             ->setAllowedTypes('layout_factory', 'callable')
+            ->setDefault('form_type', null)
         ;
     }
 
@@ -136,7 +137,30 @@ class TicketWithLayoutsManipulatorType extends AbstractType
      */
     public function onPreSubmit(FormEvent $event)
     {
-        $context   = TicketWithLayoutsContext::createOnPreSubmit($event);
+        $context = TicketWithLayoutsContext::createOnPreSubmit($event);
+
+        if ($context->getOption('subject_type') === 'default') {
+            $data            = $event->getData();
+            $data['subject'] = $context->getOption('default_subject');
+            $event->setData($data);
+        }
+
+        if ($context->getOption('subject_type') === 'message') {
+            $data            = $event->getData();
+            $message         = trim(strip_tags(html_entity_decode(@$data['message']['message'])));
+            $data['subject'] = '';
+            $num             = 0;
+            $delim           = " \n\t,.!?:;";
+            $word            = strtok($message, $delim);
+            while ($num++ < 5 && $word !== false) {
+                if ($word) {
+                    $data['subject'] = $data['subject'].' '.$word;
+                }
+                $word = strtok($delim);
+            }
+            $event->setData($data);
+        }
+
         $extracted = TicketLayoutHelper::getExtractedData($event->getData() ?: [], $context);
 
         TicketLayoutHelper::renderFormFields($context, function (LayoutField $field) use ($extracted) {

@@ -490,6 +490,55 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="content" ng-class="{'active': section == 'ticket_settings'}" data-target="ticket_settings">
+                            <div class="field">
+                                <div>
+                                    <label>Subject</label>
+                                    <div class="inline field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="ticket_subject" id="ticket_subject_select_custom"
+                                                   class="hidden" ng-model="brand_settings.ticket.select_subject"
+                                                   value="custom">
+                                            <label for="ticket_subject_select_custom">
+                                                Ask user for a subject
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="inline field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="ticket_subject" id="ticket_subject_select_message"
+                                                   class="hidden" ng-model="brand_settings.ticket.select_subject"
+                                                   value="message">
+                                            <label for="ticket_subject_select_message">
+                                                Set the subject as the first 5 words of the message
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="inline field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="ticket_subject" id="ticket_subject_select_set"
+                                                   class="hidden" ng-model="brand_settings.ticket.select_subject"
+                                                   value="default">
+                                            <label for="ticket_subject_select_set">
+                                                Set a subject
+                                            </label>
+                                            <input type="text" ng-model="brand_settings.ticket.default_subject"
+                                                   ng-show="brand_settings.ticket.select_subject == 'default'" />
+                                        </div>
+                                    </div>
+                                    <ul class="errors">
+                                        <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.select_subject.errors">
+                                            {{ ng_var('error.message') }}
+                                        </li>
+                                    </ul>
+                                    <ul class="errors">
+                                        <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.default_subject.errors">
+                                            {{ ng_var('error.message') }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -123,7 +123,7 @@ abstract class AbstractFieldResolver
     {
         switch ($field->getFieldType()) {
             case FormFields::SUBJECT:
-                return $this->createSubject();
+                return $this->createSubject($context);
             case FormFields::MESSAGE:
                 return $this->createMessage($context);
             case FormFields::PERSON:
@@ -443,7 +443,7 @@ abstract class AbstractFieldResolver
     /**
      * @return FormField
      */
-    abstract protected function createSubject();
+    abstract protected function createSubject(TicketWithLayoutsContext $context);
 
     /**
      * @param TicketWithLayoutsContext $context

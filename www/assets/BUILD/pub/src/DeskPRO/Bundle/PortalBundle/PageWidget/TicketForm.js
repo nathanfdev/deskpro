@@ -47,7 +47,9 @@ export default class TicketForm extends PageWidget {
     const $formEl = this.$element.find('.dp_ticket_form');
     const $tplEl = this.$element.find('.js_form_tpl');
     const ticketReader = new TicketValueReader($formEl);
-    const allFormFields = $([]).add($formEl.find('select')).add($tplEl.find('select'));
+    const allFormFields = $([])
+      .add($formEl.find('select, input, textarea'))
+      .add($tplEl.find('select, input, textarea'));
 
     $('#ticket_message_message_html', this.$formEl).attr('data-blob-path', 'ticket[attachments]');
 
@@ -94,7 +96,7 @@ export default class TicketForm extends PageWidget {
           newFields = newFields.filter(filterFn);
         }
 
-        newFields = _.map(newFields, (v) => {
+        newFields = _.map(layout.getMatchingFields(ticketReader), (v) => {
           const id = v.id;
           switch (id) {
             case 'subject': return 'subject';
