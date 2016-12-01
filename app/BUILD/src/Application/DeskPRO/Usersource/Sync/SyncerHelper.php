@@ -140,8 +140,11 @@ class SyncerHelper
         }
 
         if (!empty($user_info['phone'])) {
-            if ($number = PhoneNumber::createEntity($user_info['phone'])) {
-                $person->setPrimaryPhoneNumber($number);
+            $newNumber = PhoneNumber::createEntity($user_info['phone']);
+            $oldNumber = $person->getPrimaryPhoneNumber();
+
+            if ($newNumber && (!$oldNumber || $oldNumber->getFullFormatted() !== $newNumber->getFullFormatted())) {
+                $person->setPrimaryPhoneNumber($newNumber);
             }
         }
 
