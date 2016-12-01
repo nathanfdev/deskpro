@@ -167,7 +167,7 @@ class TicketLog extends DomainObject
      *
      * @return $this
      */
-    public function setPerson(Person $person)
+    public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
 
