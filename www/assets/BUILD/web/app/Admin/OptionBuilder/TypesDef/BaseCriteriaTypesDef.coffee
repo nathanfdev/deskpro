@@ -162,7 +162,10 @@ define [
                 val = data.options[0]?.value || null
 
               if !options.single and not Util.isArray(val)
-                val = [val]
+                if val
+                  val = [val]
+                else
+                  val = []
 
               return {
                 value: val,
