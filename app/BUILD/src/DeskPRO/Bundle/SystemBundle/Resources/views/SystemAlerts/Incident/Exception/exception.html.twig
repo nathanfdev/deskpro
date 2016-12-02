@@ -35,9 +35,9 @@
                 <td>{{ exception.getDateCreated()|date }}</td>
                 <td>{{ exception.getMessage() }}</td>
                 <td>
-                    <textarea cols="80" rows="10" title="Stack trace">
-                        {{ exception.getTraceAsString() }}
-                    </textarea>
+                    <a class="btn btn-primary" ng-href="#/server/incidents/event/{{ exception.getId() }}" href="#/server/incidents/event/{{ exception.getId() }}">
+                        View more
+                    </a>
                 </td>
             </tr>
         {% endfor %}

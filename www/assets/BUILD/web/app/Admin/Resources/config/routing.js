@@ -2413,6 +2413,14 @@ define(function() {
 		target: "appbody@server"
 	});
 
+	routes.push({
+		id: 'server.incidents.event',
+		url: '/event/{id}',
+		templateName: 'Server/server-incidents-event.html',
+		controller: 'Admin_ServerIncidents_Ctrl_Event',
+		target: "appbody@server"
+	});
+
 	// routes.push({
 	// 	id: 'server.incidents.view',
 	// 	url: '/view/{id}',
