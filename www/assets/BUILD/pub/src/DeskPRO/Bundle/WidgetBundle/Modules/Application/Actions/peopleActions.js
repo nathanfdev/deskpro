@@ -1,15 +1,15 @@
-import { createAction } from 'DeskPRO/Component/Ampliflux';
-import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
-import { ajaxOptions } from './bootstrapActions';
-import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { onlineAgentsSelector } from '../Selectors/peopleSelectors';
-import { dispatchOnlineAgents } from '../../../Services/WindowApi';
 import Immutable from 'immutable';
 import lscache from 'lscache';
+import { createAction } from 'DeskPRO/Component/Ampliflux';
+import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
+import { ajaxOptions } from './bootstrapActions';
+import { onlineAgentsSelector } from '../Selectors/peopleSelectors';
+import { dispatchOnlineAgents } from '../../../Services/WindowApi';
 
 export const loadOnlineAgents = createAction(
   'WIDGET_LOAD_ONLINE_AGENTS',
-  () => (dispatch, getState) => new Promise(resolve => {
+  () => (dispatch, getState) => new Promise((resolve) => {
     const updateAgents = (newAgents) => {
       const state = getState();
       const oldAgents = Immutable.fromJS(Object.values(onlineAgentsSelector(state).toJS()));
@@ -30,7 +30,7 @@ export const loadOnlineAgents = createAction(
 
     // background request data
     widgetApi.sendGet('DP_API/people/online_agents', { ...ajaxOptions })
-      .success(response => {
+      .success((response) => {
         updateAgents(response.data);
         lscache.set('dpWidget.onlineAgents', response.data, 15);
       });
