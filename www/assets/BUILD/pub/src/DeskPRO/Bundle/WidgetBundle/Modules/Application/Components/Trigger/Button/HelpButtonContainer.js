@@ -77,7 +77,7 @@ export class HelpButtonContainer extends React.Component {
   }
 
   componentWillUpdate() {
-    getLocation(location => {
+    getLocation((location) => {
       if (this.state.locationPath !== location.pathname) {
         this.setState({
           locationPath: location.pathname
@@ -92,6 +92,7 @@ export class HelpButtonContainer extends React.Component {
 
   onClick = () => {
     this.props.dispatch(reopenWidget());
+    delete sessionStorage['dpWidget.dpWindow.minimized'];
   };
 
   onClosePopup = () => {
@@ -108,10 +109,8 @@ export class HelpButtonContainer extends React.Component {
       if (!triggerPopupOpened) {
         dispatch(openTriggerPopup());
       }
-    } else {
-      if (triggerPopupOpened) {
-        dispatch(closeTriggerPopup());
-      }
+    } else if (triggerPopupOpened) {
+      dispatch(closeTriggerPopup());
     }
   }
 
@@ -147,7 +146,7 @@ export class HelpButtonContainer extends React.Component {
       size,
       onClick:   this.onClick,
       onClose:   this.onClosePopup,
-      getButton: () => this.refs.button
+      getButton: () => this.button
     };
 
     if (popupStyle === 'agents_button') {
@@ -171,7 +170,7 @@ export class HelpButtonContainer extends React.Component {
       }
       <HelpButton
         {...this.props}
-        ref="button"
+        ref={(c) => { this.button = c; }}
         locationPath={this.state.locationPath || null}
         onClick={this.onClick}
       />

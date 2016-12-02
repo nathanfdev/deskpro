@@ -143,7 +143,7 @@ export const chatResume = createAction(
       // Reset stored chat id on reload page if chat was ended
       if (!chatInfo || chatInfo.date_ended) {
         dispatch(unsetChatId());
-      } else {
+      } else if (!sessionStorage['dpWidget.dpWindow.minimized']) {
         dispatch(openWidget());
       }
     });
