@@ -1591,6 +1591,11 @@ class PersonController extends AbstractController implements ProtectedController
         return $this->createApiResponse($ret);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function quickSearchEmailAction(Request $request)
     {
         /** @var \Application\DeskPRO\EntityRepository\PersonEmail $rep */

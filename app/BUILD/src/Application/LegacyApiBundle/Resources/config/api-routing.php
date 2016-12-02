@@ -880,6 +880,16 @@ $collection->create(
 );
 
 $collection->create(
+    'api_people_quick_search_person',
+    [
+        'path'         => '/people/quick_search/{person_id}',
+        'controller'   => 'LegacyApiBundle:Person:getPerson',
+        'requirements' => ['person_id' => '\\d+'],
+        'methods'      => ['GET'],
+    ]
+);
+
+$collection->create(
     'api_people_person_post',
     [
         'path'         => '/people/{person_id}',
