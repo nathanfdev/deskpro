@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import $ from 'jquery';
-import Immutable from 'immutable';
 import { MessageList } from './MessageList';
 import { MessageListSpinner } from './MessageListSpinner';
 import {
@@ -23,25 +22,11 @@ export class MessageListContainer extends React.Component {
 
   static propTypes = {
     chatLoaded:       PropTypes.bool,
-    messages:         PropTypes.object,
-    widgetDimensions: PropTypes.object,
-    mute:             PropTypes.bool,
-    isBubble:         PropTypes.bool
+    widgetDimensions: PropTypes.object
   };
 
   componentDidMount() {
     this.reCalcHeight();
-  }
-
-  shouldComponentUpdate(props) {
-    const { chatLoaded, messages, widgetDimensions, mute, isBubble } = this.props;
-    const dimensionsChanged = !Immutable.is(widgetDimensions, props.widgetDimensions);
-
-    return props.chatLoaded !== chatLoaded
-      || !Immutable.is(messages, props.messages)
-      || dimensionsChanged
-      || props.mute !== mute
-      || props.isBubble !== isBubble;
   }
 
   componentDidUpdate() {

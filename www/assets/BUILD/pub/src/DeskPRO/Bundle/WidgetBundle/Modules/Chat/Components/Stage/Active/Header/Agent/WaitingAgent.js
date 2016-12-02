@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { windowResize } from '../../../../../../Application/Actions/dpWindowActions';
 import { endChat, unsetChatId } from '../../../../../Actions/chatActions';
-import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { history } from '../../../../../../../Services/history';
 
 export class WaitingAgent extends React.Component {
@@ -34,10 +34,11 @@ export class WaitingAgent extends React.Component {
     });
   };
 
-  onOpenTicketForm = event => {
+  onOpenTicketForm = (event) => {
     event.preventDefault();
 
     const { chatId, dispatch } = this.props;
+
     dispatch(endChat(chatId));
     dispatch(unsetChatId());
 
@@ -45,16 +46,18 @@ export class WaitingAgent extends React.Component {
   };
 
   render() {
+    const { buttonShown } = this.state;
+
     return (
       <div className="dpdesignportal-collect-user-info-header">
         <span className="img" />
         <span className="text">{portalPhrases.get('portal.chat.message_wait-pending')}</span>
 
-        {this.state.buttonShown &&
+        {buttonShown &&
           <div className="dpdesignportal-chat-message-long">
             <p>{portalPhrases.get('portal.chat.message_wait-long')}</p>
             <p>
-              <a href="#" onClick={this.onOpenTicketForm}>
+              <a href="#open-ticket-form" onClick={this.onOpenTicketForm}>
                 {portalPhrases.get('portal.chat.message_wait-ticket')}
               </a>
             </p>
