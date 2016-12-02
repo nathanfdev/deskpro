@@ -1,6 +1,10 @@
 <p>
     This incident is shown because of {{ incident.getFailureEventsCount() }} PHP exception(s)
     of type {{ incident.getFirstEvent().getClass() }} and {{ incident.getFirstEvent().getCode() }} code.
+    {% if incident.getFailureEventsCount() > 200 %}
+        <br />
+        Only the first 200 events are displayed to preserve performances
+    {% endif %}
 </p>
 
 <p>
@@ -30,7 +34,9 @@
             <td>Message</td>
             <td>Trace</td>
         </tr>
-        {% for exception in incident.getEvents() %}
+        {% set count = 0 %}
+        {% for exception in incident.getEvents() if count < 200 %}
+            {% set count = count + 1 %}
             <tr>
                 <td>{{ exception.getDateCreated()|date }}</td>
                 <td>{{ exception.getMessage() }}</td>
