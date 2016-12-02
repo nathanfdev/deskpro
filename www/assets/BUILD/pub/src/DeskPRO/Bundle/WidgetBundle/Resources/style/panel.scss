@@ -192,6 +192,27 @@ $border-color: #e7e7e7;
       }
     }
   }
+
+  &.full-screen {
+    width: 100%;
+    margin-left: 0;
+
+    .dpdesignportal-content {
+      padding-right: 10px;
+    }
+
+    .dpdesignportal-widget-body {
+      width: 100%;
+    }
+
+    .dpdesignportal-chat-footer {
+      width: 100%;
+    }
+
+    .dpdesignportal-powered-by-deskpro {
+      width: 100%;
+    }
+  }
 }
 
 .dpdesignportal-side-buttons-cover {// When the sidebar is on, a layer behind it to handle clicks on the blank space
@@ -329,14 +350,4 @@ $border-color: #e7e7e7;
 
 .hidden {
   display: none;
-}
-
-@media (max-width: 450px) {
-  .dpdesignportal {
-    width: 100%;
-    margin-left: 0;
-    .dpdesignportal-content {
-      padding-right: 10px;
-    }
-  }
 }
