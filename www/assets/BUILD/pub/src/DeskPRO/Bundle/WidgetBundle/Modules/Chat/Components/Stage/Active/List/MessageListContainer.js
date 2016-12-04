@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import { MessageList } from './MessageList';
@@ -34,41 +33,48 @@ export class MessageListContainer extends React.Component {
   }
 
   reCalcHeight() {
-    const node = ReactDOM.findDOMNode(this);
+    const node = this.node.node;
     const widgetHeight = this.props.widgetDimensions.get('height');
     const $document = $(window.widgetFrame.document);
+    const $chatHeader = $document.find('.dpdesignportal-chat-header');
+    const $powered = $document.find('.dpdesignportal-powered-by-deskpro');
 
-    let height = widgetHeight;
+    const calc = (ignoreHeaderAndFooter) => {
+      let height = widgetHeight;
+      if (!ignoreHeaderAndFooter) {
+        // increase height manually, because it isn't changing instantly after hide()/show()
+        height -= $chatHeader.outerHeight(true);
+        height -= $powered.outerHeight(true);
+      }
+      height -= $document.find('.dpdesignportal-chat-header-controls').outerHeight(true);
+      height -= $document.find('.dpdesignportal-chat-footer').outerHeight(true);
+      // todo .dpdesignportal-chat-footer height returns 37 at this stage instead of 107
+      height -= 60;
+      return height;
+    };
 
-    height -= $document.find('.dpdesignportal-header').outerHeight();
-    height -= $document.find('.dpdesignportal-chat-header-wrapper').outerHeight();
-    height -= $document.find('.dpdesignportal-chat-footer').outerHeight();
-    height -= $document.find('.dpdesignportal-powered-by-deskpro').outerHeight();
-    // lost margin of .dpdesignportal-chat-header-controls
-    height -= 20;
-
-    $(node).parent().children()
-      .each((i, child) => {
-        if (child !== node) {
-          height -= $(child).outerHeight();
-        }
-      });
+    let height = calc();
 
     if (height < 100) {
-      height = 100;
+      height = calc(true);
+      $chatHeader.hide();
+      $powered.hide();
+    } else {
+      $chatHeader.show();
+      $powered.show();
     }
 
     $(node).css('height', height);
 
-    if (this.list) {
-      this.list.scrollBottom();
+    if (this.node.scrollBottom) {
+      this.node.scrollBottom();
     }
   }
 
   render() {
     return this.props.chatLoaded
-      ? <MessageList ref={(c) => { this.list = c; }} {...this.props} />
-      : <MessageListSpinner />;
+      ? <MessageList ref={(node) => { this.node = node; }} {...this.props} />
+      : <MessageListSpinner ref={(node) => { this.node = node; }} />;
   }
 }
 export default MessageListContainer;

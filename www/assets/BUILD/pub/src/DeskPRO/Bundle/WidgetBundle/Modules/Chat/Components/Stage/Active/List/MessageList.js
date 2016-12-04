@@ -54,13 +54,13 @@ export class MessageList extends React.Component {
     this.playSound();
   }
 
-  scrollBottom = () => {
+  scrollBottom = () => setTimeout(() => {
     if (this.scrollArea) {
       this.scrollArea.setSizesToState();
       this.scrollArea.handleWindowResize();
       this.scrollArea.scrollBottom();
     }
-  };
+  }, 0);
 
   playSound() {
     const { mute } = this.props;
@@ -83,7 +83,7 @@ export class MessageList extends React.Component {
     const soundsPath = `${window.DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds`;
 
     return (
-      <div>
+      <div ref={(node) => { this.node = node; }}>
         <audio ref={(c) => { this.sound = c; }} preload="preload">
           <source src={`${soundsPath}/pop.mp3`} />
           <source src={`${soundsPath}/pop.ogg`} />
@@ -93,7 +93,7 @@ export class MessageList extends React.Component {
           <div className="bottom-aligner" />
           <div>
             {messages.map((message, key) => <MessageFactoryContainer key={key} message={message} />)}
-            <TypingEventContainer onUpdate={this.onUpdateList} />
+            <TypingEventContainer onUpdate={this.scrollBottom} />
           </div>
         </ScrollArea>
       </div>
