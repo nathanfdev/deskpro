@@ -109,6 +109,7 @@ $border-color: #e7e7e7;
         & > div {
           margin: 1px;
           display: inline-block;
+          width: 98%; // 100 and 99% conflict with bottom-aligner
         }
       }
 
