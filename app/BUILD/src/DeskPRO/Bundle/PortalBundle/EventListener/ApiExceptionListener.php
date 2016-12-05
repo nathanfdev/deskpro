@@ -29,11 +29,15 @@
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+/**
+ * Class ApiExceptionListener.
+ */
 class ApiExceptionListener implements EventSubscriberInterface
 {
     /**
@@ -46,15 +50,23 @@ class ApiExceptionListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param GetResponseForExceptionEvent $event
+     */
     public function onException(GetResponseForExceptionEvent $event)
     {
         $request   = $event->getRequest();
         $exception = $event->getException();
 
-        if (strpos($request->getPathInfo(), '/portal/api') !== false) {
-            if ($exception instanceof AccessDeniedException) {
-                $event->setException(new AccessDeniedHttpException($exception->getMessage()));
-            }
+        if (strpos($request->getPathInfo(), '/portal/api') === false) {
+            return;
+        }
+
+        if ($exception instanceof AccessDeniedException) {
+            $event->setResponse(new JsonResponse([
+                'code'    => Response::HTTP_FORBIDDEN,
+                'message' => $exception->getMessage(),
+            ], Response::HTTP_FORBIDDEN));
         }
     }
 }
