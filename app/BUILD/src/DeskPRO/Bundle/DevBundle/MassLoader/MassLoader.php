@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\DevBundle\MassLoader;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\People\PasswordScheme\Bcrypt;
 use Doctrine\ORM\EntityManager;
@@ -105,7 +104,6 @@ class MassLoader
 
     public function clearDb()
     {
-        return true;
         $this->clearTickets();
 
         $this->connection->executeUpdate('TRUNCATE TABLE ticket_filter_subscriptions');
@@ -463,29 +461,20 @@ class MassLoader
             $this->connection->batchInsert('tickets_messages', $messagesChunk);
         }
 
-        $slas = [];
-        $sla  = $this->connection->fetchColumn('SELECT id FROM slas WHERE sla_type = ?', ['first_response']);
-        foreach ($newTicketIds as $ticketId) {
-            $status = $this->faker->randomElement(
-                [TicketSla::STATUS_OK, TicketSla::STATUS_WARNING, TicketSla::STATUS_FAIL]
+        if (!empty($options['postBatchCallback'])) {
+            call_user_func(
+                $options['postBatchCallback'],
+                $newTicketIds,
+                $this->connection,
+                $this->faker
             );
-            $slas[] = [
-                'ticket_id'  => $ticketId,
-                'sla_id'     => $sla,
-                'sla_status' => $status,
-                'warn_date'  => $status === TicketSla::STATUS_WARNING ?
-                    $this->faker->dateTimeBetween('-14 days', '-10 days')->format('Y-m-d H:i:s') : null,
-                'fail_date' => $status === TicketSla::STATUS_FAIL ?
-                    $this->faker->dateTimeBetween('-14 days', '-10 days')->format('Y-m-d H:i:s') : null,
-                'is_completed'         => 0,
-                'completed_time_taken' => $this->faker->numberBetween(60 * 60 * 24, 60 * 60 * 24 * 10),
-            ];
         }
-        $this->connection->batchInsert('ticket_slas', $slas, true);
 
-        /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepository */
-        $ticketRepository = $this->em->getRepository(Ticket::class);
-        $ticketRepository->fillSearchTable();
+        if ($options['isLastBatch']) {
+            /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepository */
+            $ticketRepository = $this->em->getRepository(Ticket::class);
+            $ticketRepository->fillSearchTable();
+        }
     }
 
     /**
