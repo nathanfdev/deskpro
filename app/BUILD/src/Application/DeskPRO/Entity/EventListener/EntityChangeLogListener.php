@@ -140,6 +140,12 @@ abstract class EntityChangeLogListener
         return $ret;
     }
 
+    /**
+     * @param BaseLogEvent $event
+     * @param Person|null  $performer
+     *
+     * @return LogEvent
+     */
     protected function createLogEntry(BaseLogEvent $event, Person $performer = null)
     {
         $performer = $this->getContextPerson() ?: $performer;

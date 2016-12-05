@@ -46,6 +46,7 @@ use Application\DeskPRO\EntityRepository\Ticket;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Application\DeskPRO\People\PersonEditManager;
+use Application\DeskPRO\People\PersonMerge\PersonMerge;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
 use Symfony\Component\Form\FormError;
@@ -1231,32 +1232,35 @@ class PersonController extends AbstractController
 
     public function mergeAction($person_id, $other_person_id)
     {
-        $person       = $this->getPersonOr404($person_id);
-        $other_person = $this->getPersonOr404($other_person_id);
+        $person      = $this->getPersonOr404($person_id);
+        $otherPerson = $this->getPersonOr404($other_person_id);
 
-        if (!$person || !$other_person) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        if (!$person || !$otherPerson) {
+            throw new NotFoundHttpException();
         }
 
         if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($person)) {
             return $this->createJsonResponse(['success' => false]);
         }
 
-        if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($other_person)) {
+        if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($otherPerson)) {
             return $this->createJsonResponse(['success' => false]);
         }
 
-        $old_person_id = $other_person['id'];
+        $oldPersonId = $otherPerson['id'];
 
-        $logEvent = new Entity\LogEvent(new UserMerged($person, $other_person), $this->person);
-        $merge    = new \Application\DeskPRO\People\PersonMerge\PersonMerge($this->person, $person, $other_person);
+        $logEvent = new Entity\LogEvent(new UserMerged($person, $otherPerson), $this->person);
+        $merge    = new PersonMerge($this->person, $person, $otherPerson);
         $merge->merge();
+        $logEvent->prepare();
+        $this->em->persist($logEvent);
+        $this->em->flush();
         $this->container->get('deskpro.logger.changelog')->info($logEvent);
 
         return $this->createJsonResponse([
             'success' => true,
             'id'      => $person['id'],
-            'old_id'  => $old_person_id,
+            'old_id'  => $oldPersonId,
         ]);
     }
 
