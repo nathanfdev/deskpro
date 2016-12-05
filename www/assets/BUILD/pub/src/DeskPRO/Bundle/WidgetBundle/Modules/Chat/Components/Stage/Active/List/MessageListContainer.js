@@ -33,10 +33,10 @@ export class MessageListContainer extends React.Component {
   }
 
   reCalcHeight() {
-    const node = this.node.node;
-    const widgetHeight = this.props.widgetDimensions.get('height');
+    const { widgetDimensions } = this.props;
+    const widgetHeight = widgetDimensions.get('height');
     const $document = $(window.widgetFrame.document);
-    const $chatHeader = $document.find('.dpdesignportal-chat-header');
+    const $chatHeader = $document.find('.dpdesignportal-chat-header-wrapper');
     const $powered = $document.find('.dpdesignportal-powered-by-deskpro');
 
     const calc = (ignoreHeaderAndFooter) => {
@@ -49,7 +49,7 @@ export class MessageListContainer extends React.Component {
       height -= $document.find('.dpdesignportal-chat-header-controls').outerHeight(true);
       height -= $document.find('.dpdesignportal-chat-footer').outerHeight(true);
       // todo .dpdesignportal-chat-footer height returns 37 at this stage instead of 107
-      height -= 60;
+      height -= ignoreHeaderAndFooter ? 47 : 37;
       return height;
     };
 
@@ -64,17 +64,18 @@ export class MessageListContainer extends React.Component {
       $powered.show();
     }
 
-    $(node).css('height', height);
-
+    $(this.node.node).css('height', height);
     if (this.node.scrollBottom) {
       this.node.scrollBottom();
     }
   }
 
   render() {
-    return this.props.chatLoaded
-      ? <MessageList ref={(node) => { this.node = node; }} {...this.props} />
-      : <MessageListSpinner ref={(node) => { this.node = node; }} />;
+    const { chatLoaded } = this.props;
+
+    return chatLoaded
+      ? <MessageList ref={(c) => { this.node = c; }} {...this.props} />
+      : <MessageListSpinner ref={(c) => { this.node = c; }} />;
   }
 }
 export default MessageListContainer;
