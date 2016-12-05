@@ -590,7 +590,6 @@ $container->loadFromExtension(
                                     'stop',
                                     'lowercase',
                                     'asciifolding',
-                                    'edge_ngram_filter_3',
                                 ],
                             ],
                             'text_content_analyzer' => [
