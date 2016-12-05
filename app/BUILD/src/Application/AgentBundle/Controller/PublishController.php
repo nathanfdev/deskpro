@@ -694,25 +694,27 @@ class PublishController extends AbstractController
 
     public function saveStickySearchWordsAction($type, $content_id)
     {
+        // don't replace to EntityName::class as they are reserved names in search_sticky_result
+
         $entity_name = null;
         switch ($type) {
             case 'articles':
-                $entity_name = Article::class;
+                $entity_name = 'DeskPRO:Article';
                 break;
             case 'article':
-                $entity_name = Article::class;
+                $entity_name = 'DeskPRO:Article';
                 break;
             case 'downloads':
-                $entity_name = Download::class;
+                $entity_name = 'DeskPRO:Download';
                 break;
             case 'download':
-                $entity_name = Download::class;
+                $entity_name = 'DeskPRO:Download';
                 break;
             case 'news':
-                $entity_name = News::class;
+                $entity_name = 'DeskPRO:News';
                 break;
             case 'feedback':
-                $entity_name = Feedback::class;
+                $entity_name = 'DeskPRO:Feedback';
                 break;
         }
 
