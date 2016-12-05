@@ -53,7 +53,7 @@ class TicketSla extends AbstractEntityRepository
             throw new \InvalidArgumentException('Person must be an agent');
         }
 
-        $conn       = App::getDbRead();
+        $conn       = App::getDb();
         $slaQueries = $queryParams = $queryTypes = [];
 
         $ids = [];
@@ -129,14 +129,14 @@ class TicketSla extends AbstractEntityRepository
 
         // own team tickets, excluding own tickets and participating
         if ($teams && $filter !== 'agent') {
-            $q = 't.agent_id != '.$pid;
+            $q = 'IFNULL(t.agent_id, 0) != '.$pid;
             $q .= ' AND t.agent_team_id IN ('.$teams.')';
             $buildSlaQueryPart($q, 'exclude');
         }
 
         // participating tickets, excluding own and teams
         if ($filter === 'all') {
-            $q = 't.agent_id != '.$pid;
+            $q = 'IFNULL(t.agent_id, 0) != '.$pid;
             if ($teams) {
                 $q .= ' AND t.agent_team_id NOT IN ('.$teams.')';
             }
@@ -151,7 +151,7 @@ class TicketSla extends AbstractEntityRepository
         if ($filter === 'all' && ($viewOthers || $viewUnassigned)) {
 
             // we always exclude agent and teams because they are included in previous queries
-            $perm[] = 't.agent_id != '.$pid;
+            $perm[] = 'IFNULL(t.agent_id, 0) != '.$pid;
             if ($teams) {
                 $perm[] = 't.agent_team_id NOT IN ('.$teams.')';
             }
