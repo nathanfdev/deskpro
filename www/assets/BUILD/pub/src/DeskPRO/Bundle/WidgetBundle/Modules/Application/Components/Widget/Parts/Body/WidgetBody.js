@@ -6,7 +6,7 @@ export class WidgetBody extends React.Component {
 
   static propTypes = {
     isBubble: PropTypes.bool,
-    children: PropTypes.any
+    children: PropTypes.any // eslint-disable-line react/forbid-prop-types
   };
 
   render() {
