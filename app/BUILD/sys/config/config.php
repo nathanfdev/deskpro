@@ -29,6 +29,7 @@
 if (!defined('DP_ROOT')) {
     exit('No access');
 }
+use Application\AgentBundle\Service\AgentCaptchaGenerator;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -56,6 +57,7 @@ $container->setParameter('form.type_extension.csrf.enabled', false);
 $container->setParameter('file_locator.class', 'DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator');
 $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/doctrine-proxies');
 $container->setParameter('doctrine.dbal.connection_factory.class', 'DeskPRO\\Bundle\\AppBundle\\Doctrine\\ConnectionFactory');
+$container->setParameter('gregwar_captcha.captcha_generator.class', AgentCaptchaGenerator::class);
 
 // standard-symfony changes to templating
 $container->setParameter('templating.engine.delegating.class', 'Application\\DeskPRO\\Templating\\Engine');
