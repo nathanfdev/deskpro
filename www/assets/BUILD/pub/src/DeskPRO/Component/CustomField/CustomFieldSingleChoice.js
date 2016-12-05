@@ -31,7 +31,7 @@ class DeepSelectBox extends React.Component {
 
   renderDeep(choices, deep = 1) {
     const { value, onChange, widgetOptions } = this.props;
-    console.log(value, choices);
+
     const hasValue = (choice) => {
       if (choice.get('id') === value) {
         return true;
