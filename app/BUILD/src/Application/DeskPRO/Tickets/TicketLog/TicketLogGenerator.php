@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\TicketLog;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\ORM\StateChange\ChangeCollection;
@@ -796,6 +797,17 @@ class TicketLogGenerator
                     'old'         => $old ? $old->id : null,
                     'new'         => $new ? $new->id : null,
                 ];
+            case 'new_tasks':
+                if ($new instanceof Task) {
+                    return [
+                        'action_type' => 'task_created',
+                        'task_id'     => $new->getId(),
+                        'task_title'  => $new->getTitle(),
+                    ];
+                }
+
+                return [];
+                break;
 
             default:
                 return [];

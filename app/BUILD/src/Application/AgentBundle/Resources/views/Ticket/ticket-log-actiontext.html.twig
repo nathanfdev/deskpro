@@ -671,6 +671,9 @@
 	<span class="old-val">{{log.details.old|default(phrase('agent.general.none'))}}</span>
     {{ phrase('agent.tickets.changed_to') }}
     <span class="new-val">{{log.details.new|default(phrase('agent.general.none'))}}</span>
+{% elseif log.action_type == 'task_created' %}
+	<span class="type">{{ phrase('agent.tasks.task_created') }}</span>
+	<span class="new-val">{{log.details.task_id}}: {{ log.details.task_title}}</span>
 {% elseif not hide_unknow %}
 	{{ log.action_type }}
 {% endif %}

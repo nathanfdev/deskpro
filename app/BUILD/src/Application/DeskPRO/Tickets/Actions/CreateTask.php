@@ -87,7 +87,15 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $task = new Task();
-        $form = $this->getContainer()->getFormFactory()->create(new TaskType(), $task, ['timezone' => 'UTC']);
+        $form = $this->getContainer()->getFormFactory()->create(
+            new TaskType(),
+            $task,
+            [
+                'timezone'                      => 'UTC',
+                'csrf_protection'               => false,
+                'csrf_double_submit_protection' => false,
+            ]
+        );
 
         if (!$person = $this->getCreator($context)) {
             $context->getLogger()->debug('[CreateTask] Wrong creator');
@@ -154,6 +162,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
         $em = $this->getContainer()->getEm();
         $em->persist($task);
         $em->flush();
+        $ticket->getStateChangeRecorder()->record('new_tasks', null, $task);
 
         // todo postPersist event
         $notify = new \Application\DeskPRO\Notifications\TaskAssignNotification($task);
