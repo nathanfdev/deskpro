@@ -58,6 +58,18 @@ class IncidentController extends CrudController
     public static $listPaginate = false;
 
     /**
+     * @ApiDoc(
+     *     section="System",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident"
+     * )
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return View
      * @Rest\Get("/{id}", requirements={"id"="\d+"})
      */
     public function getAction(Request $request, $id)
@@ -65,9 +77,11 @@ class IncidentController extends CrudController
         if (!$incident = $this->findEntity($id, $request)) {
             throw $this->createNotFoundException();
         }
-        $instructions_html = $this->get('dp_sys.alerts.instructions_generator')->generate($incident);
+        $instructionsHtml = $this->get('dp_sys.alerts.instructions_generator')->generate($incident);
 
-        return View::create($this->wrap(compact('incident', 'instructions_html')), Response::HTTP_OK);
+        return View::create($this->wrap(
+            ['incident' => $incident, 'instructions_html' => $instructionsHtml]
+        ), Response::HTTP_OK);
     }
 
     /**

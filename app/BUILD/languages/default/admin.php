@@ -1267,6 +1267,7 @@ return [
     'admin.general.error_ssl_feature_tip'                                                  => 'This feature requires the OpenSSL PHP extension which is currently not installed.',
     'admin.general.error_ssl_tip'                                                          => 'Secure connections require the OpenSSL PHP extension which is currently not installed. Click now for more information.',
     'admin.general.error_type'                                                             => 'Error Type',
+    'admin.general.event'                                                                  => 'Event',
     'admin.general.fields'                                                                 => 'Fields',
     'admin.general.file_uploads'                                                           => 'File Uploads',
     'admin.general.first'                                                                  => 'First',
