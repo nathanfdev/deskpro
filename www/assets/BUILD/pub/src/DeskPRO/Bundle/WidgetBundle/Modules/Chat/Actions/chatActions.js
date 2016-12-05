@@ -1,14 +1,15 @@
-import { createAction } from 'DeskPRO/Component/Ampliflux';
-import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
-import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
-import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
-import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { generate } from 'randomstring';
 import striptags from 'striptags';
 import moment from 'moment';
 import Immutable from 'immutable';
 import linkifyHtml from 'linkifyjs/html';
+import $ from 'jquery';
+import { createAction } from 'DeskPRO/Component/Ampliflux';
+import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
+import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
+import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import {
   skippedPollingSelector,
   lockedPollingSelector,
@@ -20,7 +21,6 @@ import {
   canReopenSelector,
   lastAgentIdSelector
 } from '../Selectors/chat';
-import $ from 'jquery';
 
 // Chat setup actions
 export const setChatId = createAction('WIDGET_CHAT_SET_ID');
@@ -34,7 +34,7 @@ export const unsetChatId = createAction(
 
 export const setLastAgentId = createAction(
   'WIDGET_CHAT_SET_LAST_AGENT',
-  lastAgentId => {
+  (lastAgentId) => {
     localStorage.setItem('dpWidget.chat.lastAgentId', lastAgentId);
     return lastAgentId;
   }
@@ -104,9 +104,9 @@ export const showNotHelpfulForm = createAction('WIDGET_CHAT_SHOW_NOT_HELPFUL_FOR
 // Api actions
 export const createChat = createAction(
   'WIDGET_CHAT_CREATE_NEW',
-  params => (dispatch) => widgetApi
+  params => dispatch => widgetApi
     .sendPost('DP_API/chats/create', params, { ...ajaxOptions })
-    .success(response => {
+    .success((response) => {
       const data = response.data || {};
       const chatId = data.id;
 
@@ -130,7 +130,7 @@ export const validateEmail = createAction(
 
 export const regenerateEmailValidationCode = createAction(
   'WIDGET_CHAT_REGENERATE_EMAIL_CODE',
-  chatId => {
+  (chatId) => {
     if (!chatId) {
       return null;
     }
@@ -196,7 +196,7 @@ export const pollingChat = createAction(
 
     const queryParams = compileParams(params);
     const promise = widgetApi.sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, { ...ajaxOptions });
-    promise.success(response => {
+    promise.success((response) => {
       const locked = lockedPollingSelector(state);
       const skipped = skippedPollingSelector(state);
 
@@ -228,7 +228,7 @@ export const pollingChat = createAction(
           if (newChatInfo.ended_by === 'user') {
             const ended = moment(newChatInfo.date_ended).format('X');
             const now = moment().format('X');
-            const delay = ended - now + 300; // can reopen in 5 minutes
+            const delay = (ended - now) + 300; // can reopen in 5 minutes
 
             if (delay < 0) {
               dispatch(disableChatReopen());
@@ -262,7 +262,7 @@ export const pollingChat = createAction(
 
         // Load person info
         const peopleIds = [];
-        filteredMessages.forEach(message => {
+        filteredMessages.forEach((message) => {
           const authorId = message.author;
           if (authorId && peopleIds.indexOf(authorId) === -1) {
             peopleIds.push(authorId);
@@ -297,7 +297,7 @@ export const sendUserTyping = createAction(
 
 export const savePartialTyping = createAction(
   'WIDGET_CHAT_SAVE_PARTIAL_TYPING',
-  (params) => () => {
+  (params) => {
     if (storageAvailable('localStorage')) {
       localStorage.setItem('dpWidget.chat.partial', params);
     }
@@ -342,7 +342,7 @@ export const sendChatMessage = createAction(
 
     // Add optimistic attachments
     const attachments = attachmentsSelector(state);
-    params.attachments.forEach(blobAuthId => {
+    params.attachments.forEach((blobAuthId) => {
       const attachment = attachments.filter(blob => blob.get('blob_auth_id') === blobAuthId).first();
       dispatch(addNewMessages({
         tmp_id:       tmpId,

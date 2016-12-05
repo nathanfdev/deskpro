@@ -15,11 +15,11 @@ export class WaitingLoader extends React.Component {
         <h1>{portalPhrases.get('portal.chat.agent_disconnected', { '{agentName}': agentName })}</h1>
         <h2>{portalPhrases.get('portal.chat.looking_for_another_agent')}</h2>
         <div className="search-dots">
-          <div className="dot-1"></div>
-          <div className="dot-2"></div>
-          <div className="dot-3"></div>
-          <div className="dot-4"></div>
-          <div className="dot-5"></div>
+          <div className="dot-1" />
+          <div className="dot-2" />
+          <div className="dot-3" />
+          <div className="dot-4" />
+          <div className="dot-5" />
         </div>
       </div>
     );

@@ -30,15 +30,15 @@ export const setLiveDemoSession = createAction(
 );
 export const getSession = createAction(
   'WIDGET_GET_SESSION',
-  () => dispatch => new Promise(resolve => {
+  () => dispatch => new Promise((resolve) => {
     const visitorId =
       (window.DP_SEND_VISITOR_TRACK && window.DP_SEND_VISITOR_TRACK.visitorId)
       ? window.DP_SEND_VISITOR_TRACK.visitorId
       : '';
 
     return widgetApi
-      .sendPost('DP_API/auth/session?dp__v=' + visitorId, {
-        dpsid: localStorage.getItem('dpWidget.sessionCode'),
+      .sendPost(`DP_API/auth/session?dp__v=${visitorId}`, {
+        dpsid:        localStorage.getItem('dpWidget.sessionCode'),
         trackVisitor: window.DP_SEND_VISITOR_TRACK || {}
       }, { ...ajaxOptions })
       .success((response) => {
@@ -50,7 +50,7 @@ export const getSession = createAction(
         if (data.person) {
           dispatch(loadBatch('Person', [data.person], 'all'));
         }
-      })
+      });
   })
 );
 
@@ -143,7 +143,7 @@ export const chatResume = createAction(
       // Reset stored chat id on reload page if chat was ended
       if (!chatInfo || chatInfo.date_ended) {
         dispatch(unsetChatId());
-      } else {
+      } else if (!sessionStorage['dpWidget.dpWindow.minimized']) {
         dispatch(openWidget());
       }
     });

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { AvatarResolver } from 'DeskPRO/Component/Avatar';
-import { AgentAvatar } from '../../../../../../Application/Components/Trigger/Popups/AgentAvatar';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { AgentAvatar } from '../../../../../../Application/Components/Trigger/Popups/AgentAvatar';
 
 export class OnlineAgent extends React.Component {
 

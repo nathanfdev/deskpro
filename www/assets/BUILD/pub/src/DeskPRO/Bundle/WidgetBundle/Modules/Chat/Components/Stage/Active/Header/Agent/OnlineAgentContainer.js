@@ -33,6 +33,13 @@ export class OnlineAgentContainer extends React.Component {
     hasAssignedMessage: PropTypes.bool
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      disconnected: false
+    };
+  }
+
   componentWillReceiveProps(props) {
     const disconnected = !props.agentId && this.props.agentId;
     this.setState({ disconnected });

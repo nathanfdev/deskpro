@@ -7,6 +7,7 @@ export class WidgetContent extends React.Component {
   static propTypes = {
     isBubble:       PropTypes.bool,
     widgetPosition: PropTypes.string,
+    windowWidth:    PropTypes.number,
     children:       PropTypes.any // eslint-disable-line react/forbid-prop-types
   };
 
@@ -30,7 +31,7 @@ export class WidgetContent extends React.Component {
   }
 
   render() {
-    const { isBubble, widgetPosition, children } = this.props;
+    const { isBubble, widgetPosition, children, windowWidth } = this.props;
     if (this.state.rerender) {
       return null;
     }
@@ -43,7 +44,8 @@ export class WidgetContent extends React.Component {
             'chat-bubble':   isBubble,
             mobile:          !isBubble,
             'position-left': widgetPosition === 'bottom.left' && !isBubble,
-            'rtl-language':  portalPhrases.getTextDirection() === 'RTL'
+            'rtl-language':  portalPhrases.getTextDirection() === 'RTL',
+            'full-screen':   windowWidth < 450
           }
         )}
       >
