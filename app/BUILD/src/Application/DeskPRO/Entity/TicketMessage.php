@@ -460,9 +460,9 @@ class TicketMessage extends DomainObject
         }
 
         $message = Strings::standardEol($message);
+        $message = Strings::decodeHtmlEntities($message);
         $message = str_replace(['<br/>', '<br>', '<br />', '<p>', '</p>'], "\n", $message);
         $message = Strings::stripTags($message);
-        $message = Strings::decodeHtmlEntities($message);
         $message = Strings::decodeWhitespaceHtmlEntities($message);
         $message = preg_replace('#\s+#u', ' ', $message);
         $message = trim($message);
