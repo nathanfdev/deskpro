@@ -168,7 +168,7 @@ class TicketSla extends AbstractEntityRepository
 
         $sql = 'SELECT sla_id, sla_status, COUNT(*) AS count FROM ('.$s->getSql().') AS r GROUP BY sla_id, sla_status';
 
-        $conn    = App::getDb();
+        $conn    = App::getDbRead('search.filter.tickets');
         $results = $conn->fetchAll($sql);
 
         return $this->formatResults($ids, $results);
