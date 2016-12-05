@@ -851,6 +851,8 @@ return [
     'agent.general.priorities'                                 => 'Priorities',
     'agent.general.priority'                                   => 'Priority',
     'agent.general.private'                                    => 'Private',
+    'agent.general.problems_added'                             => 'Problems added',
+    'agent.general.problems_removed'                           => 'Problems removed',
     'agent.general.product'                                    => 'Product',
     'agent.general.products'                                   => 'Products',
     'agent.general.profile'                                    => 'Profile',
