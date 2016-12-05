@@ -108,6 +108,10 @@
     background: url('../../../../images/admin/chat-widget/screenshot.png') bottom right no-repeat;
     border: 1px solid #000000;
 
+    @media screen and (max-width: 1280px) {
+      background: url('../../../../images/admin/chat-widget/screenshot_small.png') bottom right no-repeat;
+    }
+
     .widget-editor-live-demo-loader {
       width: inherit;
       height: inherit;
