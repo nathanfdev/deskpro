@@ -272,7 +272,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         $value       = $this->getTicketFieldValueJs($id);
 
         if ($op === AbstractTriggerTerm::OP_ISSET) {
-            return "function (ticket) { return !!($value && ($value).length || $value); }";
+            return "function (ticket) { return !!($value ? ($value).length : $value); }";
         } elseif ($op === AbstractTriggerTerm::OP_NOTISSET) {
             return "function (ticket) { return !$value || 0 === ($value).length; }";
         }

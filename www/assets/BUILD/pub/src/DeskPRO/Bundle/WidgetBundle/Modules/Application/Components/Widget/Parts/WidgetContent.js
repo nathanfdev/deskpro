@@ -7,8 +7,7 @@ export class WidgetContent extends React.Component {
   static propTypes = {
     isBubble:       PropTypes.bool,
     widgetPosition: PropTypes.string,
-    children:       PropTypes.any, // eslint-disable-line react/forbid-prop-types
-    triggerResize:  PropTypes.func
+    children:       PropTypes.any     // eslint-disable-line react/forbid-prop-types
   };
 
   constructor(props) {
@@ -28,10 +27,6 @@ export class WidgetContent extends React.Component {
         rerender: false
       }), 0);
     }
-  }
-
-  componentDidUpdate() {
-    setTimeout(() => this.props.triggerResize(), 0);
   }
 
   render() {
