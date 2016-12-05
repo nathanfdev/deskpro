@@ -335,7 +335,7 @@ class TicketSearchActive extends DomainObject
                 'date_created_idx' => ['columns' => ['date_created']],
                 'status_idx'       => ['columns' => ['status']],
                 'person_idx'       => ['columns' => ['person_id']],
-                'agent_idx'        => ['columns' => ['agent_id', 'agent_team_id']],
+                'agent_idx'        => ['columns' => ['agent_id']],
                 'ref_idx'          => ['columns' => ['ref']],
             ],
         ]);

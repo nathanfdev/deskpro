@@ -33,6 +33,8 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Sla;
+use Application\DeskPRO\Entity\TicketSla;
 
 class CleanupQuarterHourly extends AbstractJob
 {
@@ -132,6 +134,28 @@ class CleanupQuarterHourly extends AbstractJob
 
         if (!$did_per_agent_filters) {
             App::getDb()->executeUpdate("DELETE FROM people_prefs WHERE name LIKE 'ticket_counts.%'");
+        }
+
+        //------------------------------
+        // Enable cached slas
+        //------------------------------
+
+        if (!$this->getContainer()->getSetting('enable_cached_sla_counts')) {
+            /** @var \Application\DeskPRO\EntityRepository\Sla $slaRepos */
+            $slaRepos = $this->getContainer()->getEm()->getRepository(Sla::class);
+            $slas     = $slaRepos->findAll();
+            $expire   = date('Y-m-d H:i:s', time() + 10800);
+
+            /** @var \Application\DeskPRO\EntityRepository\TicketSla $ticketSlaRepos */
+            $ticketSlaRepos = $this->getContainer()->getEm()->getRepository(TicketSla::class);
+
+            $incompleteSlas = App::getDb()->fetchColumn('SELECT COUNT(*) FROM ticket_slas WHERE is_completed = 0');
+            if ($incompleteSlas >= 10000 || ($counts['tickets.awaiting_user'] + $counts['tickets.awaiting_agent']) >= 10000) {
+                $this->getContainer()->getDb()->replace('settings', [
+                    'name'  => 'enable_cached_sla_counts',
+                    'value' => time(),
+                ]);
+            }
         }
     }
 }

@@ -35,25 +35,84 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Searcher\TicketSearch;
 
 class TicketSla extends AbstractEntityRepository
 {
-    public function getTicketSlaCountsForAgentInterface(array $slas, $filter = 'all', Entity\Person $person_context = null)
+    public function getCachedTicketSlaCountsForAgentInterface(array $slas, $filter, Entity\Person $person_context)
     {
-        if (!$slas) {
-            return [];
+        if (!App::$container->getSetting('enable_cached_sla_counts')) {
+            return $this->getTicketSlaCountsForAgentInterface($slas, $filter, $person_context);
         }
 
-        if (!$person_context) {
-            $person_context = App::getCurrentPerson();
-        }
-        if (!$person_context->is_agent) {
-            throw new \InvalidArgumentException('Person must be an agent');
+        /** @var \Application\DeskPRO\DBAL\Connection $db */
+        $db = $this->_em->getConnection();
+
+        $values = $db->fetchAllKeyValue("
+            SELECT name, value_array
+            FROM people_prefs
+            WHERE person_id = ? AND name LIKE 'ticket_sla_counts.%'
+        ", [$person_context->getId()]);
+
+        $results  = [];
+        $calcSlas = [];
+
+        foreach ($slas as $sla) {
+            $cacheId = 'ticket_sla_counts.'.$sla->getId();
+
+            if (isset($values[$cacheId])) {
+                $r = @unserialize($values[$cacheId]);
+            } else {
+                $r = null;
+            }
+
+            if ($r) {
+                $results[$sla->getId()] = $r;
+            } else {
+                $calcSlas[] = $sla;
+            }
         }
 
-        $conn       = App::getDb();
+        if ($calcSlas) {
+            $calcResults = $this->getTicketSlaCountsForAgentInterface($calcSlas, $filter, $person_context);
+            $inserts     = [];
+            $expire      = date('Y-m-d H:i:s', time() + 900);
+
+            if ($calcResults) {
+                foreach ($calcResults as $slaId => $slaRes) {
+                    $results[$slaId] = $slaRes;
+                }
+
+                foreach ($calcResults as $slaId => $calcRes) {
+                    $inserts[] = [
+                        'person_id'   => $person_context->getId(),
+                        'name'        => "ticket_sla_counts.{$slaId}",
+                        'value_str'   => null,
+                        'value_array' => serialize($calcRes),
+                        'date_expire' => $expire,
+                    ];
+                }
+
+                if ($inserts) {
+                    $db->batchInsert('people_prefs', $inserts, true);
+                }
+            }
+        }
+
+        return $results;
+    }
+
+    public function getTicketSlaCountsForAgentInterface(array $slas, $filter, Entity\Person $person_context)
+    {
+        $s = new TicketSearch();
+        if ($person_context) {
+            $s->setPersonContext($person_context);
+        }
+        $s->setOrderByCode('ticket.id:desc');
+        $s->addRawSelect('ts.sla_id, ts.sla_status');
+        $s->addRawJoin('INNER JOIN ticket_slas AS ts ON (ts.ticket_id = tickets.id)');
+
         $slaQueries = $queryParams = $queryTypes = [];
 
         $ids = [];
@@ -64,116 +123,53 @@ class TicketSla extends AbstractEntityRepository
             $queryParams[$sla->sla_type][] = $id;
         }
 
+        error_log('CALC '.implode(', ', $ids));
+
         if (isset($queryParams['waiting_time'])) {
-            $slaQueries[]               = '(ts.sla_id IN (:waiting_time) AND t.status = "awaiting_agent")';
-            $queryTypes['waiting_time'] = Connection::PARAM_INT_ARRAY;
+            $slaQueries[] = '(ts.sla_id IN ('.implode(',', $queryParams['waiting_time']).') AND tickets.status = "awaiting_agent")';
         }
         if (isset($queryParams['first_response'])) {
-            $slaQueries[]                 = '(ts.sla_id IN (:first_response) AND t.status = "awaiting_agent")';
-            $queryTypes['first_response'] = Connection::PARAM_INT_ARRAY;
+            $slaQueries[] = '(ts.sla_id IN ('.implode(',', $queryParams['first_response']).') AND tickets.status = "awaiting_agent")';
         }
         if (isset($queryParams['resolution'])) {
-            $slaQueries[]             = '(ts.sla_id IN (:resolution) AND t.status IN ("awaiting_agent", "awaiting_user"))';
-            $queryTypes['resolution'] = Connection::PARAM_INT_ARRAY;
+            $slaQueries[] = '(ts.sla_id IN ('.implode(',', $queryParams['resolution']).') AND tickets.status IN ("awaiting_agent", "awaiting_user"))';
         }
 
-        // convert them to queries
-        // now this is the only "WHERE" condition that doesn't use index,
-        // potentially can be broken apart as we do with agents/teams/participants
-        $slaQueriesCombined = implode(' OR ', $slaQueries);
+        $where = '
+            ts.is_completed = 0
+            AND
+            ts.sla_id IN ('.implode(',', $ids).')
+            AND 
+            ('.implode(' OR ', $slaQueries).')
+        ';
 
-        $queryParams['sla_ids'] = $ids;
-        $queryTypes['sla_ids']  = Connection::PARAM_INT_ARRAY;
-        $pid                    = (int) $person_context['id'];
-        $parts                  = [];
-        if ($teams = $person_context->getHelperManager()->callName('getagentteamids', [])) {
-            $teams = implode(',', $teams);
+        $s->addRawWhere($where);
+        $s->addRawWhere("tickets.status IN ('awaiting_user', 'awaiting_agent')");
+
+        switch ($filter) {
+            case 'agent':
+                if (!$person_context) {
+                    return $this->formatResults($ids, []);
+                }
+                $s->addTerm(TicketSearch::TERM_AGENT, TicketSearch::OP_IS, $person_context->getId());
+                break;
+
+            case 'team':
+                if (!$person_context) {
+                    return $this->formatResults($ids, []);
+                }
+                $teams = $person_context->getHelperManager()->callName('getagentteamids', []);
+                if (!$teams) {
+                    return $this->formatResults($ids, []);
+                }
+                $s->addTerm(TicketSearch::TERM_AGENT_TEAM, TicketSearch::OP_IS, $teams);
+                break;
         }
 
-        // nothing to search
-        if ($filter === 'team' && !$teams) {
-            return $this->formatResults($ids, []);
-        }
+        $sql = 'SELECT sla_id, sla_status, COUNT(*) AS count FROM ('.$s->getSql().') AS r GROUP BY sla_id, sla_status';
 
-        // builds query for a single perm condition
-        $buildSlaQueryPart = function ($condition, $p = 'none') use ($slaQueriesCombined, &$parts, $pid) {
-            $participantSubQuery = [
-                'include' => 'AND t.id IN (SELECT ticket_id FROM tickets_participants WHERE person_id = '.$pid.')',
-                'exclude' => 'AND t.id NOT IN (SELECT ticket_id FROM tickets_participants WHERE person_id = '.$pid.')',
-            ];
-
-            $parts[] = '(
-                SELECT ts.sla_id, ts.sla_status, COUNT(*) AS count
-                FROM ticket_slas ts
-                JOIN tickets_search_active t ON ts.ticket_id = t.id '.$participantSubQuery[$p].'
-                WHERE 
-                    ts.is_completed = 0
-                    AND
-                    ts.sla_id IN (:sla_ids)
-                    AND 
-                    ('.$slaQueriesCombined.')
-                    AND
-                    ('.$condition.')
-                GROUP BY  ts.sla_id, ts.sla_status
-            )';
-        };
-
-        // own tickets, excluding teams tickets and participating
-        if ($filter !== 'team') {
-            $q = 't.agent_id = '.$pid;
-            if ($teams) {
-                $q .= ' AND t.agent_team_id NOT IN ('.$teams.')';
-            }
-            $buildSlaQueryPart($q, 'exclude');
-        }
-
-        // own team tickets, excluding own tickets and participating
-        if ($teams && $filter !== 'agent') {
-            $q = 'IFNULL(t.agent_id, 0) != '.$pid;
-            $q .= ' AND t.agent_team_id IN ('.$teams.')';
-            $buildSlaQueryPart($q, 'exclude');
-        }
-
-        // participating tickets, excluding own and teams
-        if ($filter === 'all') {
-            $q = 'IFNULL(t.agent_id, 0) != '.$pid;
-            if ($teams) {
-                $q .= ' AND t.agent_team_id NOT IN ('.$teams.')';
-            }
-            $buildSlaQueryPart($q, 'include');
-        }
-
-        $perm           = [];
-        $viewUnassigned = $person_context->hasPerm('agent_tickets.view_unassigned');
-        $viewOthers     = $person_context->hasPerm('agent_tickets.view_others');
-        $disallowed     = $person_context->getHelperManager()->callName('getdisalloweddepartments', []);
-
-        if ($filter === 'all' && ($viewOthers || $viewUnassigned)) {
-
-            // we always exclude agent and teams because they are included in previous queries
-            $perm[] = 'IFNULL(t.agent_id, 0) != '.$pid;
-            if ($teams) {
-                $perm[] = 't.agent_team_id NOT IN ('.$teams.')';
-            }
-
-            if ($viewUnassigned && !$viewOthers) {
-                $perm[] = 't.agent_id IS NULL';
-            }
-            if (!$viewUnassigned && $viewOthers) {
-                $perm[] = 't.agent_id IS NOT NULL';
-            }
-
-            if ($disallowed) {
-                $perm[] = ' t.department_id NOT IN ('.implode(',', $disallowed).') ';
-            }
-        }
-
-        if ($perm) {
-            $buildSlaQueryPart(implode(' AND ', $perm), 'exclude');
-        }
-
-        $q       = implode(' UNION ALL ', $parts);
-        $results = $conn->fetchAll($q, $queryParams, $queryTypes);
+        $conn    = App::getDb();
+        $results = $conn->fetchAll($sql);
 
         return $this->formatResults($ids, $results);
     }

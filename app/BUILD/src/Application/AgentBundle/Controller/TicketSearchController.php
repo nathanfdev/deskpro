@@ -128,7 +128,7 @@ class TicketSearchController extends AbstractController
 
         $sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
         $slas       = $this->em->getRepository(Sla::class)->getAllSlas();
-        $sla_counts = $this->em->getRepository(TicketSla::class)->getTicketSlaCountsForAgentInterface($slas, $sla_filter);
+        $sla_counts = $this->em->getRepository(TicketSla::class)->getCachedTicketSlaCountsForAgentInterface($slas, $sla_filter, $this->person);
 
         //------------------------------
         // Misc
@@ -235,7 +235,7 @@ class TicketSearchController extends AbstractController
     {
         $sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
         $slas       = $this->em->getRepository(Sla::class)->getAllSlas();
-        $sla_counts = $this->em->getRepository(TicketSla::class)->getTicketSlaCountsForAgentInterface($slas, $sla_filter);
+        $sla_counts = $this->em->getRepository(TicketSla::class)->getCachedTicketSlaCountsForAgentInterface($slas, $sla_filter, $this->person);
 
         return $this->createJsonResponse([
             'counts'     => $sla_counts,
