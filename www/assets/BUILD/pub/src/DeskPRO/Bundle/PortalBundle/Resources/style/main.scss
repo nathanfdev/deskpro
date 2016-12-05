@@ -11549,7 +11549,7 @@ body.portal-mode-focus-window {
         @include margin-left(12px);
       }
       a {
-        color: $badge-color;
+        color: $text-color-lighter;
         text-decoration: underline;
         &:hover { color: $link-color; }
       }
@@ -11558,7 +11558,9 @@ body.portal-mode-focus-window {
 
   .button-wrapper {
     @include margin-left(-5px);
-    .show-more-content { color: $badge-color; }
+    .show-more-content {
+      color: $text-color-lighter;
+    }
     .show-more-content:hover { color: text-color-inverted(); }
   }
 
@@ -11577,13 +11579,13 @@ body.portal-mode-focus-window {
       font-size: 1em;
 
       .download-icon {
-        color: $badge-color;
+        color: $text-color-lighter;
         @include margin-right(5px);
         font-size: $font-size-base;
       }
 
       .feedback-count {
-        color: $badge-color;
+        color: $text-color-lighter;
         @include margin-right(5px);
         display: inline-block;
         position: relative;
@@ -11607,7 +11609,7 @@ body.portal-mode-focus-window {
         text-transform: uppercase;
         font-weight: bold;
         display: inline-block;
-        color: $badge-color;
+        color: $text-color-lighter;
         font-size: 0.7em;
         line-height: 1.2em;
         @include margin-right(6px);
