@@ -76,13 +76,14 @@ export class Frame extends React.Component {
 
   autoFrameDimensions() {
     const { frameStyles = {} } = this.props;
+    const { dimensions } = this.state;
+
     const doc = this.getContentDocument();
 
     const $container = $(doc.body.firstChild);
     const width = frameStyles.width || $container.outerWidth();
     const height = frameStyles.height || $container.outerHeight();
 
-    const dimensions = this.state.dimensions;
     if (dimensions.width === width && dimensions.height === height) {
       return;
     }
@@ -129,10 +130,10 @@ export class Frame extends React.Component {
         this.containerReady = true;
       } else {
         const $container = $(doc.body.firstChild);
+
+        $container.removeAttr('style');
         if (Object.keys(frameContainerStyles).length) {
           $container.css(frameContainerStyles);
-        } else {
-          $container.removeAttr('style');
         }
       }
 

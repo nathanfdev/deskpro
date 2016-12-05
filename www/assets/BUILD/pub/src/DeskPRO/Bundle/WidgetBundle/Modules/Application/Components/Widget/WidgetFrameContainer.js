@@ -38,7 +38,7 @@ export default class WidgetFrameContainer extends React.Component {
   }
 
   componentDidUpdate() {
-    this.triggerResize();
+    setTimeout(() => this.triggerResize(), 0);
   }
 
   triggerResize() {
