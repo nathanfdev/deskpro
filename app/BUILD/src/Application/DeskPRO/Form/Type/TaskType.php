@@ -150,8 +150,10 @@ class TaskType extends AbstractType implements EventSubscriberInterface
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'Application\DeskPRO\Entity\Task',
-            'timezone'   => null,
+            'data_class'                    => Task::class,
+            'timezone'                      => null,
+            'csrf_protection'               => false,
+            'csrf_double_submit_protection' => false,
         ]);
     }
 
