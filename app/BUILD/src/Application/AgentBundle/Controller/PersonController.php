@@ -1252,9 +1252,6 @@ class PersonController extends AbstractController
         $logEvent = new Entity\LogEvent(new UserMerged($person, $otherPerson), $this->person);
         $merge    = new PersonMerge($this->person, $person, $otherPerson);
         $merge->merge();
-        $logEvent->prepare();
-        $this->em->persist($logEvent);
-        $this->em->flush();
         $this->container->get('deskpro.logger.changelog')->info($logEvent);
 
         return $this->createJsonResponse([
