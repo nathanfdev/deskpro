@@ -363,6 +363,7 @@ class FilterChangeDetector
                             }
                         }
 
+                        $new_match = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm, $cached_terms_new);
                         if ($this->extended_log_info) {
                             $logger->debug('[FilterChangeDetector] performed new_ticket check (reset status) -- '.($new_match ? 'yes' : 'no'));
                         }
