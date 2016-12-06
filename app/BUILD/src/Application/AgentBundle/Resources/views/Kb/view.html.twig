@@ -40,7 +40,7 @@ pageMeta.baseId = '{{ baseId }}';
 						{{ phrase('agent.publish.status_archived') }}
 					</option>
 				{% endif %}
-				{% if not app.user.hasPerm('agent_publish.validate') and app.user.getId() == article.getAuthor().getId() %}
+				{% if app.user.hasPerm('agent_publish.validate') or app.user.getId() == article.person.getId() %}
 					<option {% if article.getStatusCode() == 'hidden.draft' %}selected="selected"{% endif %} value="hidden.draft">
 						{{ phrase('agent.publish.status_hidden_draft') }}
 					</option>
