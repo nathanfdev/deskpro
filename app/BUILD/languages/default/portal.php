@@ -517,6 +517,7 @@ return [
     'portal.forms.label_password'                           => 'Password',
     'portal.forms.label_password_confirm'                   => 'Confirm',
     'portal.forms.label_priority'                           => 'Priority',
+    'portal.forms.label_product'                            => 'Product',
     'portal.forms.label_reset'                              => 'Reset',
     'portal.forms.label_save'                               => 'Save',
     'portal.forms.label_select'                             => 'Select...',

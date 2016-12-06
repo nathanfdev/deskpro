@@ -415,6 +415,7 @@ abstract class AbstractFieldResolver
         }
 
         return new FormField(TicketProductType::class, [
+            'label'       => $this->phrase('portal.forms.label_product'),
             'placeholder' => '',
             'required'    => $isRequired,
             'constraints' => $constraints,
