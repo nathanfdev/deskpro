@@ -21,10 +21,12 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           min_length:               '1',
           max_length:               '',
           regex:                    '',
+          regex_required:           false,
           agent_validation:         '0',
           agent_min_length:         '1',
           agent_max_length:         '',
           agent_regex:              '',
+          agent_regex_required:     false,
           agent_validation_resolve: false,
         },
         toggle: {
@@ -108,6 +110,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
               if fieldModel.options.regex
                 formTypeOpts.user_validation = 'regex'
                 formTypeOpts.regex = fieldModel.options.regex
+                formTypeOpts.regex_required = !!fieldModel.options.regex_required
 
             if fieldModel.options.agent_required || fieldModel.options.agent_min_length || fieldModel.options.agent_max_length || fieldModel.options.agent_regex
               if fieldModel.options.agent_min_length
@@ -119,6 +122,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
               if fieldModel.options.agent_regex
                 formTypeOpts.agent_validation = 'regex'
                 formTypeOpts.agent_regex = fieldModel.options.agent_regex
+                formTypeOpts.agent_regex_required = !!fieldModel.options.agent_regex_required
 
             if fieldModel.default_value
               formTypeOpts.default_value = fieldModel.default_value
@@ -240,6 +244,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           else if formTypeOpts.user_validation == 'regex'
             postData.validation_type = 'regex'
             postData.regex = formTypeOpts.regex
+            postData.regex_required = formTypeOpts.regex_required
 
           if formTypeOpts.agent_validation == 'required'
             postData.agent_validation_type = 'required'
@@ -248,6 +253,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           else if formTypeOpts.agent_validation == 'regex'
             postData.agent_validation_type = 'regex'
             postData.agent_regex = formTypeOpts.agent_regex
+            postData.agent_regex_required = formTypeOpts.agent_regex_required
 
         when "choice"
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice'

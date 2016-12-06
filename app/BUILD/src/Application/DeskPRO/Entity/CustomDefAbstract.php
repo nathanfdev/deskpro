@@ -764,6 +764,18 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->getOption($option_name, null);
     }
 
+    /**
+     * @param bool $isAgent
+     *
+     * @return bool
+     */
+    public function isRegexRequired($isAgent = false)
+    {
+        $option_name = ($isAgent ? 'agent_' : '').'regex_required';
+
+        return $this->getOption($option_name, null);
+    }
+
     public function getValidWeekDays()
     {
         return $this->getOption('date_valid_dow', null);

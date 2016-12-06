@@ -172,6 +172,7 @@
 										</p>
 										<p ng-show="EditCtrl.form.text.user_validation == 'regex'">
 											<input type="text" class="form-control" ng-model="EditCtrl.form.text.regex" style="width: 50%;" placeholder="Enter pattern here" />
+											<label style="display: block; margin-bottom: 4px;"><input type="checkbox" ng-model="EditCtrl.form.text.regex_required" /> Require user to enter a value</label>
 										</p>
 									</div>
 								</div>
@@ -192,6 +193,7 @@
 										</p>
 										<p ng-show="EditCtrl.form.text.agent_validation == 'regex'">
 											<input type="text" class="form-control" ng-model="EditCtrl.form.text.agent_regex" style="width: 50%;" placeholder="Enter pattern here" />
+											<label style="display: block; margin-bottom: 4px;"><input type="checkbox" ng-model="EditCtrl.form.text.agent_regex_required" /> Require agent to enter a value</label>
 										</p>
 										<p ng-show="EditCtrl.form.text.agent_validation && EditCtrl.form.text.agent_validation != '0'">
 											<label style="font-weight: normal">
