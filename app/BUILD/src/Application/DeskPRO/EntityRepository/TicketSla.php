@@ -123,8 +123,6 @@ class TicketSla extends AbstractEntityRepository
             $queryParams[$sla->sla_type][] = $id;
         }
 
-        error_log('CALC '.implode(', ', $ids));
-
         if (isset($queryParams['waiting_time'])) {
             $slaQueries[] = '(ts.sla_id IN ('.implode(',', $queryParams['waiting_time']).') AND tickets.status = "awaiting_agent")';
         }
