@@ -133,7 +133,7 @@ class LogEvent extends DomainObject implements Loggable
 
         $metadata->mapManyToOne([
             'fieldName'    => 'parent',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEvent',
+            'targetEntity' => self::class,
             'joinColumns'  => [0 => [
                 'nullable' => true,
                 'onDelete' => 'cascade',
@@ -143,12 +143,12 @@ class LogEvent extends DomainObject implements Loggable
         $metadata->mapOneToMany([
             'fieldName'    => 'children',
             'mappedBy'     => 'parent',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEvent',
+            'targetEntity' => self::class,
         ]);
 
         $metadata->mapManyToOne([
             'fieldName'    => 'person',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'targetEntity' => Person::class,
             'joinColumns'  => [0 => [
                 'nullable' => true,
                 'onDelete' => 'cascade',
