@@ -33,8 +33,6 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Sla;
-use Application\DeskPRO\Entity\TicketSla;
 
 class CleanupQuarterHourly extends AbstractJob
 {
@@ -141,16 +139,9 @@ class CleanupQuarterHourly extends AbstractJob
         //------------------------------
 
         if (!$this->getContainer()->getSetting('enable_cached_sla_counts')) {
-            /** @var \Application\DeskPRO\EntityRepository\Sla $slaRepos */
-            $slaRepos = $this->getContainer()->getEm()->getRepository(Sla::class);
-            $slas     = $slaRepos->findAll();
-            $expire   = date('Y-m-d H:i:s', time() + 10800);
-
-            /** @var \Application\DeskPRO\EntityRepository\TicketSla $ticketSlaRepos */
-            $ticketSlaRepos = $this->getContainer()->getEm()->getRepository(TicketSla::class);
-
-            $incompleteSlas = App::getDb()->fetchColumn('SELECT COUNT(*) FROM ticket_slas WHERE is_completed = 0');
-            if ($incompleteSlas >= 10000 || ($counts['tickets.awaiting_user'] + $counts['tickets.awaiting_agent']) >= 10000) {
+            $incompleteSlas     = App::getDb()->fetchColumn('SELECT COUNT(*) FROM ticket_slas WHERE is_completed = 0');
+            $awaitingAgentcount = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'awaiting_agent'");
+            if ($incompleteSlas >= 10000 || ($counts['tickets.awaiting_user'] + $awaitingAgentcount) >= 10000) {
                 $this->getContainer()->getDb()->replace('settings', [
                     'name'  => 'enable_cached_sla_counts',
                     'value' => time(),
