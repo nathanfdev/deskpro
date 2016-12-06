@@ -38,7 +38,7 @@ export default class WidgetFrameContainer extends React.Component {
   }
 
   componentDidUpdate() {
-    this.triggerResize();
+    setTimeout(() => this.triggerResize(), 0);
   }
 
   triggerResize() {
@@ -51,7 +51,15 @@ export default class WidgetFrameContainer extends React.Component {
     const childProps = children.props;
 
     const windowWidth = windowDimensions.get('width');
-    const width = windowWidth < 450 ? windowWidth : 345;
+
+    let width;
+    if (windowWidth < 450) {
+      width = windowWidth;
+    } else if (isBubble) {
+      width = 350;
+    } else {
+      width = 345;
+    }
 
     const frameStyles = { width };
     const containerStyles = {};
