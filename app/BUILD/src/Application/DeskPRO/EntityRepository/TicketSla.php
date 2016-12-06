@@ -42,6 +42,10 @@ class TicketSla extends AbstractEntityRepository
 {
     public function getCachedTicketSlaCountsForAgentInterface(array $slas, $filter, Entity\Person $person_context)
     {
+        if (!count($slas)) {
+            return [];
+        }
+
         if (!App::$container->getSetting('enable_cached_sla_counts')) {
             return $this->getTicketSlaCountsForAgentInterface($slas, $filter, $person_context);
         }
