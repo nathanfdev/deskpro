@@ -292,6 +292,13 @@ class TicketSla extends DomainObject
                             'fail_date',
                         ],
                     ],
+                    'completed_id_status' => [
+                        'columns' => [
+                            'is_completed',
+                            'sla_id',
+                            'sla_status',
+                        ],
+                    ],
                 ],
                 'uniqueConstraints' => [
                     'unique_ticket_sla_idx' => [

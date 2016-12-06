@@ -2983,6 +2983,14 @@ class TicketSearch extends SearcherAbstract
     }
 
     /**
+     * @param string $select
+     */
+    public function addRawSelect($select)
+    {
+        $this->add_raw_selects[] = $select;
+    }
+
+    /**
      * Try to determine whether or not order by/group can be applied to results.
      *
      * This is used for a UI enhancement, and getting perfect accuracy is non-trivial.

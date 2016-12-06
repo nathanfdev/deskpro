@@ -36,97 +36,150 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Searcher\TicketSearch;
 
 class TicketSla extends AbstractEntityRepository
 {
-    public function getTicketSlaCountsForAgentInterface(array $slas, $filter = 'all', Entity\Person $person_context = null)
+    public function getCachedTicketSlaCountsForAgentInterface(array $slas, $filter, Entity\Person $person_context)
     {
-        if (!$slas) {
-            return [];
+        if (!App::$container->getSetting('enable_cached_sla_counts')) {
+            return $this->getTicketSlaCountsForAgentInterface($slas, $filter, $person_context);
         }
 
-        if (!$person_context) {
-            $person_context = App::getCurrentPerson();
-        }
+        /** @var \Application\DeskPRO\DBAL\Connection $db */
+        $db = $this->_em->getConnection();
 
-        if (!$person_context->is_agent) {
-            throw new \InvalidArgumentException('Person must be an agent');
-        }
+        $values = $db->fetchAllKeyValue("
+            SELECT name, value_array
+            FROM people_prefs
+            WHERE person_id = ? AND name LIKE 'ticket_sla_counts.%'
+        ", [$person_context->getId()]);
 
-        $where_perm = [];
+        $results  = [];
+        $calcSlas = [];
 
-        if ($disallowed = $person_context->getHelperManager()->callName('getdisalloweddepartments', [])) {
-            $where_perm[] = 'tickets.department_id NOT IN ('.implode(',', $disallowed).')';
-        }
+        foreach ($slas as $sla) {
+            $cacheId = 'ticket_sla_counts.'.$sla->getId();
 
-        if (!$person_context->hasPerm('agent_tickets.view_unassigned')) {
-            $where_perm[] = 'tickets.agent_id IS NOT NULL';
-        }
-
-        if (!$person_context->hasPerm('agent_tickets.view_others')) {
-            $part   = [];
-            $part[] = "tickets.agent_id = {$person_context['id']}";
-
-            if ($teams = $person_context->getHelperManager()->callName('getagentteamids', [])) {
-                $part[] = 'tickets.agent_team_id IN ('.implode(',', $teams).')';
+            if (isset($values[$cacheId])) {
+                $r = @unserialize($values[$cacheId]);
+            } else {
+                $r = null;
             }
 
-            $where_perm[] = '('.implode(' OR ', $part).')';
+            if ($r) {
+                $results[$sla->getId()] = $r;
+            } else {
+                $calcSlas[] = $sla;
+            }
         }
 
-        if (!$where_perm) {
-            $where_perm[] = '1';
-        }
+        if ($calcSlas) {
+            $calcResults = $this->getTicketSlaCountsForAgentInterface($calcSlas, $filter, $person_context);
+            $inserts     = [];
+            $expire      = date('Y-m-d H:i:s', time() + 900);
 
-        $where = '(('.implode(' AND ', $where_perm).') OR (';
-
-        $where .= "tickets.agent_id = {$person_context['id']} OR ";
-        if ($teams = $person_context->getHelperManager()->callName('getagentteamids', [])) {
-            $where .= 'tickets.agent_team_id IN ('.implode(',', $teams).') OR ';
-        }
-
-        $where .= 'tickets_participants_perm.person_id IS NOT NULL))';
-
-        switch ($filter) {
-            case 'agent':
-                $where .= " AND tickets.agent_id = {$person_context['id']}";
-                break;
-
-            case 'team':
-                if ($teams = $person_context->getHelperManager()->callName('getagentteamids', [])) {
-                    $where .= ' AND tickets.agent_team_id IN ('.implode(',', $teams).')';
-                } else {
-                    $where .= ' AND 0';
+            if ($calcResults) {
+                foreach ($calcResults as $slaId => $slaRes) {
+                    $results[$slaId] = $slaRes;
                 }
-                break;
+
+                foreach ($calcResults as $slaId => $calcRes) {
+                    $inserts[] = [
+                        'person_id'   => $person_context->getId(),
+                        'name'        => "ticket_sla_counts.{$slaId}",
+                        'value_str'   => null,
+                        'value_array' => serialize($calcRes),
+                        'date_expire' => $expire,
+                    ];
+                }
+
+                if ($inserts) {
+                    $db->batchInsert('people_prefs', $inserts, true);
+                }
+            }
         }
 
-        $where .= ' AND ticket_slas.is_completed = 0';
-        $where .= " AND ((slas.sla_type = 'waiting_time' AND tickets.status = 'awaiting_agent') OR (slas.sla_type = 'first_response' AND tickets.status = 'awaiting_agent') OR (slas.sla_type = 'resolution' AND tickets.status IN ('awaiting_agent', 'awaiting_user')))";
+        return $results;
+    }
+
+    public function getTicketSlaCountsForAgentInterface(array $slas, $filter, Entity\Person $person_context)
+    {
+        $s = new TicketSearch();
+        if ($person_context) {
+            $s->setPersonContext($person_context);
+        }
+        $s->setOrderByCode('ticket.id:desc');
+        $s->addRawSelect('ts.sla_id, ts.sla_status');
+        $s->addRawJoin('INNER JOIN ticket_slas AS ts ON (ts.ticket_id = tickets.id)');
+
+        $slaQueries = $queryParams = $queryTypes = [];
 
         $ids = [];
         foreach ($slas as $sla) {
-            $ids[] = $sla->id;
+            $id    = (int) $sla->id;
+            $ids[] = $id;
+            // first map sla types to ids
+            $queryParams[$sla->sla_type][] = $id;
         }
 
-        $where .= ' AND ticket_slas.sla_id IN ('.implode(',', $ids).')';
+        if (isset($queryParams['waiting_time'])) {
+            $slaQueries[] = '(ts.sla_id IN ('.implode(',', $queryParams['waiting_time']).') AND tickets.status = "awaiting_agent")';
+        }
+        if (isset($queryParams['first_response'])) {
+            $slaQueries[] = '(ts.sla_id IN ('.implode(',', $queryParams['first_response']).') AND tickets.status = "awaiting_agent")';
+        }
+        if (isset($queryParams['resolution'])) {
+            $slaQueries[] = '(ts.sla_id IN ('.implode(',', $queryParams['resolution']).') AND tickets.status IN ("awaiting_agent", "awaiting_user"))';
+        }
 
-        $results = $this->getEntityManager()->getConnection()->fetchAll("
-            SELECT ticket_slas.sla_id, ticket_slas.sla_status, COUNT(*) AS count
-            FROM ticket_slas
-            INNER JOIN slas ON (ticket_slas.sla_id = slas.id)
-            INNER JOIN tickets ON (ticket_slas.ticket_id = tickets.id)
-            LEFT JOIN tickets_participants AS tickets_participants_perm ON (tickets_participants_perm.ticket_id = tickets.id AND tickets_participants_perm.person_id = {$person_context->id})
-            WHERE $where
-            GROUP BY  ticket_slas.sla_id, ticket_slas.sla_status
-        ");
+        $where = '
+            ts.is_completed = 0
+            AND
+            ts.sla_id IN ('.implode(',', $ids).')
+            AND 
+            ('.implode(' OR ', $slaQueries).')
+        ';
 
+        $s->addRawWhere($where);
+        $s->addRawWhere("tickets.status IN ('awaiting_user', 'awaiting_agent')");
+
+        switch ($filter) {
+            case 'agent':
+                if (!$person_context) {
+                    return $this->formatResults($ids, []);
+                }
+                $s->addTerm(TicketSearch::TERM_AGENT, TicketSearch::OP_IS, $person_context->getId());
+                break;
+
+            case 'team':
+                if (!$person_context) {
+                    return $this->formatResults($ids, []);
+                }
+                $teams = $person_context->getHelperManager()->callName('getagentteamids', []);
+                if (!$teams) {
+                    return $this->formatResults($ids, []);
+                }
+                $s->addTerm(TicketSearch::TERM_AGENT_TEAM, TicketSearch::OP_IS, $teams);
+                break;
+        }
+
+        $sql = 'SELECT sla_id, sla_status, COUNT(*) AS count FROM ('.$s->getSql().') AS r GROUP BY sla_id, sla_status';
+
+        $conn    = App::getDbRead('search.filter.tickets');
+        $results = $conn->fetchAll($sql);
+
+        return $this->formatResults($ids, $results);
+    }
+
+    protected function formatResults(array $ids, array $results)
+    {
         $output = [];
         foreach ($ids as $id) {
             $output[$id] = ['ok' => 0, 'warning' => 0, 'fail' => 0];
         }
         foreach ($results as $result) {
-            $output[$result['sla_id']][$result['sla_status']] = $result['count'];
+            $output[$result['sla_id']][$result['sla_status']] += $result['count'];
         }
 
         return $output;
