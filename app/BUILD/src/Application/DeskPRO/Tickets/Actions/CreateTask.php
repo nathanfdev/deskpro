@@ -87,14 +87,11 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $task = new Task();
+
         $form = $this->getContainer()->getFormFactory()->create(
             new TaskType(),
             $task,
-            [
-                'timezone'                      => 'UTC',
-                'csrf_protection'               => false,
-                'csrf_double_submit_protection' => false,
-            ]
+            ['timezone' => 'UTC']
         );
 
         if (!$person = $this->getCreator($context)) {
