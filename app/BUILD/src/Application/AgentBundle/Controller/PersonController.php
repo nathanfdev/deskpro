@@ -34,6 +34,8 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
+use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
+use Application\DeskPRO\CustomFields\PersonFieldManager;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Organization;
@@ -1504,8 +1506,46 @@ class PersonController extends AbstractController
             $form->isValid();
 
             $newperson->setCustomFieldForm($_POST);
-            $newperson->save();
 
+            /** @var PersonFieldManager $fieldsManager */
+            $fieldsManager = App::getSystemService('PersonFieldsManager');
+            $personFields  = $fieldsManager->getDefinedFields();
+
+            $fieldErrors = [];
+            foreach ($personFields as $field) {
+                $errors = $field->getHandler()->validateFormData($newperson->custom_fields ?: [], HandlerAbstract::CONTEXT_AGENT);
+
+                foreach ($errors as $code) {
+                    $title = $field->getTitle();
+                    $str   = "Please correct $title";
+                    $code  = str_replace('field_'.$field->getId().'.', '', $code);
+                    switch ($code) {
+                        case 'required':
+                            $str = "$title is required";
+                            break;
+                        case 'min_length':
+                            $str = "$title is too short";
+                            break;
+                        case 'max_length':
+                            $str = "$title is too long";
+                            break;
+                        case 'regex':
+                            $str = "$title is invalid";
+                            break;
+                    }
+
+                    $fieldErrors[] = $str;
+                }
+            }
+
+            if (count($fieldErrors)) {
+                return $this->createJsonResponse([
+                    'success'        => false,
+                    'error_messages' => $fieldErrors,
+                ]);
+            }
+
+            $newperson->save();
             $person = $newperson->getPerson();
 
             $manager                   = $this->container->getCustomFieldManager();
