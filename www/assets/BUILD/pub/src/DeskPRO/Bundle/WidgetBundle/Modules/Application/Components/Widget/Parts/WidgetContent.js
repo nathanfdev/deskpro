@@ -32,6 +32,8 @@ export class WidgetContent extends React.Component {
 
   render() {
     const { isBubble, widgetPosition, children, windowWidth } = this.props;
+    const fullScreen = windowWidth < 450;
+
     if (this.state.rerender) {
       return null;
     }
@@ -41,11 +43,11 @@ export class WidgetContent extends React.Component {
         className={classNames(
           'widget-container',
           'dpdesignportal', {
-            'chat-bubble':   isBubble,
+            'chat-bubble':   isBubble && !fullScreen,
             mobile:          !isBubble,
             'position-left': widgetPosition === 'bottom.left' && !isBubble,
             'rtl-language':  portalPhrases.getTextDirection() === 'RTL',
-            'full-screen':   windowWidth < 450
+            'full-screen':   fullScreen
           }
         )}
       >

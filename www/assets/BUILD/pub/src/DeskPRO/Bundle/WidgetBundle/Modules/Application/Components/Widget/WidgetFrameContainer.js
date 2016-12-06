@@ -51,9 +51,10 @@ export default class WidgetFrameContainer extends React.Component {
     const childProps = children.props;
 
     const windowWidth = windowDimensions.get('width');
+    const fullScreen = windowWidth < 450;
 
     let width;
-    if (windowWidth < 450) {
+    if (fullScreen) {
       width = windowWidth;
     } else if (isBubble) {
       width = 350;
@@ -63,7 +64,7 @@ export default class WidgetFrameContainer extends React.Component {
 
     const frameStyles = { width };
     const containerStyles = {};
-    if (isBubble) {
+    if (isBubble && !fullScreen) {
       if (size === 'small') {
         frameStyles.marginBottom = 50;
       } else if (size === 'medium') {
