@@ -226,7 +226,7 @@ class UserSearch implements UserSearchInterface
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'news']));
             $f->addMust(new Query\Term(['status' => 'published']));
-            $f->addMust(new Query\Term('category_id', $context->getNewsCategoryIds()));
+            $f->addMust(new Query\Terms('category_id', $context->getNewsCategoryIds()));
             $boolQuery->addShould($f);
         }
         if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
@@ -234,7 +234,7 @@ class UserSearch implements UserSearchInterface
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'download']));
             $f->addMust(new Query\Term(['status' => 'published']));
-            $f->addMust(new Query\Term('category_id', $context->getDownloadCategoryIds()));
+            $f->addMust(new Query\Terms('category_id', $context->getDownloadCategoryIds()));
             $boolQuery->addShould($f);
         }
         if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
@@ -242,7 +242,7 @@ class UserSearch implements UserSearchInterface
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'feedback']));
             $f->addMustNot(new Query\Term(['status' => 'hidden']));
-            $f->addMust(new Query\Term('category_id', $context->getFeedbackCategoryIds()));
+            $f->addMust(new Query\Terms('category_id', $context->getFeedbackCategoryIds()));
             $boolQuery->addShould($f);
         }
 
