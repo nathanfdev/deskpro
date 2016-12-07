@@ -240,7 +240,8 @@ DeskPRO.Agent.RteEditor = {
 						cache: false,
 						type: 'POST',
 						success: $.proxy(function (data) {
-							var json = $.parseJSON(data);
+							var jsonString = data.match(/\{(.|\n)*\}/)[0];
+							var json = $.parseJSON(jsonString);
 
 							if (typeof json.error == 'undefined') {
 								$.proxy(api.imageUploadCallback, api)(json);
@@ -333,11 +334,13 @@ DeskPRO.Agent.RteEditor = {
 			$.ajax({
 				url: BASE_URL + 'agent/misc/accept-redactor-image-upload',
 				type: 'POST',
-				dataType: 'json',
+				dataType: 'html',
 				data: form,
 				processData: false,
 				contentType: false,
-				success: function(json) {
+				success: function(data) {
+					var jsonString = data.match(/\{(.|\n)*\}/)[0];
+					var json = $.parseJSON(jsonString);
 					if (!textarea.data('redactor')) {
 						return;
 					}
