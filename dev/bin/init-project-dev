@@ -34,11 +34,6 @@ cd $DIR_ROOT/www/assets/BUILD/pub
 npm install
 echo ".. done"
 
-echo ">> Building documentation"
-npm run-script gulp-docs
-echo ".. done"
-echo
-
 echo ">> Building new web assets"
 npm run gulp bundle
 echo ".. done"

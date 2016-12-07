@@ -35,8 +35,3 @@ npm run gulp-prod
 npm run test:visual:build
 echo ".. done"
 echo
-
-echo ">> Building documentation"
-npm run gulp-docs
-echo ".. done"
-echo
