@@ -469,6 +469,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $probs_batch     = [];
         $parts_batch     = [];
         $fielddata_batch = [];
+        $logsBatch       = [];
 
         $customDefGenerator = new CustomDataGenerator($this->faker);
 
@@ -495,12 +496,18 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 ];
             }
 
-            //------------------------------
-            // Field Data
-            //------------------------------
             foreach ($this->fields as $f) {
                 $customDefGenerator->addCustomDefData($fielddata_batch, $f, 'ticket_id', $ticket_id);
             }
+
+            $logsBatch[] = [
+                'ticket_id'    => $ticket_id,
+                'action_type'  => 'free',
+                'date_created' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'details'      => serialize([
+                    'message' => 'Test ticket created by development fixture.',
+                ]),
+            ];
         }
 
         if ($labels_batch) {
@@ -514,6 +521,9 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         }
         if ($fielddata_batch) {
             $this->db->batchInsert('custom_data_ticket', $fielddata_batch, true);
+        }
+        if ($logsBatch) {
+            $this->db->batchInsert('tickets_logs', $logsBatch, true);
         }
     }
 
