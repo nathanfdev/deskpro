@@ -280,7 +280,8 @@ DeskPRO.Agent.RteEditor = {
 						processData: false,
 						type: 'POST',
 						success: $.proxy(function (data) {
-							var json = $.parseJSON(data);
+							var jsonString = data.match(/\{(.|\n)*\}/)[0];
+							var json = $.parseJSON(jsonString);
 
 							if (typeof json.error == 'undefined') {
 								$.proxy(api.imageUploadCallback, api)(json);
