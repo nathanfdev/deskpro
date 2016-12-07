@@ -101,14 +101,7 @@
 		{# Gmail    #}
 		{############}
 
-		<div class="ng-hide" ng-show="form.outgoing_type == 'gmail'" {% if gmail_token %}ng-init="
-				TicketAccountsEdit.deferredData.gmail = {
-					token: '{{ gmail_token.access_token }}',
-					refreshToken: '{{ gmail_token.refresh_token }}',
-					clientId: '{{ gmail_token.clientId }}',
-					clientSecret: '{{ gmail_token.clientSecret }}'
-				}
-			"{% endif %}>
+		<div class="ng-hide" ng-show="form.outgoing_type == 'gmail'">
 			<div class="inner-group">
 				<table width="100%" class="inner-form-table">
 					<tr>
@@ -119,56 +112,13 @@
 						</td>
 					</tr>
 					<tr>
-						<th width="100">Email Address</th>
-						<td>
-							<span ng-show="form.address">{{ ng_var('form.address') }}</span>
-							<span ng-hide="form.address">Enter your email address above</span>
-						</td>
+						<th>Password</th>
+						<td><input type="password" class="form-control" name="title" ng-model="form.out_gmail_account.password" style="width: 50%;" /></td>
 					</tr>
-					<tr ng-if="!form.out_gmail_account.token">
-						<th>
-							App ID
-						</th>
-						<td>
-							<input type="text" class="form-control" ng-model="form.out_gmail_account.clientId" style="width: 50%;" />
-						</td>
-					</tr>
-					<tr ng-if="!form.out_gmail_account.token">
-						<th>
-							App Secret
-						</th>
-						<td>
-							<input type="text" class="form-control" ng-model="form.out_gmail_account.clientSecret" style="width: 50%;" />
-						</td>
-					</tr>
-
-					{% if app.session.getFlash('gmail.oauth.error') %}
-						<tr>
-							<td colspan="2" class="text-danger">
-								An error occurred while retrieving access token
-							</td>
-						</tr>
-					{% endif %}
-
-					<tr ng-if="form.out_gmail_account.token">
-						<td></td>
-						<td>
-							<button class="btn btn-danger" ng-click="TicketAccountsEdit.resetToken('out_gmail_account')" type="button">
-								<i class="fa fa-bolt"></i> Reset Access Token
-							</button>
-						</td>
-					</tr>
-					<tr ng-if="!form.out_gmail_account.token && form.out_gmail_account.clientId && form.out_gmail_account.clientSecret">
+					<tr>
 						<th>&nbsp;</th>
 						<td>
-							{% set replacements = {
-							_id_: 	  ng_var('form.out_gmail_account.clientId'),
-							_secret_: ng_var('form.out_gmail_account.clientSecret'),
-							_url_: 	  url('admin') ~ '%23' ~ ng_var('path')
-							} %}
-							<a ng-href="{{ path('gmail_token', {id: '_id_', secret: '_secret_', back_url: '_url_' })|replace(replacements)|raw }}" class="btn btn-info">
-								<i class="fa fa-bolt"></i> Get Access Token
-							</a>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
 						</td>
 					</tr>
 				</table>
