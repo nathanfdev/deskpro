@@ -2430,7 +2430,10 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 				this.fireEvent('postApply', [this, data, formDataInfo]);
 
 				if (data && data.failed_tickets && data.failed_tickets.length) {
-					DeskPRO_Window.showAlert('Note: ' + data.failed_tickets.length + ' tickets were not updated because you do not have permission to make the requested changed.');
+					DeskPRO_Window.showAlert('Note: ' + data.failed_tickets.length + ' ticket(s) were not updated because you do not have permission to make the requested changed.');
+				}
+				if (data && data.validation_failed_tickets && data.validation_failed_tickets.length) {
+					DeskPRO_Window.showAlert('Note: ' + data.validation_failed_tickets.length + ' ticket(s) were not updated because they did not pass validation checks.');
 				}
 
 				if (statusUpdate === 'hidden.deleted' || statusUpdate === 'hidden.spam') {

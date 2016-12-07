@@ -58,6 +58,7 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketResultsDisplay;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\UI\RuleBuilder;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -1924,6 +1925,7 @@ class TicketSearchController extends AbstractController
         }
 
         $permission_errors = [];
+        $validation_errors = [];
         $success           = [];
 
         if ($snippet_ids = $this->in->getString('snippet_ids')) {
@@ -1939,6 +1941,7 @@ class TicketSearchController extends AbstractController
 
         if (($actions || $actions_set || $macro) && $tickets) {
             if ($macro) {
+                /** @var Ticket $ticket */
                 foreach ($tickets as $ticket) {
                     $actions_collection = $macro->getActionsCollection($ticket);
 
@@ -1946,6 +1949,7 @@ class TicketSearchController extends AbstractController
                     try {
                         if (!$actions_collection->applyCheckPermission($ticket, $this->person)) {
                             $permission_errors[] = $ticket->getId();
+                            $this->db->rollback();
                             continue;
                         }
 
@@ -1955,6 +1959,13 @@ class TicketSearchController extends AbstractController
                         }
 
                         $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+
+                        if (count($this->getTicketLayoutErrors($ticket))) {
+                            $validation_errors[] = $ticket->getId();
+                            $this->db->rollback();
+                            continue;
+                        }
+
                         $this->em->persist($ticket);
                         $this->em->flush();
                         $ticket->getTicketLogger()->done();
@@ -1991,6 +2002,7 @@ class TicketSearchController extends AbstractController
 
                 $collection->applyAllModifiers();
 
+                /** @var Ticket $ticket */
                 foreach ($tickets as $ticket) {
                     if (!$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
                         $permission_errors[] = $ticket->getId();
@@ -2003,7 +2015,15 @@ class TicketSearchController extends AbstractController
                             $permission_errors[] = $ticket->getId();
                             continue;
                         }
+
                         $collection->apply(null, $ticket, $this->person);
+
+                        if (count($this->getTicketLayoutErrors($ticket))) {
+                            $validation_errors[] = $ticket->getId();
+                            $this->db->rollback();
+                            continue;
+                        }
+
                         $this->em->persist($ticket);
 
                         if ($snippet_ids) {
@@ -2048,11 +2068,12 @@ class TicketSearchController extends AbstractController
         }
 
         return $this->createJsonResponse([
-            'success'         => true,
-            'success_tickets' => $success,
-            'failed_tickets'  => $permission_errors,
-            'client_messages' => $client_messages,
-            'ticket_data'     => $ticket_data,
+            'success'                   => true,
+            'success_tickets'           => $success,
+            'failed_tickets'            => $permission_errors,
+            'validation_failed_tickets' => $validation_errors,
+            'client_messages'           => $client_messages,
+            'ticket_data'               => $ticket_data,
         ]);
     }
 
@@ -2092,5 +2113,24 @@ class TicketSearchController extends AbstractController
             'agent_signature_html' => $this->person->getSignatureHtml(),
             'ticket_options'       => $ticket_options,
         ]);
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return \Symfony\Component\Validator\ConstraintViolationListInterface
+     */
+    private function getTicketLayoutErrors(Ticket $ticket)
+    {
+        // use the importer validator as it's configured to use entity annotations as well
+        // entity annotations are disabled in the basic agent validator
+        $validator = $this->get('dp.importer_validator');
+        $errors    = $validator->validate($ticket, [
+            new AppAssert\Ticket\TicketLayout([
+                'context' => 'agent',
+            ]),
+        ]);
+
+        return $errors;
     }
 }
