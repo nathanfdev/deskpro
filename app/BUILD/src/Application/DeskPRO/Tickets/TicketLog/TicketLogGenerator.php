@@ -82,7 +82,8 @@ class TicketLogGenerator
         $group->ticket      = $this->ticket;
         $group->person      = $this->context->getPersonContext();
         $group->action_type = 'action_starter';
-        $group->details     = [
+
+        $details = [
             'event'           => $this->context->getEventType(),
             'event_method'    => $this->context->getEventMethod(),
             'event_performer' => $this->context->getEventPerformer(),
@@ -90,6 +91,13 @@ class TicketLogGenerator
             'person_name'     => $this->context->getPersonContext() ? $this->context->getPersonContext()->getDisplayName() : null,
             'person_email'    => $this->context->getPersonContext() ? $this->context->getPersonContext()->getPrimaryEmailAddress() : null,
         ];
+
+        $apiKey = $this->context->getVars()->get('via_api_key');
+        if ($apiKey) {
+            $details['via_api_key'] = $apiKey;
+        }
+
+        $group->setDetails($details);
 
         $logs   = [];
         $logs[] = $group;
