@@ -73,6 +73,15 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
     private $subheading = 'Our team are online and ready to help with your enquiries. Send us a message to get started.';
 
     /**
+     * Message at start button.
+     *
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $startButton = 'Start a conversation';
+
+    /**
      * @return string
      */
     public function getTitle()
@@ -148,6 +157,26 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
     public function setSubheading($subheading)
     {
         $this->subheading = $subheading;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStartButton()
+    {
+        return $this->startButton;
+    }
+
+    /**
+     * @param string $startButton
+     *
+     * @return $this
+     */
+    public function setStartButton($startButton)
+    {
+        $this->startButton = $startButton;
 
         return $this;
     }

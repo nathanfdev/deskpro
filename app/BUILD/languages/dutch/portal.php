@@ -205,7 +205,6 @@ return [
     'portal.chat.send_another_validation_email'             => 'Stuur me nog een e-mail',
     'portal.chat.sent_validation_code'                      => 'We hebben u een e-mail met een validatiecode gestuurd.',
     'portal.chat.start'                                     => 'Start een nieuwe chat',
-    'portal.chat.start_conversation'                        => 'Start een gesprek',
     'portal.chat.support_powered_by'                        => 'Ondersteuning mogelijk gemaakt door {{DeskPRO}}',
     'portal.chat.take_chat'                                 => 'Chat aannemen',
     'portal.chat.taken_by'                                  => 'Chat aangenomen door',

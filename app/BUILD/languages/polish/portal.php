@@ -205,7 +205,6 @@ return [
     'portal.chat.send_another_validation_email'             => 'Wyślij mi następny email',
     'portal.chat.sent_validation_code'                      => 'Wysłaliśmy ci wiadomość email z kodem potwierdzającym.',
     'portal.chat.start'                                     => 'Rozpocznij nowy czat',
-    'portal.chat.start_conversation'                        => 'Rozpocznij nową konwersacje',
     'portal.chat.support_powered_by'                        => 'Wsparcie zapewnione dzięki {{DeskPRO}}',
     'portal.chat.take_chat'                                 => 'Podejmij czat',
     'portal.chat.taken_by'                                  => 'Czat przejęty przez',

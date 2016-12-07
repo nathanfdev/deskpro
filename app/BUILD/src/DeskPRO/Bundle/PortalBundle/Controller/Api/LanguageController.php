@@ -137,7 +137,6 @@ class LanguageController extends AbstractApiController
             'portal.chat.reply_to',
             'portal.chat.screen_share',
             'portal.chat.start',
-            'portal.chat.start_conversation',
             'portal.chat.support_powered_by',
             'portal.chat.transcript_desc',
             'portal.chat.transcript_title',

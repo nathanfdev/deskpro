@@ -198,6 +198,15 @@ export const helpPopupSubheadingSelector = createSelector(
   )
 );
 
+export const helpPopupStartButtonSelector = createSelector(
+  helpPopupSelector,
+  widgetLanguageSelector,
+  translationsSelectorFactory(
+    'start_button',
+    'Start a conversation'
+  )
+);
+
 export const widgetPopupStyleSelector = createSelector(
   helpPopupSelector,
   options => options.get('style')

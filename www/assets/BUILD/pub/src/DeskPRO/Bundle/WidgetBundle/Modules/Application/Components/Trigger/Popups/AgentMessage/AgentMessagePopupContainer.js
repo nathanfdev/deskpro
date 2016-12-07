@@ -13,7 +13,6 @@ import { AgentMessagePopup } from './AgentMessagePopup';
   helpPopupMessage:    helpPopupMessageSelector(state),
   helpPopupHeading:    helpPopupHeadingSelector(state),
   helpPopupSubheading: helpPopupSubheadingSelector(state)
-
 }))
 export class AgentMessagePopupContainer extends React.Component {
 
