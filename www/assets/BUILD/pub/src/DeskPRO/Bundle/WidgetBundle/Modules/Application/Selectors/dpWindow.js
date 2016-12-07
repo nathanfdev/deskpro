@@ -46,6 +46,11 @@ export const windowDimensionsSelector = createSelector(
   dimensions => dimensions.get('window')
 );
 
+export const isFullScreenSelector = createSelector(
+  windowDimensionsSelector,
+  windowDimensions => windowDimensions.get('width') < 450
+);
+
 export const widgetDimensionsSelector = createSelector(
   dimensionsSelector,
   dimensions => dimensions.get('widget')
