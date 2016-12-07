@@ -10,7 +10,7 @@ define [
   class Admin_TicketAccounts_Ctrl_Edit extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_TicketAccounts_Ctrl_Edit'
     @CTRL_AS = 'TicketAccountsEdit'
-    @DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal', 'dpObTypesDefTicketActions', '$location']
+    @DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal', 'dpObTypesDefTicketActions', '$location', '$upload', '$http', 'Api2']
 
     init: ->
       @actionsTypeDef = @dpObTypesDefTicketActions
@@ -148,15 +148,17 @@ define [
           @stopSpinner('saving_account', true).then(=>
             @Growl.success(@getRegisteredMessage('saved_account'))
           )
-
           @form_model.apply()
           @TicketAccountsData.updateModel(@account)
-
-          @skipDirtyState()
-          if is_new
-            @$state.go('tickets.ticket_accounts.gocreate')
-          else
-            @$state.go('tickets.ticket_accounts')
+          @uploadFiles().then(=>
+              @skipDirtyState()
+              if is_new
+                @$state.go('tickets.ticket_accounts.gocreate')
+              else
+                @$state.go('tickets.ticket_accounts')
+            , (err) =>
+              @Growl.error(err)
+          )
         )
       )
       promise.error( (info, code) =>
@@ -318,11 +320,73 @@ define [
       });
 
 
-
     resetToken: (type) ->
       if @form_model.form[type]?.token?
         @form_model.form[type].token = null
         @form_model.form[type].refreshToken = null
+
+
+    onFileSelect: (files, type) ->
+      @$scope.uploading = true
+      if (!@$scope.files)
+        @$scope.files = {}
+      @$scope.files[type] = files[0]
+      if (type == 'certificate')
+        @$scope.form.cert_file = files[0].name
+      else if (type == 'key')
+        @$scope.form.key_file = files[0].name
+
+    uploadFiles: () ->
+      return new Promise( (resolve, reject) =>
+        if (!@$scope.files || (!@$scope.files.certificate && !@$scope.files.key))
+          resolve()
+        if (!@$scope.files.certificate || !@$scope.files.key)
+          reject('You must add a certificate and a key')
+        @$upload.upload({
+          url: @Api2.formatUrl('/email_accounts/'+@form_model.account.id+'/encryption'),
+          data:{ cert: @$scope.files.certificate, key: @$scope.files.key }
+        }).success( (data) =>
+          @$scope.uploading = false
+          @setCertificate data.data.cert_blob
+          @setKey data.data.key_blob
+          resolve()
+        ).error( (data) =>
+          @$scope.uploading = false
+          reject(data?.error_message || 'Error')
+        )
+      )
+
+    setCertificate: (blob) =>
+      if !blob?
+        @$scope.form.cert_file = null
+      else
+        @$scope.form.cert_file = blob.filename
+
+    setKey: (blob) =>
+      if !blob?
+        @$scope.form.key_file = null
+      else
+        @$scope.form.key_file = blob.filename
+
+    deleteCertificate: () =>
+      if @form_model.account.cert_blob
+        @Api2.sendDelete('/email_accounts/'+@form_model.account.id+'/certificate').success(() =>
+          @$scope.form.cert_file = null
+        )
+      else
+        @$scope.files.certificate = null
+        @$scope.form.cert_file = null
+
+
+    deleteKey: () =>
+      if @form_model.account.cert_blob
+        @Api2.sendDelete('/email_accounts/'+@form_model.account.id+'/key').success(() =>
+          @$scope.form.key_file = null
+        )
+      else
+        @$scope.files.key = null
+        @$scope.form.key_file = null
+
 
 
 

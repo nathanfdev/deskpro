@@ -47,6 +47,7 @@
 						{% set gmail_token = app.session.hasFlash('gmail.oauth.token') ? app.session.getFlash('gmail.oauth.token')|first : null %}
 						{% if not app.getSetting('internal.disable_email_editing.incoming_details') %}
 							{% include 'AdminInterfaceBundle:TicketAccounts:edit-in.html.twig' %}
+							{% include 'AdminInterfaceBundle:TicketAccounts:edit-encryption.html.twig' %}
 						{% endif %}
 						{% include 'AdminInterfaceBundle:TicketAccounts:edit-out.html.twig' %}
 						{% include 'AdminInterfaceBundle:TicketAccounts:edit-actions.html.twig' %}

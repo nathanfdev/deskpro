@@ -1,0 +1,40 @@
+{##################################################################################################}
+{# Incoming Account Details #}
+{##################################################################################################}
+
+<div class="form-group" ng-if="form.account_type != 'outgoing'">
+	<div class="col-lg-3">
+		<h3>{{ phrase('adm.tickets.emails_encryption') }}</h3>
+	</div>
+	<div class="col-lg-9">
+		<div class="inner-group">
+			<label>
+				<input type="checkbox"  ng-model="form.encryption_enabled" />
+				Enable encryption
+			</label>
+			<span class="help-block" ng-hide="form.encryption_enabled">
+				<span>Allows you to send encrypted emails to your helpdesk.</span>
+			</span>
+			<div ng-show="form.encryption_enabled">
+				<a href="javascript:;" class="file-upload-wrapper">
+					<input type="file" ng-file-select="TicketAccountsEdit.onFileSelect($files, 'certificate')" accept="application/pkix-cert" />
+					Upload Certificate
+				</a><br />
+				{{  ng_var('form.cert_file') }}
+                {{  ng_var('form.certificate') }}
+				<span ng-show="form.cert_file">
+					<a ng-click="TicketAccountsEdit.deleteCertificate()">Delete</a>
+				</span>
+				<br />
+				<a href="javascript:;" class="file-upload-wrapper">
+					<input type="file" ng-file-select="TicketAccountsEdit.onFileSelect($files, 'key')" accept="application/x-pem-file" />
+					Upload Key
+				</a><br />
+                {{  ng_var('form.key_file') }}
+				<span ng-show="form.key_file">
+					<a ng-click="TicketAccountsEdit.deleteKey()">Delete</a>
+				</span>
+			</div>
+		</div>
+	</div>
+</div>

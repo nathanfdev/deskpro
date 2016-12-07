@@ -39,14 +39,14 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * @property int       $id
- * @property string    $account_type
+ * @property int $id
+ * @property string $account_type
  * @property \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface $incoming_account
  * @property \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface $outgoing_account
- * @property bool      $is_enabled
- * @property string    $address
- * @property array     $other_addresses
- * @property array     $options
+ * @property bool $is_enabled
+ * @property string $address
+ * @property array $other_addresses
+ * @property array $options
  * @property \DateTime $date_created
  * @property \DateTime $date_read_start
  * @property \DateTime $date_last_incoming
@@ -161,7 +161,8 @@ class EmailAccount extends DomainObject
             self::TYPE_OUT,
             self::TYPE_TICKETS,
             self::TYPE_ARTICLES,
-        ])) {
+        ])
+        ) {
             throw new \InvalidArgumentException();
         }
 
@@ -324,6 +325,38 @@ class EmailAccount extends DomainObject
         }
 
         $this->setModelField('options', $options);
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getCertBlob()
+    {
+        return $this->cert_blob;
+    }
+
+    /**
+     * @param Blob $certBlob
+     */
+    public function setCertBlob($certBlob)
+    {
+        $this->setModelField('cert_blob', $certBlob);
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getKeyBlob()
+    {
+        return $this->key_blob;
+    }
+
+    /**
+     * @param Blob $keyBlob
+     */
+    public function setKeyBlob($keyBlob)
+    {
+        $this->setModelField('key_blob', $keyBlob);
     }
 
     //###########################################################################
