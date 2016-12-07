@@ -225,7 +225,7 @@ export class SideBar extends React.Component {
     }
     if (this.props.canUseChat()) {
       menus.push({
-        className: 'chats',
+        className: 'chat',
         label:     'Chats',
         link:      '/agent/#app.userchat',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/chat.svg`,
@@ -237,7 +237,7 @@ export class SideBar extends React.Component {
     }
     if (this.props.canUsePeople()) {
       menus.push({
-        className: 'crm',
+        className: 'people',
         label:     'CRM',
         link:      '/agent/#app.people',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/crm.svg`,
