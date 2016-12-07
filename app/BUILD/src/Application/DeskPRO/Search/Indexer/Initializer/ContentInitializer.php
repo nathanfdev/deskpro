@@ -30,11 +30,10 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\Search\IndexInitializer;
+namespace Application\DeskPRO\Search\Indexer\Initializer;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Log\Logger;
-use Application\DeskPRO\Search\Indexer\Initializer\AbstractInitializer;
 
 abstract class ContentInitializer extends AbstractInitializer
 {
