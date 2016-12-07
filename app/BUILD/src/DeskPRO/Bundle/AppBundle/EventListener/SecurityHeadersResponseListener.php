@@ -62,10 +62,10 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
         $path    = $request->getPathInfo();
 
         $csp = [
-            'default-src' => 'self',
+            'default-src' => ['self', 'blob:'],
             'script-src'  => ['*', 'data:', 'unsafe-inline', 'unsafe-eval'],
             'style-src'   => ['*', 'data:', 'unsafe-inline'],
-            'img-src'     => ['*', 'data:'],
+            'img-src'     => ['*', 'data:', 'blob:'],
             'font-src'    => ['*', 'data:'],
             'connect-src' => '*',
             'media-src'   => '*',
