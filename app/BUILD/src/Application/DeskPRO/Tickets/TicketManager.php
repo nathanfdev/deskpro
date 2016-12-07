@@ -46,7 +46,7 @@ use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
-use Application\LegacyApiBundle\Request\RequestAuth;
+use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\StreamHandler;
@@ -591,13 +591,26 @@ class TicketManager
         if ($eventMethod === 'api') {
             $key = null;
 
+            // try to get legacy api key
             try {
-                /* @var $auth RequestAuth */
-                if ($auth = $this->container->get('deskpro.api.request_auth')) {
+                $auth = $this->container->get('deskpro.api.request_auth');
+                if ($auth && $auth->getApiUser()) {
                     $key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->getId() : null;
                 }
             } catch (InactiveScopeException $e) {
-                $key = null;
+            }
+
+            // try to get new api key
+            try {
+                $token = $this->container->get('security.token_storage')->getToken();
+                if ($token instanceof ApiKeySecurityToken) {
+                    $credentials = $token->getCredentials();
+                    if ($credentials && strpos($credentials, ':') !== false) {
+                        list($key) = explode(':', $credentials, 2);
+                        $key       = (int) $key;
+                    }
+                }
+            } catch (InactiveScopeException $e) {
             }
 
             if ($key) {
