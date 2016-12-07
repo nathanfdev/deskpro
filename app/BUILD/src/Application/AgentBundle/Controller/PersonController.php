@@ -702,8 +702,8 @@ class PersonController extends AbstractController
 
         $invalid_custom_fields = [];
         $is_valid              = true;
-        foreach ($field_manager->getFields() as $field) {
-            $errors = $field->getHandler()->validateFormData($custom_fields);
+        foreach ($field_manager->getDefinedFields() as $field) {
+            $errors = $field->getHandler()->validateFormData($custom_fields, HandlerAbstract::CONTEXT_AGENT);
             foreach ($errors as $code) {
                 $invalid_custom_fields['field_'.$field->getId()] = preg_replace('#^(.*?)\.#', '', $code);
                 $is_valid                                        = false;
