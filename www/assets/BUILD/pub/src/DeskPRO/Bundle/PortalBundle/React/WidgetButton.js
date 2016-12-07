@@ -34,19 +34,19 @@ export class WidgetButton extends React.Component {
     }
   }
 
-  onWidgetStatus = event => {
+  onWidgetStatus = (event) => {
     this.setState({
       status: event.detail
     });
   };
 
-  onWidgetOnlineAgents = event => {
+  onWidgetOnlineAgents = (event) => {
     this.setState({
       onlineAgents: Immutable.fromJS(event.detail)
     });
   };
 
-  onOpenWidget = event => {
+  onOpenWidget = (event) => {
     event.preventDefault();
     if (window.DpWidget) {
       window.DpWidget.openWidget();
@@ -58,7 +58,7 @@ export class WidgetButton extends React.Component {
 
     if (status.loaded && onlineAgents.size > 0) {
       return (
-        <a href="#" onClick={this.onOpenWidget} className={classNames({ disabled: !status.chatAvailable })}>
+        <a href="#open" onClick={this.onOpenWidget} className={classNames({ disabled: !status.chatAvailable })}>
           <i className="fa fa-comments-o" />
           <h1>{portalPhrases.get('portal.general.start-chat')}</h1>
           <p>

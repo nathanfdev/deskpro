@@ -1,3 +1,5 @@
+import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import Immutable from 'immutable';
 import { store } from './store';
 import * as dpWindowActions from '../Modules/Application/Actions/dpWindowActions';
 import * as bootstrapActions from '../Modules/Application/Actions/bootstrapActions';
@@ -6,8 +8,6 @@ import { onlineAgentsSelector, onlineAgentsCountSelector } from '../Modules/Appl
 import { widgetHasChatSelector, widgetLoadedSelector } from '../Modules/Application/Selectors/bootstrap';
 import { chatBeginModeSelector, widgetOpenedSelector } from '../Modules/Application/Selectors/dpWindow';
 import { customChatFieldsOrderedSelector } from '../Modules/Application/Selectors/customFields';
-import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import Immutable from 'immutable';
 import { history, getLocation } from './history';
 
 // External window custom event handlers
@@ -55,7 +55,7 @@ const dispatchChangedDemoStage = () => {
   if (!widgetOpened) {
     dispatchCustomEvent('widgetDemoStage', 'button');
   } else {
-    getLocation(location => {
+    getLocation((location) => {
       if (location.pathname === '/ticket/form') {
         dispatchCustomEvent('widgetDemoStage', 'ticket');
       } else if (location.pathname === '/chat/active') {
@@ -76,7 +76,7 @@ handlers.reloadLiveDemoSettings = (options) => {
   dispatchChangedDemoStage();
 };
 
-handlers.changeLiveDemoStage = stage => {
+handlers.changeLiveDemoStage = (stage) => {
   const state = getState();
 
   switch (stage) {
@@ -100,7 +100,7 @@ handlers.changeLiveDemoStage = stage => {
       break;
   }
 };
-handlers.setLiveDemoSampleState = state => {
+handlers.setLiveDemoSampleState = (state) => {
   const { sampleState = {}, options = {}, settings = {}, chatCustomFields = {} } = state;
   const { agents = [], users = [] } = sampleState.people || {};
   const { dispatch } = store;
@@ -119,7 +119,7 @@ handlers.setLiveDemoSampleState = state => {
   dispatch(chatActions.addNewMessages(sampleState.chat.messages));
   dispatch(setCollection('CustomDefChat', 'all', Immutable.fromJS(chatCustomFields)));
 };
-handlers.setLiveDemoChatCustomFields = customFields => {
+handlers.setLiveDemoChatCustomFields = (customFields) => {
   const oldState = getState();
   const oldCustomFields = customChatFieldsOrderedSelector(oldState);
 
@@ -133,7 +133,7 @@ handlers.setLiveDemoChatCustomFields = customFields => {
   }
 };
 
-window.addEventListener('message', event => {
+window.addEventListener('message', (event) => {
   const { type, options } = event.data;
   if (handlers[type]) {
     handlers[type](options);
