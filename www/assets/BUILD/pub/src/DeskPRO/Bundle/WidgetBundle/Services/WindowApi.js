@@ -27,9 +27,11 @@ handlers.getWidgetStatus = () => {
   const loaded  = widgetLoadedSelector(state);
   const hasChat = widgetHasChatSelector(state);
   const onlineAgentsCount = onlineAgentsCountSelector(state);
+  const isOpened = widgetOpenedSelector(state);
 
   dispatchCustomEvent('widgetStatus', {
     loaded,
+    isOpened,
     chatAvailable: loaded && hasChat && onlineAgentsCount > 0
   });
 };

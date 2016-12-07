@@ -21,6 +21,7 @@ import {
 import { chatIdSelector, needValidateEmailSelector } from '../../Chat/Selectors/chat';
 import { loadNewTicketForm } from '../../Ticket/Actions/ticketActions';
 import { history, getLocation } from '../../../Services/history';
+import { dispatchWidgetStatus } from '../../../Services/WindowApi';
 
 const openChatBeginStageByMode = (chatBeginMode) => {
   switch (chatBeginMode) {
@@ -80,7 +81,12 @@ export const windowResize = createAction(
   }
 );
 
-export const closeWidget = createAction('WIDGET_CLOSE');
+export const closeWidget = createAction(
+  'WIDGET_CLOSE',
+  () => {
+    setTimeout(() => dispatchWidgetStatus(), 1);
+  }
+);
 export const openWidget = createAction(
   'WIDGET_OPEN',
   () => (dispatch, getState) => {
@@ -109,6 +115,7 @@ export const openWidget = createAction(
     }
 
     dispatch(windowResize());
+    setTimeout(() => dispatchWidgetStatus(), 1);
 
     return null;
   }
