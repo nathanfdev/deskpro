@@ -105,7 +105,8 @@ export const widgetPositionSelector = createSelector(
 
 export const isBubbleSelector = createSelector(
   widgetTypeSelector,
-  widgetType => widgetType === 'bubble'
+  isFullScreenSelector,
+  (widgetType, fullScreen) => widgetType === 'bubble' && !fullScreen
 );
 
 export const liveDemoSelector = createSelector(

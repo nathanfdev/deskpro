@@ -91,7 +91,7 @@ export default class WidgetFrameContainer extends React.Component {
 
     const frameStyles = { width };
     const containerStyles = {};
-    if (isBubble && !fullScreen) {
+    if (isBubble) {
       if (size === 'small') {
         frameStyles.marginBottom = 50;
       } else if (size === 'medium') {
@@ -125,7 +125,7 @@ export default class WidgetFrameContainer extends React.Component {
 
             widgetPosition,
             isBubble,
-            windowWidth
+            fullScreen
           })}
         </Provider>
       </Frame>
