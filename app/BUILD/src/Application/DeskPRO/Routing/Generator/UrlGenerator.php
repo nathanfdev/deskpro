@@ -93,7 +93,7 @@ class UrlGenerator extends BaseUrlGenerator
 
     public function generateUrl($name, $parameters = [])
     {
-        $url = $this->generatePath($name, $parameters, false);
+        $url = $this->generate($name, $parameters, self::ABSOLUTE_PATH);
 
         // Make sure index.php is in links
         $deskpro_url = rtrim(App::getContainer()->getBrandSetting('core.deskpro_url'), '/');
@@ -101,54 +101,9 @@ class UrlGenerator extends BaseUrlGenerator
         return $deskpro_url.$url;
     }
 
-    /**
-     * This is like generate() except it returns JUST the route. Nothing to do with the current base
-     * path etc is added. This will begin with a slash.
-     *
-     * @param $name
-     * @param array $parameters
-     * @param bool  $absolute
-     */
-    public function generatePath($name, $parameters = [], $absolute = false)
-    {
-        $url = $this->generate($name, $parameters, $absolute);
-
-        $with_file   = false;
-        $with_widget = false;
-        if (strpos($url, '/file.php/') !== false) {
-            $with_file = true;
-            $url       = str_replace('/file.php/', '/index.php/', $url);
-        } elseif (strpos($url, '/dp.php/') !== false) {
-            $with_file = true;
-            $url       = str_replace('/dp.php/', '/index.php/', $url);
-        }
-
-        $url = preg_replace('#^'.preg_quote($this->context->getBaseUrl(), '#').'#', '', $url);
-
-        if ($with_file) {
-            $url = '/file.php'.$url;
-            $url = str_replace('/file.php/index.php/', '/file.php/', $url);
-        } elseif ($with_widget) {
-            $url = '/dp.php'.$url;
-            $url = str_replace('/dp.php/index.php/', '/dp.php/', $url);
-        }
-
-        return $url;
-    }
-
     protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, array $requiredSchemes = [])
     {
         $url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, $requiredSchemes);
-
-        // /file.php/ is a hint to say that we want to serve through the file loader,
-        // Any route that is prefixed with /file.php/ has this magic below applied
-        if (strpos($url, '/file.php/') !== false) {
-            $url = str_replace('/index.php/', '/', $url);
-        } elseif (strpos($url, '/dp.php/') !== false) {
-            $url = str_replace('/dp.php', '', $url);
-        }
-
-        $url = str_replace('index.php//', 'index.php/', $url);
 
         return $url;
     }
