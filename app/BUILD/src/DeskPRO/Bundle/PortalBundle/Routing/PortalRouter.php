@@ -280,7 +280,15 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
                 $url .= '?'.http_build_query($queryParams);
             }
 
-            throw new RedirectToUrlException($url);
+            if (($this->isMultiLanguage() && !$requestInfo->getLanguageUrlCode())) {
+                $message = 'MultiLanguage and missing lang code';
+            } else {
+                $message = 'Not MultiLanguage but have lang code';
+            }
+
+            $message .= ' (lang code: '.($requestInfo->getLanguageUrlCode() ?: 'unset').')';
+
+            throw new RedirectToUrlException($url, $message);
         }
 
         $routablePath = $requestInfo->getRoutablePath();

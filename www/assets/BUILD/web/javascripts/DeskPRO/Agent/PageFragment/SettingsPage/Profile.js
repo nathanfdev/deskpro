@@ -248,7 +248,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 
 	getDeviceToken: function(el) {
 		jQuery.get(
-			'/api/v2/me/device-setup-token',
+      window.DP_BASE_API_URL + '/v2/me/device-setup-token',
 			function(data){
 				var tokenContainer = el.find('.dp-device-qr-code');
 				tokenContainer.html('');
