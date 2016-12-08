@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\TicketMessage;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -41,7 +42,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn("type")
  * @ORM\DiscriminatorMap({
- *     "voice_phone_call" = "TicketMessageVoicePhoneCall",
  *     "value" = "TicketMessageAttribute"
  * })
  *

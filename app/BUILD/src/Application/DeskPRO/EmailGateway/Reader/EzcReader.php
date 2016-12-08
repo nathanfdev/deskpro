@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader;
 
+use Application\DeskPRO\Entity\EmailAccount;
 use Orb\Util\Strings;
 
 /**
@@ -42,6 +43,10 @@ use Orb\Util\Strings;
  */
 class EzcReader extends AbstractReader
 {
+    /**
+     * @var EmailAccount
+     */
+    protected $account;
     /**
      * @var \ezcMailParser|null
      */
@@ -80,6 +85,22 @@ class EzcReader extends AbstractReader
                 return $text;
             });
         }
+    }
+
+    /**
+     * @return EmailAccount
+     */
+    public function getAccount()
+    {
+        return $this->account;
+    }
+
+    /**
+     * @param EmailAccount $account
+     */
+    public function setAccount($account)
+    {
+        $this->account = $account;
     }
 
     public function _kill()
@@ -688,6 +709,7 @@ class EzcReader extends AbstractReader
 
     public function decryptEmail()
     {
+        var_dump($this);
         $keys = [
             'public'  => '/Users/julien/repositories/vagrant-deskpro-dev/docker/deskpro/var/julien.cer',
             'private' => '/Users/julien/repositories/vagrant-deskpro-dev/docker/deskpro/var/julien.pem',
