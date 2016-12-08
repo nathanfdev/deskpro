@@ -389,7 +389,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 				this.popoverOuter.css({
 					'position': 'absolute',
 					'z-index': 1800,
-					'width': width+2+6, //2px for thi sborder, 6px for the popover border
+					'width': width+2+6-52, //2px for thi sborder, 6px for the popover border, 52 - sidebar menu offset
 					'overflow': 'auto',
 					'top': top ? top-3 : '',
 					'left': 61,
@@ -401,7 +401,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 				this.popoverOuter.css({
 					'position': 'absolute',
 					'z-index': 1800,
-					'width': width+2+6, //2px for thi sborder, 6px for the popover border
+					'width': width+2+6-52, //2px for thi sborder, 6px for the popover border, 52 - sidebar menu offset
 					'overflow': 'auto',
 					'top': top ? top-3 : '',
 					'left': 61,
