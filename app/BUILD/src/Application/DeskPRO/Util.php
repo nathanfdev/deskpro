@@ -308,16 +308,17 @@ class Util
 
     /**
      * @param string|array $labels
+     * @param bool         $toLower
      *
      * @return array
      */
-    public static function labelsArrayFromString($labels)
+    public static function labelsArrayFromString($labels, $toLower = true)
     {
         if (!is_array($labels)) {
             $labels = explode(',', $labels);
         }
 
-        $labels = array_map(function ($v) {
+        $labels = array_map(function ($v) use ($toLower) {
             if (!is_scalar($v)) {
                 return;
             }
@@ -326,7 +327,9 @@ class Util
                 return;
             }
 
-            $v = strtolower($v);
+            if ($toLower) {
+                $v = strtolower($v);
+            }
 
             return $v;
         }, $labels);

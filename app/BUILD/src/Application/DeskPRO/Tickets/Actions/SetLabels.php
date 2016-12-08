@@ -68,7 +68,7 @@ class SetLabels extends AbstractContainerAwareAction implements ActionInterface,
         // Add labels
         //--------------------
 
-        $add_labels = DeskPROUtil::labelsArrayFromString($this->getActionOption('add_labels', ''));
+        $add_labels = DeskPROUtil::labelsArrayFromString($this->getActionOption('add_labels', ''), false);
 
         if ($add_labels) {
             foreach ($add_labels as $l) {
