@@ -96,8 +96,10 @@ class Chat extends React.Component {
   }
 
   getPopupContent() {
+    const { chatDepartments } = this.props;
     const { activeChat, onlineAgents, departmentMode } = this.state;
     const volume = parseInt(this.state.volume, 10);
+
     return (<div id="chat-menu">
       <div className="header">
         {agentPhrases.get('agent.general.chat')}&nbsp;
@@ -121,14 +123,15 @@ class Chat extends React.Component {
         <Range min={0} max={10} value={volume} onChange={this.updateAudioVolume} />
         <hr className="full" />
         {agentPhrases.get('agent.tickets.count_agents', { count: onlineAgents.length })}
-        <button
-          className={classNames('ui', 'button', 'basic', 'tiny', 'compact', 'right', 'department-filter',
-            { active: departmentMode })}
-          onClick={this.toggleDepartmentMode}
-        >
-          <i className="icon users" />
-          {agentPhrases.get('agent.chat.by_department')}
-        </button>
+        {chatDepartments && chatDepartments.length > 1 &&
+          <button
+            className={classNames('ui', 'button', 'basic', 'tiny', 'compact', 'right', 'department-filter',
+              { active: departmentMode })}
+            onClick={this.toggleDepartmentMode}
+          >
+            <i className="icon users" />
+            {agentPhrases.get('agent.chat.by_department')}
+          </button>}
         {this.getAgents()}
       </div>
     </div>);
