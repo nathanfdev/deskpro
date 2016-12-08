@@ -74,7 +74,7 @@ class Text extends HandlerAbstract
         }
 
         $options = [];
-        foreach (['required', 'min_length', 'max_length', 'regex'] as $k) {
+        foreach (['required', 'min_length', 'max_length', 'regex', 'regex_required'] as $k) {
             $options[$k] = $this->field_def->getOption($opt_prefix.$k);
         }
 
@@ -95,8 +95,14 @@ class Text extends HandlerAbstract
         }
 
         if ($options['regex']) {
+            if ($options['regex_required']) {
+                if (!Strings::utf8_strlen($data)) {
+                    return $this->makeErrorArray(['required']);
+                }
+            }
+
             $regex = Strings::getInputRegexPattern($options['regex']);
-            if ($regex && !preg_match($regex, $data)) {
+            if ($regex && $data && !preg_match($regex, $data)) {
                 return $this->makeErrorArray(['regex_fail']);
             }
         }

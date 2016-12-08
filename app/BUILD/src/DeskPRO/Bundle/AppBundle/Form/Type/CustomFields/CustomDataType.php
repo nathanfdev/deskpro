@@ -288,7 +288,8 @@ class CustomDataType extends AbstractType
                     return $options['custom_def']->getType() === CustomDefAbstract::TYPE_HIDDEN;
                 },
                 'required' => function (Options $options) {
-                    return $options['custom_def']->isRequired($options['agent_interface']);
+                    return $options['custom_def']->isRequired($options['agent_interface'])
+                        || $options['custom_def']->isRegexRequired($options['agent_interface']);
                 },
                 'inline'         => false,
                 'error_bubbling' => false,
