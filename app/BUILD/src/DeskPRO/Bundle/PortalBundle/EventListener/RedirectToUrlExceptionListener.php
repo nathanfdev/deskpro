@@ -107,9 +107,12 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
 
         $url = rtrim($brandUrl, '/').'/'.ltrim($url, '/');
 
-        $this->logger->info('RedirectToUrlException caught: 302 redirecting to "'.$url.'"');
+        $this->logger->info('RedirectToUrlException caught: '.$e->getMessage().' -- 302 redirecting to "'.$url.'"');
 
-        $event->setResponse(new RedirectResponse($url, Response::HTTP_FOUND));
+        $response = new RedirectResponse($url, Response::HTTP_FOUND);
+        $response->headers->set('X-DeskPRO-RedirectReason', 'RedirectToUrlException: '.$e->getMessage());
+
+        $event->setResponse($response);
         $event->stopPropagation();
     }
 }
