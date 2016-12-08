@@ -442,6 +442,18 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="with-margin" ng-show="brand_settings.chat.popup.style == 'agent_text_button' || brand_settings.chat.popup.style == 'text_button' || brand_settings.chat.popup.style == 'agents_button'">
+                                    <label>Start conversation button</label>
+                                    <div class="inline fields">
+                                        <div class="thirteen wide field">
+                                            <textarea rows="3" ng-model="brand_settings.chat.popup.translations[0].start_button"></textarea>
+                                        </div>
+                                        <div class="three wide field">
+                                            <dp-semantic-language-button translations="brand_settings.chat.popup.translations" key="start_button" languages="languages">
+                                            </dp-semantic-language-button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

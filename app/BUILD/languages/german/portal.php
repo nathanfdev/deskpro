@@ -205,7 +205,6 @@ return [
     'portal.chat.send_another_validation_email'            => 'Senden Sie mir eine andere E-Mail',
     'portal.chat.sent_validation_code'                     => 'Wir senden Ihnen eine E-Mail mit einem Bestätigungscode.',
     'portal.chat.start'                                    => 'Einen neuen Chat starten',
-    'portal.chat.start_conversation'                       => 'Starte mit einer Konversation',
     'portal.chat.support_powered_by'                       => 'Support powered by {{DeskPRO}}',
     'portal.chat.take_chat'                                => 'Chat übernehmen',
     'portal.chat.taken_by'                                 => 'Chat übernommen von',

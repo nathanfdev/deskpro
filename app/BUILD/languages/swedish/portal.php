@@ -205,7 +205,6 @@ return [
     'portal.chat.send_another_validation_email'             => 'Skicka mig ett till mail',
     'portal.chat.sent_validation_code'                      => 'Vi har skickat dig ett mail med en valideringskod.',
     'portal.chat.start'                                     => 'Starta en ny chatt',
-    'portal.chat.start_conversation'                        => 'Starta en konversation',
     'portal.chat.support_powered_by'                        => 'Support powered by {{DeskPRO}}',
     'portal.chat.take_chat'                                 => 'Ta chatt',
     'portal.chat.taken_by'                                  => 'Chatt tagen av',

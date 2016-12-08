@@ -50,6 +50,10 @@ class WidgetBrandChatPopupTranslationType extends AbstractType
             ->add('message', TextType::class)
             ->add('heading', TextType::class)
             ->add('subheading', TextType::class)
+            ->add('start_button', TextType::class,
+                [
+                    'property_path' => 'startButton',
+                ])
         ;
     }
 

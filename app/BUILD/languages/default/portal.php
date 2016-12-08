@@ -218,7 +218,6 @@ return [
     'portal.chat.send_another_validation_email'             => 'Send me another email',
     'portal.chat.sent_validation_code'                      => 'We sent you an email with a validation code.',
     'portal.chat.start'                                     => 'Start a new chat',
-    'portal.chat.start_conversation'                        => 'Start a conversation',
     'portal.chat.support_powered_by'                        => 'Support powered by {{DeskPRO}}',
     'portal.chat.take_chat'                                 => 'Take Chat',
     'portal.chat.taken_by'                                  => 'Chat Taken by',

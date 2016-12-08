@@ -1,32 +1,30 @@
 import React, { PropTypes } from 'react';
 import { AgentAvatars } from './AgentAvatars';
 import { ChatPopup } from './ChatPopup';
-import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class OnlineAgentsPopup extends React.Component {
 
   static propTypes = {
-    backgroundColor: PropTypes.string,
-    textColor:       PropTypes.string,
-    popupStyle:      PropTypes.string,
-    onlineAgents:    PropTypes.object,
-    onClick:         PropTypes.func,
-    onClose:         PropTypes.func,
-    liveDemo:        PropTypes.bool
+    backgroundColor:      PropTypes.string,
+    textColor:            PropTypes.string,
+    onlineAgents:         PropTypes.object,
+    onClick:              PropTypes.func,
+    onClose:              PropTypes.func,
+    helpPopupStartButton: PropTypes.string
   };
 
-  onClick = event => {
+  onClick = (event) => {
     event.preventDefault();
     this.props.onClick();
   };
 
-  onClose = event => {
+  onClose = (event) => {
     event.preventDefault();
     this.props.onClose();
   };
 
   render() {
-    const { backgroundColor, textColor, onlineAgents } = this.props;
+    const { backgroundColor, textColor, onlineAgents, helpPopupStartButton } = this.props;
 
     return (
       <ChatPopup small {...this.props}>
@@ -47,7 +45,7 @@ export class OnlineAgentsPopup extends React.Component {
           <div className="preemtive-chat-footer">
             <div className="preemtive-chat-footer-button">
               <a
-                href="#"
+                href="/"
                 onClick={this.onClick}
                 className="wide"
                 style={{
@@ -55,7 +53,7 @@ export class OnlineAgentsPopup extends React.Component {
                   color: textColor
                 }}
               >
-                {portalPhrases.get('portal.chat.start_conversation')}
+                {helpPopupStartButton}
               </a>
             </div>
           </div>

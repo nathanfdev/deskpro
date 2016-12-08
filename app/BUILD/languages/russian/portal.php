@@ -205,7 +205,6 @@ return [
     'portal.chat.send_another_validation_email'             => 'Отправьте мне ещё одно письмо',
     'portal.chat.sent_validation_code'                      => 'Мы отправили Вам письмо с кодом подтверждения.',
     'portal.chat.start'                                     => 'Начать новый диалог',
-    'portal.chat.start_conversation'                        => 'Начать общение',
     'portal.chat.support_powered_by'                        => 'Поддержка предоставляется {{DeskPRO}}',
     'portal.chat.take_chat'                                 => 'Вступить в диалог',
     'portal.chat.taken_by'                                  => 'В диалог вступил',
