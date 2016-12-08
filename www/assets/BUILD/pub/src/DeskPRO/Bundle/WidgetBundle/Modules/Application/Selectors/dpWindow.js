@@ -46,6 +46,11 @@ export const windowDimensionsSelector = createSelector(
   dimensions => dimensions.get('window')
 );
 
+export const isFullScreenSelector = createSelector(
+  windowDimensionsSelector,
+  windowDimensions => windowDimensions.get('width') < 450
+);
+
 export const widgetDimensionsSelector = createSelector(
   dimensionsSelector,
   dimensions => dimensions.get('widget')
@@ -100,7 +105,8 @@ export const widgetPositionSelector = createSelector(
 
 export const isBubbleSelector = createSelector(
   widgetTypeSelector,
-  widgetType => widgetType === 'bubble'
+  isFullScreenSelector,
+  (widgetType, fullScreen) => widgetType === 'bubble' && !fullScreen
 );
 
 export const liveDemoSelector = createSelector(

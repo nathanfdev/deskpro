@@ -1,13 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect, Provider } from 'react-redux';
 import { Frame } from 'Ampliflux/common/components/Frame';
+import $ from 'jquery';
 import { widgetResize } from '../../Actions/dpWindowActions';
 import {
   windowDimensionsSelector,
   widgetOpenedSelector,
   widgetPositionSelector,
   isBubbleSelector,
-  helpButtonSizeSelector
+  helpButtonSizeSelector,
+  isFullScreenSelector
 } from '../../Selectors/dpWindow';
 import { widgetLoadedSelector } from '../../Selectors/bootstrap';
 import { store } from '../../../../Services/store';
@@ -18,7 +20,8 @@ import { store } from '../../../../Services/store';
   widgetLoaded:     widgetLoadedSelector(state),
   widgetPosition:   widgetPositionSelector(state),
   isBubble:         isBubbleSelector(state),
-  size:             helpButtonSizeSelector(state)
+  size:             helpButtonSizeSelector(state),
+  fullScreen:       isFullScreenSelector(state)
 }))
 export default class WidgetFrameContainer extends React.Component {
 
@@ -30,14 +33,17 @@ export default class WidgetFrameContainer extends React.Component {
     widgetPosition:   PropTypes.string,
     isBubble:         PropTypes.bool,
     children:         PropTypes.any, // eslint-disable-line react/forbid-prop-types
-    size:             PropTypes.string
+    size:             PropTypes.string,
+    fullScreen:       PropTypes.bool
   };
 
   componentDidMount() {
+    this.toggleParentWindowScroll();
     this.triggerResize();
   }
 
   componentDidUpdate() {
+    this.toggleParentWindowScroll();
     setTimeout(() => this.triggerResize(), 0);
   }
 
@@ -46,14 +52,36 @@ export default class WidgetFrameContainer extends React.Component {
     this.props.dispatch(widgetResize());
   }
 
-  render() {
-    const { widgetOpened, widgetLoaded, widgetPosition, isBubble, children, size, windowDimensions } = this.props;
-    const childProps = children.props;
+  toggleParentWindowScroll = () => {
+    const { widgetOpened, fullScreen } = this.props;
+    const $body = $('html, body', parent.window.document);
 
+    // for mobile only
+    if (!fullScreen) {
+      return;
+    }
+
+    if (widgetOpened) {
+      $body.css({
+        overflow: 'hidden',
+        position: 'fixed'
+      });
+    } else {
+      $body.css({
+        overflow: 'auto',
+        position: 'inherit'
+      });
+    }
+  };
+
+  render() {
+    const { windowDimensions, fullScreen } = this.props;
+    const { widgetOpened, widgetLoaded, widgetPosition, isBubble, children, size } = this.props;
+    const childProps = children.props;
     const windowWidth = windowDimensions.get('width');
 
     let width;
-    if (windowWidth < 450) {
+    if (fullScreen) {
       width = windowWidth;
     } else if (isBubble) {
       width = 350;
@@ -97,7 +125,7 @@ export default class WidgetFrameContainer extends React.Component {
 
             widgetPosition,
             isBubble,
-            windowWidth
+            fullScreen
           })}
         </Provider>
       </Frame>
