@@ -40,6 +40,10 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 class GmailConfig implements AccountConfigInterface
 {
+    const TYPE_POP3 = 'pop3';
+
+    const TYPE_OAUTH = 'oauth';
+
     /**
      * @var string
      */
@@ -71,6 +75,11 @@ class GmailConfig implements AccountConfigInterface
     public $refreshToken;
 
     /**
+     * imap or oauth.
+     */
+    public $type;
+
+    /**
      * {@inheritdoc}
      */
     public function serializeJsonArray()
@@ -78,10 +87,9 @@ class GmailConfig implements AccountConfigInterface
         return [
             'user'         => $this->user,
             'password'     => $this->password,
-            'clientId'     => $this->clientId,
-            'clientSecret' => $this->clientSecret,
             'token'        => $this->token,
             'refreshToken' => $this->refreshToken,
+            'type'         => $this->type,
         ];
     }
 
@@ -113,9 +121,10 @@ class GmailConfig implements AccountConfigInterface
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('user', new Constraints\NotBlank());
-        $metadata->addPropertyConstraint('clientId', new Constraints\NotBlank());
-        $metadata->addPropertyConstraint('clientSecret', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('token', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('refreshToken', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('type', new Constraints\Choice([
+            'choices' => [self::TYPE_POP3, self::TYPE_OAUTH],
+        ]));
     }
 }

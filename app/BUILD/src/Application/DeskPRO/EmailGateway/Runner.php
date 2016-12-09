@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig;
 use Application\DeskPRO\EmailGateway\Exception\ProcessingException;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Reader\EzcReader;
@@ -962,7 +963,7 @@ BODY;
                 return new Fetcher\Pop3($account, 20971520);
             case 'gmail':
                 // BC, Gmail XOAUTH2 works only via IMAP
-                if (!empty($account->incoming_account->token)) {
+                if ($account->incoming_account->type === GmailConfig::TYPE_OAUTH) {
                     return new Fetcher\ImapSocket($account, 20971520);
                 } else {
                     return new Fetcher\Pop3($account, 20971520);

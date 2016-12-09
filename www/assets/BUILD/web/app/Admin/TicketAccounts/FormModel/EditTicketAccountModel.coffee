@@ -11,13 +11,15 @@ define [
       @form.in_gmail_account    =
         mode: "read"
         read_mailbox_type: "inbox"
+        type: 'imap'
       @form.in_pop3_account     = {}
       @form.in_imap_account     = {}
       @form.in_exchange_account = {}
       @form.in_office365_account  = {}
 
       @form.outgoing_type     = 'php_mail'
-      @form.out_gmail_account = {}
+      @form.out_gmail_account =
+        type: 'imap'
       @form.out_smtp_account  = {}
       @form.out_exchange_account  = {}
       @form.out_office365_account  = {}
@@ -126,10 +128,9 @@ define [
 
         if @form.incoming_type == 'gmail'
           @form.in_gmail_account.password     = @account.incoming_account.password
-          @form.in_gmail_account.clientId     = @account.incoming_account.clientId
-          @form.in_gmail_account.clientSecret = @account.incoming_account.clientSecret
           @form.in_gmail_account.token        = @account.incoming_account.token
           @form.in_gmail_account.refreshToken = @account.incoming_account.refreshToken
+          @form.in_gmail_account.type         = @account.incoming_account.type || 'imap'
           @form.in_gmail_account.mode        = @account.incoming_account.mode || 'read'
           if @form.in_gmail_account.secure_mode and @form.in_gmail_account.secure_mode != ''
             @form.in_gmail_account.secure = true
@@ -160,10 +161,9 @@ define [
 
         if @form.outgoing_type == 'gmail'
           @form.out_gmail_account.password = @account.outgoing_account.password
-          @form.out_gmail_account.clientId     = @account.outgoing_account.clientId
-          @form.out_gmail_account.clientSecret = @account.outgoing_account.clientSecret
           @form.out_gmail_account.token        = @account.outgoing_account.token
           @form.out_gmail_account.refreshToken = @account.outgoing_account.refreshToken
+          @form.out_gmail_account.type         = @account.outgoing_account.type || 'imap'
 
         if @form.outgoing_type == 'office365'
           @form.out_office365_account.password = @account.outgoing_account.password

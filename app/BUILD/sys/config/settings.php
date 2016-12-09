@@ -702,6 +702,10 @@ return [
 
     'core_email.enable_date_limit_rejection' => true,
 
+    // TODO insert DeskPRO client_id and secret
+    'core_email.google_oauth_client_id' => '',
+    'core_email.google_oauth_secret'    => '',
+
     //###################################################################################################################
     // core_chat
     //###################################################################################################################
