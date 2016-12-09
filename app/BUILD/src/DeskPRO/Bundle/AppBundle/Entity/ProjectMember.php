@@ -150,10 +150,14 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Project $project
+     *
+     * @return $this
      */
     public function setProject(Project $project)
     {
         $this->setModelField('project', $project);
+
+        return $this;
     }
 
     /**
@@ -166,10 +170,14 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
+
+        return $this;
     }
 
     /**
@@ -182,10 +190,14 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Team $team
+     *
+     * @return $this
      */
     public function setTeam(Team $team = null)
     {
         $this->setModelField('team', $team);
+
+        return $this;
     }
 
     /**
@@ -198,9 +210,13 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Department $department
+     *
+     * @return $this
      */
     public function setDepartment(Department $department = null)
     {
         $this->setModelField('department', $department);
+
+        return $this;
     }
 }

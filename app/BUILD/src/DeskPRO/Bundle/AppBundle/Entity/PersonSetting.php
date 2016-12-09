@@ -140,7 +140,7 @@ class PersonSetting implements EntityInterface, NotifyPropertyChanged
      */
     public function setValue($value)
     {
-        $this->value = $value;
+        $this->setModelField('value', $value);
 
         return $this;
     }
