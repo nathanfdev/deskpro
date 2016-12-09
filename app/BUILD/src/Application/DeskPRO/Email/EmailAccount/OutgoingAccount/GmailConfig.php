@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 class GmailConfig implements AccountConfigInterface
 {
-    const TYPE_POP3 = 'pop3';
+    const TYPE_PASSWORD = 'password';
 
     const TYPE_OAUTH = 'oauth';
 
@@ -124,7 +124,7 @@ class GmailConfig implements AccountConfigInterface
         $metadata->addPropertyConstraint('token', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('refreshToken', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('type', new Constraints\Choice([
-            'choices' => [self::TYPE_POP3, self::TYPE_OAUTH],
+            'choices' => [self::TYPE_PASSWORD, self::TYPE_OAUTH],
         ]));
     }
 }

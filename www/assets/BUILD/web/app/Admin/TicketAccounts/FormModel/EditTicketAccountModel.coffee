@@ -19,7 +19,7 @@ define [
 
       @form.outgoing_type     = 'php_mail'
       @form.out_gmail_account =
-        type: 'imap'
+        type: 'password'
       @form.out_smtp_account  = {}
       @form.out_exchange_account  = {}
       @form.out_office365_account  = {}
@@ -160,7 +160,7 @@ define [
             @form.out_smtp_account.secure = true
 
         if @form.outgoing_type == 'gmail'
-          @form.out_gmail_account.password = @account.outgoing_account.password
+          @form.out_gmail_account.password     = @account.outgoing_account.password
           @form.out_gmail_account.token        = @account.outgoing_account.token
           @form.out_gmail_account.refreshToken = @account.outgoing_account.refreshToken
           @form.out_gmail_account.type         = @account.outgoing_account.type || 'imap'

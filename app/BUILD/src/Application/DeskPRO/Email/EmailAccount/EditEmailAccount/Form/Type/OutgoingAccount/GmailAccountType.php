@@ -47,7 +47,7 @@ class GmailAccountType extends AbstractType
         $builder->add('refreshToken', 'text', ['required' => true]);
         $builder->add('type', 'choice', [
             'required'          => true,
-            'choices'           => [GmailConfig::TYPE_POP3, GmailConfig::TYPE_OAUTH],
+            'choices'           => [GmailConfig::TYPE_PASSWORD, GmailConfig::TYPE_OAUTH],
             'choices_as_values' => true,
         ]);
     }

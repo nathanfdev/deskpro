@@ -332,7 +332,7 @@ define [
 
     getAccessToken: (url, type) =>
       if !(@$scope.form["#{type}_gmail_account"].code || '').length then return
-      url = url + '?code=' + encodeURIComponent(@$scope.form.in_gmail_account.code)
+      url = url + '?code=' + encodeURIComponent(@$scope.form["#{type}_gmail_account"].code)
       @$http({method: 'GET', url: url }).then (res) =>
         if res.data?.error
           @Growl.error(res.data.error)
