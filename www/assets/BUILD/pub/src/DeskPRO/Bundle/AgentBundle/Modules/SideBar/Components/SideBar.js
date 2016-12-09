@@ -62,10 +62,10 @@ export class SideBarContainer extends SeparateComponent {
 
   componentWillMount = () => {
     if (window.DP_FRAME_OVERLAYS) {
-      if (window.DP_FRAME_OVERLAYS.reports.opened) {
+      if (window.DP_FRAME_OVERLAYS.reports && window.DP_FRAME_OVERLAYS.reports.opened) {
         this.changeSection('menu_reports');
       }
-      if (window.DP_FRAME_OVERLAYS.admin.opened) {
+      if (window.DP_FRAME_OVERLAYS.admin && window.DP_FRAME_OVERLAYS.admin.opened) {
         this.changeSection('menu_admin');
       }
     }

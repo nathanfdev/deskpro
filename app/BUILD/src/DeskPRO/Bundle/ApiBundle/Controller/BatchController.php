@@ -122,9 +122,6 @@ class BatchController extends BaseController
         if (strpos($info['url'], '/api/v2') !== 0) {
             $info['url'] = '/api/v2/'.ltrim($info['url'], '/');
         }
-        if (!$this->matchRouteUrl($info['url'])) {
-            throw $this->createBadRequestException("Route path for '{$info['url']}' not found");
-        }
 
         $json_serialized = null;
         if ($info['data']) {
@@ -133,14 +130,18 @@ class BatchController extends BaseController
         }
 
         $subRequest = Request::create(
-            $request->getSchemeAndHttpHost().$info['url'],
+            $request->getUriForPath($info['url']),
             $info['method'],
             $info['params'],
             [],
             [],
-            [],
+            $request->server->all(),
             $json_serialized
         );
+
+        if (!$this->matchRouteUrl($subRequest)) {
+            throw $this->createBadRequestException("Route path for '{$info['url']}' not found");
+        }
 
         $subRequest->headers->set('Content-Type', 'json');
         $subRequest->query->set(JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM, 1);
@@ -157,14 +158,14 @@ class BatchController extends BaseController
     }
 
     /**
-     * @param string $url
+     * @param Request $subRequest
      *
      * @return array|false
      */
-    protected function matchRouteUrl($url)
+    protected function matchRouteUrl(Request $subRequest)
     {
         try {
-            return $this->get('router')->matchRequest(Request::create($url));
+            return $this->get('router')->matchRequest($subRequest);
         } catch (\Exception $e) {
             return false;
         }
