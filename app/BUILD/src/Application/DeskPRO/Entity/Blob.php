@@ -248,6 +248,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $filename = '_'.substr($filename, 1);
         }
 
+        $filename = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '_', $filename);
+
         $this->setModelField('filename', $filename);
 
         // Try to guess content typ based off of filename exts
