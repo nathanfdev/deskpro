@@ -45,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\Table(name="task_comments_new")
  * @JMS\ExclusionPolicy("all")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskComment implements EntityInterface, NotifyPropertyChanged
 {
@@ -134,7 +135,7 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct()
     {
-        $this->attachments = new ArrayCollection();
+        $this->setModelField('attachments', new ArrayCollection());
         $this->setDateCreated(new \DateTime());
     }
 
@@ -156,10 +157,14 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function setPerson(Person $person)
     {
         $this->setModelField('person', $person);
+
+        return $this;
     }
 
     /**
@@ -172,10 +177,14 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \DateTime $date_created
+     *
+     * @return $this
      */
     public function setDateCreated(\DateTime $date_created)
     {
         $this->setModelField('date_created', $date_created);
+
+        return $this;
     }
 
     /**
@@ -188,10 +197,14 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string $comment
+     *
+     * @return $this
      */
     public function setComment($comment)
     {
         $this->setModelField('comment', $comment);
+
+        return $this;
     }
 
     /**
@@ -204,10 +217,14 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Task $task
+     *
+     * @return $this
      */
-    public function setTask(Task $task)
+    public function setTask(Task $task = null)
     {
         $this->setModelField('task', $task);
+
+        return $this;
     }
 
     /**
@@ -220,10 +237,14 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param TaskAttachment $attachment
+     *
+     * @return $this
      */
     public function addAttachment(TaskAttachment $attachment)
     {
         $this->attachments->add($attachment);
         $this->setModelField('attachment', $attachment);
+
+        return $this;
     }
 }

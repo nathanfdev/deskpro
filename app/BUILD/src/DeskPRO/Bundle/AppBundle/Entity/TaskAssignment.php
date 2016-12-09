@@ -44,6 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_assignments")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskAssignment implements EntityInterface, NotifyPropertyChanged
 {
@@ -105,11 +106,14 @@ class TaskAssignment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Task $task
+     *
+     * @return $this
      */
-    public function setTask(Task $task)
+    public function setTask(Task $task = null)
     {
-        $this->task = $task;
         $this->setModelField('task', $task);
+
+        return $this;
     }
 
     /**
@@ -122,13 +126,16 @@ class TaskAssignment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function setPerson(Person $person)
     {
-        $this->person     = $person;
-        $this->team       = null;
-        $this->department = null;
+        $this->setModelField('team', null);
+        $this->setModelField('department', null);
         $this->setModelField('person', $person);
+
+        return $this;
     }
 
     /**
@@ -141,13 +148,16 @@ class TaskAssignment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Team $team
+     *
+     * @return $this
      */
     public function setTeam(Team $team)
     {
-        $this->team       = $team;
-        $this->department = null;
-        $this->person     = null;
+        $this->setModelField('department', null);
+        $this->setModelField('person', null);
         $this->setModelField('team', $team);
+
+        return $this;
     }
 
     /**
@@ -160,12 +170,15 @@ class TaskAssignment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Department $department
+     *
+     * @return $this
      */
     public function setDepartment(Department $department)
     {
-        $this->department = $department;
-        $this->team       = null;
-        $this->person     = null;
+        $this->setModelField('team', null);
+        $this->setModelField('person', null);
         $this->setModelField('department', $department);
+
+        return $this;
     }
 }

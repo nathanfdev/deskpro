@@ -255,7 +255,9 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
      */
     public function setMetaDataValue($key, $value)
     {
-        $this->meta_data[$key] = $value;
+        $metaData       = $this->meta_data;
+        $metaData[$key] = $value;
+        $this->setModelField('meta_data', $metaData);
 
         return $this;
     }

@@ -45,6 +45,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
@@ -54,9 +55,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TaskRepository")
  * @ORM\Table(name="tasks_new")
  * @ORM\HasLifecycleCallbacks
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
-class Task implements EntityInterface
+class Task implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     const VISIBILITY_PRIVATE = 'private';
     const VISIBILITY_PUBLIC  = 'public';
     const VISIBILITY_PROJECT = 'project';
@@ -275,12 +279,12 @@ class Task implements EntityInterface
      */
     public function __construct()
     {
-        $this->subtasks        = new ArrayCollection();
-        $this->labels          = new ArrayCollection();
-        $this->assigned        = new ArrayCollection();
-        $this->linked_articles = new ArrayCollection();
-        $this->linked_chats    = new ArrayCollection();
-        $this->linked_tickets  = new ArrayCollection();
+        $this->setModelField('subtasks', new ArrayCollection());
+        $this->setModelField('labels', new ArrayCollection());
+        $this->setModelField('assigned', new ArrayCollection());
+        $this->setModelField('linked_articles', new ArrayCollection());
+        $this->setModelField('linked_chats', new ArrayCollection());
+        $this->setModelField('linked_tickets', new ArrayCollection());
 
         $this->setDateCreated(new \DateTime());
     }
@@ -477,10 +481,14 @@ class Task implements EntityInterface
 
     /**
      * @param string $title
+     *
+     * @return $this
      */
     public function setTitle($title)
     {
-        $this->title = $title;
+        $this->setModelField('title', $title);
+
+        return $this;
     }
 
     /**
@@ -493,7 +501,7 @@ class Task implements EntityInterface
         $date_done = $isDone ? new \DateTime() : null;
 
         $this->setDateDone($date_done);
-        $this->is_done = $isDone;
+        $this->setModelField('is_done', $isDone);
 
         return $this;
     }
@@ -551,93 +559,122 @@ class Task implements EntityInterface
 
     /**
      * @param Department $department
+     *
+     * @return $this
      */
     public function addDepartment(Department $department)
     {
         $assigned = new TaskAssignment();
         $assigned->setDepartment($department);
-        $assigned->setTask($this);
         $this->addAssigned($assigned);
+
+        return $this;
     }
 
     /**
      * @param Department $department
+     *
+     * @return $this
      */
     public function removeDepartment(Department $department)
     {
         if (!empty($this->assigned)) {
-            foreach ($this->assigned as $assigned) {
-                if ($assigned->getDepartment() === $department) {
-                    $this->assigned->removeElement($assigned);
+            foreach ($this->assigned as $assignment) {
+                if ($assignment->getDepartment() === $department) {
+                    $this->removeAssigned($assignment);
                 }
             }
         }
+
+        return $this;
     }
 
     /**
      * @param AgentTeam $agentTeam
+     *
+     * @return $this
      */
     public function addTeam(AgentTeam $agentTeam)
     {
         $assigned = new TaskAssignment();
         $assigned->setTeam($agentTeam);
-        $assigned->setTask($this);
         $this->addAssigned($assigned);
+
+        return $this;
     }
 
     /**
      * @param AgentTeam $agentTeam
+     *
+     * @return $this
      */
     public function removeTeam(AgentTeam $agentTeam)
     {
         if (!empty($this->assigned)) {
-            foreach ($this->assigned as $assigned) {
-                if ($assigned->getTeam() === $agentTeam) {
-                    $this->assigned->removeElement($assigned);
+            foreach ($this->assigned as $assignment) {
+                if ($assignment->getTeam() === $agentTeam) {
+                    $this->removeAssigned($assignment);
                 }
             }
         }
+
+        return $this;
     }
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function addAgent(Person $person)
     {
         $assignment = new TaskAssignment();
         $assignment->setPerson($person);
-        $assignment->setTask($this);
         $this->addAssigned($assignment);
+
+        return $this;
     }
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function removeAgent(Person $person)
     {
         if (!empty($this->assigned)) {
             foreach ($this->assigned as $assignment) {
                 if ($assignment->getPerson() === $person) {
-                    $this->assigned->removeElement($assignment);
+                    $this->removeAssigned($assignment);
                 }
             }
         }
+
+        return $this;
     }
 
     /**
      * @param TaskAssignment $assignment
+     *
+     * @return $this
      */
     public function addAssigned(TaskAssignment $assignment)
     {
         $this->assigned->add($assignment);
+        $assignment->setTask($this);
+
+        return $this;
     }
 
     /**
      * @param TaskAssignment $assignment
+     *
+     * @return $this
      */
     public function removeAssigned(TaskAssignment $assignment)
     {
         $this->assigned->removeElement($assignment);
+        $assignment->setTask(null);
     }
 
     /**
@@ -929,7 +966,7 @@ class Task implements EntityInterface
      */
     public function setList(TaskList $list = null)
     {
-        $this->list = $list;
+        $this->setModelField('list', $list);
 
         return $this;
     }

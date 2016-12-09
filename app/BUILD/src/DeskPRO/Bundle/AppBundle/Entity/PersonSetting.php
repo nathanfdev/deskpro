@@ -45,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity()
  * @ORM\Table(name="person_settings")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class PersonSetting implements EntityInterface, NotifyPropertyChanged
 {

@@ -59,6 +59,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields={"project", "person"}, errorPath="person")
  * @UniqueEntity(fields={"project", "team"}, errorPath="team")
  * @UniqueEntity(fields={"project", "department"}, errorPath="department")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class ProjectMember implements EntityInterface, NotifyPropertyChanged
 {
@@ -153,7 +154,7 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setProject(Project $project)
+    public function setProject(Project $project = null)
     {
         $this->setModelField('project', $project);
 

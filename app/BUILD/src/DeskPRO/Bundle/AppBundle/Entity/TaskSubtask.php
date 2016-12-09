@@ -200,10 +200,14 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string $title
+     *
+     * @return $this
      */
     public function setTitle($title)
     {
         $this->setModelField('title', $title);
+
+        return $this;
     }
 
     /**
@@ -216,11 +220,15 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param bool $done
+     *
+     * @return $this
      */
     public function setIsDone($done)
     {
         $this->setModelField('is_done', $done);
         $this->setDateCompleted(new \DateTime());
+
+        return $this;
     }
 
     /**
@@ -253,10 +261,14 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param int $display_order
+     *
+     * @return $this
      */
     public function setDisplayOrder($display_order)
     {
         $this->setModelField('display_order', $display_order);
+
+        return $this;
     }
 
     /**
@@ -269,9 +281,13 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \DateTime $date_completed
+     *
+     * @return $this
      */
     public function setDateCompleted($date_completed)
     {
         $this->setModelField('date_completed', $date_completed);
+
+        return $this;
     }
 }
