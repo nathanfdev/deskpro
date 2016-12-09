@@ -45,7 +45,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatParticipantRepository")
  * @ORM\Table(name="agent_chat_participant")
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  */
 class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
@@ -109,7 +109,7 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
      */
     public function setChat(AgentChat $chat = null)
     {
-        $this->chat = $chat;
+        $this->setModelField('chat', $chat);
 
         return $this;
     }
@@ -128,7 +128,7 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
      */
     public function setPerson(Person $person = null)
     {
-        $this->person = $person;
+        $this->setModelField('person', $person);
 
         return $this;
     }
@@ -146,7 +146,7 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
      */
     public function setTeam(AgentTeam $team = null)
     {
-        $this->team = $team;
+        $this->setModelField('team', $team);
 
         return $this;
     }
@@ -164,7 +164,7 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
      */
     public function setDepartment(Department $department = null)
     {
-        $this->department = $department;
+        $this->setModelField('department', $department);
 
         return $this;
     }

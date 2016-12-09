@@ -115,10 +115,14 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string $name
+     *
+     * @return $this
      */
     public function setName($name)
     {
         $this->setModelField('name', $name);
+
+        return $this;
     }
 
     /**
@@ -131,10 +135,14 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param array $tags
+     *
+     * @return $this
      */
     public function setTags(array $tags)
     {
         $this->setModelField('tags', $tags);
+
+        return $this;
     }
 
     /**
@@ -147,10 +155,14 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \Application\DeskPRO\Entity\Brand $brand
+     *
+     * @return $this
      */
     public function setBrand($brand)
     {
         $this->setModelField('brand', $brand);
+
+        return $this;
     }
 
     /**
@@ -163,10 +175,14 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \Application\DeskPRO\Entity\Blob $blob
+     *
+     * @return $this
      */
     public function setBlob($blob)
     {
         $this->setModelField('blob', $blob);
+
+        return $this;
     }
 
     /**
@@ -179,10 +195,14 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \DateTime $date_created
+     *
+     * @return $this
      */
     public function setDateCreated($date_created)
     {
         $this->setModelField('date_created', $date_created);
+
+        return $this;
     }
 
     /**
@@ -195,9 +215,13 @@ class BrandAsset implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \DateTime $date_updated
+     *
+     * @return $this
      */
     public function setDateUpdated($date_updated)
     {
         $this->setModelField('date_updated', $date_updated);
+
+        return $this;
     }
 }
