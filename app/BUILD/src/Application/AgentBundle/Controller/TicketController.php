@@ -5006,9 +5006,10 @@ CSS;
     protected function getAgentBrands()
     {
         /** @var Entity\Department[] $departments */
-        $departments = $this->em->getRepository(Entity\Department::class)->findBy(
-            ['id' => $this->person->AgentPermissions->getAllowedDepartments('tickets', false, 'assign')]
-        );
+        $departments = $this->getContainer()
+            ->getTicketDepartments()
+            ->getByIds($this->person->AgentPermissions->getAllowedDepartments('tickets', false, 'assign'));
+
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
         foreach ($brands as $key => $brand) {
