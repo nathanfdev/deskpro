@@ -53,6 +53,19 @@ return [
         'is_managed' => true,
     ],
 
+    'chinese_simplified' => [
+        'id'         => 'chinese_simplified',
+        'lang_code'  => 'zho',
+        'title'      => 'Chinese (Simplified)',
+        'locale'     => 'zh_CN',
+        'flag_image' => 'cn.png',
+        'is_rtl'     => false,
+        'has_user'   => true,
+        'has_agent'  => true,
+        'has_admin'  => true,
+        'is_managed' => true,
+    ],
+
     'danish' => [
         'id'         => 'danish',
         'lang_code'  => 'dan',
@@ -306,6 +319,19 @@ return [
         'title'      => 'Turkish',
         'locale'     => 'tr',
         'flag_image' => 'tr.png',
+        'is_rtl'     => false,
+        'has_user'   => true,
+        'has_agent'  => false,
+        'has_admin'  => false,
+        'is_managed' => true,
+    ],
+
+    'welsh' => [
+        'id'         => 'welsh',
+        'lang_code'  => 'cym',
+        'title'      => 'Welsh',
+        'locale'     => 'cy_GB',
+        'flag_image' => 'cy.png',
         'is_rtl'     => false,
         'has_user'   => true,
         'has_agent'  => false,
