@@ -48,6 +48,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="custom_ticket_filters")
  *
  * @JMS\ExclusionPolicy("ALL")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyChanged
 {
@@ -175,10 +176,10 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      */
     public function __construct()
     {
-        $this->filter_views       = new ArrayCollection();
-        $this->filter_preferences = new ArrayCollection();
-        $this->date_created       = new \DateTime();
-        $this->date_updated       = new \DateTime();
+        $this->setModelField('filter_views', new ArrayCollection());
+        $this->setModelField('filter_preferences', new ArrayCollection());
+        $this->setModelField('date_created', new \DateTime());
+        $this->setModelField('date_updated', new \DateTime());
     }
 
     /**
@@ -199,10 +200,14 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
 
     /**
      * @param string $title
+     *
+     * @return $this
      */
     public function setTitle($title)
     {
         $this->setModelField('title', $title);
+
+        return $this;
     }
 
     /**
@@ -215,10 +220,14 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
 
     /**
      * @param int $display_order
+     *
+     * @return $this
      */
     public function setDisplayOrder($display_order)
     {
         $this->setModelField('display_order', (int) $display_order);
+
+        return $this;
     }
 
     /**
@@ -231,10 +240,14 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
 
     /**
      * @param TicketFilterSet $filter_set
+     *
+     * @return $this
      */
     public function setFilterSet(TicketFilterSet $filter_set)
     {
         $this->setModelField('filter_set', $filter_set);
+
+        return $this;
     }
 
     /**
@@ -255,22 +268,28 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
 
     /**
      * @param TicketFilterPreference $filter_preference
+     *
+     * @return $this
      */
     public function addFilterPreference(TicketFilterPreference $filter_preference)
     {
         $this->filter_preferences->add($filter_preference);
-
         $this->setModelField('filter_preferences', $this->filter_preferences);
+
+        return $this;
     }
 
     /**
      * @param TicketFilterView $view
+     *
+     * @return $this
      */
     public function addFilterView(TicketFilterView $view)
     {
         $this->filter_views->add($view);
-
         $this->setModelField('filter_views', $this->filter_views);
+
+        return $this;
     }
 
     /**
@@ -283,10 +302,14 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
 
     /**
      * @param TermInterface $term
+     *
+     * @return $this
      */
     public function setTerm(TermInterface $term)
     {
         $this->setModelField('term', $term);
+
+        return $this;
     }
 
     /**
@@ -299,10 +322,14 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
 
     /**
      * @param \DateTime $date_created
+     *
+     * @return $this
      */
     public function setDateCreated(\DateTime $date_created)
     {
         $this->setModelField('date_created', $date_created);
+
+        return $this;
     }
 
     /**
@@ -315,9 +342,13 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
 
     /**
      * @param \DateTime $date_updated
+     *
+     * @return $this
      */
     public function setDateUpdated(\DateTime $date_updated)
     {
         $this->setModelField('date_updated', $date_updated);
+
+        return $this;
     }
 }

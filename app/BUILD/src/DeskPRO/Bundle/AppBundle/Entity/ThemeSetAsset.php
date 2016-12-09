@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Blob;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -35,6 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="theme_set_assets")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
 {
@@ -101,8 +103,8 @@ class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct()
     {
-        $this->date_created = new \DateTime();
-        $this->date_updated = new \DateTime();
+        $this->setModelField('date_created', new \DateTime());
+        $this->setModelField('date_updated', new \DateTime());
     }
 
     /**
@@ -123,10 +125,14 @@ class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string $name
+     *
+     * @return $this
      */
     public function setName($name)
     {
         $this->setModelField('name', $name);
+
+        return $this;
     }
 
     /**
@@ -139,10 +145,14 @@ class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param array $tags
+     *
+     * @return $this
      */
     public function setTags(array $tags)
     {
         $this->setModelField('tags', $tags);
+
+        return $this;
     }
 
     /**
@@ -155,14 +165,18 @@ class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param ThemeSet $theme_set
+     *
+     * @return $this
      */
     public function setThemeSet(ThemeSet $theme_set)
     {
         $this->setModelField('theme_set', $theme_set);
+
+        return $this;
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\Blob
+     * @return Blob
      */
     public function getBlob()
     {
@@ -170,11 +184,15 @@ class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Blob $blob
+     * @param Blob $blob
+     *
+     * @return $this
      */
     public function setBlob($blob)
     {
         $this->setModelField('blob', $blob);
+
+        return $this;
     }
 
     /**
@@ -187,10 +205,14 @@ class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \DateTime $date_created
+     *
+     * @return $this
      */
     public function setDateCreated($date_created)
     {
         $this->setModelField('date_created', $date_created);
+
+        return $this;
     }
 
     /**
@@ -203,9 +225,13 @@ class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \DateTime $date_updated
+     *
+     * @return $this
      */
     public function setDateUpdated($date_updated)
     {
         $this->setModelField('date_updated', $date_updated);
+
+        return $this;
     }
 }

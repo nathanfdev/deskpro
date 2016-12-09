@@ -44,6 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="ticket_filter_sets")
  *
  * @JMS\ExclusionPolicy("all")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 {
@@ -157,9 +158,9 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct()
     {
-        $this->filters       = new ArrayCollection();
-        $this->shared_agents = new ArrayCollection();
-        $this->display_order = 0;
+        $this->setModelField('filters', new ArrayCollection());
+        $this->setModelField('shared_agents', new ArrayCollection());
+        $this->setModelField('display_order', 0);
     }
 
     /**
@@ -180,13 +181,15 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param TicketFilter $filter
+     *
+     * @return $this
      */
     public function addFilter(TicketFilter $filter)
     {
         $this->filters->add($filter);
-        $this->setModelField('filter', $filter);
-
         $filter->setFilterSet($this);
+
+        return $this;
     }
 
     /**
@@ -199,10 +202,14 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string $title
+     *
+     * @return $this
      */
     public function setTitle($title)
     {
         $this->setModelField('title', $title);
+
+        return $this;
     }
 
     /**
@@ -215,10 +222,14 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param int $display_order
+     *
+     * @return $this
      */
     public function setDisplayOrder($display_order)
     {
         $this->setModelField('display_order', (int) $display_order);
+
+        return $this;
     }
 
     /**
@@ -231,10 +242,14 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param bool $default
+     *
+     * @return $this
      */
     public function setIsDefault($default)
     {
         $this->setModelField('is_default', (bool) $default);
+
+        return $this;
     }
 
     /**
@@ -247,10 +262,14 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Person $private_agent
+     *
+     * @return $this
      */
     public function setPrivateAgent(Person $private_agent)
     {
         $this->setModelField('private_agent', $private_agent);
+
+        return $this;
     }
 
     /**
@@ -263,12 +282,15 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Person $agent
+     *
+     * @return $this
      */
     public function addSharedAgent(Person $agent)
     {
         $this->shared_agents->add($agent);
-
         $this->setModelField('shared_agents', $this->shared_agents);
+
+        return $this;
     }
 
     /**

@@ -97,7 +97,7 @@ class TaskLinkedArticle extends AbstractTaskLinkedItem
      */
     public function setArticle(Article $article)
     {
-        $this->article = $article;
+        $this->setModelField('article', $article);
 
         return $this;
     }

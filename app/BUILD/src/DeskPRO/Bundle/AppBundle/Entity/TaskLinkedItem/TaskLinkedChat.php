@@ -97,7 +97,7 @@ class TaskLinkedChat extends AbstractTaskLinkedItem
      */
     public function setChat(ChatConversation $chat)
     {
-        $this->chat = $chat;
+        $this->setModelField('chat', $chat);
 
         return $this;
     }
