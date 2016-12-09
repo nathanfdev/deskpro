@@ -79,6 +79,7 @@ class EmailAccountsController extends BaseController
 
         $certificate = $request->files->get('cert');
         $key         = $request->files->get('key');
+        $passPhrase  = $request->get('pass_phrase');
 
         $certString = file_get_contents($certificate->getPathname());
         $keyString  = file_get_contents($key->getPathname());
@@ -110,8 +111,9 @@ class EmailAccountsController extends BaseController
         $certBlob = $accept->accept($certificate);
         $keyBlob  = $accept->accept($key);
 
-        $account->setCertBlob($certBlob);
-        $account->setKeyBlob($keyBlob);
+        $account->setCertBlob($certBlob)
+            ->setKeyBlob($keyBlob)
+            ->setKeyPassphrase($passPhrase);
 
         $em->persist($account);
         $em->flush();

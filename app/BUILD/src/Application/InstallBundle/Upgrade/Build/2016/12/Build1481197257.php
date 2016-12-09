@@ -32,7 +32,7 @@ class Build1481197257 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('My Upgrade Class');
+        $this->out('Ticket Message Attributes table');
         $this->execDbQuery('default', 'CREATE TABLE ticket_message_attributes (id INT AUTO_INCREMENT NOT NULL, ticket_message_id INT DEFAULT NULL, name VARCHAR(250) NOT NULL, value VARCHAR(5000) DEFAULT NULL, date_created DATETIME NOT NULL, type VARCHAR(255) NOT NULL, INDEX IDX_92C49E9BC5E9817D (ticket_message_id), UNIQUE INDEX attr_name (ticket_message_id, name), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
         $this->execDbQuery('default', 'ALTER TABLE ticket_message_attributes ADD CONSTRAINT FK_92C49E9BC5E9817D FOREIGN KEY (ticket_message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE');
     }

@@ -33,7 +33,12 @@
                 {{  ng_var('form.key_file') }}
 				<span ng-show="form.key_file">
 					<a ng-click="TicketAccountsEdit.deleteKey()">Delete</a>
+				</span><br />
+				<span class="help-block">
+					Your private key pass phrase (optional)
 				</span>
+				<input type="password" class="form-control" name="key_pass_phrase" ng-model="form.key_pass_phrase" style="width: 50%;"
+					   required autofocus />
 			</div>
 		</div>
 	</div>

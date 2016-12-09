@@ -141,6 +141,11 @@ class EmailAccount extends DomainObject
     protected $key_blob = null;
 
     /**
+     * @var string
+     */
+    protected $key_pass_phrase = null;
+
+    /**
      * @param string $account_type
      */
     public function __construct($account_type)
@@ -154,6 +159,8 @@ class EmailAccount extends DomainObject
      * @param string $account_type
      *
      * @throws \InvalidArgumentException
+     *
+     * @return $this
      */
     public function setAccountType($account_type)
     {
@@ -167,6 +174,8 @@ class EmailAccount extends DomainObject
         }
 
         $this->setModelField('account_type', $account_type);
+
+        return $this;
     }
 
     /**
@@ -175,7 +184,7 @@ class EmailAccount extends DomainObject
     public function getIncomingAccountType()
     {
         if (!$this->incoming_account) {
-            return;
+            return null;
         }
 
         return $this->incoming_account->getType();
@@ -187,7 +196,7 @@ class EmailAccount extends DomainObject
     public function getOutgoingAccountType()
     {
         if (!$this->outgoing_account) {
-            return;
+            return null;
         }
 
         return $this->outgoing_account->getType();
@@ -254,7 +263,7 @@ class EmailAccount extends DomainObject
             }
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -291,6 +300,8 @@ class EmailAccount extends DomainObject
     /**
      * @param string $name
      * @param mixed  $value
+     *
+     * @return $this
      */
     public function setOption($name, $value)
     {
@@ -298,7 +309,7 @@ class EmailAccount extends DomainObject
 
         if ($value === null) {
             if (!$new) {
-                return;
+                return $this;
             }
 
             unset($new[$name]);
@@ -313,10 +324,14 @@ class EmailAccount extends DomainObject
         }
 
         $this->setModelField('options', $new);
+
+        return $this;
     }
 
     /**
      * @param string $options
+     *
+     * @return $this
      */
     public function setOptions($options)
     {
@@ -325,6 +340,8 @@ class EmailAccount extends DomainObject
         }
 
         $this->setModelField('options', $options);
+
+        return $this;
     }
 
     /**
@@ -337,10 +354,14 @@ class EmailAccount extends DomainObject
 
     /**
      * @param Blob $certBlob
+     *
+     * @return $this
      */
     public function setCertBlob($certBlob)
     {
         $this->setModelField('cert_blob', $certBlob);
+
+        return $this;
     }
 
     /**
@@ -353,10 +374,34 @@ class EmailAccount extends DomainObject
 
     /**
      * @param Blob $keyBlob
+     *
+     * @return $this
      */
     public function setKeyBlob($keyBlob)
     {
         $this->setModelField('key_blob', $keyBlob);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKeyPassPhrase()
+    {
+        return $this->key_pass_phrase;
+    }
+
+    /**
+     * @param string $keyPassPhrase
+     *
+     * @return EmailAccount
+     */
+    public function setKeyPassPhrase($keyPassPhrase)
+    {
+        $this->setModelField('key_pass_phrase', $keyPassPhrase);
+
+        return $this;
     }
 
     //###########################################################################
@@ -498,6 +543,13 @@ class EmailAccount extends DomainObject
                     'onDelete'             => 'set null',
                 ],
             ],
+        ]);
+        $metadata->mapField([
+            'columnName' => 'key_pass_phrase',
+            'fieldName'  => 'key_pass_phrase',
+            'type'       => 'string',
+            'length'     => 255,
+            'nullable'   => true,
         ]);
     }
 }

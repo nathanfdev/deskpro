@@ -339,20 +339,20 @@ define [
     uploadFiles: () ->
       return new Promise( (resolve, reject) =>
         if (!@$scope.files || (!@$scope.files.certificate && !@$scope.files.key))
-          resolve()
+          return resolve()
         if (!@$scope.files.certificate || !@$scope.files.key)
-          reject('You must add a certificate and a key')
+          return reject('You must add a certificate and a key')
         @$upload.upload({
           url: @Api2.formatUrl('/email_accounts/'+@form_model.account.id+'/encryption'),
-          data:{ cert: @$scope.files.certificate, key: @$scope.files.key }
+          data:{ cert: @$scope.files.certificate, key: @$scope.files.key, pass_phrase: @form_model.form.key_pass_phrase }
         }).success( (data) =>
           @$scope.uploading = false
           @setCertificate data.data.cert_blob
           @setKey data.data.key_blob
-          resolve()
+          return resolve()
         ).error( (data) =>
           @$scope.uploading = false
-          reject(data?.error_message || 'Error')
+          return reject(data?.error_message || 'Error')
         )
       )
 

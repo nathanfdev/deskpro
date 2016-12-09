@@ -32,7 +32,6 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\Entity\Blob;
@@ -762,34 +761,38 @@ class EzcReader extends AbstractReader
             $certBlob = $account->getCertBlob();
             $keyBlob  = $account->getKeyBlob();
             if ($certBlob && $keyBlob) {
-                $public    = App::getContainer()->getBlobStorage()->copyBlobRecordToString($certBlob);
-                $private   = App::getContainer()->getBlobStorage()->copyBlobRecordToString($keyBlob);
+                $public    = $this->blobStorage->copyBlobRecordToString($certBlob);
+                $private   = $this->blobStorage->copyBlobRecordToString($keyBlob);
                 $tmpDir    = $this->getEnv()->getUserTmpDir();
                 $encrypted = $tmpDir.'/encrypted.txt';
                 file_put_contents($encrypted, $this->raw_source);
                 $outfile = $tmpDir.'/decrypted.txt';
-                if (openssl_pkcs7_decrypt($encrypted, $outfile, $public, [$private, 1234])) {
-                    $set                 = new \ezcMailVariableSet(file_get_contents($outfile));
-                    $this->decryptedMail = $this->parser->parseMail($set);
+                try {
+                    $key = $account->getKeyPassPhrase() ?
+                        [$private, $account->getKeyPassPhrase()] :
+                        $private;
+                    if (openssl_pkcs7_decrypt($encrypted, $outfile, $public, $key)) {
+                        $set                 = new \ezcMailVariableSet(file_get_contents($outfile));
+                        $this->decryptedMail = $this->parser->parseMail($set);
 
-                    if (!$this->decryptedMail || !isset($this->decryptedMail[0])) {
-                        @unlink($encrypted);
-                        @unlink($outfile);
-                        throw new \InvalidArgumentException('Bad mail source, could not decode');
-                    }
-
-                    $this->decryptedMail = $this->decryptedMail[0];
-
-                    foreach ($this->decryptedMail->fetchParts() as $part) {
-                        if (isset($part->mimeType) && $part->mimeType === 'pkcs7-signature') {
-                            $this->validateSignature($outfile);
+                        if (!$this->decryptedMail || !isset($this->decryptedMail[0])) {
+                            throw new \InvalidArgumentException('Bad mail source, could not decode');
                         }
+
+                        $this->decryptedMail = $this->decryptedMail[0];
+
+                        foreach ($this->decryptedMail->fetchParts() as $part) {
+                            if (isset($part->mimeType) && $part->mimeType === 'pkcs7-signature') {
+                                $this->validateSignature($outfile);
+                            }
+                        }
+                    } else {
+                        $this->decryptionError = self::DECRYPT_FAILURE;
                     }
-                } else {
-                    $this->decryptionError = self::DECRYPT_FAILURE;
+                } finally {
+                    @unlink($encrypted);
+                    @unlink($outfile);
                 }
-                @unlink($encrypted);
-                @unlink($outfile);
             } else {
                 $this->decryptionError = self::DECRYPT_NO_KEY_FOR_ACCOUNT;
             }

@@ -44,8 +44,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\DiscriminatorMap({
  *     "value" = "TicketMessageAttribute"
  * })
- *
- * @JMS\ExclusionPolicy("all")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
+ * @JMS\ExclusionPolicy("All")
  */
 class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
 {
@@ -97,7 +97,7 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct($name)
     {
-        $this->name        = $name;
+        $this->setModelField('name', $name);
         $this->dateCreated = new \DateTime();
     }
 
@@ -119,10 +119,14 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param TicketMessage $message
+     *
+     * @return $this
      */
     public function setMessage($message)
     {
-        $this->message = $message;
+        $this->setModelField('message', $message);
+
+        return $this;
     }
 
     /**
@@ -141,9 +145,16 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
         return $this->value;
     }
 
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
     public function setValue($value)
     {
-        $this->value = $value;
+        $this->setModelField('value', $value);
+
+        return $this;
     }
 
     /**
