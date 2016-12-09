@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 import { createSelector } from 'reselect';
-import { widgetLanguageSelector } from './bootstrap';
+import { sessionLanguageSelector } from './bootstrap';
 
 export const translationsSelectorFactory = (property, defaultValue) => (options, language) => {
   const translations = options.get('translations') || [];
@@ -128,6 +128,17 @@ export const helpButtonSelector = createSelector(
 export const helpButtonSizeSelector = createSelector(
   helpButtonSelector,
   options => options.get('size')
+);
+
+export const widgetLanguageSelector = createSelector(
+  widgetOptionsSelector,
+  sessionLanguageSelector,
+  (options, sessionLanguage) => {
+    if (options.get('language')) {
+      return options.get('language');
+    }
+    return sessionLanguage;
+  }
 );
 
 export const helpButtonNameSelector = createSelector(

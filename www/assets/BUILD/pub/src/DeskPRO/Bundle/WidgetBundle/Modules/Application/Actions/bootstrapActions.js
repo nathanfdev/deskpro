@@ -11,11 +11,15 @@ import {
   requireChatLoginSelector,
   requireChatEmailValidationSelector,
   widgetHasChatSelector,
-  widgetLanguageSelector,
   widgetSessionChatIdSelector
 } from '../Selectors/bootstrap';
 
-import { liveDemoSelector, noFetchOptionsSelector, widgetEnabledSelector } from '../Selectors/dpWindow';
+import {
+  liveDemoSelector,
+  noFetchOptionsSelector,
+  widgetLanguageSelector,
+  widgetEnabledSelector
+} from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 
 export const ajaxOptions = { crossDomain: true, dataType: 'json' };
