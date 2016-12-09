@@ -498,7 +498,7 @@ class TicketSearchController extends AbstractController
         return $this->render("AgentBundle:TicketSearch:$tpl", [
             'ticket_display'    => $ticket_display,
             'tickets'           => $tickets,
-            'display_fields'    => $display_fields,
+            'display_fields'    => $this->normalizeDisplayFields($display_fields),
             'ticket_field_defs' => $ticket_field_defs,
             'person_field_defs' => $person_field_defs,
             'changed_fields'    => $changed_fields,
@@ -1397,9 +1397,7 @@ class TicketSearchController extends AbstractController
 
         $json_renderer = new TicketListRenderer($ticket_display);
 
-        if (!$this->container->getSetting('core_tickets.use_ref') && in_array('ref', $vars['display_fields'])) {
-            $vars['display_fields'] = Arrays::removeValue($vars['display_fields'], 'ref');
-        }
+        $vars['display_fields'] = $this->normalizeDisplayFields(!empty($vars['display_fields']) ? $vars['display_fields'] : []);
 
         $vars = array_merge($vars, [
             'type'                   => $type,
@@ -2113,6 +2111,19 @@ class TicketSearchController extends AbstractController
             'agent_signature_html' => $this->person->getSignatureHtml(),
             'ticket_options'       => $ticket_options,
         ]);
+    }
+
+    private function normalizeDisplayFields($display_fields)
+    {
+        if (!$display_fields || !is_array($display_fields)) {
+            $display_fields = [];
+        }
+
+        if (!$this->container->getSetting('core_tickets.use_ref') && in_array('ref', $display_fields)) {
+            $display_fields = Arrays::removeValue($display_fields, 'ref');
+        }
+
+        return array_values($display_fields);
     }
 
     /**
