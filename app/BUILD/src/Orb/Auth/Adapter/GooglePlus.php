@@ -86,9 +86,9 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
             $client->authenticate($_GET['code']);
 
             if ($access_token = $client->getAccessToken()) {
-                $attrs = $client->verifyIdToken()->getAttributes();
+                $attrs = $client->verifyIdToken();
 
-                if ($this->domain && !Urls::verifyEmailDomain($attrs['payload']['email'], $this->domain)) {
+                if ($this->domain && !Urls::verifyEmailDomain($attrs['email'], $this->domain)) {
                     return new Result(
                         Result::FAILURE, null,
                         [
@@ -98,19 +98,19 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
                     );
                 }
 
-                if (empty($attrs['payload']) || empty($attrs['payload']['sub'])) {
+                if (empty($attrs['sub'])) {
                     throw new \Exception('Google API payload was changed.');
                 }
 
                 $identity = new Identity(
-                    $attrs['payload']['sub'],
+                    $attrs['sub'],
                     [
-                        'email'          => $attrs['payload']['email'],
-                        'email_verified' => $attrs['payload']['email_verified'],
-                        'sub'            => $attrs['payload']['sub'],
+                        'email'          => $attrs['email'],
+                        'email_verified' => $attrs['email_verified'],
+                        'sub'            => $attrs['sub'],
                     ]
                 );
-                $identity->setFriendlyIdentity($attrs['payload']['email']);
+                $identity->setFriendlyIdentity($attrs['email']);
 
                 return new Result(Result::SUCCESS, $identity);
             } else {
