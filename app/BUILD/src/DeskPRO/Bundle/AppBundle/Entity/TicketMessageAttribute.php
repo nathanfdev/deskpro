@@ -134,11 +134,16 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getValue()
     {
         return $this->value;
+    }
+
+    public function setValue($value)
+    {
+        $this->value = $value;
     }
 
     /**

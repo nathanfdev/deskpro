@@ -29,6 +29,7 @@
 namespace DpBehat\Portal;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
@@ -353,7 +354,8 @@ class GenericContext extends BasePortalContext
         $email_body    = $blob_storage->copyBlobRecordToString($blob);
         $email_subject = $last_email->getHeaderSubject();
 
-        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        /** @var EzcReader $reader */
+        $reader = $this->get('email.ezc_reader_factory')->create();
         $reader->setRawSource($email_body);
         $email_body = $reader->getBodyText()->getBodyUtf8();
 

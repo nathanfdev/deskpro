@@ -35,6 +35,7 @@ namespace Application\DeskPRO\EmailGateway;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Exception\ProcessingException;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\DelegateLogger;
@@ -63,6 +64,11 @@ class Runner
      * @var \Application\DeskPRO\Email\EmailAccount\EmailAccountManager
      */
     private $accountManager;
+
+    /**
+     * @var EzcReader
+     */
+    private $reader;
 
     /**
      * @var \Application\DeskPRO\Entity\EmailAccount[]
@@ -121,6 +127,7 @@ class Runner
     {
         $this->logger         = new \Application\DeskPRO\Log\Logger();
         $this->accountManager = App::$container->getEmailAccountManager();
+        $this->reader         = App::getContainer()->getEmailEzcReaderFactory()->create();
     }
 
     /**
@@ -814,7 +821,7 @@ BODY;
 
                 // Send alert to user
                 if ($source->error_code == EmailSource::ERR_MESSAGE_TOO_BIG) {
-                    $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+                    $reader = $this->reader;
                     $reader->setRawSource($source->headers."\n\nBogus Body\n");
                     $fromEmail = $reader->getFromAddress()->getEmail();
                     $subject   = $reader->getSubject()->getSubjectUtf8();

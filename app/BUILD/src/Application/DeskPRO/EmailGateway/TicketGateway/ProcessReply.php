@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
 use Orb\Types\NoValue;
 
 class ProcessReply extends ProcessAbstract
@@ -179,6 +180,21 @@ class ProcessReply extends ProcessAbstract
 
         $message               = new TicketMessage($this->reader->getId());
         $message->email_reader = $this->reader;
+        if ($this->reader->isSigned() !== null) {
+            $signed = new TicketMessageAttribute('signed');
+            $signed->setValue($this->reader->isSigned());
+            $message->addAttribute($signed);
+        }
+        if ($this->reader->getDecryptedMail() !== null) {
+            $decrypted = new TicketMessageAttribute('decrypted');
+            $decrypted->setValue(true);
+            $message->addAttribute($decrypted);
+        }
+        if ($this->reader->getDecryptionError() !== null) {
+            $decryptionError = new TicketMessageAttribute('decryption_error');
+            $decryptionError->setValue($this->reader->getDecryptionError());
+            $message->addAttribute($decryptionError);
+        }
         if ($this->reader->hasProperty('email_source')) {
             $message['email_source'] = $this->reader->getProperty('email_source');
         }

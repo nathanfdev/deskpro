@@ -44,6 +44,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
 use Orb\Util\Strings;
 
 class ProcessNew extends ProcessAbstract
@@ -285,6 +286,28 @@ class ProcessNew extends ProcessAbstract
         $ticketMessage->setMessageHtml($emailInfo->body);
         $ticketMessage->withNewSubject  = $subject;
         $ticketMessage->creation_system = 'gateway.person';
+        if ($this->reader->isSigned() !== null) {
+            $signed = new TicketMessageAttribute('signed');
+            $signed->setValue($this->reader->isSigned());
+            $ticketMessage->addAttribute($signed);
+        }
+        if ($this->reader->getDecryptedMail() !== null) {
+            $decrypted = new TicketMessageAttribute('decrypted');
+            $decrypted->setValue(true);
+            $ticketMessage->addAttribute($decrypted);
+        }
+        if ($this->reader->getDecryptionError() !== null) {
+            $decryptionError = new TicketMessageAttribute('decryption_error');
+            $decryptionError->setValue($this->reader->getDecryptionError());
+            $ticketMessage->addAttribute($decryptionError);
+
+            $emailSourceBlob = $this->reader->getSourceAsBlob();
+
+            $attach           = new TicketAttachment();
+            $attach['blob']   = $emailSourceBlob;
+            $attach['person'] = $this->person;
+            $ticketMessage->addAttachment($attach);
+        }
 
         if ($this->reader->getProperty('email_source')) {
             $ticketMessage->email_source = $this->reader->getProperty('email_source');

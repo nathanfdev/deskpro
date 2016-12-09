@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\EmailGateway;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailSource;
@@ -78,7 +79,7 @@ class RunnerExecSource
     public function __construct(EmailSource $source, AbstractReader $reader = null, EmailAccountManager $account_manager, Logger $logger = null)
     {
         $this->source          = $source;
-        $this->account         = $source->email_account;
+        $this->account         = $source->getEmailAccount();
         $this->reader          = $reader;
         $this->logger          = $logger ?: new Logger();
         $this->account_manager = $account_manager;
@@ -100,7 +101,7 @@ class RunnerExecSource
         if (!$this->reader) {
             $this->logger->logDebug('No reader set, creating it from raw source');
             $ts           = microtime(true);
-            $this->reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+            $this->reader = App::getContainer()->getEmailEzcReaderFactory()->create();
             $this->reader->setRawSource($this->source['raw_source']);
             $this->logger->logDebug(sprintf('Reader created in %.3fs', microtime(true) - $ts));
         }

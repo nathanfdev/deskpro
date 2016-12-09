@@ -242,6 +242,22 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return EmailAccount
+     */
+    public function getEmailAccount()
+    {
+        return $this->email_account;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
      * Get the full raw source of the email.
      *
      * @deprecated

@@ -32,9 +32,7 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\Logger;
@@ -89,6 +87,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
         //----------------------------------------
 
         if ($input->getOption('source')) {
+            /** @var EmailSource $source */
             $source = $this->getContainer()->getEm()->find(EmailSource::class, $input->getOption('source'));
 
             if (!$source) {
@@ -97,17 +96,18 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 return 1;
             }
 
-            $reader = new EzcReader();
+            $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
+            $reader->setEmailAccount($source->getEmailAccount());
             $reader->setRawSource($source['raw_source']);
-            $account = $source->email_account;
+            $account = $source->getEmailAccount();
 
             if (!$account) {
                 $account = $this->findEmailAccountFrom($reader);
             }
 
             if ($expectPending) {
-                if ($source->status !== EmailSource::STATUS_INSERTED && $source->status !== EmailSource::STATUS_RETRY) {
-                    $output->writeln(sprintf('<error>Status is %s (expected inserted or retry)</error>', $source->status));
+                if ($source->getStatus() !== EmailSource::STATUS_INSERTED && $source->getStatus() !== EmailSource::STATUS_RETRY) {
+                    $output->writeln(sprintf('<error>Status is %s (expected inserted or retry)</error>', $source->getStatus()));
 
                     return 1;
                 }
@@ -156,7 +156,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 $rawHeaders = substr($rawHeaders, 0, 4000);
             }
 
-            $reader = new EzcReader();
+            $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
             $reader->setRawSource($rawSource);
             $account = $this->findEmailAccountFrom($reader);
 
@@ -177,7 +177,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $t = microtime(true);
             $output->writeln('<info>Saving blob...</info>');
 
-            $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+            $blob = $this->getContainer()->getBlobStorage()->createBlobRecordFromString(
                 $rawSource,
                 'email.eml',
                 'message/rfc822'
@@ -189,8 +189,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
             // attempt to load it from the blob storage which is wasteful (eg could read back from s3 what we just wrote)
             $source->_raw = $rawSource;
 
-            App::getOrm()->persist($source);
-            App::getOrm()->flush();
+            $this->getContainer()->getEm()->persist($source);
+            $this->getContainer()->getEm()->flush();
 
             $output->writeln(sprintf('<info>Saved email source #'.$source->getId().' (took %.5s)</info>', microtime(true) - $t));
         }
@@ -206,14 +206,14 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
             $source->status     = 'error';
             $source->error_code = 'invalid_address';
-            App::getOrm()->persist($source);
-            App::getOrm()->flush();
+            $this->getContainer()->getEm()->persist($source);
+            $this->getContainer()->getEm()->flush();
 
             return 1;
         }
 
         if ($accountId) {
-            $accountManager = App::$container->getEmailAccountManager();
+            $accountManager = $this->getContainer()->getEmailAccountManager();
 
             if (ctype_digit($accountId)) {
                 if (!$accountManager->hasAcccount($accountId)) {
@@ -231,8 +231,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
                     $source->status     = 'error';
                     $source->error_code = 'invalid_address';
-                    App::getOrm()->persist($source);
-                    App::getOrm()->flush();
+                    $this->getContainer()->getEm()->persist($source);
+                    $this->getContainer()->getEm()->flush();
 
                     return 1;
                 }
@@ -243,15 +243,15 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
                 $source->status     = 'error';
                 $source->error_code = 'invalid_address';
-                App::getOrm()->persist($source);
-                App::getOrm()->flush();
+                $this->getContainer()->getEm()->persist($source);
+                $this->getContainer()->getEm()->flush();
             }
         }
 
         if ($source->email_account !== $account) {
             $source->email_account = $account;
-            App::getOrm()->persist($source);
-            App::getOrm()->flush();
+            $this->getContainer()->getEm()->persist($source);
+            $this->getContainer()->getEm()->flush();
         }
 
         //----------------------------------------
@@ -296,7 +296,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
             if ($DP_ENV->getConfig('async_email_processing.process')) {
                 /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
-                $proc = App::getContainer()->get('in_email.proc_queue');
+                $proc = $this->getContainer()->get('in_email.proc_queue');
                 $proc->enqueueNewEmail($source);
             }
         }
@@ -311,7 +311,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
      */
     private function findEmailAccountFrom(AbstractReader $reader)
     {
-        $accountManager = App::$container->getEmailAccountManager();
+        $accountManager = $this->getContainer()->getEmailAccountManager();
 
         foreach ($reader->getReceivedAddresses() as $email) {
             $account = $accountManager->findAccountForEmailAddress($email->email, 'is_enabled');

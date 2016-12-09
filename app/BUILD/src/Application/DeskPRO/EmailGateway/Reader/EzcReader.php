@@ -32,7 +32,12 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\EmailAccount;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use Orb\Util\Strings;
 
 /**
@@ -46,7 +51,22 @@ class EzcReader extends AbstractReader
     /**
      * @var EmailAccount
      */
-    protected $account;
+    protected $emailAccount;
+
+    /**
+     * @var EmailAccountManager
+     */
+    protected $emailAccountManager;
+
+    /**
+     * @var AppEnv
+     */
+    protected $environment;
+
+    /**
+     * @var DeskproBlobStorage
+     */
+    protected $blobStorage;
     /**
      * @var \ezcMailParser|null
      */
@@ -57,21 +77,22 @@ class EzcReader extends AbstractReader
      */
     protected $mail = null;
 
-    /**
-     * @var \ezcMail
-     */
-    protected $decryptedMail = null;
-
-    /**
-     * @var bool
-     */
-    protected $isSigned = false;
-
+    const DECRYPT_NO_ACCOUNT         = 'no_account';
+    const DECRYPT_NO_KEY_FOR_ACCOUNT = 'no_key';
+    const DECRYPT_FAILURE            = 'other_failure';
     /**
      * EzcReader constructor.
+     *
+     * @param EmailAccountManager $emailAccountManager
+     * @param DeskproBlobStorage  $blobStorage
+     * @param AppEnv              $environment
      */
-    public function __construct()
+    public function __construct(EmailAccountManager $emailAccountManager, DeskproBlobStorage $blobStorage, AppEnv $environment)
     {
+        $this->emailAccountManager = $emailAccountManager;
+        $this->blobStorage         = $blobStorage;
+        $this->environment         = $environment;
+
         $opt = new \ezcMailParserOptions();
 
         $this->parser = new \ezcMailParser($opt);
@@ -90,17 +111,37 @@ class EzcReader extends AbstractReader
     /**
      * @return EmailAccount
      */
-    public function getAccount()
+    public function getEmailAccount()
     {
-        return $this->account;
+        return $this->emailAccount;
     }
 
     /**
-     * @param EmailAccount $account
+     * @param EmailAccount $emailAccount
+     *
+     * @return EzcReader
      */
-    public function setAccount($account)
+    public function setEmailAccount($emailAccount)
     {
-        $this->account = $account;
+        $this->emailAccount = $emailAccount;
+
+        return $this;
+    }
+
+    /**
+     * @return EmailAccountManager
+     */
+    public function getEmailAccountManager()
+    {
+        return $this->emailAccountManager;
+    }
+
+    /**
+     * @return AppEnv
+     */
+    public function getEnv()
+    {
+        return $this->environment;
     }
 
     public function _kill()
@@ -354,6 +395,10 @@ class EzcReader extends AbstractReader
                 || ($part instanceof \ezcMailText && $part->subType == 'calendar')
                 || ($part instanceof \ezcMailRfc822Digest)
             ) {
+                // We already analysed the signature or the encrypted content so we don't had it as an attachment
+                if ($part->mimeType === 'pkcs7-signature' || $part->mimeType === 'pkcs7-mime') {
+                    continue;
+                }
                 $attach = new Item\Attachment();
 
                 if ($part instanceof \ezcMailText) {
@@ -709,50 +754,89 @@ class EzcReader extends AbstractReader
 
     public function decryptEmail()
     {
-        var_dump($this);
-        $keys = [
-            'public'  => '/Users/julien/repositories/vagrant-deskpro-dev/docker/deskpro/var/julien.cer',
-            'private' => '/Users/julien/repositories/vagrant-deskpro-dev/docker/deskpro/var/julien.pem',
-        ];
-        if (!file_exists($keys['public'])) {
-            var_dump('Public Key not found');
-        }
-        if (!file_exists($keys['private'])) {
-            var_dump('Private Key not found');
-        }
-        $public    = file_get_contents($keys['public']);
-        $private   = file_get_contents($keys['private']);
-        $encrypted = '/Users/julien/repositories/vagrant-deskpro-dev/docker/deskpro/var/encrypted.txt';
-        file_put_contents($encrypted, $this->raw_source);
-        $outfilename = '/Users/julien/repositories/vagrant-deskpro-dev/docker/deskpro/var/decrypted.txt';
-        if (openssl_pkcs7_decrypt($encrypted, $outfilename, $public, [$private, 1234])) {
-            $set                 = new \ezcMailVariableSet(file_get_contents($outfilename));
-            $this->decryptedMail = $this->parser->parseMail($set);
+        $account = $this->findEmailAccountFrom();
 
-            if (!$this->decryptedMail || !isset($this->decryptedMail[0])) {
-                throw new \InvalidArgumentException('Bad mail source, could not decode');
-            }
-
-            $this->decryptedMail = $this->decryptedMail[0];
-
-            foreach ($this->decryptedMail->fetchParts() as $part) {
-                if (isset($part->mimeType) && $part->mimeType === 'pkcs7-signature') {
-                    $this->validateSignature($outfilename);
-                }
-            }
+        if (!$account) {
+            $this->decryptionError = self::DECRYPT_NO_ACCOUNT;
         } else {
-            echo "failed to decrypt!\n";
+            $certBlob = $account->getCertBlob();
+            $keyBlob  = $account->getKeyBlob();
+            if ($certBlob && $keyBlob) {
+                $public    = App::getContainer()->getBlobStorage()->copyBlobRecordToString($certBlob);
+                $private   = App::getContainer()->getBlobStorage()->copyBlobRecordToString($keyBlob);
+                $tmpDir    = $this->getEnv()->getUserTmpDir();
+                $encrypted = $tmpDir.'/encrypted.txt';
+                file_put_contents($encrypted, $this->raw_source);
+                $outfile = $tmpDir.'/decrypted.txt';
+                if (openssl_pkcs7_decrypt($encrypted, $outfile, $public, [$private, 1234])) {
+                    $set                 = new \ezcMailVariableSet(file_get_contents($outfile));
+                    $this->decryptedMail = $this->parser->parseMail($set);
+
+                    if (!$this->decryptedMail || !isset($this->decryptedMail[0])) {
+                        @unlink($encrypted);
+                        @unlink($outfile);
+                        throw new \InvalidArgumentException('Bad mail source, could not decode');
+                    }
+
+                    $this->decryptedMail = $this->decryptedMail[0];
+
+                    foreach ($this->decryptedMail->fetchParts() as $part) {
+                        if (isset($part->mimeType) && $part->mimeType === 'pkcs7-signature') {
+                            $this->validateSignature($outfile);
+                        }
+                    }
+                } else {
+                    $this->decryptionError = self::DECRYPT_FAILURE;
+                }
+                @unlink($encrypted);
+                @unlink($outfile);
+            } else {
+                $this->decryptionError = self::DECRYPT_NO_KEY_FOR_ACCOUNT;
+            }
         }
-        @unlink($encrypted);
-        @unlink($outfilename);
     }
 
     public function validateSignature($file = null)
     {
         if (!$file) {
-            $file = '/Users/julien/repositories/vagrant-deskpro-dev/docker/deskpro/var/encrypted.txt';
+            $tmpDir = $this->getEnv()->getUserTmpDir();
+            $file   = $tmpDir.'/encrypted.txt';
             file_put_contents($file, $this->raw_source);
         }
         $this->isSigned = openssl_pkcs7_verify($file, 0);
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\EmailAccount|null
+     */
+    private function findEmailAccountFrom()
+    {
+        if ($this->emailAccount) {
+            return $this->emailAccount;
+        }
+        foreach ($this->getReceivedAddresses() as $email) {
+            $account = $this->emailAccountManager->findAccountForEmailAddress($email->email, 'is_enabled');
+            if ($account) {
+                return $account;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getSourceAsBlob()
+    {
+        $filename = 'original.eml';
+        $mimeType = 'message/rfc822';
+
+        return $this->blobStorage->createBlobRecordFromString(
+            $this->raw_source,
+            $filename,
+            $mimeType,
+            ['is_temp' => false]
+        );
     }
 }
