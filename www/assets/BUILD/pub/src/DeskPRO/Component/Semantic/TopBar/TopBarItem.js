@@ -18,10 +18,10 @@ class TopBarItem extends React.Component {
   };
 
   render() {
-    const { children, className, childrenWrapper } = this.props;
+    const { children, className, childrenWrapper, title } = this.props;
     return (
-      <div 
-        className={classNames('item', className)} 
+      <div
+        className={classNames('item', className)}
         onClick={this.handleClick}
         title={title}
       >

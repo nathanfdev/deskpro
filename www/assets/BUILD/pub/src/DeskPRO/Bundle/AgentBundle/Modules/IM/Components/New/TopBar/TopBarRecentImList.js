@@ -58,7 +58,7 @@ class TopBarRecentImList extends RecentList {
     return this.state.chats.slice(0, 10).map(agent => this.getItem(agent));
   }
 
-  renderNotificationsBaloon(chat) {
+  renderNotificationsBalloon(chat) {
     const notificationCount = this.getNotificationCount(chat);
     return notificationCount ? <div className="ui knuckles label message-counter">{notificationCount}</div> : null;
   }
@@ -88,7 +88,7 @@ class TopBarRecentImList extends RecentList {
           person={agent} size={24}
           className="ui avatar image im"
         />
-        {this.renderNotificationsBaloon(chat)}
+        {this.renderNotificationsBalloon(chat)}
       </span>
     );
   }
@@ -103,7 +103,7 @@ class TopBarRecentImList extends RecentList {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
         <DepartmentAvatar department={department} size={24} className="ui avatar image im" />
-        {this.renderNotificationsBaloon(chat)}
+        {this.renderNotificationsBalloon(chat)}
       </span>
     );
   }
@@ -118,7 +118,7 @@ class TopBarRecentImList extends RecentList {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
         <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" />
-        {this.renderNotificationsBaloon(chat)}
+        {this.renderNotificationsBalloon(chat)}
       </span>
     );
   }
@@ -131,7 +131,7 @@ class TopBarRecentImList extends RecentList {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
         {AvatarHelper.renderEveryoneAvatar()}
-        {this.renderNotificationsBaloon(chat)}
+        {this.renderNotificationsBalloon(chat)}
       </span>
     );
   }
@@ -144,7 +144,7 @@ class TopBarRecentImList extends RecentList {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
         {AvatarHelper.renderGroupAvatar(chat)}
-        {this.renderNotificationsBaloon(chat)}
+        {this.renderNotificationsBalloon(chat)}
       </span>
     );
   }

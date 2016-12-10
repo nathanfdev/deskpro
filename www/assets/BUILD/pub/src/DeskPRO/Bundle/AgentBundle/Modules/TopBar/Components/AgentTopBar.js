@@ -12,7 +12,6 @@ import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'Des
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { loadFromApi, isLoadedCollectionSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import notificationsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg';
 import { IMOverlay, IMButton, TopBarRecentImList, GroupAddDrawer } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar';
 import AddButton from './AddButton';
 import Chat from './Chat';
@@ -106,21 +105,6 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.onChatSearch     = this.onChatSearch.bind(this);
   }
 
-  componentWillMount() {
-    this.props.dispatch(loadFromApi(
-      'AgentChat',
-      'DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=5',
-      'recent'
-    ));
-    this.props.dispatch(loadFromApi(
-      'AgentChat',
-      'DP_API/agent_chats/groups',
-      'group'
-    ));
-
-    this.refreshCounts();
-  }
-
   refreshCounts() {
     if (this.props.recentLoaded) {
       this.props.dispatch(messagesActions.refreshCounts());
@@ -181,6 +165,18 @@ export class AgentTopBarContainer extends SeparateComponent {
         notificationCount: parseInt(oldNotifIcon.innerHTML, 10)
       });
     }
+    this.props.dispatch(loadFromApi(
+      'AgentChat',
+      'DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=5',
+      'recent'
+    ));
+    this.props.dispatch(loadFromApi(
+      'AgentChat',
+      'DP_API/agent_chats/groups',
+      'group'
+    ));
+
+    this.refreshCounts();
   };
 
   onSearchFocus = () => {

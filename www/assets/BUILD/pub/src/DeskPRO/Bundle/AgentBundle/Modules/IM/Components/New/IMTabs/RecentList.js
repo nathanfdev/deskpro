@@ -108,7 +108,7 @@ class RecentList extends React.Component {
     return nestedCounts && nestedCounts.count ? nestedCounts.count : 0;
   }
 
-  renderNotificationsBaloon(chat) {
+  renderNotificationsBalloon(chat) {
     const notificationCount = this.getNotificationCount(chat);
     return (
       <div
@@ -143,7 +143,7 @@ class RecentList extends React.Component {
       >
         <div className="content agent recent" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">{agent.get('name')}</div>
-          {this.renderNotificationsBaloon(chat)}
+          {this.renderNotificationsBalloon(chat)}
         </div>
         <div className="timestamp content right floated">
           {AbstractList.getTimestamp(chat.get('date_last_message'))}
@@ -163,7 +163,7 @@ class RecentList extends React.Component {
       >
         <div className="content department" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">department</div>
-          {this.renderNotificationsBaloon(chat)}
+          {this.renderNotificationsBalloon(chat)}
           <div className="description">
             {department.get('title')}
             <span className="agents-list">{this.getAgents(department)}</span>
@@ -190,7 +190,7 @@ class RecentList extends React.Component {
             {team.get('name')}
             <span className="agents-list">{this.getAgents(team)}</span>
           </div>
-          {this.renderNotificationsBaloon(chat)}
+          {this.renderNotificationsBalloon(chat)}
         </div>
         <div className="timestamp content right floated">
           {AbstractList.getTimestamp(chat.get('date_last_message'))}
@@ -212,7 +212,7 @@ class RecentList extends React.Component {
             {chat.get('name')}
             <span className="agents-list">{this.getAgents(chat)}</span>
           </div>
-          {this.renderNotificationsBaloon(chat)}
+          {this.renderNotificationsBalloon(chat)}
         </div>
         <div className="timestamp content right floated">
           {AbstractList.getTimestamp(chat.get('date_last_message'))}
@@ -233,7 +233,7 @@ class RecentList extends React.Component {
           <div className="header">
             Everyone
           </div>
-          {this.renderNotificationsBaloon(chat)}
+          {this.renderNotificationsBalloon(chat)}
         </div>
         <div className="timestamp content right floated">
           {AbstractList.getTimestamp(chat.get('date_last_message'))}
