@@ -145,10 +145,13 @@ class LabelTask implements EntityInterface, NotifyPropertyChanged, Label
 
     /**
      * @param Task $task
+     *
+     * @return $this
      */
-    public function setTask(Task $task)
+    public function setTask(Task $task = null)
     {
         $this->setModelField('task', $task);
-        $task->addLabel($this);
+
+        return $this;
     }
 }

@@ -810,9 +810,9 @@ class Task implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setDateCreated($dateCreated)
+    public function setDateCreated(\DateTime $dateCreated = null)
     {
-        $this->date_created = $dateCreated;
+        $this->setModelField('date_created', $dateCreated);
 
         return $this;
     }
@@ -826,7 +826,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
      */
     public function setTaskType($taskType)
     {
-        $this->task_type = $taskType;
+        $this->setModelField('task_type', $taskType);
 
         return $this;
     }
@@ -838,9 +838,9 @@ class Task implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setDateDue($dateDue)
+    public function setDateDue(\DateTime $dateDue = null)
     {
-        $this->date_due = $dateDue;
+        $this->setModelField('date_due', $dateDue);
 
         return $this;
     }
@@ -852,9 +852,9 @@ class Task implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setDateEventStart($dateEventStart)
+    public function setDateEventStart(\DateTime $dateEventStart = null)
     {
-        $this->date_event_start = $dateEventStart;
+        $this->setModelField('date_event_start', $dateEventStart);
 
         return $this;
     }
@@ -866,9 +866,9 @@ class Task implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setDateEventEnd($dateEventEnd)
+    public function setDateEventEnd(\DateTime $dateEventEnd = null)
     {
-        $this->date_event_end = $dateEventEnd;
+        $this->setModelField('date_event_end', $dateEventEnd);
 
         return $this;
     }
@@ -882,7 +882,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
      */
     public function setVisibility($visibility)
     {
-        $this->visibility = $visibility;
+        $this->setModelField('visibility', $visibility);
 
         return $this;
     }
@@ -896,7 +896,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
      */
     public function setUrgency($urgency)
     {
-        $this->urgency = $urgency;
+        $this->setModelField('urgency', $urgency);
 
         return $this;
     }
@@ -908,9 +908,9 @@ class Task implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setDateDone($dateDone)
+    public function setDateDone(\DateTime $dateDone = null)
     {
-        $this->date_done = $dateDone;
+        $this->setModelField('date_done', $dateDone);
 
         return $this;
     }
@@ -924,7 +924,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
      */
     public function setDisplayOrder($displayOrder)
     {
-        $this->display_order = $displayOrder;
+        $this->setModelField('display_order', $displayOrder);
 
         return $this;
     }
@@ -938,7 +938,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
      */
     public function setCreator(Person $creator = null)
     {
-        $this->creator = $creator;
+        $this->setModelField('creator', $creator);
 
         return $this;
     }
@@ -952,7 +952,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
      */
     public function setProject(TaskProject $project = null)
     {
-        $this->project = $project;
+        $this->setModelField('project', $project);
 
         return $this;
     }
@@ -980,7 +980,8 @@ class Task implements EntityInterface, NotifyPropertyChanged
      */
     public function addSubtask(TaskSubtask $subtask)
     {
-        $this->subtasks[] = $subtask;
+        $this->subtasks->add($subtask);
+        $subtask->setTask($this);
 
         return $this;
     }
@@ -994,7 +995,8 @@ class Task implements EntityInterface, NotifyPropertyChanged
      */
     public function addLabel(LabelTask $label)
     {
-        $this->labels[] = $label;
+        $this->labels->add($label);
+        $label->setTask($this);
 
         return $this;
     }
@@ -1003,10 +1005,15 @@ class Task implements EntityInterface, NotifyPropertyChanged
      * Remove label.
      *
      * @param LabelTask $label
+     *
+     * @return $this
      */
     public function removeLabel(LabelTask $label)
     {
         $this->labels->removeElement($label);
+        $label->setTask(null);
+
+        return $this;
     }
 
     /**
@@ -1018,7 +1025,8 @@ class Task implements EntityInterface, NotifyPropertyChanged
      */
     public function addComment(TaskComment $comment)
     {
-        $this->comments[] = $comment;
+        $this->comments->add($comment);
+        $comment->setTask($this);
 
         return $this;
     }
@@ -1032,7 +1040,8 @@ class Task implements EntityInterface, NotifyPropertyChanged
      */
     public function addAttachment(TaskAttachment $attachment)
     {
-        $this->attachments[] = $attachment;
+        $this->attachments->add($attachment);
+        $attachment->setTask($this);
 
         return $this;
     }
