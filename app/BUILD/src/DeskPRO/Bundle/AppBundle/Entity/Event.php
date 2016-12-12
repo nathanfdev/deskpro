@@ -41,7 +41,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  * @ORM\Table(name="notification_system_event")
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  *
  * @category Entities
@@ -86,7 +86,9 @@ class Event implements EntityInterface, NotifyPropertyChanged
      */
     public function setId($id)
     {
-        $this->id = $id;
+        $this->setModelField('id', $id);
+
+        return $this;
     }
 
     /**
@@ -104,7 +106,7 @@ class Event implements EntityInterface, NotifyPropertyChanged
      */
     public function setEvent(SystemEventInterface $event)
     {
-        $this->event = $event;
+        $this->setModelField('event', $event);
 
         return $this;
     }
@@ -124,7 +126,7 @@ class Event implements EntityInterface, NotifyPropertyChanged
      */
     public function setIsPorcessed($processed)
     {
-        $this->processed = (bool) $processed;
+        $this->setModelField('processed', (bool) $processed);
 
         return $this;
     }

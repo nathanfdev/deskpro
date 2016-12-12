@@ -164,11 +164,14 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param AppInstance $app
+     *
+     * @return $this
      */
     public function setApp(AppInstance $app)
     {
-        $this->app = $app;
         $this->setModelField('app', $app);
+
+        return $this;
     }
 
     /**
@@ -181,11 +184,14 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param $js_class
+     *
+     * @return $this
      */
     public function setJsClass($js_class)
     {
-        $this->js_class = $js_class;
         $this->setModelField('js_class', $js_class);
+
+        return $this;
     }
 
     /**
@@ -198,11 +204,14 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param bool $has_form_template
+     *
+     * @return $this
      */
     public function setHasFormTemplate($has_form_template)
     {
-        $this->has_form_template = $has_form_template;
         $this->setModelField('has_form_template', $has_form_template);
+
+        return $this;
     }
 
     /**
@@ -215,11 +224,14 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param bool $is_agent_field
+     *
+     * @return $this
      */
     public function setIsAgentField($is_agent_field)
     {
-        $this->is_agent_field = $is_agent_field;
         $this->setModelField('is_agent_field', $is_agent_field);
+
+        return $this;
     }
 
     /**
@@ -232,11 +244,14 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param bool $has_display_template
+     *
+     * @return $this
      */
     public function setHasDisplayTemplate($has_display_template)
     {
-        $this->has_display_template = $has_display_template;
         $this->setModelField('has_display_template', $has_display_template);
+
+        return $this;
     }
 
     /**
@@ -249,11 +264,14 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string $title
+     *
+     * @return $this
      */
     public function setTitle($title)
     {
-        $this->title = $title;
         $this->setModelField('title', $title);
+
+        return $this;
     }
 
     /**
@@ -266,11 +284,14 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string $description
+     *
+     * @return $this
      */
     public function setDescription($description)
     {
-        $this->description = $description;
         $this->setModelField('description', $description);
+
+        return $this;
     }
 
     /**
@@ -316,11 +337,14 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param array $options
+     *
+     * @return $this
      */
     public function setOptions($options)
     {
-        $this->options = $options;
         $this->setModelField('options', $options);
+
+        return $this;
     }
 
     /**
@@ -343,16 +367,23 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
     /**
      * @param string $name
      * @param mixed  $value
+     *
+     * @return $this
      */
     public function setOption($name, $value)
     {
+        // we need this trick because we want to track change in ::selfModelField call
+        $options = $this->options;
+
         if ($value === null) {
-            unset($this->options[$name]);
+            unset($options[$name]);
         } else {
-            $this->options[$name] = $value;
+            $options[$name] = $value;
         }
 
-        $this->setModelField('options', $this->options);
+        $this->setModelField('options', $options);
+
+        return $this;
     }
 
     /**
@@ -365,11 +396,14 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param bool $is_user_enabled
+     *
+     * @return $this
      */
     public function setIsUserEnabled($is_user_enabled)
     {
-        $this->is_user_enabled = $is_user_enabled;
         $this->setModelField('is_user_enabled', $is_user_enabled);
+
+        return $this;
     }
 
     /**
@@ -382,11 +416,14 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param bool $is_enabled
+     *
+     * @return $this
      */
     public function setIsEnabled($is_enabled)
     {
-        $this->is_enabled = $is_enabled;
         $this->setModelField('is_enabled', $is_enabled);
+
+        return $this;
     }
 
     /**
@@ -399,11 +436,14 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param int $display_order
+     *
+     * @return $this
      */
     public function setDisplayOrder($display_order)
     {
-        $this->display_order = $display_order;
         $this->setModelField('display_order', $display_order);
+
+        return $this;
     }
 
     /**
@@ -416,10 +456,13 @@ class CustomDefTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param mixed $default_value
+     *
+     * @return $this
      */
     public function setDefaultValue($default_value)
     {
-        $this->default_value = $default_value;
         $this->setModelField('default_value', $default_value);
+
+        return $this;
     }
 }

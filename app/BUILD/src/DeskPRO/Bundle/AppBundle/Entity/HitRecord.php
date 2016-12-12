@@ -44,6 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="visitor_id_idx", columns={"visitor_id"}),
  *     @ORM\Index(name="page_type_idx", columns={"page_type", "page_id"})
  * })
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class HitRecord implements EntityInterface, NotifyPropertyChanged
 {
@@ -129,11 +130,11 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct($page_type, $page_id, $url, array $meta = null)
     {
-        $this->page_type    = $page_type;
-        $this->page_id      = $page_id;
-        $this->url          = $url;
-        $this->meta         = $meta;
-        $this->date_created = new \DateTime();
+        $this->setModelField('page_type', $page_type);
+        $this->setModelField('page_id', $page_id);
+        $this->setModelField('url', $url);
+        $this->setModelField('meta', $meta);
+        $this->setModelField('date_created', new \DateTime());
     }
 
     /**
@@ -146,10 +147,14 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param mixed $id
+     *
+     * @return $this
      */
     public function setId($id)
     {
-        $this->id = $id;
+        $this->setModelField('id', $id);
+
+        return $this;
     }
 
     /**
@@ -162,10 +167,14 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param mixed $visitor_id
+     *
+     * @return $this
      */
     public function setVisitorId($visitor_id)
     {
-        $this->visitor_id = $visitor_id;
+        $this->setModelField('visitor_id', $visitor_id);
+
+        return $this;
     }
 
     /**
@@ -178,10 +187,14 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param mixed $ip_address
+     *
+     * @return $this
      */
     public function setIpAddress($ip_address)
     {
-        $this->ip_address = $ip_address;
+        $this->setModelField('ip_address', $ip_address);
+
+        return $this;
     }
 
     /**
@@ -194,10 +207,14 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param mixed $page_type
+     *
+     * @return $this
      */
     public function setPageType($page_type)
     {
-        $this->page_type = $page_type;
+        $this->setModelField('page_type', $page_type);
+
+        return $this;
     }
 
     /**
@@ -210,10 +227,14 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param mixed $page_id
+     *
+     * @return $this
      */
     public function setPageId($page_id)
     {
-        $this->page_id = $page_id;
+        $this->setModelField('page_id', $page_id);
+
+        return $this;
     }
 
     /**
@@ -226,10 +247,14 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param mixed $url
+     *
+     * @return $this
      */
     public function setUrl($url)
     {
-        $this->url = $url;
+        $this->setModelField('url', $url);
+
+        return $this;
     }
 
     /**
@@ -242,10 +267,14 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param mixed $referrer
+     *
+     * @return $this
      */
     public function setReferrer($referrer)
     {
-        $this->referrer = $referrer;
+        $this->setModelField('referrer', $referrer);
+
+        return $this;
     }
 
     /**
@@ -258,10 +287,14 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param mixed $geo_country
+     *
+     * @return $this
      */
     public function setGeoCountry($geo_country)
     {
-        $this->geo_country = $geo_country;
+        $this->setModelField('geo_country', $geo_country);
+
+        return $this;
     }
 
     /**
@@ -274,10 +307,14 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param mixed $user_agent
+     *
+     * @return $this
      */
     public function setUserAgent($user_agent)
     {
-        $this->user_agent = $user_agent;
+        $this->setModelField('user_agent', $user_agent);
+
+        return $this;
     }
 
     /**
@@ -290,10 +327,14 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param mixed $meta
+     *
+     * @return $this
      */
     public function setMeta($meta)
     {
-        $this->meta = $meta ?: null;
+        $this->setModelField('meta', $meta ?: null);
+
+        return $this;
     }
 
     /**
@@ -306,10 +347,14 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \DateTime $date_created
+     *
+     * @return $this
      */
     public function setDateCreated($date_created)
     {
-        $this->date_created = $date_created;
+        $this->setModelField('date_created', $date_created);
+
+        return $this;
     }
 
     /**

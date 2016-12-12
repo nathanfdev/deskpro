@@ -95,11 +95,14 @@ class CustomDataTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param CustomDefTask $field
+     *
+     * @return $this
      */
     public function setField($field)
     {
-        $this->field = $field;
         $this->setModelField('field', $field);
+
+        return $this;
     }
 
     /**
@@ -112,11 +115,14 @@ class CustomDataTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param CustomDefTask $root_field
+     *
+     * @return $this
      */
     public function setRootField($root_field)
     {
-        $this->root_field = $root_field;
         $this->setModelField('root_field', $root_field);
+
+        return $this;
     }
 
     /**
@@ -129,10 +135,13 @@ class CustomDataTask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Task $task
+     *
+     * @return $this
      */
     public function setTask(Task $task)
     {
-        $this->task = $task;
         $this->setModelField('task', $task);
+
+        return $this;
     }
 }

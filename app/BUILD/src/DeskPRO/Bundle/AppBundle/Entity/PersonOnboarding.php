@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField\DateTime;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -41,9 +41,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity()
  * @ORM\Table("person_onboarding")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
-class PersonOnboarding implements EntityInterface
+class PersonOnboarding implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     const STATUS_NEW         = 0;
     const STATUS_IN_PROGRESS = 1;
     const STATUS_COMPLETED   = 2;
@@ -114,7 +117,7 @@ class PersonOnboarding implements EntityInterface
      * @JMS\Expose()
      *
      * @ORM\Column(type="string")
-     * 
+     *
      * @var string
      */
     protected $application;
@@ -124,7 +127,7 @@ class PersonOnboarding implements EntityInterface
      *
      * @ORM\Column(type="datetime", name="date_completion", nullable=true)
      *
-     * @var DateTime
+     * @var \DateTime
      */
     protected $dateCompletion;
 
@@ -151,7 +154,7 @@ class PersonOnboarding implements EntityInterface
      */
     public function setPerson(Person $person)
     {
-        $this->person = $person;
+        $this->setModelField('person', $person);
 
         return $this;
     }
@@ -171,7 +174,7 @@ class PersonOnboarding implements EntityInterface
      */
     public function setCurrentStep($currentStep)
     {
-        $this->currentStep = $currentStep;
+        $this->setModelField('currentStep', $currentStep);
 
         return $this;
     }
@@ -191,7 +194,7 @@ class PersonOnboarding implements EntityInterface
      */
     public function setOnboardingClass($onboardingClass)
     {
-        $this->onboardingClass = $onboardingClass;
+        $this->setModelField('onboardingClass', $onboardingClass);
 
         return $this;
     }
@@ -211,7 +214,7 @@ class PersonOnboarding implements EntityInterface
      */
     public function setStatus($status)
     {
-        $this->status = $status;
+        $this->setModelField('status', $status);
 
         return $this;
     }
@@ -231,13 +234,13 @@ class PersonOnboarding implements EntityInterface
      */
     public function setApplication($application)
     {
-        $this->application = $application;
+        $this->setModelField('application', $application);
 
         return $this;
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDateCompletion()
     {
@@ -245,13 +248,13 @@ class PersonOnboarding implements EntityInterface
     }
 
     /**
-     * @param DateTime $dateCompletion
+     * @param \DateTime $dateCompletion
      *
      * @return PersonOnboarding
      */
-    public function setDateCompletion($dateCompletion)
+    public function setDateCompletion(\DateTime $dateCompletion = null)
     {
-        $this->dateCompletion = $dateCompletion;
+        $this->setModelField('dateCompletion', $dateCompletion);
 
         return $this;
     }

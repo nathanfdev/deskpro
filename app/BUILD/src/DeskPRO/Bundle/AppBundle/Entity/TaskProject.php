@@ -47,6 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\Table(name="task_projects")
  * @JMS\ExclusionPolicy("all")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskProject implements EntityInterface, NotifyPropertyChanged
 {
@@ -98,8 +99,8 @@ class TaskProject implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct()
     {
-        $this->tasks   = new ArrayCollection();
-        $this->members = new ArrayCollection();
+        $this->setModelField('tasks', new ArrayCollection());
+        $this->setModelField('members', new ArrayCollection());
     }
 
     /**
@@ -200,7 +201,6 @@ class TaskProject implements EntityInterface, NotifyPropertyChanged
     {
         $member = new ProjectMember();
         $member->setDepartment($department);
-        $member->setProject($this);
         $this->addMember($member);
     }
 
@@ -287,35 +287,53 @@ class TaskProject implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param ProjectMember $member
+     *
+     * @return $this
      */
     public function addMember(ProjectMember $member)
     {
         $this->members->add($member);
-        $this->setModelField('member', $member);
+        $member->setProject($this);
+
+        return $this;
     }
 
     /**
      * @param ProjectMember $member
+     *
+     * @return $this
      */
     public function removeMember(ProjectMember $member)
     {
         $this->members->removeElement($member);
+        $member->setProject(null);
+
+        return $this;
     }
 
     /**
      * @param TaskList $list
+     *
+     * @return $this
      */
     public function addList(TaskList $list)
     {
         $this->lists->add($list);
-        $this->setModelField('list', $list);
+        $list->setProject($this);
+
+        return $this;
     }
 
     /**
      * @param TaskList $list
+     *
+     * @return $this
      */
     public function removeList(TaskList $list)
     {
         $this->lists->removeElement($list);
+        $list->setProject(null);
+
+        return $this;
     }
 }

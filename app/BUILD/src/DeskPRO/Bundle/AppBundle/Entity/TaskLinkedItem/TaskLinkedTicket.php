@@ -94,7 +94,7 @@ class TaskLinkedTicket extends AbstractTaskLinkedItem
      */
     public function setTicket(Ticket $ticket)
     {
-        $this->ticket = $ticket;
+        $this->setModelField('ticket', $ticket);
 
         return $this;
     }

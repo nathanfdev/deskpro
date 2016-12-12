@@ -46,7 +46,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatRepository")
  * @ORM\Table(name="agent_chat")
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  * @JMS\ExclusionPolicy("all")
  */
@@ -141,10 +141,10 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      */
     public function __construct()
     {
-        $this->date_created      = new \DateTime();
-        $this->date_last_message = new \DateTime();
-        $this->participants      = new ArrayCollection();
-        $this->messages          = new ArrayCollection();
+        $this->setModelField('date_created', new \DateTime());
+        $this->setModelField('date_last_message', new \DateTime());
+        $this->setModelField('participants', new ArrayCollection());
+        $this->setModelField('messages', new ArrayCollection());
     }
 
     /**
@@ -170,7 +170,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      */
     public function setType($type)
     {
-        $this->type = $type;
+        $this->setModelField('type', $type);
 
         return $this;
     }
@@ -190,7 +190,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      */
     public function setArchived($archived = true)
     {
-        $this->is_archived = (bool) $archived;
+        $this->setModelField('archived', (bool) $archived);
 
         return $this;
     }
@@ -218,7 +218,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      */
     public function setDateLastMessage(\DateTime $date)
     {
-        $this->date_last_message = $date;
+        $this->setModelField('date_last_message', $date);
 
         return $this;
     }
@@ -363,8 +363,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     {
         $message->setChat($this);
         $this->messages->add($message);
-
-        $this->date_last_message = new \DateTime();
+        $this->setModelField('date_last_message', new \DateTime());
 
         return $this;
     }
