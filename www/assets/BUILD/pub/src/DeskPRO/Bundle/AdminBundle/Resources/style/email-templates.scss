@@ -257,6 +257,7 @@
   .ui.vertical.menu {
     > .item {
       margin-bottom: 60px;
+      width: 260px;
       max-height: 425px;
       overflow-y: auto;
     }
@@ -266,6 +267,16 @@
       bottom: 0;
       left: 0;
       position: absolute;
+    }
+    width: auto;
+  }
+  .ui.vertical.menu:first-child {
+    width: 260px;
+  }
+  .add-phrase {
+    padding: 10px;
+    .ui.form .field > label {
+      font-size: 12px;
     }
   }
 }

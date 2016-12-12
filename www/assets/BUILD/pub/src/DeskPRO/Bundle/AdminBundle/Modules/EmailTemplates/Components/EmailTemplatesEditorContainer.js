@@ -218,6 +218,7 @@ class EmailTemplatesEditor extends React.Component {
                 >
                   <PhrasesMenuContainer
                     closeMenu={this.closePhrasesMenu}
+                    languages={window.DP_ENABLED_LANGS}
                   />
                 </DropDownMenu>
               </div>

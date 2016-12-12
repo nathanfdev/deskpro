@@ -116,7 +116,7 @@ class PopUp extends React.Component {
 
   render() {
     const { isOpen } = this.state;
-    const { children } = this.props;
+    const { children, className } = this.props;
 
     return (
       <div

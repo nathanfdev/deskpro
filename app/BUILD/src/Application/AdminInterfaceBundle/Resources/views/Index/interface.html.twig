@@ -152,6 +152,11 @@
                     {{ nav.list_subitem(phrase('adm.problems.title'), ng_href('tickets.problems'), 'tickets.problems', 'fa-bullhorn') }}
                     {{ nav.list_subitem('Settings', ng_href('tickets.settings'), 'tickets.settings', 'fa-cog') }}
                 {{ nav.list_item_group_end() }}
+                {% if app.hasFeature('new_email_templates') %}
+                    {{ nav.list_item_group(phrase('adm.general.apps_emails'), 'fa-envelope', '', 'emails') }}
+                        {{ nav.list_subitem('Templates Editor', ng_href('emails.templates_editor'), 'emails.templates_editor', 'fa-file-text') }}
+                    {{ nav.list_item_group_end() }}
+                {% endif %}
                 {{ nav.list_item_group(phrase('adm.general.apps_crm'), 'fa-users', '', 'crm') }}
                     {{ nav.list_subitem('Auth & SSO', ng_href('crm.usersources'), 'crm.usersources', 'fa-key') }}
                     {{ nav.list_subitem('User Groups', ng_href('crm.groups'), 'crm.groups', 'fa-group') }}

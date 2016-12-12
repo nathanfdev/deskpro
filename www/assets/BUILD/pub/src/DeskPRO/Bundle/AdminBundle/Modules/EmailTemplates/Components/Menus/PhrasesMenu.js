@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
+import { Form, Field, Input } from 'DeskPRO/Component/Semantic/Form';
 import classNames from 'classnames';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 
@@ -10,7 +11,8 @@ import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 export class PhrasesMenuContainer extends React.Component {
   static propTypes = {
     emailTemplates: PropTypes.object.isRequired,
-    closeMenu:      PropTypes.func
+    closeMenu:      PropTypes.func,
+    languages:      PropTypes.array
   };
 
   selectPhrase = () => {
@@ -24,6 +26,7 @@ export class PhrasesMenuContainer extends React.Component {
     }
     return (<PhrasesMenu
       phrases={phrases}
+      languages={this.props.languages}
       onSelectPhrase={this.selectPhrase}
     />);
   }
@@ -32,7 +35,8 @@ export class PhrasesMenuContainer extends React.Component {
 export class PhrasesMenu extends React.Component {
   static propTypes = {
     phrases:        PropTypes.object,
-    onSelectPhrase: PropTypes.func
+    onSelectPhrase: PropTypes.func,
+    languages:      PropTypes.array
   };
 
   static formatTitle(title) {
@@ -76,7 +80,13 @@ export class PhrasesMenu extends React.Component {
   };
 
   getRightPanel = () => {
-    if (!this.state.selectedLeft || !this.state.selectedLeft.get('phrases')) {
+    if (!this.state.selectedLeft) {
+      return null;
+    }
+    if (this.state.selectedLeft === 'add_phrase') {
+      return this.getAddPhrase();
+    }
+    if (!this.state.selectedLeft.get('phrases')) {
       return null;
     }
     const properties = this.state.selectedLeft.get('phrases').valueSeq().map(
@@ -107,12 +117,33 @@ export class PhrasesMenu extends React.Component {
     );
   };
 
+  getAddPhrase = () => {
+    const translations = this.props.languages.map(
+      language => <Field key={`language_${language.code}`}>
+        <label htmlFor="phrase">{language.title}</label>
+        <Input id="phrase" />
+      </Field>
+    );
+    return (
+      <div className="add-phrase">
+        <Form>
+          <Field className="inline">
+            <label htmlFor="phrase">Phrase: custom.</label>
+            <Input id="phrase" />
+          </Field>
+          {translations}
+        </Form>
+      </div>
+    );
+  };
+
   getLeftFooter = () => (<footer>
     <div className="ui action input small">
       <button
         className={classNames(
             'ui button basic small'
           )}
+        onClick={() => this.setActive('add_phrase')}
       >
           + Add Phrase
         </button>
