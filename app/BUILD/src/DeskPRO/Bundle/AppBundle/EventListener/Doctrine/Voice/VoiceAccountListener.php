@@ -99,12 +99,17 @@ class VoiceAccountListener
     public function createTwimlApp(VoiceAccount $account)
     {
         // create twiml app
-        $voiceUrl = $this->router->generate('twilio_phone_number_callback', [
+        $requestUrl = $this->router->generate('twilio_phone_number_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $twimlApp = $this->twilioAdapter->createTwimlApp($account, $voiceUrl, 'GET');
+        $statusUrl = $this->router->generate('twilio_phone_number_status_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $twimlApp = $this->twilioAdapter->createTwimlApp($account, $requestUrl, 'GET', $statusUrl, 'POST');
         if (!$twimlApp) {
             throw new TwilioException('Unable to create Twiml app');
         }

@@ -2753,7 +2753,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}).bind(this), 'chat_ids', { recurring: true });
 
 		this.getTabWatcher().addTabTypeWatcher('userchat', new DeskPRO.Agent.WindowElement.TabWatcher.UserChat());
-		this.getTabWatcher().addTabTypeWatcher('voice-call', new DeskPRO.Agent.WindowElement.TabWatcher.VoiceCallInProgress());
 	},
 
 	_initRoutes: function() {

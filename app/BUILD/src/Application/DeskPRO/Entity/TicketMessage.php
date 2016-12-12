@@ -128,6 +128,8 @@ class TicketMessage extends DomainObject
     protected $email_source = null;
 
     /**
+     * @JMS\Expose()
+     *
      * @var TicketMessageAttribute[]
      */
     protected $attributes;
@@ -769,15 +771,21 @@ class TicketMessage extends DomainObject
 
     /**
      * @param TicketMessageAttribute $attr
+     *
+     * @return $this
      */
     public function addAttribute(TicketMessageAttribute $attr)
     {
         $this->attributes->add($attr);
         $attr->setMessage($this);
+
+        return $this;
     }
 
     /**
      * @param string|TicketMessageAttribute $attr
+     *
+     * @return $this
      */
     public function removeAttribute($attr)
     {
@@ -787,7 +795,10 @@ class TicketMessage extends DomainObject
                 throw new \OutOfBoundsException();
             }
         }
+
         $this->attributes->removeElement($attr);
+
+        return $this;
     }
 
     /**

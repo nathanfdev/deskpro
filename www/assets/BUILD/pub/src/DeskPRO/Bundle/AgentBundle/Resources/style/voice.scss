@@ -843,7 +843,7 @@ $voice-green-border-color: #47BF61;
       i {
         margin-top: 10px;
         color: $dp-greyscale-450;
-        font-size: 55px
+        font-size: 55px;
       }
 
       > .user-photo {
@@ -886,5 +886,172 @@ $voice-green-border-color: #47BF61;
     background: -webkit-linear-gradient(180deg, rgba(255, 255, 255, 1) 14.79%, rgba(253, 253, 253, 0.48) 64.28%, rgba(246, 246, 246, 0.29) 82.1%, rgba(235, 235, 235, 0.16) 94.77%, rgba(227, 227, 227, 0.1) 100%);
     background: linear-gradient(180deg, rgba(255, 255, 255, 1) 14.79%, rgba(253, 253, 253, 0.48) 64.28%, rgba(246, 246, 246, 0.29) 82.1%, rgba(235, 235, 235, 0.16) 94.77%, rgba(227, 227, 227, 0.1) 100%);
     border: 0;
+  }
+}
+
+.voice-ticket-message {
+  font-family: 'Open Sans';
+
+  .voice-ticket-message-participants {
+    width: 45px;
+    float: left;
+
+    .avatar {
+      margin-bottom: 3px;
+      margin-right: 5px;
+      display: inline-block;
+      position: relative;
+      background-color: #FFFFFF;
+      overflow: hidden;
+
+      i {
+        margin-top: 10px;
+        color: $dp-greyscale-450;
+        font-size: 45px;
+        margin-top: 2px;
+      }
+
+      > .user-photo {
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: #FFFFFF;
+      }
+    }
+  }
+
+  .voice-ticket-message-body {
+    overflow: hidden;
+    margin-bottom: 8px;
+
+    .voice-ticket-message-header {
+      background-color: $voice-green-border-color;
+      padding: 9px 10px;
+
+      .voice-ticket-message-id {
+        font-weight: 400;
+        font-size: 10px;
+        color: $dp-greyscale-50;
+        border: 1px solid #FFFFFF;
+        padding: 1px 5px;
+      }
+
+      .voice-ticket-message-title {
+        position: relative;
+        font-weight: 600;
+        font-size: 12px;
+        color: $dp-greyscale-50;
+        margin: 10px;
+
+        i {
+          position: relative;
+          font-size: 16px;
+          top: 2px;
+          padding-left: 0;
+        }
+      }
+
+      .voice-ticket-message-date {
+        position: relative;
+        float: right;
+        font-weight: 400;
+        font-size: 10px;
+        color: $dp-greyscale-50;
+
+        i {
+          position: relative;
+          margin-left: 5px;
+          font-size: 16px;
+          top: 2px;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .voice-ticket-message-controls {
+      padding: 15px 15px 15px 20px;
+      background-color: #FFFFFF;
+      border: 1px solid #CCCCCC;
+      border-top: 0;
+
+      .voice-ticket-message-timeline {
+        display: inline-block;
+        width: 300px;
+
+        .range {
+          width: 100%;
+        }
+      }
+
+      .voice-ticket-message-time, .voice-ticket-message-size {
+        font-weight: 400;
+        font-size: 10px;
+        color: $dp-greyscale-850;
+      }
+
+      .voice-ticket-message-time {
+        margin-left: 10px;
+      }
+
+      .voice-ticket-message-size {
+        margin-left: 20px;
+
+        i {
+          padding-left: 0;
+        }
+      }
+
+      button {
+        height: 30px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        margin-right: 10px;
+
+        &.call-button {
+          float: right;
+          font-weight: 600;
+          font-size: 16px;
+          color: $dp-greyscale-850;
+          margin-right: 0;
+          padding-left: 15px;
+          padding-right: 15px;
+
+          i {
+            color: $voice-green-border-color;
+            font-size: 20px;
+            margin-right: 3px !important;
+          }
+        }
+      }
+    }
+
+    .voice-ticket-message-transcript, .voice-ticket-message-log {
+      padding: 10px 15px 10px 20px;
+      background-color: #F4F5F5;
+      border: 1px solid #CCCCCC;
+      border-top: 0;
+
+      .voice-ticket-message-section-title {
+        font-weight: 600;
+        font-size: 12px;
+        color: $dp-greyscale-850;
+      }
+
+      .voice-ticket-message-expand-button {
+        float: right;
+        cursor: pointer;
+        font-size: 20px;
+        margin-right: 0;
+      }
+
+      .voice-ticket-message-transcript-text {
+        clear: both;
+        display: block;
+        font-weight: 400;
+        font-size: 10px;
+        color: $dp-greyscale-850;
+        padding: 5px 0;
+      }
+    }
   }
 }
