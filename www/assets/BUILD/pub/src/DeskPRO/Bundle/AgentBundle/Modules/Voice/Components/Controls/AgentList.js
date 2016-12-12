@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import ScrollArea from 'react-scrollbar-versioned';
+import ScrollArea from 'react-scrollbar';
 import classNames from 'classnames';
 import Avatar from '../Common/Avatar';
 

@@ -21,9 +21,6 @@ import { isVoiceEnabledSelector } from '../../Voice/Selectors/client';
 import { onlineUserChatAgentsSelector, userChatEnabledSelector } from '../../Agent/Selectors/agents';
 import { toggleUserChat } from '../../Agent/Actions/agentActions';
 
-// import { IMContainer } from '../IM/Components/IMContainer';
-// import { HeaderWidget } from '../IM/Components/HeaderWidget';
-
 @connect(state => ({
   agents:              collectionSelectorFactory('Person', 'agents')(state),
   chatDepartments:     collectionSelectorFactory('Department', 'all_tickets')(state),
@@ -47,9 +44,9 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   teamsLoaded:         isLoadedCollectionSelectorFactory('AgentTeam', 'my')(state),
   myDepartmentsLoaded: isLoadedCollectionSelectorFactory('Department', 'my_tickets')(state),
   agentsLoaded:        isLoadedCollectionSelectorFactory('Person', 'agents')(state),
-  voiceEnabled:    isVoiceEnabledSelector(state),
-  userChatEnabled: userChatEnabledSelector(state),
-  onlineAgents:    onlineUserChatAgentsSelector(state),
+  voiceEnabled:        isVoiceEnabledSelector(state),
+  userChatEnabled:     userChatEnabledSelector(state),
+  onlineAgents:        onlineUserChatAgentsSelector(state)
 }))
 export class AgentTopBarContainer extends SeparateComponent {
 
@@ -384,10 +381,10 @@ export class AgentTopBar extends React.Component {
     myDepartmentsLoaded: PropTypes.bool.isRequired,
     agentsLoaded:        PropTypes.bool.isRequired,
     onClearSearchInput:  PropTypes.func,
-    voiceEnabled:       PropTypes.bool,
-    userChatEnabled:    PropTypes.bool,
-    onlineAgents:       PropTypes.object,
-    onToggleChat:       PropTypes.func
+    voiceEnabled:        PropTypes.bool,
+    userChatEnabled:     PropTypes.bool,
+    onlineAgents:        PropTypes.object,
+    onToggleChat:        PropTypes.func
   };
 
   onChatVolumeUpdate = (newVal) => {
@@ -413,9 +410,9 @@ export class AgentTopBar extends React.Component {
 
   render() {
     const { groupLoaded, groupCreation, teamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
-    const { current, chating, recentClick, messages, chatClickOut, participantClick, dispatch } = this.props;
+    const { current, chating, messages, chatClickOut, participantClick, recentClick, createGroup } = this.props;
     const { searchQuery, counts, groupChats, agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
-    const { editChat, updateGroup, loadMessages, onChatSearch, onScroll, createGroup, openGroupDrawer, markNewMessages, onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
+    const { editChat, updateGroup, loadMessages, onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
     const { checkedAgents, closeIframes, toggleViewMode, me, myDepartments, teams, recentChats, recentLoaded, overlayShown } = this.props;
 
     const groupDrawerTarget = document.getElementById('im-button');
