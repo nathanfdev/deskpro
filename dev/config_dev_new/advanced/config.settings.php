@@ -5,6 +5,9 @@ $SETTINGS['disable_portal_http_cache'] = true;
 $SETTINGS['disable_url_corrections']   = false;
 $SETTINGS['disable_outgoing_email']    = true;
 
+// Enable all experimental features
+$SETTINGS['enable_experimental'] = ['all' => true];
+
 ######################################################
 # Basic settings for logging and dupe system         #
 ######################################################
