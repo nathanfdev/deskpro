@@ -42,7 +42,9 @@ class AgentLegacyApp {
       this.renderPiece(AgentList, AgentList.getType());
       this.renderPiece(SideBarContainer, SideBarContainer.getType());
       this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());
-      this.renderPiece(NotificationServiceContainer, NotificationServiceContainer.getType());
+      if (window.DP_HAS_NEW_IM) {
+        this.renderPiece(NotificationServiceContainer, NotificationServiceContainer.getType());
+      }
       window.$('#dp_loading').remove();
 
       const messageBroker = window.DeskPRO_Window.getMessageBroker();

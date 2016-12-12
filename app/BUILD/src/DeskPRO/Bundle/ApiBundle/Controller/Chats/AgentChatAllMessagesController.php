@@ -35,6 +35,7 @@ use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\ApiBundle\Traits\AgentChatFiltersTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -47,6 +48,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @Rest\Route("/agent_chats/messages")
  * @ApiUnstable()
  * @ApiDoc(target="all", section="Chats", output="DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage")
+ * @Feature("agent_chat")
  */
 class AgentChatAllMessagesController extends CrudController
 {

@@ -162,18 +162,20 @@ export class AgentTopBarContainer extends SeparateComponent {
         notificationCount: parseInt(oldNotifIcon.innerHTML, 10)
       });
     }
-    this.props.dispatch(loadFromApi(
-      'AgentChat',
-      'DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=5',
-      'recent'
-    ));
-    this.props.dispatch(loadFromApi(
-      'AgentChat',
-      'DP_API/agent_chats/groups',
-      'group'
-    ));
+    if (window.DP_HAS_NEW_IM) {
+      this.props.dispatch(loadFromApi(
+        'AgentChat',
+        'DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=5',
+        'recent'
+      ));
+      this.props.dispatch(loadFromApi(
+        'AgentChat',
+        'DP_API/agent_chats/groups',
+        'group'
+      ));
 
-    this.refreshCounts();
+      this.refreshCounts();
+    }
   };
 
   onSearchFocus = () => {
@@ -408,14 +410,92 @@ export class AgentTopBar extends React.Component {
     return '';
   };
 
-  render() {
+  renderIM() {
+    if (!window.DP_HAS_NEW_IM) return null;
+
     const { groupLoaded, groupCreation, teamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
     const { current, chating, messages, chatClickOut, participantClick, recentClick, createGroup } = this.props;
-    const { searchQuery, counts, groupChats, agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
-    const { editChat, updateGroup, loadMessages, onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat, toggleImOverlay } = this.props;
-    const { checkedAgents, closeIframes, toggleViewMode, me, myDepartments, teams, recentChats, recentLoaded, overlayShown } = this.props;
-
+    const { editChat, updateGroup, loadMessages, onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, toggleImOverlay } = this.props;
+    const { searchQuery, counts, groupChats, checkedAgents, me, myDepartments, teams, recentChats, recentLoaded, overlayShown } = this.props;
+    const { agents, onSearchFocus, onSearchBlur } = this.props;
     const groupDrawerTarget = document.getElementById('im-button');
+
+    return (<TopBarItem childrenWrapper="im-list">
+      <TopBarRecentImList
+        me={me}
+        agents={agents}
+        departments={myDepartments}
+        teams={teams}
+        chats={recentChats}
+        counts={counts}
+        onRecentClick={recentClick}
+        teamsLoaded={teamsLoaded}
+        departmentsLoaded={myDepartmentsLoaded}
+        agentsLoaded={agentsLoaded}
+        recentLoaded={recentLoaded}
+      >
+        <IMOverlay
+          counts={counts}
+          teamsLoaded={teamsLoaded}
+          myDepartmentsLoaded={myDepartmentsLoaded}
+          agentsLoaded={agentsLoaded}
+          me={me}
+          agents={agents}
+          departments={myDepartments}
+          teams={teams}
+          onRecentClick={recentClick}
+          onParticipantClick={participantClick}
+          createNewGroup={() => openGroupDrawer()}
+          isOpen={overlayShown}
+          chats={recentChats}
+          groups={groupChats}
+          toggleOverlay={toggleImOverlay}
+          departmentsLoaded={myDepartmentsLoaded}
+          recentLoaded={recentLoaded}
+          groupLoaded={groupLoaded}
+          onFocus={onSearchFocus}
+          onBlur={onSearchBlur}
+          searchQuery={searchQuery}
+        >
+          <IMButton />
+        </IMOverlay>
+        {(groupDrawerTarget) ? <GroupAddDrawer
+          me={me}
+          isOpen={groupCreation}
+          agents={agents}
+          target={groupDrawerTarget}
+          checkedAgents={checkedAgents.toJS()}
+          clickOut={() => { this.props.dispatch(chatsActions.closeGroupDrawer()); }}
+          createGroup={createGroup}
+          updateGroup={updateGroup}
+          editChat={editChat}
+        /> : null }
+        {current.get('id') ? <Container
+          isOpen={chating}
+          onScroll={onScroll}
+          searchQuery={searchQuery}
+          onChatSearch={onChatSearch}
+          agents={agents}
+          departments={myDepartments}
+          teams={teams}
+          me={me}
+          messages={messages}
+          current={current}
+          onSubmit={onSubmit}
+          clickOut={chatClickOut}
+          loadMessages={loadMessages}
+          loadingMessages={loadingMessages}
+          markNewMessages={markNewMessages}
+          openGroupDrawer={openGroupDrawer}
+        /> : null }
+      </TopBarRecentImList>
+    </TopBarItem>);
+  }
+
+  render() {
+    const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
+    const { onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat } = this.props;
+    const { closeIframes, toggleViewMode } = this.props;
 
     return (<TopBar>
       <TopBarItem className="search-box legacy-omnibox">
@@ -435,77 +515,7 @@ export class AgentTopBar extends React.Component {
       >
         <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
       </TopBarItem>
-      <TopBarItem childrenWrapper="im-list">
-        <TopBarRecentImList
-          me={me}
-          agents={agents}
-          departments={myDepartments}
-          teams={teams}
-          chats={recentChats}
-          counts={counts}
-          onRecentClick={recentClick}
-          teamsLoaded={teamsLoaded}
-          departmentsLoaded={myDepartmentsLoaded}
-          agentsLoaded={agentsLoaded}
-          recentLoaded={recentLoaded}
-        >
-          <IMOverlay
-            counts={counts}
-            teamsLoaded={teamsLoaded}
-            myDepartmentsLoaded={myDepartmentsLoaded}
-            agentsLoaded={agentsLoaded}
-            me={me}
-            agents={agents}
-            departments={myDepartments}
-            teams={teams}
-            onRecentClick={recentClick}
-            onParticipantClick={participantClick}
-            createNewGroup={() => openGroupDrawer()}
-            isOpen={overlayShown}
-            chats={recentChats}
-            groups={groupChats}
-            toggleOverlay={toggleImOverlay}
-            departmentsLoaded={myDepartmentsLoaded}
-            recentLoaded={recentLoaded}
-            groupLoaded={groupLoaded}
-            onFocus={onSearchFocus}
-            onBlur={onSearchBlur}
-            searchQuery={searchQuery}
-          >
-            <IMButton />
-          </IMOverlay>
-          {(groupDrawerTarget) ? <GroupAddDrawer
-            me={me}
-            isOpen={groupCreation}
-            agents={agents}
-            target={groupDrawerTarget}
-            checkedAgents={checkedAgents.toJS()}
-            clickOut={() => { this.props.dispatch(chatsActions.closeGroupDrawer()); }}
-            createGroup={createGroup}
-            updateGroup={updateGroup}
-            editChat={editChat}
-          /> : null }
-          {current.get('id') ? <Container
-            isOpen={chating}
-            onScroll={onScroll}
-            searchQuery={searchQuery}
-            onChatSearch={onChatSearch}
-            agents={agents}
-            departments={myDepartments}
-            teams={teams}
-            me={me}
-            messages={messages}
-            current={current}
-            onSubmit={onSubmit}
-            clickOut={chatClickOut}
-            loadMessages={loadMessages}
-            loadingMessages={loadingMessages}
-            markNewMessages={markNewMessages}
-            openGroupDrawer={openGroupDrawer}
-          /> : null }
-
-        </TopBarRecentImList>
-      </TopBarItem>
+      { this.renderIM() }
       <AddButton closeIframes={closeIframes} />
       <TopBarRightMenu>
         <TopBarItem
