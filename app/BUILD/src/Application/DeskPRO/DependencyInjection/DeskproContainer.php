@@ -710,6 +710,14 @@ class DeskproContainer extends Container
     }
 
     /**
+     * @return \Application\DeskPRO\CustomFields\ChatFieldManager
+     */
+    public function getChatFieldManager()
+    {
+        return $this->getSystemService('chat_fields_manager');
+    }
+
+    /**
      * Get the value of a setting.
      *
      * @param string $name    The name of the setting to get
