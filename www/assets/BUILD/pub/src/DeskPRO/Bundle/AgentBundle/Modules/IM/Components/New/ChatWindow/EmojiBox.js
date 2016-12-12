@@ -7,7 +7,7 @@ class EmojiBox extends React.Component
 {
 
   static propTypes = {
-    emojiNode:  PropTypes.node,
+    emojiNode:  PropTypes.object,
     emojiClick: PropTypes.func.isRequired,
     clickOut:   PropTypes.func.isRequired,
     isOpen:     PropTypes.bool.isRequired

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { RteEditor } from 'DeskPRO/Component/Rte/RteEditor';
+import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
 import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
@@ -387,12 +387,15 @@ class Container extends React.Component {
                   onClick={this.openEmoji} ref={(c) => { this.emoji = c; }}
                 />
               </form>
-              <EmojiBox
-                isOpen={this.state.emojiOpened}
-                clickOut={this.closeEmoji}
-                emojiNode={this.emoji}
-                emojiClick={this.addEmoji}
-              />
+              {this.emoji ?
+                <EmojiBox
+                  isOpen={this.state.emojiOpened}
+                  clickOut={this.closeEmoji}
+                  emojiNode={this.emoji}
+                  emojiClick={this.addEmoji}
+                />
+                : null
+              }
             </div>
           </div>
         </ClickOut>
