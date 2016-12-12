@@ -1,0 +1,72 @@
+import React, { PropTypes } from 'react';
+import SectionHeader from '../../../../Common/Components/SectionHeader';
+
+class AccountList extends React.Component {
+
+  static propTypes = {
+    accounts:      PropTypes.object,
+    onNewAccount:  PropTypes.func,
+    onEditAccount: PropTypes.func
+  };
+
+  renderEmpty() {
+    const { onNewAccount } = this.props;
+
+    return (
+      <div className="page">
+        <SectionHeader title="General Settings" dividing />
+
+        You currently have no accounts.
+        <br /><br />
+
+        <button className="ui primary button" onClick={onNewAccount}>
+          Add new Twilio account
+        </button>
+      </div>
+    );
+  }
+
+  renderTable() {
+    const { accounts = [], onNewAccount, onEditAccount } = this.props;
+
+    return (
+      <div className="page">
+        <button className="ui right floated basic button" onClick={onNewAccount}>
+          <i className="icon plus" />
+          Add new Twilio account
+        </button>
+        <SectionHeader title="General Settings" />
+
+        <div className="twilio-list-table">
+          <div className="row header">
+            <div className="column account-name">Name/Note</div>
+            <div className="column sid">Account SID</div>
+            <div className="column date">Date Added</div>
+          </div>
+          {accounts.map((account, index) =>
+            <div className="row" key={index}>
+              <div className="info">
+                <div className="column account-name">{account.get('account_name')}</div>
+                <div className="column sid">{account.get('account_sid')}</div>
+                <div className="column date">{account.get('date_created')}</div>
+                <div className="column options-button">
+                  <a onClick={(event) => { event.preventDefault(); onEditAccount(account); }}>
+                    <i className="fa fa-gear" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    const { accounts } = this.props;
+
+    return accounts && accounts.size ? this.renderTable() : this.renderEmpty();
+  }
+}
+
+export default AccountList;

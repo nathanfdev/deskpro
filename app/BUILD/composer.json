@@ -81,7 +81,8 @@
     "geoip2/geoip2": "~2.4",
     "egulias/email-validator": "~1.2",
     "shopblocks/php-ico": "*",
-    "composer/ca-bundle": "^1.0"
+    "composer/ca-bundle": "^1.0",
+    "twilio/sdk": "^5.4"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",

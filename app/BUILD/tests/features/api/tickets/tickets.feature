@@ -6,9 +6,10 @@ Feature: /tickets endpoint
 
   Background:
     Given no Person records exist
+    And no EmailAccount records exist
     And I'm authenticated as admin
     And agent and user exist
-    And the following Organization records exist:
+    And only the following Organization records exist:
       | #         | Name                  |
       | microsoft | Microsoft Corporation |
     And only the following Ticket records exist:
@@ -20,7 +21,6 @@ Feature: /tickets endpoint
       | ticket5 | Fifth Demo Ticket  | {agent} |              | hidden         | deleted       |
     And I have a Department record referenced as department
     And there are no custom ticket fields defined
-    And no EmailAccount records exist
 
   Scenario: I create a ticket
     Given only the following Product records exist:

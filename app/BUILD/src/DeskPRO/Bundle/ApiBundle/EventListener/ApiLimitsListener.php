@@ -75,6 +75,10 @@ class ApiLimitsListener implements EventSubscriberInterface
      */
     public function onController(FilterControllerEvent $event)
     {
+        if (!$event->isMasterRequest()) {
+            return;
+        }
+
         $controller = $event->getController();
         $token      = $this->container->get('security.token_storage')->getToken();
 

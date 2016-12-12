@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -37,8 +33,10 @@ use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Component\Util\TypeUtils;
 use DpSys\LowError\SystemErrorHandler;
 use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -64,12 +62,13 @@ class BaseController extends FOSRestController
 
     /**
      * @param mixed $data
+     * @param array $meta
      *
      * @return ApiWrapper
      */
-    protected function wrap($data)
+    protected function wrap($data, array $meta = [])
     {
-        return new ApiWrapper($data);
+        return new ApiWrapper($data, $meta);
     }
 
     /**
@@ -88,6 +87,26 @@ class BaseController extends FOSRestController
             $message,
             $errors_data
         );
+    }
+
+    /**
+     * @param string     $code
+     * @param \Exception $e
+     *
+     * @return View
+     */
+    protected function getFormErrorResponseFromException($code, \Exception $e)
+    {
+        return new View([
+            'errors' => [
+                'errors' => [
+                    [
+                        'code'    => $code,
+                        'message' => $e->getMessage(),
+                    ],
+                ],
+            ],
+        ], Response::HTTP_BAD_REQUEST);
     }
 
     /**

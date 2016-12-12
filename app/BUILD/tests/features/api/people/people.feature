@@ -6,7 +6,7 @@ Feature: /people endpoint
 
   Background:
     Given there are no "Person" records
-    Given there are no "Usergroup" records
+    And there are no "Usergroup" records
     And I'm authenticated as "admin"
 
   Scenario: I get paginated list of people
@@ -45,6 +45,10 @@ Feature: /people endpoint
     And "merchants" user group exists
     And "ice" agent group exists
     And "fire" agent group exists
+    And only the following custom person fields exist:
+      | #  | Type | Title      |
+      | f1 | text | Text field |
+
     When I send a POST request to "/api/v2/people" with body:
     """
 {
@@ -57,7 +61,7 @@ Feature: /people endpoint
   "agent_groups": [~ice_group~, ~fire_group~],
   "labels": ["label1", "label2"],
   "fields": {
-    "6": "some text"
+    "~f1~": "some text"
   },
   "contact_data": {
     "website": [
@@ -83,10 +87,7 @@ Feature: /people endpoint
     And the JSON node "data.labels" should have 2 elements
     And the JSON node "data.labels[0]" should be equal to "label1"
     And the JSON node "data.labels[1]" should be equal to "label2"
-    And the JSON node "data.fields" should have 4 elements
-    And the JSON node "data.fields.5.value" should exist
-    And the JSON node "data.fields.6.value" should be equal to "some text"
-    And the JSON node "data.fields.7.value" should be equal to 0
+    And the JSON node "data.fields.{f1}.value" should be equal to "some text"
     And the JSON node "data.user_groups" should have 2 elements
     And the JSON node "data.user_groups[0]" should be equal to "{knights_group}"
     And the JSON node "data.user_groups[1]" should be equal to "{merchants_group}"

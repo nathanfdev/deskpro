@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -36,6 +37,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\RequestContext;
 
 /**
  * Class BatchController.
@@ -152,6 +154,13 @@ class BatchController extends BaseController
             }
         }
 
+        // reset entity manager
+        $this->getDoctrine()->getManager()->clear();
+        if ($this->getUser() instanceof Person) {
+            $token = $this->container->get('security.token_storage')->getToken();
+            $token->setUser($this->getRepository(Person::class)->find($this->getUser()->getId()));
+        }
+
         $response = $this->getKernel()->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
         return $this->get('serializer')->deserialize($response->getContent(), 'array', 'json');
@@ -164,10 +173,19 @@ class BatchController extends BaseController
      */
     protected function matchRouteUrl(Request $subRequest)
     {
+        $router = $this->get('router');
+
+        $originalContext   = $router->getContext();
+        $subRequestContext = new RequestContext($subRequest->getUri(), $subRequest->getMethod());
+
         try {
+            $router->setContext($subRequestContext);
+
             return $this->get('router')->matchRequest($subRequest);
         } catch (\Exception $e) {
             return false;
+        } finally {
+            $router->setContext($originalContext);
         }
     }
 }

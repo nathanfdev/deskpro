@@ -79,3 +79,10 @@ services:
     arguments: ["@brand_stack", "@request_stack"]
     tags:
       - { name: validator.constraint_validator }
+
+  validator.voice_account:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Voice\VoiceAccountValidator
+    arguments:
+      - "@twilio_adapter"
+    tags:
+      - { name: validator.constraint_validator }

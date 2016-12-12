@@ -109,25 +109,29 @@ class AddButton extends React.Component {
 
   render() {
     const content = this.getPopupContent();
+
     if (content) {
-      return (<div className="item add" onClick={this.togglePopup}>
-        <PopUp
-          positionMy="center top"
-          positionAt="center bottom"
-          id={3}
-          elementId="add-menu-popup"
-          zIndex={99999}
-          content={content}
-          ref={(c) => { this.addPopup = c; }}
-          className="add_menu_popup"
-          autoOpen={false}
-        >
-          <button className="ui button">
-            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
-          </button>
-        </PopUp>
-      </div>);
+      return (
+        <div className="item add" onClick={this.togglePopup}>
+          <PopUp
+            positionMy="center top"
+            positionAt="center bottom"
+            id={3}
+            elementId="add-menu-popup"
+            zIndex={99999}
+            content={content}
+            ref={(c) => { this.addPopup = c; }}
+            className="add_menu_popup"
+            autoOpen={false}
+          >
+            <button className="ui button">
+              <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
+            </button>
+          </PopUp>
+        </div>
+      );
     }
+
     return null;
   }
 }

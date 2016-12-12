@@ -349,4 +349,12 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     {
         return $this->container->get('kernel')->getEnvironment() !== 'prod';
     }
+
+    /**
+     * @return \DpSys\Features
+     */
+    public function hasVoice()
+    {
+        return $this->container->get('deskpro.feature_flags')->hasVoice();
+    }
 }

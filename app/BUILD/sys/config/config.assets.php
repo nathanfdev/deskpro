@@ -259,7 +259,7 @@ $CONFIG['agent_pages'] = [
         'javascripts/DeskPRO/Agent/PageFragment/Page/DownloadsView.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
-
+        'javascripts/DeskPRO/Agent/PageFragment/Page/VoiceCallInProgress.js',
     ],
 ];
 
@@ -333,6 +333,7 @@ $CONFIG['agent_agent_ui'] = [
         'javascripts/DeskPRO/Agent/PageFragment/Loading.js',
         'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/Tickets.js',
         'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/UserChat.js',
+        'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/VoiceCallInProgress.js',
         'javascripts/DeskPRO/Agent/WindowElement/TabBar.js',
         'javascripts/DeskPRO/Agent/WindowElement/TabBarOverflow.js',
         'javascripts/DeskPRO/Agent/TextSnippetAjaxDriver.js',

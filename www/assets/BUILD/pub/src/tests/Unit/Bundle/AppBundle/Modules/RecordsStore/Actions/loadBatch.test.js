@@ -40,15 +40,14 @@ describe('RecordsStore loadBatch() action', () => {
     expect(TicketRepository.loadBatch).toHaveBeenCalledWith([1, 3]);
   });
 
-  it('should return all targets in payload.ids', () => {
+  it('should return all targets in payload.allCollectionIds', () => {
     const fakeState = fakeRecordsStore({Ticket: {records: {2: {id: 2}}}});
     const TicketRepository = jasmine.createSpyObj('TicketRepository', ['loadBatch']);
     spyOn(DAL, 'repository').and.returnValue(TicketRepository);
     TicketRepository.loadBatch.and.returnValue({then: () => {}});
 
     const action = dispatchInAgent(loadBatch('Ticket', [1, 2, 3], 'test'), fakeState);
-
-    expect(action.payload.ids).toEqual([1, 2, 3]);
+    expect(action.payload.allCollectionIds).toEqual([1, 2, 3]);
   });
 
   it('should return empty payload.records if all requested records are loaded', () => {

@@ -12,6 +12,7 @@ Feature: New ticket form
       | d2 | Department 2 | [{defaultBrand}] | 1                  |
     And I grant the "{d1}" department permission of tickets app for usergroup registered
     And I grant the "{d2}" department permission of tickets app for usergroup registered
+    And I set permission "tickets.use" = 1 for "registered" usergroup
     And only the following custom person fields exist:
       | #            | Type     | Title          |
       | user_field_1 | text     | Text field     |

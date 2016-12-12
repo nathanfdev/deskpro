@@ -3,6 +3,12 @@ parameters:
 
 services:
 
+  security.feature_listener:
+    class: DeskPRO\Bundle\AppBundle\Security\EventListener\FeatureListener
+    arguments: ["@deskpro.feature_flags", "@annotation_reader"]
+    tags:
+      - { name: kernel.event_subscriber }
+
   # Each kernel bundle will have their own specific security services dedicated to it
   # these are some general security services that should be able to be used app-wide.
   # For specific security implmentation details, see security.yml in the kernel bundles.

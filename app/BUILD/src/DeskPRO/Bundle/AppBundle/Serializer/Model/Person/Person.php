@@ -31,7 +31,9 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Person;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
@@ -451,11 +453,20 @@ class Person
     protected $primaryTeam;
 
     /**
+     * Agent data.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\AgentData")
+     *
+     * @var AgentData
+     */
+    protected $agentData;
+
+    /**
      * Constructor.
      *
-     * @param \Application\DeskPRO\Entity\Person $person
+     * @param PersonEntity $person
      */
-    public function __construct(\Application\DeskPRO\Entity\Person $person)
+    public function __construct(PersonEntity $person)
     {
         $this->id                      = $person->getId();
         $this->pictureBlob             = $person->picture_blob;
@@ -500,6 +511,7 @@ class Person
         $this->emails                  = $person->getEmails();
         $this->teams                   = $person->getTeams();
         $this->primaryTeam             = $person->getPrimaryTeam();
+        $this->agentData               = $person->getAgentData();
     }
 
     /**

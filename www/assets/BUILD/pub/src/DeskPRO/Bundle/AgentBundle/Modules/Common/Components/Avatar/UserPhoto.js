@@ -14,10 +14,11 @@ export class UserPhoto extends React.Component {
   };
 
   getStyle() {
-    const { imageUrl, color, width, height } = this.props;
+    const { imageUrl, color, width, height, type } = this.props;
     const style = {
-      width:  `${width}px !important`,
-      height: `${height}px !important`
+      width:          `${width}px`,
+      height:         `${height}px`,
+      backgroundSize: '100% 100%'
     };
 
     if (color) {
@@ -25,6 +26,9 @@ export class UserPhoto extends React.Component {
     }
     if (imageUrl) {
       style.backgroundImage = `url(${imageUrl})`;
+    }
+    if (type !== 'gravatar') {
+      style.display = 'inline-block';
     }
 
     return style;
@@ -51,7 +55,7 @@ export class UserPhoto extends React.Component {
         className={classNames(
         'user-photo', {
           'text-fallback': type === 'text',
-          'gravatar':      type === 'gravatar'
+          gravatar:        type === 'gravatar'
         })}
       >
 

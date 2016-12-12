@@ -181,8 +181,10 @@ define([
   'Admin/AntiAbuse/Ctrl/CaptchaSettings',
   'Admin/AntiAbuse/Ctrl/EmailRateLimiting',
   'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
+  'Admin/VoiceChannel/Ctrl/ReactComponent',
 
-  'CloudAdminLoad'
+  'CloudAdminLoad',
+  window.DP_ADMIN_BUNDLE_PATH
 
 ], function(angular) {
 

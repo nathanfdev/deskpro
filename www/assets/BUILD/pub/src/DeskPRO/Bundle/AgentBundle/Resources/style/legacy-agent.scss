@@ -2,12 +2,15 @@
 @import 'joyride';
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/css3/_placeholder";
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/addons/_clearfix";
+@import "../../../../../../node_modules/react-select/scss/select";
+@import "../../../../../../node_modules/react-select/scss/components";
 @import "raw/misc";
 @import "raw/dropdowns";
 @import "raw/dropdown-im";
 @import "raw/dropdown-active-chat";
 @import "raw/dropdown-chat";
 @import "global-widgets/im-container";
+@import "voice";
 
 
 .menu-with-panel {
@@ -295,6 +298,19 @@ $contrast: 5% !default;
   .item:hover #notifications svg .notifications-primary {
     fill: $dp-sonic-primary;
   }
+  .voice {
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-right: 20px;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+
+
+    .voice-menu-icon {
+      font-size: 25px !important;
+    }
+  }
   .user {
     display: inline-block;
     padding-right: 5px;
@@ -438,6 +454,15 @@ $contrast: 5% !default;
     }
   }
 }
+button.ui {
+  i.icon {
+    padding: 0;
+  }
+}
+i.ui.icon {
+  padding: 0;
+}
+
 #user-menu-popup {
   &:before {
     right: 30px;

@@ -283,3 +283,17 @@ services:
     arguments: ["@settings_resolver", "@language_manager"]
     tags:
       - { name: form.type }
+
+  form.voice_account:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAccountType
+    arguments:
+      - "@twilio_adapter"
+    tags:
+      - { name: form.type }
+
+  form.voice_queue:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceQueueType
+    arguments:
+      - "@twilio_adapter"
+    tags:
+      - { name: form.type }

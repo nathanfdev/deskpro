@@ -1,4 +1,6 @@
-import AgentLegacyApp from 'DeskPRO/Bundle/AgentBundle/AgentLegacyApp';
+import AgentLegacyApp from './AgentLegacyApp';
 
 const app = new AgentLegacyApp();
 app.run();
+
+window.AgentLegacyBundle = app;

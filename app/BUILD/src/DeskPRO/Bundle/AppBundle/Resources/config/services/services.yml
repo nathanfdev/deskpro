@@ -116,3 +116,7 @@ services:
   dp.jira:
     class: Application\DeskPRO\Service\JIRA
     arguments: ["@service_container"]
+
+  twilio_adapter:
+    class: DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter
+    arguments: ["@doctrine.orm.entity_manager"]

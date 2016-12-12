@@ -56,3 +56,6 @@ services:
         class: DpTestSrc\TestBundle\UserDetailsRepo
         arguments:
             - "@doctrine.orm.default_entity_manager"
+
+    twilio_adapter:
+        class: DpTestSrc\TestBundle\Mock\TwilioNullAdapter
