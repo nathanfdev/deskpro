@@ -107,6 +107,18 @@ export class PhrasesMenu extends React.Component {
     );
   };
 
+  getLeftFooter = () => (<footer>
+    <div className="ui action input small">
+      <button
+        className={classNames(
+            'ui button basic small'
+          )}
+      >
+          + Add Phrase
+        </button>
+    </div>
+  </footer>);
+
   selectPhrase = (phrase) => {
     this.props.onSelectPhrase(phrase);
   };
@@ -121,7 +133,7 @@ export class PhrasesMenu extends React.Component {
 
   render() {
     return (
-      <div className="variables two-panels-menu">
+      <div className="phrases two-panels-menu">
         <MenuWrapper>
           <SearchBox
             onUserInput={this.updateFilter}
@@ -129,6 +141,7 @@ export class PhrasesMenu extends React.Component {
           <Menu>
             {this.getGroups()}
           </Menu>
+          {this.getLeftFooter()}
         </MenuWrapper>
         {this.getRightPanel()}
       </div>

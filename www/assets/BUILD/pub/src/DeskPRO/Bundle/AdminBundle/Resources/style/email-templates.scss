@@ -212,7 +212,6 @@
       bottom: 0;
       left: 0;
       position: absolute;
-      height: 100px;
       .ui.action input {
         width: 80px;
       }
@@ -249,6 +248,24 @@
     .example {
       font-size: 14px;
       color: $dp-greyscale-850;
+    }
+  }
+}
+.phrases {
+  width: 780px;
+  height: 550px;
+  .ui.vertical.menu {
+    > .item {
+      margin-bottom: 60px;
+      max-height: 425px;
+      overflow-y: auto;
+    }
+    footer {
+      padding: 20px;
+      font-size: 14px;
+      bottom: 0;
+      left: 0;
+      position: absolute;
     }
   }
 }
