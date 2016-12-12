@@ -26,11 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Twilio;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAccountType;
@@ -45,8 +46,9 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/voice_accounts")
  * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceAccount")
+ * @Feature("voice")
  */
-class TwilioAccountsController extends CrudController
+class VoiceAccountsController extends CrudController
 {
     public static $entity    = VoiceAccount::class;
     public static $type      = VoiceAccountType::class;

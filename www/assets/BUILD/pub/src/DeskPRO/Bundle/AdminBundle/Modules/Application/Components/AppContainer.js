@@ -29,17 +29,18 @@ class AppContainer extends React.Component {
     return (
       <Provider store={store}>
         <Router history={history}>
-          <Route path="voice_channel">
-            <Route path="accounts" component={Voice.Accounts} />
-            <Route path="numbers" component={Voice.Numbers} />
-            <Route path="numbers/available" component={Voice.AvailableNumbers} />
-            <Route path="numbers/existing" component={Voice.ExistingNumbers} />
-            <Route path="queues" component={Voice.Queues} />
-            <Route path="queues/new" component={Voice.NewQueue} />
-            <Route path="queues/:queueId" component={Voice.EditQueue} />
-            <Route path="extensions" component={Voice.ExistingExtensionList} />
-            <Route path="extensions/new" component={Voice.NewExtensionList} />
-          </Route>
+          {window.DP_HAS_VOICE &&
+            <Route path="voice_channel">
+              <Route path="accounts" component={Voice.Accounts} />
+              <Route path="numbers" component={Voice.Numbers} />
+              <Route path="numbers/available" component={Voice.AvailableNumbers} />
+              <Route path="numbers/existing" component={Voice.ExistingNumbers} />
+              <Route path="queues" component={Voice.Queues} />
+              <Route path="queues/new" component={Voice.NewQueue} />
+              <Route path="queues/:queueId" component={Voice.EditQueue} />
+              <Route path="extensions" component={Voice.ExistingExtensionList} />
+              <Route path="extensions/new" component={Voice.NewExtensionList} />
+            </Route>}
         </Router>
       </Provider>
     );

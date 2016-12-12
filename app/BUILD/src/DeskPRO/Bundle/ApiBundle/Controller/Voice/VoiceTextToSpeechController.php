@@ -26,11 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Twilio;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Response;
 use Twilio\Twiml;
@@ -41,8 +42,9 @@ use Twilio\Twiml;
  * @ApiModes("all")
  * @Rest\Route("/voice_tts")
  * @ApiUserContext("open")
+ * @Feature("voice")
  */
-class TwilioTextToSpeechController extends BaseController
+class VoiceTextToSpeechController extends BaseController
 {
     /**
      * @Rest\Get("")

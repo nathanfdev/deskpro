@@ -26,10 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Twilio;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceNumberType;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -39,8 +40,9 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/voice_numbers")
+ * @Feature("voice")
  */
-class TwilioNumbersController extends CrudController
+class VoiceNumbersController extends CrudController
 {
     public static $entity = VoiceNumber::class;
     public static $type   = VoiceNumberType::class;

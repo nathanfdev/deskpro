@@ -188,15 +188,17 @@
                     {{ nav.list_subitem('Labels', ng_href('chat.labels'), 'chat.labels', 'fa-tags') }}
                     {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor', '{brandId: brandId}'), 'portal.widget_editor_link', 'fa-puzzle-piece') }}
                 {{ nav.list_item_group_end() }}
-                {{ nav.list_item_group(phrase('adm.general.voice_channel'), 'fa-comments-o', '', 'voice-channel') }}
-                    {{ nav.list_subitem('General Settings', ng_href('voice-channel.accounts'), 'voice-channel.accounts', 'fa-cog') }}
-                    {{ nav.list_subitem('Numbers', ng_href('voice-channel.numbers'), 'voice-channel.numbers', 'fa-th') }}
-                    {{ nav.list_subitem('Extensions', ng_href('voice-channel.extensions'), 'voice-channel.extensions', 'fa-bullseye') }}
-                    {{ nav.list_subitem('Queue Settings', ng_href('voice-channel.queues'), 'voice-channel.queues', 'fa-list-ul') }}
-                    {#{{ nav.list_subitem('Music & Greetings', ng_href('voice-channel.music_and_greetings'), 'voice-channel.music_and_greetings', 'fa-music') }}#}
-                    {#{{ nav.list_subitem('IVR', ng_href('voice-channel.ivr'), 'voice-channel.ivr', 'fa-sitemap') }}#}
-                    {#{{ nav.list_subitem('History', ng_href('voice-channel.history'), 'voice-channel.history', 'fa-clock-o') }}#}
-                {{ nav.list_item_group_end() }}
+                {% if app.hasVoice() %}
+                    {{ nav.list_item_group(phrase('adm.general.voice_channel'), 'fa-comments-o', '', 'voice-channel') }}
+                        {{ nav.list_subitem('General Settings', ng_href('voice-channel.accounts'), 'voice-channel.accounts', 'fa-cog') }}
+                        {{ nav.list_subitem('Numbers', ng_href('voice-channel.numbers'), 'voice-channel.numbers', 'fa-th') }}
+                        {{ nav.list_subitem('Extensions', ng_href('voice-channel.extensions'), 'voice-channel.extensions', 'fa-bullseye') }}
+                        {{ nav.list_subitem('Queue Settings', ng_href('voice-channel.queues'), 'voice-channel.queues', 'fa-list-ul') }}
+                        {#{{ nav.list_subitem('Music & Greetings', ng_href('voice-channel.music_and_greetings'), 'voice-channel.music_and_greetings', 'fa-music') }}#}
+                        {#{{ nav.list_subitem('IVR', ng_href('voice-channel.ivr'), 'voice-channel.ivr', 'fa-sitemap') }}#}
+                        {#{{ nav.list_subitem('History', ng_href('voice-channel.history'), 'voice-channel.history', 'fa-clock-o') }}#}
+                    {{ nav.list_item_group_end() }}
+                {% endif %}
                 {{ nav.list_item_group(phrase('adm.general.apps'), 'fa-cubes', '', 'apps') }}
                     {{ nav.list_subitem(phrase('adm.general.apps'), ng_href('apps.apps'), 'apps.apps', 'fa-puzzle-piece') }}
                     {{ nav.list_subitem(phrase('adm.general.api_keys'), ng_href('apps.api_keys'), 'apps.api_keys', 'fa-key') }}
@@ -272,6 +274,7 @@
         window.DP_IS_TESTING        = {% if app.isTesting() %}true{% else %}false{% endif %};
         window.DP_IS_CLOUD          = {% if app.isCloud() %}true{% else %}false{% endif %};
         window.DP_IS_DEV_ENV        = {% if app.isDevEnv() %}true{% else %}false{% endif %};
+        window.DP_HAS_VOICE         = {% if app.hasVoice() %}true{% else %}false{% endif %};
         window.DP_SECURE_LIC_SERVER = '{{ license_server }}';
         {% if app.isCloud() %}
         window.DPC_SITE_DOMAIN = '{{ constant('DPC_SITE_DOMAIN') }}';
