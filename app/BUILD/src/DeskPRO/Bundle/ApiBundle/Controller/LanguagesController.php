@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Component\Util\MapUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -340,6 +341,7 @@ class LanguagesController extends CrudController
      *      }
      * )
      * @Rest\Get("/email_phrases/{group}/{languageId}")
+     * @Feature("new_email_templates")
      *
      * @param $languageId
      *

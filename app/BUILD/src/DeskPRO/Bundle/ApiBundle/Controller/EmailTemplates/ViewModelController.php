@@ -33,6 +33,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -41,6 +42,7 @@ use FOS\RestBundle\View\View;
  * API access to person settings.
  *
  * @ApiModes("all")
+ * @Feature("new_email_templates")
  * @Rest\Route("/email_templates/view_model")
  */
 class ViewModelController extends BaseController
