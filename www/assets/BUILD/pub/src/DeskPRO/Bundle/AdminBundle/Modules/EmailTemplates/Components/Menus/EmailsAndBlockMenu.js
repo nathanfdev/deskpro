@@ -162,9 +162,9 @@ export class EmailsAndBlockMenu extends React.Component {
       return (<AccordionPanel
         key={`addEl${subGroup.get('subGroupId')}`}
         panel={{
-          title:       subGroup.get('title'),
-          subElements: subGroup.get('templates').size,
-          icon:        'folder open',
+          title: subGroup.get('title'),
+          count: subGroup.get('templates').toArray(),
+          icon:  'icon folder open',
           content
         }}
       />);

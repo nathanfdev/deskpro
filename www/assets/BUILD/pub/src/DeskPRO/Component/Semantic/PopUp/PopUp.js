@@ -116,11 +116,10 @@ class PopUp extends React.Component {
 
   render() {
     const { isOpen } = this.state;
-    const { children, className } = this.props;
+    const { children } = this.props;
 
     return (
       <div
-        style={{ display: 'inline-block' }}
         className={classNames({ active: isOpen }, className)}
         ref={(c) => { this.button = c; }}
         onClick={this.openPopup}
