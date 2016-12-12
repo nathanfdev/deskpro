@@ -105,11 +105,7 @@ class FeatureListener implements EventSubscriberInterface
     private function hasAccess(Feature $annotation)
     {
         $feature = $annotation->getName();
-        if ($feature === 'voice') {
-            return $this->features->hasVoice();
-        }
 
-        // unknown feature, deny access
-        return false;
+        return $this->features->hasFeature($feature);
     }
 }

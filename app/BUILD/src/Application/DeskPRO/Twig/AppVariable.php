@@ -351,10 +351,20 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     }
 
     /**
-     * @return \DpSys\Features
+     * @return bool
      */
     public function hasVoice()
     {
         return $this->container->get('deskpro.feature_flags')->hasVoice();
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
+    public function hasFeature($id)
+    {
+        return $this->container->get('deskpro.feature_flags')->hasFeature($id);
     }
 }

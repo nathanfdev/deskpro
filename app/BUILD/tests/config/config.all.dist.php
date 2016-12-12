@@ -70,5 +70,6 @@ $CONFIG['env'] = [
     'debug_mode'  => true,
 ];
 
+$CONFIG['settings']['enable_experimental']    = ['all' => true];
 $CONFIG['settings']['disable_outgoing_email'] = true;
 $CONFIG['settings']['core.deskpro_url']       = 'http://pr-next.deskprodev.com/';
