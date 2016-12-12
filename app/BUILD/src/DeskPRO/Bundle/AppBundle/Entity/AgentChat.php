@@ -190,8 +190,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      */
     public function setArchived($archived = true)
     {
-        $archived = (bool) $archived;
-        $this->setModelField('archived', $archived);
+        $this->setModelField('archived', (bool) $archived);
 
         return $this;
     }

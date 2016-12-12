@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField\DateTime;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -128,7 +127,7 @@ class PersonOnboarding implements EntityInterface, NotifyPropertyChanged
      *
      * @ORM\Column(type="datetime", name="date_completion", nullable=true)
      *
-     * @var DateTime
+     * @var \DateTime
      */
     protected $dateCompletion;
 
@@ -241,7 +240,7 @@ class PersonOnboarding implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDateCompletion()
     {
@@ -249,11 +248,11 @@ class PersonOnboarding implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param DateTime $dateCompletion
+     * @param \DateTime $dateCompletion
      *
      * @return PersonOnboarding
      */
-    public function setDateCompletion(DateTime $dateCompletion)
+    public function setDateCompletion(\DateTime $dateCompletion = null)
     {
         $this->setModelField('dateCompletion', $dateCompletion);
 
