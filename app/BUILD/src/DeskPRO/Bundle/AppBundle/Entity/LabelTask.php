@@ -85,7 +85,6 @@ class LabelTask implements EntityInterface, NotifyPropertyChanged, Label
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task", inversedBy="labels")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
-     * @Assert\Valid()
      *
      * @var Task
      */

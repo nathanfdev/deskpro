@@ -75,7 +75,6 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @Assert\NotNull()
-     * @Assert\Valid()
      *
      * @var Task
      */
@@ -103,7 +102,7 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      *
-     * @Assert\Valid()
+     * @Assert\NotNull()
      *
      * @var Person
      */

@@ -63,7 +63,6 @@ class TaskAssignment implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task", inversedBy="assigned")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
-     * @Assert\Valid()
      */
     protected $task;
 

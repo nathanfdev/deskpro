@@ -74,7 +74,6 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull
-     * @Assert\Valid()
      *
      * @var Person
      */
@@ -115,7 +114,6 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task", inversedBy="comments")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull
-     * @Assert\Valid()
      *
      * @var Task
      */

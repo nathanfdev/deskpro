@@ -61,7 +61,6 @@ class TaskLinkedChat extends AbstractTaskLinkedItem
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task", inversedBy="linked_chats")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=false)
      * @Assert\NotNull()
-     * @Assert\Valid()
      *
      * @var Task
      */
