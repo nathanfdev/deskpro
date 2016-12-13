@@ -38,6 +38,10 @@
         window.location = '/{{ path('user')|ltrim('/') }}index.php?_sys=message&ie8_admin';
     </script>
     <![endif]-->
+    <script type="text/javascript">
+//      IE/Edge Hack http://stackoverflow.com/questions/1481251/what-does-document-domain-document-domain-do
+        document.domain = document.domain;
+    </script>
 
     <style type="text/css">
         body {
