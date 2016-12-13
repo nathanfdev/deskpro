@@ -95,6 +95,7 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @Assert\NotNull()
+     * @Assert\Valid()
      *
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\Entity\TaskSubtask>")

@@ -85,6 +85,7 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject", inversedBy="members")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
+     * @Assert\Valid()
      *
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Project>")

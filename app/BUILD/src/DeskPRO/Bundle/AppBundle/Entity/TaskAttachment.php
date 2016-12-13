@@ -75,6 +75,7 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @Assert\NotNull()
+     * @Assert\Valid()
      *
      * @var Task
      */
