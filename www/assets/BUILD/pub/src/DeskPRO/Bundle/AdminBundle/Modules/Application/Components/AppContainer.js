@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { Router, Route } from 'react-router';
 import toastr from 'toastr';
 import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
-import repositoriesConfig from 'DeskPRO/Bundle/AdminBundle/DAL/config';
+import { repositoriesConfig } from 'DeskPRO/Bundle/AdminBundle/DAL/config';
 import store from '../../../Services/store';
 import { history } from '../../../Services/history';
 import * as Voice from '../../Voice/Components/index';
@@ -86,6 +86,9 @@ class AppContainer extends React.Component {
               legacyNavigate: this.props.legacyNavigate
             }))}
           />
+          <Route path="emails" key="email_routes">
+            <Route path="templates_editor" component={EmailTemplates.Editor} />
+          </Route>
         </Router>
       </Provider>
     );
