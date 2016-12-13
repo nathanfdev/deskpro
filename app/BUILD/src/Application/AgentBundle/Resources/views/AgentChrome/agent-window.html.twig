@@ -8,6 +8,7 @@
   <script type="text/javascript">
     window.DP_BASE_URL =  '{{ app.request.getSchemeAndHttpHost() ~ app.request.getBaseUrl() }}';
     window.DP_BASE_URL_RELATIVE = '{{ app.request.getBaseUrl() }}';
+    window.DP_BASE_API_URL      = '/{{ path('user')|ltrim('/') }}api';
     window.DP_PHONE_UTIL_PATH = '{{ asset('phonenumber_utils.js', 'app_assets') }}';
     window.DP_AGENT_INTERFACE_PATH_NAMESPACE = 'new-agent';
   </script>

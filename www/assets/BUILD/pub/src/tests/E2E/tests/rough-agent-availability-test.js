@@ -21,7 +21,7 @@ module.exports = {
       .assert.urlEquals(url('/tasks'))
 
       // Go through the all menu items
-      
+
       .click(menuItemSelector(1))
       .assert.urlEquals(url('/tickets'))
       .waitForElementVisible('//h1[contains(., "Tickets")]')
