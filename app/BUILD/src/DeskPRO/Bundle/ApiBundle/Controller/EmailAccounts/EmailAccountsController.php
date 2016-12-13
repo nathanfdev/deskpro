@@ -103,10 +103,6 @@ class EmailAccountsController extends BaseController
                 'Error: certificate email address: '.$info['subject']['emailAddress'].' does not match account'
             );
         }
-        $match = openssl_x509_check_private_key($certString, $keyString);
-//        if (!$info) {
-//            return $this->createNotFoundException('Error: Not a certificate');
-//        }
 
         $certBlob = $accept->accept($certificate);
         $keyBlob  = $accept->accept($key);

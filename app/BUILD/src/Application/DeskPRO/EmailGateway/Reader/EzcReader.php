@@ -763,10 +763,11 @@ class EzcReader extends AbstractReader
             if ($certBlob && $keyBlob) {
                 $public    = $this->blobStorage->copyBlobRecordToString($certBlob);
                 $private   = $this->blobStorage->copyBlobRecordToString($keyBlob);
+                $fileId    = uniqid('encMails', true);
                 $tmpDir    = $this->getEnv()->getUserTmpDir();
-                $encrypted = $tmpDir.'/encrypted.txt';
+                $encrypted = $tmpDir.'/'.$fileId.'encrypted.txt';
                 file_put_contents($encrypted, $this->raw_source);
-                $outfile = $tmpDir.'/decrypted.txt';
+                $outfile = $tmpDir.'/'.$fileId.'decrypted.txt';
                 try {
                     $key = $account->getKeyPassPhrase() ?
                         [$private, $account->getKeyPassPhrase()] :
@@ -803,10 +804,15 @@ class EzcReader extends AbstractReader
     {
         if (!$file) {
             $tmpDir = $this->getEnv()->getUserTmpDir();
-            $file   = $tmpDir.'/encrypted.txt';
+            $fileId = uniqid('sigMails', true);
+            $file   = $tmpDir.'/'.$fileId.'encrypted.txt';
             file_put_contents($file, $this->raw_source);
         }
-        $this->isSigned = openssl_pkcs7_verify($file, 0);
+        try {
+            $this->isSigned = openssl_pkcs7_verify($file, 0);
+        } finally {
+            @unlink($file);
+        }
     }
 
     /**
