@@ -60,9 +60,6 @@ define [
   SetupRouting(AdminModule)
   SetupTemplates(AdminModule)
 
-  # IE/Edge Hack http://stackoverflow.com/questions/1481251/what-does-document-domain-document-domain-do
-  document.domain = document.domain;
-
   if window.DP_REDIRECT_TO_LICENSE
     console.log("Redirect to license")
     window.location.hash = '/license'
