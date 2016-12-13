@@ -42,6 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn("type")
  * @ORM\DiscriminatorMap({
+ *     "voice_phone_call" = "TicketMessageVoicePhoneCall",
  *     "value" = "TicketMessageAttribute"
  * })
  * @ORM\ChangeTrackingPolicy("NOTIFY")
