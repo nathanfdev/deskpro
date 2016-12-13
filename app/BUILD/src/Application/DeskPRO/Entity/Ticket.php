@@ -302,8 +302,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var ArrayCollection
-     *
-     * @Assert\Valid()
      */
     protected $messages;
 

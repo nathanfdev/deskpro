@@ -95,7 +95,7 @@ class TicketAttachment extends DomainObject
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\TicketMessage>")
      *
-     * @Assert\Valid()
+     * @Assert\NotBlank()
      *
      * @var TicketMessage
      */
