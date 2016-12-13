@@ -442,6 +442,8 @@ abstract class AbstractFieldResolver
     }
 
     /**
+     * @param TicketWithLayoutsContext $context
+     *
      * @return FormField
      */
     abstract protected function createSubject(TicketWithLayoutsContext $context);

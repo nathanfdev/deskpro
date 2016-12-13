@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
@@ -123,6 +124,11 @@ class TicketController extends AbstractApiController
             if ($person) {
                 $ticket->setPerson($person);
                 $guestForm->handleRequest($request);
+
+                if (!$this->getUser() || $this->getUser() instanceof PersonGuest) {
+                    // if the user is not authorized then don't allow to change person entity
+                    $this->getManager()->getUnitOfWork()->clearEntityChangeSet(spl_object_hash($ticket->getPerson()));
+                }
 
                 $ticketService->acceptNewTicket($ticket, $request);
             } else {
