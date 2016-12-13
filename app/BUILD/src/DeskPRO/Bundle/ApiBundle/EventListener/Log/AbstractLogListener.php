@@ -54,7 +54,7 @@ abstract class AbstractLogListener implements EventSubscriberInterface
      */
     public function onResponse(FilterResponseEvent $event)
     {
-        if ($this->composer->getLog()) {
+        if ($this->composer->getLog() && $this->composer->getLog()->getMode()) {
             $this->composer->finishApiLog($event->getResponse());
             try {
                 $this->composer->write($event->getRequest(), $event->getResponse());

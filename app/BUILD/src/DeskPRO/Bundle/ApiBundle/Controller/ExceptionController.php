@@ -47,7 +47,7 @@ class ExceptionController extends BaseController
      *
      * @return View|Response
      */
-    public function showAction(\Exception $exception)
+    public function showAction($exception)
     {
         $parameters = [];
         if ($exception instanceof WrappedApiErrorException) {
