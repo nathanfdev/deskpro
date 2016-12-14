@@ -106,9 +106,10 @@ Feature: New ticket form
 
     When I go to "/new-ticket"
     Then I should see ".form-ticket" form fields in following order:
-      | name                       |
-      | ticket[department]         |
-      | ticket[subject]            |
-      | ticket[message][message]   |
-      | ticket[message][format]    |
-      | ticket[person][user_name]  |
+      | name                           |
+      | ticket[department]             |
+      | ticket[subject]                |
+      | ticket[message][message]       |
+      | ticket[message][format]        |
+      | ticket[attachments][0][upload] |
+      | ticket[person][user_name]      |
