@@ -1958,7 +1958,7 @@ class TicketSearchController extends AbstractController
 
                         $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
 
-                        if (count($this->getTicketLayoutErrors($ticket))) {
+                        if ($ticket->isResolved() && count($this->getTicketLayoutErrors($ticket))) {
                             $validation_errors[] = $ticket->getId();
                             $this->db->rollback();
                             continue;
@@ -2016,7 +2016,7 @@ class TicketSearchController extends AbstractController
 
                         $collection->apply(null, $ticket, $this->person);
 
-                        if (count($this->getTicketLayoutErrors($ticket))) {
+                        if ($ticket->isResolved() && count($this->getTicketLayoutErrors($ticket))) {
                             $validation_errors[] = $ticket->getId();
                             $this->db->rollback();
                             continue;
