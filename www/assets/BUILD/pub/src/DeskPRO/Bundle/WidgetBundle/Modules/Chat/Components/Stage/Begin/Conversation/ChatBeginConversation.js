@@ -76,7 +76,7 @@ export class ChatBeginConversation extends React.Component {
   }
 
   prepareFormFields(props) {
-    const { customFields, errors, submit } = props;
+    const { customFields, widgetLanguage, errors, submit } = props;
     if (!props.customFieldsLoaded || (props.allowDepartmentSelection && !props.chatDepartmentsLoaded)) {
       return;
     }
@@ -130,6 +130,7 @@ export class ChatBeginConversation extends React.Component {
       const field = (
         <CustomField
           config={customField}
+          language={widgetLanguage}
           formErrors={errors}
           widgetOptions={{
             context:       [parent.document, window.widgetFrame.document],
