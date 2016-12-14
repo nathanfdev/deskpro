@@ -39,7 +39,6 @@ use Application\DeskPRO\CustomFields\Handler;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
-use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Numbers;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -51,8 +50,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property CustomDefAbstract[]|ArrayCollection $children
  *
  * @method setParent(CustomDefAbstract $parent)
- *
- * @JMS\ExclusionPolicy("all")
  */
 class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
@@ -80,9 +77,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * The unique ID.
      *
      * @var int
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      */
     protected $id = null;
 
@@ -138,9 +132,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      *
      * @var string
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @Assert\NotBlank()
      */
     protected $title = '';
@@ -149,9 +140,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * The description.
      *
      * @var string
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      */
     protected $description = '';
 
@@ -168,8 +156,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * Options for the field.
      *
-     * @JMS\Expose()
-     * @JMS\Type("array")
+     * @var array
      */
     protected $options = [];
 
@@ -177,17 +164,11 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * Can the field be viewed by the user?
      *
      * @var bool
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      */
     protected $is_user_enabled = true;
 
     /**
      * True if field is enabled.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -195,9 +176,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
     /**
      * Obviously it is field`s display order.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -212,9 +190,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
     /**
      * Is this field associated with agents only.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -298,9 +273,25 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * @return string
      */
+    public function getRawTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return string
+     */
     public function getDescription()
     {
         return App::getTranslator()->getPhraseObject($this, 'description');
+    }
+
+    /**
+     * @return string
+     */
+    public function getRawDescription()
+    {
+        return $this->description;
     }
 
     /**
@@ -385,9 +376,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @JMS\VirtualProperty()
-     * @JMS\Type("array")
-     *
      * @return array
      */
     public function getChoices()
@@ -920,8 +908,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @JMS\VirtualProperty()
-     *
      * @return mixed
      */
     public function getDefaultValue()
@@ -995,9 +981,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * we return the real type of field (e.g., checkbox or radio) based on display options.
      *
      * @return string
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
      */
     public function getWidgetType()
     {
