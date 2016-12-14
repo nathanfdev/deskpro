@@ -83,7 +83,7 @@ class ApiRequestIdListener implements EventSubscriberInterface
         if ($token && $token instanceof AbstractApiSecurityToken) {
             $mode = ApiUtil::getMode($token->getName());
         } else {
-            $mode = ApiUtil::API_MODE_SESSION;
+            $mode = null;
         }
         $this->helper->setMode($mode);
     }
