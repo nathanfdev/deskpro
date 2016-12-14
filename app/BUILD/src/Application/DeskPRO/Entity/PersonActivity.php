@@ -91,6 +91,19 @@ class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
         $this['person'] = $person;
     }
 
+    /**
+     * @return array
+     */
+    public function toDbArray()
+    {
+        return [
+            'id'           => $this->id,
+            'action_type'  => $this->action_type,
+            'details'      => serialize($this->details ?: []),
+            'date_created' => $this->date_created->format('Y-m-d H:i:s'),
+        ];
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

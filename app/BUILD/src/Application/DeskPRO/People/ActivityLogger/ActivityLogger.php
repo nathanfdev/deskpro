@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\People\ActivityLogger;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonActivity;
 use Application\DeskPRO\People\ActivityLogger\ActionType\ActionTypeAbstract;
@@ -43,9 +44,9 @@ use Orb\Util\Util;
 class ActivityLogger
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var Connection
      */
-    protected $em;
+    protected $db;
 
     /**
      * @var PersonActivity[]
@@ -59,7 +60,7 @@ class ActivityLogger
      */
     public function __construct(\Doctrine\ORM\EntityManager $em)
     {
-        $this->em = $em;
+        $this->db = $em->getConnection();
 
         $me = $this;
         \DpShutdown::add(function () use ($me) {
@@ -112,10 +113,14 @@ class ActivityLogger
             return;
         }
 
+        // using plain sql here instead of doctrine
+        // to avoid any need for EM to have any related entities
+
+        $batch = [];
         foreach ($pending as $a) {
-            $this->em->persist($a);
+            $batch[] = $a->toDbArray();
         }
 
-        $this->em->flush();
+        $this->db->batchInsert('person_activity', $batch, true);
     }
 }
