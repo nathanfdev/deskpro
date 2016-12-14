@@ -176,6 +176,10 @@ class TicketMessageType extends AbstractType
                     // so we need to map entity property with the form field
                     'message' => 'message',
                 ],
+                'constraints' => [
+                    // check message directly via the form to prevent checking all ticket messages collection
+                    new Assert\Valid(),
+                ],
             ])
             ->setRequired([
                 'ticket',
