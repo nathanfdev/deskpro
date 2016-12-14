@@ -32,6 +32,7 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\FormExceptionInterface;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -43,7 +44,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class ExceptionController extends BaseController
 {
     /**
-     * @param \Exception $exception
+     * @param \Exception|FlattenException $exception
      *
      * @return View|Response
      */
@@ -73,9 +74,16 @@ class ExceptionController extends BaseController
             $exception = new AccessDeniedHttpException($exception->getMessage(), $exception);
         }
 
-        $status  = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
-        $code    = $this->get('form_error.code_factory')->getErrorCodeForException($exception);
-        $message = $this->get('form_error.message_factory.api')->createMessage($code, $parameters);
+        $status = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
+
+        if ($exception instanceof \Exception) {
+            $code    = $this->get('form_error.code_factory')->getErrorCodeForException($exception);
+            $message = $this->get('form_error.message_factory.api')->createMessage($code, $parameters);
+        } else {
+            // this is a quick stub for dev mode.
+            $code    = $exception->getCode();
+            $message = $exception->getMessage();
+        }
 
         // $exception has "getHeaders()" that we are interested in using
 
@@ -97,12 +105,12 @@ class ExceptionController extends BaseController
     }
 
     /**
-     * @param \Exception $exception
-     * @param array      $representation
+     * @param \Exception|FlattenException $exception
+     * @param array                       $representation
      *
      * @return array
      */
-    private function addExceptionInfo(\Exception $exception, array $representation)
+    private function addExceptionInfo($exception, array $representation)
     {
         // in dev environment, display a stack trace, dont show if we have a test.client
         if ($this->container->getParameter('kernel.debug') && !$this->container->has('test.client')) {
