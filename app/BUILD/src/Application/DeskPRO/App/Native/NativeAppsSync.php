@@ -205,7 +205,18 @@ class NativeAppsSync
                 continue;
             }
 
-            $app_package = new Package($f_path);
+            try {
+                $app_package = new Package($f_path);
+            } catch (\Exception $e) {
+                $this->logger->error("EXCEPTION: {$e->getMessage()}");
+                if ($this->exception_handler) {
+                    call_user_func($this->exception_handler, $e, ['mode' => 'install', 'manager' => $this->manager]);
+                    continue;
+                } else {
+                    throw $e;
+                }
+            }
+
             if ($this->manager->hasPackage($app_package->getManifest()->getPackageName())) {
                 // already installed (will have been updated)
                 continue;
@@ -229,6 +240,7 @@ class NativeAppsSync
                 $this->logger->error("EXCEPTION: {$e->getMessage()}");
                 if ($this->exception_handler) {
                     call_user_func($this->exception_handler, $e, ['mode' => 'install', 'package' => $app_package, 'manager' => $this->manager]);
+                    continue;
                 } else {
                     throw $e;
                 }
