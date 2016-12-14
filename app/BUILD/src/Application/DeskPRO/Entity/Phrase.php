@@ -124,6 +124,26 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return Language
+     */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    /**
+     * @param Language $language
+     *
+     * @return Phrase
+     */
+    public function setLanguage($language)
+    {
+        $this->setModelField('language', $language);
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getName()
@@ -131,18 +151,89 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName($name)
     {
         $this->setModelField('name', $name);
 
-        $groupname = self::getGroupFromName($name);
+        $groupName = self::getGroupFromName($name);
 
-        if ($groupname) {
-            $this->setModelField('groupname', $groupname);
+        if ($groupName) {
+            $this->setModelField('groupname', $groupName);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupname()
+    {
+        return $this->groupname;
+    }
+
+    /**
+     * SetName should be used instead.
+     *
+     * @param string $groupName
+     *
+     * @return Phrase
+     */
+    public function setGroupname($groupName)
+    {
+        $this->setModelField('groupname', $groupName);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhrase()
+    {
+        return $this->phrase;
+    }
+
+    /**
+     * @param string $phrase
+     *
+     * @return Phrase
+     */
+    public function setPhrase($phrase)
+    {
+        $this->setModelField('phrase', $phrase);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOriginalPhrase()
+    {
+        return $this->original_phrase;
+    }
+
+    /**
+     * @param string $originalPhrase
+     */
+    public function setOriginalPhrase($originalPhrase)
+    {
+        $this->setModelField('original_phrase', $originalPhrase);
+    }
+
+    /**
+     * @return string
+     */
+    public function getOriginalHash()
+    {
+        return $this->original_hash;
+    }
+
+    /**
+     * @param string $originalHash
+     */
+    public function setOriginalHash($originalHash)
+    {
+        $this->setModelField('original_hash', $originalHash);
     }
 
     /**

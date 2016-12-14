@@ -29,13 +29,17 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomPhraseType;
 use DeskPRO\Component\Util\MapUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -452,5 +456,60 @@ class LanguagesController extends CrudController
         // - when langs are updated (need some global uid that changes when admin edits phrase)
 
         return $res;
+    }
+
+    /**
+     * @ApiDoc(
+     *      section="Languages",
+     *      description="Create new custom phrase in several languages",
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      }
+     * )
+     * @Rest\Post("/custom_phrase")
+     *
+     * @param Request $request
+     *
+     * @throws \Exception
+     *
+     * @return JsonResponse
+     */
+    public function postCustomPhraseAction(Request $request)
+    {
+        $form = $this->createForm(CustomPhraseType::class);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $data = $form->getData();
+
+        $phraseName = 'custom.'.$data['name'];
+
+        if ($this->getManager()->getRepository(Phrase::class)->findOneBy(['name' => $phraseName])) {
+            $form->get('name')->addError(new FormError('Duplicate entry.'));
+            throw new InvalidFormException($form);
+        }
+
+        $entityManager = $this->getManager();
+
+        $phrases = [];
+
+        /** @var Language $language */
+        foreach ($this->getContainer()->get('language_manager')->getEnabledLanguages() as $language) {
+            if (!empty($data['phrase_'.$language->getLocale()])) {
+                $phrase = new Phrase();
+                $phrase->setName($phraseName);
+                $phrase->setLanguage($language);
+                $phrase->setPhrase($data['phrase_'.$language->getLocale()]);
+                $phrase->setOriginalHash('');
+                $entityManager->persist($phrase);
+                $phrases[] = $phrase;
+            }
+        }
+        $entityManager->flush();
+
+        return new JsonResponse($phrases);
     }
 }

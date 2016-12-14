@@ -39,6 +39,7 @@ class Button extends React.Component {
 
   handleClick = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!this.props.disabled) {
       if (!this.props.confirm || this.state.confirm) {
         this.props.onClick(e);

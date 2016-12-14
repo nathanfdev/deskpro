@@ -134,4 +134,9 @@ export const loadExampleTicket = createAction(
   })
 );
 
+export const saveCustomPhrase = createAction(
+  'EMAIL_TEMPLATES_SAVE_CUSTOM_PHRASE',
+  phrase => repository('Languages').saveCustomPhrase(phrase)
+);
+
 export const cleanState = createAction('EMAIL_TEMPLATES_CLEAN_STATE');
