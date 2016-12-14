@@ -64,7 +64,6 @@ class TaskStarred implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
-     * @Assert\Valid()
      */
     protected $task;
 
@@ -73,7 +72,6 @@ class TaskStarred implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
-     * @Assert\Valid()
      */
     protected $person;
 

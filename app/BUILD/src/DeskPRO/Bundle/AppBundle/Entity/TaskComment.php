@@ -74,7 +74,6 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull
-     * @Assert\Valid()
      *
      * @var Person
      */

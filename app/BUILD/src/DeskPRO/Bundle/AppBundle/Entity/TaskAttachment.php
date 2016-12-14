@@ -103,7 +103,7 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      *
-     * @Assert\Valid()
+     * @Assert\NotNull()
      *
      * @var Person
      */

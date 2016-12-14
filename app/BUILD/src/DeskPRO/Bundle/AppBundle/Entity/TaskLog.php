@@ -61,7 +61,6 @@ class TaskLog implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="SET NULL")
      * @Assert\NotNull()
-     * @Assert\Valid()
      */
     protected $person;
 

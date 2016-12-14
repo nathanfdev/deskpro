@@ -124,7 +124,6 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="creator_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      * @Assert\NotNull()
-     * @Assert\Valid()
      *
      * @var Person
      */
