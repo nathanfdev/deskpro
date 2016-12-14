@@ -20,7 +20,7 @@ const commands = {
 };
 
 module.exports = {
-  url:      url('/agent/login'),
+  url:      url('/agent/login?return=/admin/admin-interface'),
   commands: [commands],
   elements: {
     loginInput:    { selector: 'input[name="email"]' },
