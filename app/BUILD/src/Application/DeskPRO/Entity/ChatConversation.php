@@ -76,6 +76,8 @@ class ChatConversation extends DomainObject implements LabelsOwner
     /**
      * Department which chat was assigned.
      *
+     * @AppAssert\LeafDepartment()
+     *
      * @var \Application\DeskPRO\Entity\Department
      */
     protected $department = null;
@@ -1375,6 +1377,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
     public function setVisitorId($visitor_id)
     {
         $this->setModelField('visitor_id', $visitor_id);
+
         return $this;
     }
 

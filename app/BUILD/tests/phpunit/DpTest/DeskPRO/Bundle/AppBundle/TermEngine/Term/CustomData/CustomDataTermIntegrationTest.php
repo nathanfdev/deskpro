@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -38,8 +34,6 @@ use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\TermIntegrationTest;
 
 class CustomDataTermIntegrationTest extends TermIntegrationTest
 {
-    private static $is_set_up = false;
-
     /**
      * @var Ticket[]
      */
@@ -53,14 +47,11 @@ class CustomDataTermIntegrationTest extends TermIntegrationTest
     protected function setUp()
     {
         parent::setUp();
-
-        if (self::$is_set_up) {
-            return;
-        }
-        self::$is_set_up = true;
+        self::$tickets = [];
 
         $this->em->persist(self::$fieldType1 = $this->dummyCustomDefTicket());
         $this->em->persist(self::$fieldType2 = $this->dummyCustomDefTicket());
+
         for ($i = 0; $i < 5; ++$i) {
             $ticket = $this->dummyTicket();
             $this->em->persist($ticket);

@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity()
  * @ORM\Table(name="api_keys_actions")
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  */
 class ApiKeyAction implements EntityInterface, NotifyPropertyChanged
@@ -88,7 +88,7 @@ class ApiKeyAction implements EntityInterface, NotifyPropertyChanged
      */
     public function setAction($action)
     {
-        $this->action = $action;
+        $this->setModelField('action', $action);
 
         return $this;
     }
@@ -108,7 +108,7 @@ class ApiKeyAction implements EntityInterface, NotifyPropertyChanged
      */
     public function setKey(ApiKey $key)
     {
-        $this->key = $key;
+        $this->setModelField('key', $key);
 
         return $this;
     }

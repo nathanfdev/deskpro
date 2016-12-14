@@ -28,6 +28,6 @@
 
 return [
     'agent.publish.helpful'         => 'Hjälpsam',
-    'agent.publish.view_count'      => 'Visa Antal',
-    'agent.tickets.send_reply_as_x' => 'Skicka Svar som {{status}}',
+    'agent.publish.view_count'      => 'Visa antal',
+    'agent.tickets.send_reply_as_x' => 'Skicka svar som {{status}}',
 ];

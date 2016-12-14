@@ -44,7 +44,7 @@ class TextValidator extends AbstractSingleValueValidator
         $validators = [];
 
         // Required validator
-        if ($constraint->getCustomDefOption('required', true)) {
+        if ($constraint->getCustomDefOption('required', true) || $constraint->getCustomDefOption('regex_required', true)) {
             $validators[] = new Assert\NotBlank();
         }
 

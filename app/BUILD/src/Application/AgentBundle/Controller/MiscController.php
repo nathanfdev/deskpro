@@ -692,7 +692,7 @@ JS;
             }
         }
 
-        $res = $this->createJsonResponse([
+        $blob = [
             'blob_id'           => $blob['id'],
             'blob_auth'         => $blob->authcode,
             'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
@@ -703,9 +703,9 @@ JS;
 
             // needed for Redactor
             'filelink' => $blob->getDownloadUrl(true),
-        ]);
+        ];
 
-        return $res;
+        return $this->render('AgentBundle:Misc:redactor-image-upload.html.twig', ['blob' => $blob]);
     }
 
     public function redactorAutosaveAction($content_type, $content_id)

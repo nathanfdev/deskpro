@@ -81,18 +81,22 @@ Orb.Util.Events = {
 
 		defaultContext = this.__events_default_context || this;
 
-		args = Array.from(args || []);
+		var argsArr = Array.from(args || []);
+		if (argsArr.length < 1 && typeof args === 'object') {
+			argsArr = [args];
+		}
+
 		for (var i = 0; i < this.__events[type].length; i++) {
 			fn_info = this.__events[type][i];
 			if (delay) {
 				try {
-					fn_info[0].delay(delay, fn_info[1] || defaultContext, args);
+					fn_info[0].delay(delay, fn_info[1] || defaultContext, argsArr);
 				} catch (e) {
 					console.error("Event Error %s: %o %s", type, e, e.stack || '');
 				}
 			} else {
 				try {
-					fn_info[0].apply(fn_info[1] || defaultContext, args);
+					fn_info[0].apply(fn_info[1] || defaultContext, argsArr);
 				} catch (e) {
 					console.error("Event Error %s: %o %s", type, e, e.stack || '');
 				}

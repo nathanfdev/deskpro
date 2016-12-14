@@ -389,6 +389,10 @@ class PhraseData
                 $phrase_group = 'obj_customdeforganization';
                 break;
 
+            case 'DeskPRO:CustomDefChat':
+                $phrase_group = 'obj_customdefchat';
+                break;
+
             default: return [];
         }
 

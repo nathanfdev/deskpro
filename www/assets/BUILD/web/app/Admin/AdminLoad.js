@@ -128,6 +128,7 @@ define([
   'Admin/Server/Ctrl/ServerErrorLogsView',
   'Admin/Server/Ctrl/ServerIncidents',
   'Admin/Server/Ctrl/ServerIncidentsView',
+  'Admin/Server/Ctrl/ServerIncidentsEvent',
   'Admin/Server/Ctrl/ServerTaskQueue',
   'Admin/Server/Ctrl/ServerCronList',
   'Admin/Server/Ctrl/ServerCronLogs',
@@ -180,8 +181,10 @@ define([
   'Admin/AntiAbuse/Ctrl/CaptchaSettings',
   'Admin/AntiAbuse/Ctrl/EmailRateLimiting',
   'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
+  'Admin/VoiceChannel/Ctrl/ReactComponent',
 
-  'CloudAdminLoad'
+  'CloudAdminLoad',
+  window.DP_ADMIN_BUNDLE_PATH
 
 ], function(angular) {
 

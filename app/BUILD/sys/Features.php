@@ -28,8 +28,13 @@
 
 namespace DpSys;
 
+/**
+ * This class handles feature flags for both licensed features as well as experimental features.
+ */
 final class Features
 {
+    const VOICE = 'voice';
+
     /**
      * @var Features
      */
@@ -58,20 +63,39 @@ final class Features
      *
      * @return bool
      */
-    public function hasExperimental($id)
+    private function hasExperimental($id)
     {
         return $this->getDpEnv()->getConfig('settings.enable_experimental.all')
             || $this->getDpEnv()->getConfig('settings.enable_experimental.'.$id);
     }
 
     /**
-     * Can we use voice?
+     * Check if a certain feature is enabeld for the current license / config.
+     *
+     * @param string $id the id of the feature
+     *
+     * @return bool
+     */
+    public function hasFeature($id)
+    {
+        switch ($id) {
+            case self::VOICE:
+                return $this->hasVoice();
+            default:
+                // assume it's an arbitrary experimental flag
+                return $this->hasExperimental($id);
+        }
+    }
+
+    /**
+     * Can we use voice? Voice is only enabled if the license has voice or if we're in dev mode.
      *
      * @return bool
      */
     public function hasVoice()
     {
-        return $this->getLicense()->hasFlag('has_voice') || $this->getLicense()->hasFlag('is_dev');
+        return ($this->getLicense()->hasFlag('has_voice') || $this->getLicense()->hasFlag('is_dev'))
+            && $this->hasExperimental('voice');
     }
 
     /**

@@ -72,6 +72,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
     And the JSON node "data.grouped_results[4].results" should have 0 elements
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
+    And the JSON node "data.grouped_results[5].results" should have 1 element
     And the JSON node "data.grouped_results[5].results[0].id" should be equal to "{admin}"
     And the JSON node "data.grouped_results[5].results[0].name" should be equal to "Admin Admin"
     And the JSON node "data.grouped_results[6].type" should be equal to "agent"

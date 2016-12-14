@@ -162,9 +162,7 @@ class LanguageDataService extends BaseRepositoryService
      */
     public function getDefault()
     {
-        $this->preload();
-
-        return $this->get($this->default_lang_id);
+        return $this->default_lang_id ? $this->em->getRepository(Language::class)->find($this->default_lang_id) : null;
     }
 
     /**

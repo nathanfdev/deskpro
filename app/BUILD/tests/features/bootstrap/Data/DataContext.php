@@ -38,6 +38,7 @@ use DpBehat\BaseContext;
 use DpBehat\Data\Factory\SimpleFactory;
 use DpBehat\Data\PeopleContext as PeopleDataContext;
 use DpBehat\DataSetContext;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * Class DataContext.
@@ -545,9 +546,19 @@ class DataContext extends BaseContext
                 throw new \Exception("Object $ref not found");
             }
 
+            $propertyAccessor = PropertyAccess::createPropertyAccessor();
+            if ($propertyAccessor->isReadable($object, $prop)) {
+                return $propertyAccessor->getValue($object, $prop);
+            }
+
             $reflectionObject = new \ReflectionObject($object);
             if (!$reflectionObject->hasProperty($prop)) {
-                throw new \Exception("Property $prop doesn't exist");
+                $propsNames = [];
+                foreach ($reflectionObject->getProperties() as $prop) {
+                    $propsNames[] = $prop->getName();
+                }
+
+                throw new \Exception("Property $prop doesn't exist. Has props: ".implode(',', $propsNames));
             }
 
             $reflectionProperty = $reflectionObject->getProperty($prop);

@@ -1,7 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-
 list($tag, $numThreads, $path) = array_values(getopt('', ['tag:', 'num:', 'path:']));
 
 $path = __DIR__ . '/' . $path;
@@ -18,7 +17,9 @@ $iterator = new RecursiveDirectoryIterator($path);
 foreach (new RecursiveIteratorIterator($iterator) as $filename => $file) {
     /** @var \SplFileInfo $file */
     if ($file->getExtension() === 'feature') {
-        file_put_contents($filename, "\n@$tag-{$i}\n" , FILE_APPEND);
+        $content = "@$tag-{$i}\n";
+        $content .= file_get_contents($filename);
+        file_put_contents($filename, $content);
         $i = $i % $numThreads + 1;
     }
 }

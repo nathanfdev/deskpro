@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import $ from 'jquery';
-import Immutable from 'immutable';
 import { MessageList } from './MessageList';
 import { MessageListSpinner } from './MessageListSpinner';
 import {
@@ -23,25 +21,11 @@ export class MessageListContainer extends React.Component {
 
   static propTypes = {
     chatLoaded:       PropTypes.bool,
-    messages:         PropTypes.object,
-    widgetDimensions: PropTypes.object,
-    mute:             PropTypes.bool,
-    isBubble:         PropTypes.bool
+    widgetDimensions: PropTypes.object
   };
 
   componentDidMount() {
     this.reCalcHeight();
-  }
-
-  shouldComponentUpdate(props) {
-    const { chatLoaded, messages, widgetDimensions, mute, isBubble } = this.props;
-    const dimensionsChanged = !Immutable.is(widgetDimensions, props.widgetDimensions);
-
-    return props.chatLoaded !== chatLoaded
-      || !Immutable.is(messages, props.messages)
-      || dimensionsChanged
-      || props.mute !== mute
-      || props.isBubble !== isBubble;
   }
 
   componentDidUpdate() {
@@ -49,41 +33,49 @@ export class MessageListContainer extends React.Component {
   }
 
   reCalcHeight() {
-    const node = ReactDOM.findDOMNode(this);
-    const widgetHeight = this.props.widgetDimensions.get('height');
+    const { widgetDimensions } = this.props;
+    const widgetHeight = widgetDimensions.get('height');
     const $document = $(window.widgetFrame.document);
+    const $chatHeader = $document.find('.dpdesignportal-chat-header-wrapper');
+    const $powered = $document.find('.dpdesignportal-powered-by-deskpro');
 
-    let height = widgetHeight;
+    const calc = (ignoreHeaderAndFooter) => {
+      let height = widgetHeight;
+      if (!ignoreHeaderAndFooter) {
+        // increase height manually, because it isn't changing instantly after hide()/show()
+        height -= $chatHeader.outerHeight(true);
+        height -= $powered.outerHeight(true);
+      }
+      height -= $document.find('.dpdesignportal-chat-header-controls').outerHeight(true);
+      height -= $document.find('.dpdesignportal-chat-footer').outerHeight(true);
+      // todo .dpdesignportal-chat-footer height returns 37 at this stage instead of 107
+      height -= ignoreHeaderAndFooter ? 47 : 37;
+      return height;
+    };
 
-    height -= $document.find('.dpdesignportal-header').outerHeight();
-    height -= $document.find('.dpdesignportal-chat-header-wrapper').outerHeight();
-    height -= $document.find('.dpdesignportal-chat-footer').outerHeight();
-    height -= $document.find('.dpdesignportal-powered-by-deskpro').outerHeight();
-    // lost margin of .dpdesignportal-chat-header-controls
-    height -= 20;
-
-    $(node).parent().children()
-      .each((i, child) => {
-        if (child !== node) {
-          height -= $(child).outerHeight();
-        }
-      });
+    let height = calc();
 
     if (height < 100) {
-      height = 100;
+      height = calc(true);
+      $chatHeader.hide();
+      $powered.hide();
+    } else {
+      $chatHeader.show();
+      $powered.show();
     }
 
-    $(node).css('height', height);
-
-    if (this.list) {
-      this.list.scrollBottom();
+    $(this.node.node).css('height', height);
+    if (this.node.scrollBottom) {
+      this.node.scrollBottom();
     }
   }
 
   render() {
-    return this.props.chatLoaded
-      ? <MessageList ref={(c) => { this.list = c; }} {...this.props} />
-      : <MessageListSpinner />;
+    const { chatLoaded } = this.props;
+
+    return chatLoaded
+      ? <MessageList ref={(c) => { this.node = c; }} {...this.props} />
+      : <MessageListSpinner ref={(c) => { this.node = c; }} />;
   }
 }
 export default MessageListContainer;

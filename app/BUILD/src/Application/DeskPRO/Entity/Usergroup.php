@@ -133,11 +133,19 @@ class Usergroup extends DomainObject
     protected $permissions;
 
     /**
+     * Usergroup members.
+     *
+     * @var ArrayCollection|Person[]
+     */
+    protected $people;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
         $this->permissions = new ArrayCollection();
+        $this->people      = new ArrayCollection();
     }
 
     /**
@@ -276,6 +284,11 @@ class Usergroup extends DomainObject
         return $this->is_enabled;
     }
 
+    public function getPeople()
+    {
+        return $this->people;
+    }
+
     /**
      * Generate a key for a set of usergroups. These same usergroups
      * will always generate the same key.
@@ -400,6 +413,15 @@ class Usergroup extends DomainObject
                     'remove',
                 ],
                 'orphanRemoval' => true,
+            ]
+        );
+
+        $metadata->mapManyToMany(
+            [
+                'fieldName'    => 'people',
+                'targetEntity' => Person::class,
+                'mappedBy'     => 'usergroups',
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

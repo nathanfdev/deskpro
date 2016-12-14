@@ -499,7 +499,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         $brandSettingsResolver = App::get('brand_aware_settings_resolver');
 
         foreach ($brands as $brand) {
-            $brandStack->push($brand);
+            $brandStack->push($brand, true);
             foreach ($appSettings as $key => &$setting) {
                 $setting = $setting || $brandSettingsResolver->getSetting($key);
             }

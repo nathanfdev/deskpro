@@ -11,9 +11,11 @@ import { AgentTopBarContainer } from './Modules/TopBar/Components/AgentTopBar';
 import { SideBarContainer } from './Modules/SideBar/Components/SideBar';
 import { AgentList } from './Modules/Agent/Components/AgentList';
 import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
+import VoiceControlsContainer from './Modules/Voice/Components/Controls/VoiceControlsContainer';
 import AgentReducers from './AgentApp_Reducers';
 import AppReducers from '../AppBundle/AppApp_Reducers';
 import { preloadData } from './Modules/Application/Actions/bootstrapActions';
+import { setOnlineAgents, setOnlineUserChatAgents } from './Modules/Agent/Actions/agentActions';
 
 class AgentLegacyApp {
 
@@ -21,9 +23,11 @@ class AgentLegacyApp {
   store;
 
   run() {
+    // IE/Edge Hack http://stackoverflow.com/questions/1481251/what-does-document-domain-document-domain-do
+    document.domain = document.domain;
     this.store = AgentLegacyApp.createStore();
     this.store.dispatch(preloadData()).then(() => {
-      window.$(document).on('ready', () => this.start());
+      window.$(document).ready(() => this.start());
     });
   }
 
@@ -37,6 +41,14 @@ class AgentLegacyApp {
       this.renderPiece(SideBarContainer, SideBarContainer.getType());
       this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());
       window.$('#dp_loading').remove();
+
+      const messageBroker = window.DeskPRO_Window.getMessageBroker();
+      messageBroker.addMessageListener('agent.online-agents', (event) => {
+        this.store.dispatch(setOnlineAgents(event.online_agents));
+      });
+      messageBroker.addMessageListener('agent.online-agents-userchat', (event) => {
+        this.store.dispatch(setOnlineUserChatAgents(event.online_agents));
+      });
     }
   }
 
@@ -60,6 +72,23 @@ class AgentLegacyApp {
     // it's not good when there are elements for different pages.
     // Or, we may just call this method when it's needed.
     setTimeout(() => this.renderPiece(piece, piecePlace), 1000);
+  }
+
+  renderVoiceControls(node, callId, onEndCall) {
+    let tabRef;
+
+    ReactDOM.render(
+      <Provider store={this.store}>
+        <VoiceControlsContainer
+          tabRef={(c) => { tabRef = c; }}
+          callId={callId}
+          onEndCall={onEndCall}
+        />
+      </Provider>,
+      node
+    );
+
+    return tabRef;
   }
 
   static createStore(initialState = {}) {

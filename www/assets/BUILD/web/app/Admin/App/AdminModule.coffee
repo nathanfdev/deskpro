@@ -44,10 +44,7 @@ define [
 
   'DeskPRO/OptionBuilder/Module'
   'DeskPRO/CategoryBuilder/Module'
-  'DeskPRO/Directive/DpDateTimePicker',
-  'react',
-  'react-dom',
-  'ngReact'
+  'DeskPRO/Directive/DpDateTimePicker'
 ], (angular
   ZeroClipboard
 ) ->
@@ -80,8 +77,7 @@ define [
     'deskpro.category_builder'
     'dp.datetimepicker'
     'luegg.directives',
-    'angularSpectrumColorpicker',
-    'react'
+    'angularSpectrumColorpicker'
   ])
 
   AdminModule.config(['datepickerConfig', 'datepickerPopupConfig', (datepickerConfig, datepickerPopupConfig) ->

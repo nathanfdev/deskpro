@@ -30,10 +30,10 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\Search\IndexInitializer\Mysql;
+namespace Application\DeskPRO\Search\Indexer\Initializer\Mysql;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Search\IndexInitializer\ContentInitializer as BaseContentInitializer;
+use Application\DeskPRO\Search\Indexer\Initializer\ContentInitializer as BaseContentInitializer;
 
 class ContentInitializer extends BaseContentInitializer
 {

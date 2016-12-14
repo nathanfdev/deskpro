@@ -47,6 +47,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\File;
 
 /**
@@ -241,6 +242,10 @@ class TicketMessageAttachmentType extends AbstractType
             ->setDefaults([
                 'data_class'     => TicketAttachment::class,
                 'error_bubbling' => false,
+                'constraints'    => [
+                    // check message attachments directly via the form to prevent checking all ticket messages collection
+                    new Assert\Valid(),
+                ],
             ])
             ->setRequired([
                 'ticket_message',

@@ -21,46 +21,49 @@ import {
   helpButtonTextColorSelector,
   agentPollingTimeoutSelector,
   triggerPopupOpenedSelector,
-  liveDemoSelector
+  liveDemoSelector,
+  helpPopupStartButtonSelector
 } from '../../../Selectors/dpWindow';
 import { widgetHasChatSelector } from '../../../Selectors/bootstrap';
 import { chatIdSelector } from '../../../../Chat/Selectors/chat';
 import { getLocation } from '../../../../../Services/history';
 
 @connect(state => ({
-  hasChat:             widgetHasChatSelector(state),
-  proactiveChat:       widgetProactiveChatSelector(state),
-  popupStyle:          widgetPopupStyleSelector(state),
-  popupDelay:          widgetPopupDelaySelector(state),
-  triggerPopupOpened:  triggerPopupOpenedSelector(state),
-  widgetOpened:        widgetOpenedSelector(state),
-  widgetPosition:      widgetPositionSelector(state),
-  size:                helpButtonSizeSelector(state),
-  name:                helpButtonNameSelector(state),
-  backgroundColor:     helpButtonBackgroundColorSelector(state),
-  textColor:           helpButtonTextColorSelector(state),
-  agentsCount:         onlineAgentsCountSelector(state),
-  agentPollingTimeout: agentPollingTimeoutSelector(state),
-  liveDemo:            liveDemoSelector(state),
-  chatId:              chatIdSelector(state)
+  hasChat:              widgetHasChatSelector(state),
+  proactiveChat:        widgetProactiveChatSelector(state),
+  popupStyle:           widgetPopupStyleSelector(state),
+  popupDelay:           widgetPopupDelaySelector(state),
+  triggerPopupOpened:   triggerPopupOpenedSelector(state),
+  widgetOpened:         widgetOpenedSelector(state),
+  widgetPosition:       widgetPositionSelector(state),
+  size:                 helpButtonSizeSelector(state),
+  name:                 helpButtonNameSelector(state),
+  backgroundColor:      helpButtonBackgroundColorSelector(state),
+  textColor:            helpButtonTextColorSelector(state),
+  agentsCount:          onlineAgentsCountSelector(state),
+  agentPollingTimeout:  agentPollingTimeoutSelector(state),
+  liveDemo:             liveDemoSelector(state),
+  chatId:               chatIdSelector(state),
+  helpPopupStartButton: helpPopupStartButtonSelector(state)
 }))
 export default class HelpButtonContainer extends React.Component {
 
   static propTypes = {
-    hasChat:             PropTypes.bool,
-    proactiveChat:       PropTypes.bool,
-    triggerPopupOpened:  PropTypes.bool,
-    widgetOpened:        PropTypes.bool,
-    popupStyle:          PropTypes.string,
-    popupDelay:          PropTypes.number,
-    size:                PropTypes.string,
-    widgetPosition:      PropTypes.string,
-    dispatch:            PropTypes.func,
-    backgroundColor:     PropTypes.string,
-    borderColor:         PropTypes.string,
-    textColor:           PropTypes.string,
-    agentsCount:         PropTypes.number,
-    agentPollingTimeout: PropTypes.oneOfType([
+    hasChat:              PropTypes.bool,
+    proactiveChat:        PropTypes.bool,
+    triggerPopupOpened:   PropTypes.bool,
+    widgetOpened:         PropTypes.bool,
+    popupStyle:           PropTypes.string,
+    popupDelay:           PropTypes.number,
+    size:                 PropTypes.string,
+    widgetPosition:       PropTypes.string,
+    dispatch:             PropTypes.func,
+    backgroundColor:      PropTypes.string,
+    borderColor:          PropTypes.string,
+    textColor:            PropTypes.string,
+    agentsCount:          PropTypes.number,
+    helpPopupStartButton: PropTypes.string,
+    agentPollingTimeout:  PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
     ]),
@@ -95,6 +98,7 @@ export default class HelpButtonContainer extends React.Component {
 
   onClick = () => {
     this.props.dispatch(reopenWidget());
+    delete sessionStorage['dpWidget.dpWindow.minimized'];
   };
 
   onClosePopup = () => {
@@ -138,7 +142,7 @@ export default class HelpButtonContainer extends React.Component {
 
   renderPopup() {
     const { widgetPosition } = this.props;
-    const { backgroundColor, textColor, borderColor, liveDemo, popupStyle, size } = this.props;
+    const { backgroundColor, textColor, borderColor, liveDemo, popupStyle, size, helpPopupStartButton } = this.props;
     const popupProps = {
       widgetPosition,
       backgroundColor,
@@ -147,9 +151,10 @@ export default class HelpButtonContainer extends React.Component {
       liveDemo,
       popupStyle,
       size,
+      helpPopupStartButton,
       onClick:   this.onClick,
       onClose:   this.onClosePopup,
-      getButton: () => this.refButton
+      getButton: () => this.button
     };
 
     if (popupStyle === 'agents_button') {
@@ -173,7 +178,7 @@ export default class HelpButtonContainer extends React.Component {
       }
       <HelpButton
         {...this.props}
-        ref={(node) => { this.refButton = node; }}
+        ref={(c) => { this.button = c; }}
         locationPath={this.state.locationPath || null}
         onClick={this.onClick}
       />

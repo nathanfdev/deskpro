@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class AbstractExceptionEvent.
@@ -60,6 +61,9 @@ abstract class AbstractExceptionEvent extends AbstractEvent
      * @var string
      *
      * @ORM\Column(type="string")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $message;
 

@@ -39,7 +39,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
         right:           0,
         bottom:          0,
         left:            '52px',
-        zIndex:          200,
+        zIndex:          2000,
         backgroundColor: '#F5F7FA'
       }
     });
@@ -142,13 +142,11 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
       return;
     }
 
-    var frameWindow = this.getFrameWindow();
-
     path = path || '/';
     path = path.replace(/^#/, '');
 
-    frameWindow.location.hash = '#' + path;
-    frameWindow.parent.location.hash = '#' + this.frameId + ':' + (path || '');
+    this.getFrameWindow().location.hash = '#' + path;
+    window.location.hash = '#' + this.frameId + ':' + (path || '');
   },
 
   close: function() {
@@ -157,16 +155,15 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 
     window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
 
-    var event = new CustomEvent('dpCloseOverlayFrame', { 'detail': { id: this.frameId } });
-    window.document.dispatchEvent(event);
-
     if (this.frameTitle) {
       document.title = this.originalTitle;
     }
 
-    var frameWindow = this.getFrameWindow();
-    frameWindow.parent.location.hash = '';
     DeskPRO_Window.enableHashPath();
+
+    DeskPRO_Window.updateWindowUrlFragment();
+    var event = new CustomEvent('dpCloseOverlayFrame', { 'detail': { id: this.frameId } });
+    window.document.dispatchEvent(event);
   },
 
   getFrameWindow: function() {

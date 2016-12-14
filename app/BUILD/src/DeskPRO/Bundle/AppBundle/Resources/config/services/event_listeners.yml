@@ -34,6 +34,30 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
+  event_listener.voice_account:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceAccountListener
+    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@router"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.voice_queue:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceQueueListener
+    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@router"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.voice_worker:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceWorkerListener
+    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.voice_number:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceNumberListener
+    arguments: ["@twilio_adapter"]
+    tags:
+      - { name: doctrine.entity_listener }
+
   event_listener.custom_data_ticket:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDataChangeListener
     tags:
@@ -42,10 +66,10 @@ services:
   event_listener.listener.client_message_listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageListener
     arguments:
-        - "@doctrine.orm.entity_manager"
-        - "@jms_serializer.serializer"
+      - "@doctrine.orm.entity_manager"
+      - "@jms_serializer.serializer"
     tags:
-        - { name: kernel.event_subscriber }
+      - { name: kernel.event_subscriber }
 
   annotations_cache_warmer:
     class: DeskPRO\Bundle\AppBundle\CacheWarmer\AnnotationsCacheWarmer

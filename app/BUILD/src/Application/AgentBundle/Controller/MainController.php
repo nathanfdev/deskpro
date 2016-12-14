@@ -215,6 +215,7 @@ class MainController extends AbstractController
             'agents'              => $agents,
             'agent_teams'         => $agent_teams,
             'agent_chat_depmap'   => $agent_chat_depmap,
+            'chat_dep_ids'        => $this->person->getHelper('AgentPermissions')->getAllowedDepartments('chat'),
             'ticket_snippet_cats' => $ticket_snippet_cats,
             'chat_snippet_cats'   => $chat_snippet_cats,
             'brand_app_settings'  => $this->getBrandAppSettings(),

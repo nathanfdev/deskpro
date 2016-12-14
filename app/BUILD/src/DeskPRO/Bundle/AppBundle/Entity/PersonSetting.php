@@ -45,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity()
  * @ORM\Table(name="person_settings")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class PersonSetting implements EntityInterface, NotifyPropertyChanged
 {
@@ -55,7 +56,7 @@ class PersonSetting implements EntityInterface, NotifyPropertyChanged
      * @ORM\Id()
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
-     * @Assert\Valid()
+     * @Assert\NotNull()
      */
     protected $person;
 
@@ -140,7 +141,7 @@ class PersonSetting implements EntityInterface, NotifyPropertyChanged
      */
     public function setValue($value)
     {
-        $this->value = $value;
+        $this->setModelField('value', $value);
 
         return $this;
     }

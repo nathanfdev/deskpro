@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Component\Util\ListUtils;
@@ -38,6 +34,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Class SecurityHeadersResponseListener.
+ */
 class SecurityHeadersResponseListener implements EventSubscriberInterface
 {
     /**
@@ -62,15 +61,15 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
         $path    = $request->getPathInfo();
 
         $csp = [
-            'default-src' => 'self',
+            'default-src' => ['self', 'blob:'],
             'script-src'  => ['*', 'data:', 'unsafe-inline', 'unsafe-eval'],
             'style-src'   => ['*', 'data:', 'unsafe-inline'],
-            'img-src'     => ['*', 'data:'],
+            'img-src'     => ['*', 'data:', 'blob:'],
             'font-src'    => ['*', 'data:'],
             'connect-src' => '*',
-            'media-src'   => '*',
+            'media-src'   => ['*', 'data:', 'blob:'],
             'object-src'  => '*',
-            'child-src'   => '*',
+            'child-src'   => ['*', 'blob:'],
             'form-action' => '*',
         ];
 

@@ -40,7 +40,7 @@ use Zend\Db\TableGateway\Exception\RuntimeException;
 /**
  * @ORM\Entity()
  * @ORM\Table(name="client_devices", uniqueConstraints={@ORM\UniqueConstraint(name="device",columns={"device_id", "person_id", "app_type"})})
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  * @JMS\ExclusionPolicy("all")
  */

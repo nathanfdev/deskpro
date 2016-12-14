@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import $ from 'jquery';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 class SuggestionRow extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+
+  static propTypes = {
+    result: PropTypes.object
+  };
 
   render() {
-    const type = this.props.result.type;
     const icon = this.props.result.object.icon_html;
 
     return (
@@ -19,8 +19,9 @@ class SuggestionRow extends React.Component {
           className="related-article-link"
           href={this.props.result.object.url}
           target="_blank"
+          rel="noopener noreferrer"
         >
-          <span dangerouslySetInnerHTML={{ __html: icon }}></span>
+          <span dangerouslySetInnerHTML={{ __html: icon }} />
           <span className="item-title">{this.props.result.object.name}</span>
         </a>
       </li>
@@ -29,18 +30,22 @@ class SuggestionRow extends React.Component {
 }
 
 class SuggestionMore extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+
+  static propTypes = {
+    showAll: PropTypes.func,
+    count:   PropTypes.number
+  };
 
   render() {
+    const { showAll, count } = this.props;
+
     return (
       <li className="related-list-meta">
         <a
-          onClick={this.props.showAll}
+          onClick={showAll}
           className="show-more-content"
         >
-          {portalPhrases.get('portal.general.show_x_more', { num: this.props.count })}
+          {portalPhrases.get('portal.general.show_x_more', { num: count })}
         </a>
       </li>
     );
@@ -48,9 +53,10 @@ class SuggestionMore extends React.Component {
 }
 
 class SuggestionLess extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+
+  static propTypes = {
+    showLess: PropTypes.func
+  };
 
   render() {
     return (
@@ -68,22 +74,18 @@ class SuggestionLess extends React.Component {
 
 
 class Suggestions extends React.Component {
+
+  static propTypes = {
+    results: PropTypes.array
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       show_all: false
     };
   }
-  showMore() {
-    this.setState({
-      show_all: true
-    });
-  }
-  showLess() {
-    this.setState({
-      show_all: false
-    });
-  }
+
   componentWillReceiveProps(newProps) {
     if (this.props.results !== newProps.results) {
       this.setState({
@@ -91,32 +93,41 @@ class Suggestions extends React.Component {
       });
     }
   }
+
+  showMore = () => {
+    this.setState({
+      show_all: true
+    });
+  };
+
+  showLess = () => {
+    this.setState({
+      show_all: false
+    });
+  }
+
   render() {
-    if (this.props.results.length === 0) {
+    const { results } = this.props;
+    if (results.length === 0) {
       return null;
     }
 
-    let visible_results;
+    let visibleResults;
     if (!this.state.show_all) {
-      visible_results = _.slice(this.props.results, 0, 5);
+      visibleResults = _.slice(results, 0, 5);
     } else {
-      visible_results = this.props.results;
+      visibleResults = results;
     }
 
     return (
       <ul>
+        { _.map(visibleResults, (result, idx) =>
+          <SuggestionRow key={result.type + result.object.id} alt={idx % 2 === 0} result={result} />)}
         {
-          _.map(visible_results, (result, idx) => {
-            return (
-              <SuggestionRow key={result.type + result.object.id} alt={idx % 2 === 0} result={result} />
-            );
-          })
+          (!this.state.show_all && results.length > 5) ? (<SuggestionMore alt={visibleResults.length % 2 === 0} count={results.length - 5} showAll={this.showMore} />) : null
         }
         {
-          (!this.state.show_all && this.props.results.length > 5) ? (<SuggestionMore alt={visible_results.length % 2 === 0} count={this.props.results.length - 5} showAll={this.showMore.bind(this)} />) : null
-        }
-        {
-          (this.state.show_all && this.props.results.length > 5) ? (<SuggestionLess alt={visible_results.length % 2 === 0} count={this.props.results.length - 5} showLess={this.showLess.bind(this)} />) : null
+          (this.state.show_all && results.length > 5) ? (<SuggestionLess alt={visibleResults.length % 2 === 0} count={results.length - 5} showLess={this.showLess} />) : null
         }
       </ul>
     );
@@ -124,6 +135,10 @@ class Suggestions extends React.Component {
 }
 
 export class NewTicketSuggestions extends React.Component {
+
+  static propTypes = {
+    input: PropTypes.object
+  };
 
   constructor(props) {
     super(props);
@@ -149,37 +164,38 @@ export class NewTicketSuggestions extends React.Component {
 
   doSearch(queryModifications) {
     const lastQuery = this.state.search_query || {};
-    const search_query = { ...lastQuery, ...queryModifications };
+    const searchQuery = { ...lastQuery, ...queryModifications };
     this.setState({
-      search_query
+      search_query: searchQuery
     });
 
-    if (!search_query.content || search_query.content.length < 3) {
+    if (!searchQuery.content || searchQuery.content.length < 3) {
       // we need a query with a length of at least 3 for the server to do any real searching
       // so don't do a HTTP request if we don't at least have that
       return;
     }
 
     this.setState({
+      data:   [],
       doSpin: true
     });
 
-    portalHttp.sendGet('DP_URL/search/similar/article', { data: search_query }).then((r) => {
+    portalHttp.sendGet('DP_URL/search/similar/article', { data: searchQuery }).then((r) => {
       if (!r.isError()) {
         this.setState({
-          data:   r.data.data,
-          search_query,
-          doSpin: false
+          data:         r.data.data,
+          search_query: searchQuery,
+          doSpin:       false
         });
       }
     });
   }
 
-	                                                                                                                        render() {
-  const data = this.state.data || [];
-  const results = data.results || [];
+  render() {
+    const data = this.state.data || [];
+    const results = data.results || [];
 
-  return (
+    return (
       <div style={{ display: (this.state.search_query.content.length >= 3 && results.length > 0 ? ' block' : 'none') }}>
         <div className="ticket-related-articles">
           <header>
@@ -190,5 +206,5 @@ export class NewTicketSuggestions extends React.Component {
         </div>
       </div>
     );
-}
+  }
 }

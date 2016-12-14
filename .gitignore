@@ -75,6 +75,7 @@ bin/deskpro-importer-tools
 /app/BUILD/sys/Resources/distro-checksums.php
 /app/BUILD/sys/Resources/cloudflare-ips.php
 /app/BUILD/sys/Resources/agent-perm-names.php
+/app/BUILD/sys/Resources/serverinfo/warmupit.php
 /app/BUILD/src/Application/InstallBundle/Data/schema.php
 /app/BUILD/src/Application/DeskPRO/Dpql/Parser.out
 /app/BUILD/sys/enc

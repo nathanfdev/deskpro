@@ -48,7 +48,7 @@ class GooglePlus extends AbstractAdapter
     }
 
     /**
-     * @return \Orb\Auth\Adapter\Google
+     * @return \Orb\Auth\Adapter\GooglePlus
      */
     protected function _createAuthAdapterObject()
     {

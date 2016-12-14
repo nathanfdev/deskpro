@@ -273,6 +273,20 @@ class TicketSearchActive extends DomainObject
     }
 
     /**
+     * @return string
+     */
+    public static function getFieldNamesAsSqlString()
+    {
+        static $cols;
+
+        if ($cols === null) {
+            $cols = '`'.implode('`, `', self::getFieldNames()).'`';
+        }
+
+        return $cols;
+    }
+
+    /**
      * Given a ticket, get a raw database array we can copy into the search active table.
      *
      * @param Ticket $ticket

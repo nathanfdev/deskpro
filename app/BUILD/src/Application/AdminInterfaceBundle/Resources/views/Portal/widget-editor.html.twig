@@ -202,6 +202,15 @@
                                     <p>
                                         {{ phrase('admin.widget.chat_request_person_desc') }}
                                     </p>
+                                    <div class="inline field" ng-if="brand_settings.chat.request_user_info">
+                                        <div class="ui toggle checkbox">
+                                            <input type="checkbox" id="require_department"
+                                                   ng-model="brand_settings.chat.allow_department_selection" class="hidden right">
+                                            <label for="require_department">
+                                                {{ phrase('admin.widget.chat_allow_department_selection') }}
+                                            </label>
+                                        </div>
+                                    </div>
                                     <div ng-if="brand_settings.chat.request_user_info">
                                         <div class="dp-item-list">
                                             <div class="inline field">
@@ -439,6 +448,18 @@
                                         />
                                         seconds
                                     </label>
+                                </div>
+                                <div class="with-margin" ng-show="brand_settings.chat.popup.style == 'agent_text_button' || brand_settings.chat.popup.style == 'text_button' || brand_settings.chat.popup.style == 'agents_button'">
+                                    <label>Start conversation button</label>
+                                    <div class="inline fields">
+                                        <div class="thirteen wide field">
+                                            <textarea rows="3" ng-model="brand_settings.chat.popup.translations[0].start_button"></textarea>
+                                        </div>
+                                        <div class="three wide field">
+                                            <dp-semantic-language-button translations="brand_settings.chat.popup.translations" key="start_button" languages="languages">
+                                            </dp-semantic-language-button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -159,7 +159,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	scanGlossaryWords: function() {
 		DeskPRO.WordHighlighter.highlight(this.getEl('content_ed').find('.article-content-wrap').get(0), this.meta.glossaryWords);
 		this.getEl('content_ed').find('span.dp-highlight-word').each(function() {
-			$(this).addClass('embedded-glossary-word tipped').data('tipped-options', "ajax:true, maxWidth:300").data('tipped', BASE_URL + "agent/glossary/"+$(this).data('word')+"/tip");
+			$(this).addClass('embedded-glossary-word tipped').data('tipped-options', "ajax:true, maxWidth:300").data('tipped', BASE_URL + "agent/glossary/"+encodeURIComponent($(this).data('word'))+"/tip");
 		});
 	},
 

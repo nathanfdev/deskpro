@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Tickets\TicketLog;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Problem;
+use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\ORM\StateChange\ChangeCollection;
@@ -80,7 +82,8 @@ class TicketLogGenerator
         $group->ticket      = $this->ticket;
         $group->person      = $this->context->getPersonContext();
         $group->action_type = 'action_starter';
-        $group->details     = [
+
+        $details = [
             'event'           => $this->context->getEventType(),
             'event_method'    => $this->context->getEventMethod(),
             'event_performer' => $this->context->getEventPerformer(),
@@ -88,6 +91,13 @@ class TicketLogGenerator
             'person_name'     => $this->context->getPersonContext() ? $this->context->getPersonContext()->getDisplayName() : null,
             'person_email'    => $this->context->getPersonContext() ? $this->context->getPersonContext()->getPrimaryEmailAddress() : null,
         ];
+
+        $apiKey = $this->context->getVars()->get('via_api_key');
+        if ($apiKey) {
+            $details['via_api_key'] = $apiKey;
+        }
+
+        $group->setDetails($details);
 
         $logs   = [];
         $logs[] = $group;
@@ -733,6 +743,18 @@ class TicketLogGenerator
 
                 return $data;
 
+            case 'problems':
+                return [
+                    'action_type' => 'changed_problems',
+                    'added'       => array_map(function (Problem $p) {
+                        return $p->getTitle();
+                    }, $added),
+                    'removed' => array_map(function (Problem $p) {
+                        return $p->getTitle();
+                    }, $removed),
+                ];
+                break;
+
             // Custom fields changed
             case strpos($change->getField(), 'custom_data.') === 0:
                 $value_before = null;
@@ -796,6 +818,17 @@ class TicketLogGenerator
                     'old'         => $old ? $old->id : null,
                     'new'         => $new ? $new->id : null,
                 ];
+            case 'new_tasks':
+                if ($new instanceof Task) {
+                    return [
+                        'action_type' => 'task_created',
+                        'task_id'     => $new->getId(),
+                        'task_title'  => $new->getTitle(),
+                    ];
+                }
+
+                return [];
+                break;
 
             default:
                 return [];

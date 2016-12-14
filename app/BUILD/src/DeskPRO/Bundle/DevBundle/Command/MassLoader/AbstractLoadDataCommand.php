@@ -92,6 +92,7 @@ abstract class AbstractLoadDataCommand extends ContainerAwareCommand
 
         $dataLoader = $this->getMassLoader();
         for ($i = 0; $i < $count; ++$i) {
+            $options['isLastBatch'] = ($i === ($count - 1));
             $dataLoader->$method($options);
             if ($progressBar) {
                 $progressBar->advance();

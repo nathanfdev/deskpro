@@ -71,7 +71,7 @@ class FilterChangeDetector
     /**
      * @var bool
      */
-    private $extended_log_info = false;
+    private $extended_log_info = true;
 
     /**
      * @var bool
@@ -324,6 +324,9 @@ class FilterChangeDetector
                             $orig_match = false;
                         } else {
                             $orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm, $cached_terms_orig);
+                            if ($this->extended_log_info) {
+                                $logger->debug('[FilterChangeDetector] performed orig_ticket check -- '.($orig_match ? 'yes' : 'no'));
+                            }
                         }
                         $orig_match_real = $orig_match;
                     }
@@ -331,6 +334,10 @@ class FilterChangeDetector
                     if ($new_match_failterm === null) {
                         $new_match      = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm, $cached_terms_new);
                         $new_match_real = $new_match;
+
+                        if ($this->extended_log_info) {
+                            $logger->debug('[FilterChangeDetector] performed new_ticket check -- '.($new_match ? 'yes' : 'no'));
+                        }
                     }
 
                     if ($orig_match && $agentPermOld) {
@@ -351,9 +358,15 @@ class FilterChangeDetector
                             $orig_match = false;
                         } else {
                             $orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm, $cached_terms_orig);
+                            if ($this->extended_log_info) {
+                                $logger->debug('[FilterChangeDetector] performed orig_ticket check (reset status) -- '.($orig_match ? 'yes' : 'no'));
+                            }
                         }
 
                         $new_match = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm, $cached_terms_new);
+                        if ($this->extended_log_info) {
+                            $logger->debug('[FilterChangeDetector] performed new_ticket check (reset status) -- '.($new_match ? 'yes' : 'no'));
+                        }
 
                         $orig_match_real = $orig_match;
                         $new_match_real  = $new_match;

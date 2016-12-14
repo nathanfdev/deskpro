@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\CustomFields;
 
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
 use Orb\Auth\Identity;
@@ -43,7 +44,7 @@ class PersonFieldManager extends FieldManager
     /**
      * Get an array of all defined fields (by doing a query).
      *
-     * @return array
+     * @return CustomDefPerson[]
      */
     public function getDefinedFields()
     {

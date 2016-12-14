@@ -1,6 +1,6 @@
-import { createSelector } from 'reselect';
 import Immutable from 'immutable';
-import { widgetLanguageSelector } from './bootstrap';
+import { createSelector } from 'reselect';
+import { sessionLanguageSelector } from './bootstrap';
 
 export const translationsSelectorFactory = (property, defaultValue) => (options, language) => {
   const translations = options.get('translations') || [];
@@ -44,6 +44,11 @@ export const dimensionsSelector = createSelector(
 export const windowDimensionsSelector = createSelector(
   dimensionsSelector,
   dimensions => dimensions.get('window')
+);
+
+export const isFullScreenSelector = createSelector(
+  windowDimensionsSelector,
+  windowDimensions => windowDimensions.get('width') < 450
 );
 
 export const widgetDimensionsSelector = createSelector(
@@ -100,7 +105,8 @@ export const widgetPositionSelector = createSelector(
 
 export const isBubbleSelector = createSelector(
   widgetTypeSelector,
-  widgetType => widgetType === 'bubble'
+  isFullScreenSelector,
+  (widgetType, fullScreen) => widgetType === 'bubble' && !fullScreen
 );
 
 export const liveDemoSelector = createSelector(
@@ -122,6 +128,17 @@ export const helpButtonSelector = createSelector(
 export const helpButtonSizeSelector = createSelector(
   helpButtonSelector,
   options => options.get('size')
+);
+
+export const widgetLanguageSelector = createSelector(
+  widgetOptionsSelector,
+  sessionLanguageSelector,
+  (options, sessionLanguage) => {
+    if (options.get('language')) {
+      return options.get('language');
+    }
+    return sessionLanguage;
+  }
 );
 
 export const helpButtonNameSelector = createSelector(
@@ -154,6 +171,11 @@ export const chatOptionsSelector = createSelector(
 export const widgetProactiveChatSelector = createSelector(
   chatOptionsSelector,
   options => (options.get('proactive') !== undefined ? options.get('proactive') : true)
+);
+
+export const widgetAllowDepartmentSelection = createSelector(
+  chatOptionsSelector,
+  options => (options.get('allow_department_selection') !== undefined ? options.get('allow_department_selection') : false)
 );
 
 export const chatBeginModeSelector = createSelector(
@@ -190,6 +212,15 @@ export const helpPopupSubheadingSelector = createSelector(
   translationsSelectorFactory(
     'subheading',
     'Our team are online and ready to help with your enquiries. Send us a message to get started.'
+  )
+);
+
+export const helpPopupStartButtonSelector = createSelector(
+  helpPopupSelector,
+  widgetLanguageSelector,
+  translationsSelectorFactory(
+    'start_button',
+    'Start a conversation'
   )
 );
 

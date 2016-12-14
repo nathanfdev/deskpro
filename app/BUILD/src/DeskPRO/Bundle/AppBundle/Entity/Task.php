@@ -45,6 +45,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
@@ -54,9 +55,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TaskRepository")
  * @ORM\Table(name="tasks_new")
  * @ORM\HasLifecycleCallbacks
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
-class Task implements EntityInterface
+class Task implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     const VISIBILITY_PRIVATE = 'private';
     const VISIBILITY_PUBLIC  = 'public';
     const VISIBILITY_PROJECT = 'project';
@@ -275,12 +279,12 @@ class Task implements EntityInterface
      */
     public function __construct()
     {
-        $this->subtasks        = new ArrayCollection();
-        $this->labels          = new ArrayCollection();
-        $this->assigned        = new ArrayCollection();
-        $this->linked_articles = new ArrayCollection();
-        $this->linked_chats    = new ArrayCollection();
-        $this->linked_tickets  = new ArrayCollection();
+        $this->setModelField('subtasks', new ArrayCollection());
+        $this->setModelField('labels', new ArrayCollection());
+        $this->setModelField('assigned', new ArrayCollection());
+        $this->setModelField('linked_articles', new ArrayCollection());
+        $this->setModelField('linked_chats', new ArrayCollection());
+        $this->setModelField('linked_tickets', new ArrayCollection());
 
         $this->setDateCreated(new \DateTime());
     }
@@ -477,10 +481,14 @@ class Task implements EntityInterface
 
     /**
      * @param string $title
+     *
+     * @return $this
      */
     public function setTitle($title)
     {
-        $this->title = $title;
+        $this->setModelField('title', $title);
+
+        return $this;
     }
 
     /**
@@ -493,7 +501,7 @@ class Task implements EntityInterface
         $date_done = $isDone ? new \DateTime() : null;
 
         $this->setDateDone($date_done);
-        $this->is_done = $isDone;
+        $this->setModelField('is_done', $isDone);
 
         return $this;
     }
@@ -551,93 +559,122 @@ class Task implements EntityInterface
 
     /**
      * @param Department $department
+     *
+     * @return $this
      */
     public function addDepartment(Department $department)
     {
         $assigned = new TaskAssignment();
         $assigned->setDepartment($department);
-        $assigned->setTask($this);
         $this->addAssigned($assigned);
+
+        return $this;
     }
 
     /**
      * @param Department $department
+     *
+     * @return $this
      */
     public function removeDepartment(Department $department)
     {
         if (!empty($this->assigned)) {
-            foreach ($this->assigned as $assigned) {
-                if ($assigned->getDepartment() === $department) {
-                    $this->assigned->removeElement($assigned);
+            foreach ($this->assigned as $assignment) {
+                if ($assignment->getDepartment() === $department) {
+                    $this->removeAssigned($assignment);
                 }
             }
         }
+
+        return $this;
     }
 
     /**
      * @param AgentTeam $agentTeam
+     *
+     * @return $this
      */
     public function addTeam(AgentTeam $agentTeam)
     {
         $assigned = new TaskAssignment();
         $assigned->setTeam($agentTeam);
-        $assigned->setTask($this);
         $this->addAssigned($assigned);
+
+        return $this;
     }
 
     /**
      * @param AgentTeam $agentTeam
+     *
+     * @return $this
      */
     public function removeTeam(AgentTeam $agentTeam)
     {
         if (!empty($this->assigned)) {
-            foreach ($this->assigned as $assigned) {
-                if ($assigned->getTeam() === $agentTeam) {
-                    $this->assigned->removeElement($assigned);
+            foreach ($this->assigned as $assignment) {
+                if ($assignment->getTeam() === $agentTeam) {
+                    $this->removeAssigned($assignment);
                 }
             }
         }
+
+        return $this;
     }
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function addAgent(Person $person)
     {
         $assignment = new TaskAssignment();
         $assignment->setPerson($person);
-        $assignment->setTask($this);
         $this->addAssigned($assignment);
+
+        return $this;
     }
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function removeAgent(Person $person)
     {
         if (!empty($this->assigned)) {
             foreach ($this->assigned as $assignment) {
                 if ($assignment->getPerson() === $person) {
-                    $this->assigned->removeElement($assignment);
+                    $this->removeAssigned($assignment);
                 }
             }
         }
+
+        return $this;
     }
 
     /**
      * @param TaskAssignment $assignment
+     *
+     * @return $this
      */
     public function addAssigned(TaskAssignment $assignment)
     {
         $this->assigned->add($assignment);
+        $assignment->setTask($this);
+
+        return $this;
     }
 
     /**
      * @param TaskAssignment $assignment
+     *
+     * @return $this
      */
     public function removeAssigned(TaskAssignment $assignment)
     {
         $this->assigned->removeElement($assignment);
+        $assignment->setTask(null);
     }
 
     /**
@@ -773,9 +810,9 @@ class Task implements EntityInterface
      *
      * @return $this
      */
-    public function setDateCreated($dateCreated)
+    public function setDateCreated(\DateTime $dateCreated = null)
     {
-        $this->date_created = $dateCreated;
+        $this->setModelField('date_created', $dateCreated);
 
         return $this;
     }
@@ -789,7 +826,7 @@ class Task implements EntityInterface
      */
     public function setTaskType($taskType)
     {
-        $this->task_type = $taskType;
+        $this->setModelField('task_type', $taskType);
 
         return $this;
     }
@@ -801,9 +838,9 @@ class Task implements EntityInterface
      *
      * @return $this
      */
-    public function setDateDue($dateDue)
+    public function setDateDue(\DateTime $dateDue = null)
     {
-        $this->date_due = $dateDue;
+        $this->setModelField('date_due', $dateDue);
 
         return $this;
     }
@@ -815,9 +852,9 @@ class Task implements EntityInterface
      *
      * @return $this
      */
-    public function setDateEventStart($dateEventStart)
+    public function setDateEventStart(\DateTime $dateEventStart = null)
     {
-        $this->date_event_start = $dateEventStart;
+        $this->setModelField('date_event_start', $dateEventStart);
 
         return $this;
     }
@@ -829,9 +866,9 @@ class Task implements EntityInterface
      *
      * @return $this
      */
-    public function setDateEventEnd($dateEventEnd)
+    public function setDateEventEnd(\DateTime $dateEventEnd = null)
     {
-        $this->date_event_end = $dateEventEnd;
+        $this->setModelField('date_event_end', $dateEventEnd);
 
         return $this;
     }
@@ -845,7 +882,7 @@ class Task implements EntityInterface
      */
     public function setVisibility($visibility)
     {
-        $this->visibility = $visibility;
+        $this->setModelField('visibility', $visibility);
 
         return $this;
     }
@@ -859,7 +896,7 @@ class Task implements EntityInterface
      */
     public function setUrgency($urgency)
     {
-        $this->urgency = $urgency;
+        $this->setModelField('urgency', $urgency);
 
         return $this;
     }
@@ -871,9 +908,9 @@ class Task implements EntityInterface
      *
      * @return $this
      */
-    public function setDateDone($dateDone)
+    public function setDateDone(\DateTime $dateDone = null)
     {
-        $this->date_done = $dateDone;
+        $this->setModelField('date_done', $dateDone);
 
         return $this;
     }
@@ -887,7 +924,7 @@ class Task implements EntityInterface
      */
     public function setDisplayOrder($displayOrder)
     {
-        $this->display_order = $displayOrder;
+        $this->setModelField('display_order', $displayOrder);
 
         return $this;
     }
@@ -901,7 +938,7 @@ class Task implements EntityInterface
      */
     public function setCreator(Person $creator = null)
     {
-        $this->creator = $creator;
+        $this->setModelField('creator', $creator);
 
         return $this;
     }
@@ -915,7 +952,7 @@ class Task implements EntityInterface
      */
     public function setProject(TaskProject $project = null)
     {
-        $this->project = $project;
+        $this->setModelField('project', $project);
 
         return $this;
     }
@@ -929,7 +966,7 @@ class Task implements EntityInterface
      */
     public function setList(TaskList $list = null)
     {
-        $this->list = $list;
+        $this->setModelField('list', $list);
 
         return $this;
     }
@@ -943,7 +980,8 @@ class Task implements EntityInterface
      */
     public function addSubtask(TaskSubtask $subtask)
     {
-        $this->subtasks[] = $subtask;
+        $this->subtasks->add($subtask);
+        $subtask->setTask($this);
 
         return $this;
     }
@@ -957,7 +995,8 @@ class Task implements EntityInterface
      */
     public function addLabel(LabelTask $label)
     {
-        $this->labels[] = $label;
+        $this->labels->add($label);
+        $label->setTask($this);
 
         return $this;
     }
@@ -966,10 +1005,15 @@ class Task implements EntityInterface
      * Remove label.
      *
      * @param LabelTask $label
+     *
+     * @return $this
      */
     public function removeLabel(LabelTask $label)
     {
         $this->labels->removeElement($label);
+        $label->setTask(null);
+
+        return $this;
     }
 
     /**
@@ -981,7 +1025,8 @@ class Task implements EntityInterface
      */
     public function addComment(TaskComment $comment)
     {
-        $this->comments[] = $comment;
+        $this->comments->add($comment);
+        $comment->setTask($this);
 
         return $this;
     }
@@ -995,7 +1040,8 @@ class Task implements EntityInterface
      */
     public function addAttachment(TaskAttachment $attachment)
     {
-        $this->attachments[] = $attachment;
+        $this->attachments->add($attachment);
+        $attachment->setTask($this);
 
         return $this;
     }

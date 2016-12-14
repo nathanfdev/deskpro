@@ -2753,6 +2753,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}).bind(this), 'chat_ids', { recurring: true });
 
 		this.getTabWatcher().addTabTypeWatcher('userchat', new DeskPRO.Agent.WindowElement.TabWatcher.UserChat());
+		this.getTabWatcher().addTabTypeWatcher('voice-call', new DeskPRO.Agent.WindowElement.TabWatcher.VoiceCallInProgress());
 	},
 
 	_initRoutes: function() {
@@ -2795,6 +2796,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('kb_article_view', this.loadRoute.bind(this));
 		this.addPageRouteLoader('kb_article_new', this.loadRoute.bind(this));
 		this.addPageRouteLoader('kb_article_edit', this.loadRoute.bind(this));
+		this.addPageRouteLoader('voice', this.loadRoute.bind(this));
 		this.addPageRouteLoader('poppage', this.loadRouteOverlay.bind(this));
 
 		var self = this;
@@ -2850,6 +2852,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				};
 				self.newTicketLoader.open();
 			};
+			$('#create_ticket_btn').on('click', function() { DeskPRO_Window.newTicketLoader.toggle(); });
 		}
 
 		if (DESKPRO_PERSON_PERMS['agent_people.create']) {
@@ -3061,6 +3064,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 	switchToSection: function(section_id, no_load_list) {
 
 		DP.console.debug('Switching to %s', section_id);
+
+		var event = new CustomEvent('dpChangeSection', { 'detail': { section: section_id.replace(/_section/, '') } });
+		window.document.dispatchEvent(event);
 
 		var handler = this.sections[section_id];
 		if (!handler) {

@@ -54,18 +54,25 @@
                     <div class="column-half">
                         <div class="bucket">
                             <label class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-email') }}</label>
-                            <input type="text" placeholder="{{ phrase('portal.account.login-email') }}" name="username" id="login_username" value="{{ last_username }}">
+                            <input type="text" placeholder="{{ phrase('portal.account.login-email') }}" name="username"
+                                   id="login_username" value="{{ last_username }}" tabindex="1"
+                            >
                         </div>
                     </div>
 
                     <div class="column-half omega">
                         <div class="bucket">
-
-                            {% if auth_manager.isForgotPasswordVisible %}
-                                <div class="form-meta form-meta-grey"><a href="{{ path('portal_reset_password', {'email': last_username}) }}">{{ phrase('portal.account.login-password-reminder') }}</a></div>
-                            {% endif %}
                             <label class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-password') }}</label>
-                            <input type="password" placeholder="{{ phrase('portal.account.login-password') }}" name="password" id="login_password">
+                            <input type="password" placeholder="{{ phrase('portal.account.login-password') }}"
+                                   name="password" id="login_password" tabindex="2"
+                            >
+                            {% if auth_manager.isForgotPasswordVisible %}
+                                <div class="form-meta form-meta-grey form-meta-top">
+                                    <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5">
+                                        {{ phrase('portal.account.login-password-reminder') }}
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -76,9 +83,9 @@
                     {% if auth_manager.isRememberMeEnabled %}
                         <div class="column-full">
                             <div class="bucket">
-                                <button class="button">{{ phrase('portal.account.login-btn') }}</button>
+                                <button class="button" tabindex="4">{{ phrase('portal.account.login-btn') }}</button>
                                 <div class="remember-me"><label for="remember_me">
-                                        <input tabindex="1" type="checkbox" name="remember_me">
+                                        <input tabindex="3" type="checkbox" name="remember_me">
                                         <span>{{ phrase('portal.account.login-remember') }}</span>
                                     </label>
                                 </div>

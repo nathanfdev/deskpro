@@ -538,12 +538,13 @@ class AgentHelper implements PersonContextInterface
      * @param null   $limit
      * @param string $order_dir
      * @param bool   $all
+     * @param string $status
      *
      * @return array
      */
-    public function getDraftContent($limit = null, $order_dir = 'ASC', $all = false)
+    public function getDraftContent($limit = null, $order_dir = 'ASC', $all = false, $status = 'draft')
     {
-        $results = $this->getDraftInfo($limit, $order_dir, $all);
+        $results = $this->getDraftInfo($limit, $order_dir, $all, $status);
 
         return $this->getContentFromInfo($results);
     }
@@ -555,7 +556,7 @@ class AgentHelper implements PersonContextInterface
      *
      * @return array
      */
-    public function getDraftInfo($limit = null, $order_dir = 'ASC', $all = false)
+    public function getDraftInfo($limit = null, $order_dir = 'ASC', $all = false, $status = 'draft')
     {
         $sql_parts = [];
 
@@ -615,7 +616,9 @@ class AgentHelper implements PersonContextInterface
                 SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
                 FROM $table AS c
                 LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
-                WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' $person_sql) OR (r.status = 'draft' $person_sql)
+                WHERE 
+                    (c.status = 'hidden' AND c.hidden_status = '{$status}' $person_sql) 
+                 OR (r.status = '{$status}' $person_sql)
                 GROUP BY c.id
             )";
         }
@@ -635,11 +638,12 @@ class AgentHelper implements PersonContextInterface
     /**
      * Count how many drafts there are for this user.
      *
-     * @param bool $mine
+     * @param bool   $mine
+     * @param string $status
      *
      * @return int
      */
-    public function getDraftsCount($mine = true)
+    public function getCountsByHiddenStatus($mine = true, $status = 'draft')
     {
         $types = [
             'articles' => [
@@ -684,7 +688,9 @@ class AgentHelper implements PersonContextInterface
                 SELECT COUNT(DISTINCT c.id)
                 FROM $table c
                 LEFT JOIN {$t_info['rev_table']} r ON (r.{$t_info['id_field']} = c.id)
-                WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' $person_sql) OR (r.status = 'draft' $person_sql)
+                WHERE 
+                    (c.status = 'hidden' AND c.hidden_status = '{$status}' $person_sql) 
+                    OR (r.status = '{$status}' $person_sql)
             ) AS $alias";
         }
 

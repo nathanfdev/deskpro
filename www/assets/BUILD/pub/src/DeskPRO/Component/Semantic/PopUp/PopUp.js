@@ -4,24 +4,24 @@ import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Detached } from '../../Positioned/Detached';
 
 class PopUp extends React.Component {
+
   static propTypes = {
     opened:     PropTypes.bool,
-    onOpen:     PropTypes.func,
     elementId:  PropTypes.string,
     positionAt: PropTypes.string,
     content:    PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.node
     ]).isRequired,
-    id:        PropTypes.number.isRequired,
-    children:  PropTypes.any,
+    children:  PropTypes.node,
     autoClose: PropTypes.bool,
-    autoOpen:  PropTypes.bool
+    autoOpen:  PropTypes.bool,
+    className: PropTypes.string
   };
+
   static defaultProps = {
-    onOpen() {},
-    autoClose: true,
-    autoOpen:  true
+    autoClose: false,
+    autoOpen:  false
   };
 
   constructor(props) {
@@ -29,6 +29,7 @@ class PopUp extends React.Component {
     this.state = {
       isOpen: !!this.props.opened
     };
+
     if (this.props.autoClose) {
       window.document.addEventListener('dpPopupOpen', () => {
         this.closePopup();
@@ -44,13 +45,13 @@ class PopUp extends React.Component {
   };
 
   onMouseLeave = () => {
-    if (this.props.opened) {
+    const { opened, autoClose } = this.props;
+
+    if (opened || !autoClose) {
       return;
     }
-    const self = this;
-    this.timeout = setTimeout(() => {
-      self.closePopup();
-    }, 500);
+
+    this.timeout = setTimeout(() => this.closePopup(), 100);
   };
 
   openPopup = () => {
@@ -82,11 +83,12 @@ class PopUp extends React.Component {
   };
 
   renderBody() {
-    const { content, positionAt, elementId } = this.props;
+    const { content, positionAt, elementId, className } = this.props;
+    const { isOpen } = this.state;
 
     return (
       <ClickOut onClickOut={this.closePopup}>
-        <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen })}>
+        <div id={elementId} className={classNames('ui', 'popup', positionAt, className, { visible: isOpen })}>
           {content}
         </div>
       </ClickOut>
@@ -101,9 +103,10 @@ class PopUp extends React.Component {
       <div
         style={{ display: 'inline-block' }}
         className={classNames({ active: isOpen })}
-        ref={c => { this.button = c; }}
+        ref={(c) => { this.button = c; }}
         onClick={this.openPopup}
         onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
       >
         {children}
         <Detached
@@ -117,4 +120,5 @@ class PopUp extends React.Component {
     );
   }
 }
+
 export default PopUp;

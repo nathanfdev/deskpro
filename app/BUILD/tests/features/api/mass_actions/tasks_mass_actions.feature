@@ -1,4 +1,4 @@
-Feature: /mass_actions/tickets endpoint
+Feature: /mass_actions endpoint
   To complete mass actions on tickets list
   As an API user
   I want an API endpoint

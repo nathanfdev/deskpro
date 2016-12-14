@@ -33,5 +33,7 @@ export const repositoriesConfig = {
     type:            'api',
     url:             '/article_pending_creates',
     repositoryClass: ArticlePendingCreateRepository
-  }
+  },
+  VoiceQueue:  { type: 'api', url: '/voice_queues', allowAll: true },
+  VoiceNumber: { type: 'api', url: '/voice_numbers', allowAll: true }
 };

@@ -1,20 +1,15 @@
 import Immutable from 'immutable';
-import { createReducer } from 'Ampliflux';
-import { loadBatch, setCollection, releaseCollection, addToCollection, removeFromCollection } from '../Actions/store';
 import { async, asyncIndicator, composeHandlers } from 'Ampliflux/reducers/handlers';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
+import { createReducer } from 'Ampliflux';
+import { loadBatch, setCollection, releaseCollection, addToCollection, removeFromCollection, updateCollection } from '../Actions/store';
 
 const storeInitialState = {};
 
-function mergeRecords(state, recordName, records) {
-  const currentRecords = state.getIn([recordName, 'records']);
-  return currentRecords ? currentRecords.merge(records) : records;
-}
-
 function gc(state, recordName) {
   const validRecordIds = [];
-  state.getIn([recordName, 'collections']).forEach(collection => {
-    collection.forEach(id => {
+  state.getIn([recordName, 'collections']).forEach((collection) => {
+    collection.forEach((id) => {
       if (validRecordIds.indexOf(id) === -1) {
         validRecordIds.push(id);
       }
@@ -30,7 +25,7 @@ function handleSetCollection(state, { recordName, collectionName, records, ids, 
 
   // count ids BEFORE we will update records. So we just insert new records in records and replace collection ids
   const newIds = ids ? Immutable.Set(ids) : newRecords.keySeq().toSet();
-  return state.withMutations(map => {
+  return state.withMutations((map) => {
     map.mergeIn([recordName, 'records'], newRecords);
     map.setIn([recordName, 'collections', collectionName], newIds);
     map.mergeIn([recordName, 'statuses', collectionName], { success: true, loading: false });
@@ -44,11 +39,31 @@ function handleAddToCollection(state, { recordName, collectionName, records }) {
   // nope, BEFORE
   const oldIds = Immutable.Set(state.getIn([recordName, 'collections', collectionName]));
   const newIds = newRecords.keySeq().toSet().union(oldIds);
-  return state.withMutations(map => {
+  return state.withMutations((map) => {
     map.mergeIn([recordName, 'records'], newRecords);
     map.setIn([recordName, 'collections', collectionName], newIds);
     map.mergeIn([recordName, 'statuses', collectionName], { success: true, loading: false });
   });
+}
+
+function handleUpdateCollection(state, { recordName, records, mergeType }) {
+  let currentRecords = state.getIn([recordName, 'records']);
+  currentRecords = currentRecords.withMutations((set) => {
+    const newRecords = Immutable.Map.isMap(records) ? records : mapKeyedFromArray(records, 'id');
+    newRecords.forEach((record, id) => {
+      let newRecord = record;
+      if (mergeType === 'merge') {
+        const oldRecord = set.get(id);
+        if (oldRecord) {
+          newRecord = oldRecord.merge(newRecord);
+        }
+      }
+
+      set.set(id, newRecord);
+    });
+  });
+
+  return state.setIn([recordName, 'records'], currentRecords);
 }
 
 export default createReducer(storeInitialState, {
@@ -64,12 +79,13 @@ export default createReducer(storeInitialState, {
 
   [setCollection]: handleSetCollection,
 
-  [addToCollection]: handleAddToCollection,
+  [addToCollection]:  handleAddToCollection,
+  [updateCollection]: handleUpdateCollection,
 
   [removeFromCollection]: (state, { recordName, collectionName, ids }) => {
     let collection = state.getIn([recordName, 'collections', collectionName]);
 
-    collection = collection.withMutations(set => {
+    collection = collection.withMutations((set) => {
       for (const i of ids) {
         set.delete(i);
       }

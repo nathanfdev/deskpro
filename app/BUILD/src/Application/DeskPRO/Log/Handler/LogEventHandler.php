@@ -37,7 +37,7 @@ class LogEventHandler extends DBHandler
      */
     public function isHandling(array $record)
     {
-        return isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogEvent;
+        return true;
     }
 
     /**
@@ -45,6 +45,10 @@ class LogEventHandler extends DBHandler
      */
     protected function write(array $record)
     {
+        if (!(isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogEvent)) {
+            return;
+        }
+
         /** @var LogEvent $entity */
         $entity = $record['context']['_entity'];
         $entity->prepare();

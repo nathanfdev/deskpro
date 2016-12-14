@@ -32,20 +32,16 @@ export class Frame extends React.Component {
   }
 
   componentWillUnmount() {
-    React.unmountComponentAtNode(this.getContentDocument().body);
-  }
-
-  getDOMNode() {
-    return ReactDOM.findDOMNode(this.refs.iframe);
+    ReactDOM.unmountComponentAtNode(this.getContentDocument().body);
   }
 
   getContentDocument() {
-    return this.getDOMNode().contentDocument;
+    return this.iframe.contentDocument;
   }
 
   getFrameStyles() {
     const { frameStyles = {}, isVisible, positionMode } = this.props;
-    const dimensions = this.state.dimensions;
+    const { dimensions } = this.state;
 
     let position;
     switch (positionMode) {
@@ -80,13 +76,14 @@ export class Frame extends React.Component {
 
   autoFrameDimensions() {
     const { frameStyles = {} } = this.props;
+    const { dimensions } = this.state;
+
     const doc = this.getContentDocument();
 
     const $container = $(doc.body.firstChild);
     const width = frameStyles.width || $container.outerWidth();
     const height = frameStyles.height || $container.outerHeight();
 
-    const dimensions = this.state.dimensions;
     if (dimensions.width === width && dimensions.height === height) {
       return;
     }
@@ -98,7 +95,7 @@ export class Frame extends React.Component {
 
   renderFrameContents() {
     const doc = this.getContentDocument();
-    const { frameStyles = {}, containerStyles = {} } = this.props;
+    const { name, children, frameStyles = {}, containerStyles = {} } = this.props;
     const containerDimensions = {};
 
     if (frameStyles.width) {
@@ -127,20 +124,20 @@ export class Frame extends React.Component {
 
         $head.html($styles);
         $head.append($links);
-        $body.addClass('react_frame_body').addClass(`${this.props.name}_body`);
+        $body.addClass('react_frame_body').addClass(`${name}_body`);
         $body.html($container);
 
         this.containerReady = true;
       } else {
         const $container = $(doc.body.firstChild);
+
+        $container.removeAttr('style');
         if (Object.keys(frameContainerStyles).length) {
           $container.css(frameContainerStyles);
-        } else {
-          $container.removeAttr('style');
         }
       }
 
-      const contents = React.createElement('div', containerDimensions, this.props.children);
+      const contents = React.createElement('div', containerDimensions, children);
       ReactDOM.render(contents, doc.body.firstChild);
     } else {
       setTimeout(() => this.renderFrameContents(), 0);
@@ -148,11 +145,14 @@ export class Frame extends React.Component {
   }
 
   render() {
+    const { name } = this.props;
+    const styles = this.getFrameStyles();
+
     return (
       <iframe
-        ref="iframe"
-        name={this.props.name}
-        style={this.getFrameStyles()}
+        ref={(c) => { this.iframe = c; }}
+        name={name}
+        style={styles}
       />
     );
   }

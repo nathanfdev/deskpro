@@ -480,6 +480,11 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
                 }
 
                 if ($val instanceof PersistentCollection) {
+                    // hotfix -- problem filters not updating
+                    // https://trello.com/c/h42231s0
+                    if ($prop === 'problems' && !$val->isInitialized() && $this instanceof Ticket) {
+                        $val->initialize();
+                    }
                     if ($val->isInitialized()) {
                         $newVal = new ArrayCollection($val->getSnapshot());
                     } else {

@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
-import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
+import DropZone from 'DeskPRO/Component/Uploader/DropZone';
 import { AttachedList } from './AttachedList';
 
 export default class PortalAttach extends React.Component {

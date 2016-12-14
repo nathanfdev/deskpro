@@ -17,9 +17,9 @@ import $ from 'jquery';
 export class ClickOut extends React.Component {
 
   static propTypes = {
-    context:         PropTypes.any,
+    context:         PropTypes.array,
     ignoreNodes:     PropTypes.array,
-    additionalNodes: PropTypes.any,
+    additionalNodes: PropTypes.array,
     children:        PropTypes.node,
     onClickOut:      PropTypes.func.isRequired,
     onClick:         PropTypes.func,
@@ -29,12 +29,12 @@ export class ClickOut extends React.Component {
   componentDidMount() {
     $(this.getContext()).on('click touchend', this.onClick);
 
-    const events = $._data(this.getContext(), 'events');
+    const events = $.data(this.getContext(), 'events');
     if (events) {
       events.click = events.click || [];
       events.click.sort((a, b) => b.guid - a.guid);
 
-      $._data(this.getContext(), 'events', events);
+      $.data(this.getContext(), 'events', events);
     }
   }
 

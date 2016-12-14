@@ -46,7 +46,7 @@ use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
-use Application\LegacyApiBundle\Request\RequestAuth;
+use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\StreamHandler;
@@ -486,77 +486,28 @@ class TicketManager
 
     /**
      * @param Person $agent
-     * @param        $event_type
-     * @param        $event_method
-     * @param array  $event_method_options
+     * @param        $eventType
+     * @param        $eventMethod
+     * @param array  $eventMethodOptions
      *
      * @return ExecutorContextInterface
      */
-    public function createAgentExecutorContext(Person $agent = null, $event_type, $event_method, array $event_method_options = [])
+    public function createAgentExecutorContext(Person $agent = null, $eventType, $eventMethod, array $eventMethodOptions = [])
     {
-        $context = new ExecutorContext($this->createNewLogger());
-        $context->getVars()->setArray($this->auto_vars);
-
-        if ($agent) {
-            $context->setPersonContext($agent);
-        }
-
-        if ($event_method === 'api') {
-            $key = null;
-
-            try {
-                /* @var $auth RequestAuth */
-                if ($auth = $this->container->get('deskpro.api.request_auth')) {
-                    $key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
-                }
-            } catch (InactiveScopeException $e) {
-                $key = null;
-            }
-
-            if ($key) {
-                $context->getVars()->set('via_api_key', $key);
-            }
-        }
-
-        $context->setEventPerformer('agent');
-        $context->setEventType($event_type);
-        $context->setEventMethod($event_method, $event_method_options);
-
-        return $context;
+        return $this->createPersonContext('agent', $agent, $eventType, $eventMethod, $eventMethodOptions);
     }
 
     /**
      * @param Person $user
-     * @param        $event_type
-     * @param        $event_method
-     * @param array  $event_method_options
+     * @param        $eventType
+     * @param        $eventMethod
+     * @param array  $eventMethodOptions
      *
      * @return ExecutorContextInterface
      */
-    public function createUserExecutorContext(Person $user = null, $event_type, $event_method, array $event_method_options = [])
+    public function createUserExecutorContext(Person $user = null, $eventType, $eventMethod, array $eventMethodOptions = [])
     {
-        $context = new ExecutorContext($this->createNewLogger());
-        $context->getVars()->setArray($this->auto_vars);
-
-        if ($user) {
-            $context->setPersonContext($user);
-        }
-
-        if ('api' === $event_method) {
-            $key = null;
-            /* @var $auth RequestAuth */
-            if ($auth = $this->container->get('deskpro.api.request_auth')) {
-                $key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
-            }
-
-            $context->getVars()->set('via_api_key', $key);
-        }
-
-        $context->setEventPerformer('user');
-        $context->setEventType($event_type);
-        $context->setEventMethod($event_method, $event_method_options);
-
-        return $context;
+        return $this->createPersonContext('user', $user, $eventType, $eventMethod, $eventMethodOptions);
     }
 
     /**
@@ -617,5 +568,60 @@ class TicketManager
         }
 
         return $logger;
+    }
+
+    /**
+     * @param string      $eventPerformer
+     * @param Person|null $person
+     * @param string      $eventType
+     * @param string      $eventMethod
+     * @param array       $eventMethodOptions
+     *
+     * @return ExecutorContext
+     */
+    private function createPersonContext($eventPerformer, Person $person = null, $eventType, $eventMethod, array $eventMethodOptions = [])
+    {
+        $context = new ExecutorContext($this->createNewLogger());
+        $context->getVars()->setArray($this->auto_vars);
+
+        if ($person) {
+            $context->setPersonContext($person);
+        }
+
+        if ($eventMethod === 'api') {
+            $key = null;
+
+            // try to get legacy api key
+            try {
+                $auth = $this->container->get('deskpro.api.request_auth');
+                if ($auth && $auth->getApiUser()) {
+                    $key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->getId() : null;
+                }
+            } catch (InactiveScopeException $e) {
+            }
+
+            // try to get new api key
+            try {
+                $token = $this->container->get('security.token_storage')->getToken();
+                if ($token instanceof ApiKeySecurityToken) {
+                    $credentials = $token->getCredentials();
+                    if ($credentials && strpos($credentials, ':') !== false) {
+                        list($key) = explode(':', $credentials, 2);
+                        $key       = (int) $key;
+                    }
+                }
+            } catch (InactiveScopeException $e) {
+            }
+
+            if ($key) {
+                $context->getVars()->set('via_api_key', $key);
+            }
+        }
+
+        $context->setEventPerformer($eventPerformer);
+        $context->setEventType($eventType);
+        $context->setEventMethod($eventMethod, $eventMethodOptions);
+
+        return $context;
     }
 }

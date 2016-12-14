@@ -45,7 +45,15 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           @group = { id: 0 }
 
         @agents = res[1]
-        @chatDeps   = res[3]
+        # deps need to be flattened to show in the table
+        @chatDeps = []
+        for dep in res[3]
+          @chatDeps.push(dep)
+          if dep.children
+            for subdep in dep.children
+              subdep.depth = 1
+              @chatDeps.push(subdep)
+
 
         # deps need to be flattened to show in the table
         @ticketDeps = []

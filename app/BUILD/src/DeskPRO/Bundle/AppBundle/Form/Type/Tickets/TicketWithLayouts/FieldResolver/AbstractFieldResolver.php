@@ -415,6 +415,7 @@ abstract class AbstractFieldResolver
         }
 
         return new FormField(TicketProductType::class, [
+            'label'       => $this->phrase('portal.forms.label_product'),
             'placeholder' => '',
             'required'    => $isRequired,
             'constraints' => $constraints,
@@ -441,6 +442,8 @@ abstract class AbstractFieldResolver
     }
 
     /**
+     * @param TicketWithLayoutsContext $context
+     *
      * @return FormField
      */
     abstract protected function createSubject(TicketWithLayoutsContext $context);
@@ -519,13 +522,17 @@ abstract class AbstractFieldResolver
     }
 
     /**
-     * @param CustomDefAbstract|null $def
+     * @param CustomDefAbstract|null   $def
+     * @param TicketWithLayoutsContext $context
      *
      * @return bool
      */
-    protected function canRenderCustomDef(CustomDefAbstract $def = null)
+    protected function canRenderCustomDef(CustomDefAbstract $def = null, TicketWithLayoutsContext $context)
     {
-        return $def && $def->isEnabled() && $def->getType();
+        return $def
+            && $def->isEnabled()
+            && $def->getType()
+            && (!$def->isAgentField() || ($def->isAgentField() && $context->isAgentView()));
     }
 
     /**

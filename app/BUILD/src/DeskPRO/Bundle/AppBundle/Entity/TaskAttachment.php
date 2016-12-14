@@ -45,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\Table(name="task_attachments")
  * @JMS\ExclusionPolicy("all")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskAttachment implements EntityInterface, NotifyPropertyChanged
 {
@@ -102,7 +103,7 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      *
-     * @Assert\Valid()
+     * @Assert\NotNull()
      *
      * @var Person
      */
@@ -161,10 +162,14 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Task $task
+     *
+     * @return $this
      */
-    public function setTask(Task $task)
+    public function setTask(Task $task = null)
     {
         $this->setModelField('task', $task);
+
+        return $this;
     }
 
     /**
@@ -177,10 +182,14 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param TaskComment $comment
+     *
+     * @return $this
      */
     public function setComment(TaskComment $comment = null)
     {
         $this->setModelField('comment', $comment);
+
+        return $this;
     }
 
     /**
@@ -193,10 +202,14 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function setPerson(Person $person)
     {
         $this->setModelField('person', $person);
+
+        return $this;
     }
 
     /**
@@ -209,10 +222,14 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Blob $blob
+     *
+     * @return $this
      */
     public function setBlob(Blob $blob)
     {
         $this->setModelField('blob', $blob);
+
+        return $this;
     }
 
     /**
@@ -225,9 +242,13 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \DateTime $date_created
+     *
+     * @return $this
      */
     public function setDateCreated(\DateTime $date_created)
     {
         $this->setModelField('date_created', $date_created);
+
+        return $this;
     }
 }

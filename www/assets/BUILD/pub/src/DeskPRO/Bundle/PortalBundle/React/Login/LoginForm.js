@@ -115,7 +115,7 @@ export class LoginForm extends React.Component {
             onBlur={this.onEmailBlur}
             onChange={this.onResetFailed}
             id="login-form-username"
-            tabIndex="-1"
+            tabIndex="21"
           />
         </label>
 
@@ -129,7 +129,7 @@ export class LoginForm extends React.Component {
             name="password"
             onChange={this.onResetFailed}
             id="login-form-password"
-            tabIndex="-1"
+            tabIndex="22"
           />
         </label>
 
@@ -140,22 +140,20 @@ export class LoginForm extends React.Component {
               type="checkbox"
               name="remember_me"
               id="login-form-remember-me"
-              tabIndex="-1"
+              tabIndex="23"
             />
             {portalPhrases.get('portal.account.login-stay-logged-in')}
           </label>
         </div>
 
-        <button type="submit">{portalPhrases.get('portal.account.login-btn')}</button>
+        <button type="submit" tabIndex="24">{portalPhrases.get('portal.account.login-btn')}</button>
 
-        {
-          window.IS_FORGOT_PASSWORD_VISIBLE &&
-            <div className="secondary-action">
-              <a href={this.state.reset_path}>
-                {portalPhrases.get('portal.account.login-password-reminder')}
-              </a>
-            </div>
-        }
+        {window.DESKPRO_IS_FORGOT_PASSWORD_VISIBLE &&
+          <div className="secondary-action">
+            <a href={this.state.reset_path} tabIndex="25">
+              {portalPhrases.get('portal.account.login-password-reminder')}
+            </a>
+          </div>}
       </form>
     );
   }

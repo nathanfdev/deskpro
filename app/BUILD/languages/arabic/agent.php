@@ -890,7 +890,7 @@ return [
     'agent.general.reset'                                   => 'اعادة تعيين',
     'agent.general.reset_password'                          => 'اعادة تعيين كلمة المرور',
     'agent.general.revision'                                => 'مراجعة',
-    'agent.general.save'                                    => 'محفوظة',
+    'agent.general.save'                                    => 'إحفظ',
     'agent.general.save_settings'                           => 'حفظ التغييرات',
     'agent.general.saved'                                   => 'تم الحفظ',
     'agent.general.saving'                                  => 'الحفظ',

@@ -136,10 +136,15 @@ class PersonType extends AbstractType
             ->add('primary_team', EntityType::class, [
                 'class' => AgentTeam::class,
             ])
+            ->add('agent_data', PersonAgentDataType::class, [
+                'property_path' => 'agentData',
+                'required'      => false,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncEmails']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncName']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onUnsetAgentData'], 100);
     }
 
     /**
@@ -205,6 +210,23 @@ class PersonType extends AbstractType
                 'first_name' => $person->first_name,
                 'last_name'  => $person->last_name,
             ]));
+        }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onUnsetAgentData(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!$data instanceof Person) {
+            return;
+        }
+
+        if (!$data->isAgent()) {
+            $data->setAgentData(null);
         }
     }
 

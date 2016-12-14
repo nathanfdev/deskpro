@@ -36,21 +36,50 @@ use Orb\Util\Strings;
 
 class TextField extends CustomFieldAbstract
 {
-    /** @var int */
+    /**
+     * @var int
+     */
     public $min_length;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     public $max_length;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $regex;
-    /** @var string */
+
+    /**
+     * @var bool
+     */
+    public $regex_required = false;
+
+    /**
+     * @var string
+     */
     public $default_value = '';
 
-    /** @var int */
+    /**
+     * @var int
+     */
     public $agent_min_length;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     public $agent_max_length;
-    /** @var string */
+
+    /**
+     * @var string
+     * */
     public $agent_regex;
+
+    /**
+     * @var bool
+     */
+    public $agent_regex_required = false;
 
     public function init()
     {
@@ -67,6 +96,7 @@ class TextField extends CustomFieldAbstract
         if ($this->_field->getOption('regex')) {
             $this->validation_type = 'regex';
             $this->regex           = $this->_field->getOption('regex');
+            $this->regex_required  = $this->_field->getOption('regex_required');
         }
 
         if ($this->_field->getOption('agent_min_length')) {
@@ -80,6 +110,7 @@ class TextField extends CustomFieldAbstract
         if ($this->_field->getOption('agent_regex')) {
             $this->agent_validation_type = 'regex';
             $this->agent_regex           = $this->_field->getOption('agent_regex');
+            $this->agent_regex_required  = $this->_field->getOption('agent_regex_required');
         }
         if ($this->_field->getOption('agent_validation_resolve')) {
             $this->agent_validation_resolve = true;
@@ -98,18 +129,21 @@ class TextField extends CustomFieldAbstract
             $field->setOption('min_length', $this->min_length);
             $field->setOption('max_length', $this->max_length);
             $field->setOption('regex', null);
+            $field->setOption('regex_required', null);
         } elseif ($this->regex) {
             $this->regex = Strings::getInputRegexPattern($this->regex);
 
             $this->validation_type = 'regex';
             $field->setOption('required', null);
             $field->setOption('regex', $this->regex);
+            $field->setOption('regex_required', $this->regex_required);
             $field->setOption('min_length', null);
             $field->setOption('max_length', null);
         } else {
             $this->validation_type = null;
             $field->setOption('required', null);
             $field->setOption('regex', null);
+            $field->setOption('regex_required', null);
             $field->setOption('min_length', null);
             $field->setOption('max_length', null);
         }
@@ -120,6 +154,7 @@ class TextField extends CustomFieldAbstract
             $field->setOption('agent_min_length', $this->agent_min_length);
             $field->setOption('agent_max_length', $this->agent_max_length);
             $field->setOption('agent_regex', null);
+            $field->setOption('agent_regex_required', null);
         } elseif ($this->agent_regex) {
             $this->agent_validation_type = 'regex';
 
@@ -127,12 +162,14 @@ class TextField extends CustomFieldAbstract
 
             $field->setOption('agent_required', null);
             $field->setOption('agent_regex', $this->agent_regex);
+            $field->setOption('agent_regex_required', $this->agent_regex_required);
             $field->setOption('agent_min_length', null);
             $field->setOption('agent_max_length', null);
         } else {
             $this->agent_validation_type = null;
             $field->setOption('agent_required', null);
             $field->setOption('agent_regex', null);
+            $field->setOption('agent_regex_required', null);
             $field->setOption('agent_min_length', null);
             $field->setOption('agent_max_length', null);
         }

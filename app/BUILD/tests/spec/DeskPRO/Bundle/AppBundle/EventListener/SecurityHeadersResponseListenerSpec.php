@@ -67,7 +67,7 @@ class SecurityHeadersResponseListenerSpec extends ObjectBehavior
 
         $headers->add(['X-Content-Type-Options' => 'nosniff'])->shouldBeCalled();
         $headers->add(['X-Frame-Options' => 'sameorigin'])->shouldBeCalled();
-        $headers->add(['Content-Security-Policy' => 'default-src \'self\'; script-src * data: \'unsafe-inline\' \'unsafe-eval\'; style-src * data: \'unsafe-inline\'; img-src * data:; font-src * data:; connect-src *; media-src *; object-src *; child-src *; form-action *; frame-ancestors \'self\''])->shouldBeCalled();
+        $headers->add(['Content-Security-Policy' => 'default-src \'self\' blob:; script-src * data: \'unsafe-inline\' \'unsafe-eval\'; style-src * data: \'unsafe-inline\'; img-src * data: blob:; font-src * data:; connect-src *; media-src * data: blob:; object-src *; child-src * blob:; form-action *; frame-ancestors \'self\''])->shouldBeCalled();
         $headers->add(['Referrer-Policy' => 'no-referrer-when-downgrade'])->shouldBeCalled();
 
         $this->onResponse($event);

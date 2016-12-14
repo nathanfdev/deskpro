@@ -1,4 +1,3 @@
-import { AdminApp } from 'DeskPRO/Bundle/AdminBundle/AdminApp';
+import AdminApp from './AdminApp';
 
-const app = new AdminApp();
-app.run();
+window.AdminBundle = AdminApp;

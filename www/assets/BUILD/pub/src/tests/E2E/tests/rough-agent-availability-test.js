@@ -1,11 +1,11 @@
-import { url } from '../helpers.js';
+import { url } from '../helpers';
 
 function menuItemSelector(num) {
-  return '//a[contains(@class, "dpw-app-bar-item-' + num + '")]/div/div[contains(@class, "icon")]';
+  return `//a[contains(@class, "dpw-app-bar-item-${num}")]/div/div[contains(@class, "icon")]`;
 }
 
 module.exports = {
-  'I go through the all apps in the agent interface and check navigation panes get loaded': function(client) {
+  'I go through the all apps in the agent interface and check navigation panes get loaded': (client) => {
     client.page.login().navigate().loginAsAdmin();
 
     client
@@ -21,7 +21,7 @@ module.exports = {
       .assert.urlEquals(url('/tasks'))
 
       // Go through the all menu items
-      
+
       .click(menuItemSelector(1))
       .assert.urlEquals(url('/tickets'))
       .waitForElementVisible('//h1[contains(., "Tickets")]')

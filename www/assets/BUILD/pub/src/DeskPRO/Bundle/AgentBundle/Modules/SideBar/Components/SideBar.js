@@ -55,19 +55,18 @@ export class SideBarContainer extends SeparateComponent {
         }
       }
     });
+    window.document.addEventListener('dpChangeSection', (e) => {
+      this.changeSection(`menu_${e.detail.section}`);
+    });
   }
 
   componentWillMount = () => {
     if (window.DP_FRAME_OVERLAYS) {
-      if (window.DP_FRAME_OVERLAYS.reports.opened) {
+      if (window.DP_FRAME_OVERLAYS.reports && window.DP_FRAME_OVERLAYS.reports.opened) {
         this.changeSection('menu_reports');
       }
-      if (window.DP_FRAME_OVERLAYS.admin.opened) {
-        if (window.DP_FRAME_OVERLAYS.admin.frame[0].baseURI.match(/#admin:\/license$/)) {
-          this.changeSection('menu_billing');
-        } else {
-          this.changeSection('menu_admin');
-        }
+      if (window.DP_FRAME_OVERLAYS.admin && window.DP_FRAME_OVERLAYS.admin.opened) {
+        this.changeSection('menu_admin');
       }
     }
   };
@@ -226,7 +225,7 @@ export class SideBar extends React.Component {
     }
     if (this.props.canUseChat()) {
       menus.push({
-        className: 'chats',
+        className: 'chat',
         label:     'Chats',
         link:      '/agent/#app.userchat',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/chat.svg`,
@@ -238,7 +237,7 @@ export class SideBar extends React.Component {
     }
     if (this.props.canUsePeople()) {
       menus.push({
-        className: 'crm',
+        className: 'people',
         label:     'CRM',
         link:      '/agent/#app.people',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/crm.svg`,

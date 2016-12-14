@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -36,7 +37,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="content_subscription_log", indexes={
  *     @ORM\Index(name="content_idx", columns={"content_type", "content_id"})
  * })
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class ContentSubscriptionLog implements EntityInterface, NotifyPropertyChanged
 {
@@ -54,7 +55,7 @@ class ContentSubscriptionLog implements EntityInterface, NotifyPropertyChanged
     protected $id;
 
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * @var Person
      */
     protected $person;
 
@@ -91,7 +92,7 @@ class ContentSubscriptionLog implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\Person
+     * @return Person
      */
     public function getPerson()
     {
@@ -99,11 +100,15 @@ class ContentSubscriptionLog implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Person $person
+     * @param Person $person
+     *
+     * @return $this
      */
     public function setPerson($person)
     {
-        $this->person = $person;
+        $this->setModelField('person', $person);
+
+        return $this;
     }
 
     /**
@@ -118,10 +123,14 @@ class ContentSubscriptionLog implements EntityInterface, NotifyPropertyChanged
      * This is the base name of the entity object (e.g. Article, News, Download, Feedback).
      *
      * @param string $content_type
+     *
+     * @return $this
      */
     public function setContentType($content_type)
     {
-        $this->content_type = $content_type;
+        $this->setModelField('content_type', $content_type);
+
+        return $this;
     }
 
     /**
@@ -134,10 +143,14 @@ class ContentSubscriptionLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string $content_id
+     *
+     * @return $this
      */
     public function setContentId($content_id)
     {
-        $this->content_id = $content_id;
+        $this->setModelField('content_id', $content_id);
+
+        return $this;
     }
 
     /**
@@ -150,10 +163,14 @@ class ContentSubscriptionLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string $notify_type
+     *
+     * @return $this
      */
     public function setNotifyType($notify_type)
     {
-        $this->notify_type = $notify_type;
+        $this->setModelField('notify_type', $notify_type);
+
+        return $this;
     }
 
     /**
@@ -166,9 +183,13 @@ class ContentSubscriptionLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \DateTime $date_sent
+     *
+     * @return $this
      */
     public function setDateSent($date_sent)
     {
-        $this->date_sent = $date_sent;
+        $this->setModelField('date_sent', $date_sent);
+
+        return $this;
     }
 }

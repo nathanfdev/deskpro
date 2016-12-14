@@ -58,6 +58,7 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketResultsDisplay;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\UI\RuleBuilder;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -86,19 +87,18 @@ class TicketSearchController extends AbstractController
         $filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($sys_filters, $this->person);
         $filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
 
-        $archive_filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($archive_filters, $this->person);
-        $custom_filter_counts  = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($custom_filters, $this->person);
-
-        // Summary of terms for all filters
-        $filters_summary = [];
         $problem_filters = [];
         foreach ($all_filters as $filter) {
             if (Entity\Problem::FILTER_PREFIX === substr($filter->sys_name, 0, 8)) {
                 $problem_filters[substr($filter->sys_name, 8)] = $filter;
             }
-            $searcher                       = $filter->getSearcher();
-            $filters_summary[$filter['id']] = $searcher->getSummary();
         }
+
+        $archive_filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($archive_filters, $this->person);
+        $custom_filter_counts  = App::getApi('tickets.filters')->getAllCountsForFiltersCollection(
+            array_merge($custom_filters, $problem_filters),
+            $this->person
+        );
 
         //agent.ui.filter
         $filter_show_options = $this->db->fetchAllKeyValue("
@@ -129,7 +129,7 @@ class TicketSearchController extends AbstractController
 
         $sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
         $slas       = $this->em->getRepository(Sla::class)->getAllSlas();
-        $sla_counts = $this->em->getRepository(TicketSla::class)->getTicketSlaCountsForAgentInterface($slas, $sla_filter);
+        $sla_counts = $this->em->getRepository(TicketSla::class)->getCachedTicketSlaCountsForAgentInterface($slas, $sla_filter, $this->person);
 
         //------------------------------
         // Misc
@@ -164,7 +164,6 @@ class TicketSearchController extends AbstractController
             'archive_filter_counts'  => $archive_filter_counts,
             'custom_filter_counts'   => $custom_filter_counts,
             'filter_id_matches'      => $filter_id_matches,
-            'filters_summary'        => $filters_summary,
             'custom_filters'         => $custom_filters,
             'flags'                  => $flags,
             'flag_counts'            => $flag_counts,
@@ -237,7 +236,7 @@ class TicketSearchController extends AbstractController
     {
         $sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
         $slas       = $this->em->getRepository(Sla::class)->getAllSlas();
-        $sla_counts = $this->em->getRepository(TicketSla::class)->getTicketSlaCountsForAgentInterface($slas, $sla_filter);
+        $sla_counts = $this->em->getRepository(TicketSla::class)->getCachedTicketSlaCountsForAgentInterface($slas, $sla_filter, $this->person);
 
         return $this->createJsonResponse([
             'counts'     => $sla_counts,
@@ -499,7 +498,7 @@ class TicketSearchController extends AbstractController
         return $this->render("AgentBundle:TicketSearch:$tpl", [
             'ticket_display'    => $ticket_display,
             'tickets'           => $tickets,
-            'display_fields'    => $display_fields,
+            'display_fields'    => $this->normalizeDisplayFields($display_fields),
             'ticket_field_defs' => $ticket_field_defs,
             'person_field_defs' => $person_field_defs,
             'changed_fields'    => $changed_fields,
@@ -1398,9 +1397,7 @@ class TicketSearchController extends AbstractController
 
         $json_renderer = new TicketListRenderer($ticket_display);
 
-        if (!$this->container->getSetting('core_tickets.use_ref') && in_array('ref', $vars['display_fields'])) {
-            $vars['display_fields'] = Arrays::removeValue($vars['display_fields'], 'ref');
-        }
+        $vars['display_fields'] = $this->normalizeDisplayFields(!empty($vars['display_fields']) ? $vars['display_fields'] : []);
 
         $vars = array_merge($vars, [
             'type'                   => $type,
@@ -1920,12 +1917,20 @@ class TicketSearchController extends AbstractController
 
         $tickets = $this->em->getRepository(Ticket::class)->getTicketsResultsFromIds($ticket_ids);
 
+        foreach ($tickets as $t) {
+            // disable auto processing because call to
+            // $ticket->getTicketLogger()->done()
+            // below will call it
+            $t->disableAutoTicketProcess();
+        }
+
         $macro = false;
         if ($macro_id = $this->in->getUInt('run_macro_id')) {
             $macro = $this->em->find(TicketMacro::class, $macro_id);
         }
 
         $permission_errors = [];
+        $validation_errors = [];
         $success           = [];
 
         if ($snippet_ids = $this->in->getString('snippet_ids')) {
@@ -1941,6 +1946,7 @@ class TicketSearchController extends AbstractController
 
         if (($actions || $actions_set || $macro) && $tickets) {
             if ($macro) {
+                /** @var Ticket $ticket */
                 foreach ($tickets as $ticket) {
                     $actions_collection = $macro->getActionsCollection($ticket);
 
@@ -1948,6 +1954,7 @@ class TicketSearchController extends AbstractController
                     try {
                         if (!$actions_collection->applyCheckPermission($ticket, $this->person)) {
                             $permission_errors[] = $ticket->getId();
+                            $this->db->rollback();
                             continue;
                         }
 
@@ -1957,6 +1964,13 @@ class TicketSearchController extends AbstractController
                         }
 
                         $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+
+                        if ($ticket->isResolved() && count($this->getTicketLayoutErrors($ticket))) {
+                            $validation_errors[] = $ticket->getId();
+                            $this->db->rollback();
+                            continue;
+                        }
+
                         $this->em->persist($ticket);
                         $this->em->flush();
                         $ticket->getTicketLogger()->done();
@@ -1993,6 +2007,7 @@ class TicketSearchController extends AbstractController
 
                 $collection->applyAllModifiers();
 
+                /** @var Ticket $ticket */
                 foreach ($tickets as $ticket) {
                     if (!$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
                         $permission_errors[] = $ticket->getId();
@@ -2005,7 +2020,15 @@ class TicketSearchController extends AbstractController
                             $permission_errors[] = $ticket->getId();
                             continue;
                         }
+
                         $collection->apply(null, $ticket, $this->person);
+
+                        if ($ticket->isResolved() && count($this->getTicketLayoutErrors($ticket))) {
+                            $validation_errors[] = $ticket->getId();
+                            $this->db->rollback();
+                            continue;
+                        }
+
                         $this->em->persist($ticket);
 
                         if ($snippet_ids) {
@@ -2050,11 +2073,12 @@ class TicketSearchController extends AbstractController
         }
 
         return $this->createJsonResponse([
-            'success'         => true,
-            'success_tickets' => $success,
-            'failed_tickets'  => $permission_errors,
-            'client_messages' => $client_messages,
-            'ticket_data'     => $ticket_data,
+            'success'                   => true,
+            'success_tickets'           => $success,
+            'failed_tickets'            => $permission_errors,
+            'validation_failed_tickets' => $validation_errors,
+            'client_messages'           => $client_messages,
+            'ticket_data'               => $ticket_data,
         ]);
     }
 
@@ -2094,5 +2118,37 @@ class TicketSearchController extends AbstractController
             'agent_signature_html' => $this->person->getSignatureHtml(),
             'ticket_options'       => $ticket_options,
         ]);
+    }
+
+    private function normalizeDisplayFields($display_fields)
+    {
+        if (!$display_fields || !is_array($display_fields)) {
+            $display_fields = [];
+        }
+
+        if (!$this->container->getSetting('core_tickets.use_ref') && in_array('ref', $display_fields)) {
+            $display_fields = Arrays::removeValue($display_fields, 'ref');
+        }
+
+        return array_values($display_fields);
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return \Symfony\Component\Validator\ConstraintViolationListInterface
+     */
+    private function getTicketLayoutErrors(Ticket $ticket)
+    {
+        // use the importer validator as it's configured to use entity annotations as well
+        // entity annotations are disabled in the basic agent validator
+        $validator = $this->get('dp.importer_validator');
+        $errors    = $validator->validate($ticket, [
+            new AppAssert\Ticket\TicketLayout([
+                'context' => 'agent',
+            ]),
+        ]);
+
+        return $errors;
     }
 }

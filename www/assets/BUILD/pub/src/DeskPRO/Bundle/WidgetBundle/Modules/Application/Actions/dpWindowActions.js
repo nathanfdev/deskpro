@@ -1,4 +1,7 @@
+import $ from 'jquery';
+import lscache from 'lscache';
 import { createAction } from 'DeskPRO/Component/Ampliflux';
+import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import {
   requireChatLoginSelector,
   widgetSessionIsLoginSelector,
@@ -18,11 +21,9 @@ import {
 import { chatIdSelector, needValidateEmailSelector } from '../../Chat/Selectors/chat';
 import { loadNewTicketForm } from '../../Ticket/Actions/ticketActions';
 import { history, getLocation } from '../../../Services/history';
-import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
-import $ from 'jquery';
-import lscache from 'lscache';
+import { dispatchWidgetStatus } from '../../../Services/WindowApi';
 
-const openChatBeginStageByMode = chatBeginMode => {
+const openChatBeginStageByMode = (chatBeginMode) => {
   switch (chatBeginMode) {
     case 'conversation':
       history.replace('/chat/begin/conversation');
@@ -60,7 +61,7 @@ export const widgetResize = createAction(
 
     return {
       width:  $window.width(),
-      height: widgetFrameWindow.innerHeight > $window.height() ? widgetFrameWindow.innerHeight : $window.height()
+      height: Math.max(widgetFrameWindow.innerHeight, $window.height())
     };
   }
 );
@@ -80,7 +81,12 @@ export const windowResize = createAction(
   }
 );
 
-export const closeWidget = createAction('WIDGET_CLOSE');
+export const closeWidget = createAction(
+  'WIDGET_CLOSE',
+  () => {
+    setTimeout(() => dispatchWidgetStatus(), 1);
+  }
+);
 export const openWidget = createAction(
   'WIDGET_OPEN',
   () => (dispatch, getState) => {
@@ -109,6 +115,7 @@ export const openWidget = createAction(
     }
 
     dispatch(windowResize());
+    setTimeout(() => dispatchWidgetStatus(), 1);
 
     return null;
   }
@@ -131,8 +138,8 @@ export const reopenWidget = createAction('WIDGET_REOPEN', () => (dispatch) => {
 export const loadOptions = createAction('WIDGET_OPTIONS', options => $.extend(true, {}, options));
 export const fetchOptions = createAction(
   'WIDGET_FETCH_OPTIONS',
-  () => dispatch => new Promise(resolve => {
-    const setOptions = options => {
+  () => dispatch => new Promise((resolve) => {
+    const setOptions = (options) => {
       // we need to merge the fetched options with the 'window.DP_OPTIONS' to have per-page customization
       // (e.g. have Page A on your site can use different phrases than Page B)
       const mergedOptions = $.extend(true, {}, options, window.DP_OPTIONS);
@@ -148,7 +155,7 @@ export const fetchOptions = createAction(
     }
 
     const promise = widgetApi.sendGet('DP_API/widget/brand_options');
-    promise.then(response => {
+    promise.then((response) => {
       const options = response.data.data;
 
       setOptions(options);

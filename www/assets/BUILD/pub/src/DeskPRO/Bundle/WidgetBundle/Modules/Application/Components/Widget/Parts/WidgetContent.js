@@ -5,9 +5,10 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 export class WidgetContent extends React.Component {
 
   static propTypes = {
+    fullScreen:     PropTypes.bool,
     isBubble:       PropTypes.bool,
     widgetPosition: PropTypes.string,
-    children:       PropTypes.any     // eslint-disable-line react/forbid-prop-types
+    children:       PropTypes.any // eslint-disable-line react/forbid-prop-types
   };
 
   constructor(props) {
@@ -30,7 +31,8 @@ export class WidgetContent extends React.Component {
   }
 
   render() {
-    const { isBubble, widgetPosition, children } = this.props;
+    const { fullScreen, isBubble, widgetPosition, children } = this.props;
+
     if (this.state.rerender) {
       return null;
     }
@@ -43,7 +45,8 @@ export class WidgetContent extends React.Component {
             'chat-bubble':   isBubble,
             mobile:          !isBubble,
             'position-left': widgetPosition === 'bottom.left' && !isBubble,
-            'rtl-language':  portalPhrases.getTextDirection() === 'RTL'
+            'rtl-language':  portalPhrases.getTextDirection() === 'RTL',
+            'full-screen':   fullScreen
           }
         )}
       >

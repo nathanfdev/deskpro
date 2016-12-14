@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -36,6 +37,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\RequestContext;
 
 /**
  * Class BatchController.
@@ -122,9 +124,6 @@ class BatchController extends BaseController
         if (strpos($info['url'], '/api/v2') !== 0) {
             $info['url'] = '/api/v2/'.ltrim($info['url'], '/');
         }
-        if (!$this->matchRouteUrl($info['url'])) {
-            throw $this->createBadRequestException("Route path for '{$info['url']}' not found");
-        }
 
         $json_serialized = null;
         if ($info['data']) {
@@ -133,14 +132,18 @@ class BatchController extends BaseController
         }
 
         $subRequest = Request::create(
-            $request->getSchemeAndHttpHost().$info['url'],
+            $request->getUriForPath($info['url']),
             $info['method'],
             $info['params'],
             [],
             [],
-            [],
+            $request->server->all(),
             $json_serialized
         );
+
+        if (!$this->matchRouteUrl($subRequest)) {
+            throw $this->createBadRequestException("Route path for '{$info['url']}' not found");
+        }
 
         $subRequest->headers->set('Content-Type', 'json');
         $subRequest->query->set(JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM, 1);
@@ -151,22 +154,38 @@ class BatchController extends BaseController
             }
         }
 
+        // reset entity manager
+        $this->getDoctrine()->getManager()->clear();
+        if ($this->getUser() instanceof Person) {
+            $token = $this->container->get('security.token_storage')->getToken();
+            $token->setUser($this->getRepository(Person::class)->find($this->getUser()->getId()));
+        }
+
         $response = $this->getKernel()->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
         return $this->get('serializer')->deserialize($response->getContent(), 'array', 'json');
     }
 
     /**
-     * @param string $url
+     * @param Request $subRequest
      *
      * @return array|false
      */
-    protected function matchRouteUrl($url)
+    protected function matchRouteUrl(Request $subRequest)
     {
+        $router = $this->get('router');
+
+        $originalContext   = $router->getContext();
+        $subRequestContext = new RequestContext($subRequest->getUri(), $subRequest->getMethod());
+
         try {
-            return $this->get('router')->matchRequest(Request::create($url));
+            $router->setContext($subRequestContext);
+
+            return $this->get('router')->matchRequest($subRequest);
         } catch (\Exception $e) {
             return false;
+        } finally {
+            $router->setContext($originalContext);
         }
     }
 }

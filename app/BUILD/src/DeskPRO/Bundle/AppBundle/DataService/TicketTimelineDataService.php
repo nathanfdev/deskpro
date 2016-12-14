@@ -96,7 +96,7 @@ class TicketTimelineDataService extends AbstractDataService
                 case 'changed_status':
                     $old_type = $this->getStatusType($l->details['old_status']);
                     $new_type = $this->getStatusType($l->details['new_status']);
-                    if ($old_type != $new_type && $old_type != 'hidden') {
+                    if ($l->details['old_status'] && $old_type !== $new_type && $old_type !== 'hidden') {
                         if ($new_type == 'open') {
                             $timeline->addLine(new Line\TicketReOpenedLine($l->date_created, $l->person));
                         } else {

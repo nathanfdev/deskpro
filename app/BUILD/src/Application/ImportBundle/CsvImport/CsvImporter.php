@@ -193,7 +193,7 @@ class CsvImporter
                     break;
                 case 'city':
                 case 'state':
-                case 'post_code':
+                case 'zip':
                 case 'country':
                     $label = isset($info['label']) ? $info['label'] : 0;
 

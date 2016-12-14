@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\People\ActivityLogger;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonActivity;
 use Application\DeskPRO\People\ActivityLogger\ActionType\ActionTypeAbstract;
@@ -43,13 +44,28 @@ use Orb\Util\Util;
 class ActivityLogger
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var Connection
      */
-    protected $em;
+    protected $db;
 
+    /**
+     * @var PersonActivity[]
+     */
+    protected $pending = [];
+
+    /**
+     * ActivityLogger constructor.
+     *
+     * @param \Doctrine\ORM\EntityManager $em
+     */
     public function __construct(\Doctrine\ORM\EntityManager $em)
     {
-        $this->em = $em;
+        $this->db = $em->getConnection();
+
+        $me = $this;
+        \DpShutdown::add(function () use ($me) {
+            $me->flush();
+        });
     }
 
     /**
@@ -61,33 +77,18 @@ class ActivityLogger
      *
      * @return \Application\DeskPRO\Entity\PersonActivity|array
      */
-    public function saveActionDetails(Person $person, $action_type, array $details)
+    private function createActionDetails(Person $person, $action_type, array $details)
     {
         $activity                = new PersonActivity();
         $activity->person        = $person;
         $activity['action_type'] = $action_type;
         $activity['details']     = $details;
 
-        $this->em->getConnection()->beginTransaction();
-        try {
-            $this->em->persist($activity);
-            $this->em->flush();
-            $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
-            throw $e;
-        }
-
         return $activity;
     }
 
     /**
-     * Save an action object.
-     *
-     * @param \Application\DeskPRO\Entity\Person                            $person
-     * @param \Application\DeskPRO\People\ActivityLogger\ActionTypeAbstract $action
-     *
-     * @return \Application\DeskPRO\Entity\PersonActivity|array
+     * @param ActionTypeAbstract $action
      */
     public function saveAction(ActionTypeAbstract $action)
     {
@@ -95,9 +96,31 @@ class ActivityLogger
         $action_type = Strings::camelCaseToUnderscore($action_type);
 
         $details = $action->getDetails();
+        $act     = $this->createActionDetails($action->getPersonContext(), $action_type, $details);
 
-        return $this->saveActionDetails($action->getPersonContext(), $action_type, $details);
+        $this->pending[] = $act;
+    }
 
-        return;
+    /**
+     * Flush log entries to db.
+     */
+    public function flush()
+    {
+        $pending       = $this->pending;
+        $this->pending = [];
+
+        if (!$pending) {
+            return;
+        }
+
+        // using plain sql here instead of doctrine
+        // to avoid any need for EM to have any related entities
+
+        $batch = [];
+        foreach ($pending as $a) {
+            $batch[] = $a->toDbArray();
+        }
+
+        $this->db->batchInsert('person_activity', $batch, true);
     }
 }

@@ -42,6 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_log")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskLog implements EntityInterface, NotifyPropertyChanged
 {
@@ -60,7 +61,6 @@ class TaskLog implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="SET NULL")
      * @Assert\NotNull()
-     * @Assert\Valid()
      */
     protected $person;
 
@@ -141,10 +141,14 @@ class TaskLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function setPerson(Person $person)
     {
         $this->setModelField('person', $person);
+
+        return $this;
     }
 
     /**
@@ -165,6 +169,8 @@ class TaskLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param array $details
+     *
+     * @return $this
      */
     public function setDetails(array $details)
     {
@@ -182,11 +188,15 @@ class TaskLog implements EntityInterface, NotifyPropertyChanged
         }
 
         $this->setModelField('details', $details);
+
+        return $this;
     }
 
     /**
      * @param string $name
      * @param mixed  $value
+     *
+     * @return $this
      */
     public function setDetailItem($name, $value)
     {
@@ -194,6 +204,8 @@ class TaskLog implements EntityInterface, NotifyPropertyChanged
         $details[$name] = $value;
 
         $this->setModelField('details', $details);
+
+        return $this;
     }
 
     /**
@@ -206,9 +218,13 @@ class TaskLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Task $task
+     *
+     * @return $this
      */
-    public function setTask(Task $task)
+    public function setTask(Task $task = null)
     {
         $this->setModelField('task', $task);
+
+        return $this;
     }
 }

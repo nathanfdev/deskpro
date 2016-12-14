@@ -76,7 +76,7 @@ deskpro.util.sourceMapRoot = function (file) {
   var rel = path.replace(/^.*?\/web\/app\-build\//, '');
 
   // Counts slashes the relative path to decide how many levels up we need to go
-  var depth = (rel.match(/(\/|\\)/g) || []).length + 1;
+  var depth = (rel.match(/(\/|\\)/g) || []).length - 1;
 
   // The sub-dir that the file is under
   var ns = rel.split('/')[0];

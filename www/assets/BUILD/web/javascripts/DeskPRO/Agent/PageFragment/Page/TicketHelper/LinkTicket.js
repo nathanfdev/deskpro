@@ -30,7 +30,7 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentElement: this.wrapperEl,
 			destroyOnClose: true,
-			//zIndex: 'top',
+			zIndex: 1800,
 			onOverlayClosed: function() {
 				self.overlay = null;
 			}

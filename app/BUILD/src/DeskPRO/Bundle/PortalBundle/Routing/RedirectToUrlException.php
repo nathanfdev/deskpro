@@ -39,9 +39,9 @@ class RedirectToUrlException extends \InvalidArgumentException
      */
     private $url;
 
-    public function __construct($url)
+    public function __construct($url, $message = 'Redirect')
     {
-        parent::__construct('301 - Found', 301);
+        parent::__construct($message, 301);
         $this->url = $url;
     }
 

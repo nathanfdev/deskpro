@@ -25,14 +25,14 @@
 			"name": "client_id",
 			"type": "text",
 			"label": "Client ID",
-			"description": "You can find or create this in your Google developer console (https://console.developers.google.com/). Once there, follow: APIs & Auth -> Credentials -> OAuth.",
+			"description": "You can find or create this in your Google developer console (https://console.developers.google.com/). Once there, follow: Google APIs -> Google+ APIs -> Enable.",
 			"native_only": true
 		},
 		{
 			"name": "client_secret",
 			"type": "text",
 			"label": "Client Secret",
-			"description": "You can find or create this in your Google developer console (https://console.developers.google.com/). Once there, follow: APIs & Auth -> Credentials -> OAuth.",
+			"description": "You can find or create this in your Google developer console (https://console.developers.google.com/). Once there, follow: Google APIs -> Google+ APIs -> Enable.",
 			"native_only": true
 		},
 		{

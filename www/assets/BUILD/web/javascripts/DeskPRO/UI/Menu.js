@@ -498,12 +498,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 			this.elements.shim.hide();
 		}
 
-		if (this.parentMenu) {
-			// no fade for submenus
-			this.elements.wrapperOuter.hide();
-		} else {
-			this.elements.wrapperOuter.fadeOut(200);
-		}
+		this.elements.wrapperOuter.hide();
 
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
 			this.openTriggerEvent.customEvents.fireEvent('menuClosed', [{ menu: this }]);
@@ -551,7 +546,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 		}
 
 		if (!eventData.noFireEvent) {
-			this.fireEvent('itemClicked', [eventData]);
+			setTimeout((function(){
+        this.fireEvent('itemClicked', [eventData]);
+			}).bind(this), 0);
 		}
 
 		event.stopPropagation();

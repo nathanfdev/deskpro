@@ -95,7 +95,7 @@ class TicketAttachment extends DomainObject
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\TicketMessage>")
      *
-     * @Assert\Valid()
+     * @Assert\NotBlank()
      *
      * @var TicketMessage
      */
@@ -214,6 +214,22 @@ class TicketAttachment extends DomainObject
     public function isInline()
     {
         return $this->is_inline;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgentNote()
+    {
+        return $this->is_agent_note;
+    }
+
+    /**
+     * @return TicketMessage
+     */
+    public function getMessage()
+    {
+        return $this->message;
     }
 
     //###########################################################################

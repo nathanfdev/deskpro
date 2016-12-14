@@ -1704,6 +1704,12 @@ $collection->create('agent_publish_cats_newform_save', [
     'controller' => 'AgentBundle:Publish:addCategoryFormSave',
 ]);
 
+$collection->create('agent_public_pending_approval', [
+    'path'       => '/publish/pending_approval/{type}',
+    'controller' => 'AgentBundle:Publish:listPendingApproval',
+    'options'    => ['fragment_name' => 'pending_approval', 'fragment_type' => 'list'],
+]);
+
 $collection->create('agent_public_drafts', [
     'path'       => '/publish/drafts/{type}',
     'controller' => 'AgentBundle:Publish:listDrafts',
@@ -2384,9 +2390,15 @@ $collection->create('agent_jira_ticket_issue_unlink', [
     'requirements' => ['ticketId' => '\\d+', 'issueId' => '\\d+'],
 ]);
 
-$collection->create('gregwar_captcha', [
+$collection->create('gregwar_captcha.agent.generate_captcha', [
     'path'       => '/generate-captcha/{key}',
     'controller' => 'AgentBundle:Captcha:generate',
+    'methods'    => ['GET'],
+]);
+
+$collection->create('voice_in_progress', [
+    'path'       => '/voice/in-progress/{phoneCall}/{callSid}',
+    'controller' => 'AgentBundle:Voice:voiceInProgress',
     'methods'    => ['GET'],
 ]);
 

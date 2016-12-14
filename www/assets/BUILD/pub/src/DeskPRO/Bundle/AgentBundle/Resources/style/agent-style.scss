@@ -1,6 +1,7 @@
 // @ToDo Need we move below variable set into variables.scss?
 $fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
 $flagsImagePath: "../../../../../../node_modules/intl-tel-input/build/img/";
+$flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
 $tablet: new-breakpoint(max-width 960px 6);
 $mobile: new-breakpoint(max-width 640px 6);
 
@@ -9,6 +10,7 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "../../../../../../node_modules/font-awesome/scss/font-awesome";
 @import "../../../../../../node_modules/intl-tel-input/src/css/intlTelInput";
 @import "../../../../../../node_modules/cropper/src/scss/cropper";
+@import '../../../../../../node_modules/flag-icon-css/sass/flag-icon';
 
 @import "normalize.css";
 @import 'variables';

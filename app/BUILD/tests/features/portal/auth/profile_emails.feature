@@ -4,6 +4,7 @@ Feature: User Profile
 
   Background:
     Given there are no PersonEmail records
+    And I have only default brand
     And I'm authenticated as user
     And the following languages are enabled:
       | default |

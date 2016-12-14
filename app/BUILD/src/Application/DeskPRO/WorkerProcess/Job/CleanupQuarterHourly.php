@@ -133,5 +133,20 @@ class CleanupQuarterHourly extends AbstractJob
         if (!$did_per_agent_filters) {
             App::getDb()->executeUpdate("DELETE FROM people_prefs WHERE name LIKE 'ticket_counts.%'");
         }
+
+        //------------------------------
+        // Enable cached slas
+        //------------------------------
+
+        if (!$this->getContainer()->getSetting('enable_cached_sla_counts')) {
+            $incompleteSlas     = App::getDb()->fetchColumn('SELECT COUNT(*) FROM ticket_slas WHERE is_completed = 0');
+            $awaitingAgentcount = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'awaiting_agent'");
+            if ($incompleteSlas >= 10000 || ($counts['tickets.awaiting_user'] + $awaitingAgentcount) >= 10000) {
+                $this->getContainer()->getDb()->replace('settings', [
+                    'name'  => 'enable_cached_sla_counts',
+                    'value' => time(),
+                ]);
+            }
+        }
     }
 }

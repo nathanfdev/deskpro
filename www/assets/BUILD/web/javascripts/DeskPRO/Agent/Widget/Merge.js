@@ -89,7 +89,7 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
 			contentAjax: { url: this._getOverlayUrl(this.options.metaId, otherId) },
-			zIndex: 40000 // Above floating people windows
+			zIndex: 1900 // Above floating people windows
 		});
 		this.overlay.addEvent('ajaxDone', this._overlayLoaded.bind(this));
 		this.overlay.open();
@@ -119,7 +119,7 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
 			contentAjax: { url: this._getOverlayUrl(this.options.metaId, otherId) },
-			zIndex: 40000 // Above floating people windows
+			zIndex: 1900 // Above floating people windows
 		});
 		this.overlay.addEvent('ajaxDone', this._overlayLoaded.bind(this));
 		this.overlay.open();
@@ -133,7 +133,7 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
 			contentAjax: { url: this._getOverlayUrl(this.options.metaId, 0) },
-			zIndex: 40000 // Above floating people windows
+			zIndex: 1900 // Above floating people windows
 		});
 		this.overlay.addEvent('ajaxDone', this._overlayLoaded.bind(this));
 		this.overlay.open();

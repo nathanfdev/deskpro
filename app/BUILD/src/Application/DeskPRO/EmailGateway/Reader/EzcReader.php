@@ -32,7 +32,6 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader;
 
-use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
 
 /**
@@ -415,13 +414,6 @@ class EzcReader extends AbstractReader
                             $attach->mime_type = "{$part->contentType}/{$part->mimeType}";
                         } else {
                             $attach->mime_type = 'application/octet-stream';
-                        }
-                    }
-
-                    if (!Strings::getExtension($attach->file_name)) {
-                        $ext = ContentTypes::findExtensionForContentType($attach->mime_type);
-                        if ($ext) {
-                            $attach->file_name .= ".$ext";
                         }
                     }
                 }
