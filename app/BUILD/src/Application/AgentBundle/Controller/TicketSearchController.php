@@ -1917,6 +1917,13 @@ class TicketSearchController extends AbstractController
 
         $tickets = $this->em->getRepository(Ticket::class)->getTicketsResultsFromIds($ticket_ids);
 
+        foreach ($tickets as $t) {
+            // disable auto processing because call to
+            // $ticket->getTicketLogger()->done()
+            // below will call it
+            $t->disableAutoTicketProcess();
+        }
+
         $macro = false;
         if ($macro_id = $this->in->getUInt('run_macro_id')) {
             $macro = $this->em->find(TicketMacro::class, $macro_id);
