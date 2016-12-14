@@ -112,7 +112,7 @@ class ActivityLogger
             return;
         }
 
-        foreach ($this->pending as $a) {
+        foreach ($pending as $a) {
             $this->em->persist($a);
         }
 
