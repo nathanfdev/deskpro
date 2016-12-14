@@ -3583,8 +3583,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         sort($hashes, \SORT_STRING);
 
-        $this->ticket_hash = sha1(implode('', $hashes));
-        $this->_onPropertyChanged('ticket_hash', '', $this->ticket_hash);
+        $ticket_hash = sha1(implode('', $hashes));
+        $this->setModelField('ticket_hash', $ticket_hash);
     }
 
     public function initHashCode()
@@ -4615,8 +4615,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->addLifecycleCallback('_onValidateProps', 'preUpdate');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');
-        $metadata->addLifecycleCallback('recomputeHash', 'postPersist');
-        $metadata->addLifecycleCallback('recomputeHash', 'postUpdate');
         $metadata->setPrimaryTable(
             [
                 'name'    => 'tickets',
