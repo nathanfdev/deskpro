@@ -1157,11 +1157,20 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
             $property = 'title';
         }
 
-        $name = strtolower(\Orb\Util\Util::getBaseClassname($this));
+        return $this->getPropertyPhraseName($property);
+    }
 
-        $phrase_name = 'obj_'.$name.'.'.$this->id.'_'.$property;
+    /**
+     * @param string $property
+     *
+     * @return string
+     */
+    public function getPropertyPhraseName($property)
+    {
+        $name        = strtolower(\Orb\Util\Util::getBaseClassname($this));
+        $phraseName = 'obj_'.$name.'.'.$this->id.'_'.$property;
 
-        return $phrase_name;
+        return $phraseName;
     }
 
     /**

@@ -35,14 +35,37 @@ use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\CustomDef as CustomDefModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\CustomDefTranslation;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class CustomDefHandler.
  */
 class CustomDefHandler extends AbstractEntityHandler
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var array
+     */
+    private $phrases;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -65,6 +88,48 @@ class CustomDefHandler extends AbstractEntityHandler
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
-        return new CustomDefModel($entity);
+        $model = new CustomDefModel($entity);
+        $model->setTranslations(new CallbackDeferredProperty([$this, 'getTranslations'], [$entity]));
+
+        return $model;
+    }
+
+    /**
+     * @param CustomDefAbstract $entity
+     *
+     * @return array
+     */
+    public function getTranslations(CustomDefAbstract $entity)
+    {
+        if (null === $this->phrases) {
+            /** @var \Application\DeskPRO\DBAL\Connection $connection */
+            $connection    = $this->em->getConnection();
+            $this->phrases = $connection->fetchAll(
+                'SELECT language_id, `name`, phrase FROM phrases WHERE groupname = :groupname AND is_outdated = 0',
+                [
+                    'groupname' => 'obj_customdefchat',
+                ]
+            );
+        }
+
+        $entityPhrases = [];
+        foreach ($this->phrases as $phrase) {
+            foreach (['title', 'description'] as $property) {
+                if ($phrase['name'] === $entity->getPropertyPhraseName($property)) {
+                    $entityPhrases[$phrase['language_id']][$property] = $phrase['phrase'];
+                }
+            }
+        }
+
+        $translations = [];
+        foreach ($entityPhrases as $languageId => $entityPhrase) {
+            $translations[] = new CustomDefTranslation(
+                isset($entityPhrase['title']) ? $entityPhrase['title'] : null,
+                isset($entityPhrase['description']) ? $entityPhrase['description'] : null,
+                $languageId
+            );
+        }
+
+        return $translations;
     }
 }

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -133,6 +134,13 @@ class CustomDef
     private $widgetType;
 
     /**
+     * @JMS\Type("deferred<array<DeskPRO\Bundle\AppBundle\Serializer\Model\CustomDefTranslation>>")
+     *
+     * @var CustomDefTranslation[]
+     */
+    private $translations = [];
+
+    /**
      * Constructor.
      *
      * @param CustomDefAbstract $def
@@ -151,5 +159,13 @@ class CustomDef
         $this->defaultValue  = $def->getDefaultValue();
         $this->widgetType    = $def->getWidgetType();
         $this->choices       = $def->getChoices();
+    }
+
+    /**
+     * @param CallbackDeferredProperty|CustomDefTranslation[] $translations
+     */
+    public function setTranslations($translations)
+    {
+        $this->translations = $translations;
     }
 }
