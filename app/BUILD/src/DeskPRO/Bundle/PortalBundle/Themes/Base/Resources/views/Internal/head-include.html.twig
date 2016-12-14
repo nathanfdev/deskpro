@@ -43,7 +43,14 @@
 
 <script type="text/javascript">
   (function() {
-    window.DP_LOAD_FN = [];
+    window.DP_LOAD_FN = window.DP_LOAD_FN || [];
+    window.onDeskproReady = function(cb) {
+      if (window.DP_PAGE_IS_READY) {
+        cb();
+      } else {
+        window.DP_LOAD_FN.push(cb);
+      }
+    };
 
     window.DESKPRO_BASE_URL = '{{ base_url() }}';
     window.DESKPRO_ROOT_URL = '{{ root_url() }}';
