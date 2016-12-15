@@ -51,10 +51,13 @@ export const preloadData    = createAction(
         my_agent_teams:        { endpoint: 'agent_teams', query: 'my=true' },
         ticket_departments:    { endpoint: 'ticket_departments' },
         my_ticket_departments: { endpoint: 'ticket_departments', query: 'my=true' },
-        onboardings:           { endpoint: 'people/onboarding/pending' },
-        voice_tokens:          { endpoint: 'voice_client/tokens' },
-        voice_activities:      { endpoint: 'voice_client/activities' }
+        onboardings:           { endpoint: 'people/onboarding/pending' }
       };
+
+      if (window.DP_HAS_VOICE) {
+        batchComponents.voice_tokens     = { endpoint: 'voice_client/tokens' };
+        batchComponents.voice_activities = { endpoint: 'voice_client/activities' };
+      }
 
       dispatch(loadAgentPhraseTranslations());
 
@@ -88,14 +91,16 @@ export const preloadData    = createAction(
           dispatch(setCollection('Person', 'me', [data.me.person]));
           dispatch(setImMe(data.me.person));
 
-          dispatch(setVoiceTokens(data.voice_tokens));
-          dispatch(setVoiceActivities(data.voice_activities));
+          if (window.DP_HAS_VOICE) {
+            dispatch(setVoiceTokens(data.voice_tokens));
+            dispatch(setVoiceActivities(data.voice_activities));
 
-          const state = getState();
-          const voiceEnabled = isVoiceEnabledSelector(state);
+            const state = getState();
+            const voiceEnabled = isVoiceEnabledSelector(state);
 
-          if (voiceEnabled) {
-            dispatch(voiceBootstrap());
+            if (voiceEnabled) {
+              dispatch(voiceBootstrap());
+            }
           }
 
           dispatch(donePreloading());
