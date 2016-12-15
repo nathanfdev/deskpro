@@ -57,6 +57,7 @@ class ValidatorErrorCodeFactory
         '/The choice ".*" does not exist or is not unique/'          => ErrorsCodes::BAD_CHOICE,
         '/The choices ".*" do not exist in the choice list./'        => ErrorsCodes::BAD_CHOICE,
         '/Could not find all matching choices for the given values/' => ErrorsCodes::BAD_CHOICE,
+        '/All values in the array should be the same/'               => ErrorsCodes::MISMATCH_VALUES,
     ];
 
     /**

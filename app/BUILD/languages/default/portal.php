@@ -495,6 +495,7 @@ return [
     'portal.forms.error_upload_html_size'                   => 'The file is too large.',
     'portal.forms.error_upload_ini_size'                    => 'The file is too large. Maximum allowed size is {{ limit }} {{ suffix }}.',
     'portal.forms.error_extra_fields'                       => 'Sorry but there was an error processing your request. Please try again.',
+    'portal.forms.error_mismatch_values'                    => 'This value does not match',
     'portal.forms.label_add_attachment'                     => 'Add Another Attachment',
     'portal.forms.label_captcha'                            => 'To prove you are a human, please tell us the text you see in the CAPTCHA image',
     'portal.forms.label_category'                           => 'Category',
