@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@kadira/storybook';
 import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Fieldset, Input, createValue } from '@deskpro/react-forms';
-import { css } from '../../decorators';
+import { css } from '../decorators';
 
 const formErrors = {
   fields: {

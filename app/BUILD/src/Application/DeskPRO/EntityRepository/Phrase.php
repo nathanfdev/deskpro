@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
+use Orb\Util\Numbers;
 
 class Phrase extends AbstractEntityRepository
 {
@@ -55,25 +55,42 @@ class Phrase extends AbstractEntityRepository
         }
     }
 
+    /**
+     * @param Language|int $language
+     *
+     * @return mixed
+     */
     public function getCustomPhraseNamesInLanguage($language)
     {
-        $names = App::getDb()->fetchColumn('
+        if (Numbers::isInteger($language)) {
+            $languageId = $language;
+        } else {
+            $languageId = $language['id'];
+        }
+
+        $names = $this->getEntityManager()->getConnection()->fetchColumn('
             SELECT name
             FROM phrases
             WHERE language_id = ? AND phrase IS NOT NULL
-        ', [$language['id']]);
+        ', [$languageId]);
 
         return $names;
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Language $language
-     * @param string                               $group
+     * @param Language|int $language
+     * @param string       $group
      *
      * @return array
      */
     public function getPhrasesInGroup($language, $group)
     {
+        if (Numbers::isInteger($language)) {
+            $languageId = $language;
+        } else {
+            $languageId = $language['id'];
+        }
+
         $parts = explode('.', $group);
         if (count($parts) == 2) {
             if ($parts[0] == $parts[1]) {
@@ -84,7 +101,7 @@ class Phrase extends AbstractEntityRepository
             SELECT name, COALESCE(phrase, original_phrase) AS phrase
             FROM phrases
             WHERE language_id = ? AND groupname LIKE ?
-        ', [$language['id'], $group.'%']);
+        ', [$languageId, $group.'%']);
 
         return $phrases;
     }

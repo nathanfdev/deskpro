@@ -55,9 +55,7 @@ export class PhrasesMenu extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.phrases !== this.props.phrases) {
-      this.setState({
-        selectedLeft: nextProps.phrases.first()
-      });
+      this.selectselectFirstMenu();
     }
   }
 
@@ -89,6 +87,7 @@ export class PhrasesMenu extends React.Component {
     if (this.state.selectedLeft === 'add_phrase') {
       return (<AddPhraseFormContainer
         languages={this.props.languages}
+        setMenu={this.selectselectFirstMenu}
       />);
     }
     if (!this.state.selectedLeft.get('phrases')) {
@@ -134,6 +133,12 @@ export class PhrasesMenu extends React.Component {
         </Button>
     </div>
   </footer>);
+
+  selectFirstMenu = () => {
+    this.setState({
+      selectedLeft: this.props.phrases.first()
+    });
+  };
 
   selectPhrase = (phrase) => {
     this.props.onSelectPhrase(phrase);

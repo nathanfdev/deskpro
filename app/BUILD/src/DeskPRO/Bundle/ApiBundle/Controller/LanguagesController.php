@@ -396,6 +396,7 @@ class LanguagesController extends CrudController
                     'user.profile.*',
                     'portal.sidebar.*',
                     'user.time.*',
+                    'custom.emails.*',
                 ];
                 break;
             case 'agent':
@@ -485,7 +486,7 @@ class LanguagesController extends CrudController
 
         $data = $form->getData();
 
-        $phraseName = 'custom.'.$data['name'];
+        $phraseName = 'custom.emails.'.$data['name'];
 
         if ($this->getManager()->getRepository(Phrase::class)->findOneBy(['name' => $phraseName])) {
             $form->get('name')->addError(new FormError('Duplicate entry.'));

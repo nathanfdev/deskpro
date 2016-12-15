@@ -5,11 +5,15 @@ import { Button } from 'DeskPRO/Component/Semantic/Button';
 import classNames from 'classnames';
 import * as actions from '../../Actions/templatesActions';
 
-@connect()
+@connect(state => ({
+  emailTemplates: state.EmailTemplates.templates
+}))
 export class AddPhraseFormContainer extends React.Component {
   static propTypes = {
-    dispatch:  PropTypes.func,
-    languages: PropTypes.array
+    dispatch:       PropTypes.func,
+    languages:      PropTypes.array,
+    emailTemplates: PropTypes.object.isRequired,
+    setMenu:        PropTypes.func
   };
 
   constructor(props) {
@@ -27,8 +31,9 @@ export class AddPhraseFormContainer extends React.Component {
     const phrase = {
       name: this.form.nameInput.input.value
     };
+
     for (const field of this.form.translationInputs) {
-      if (field.input.value) {
+      if (field && field.input.value) {
         phrase[field.input.name] = field.input.value;
       }
     }
@@ -37,6 +42,14 @@ export class AddPhraseFormContainer extends React.Component {
         this.setState({
           savingNewPhrase: false
         });
+        this.props.dispatch(actions.loadPhrases(
+          this.props.emailTemplates.get('currentTemplateGroup'),
+          this.props.emailTemplates.get('currentLanguage')
+        )).then(
+          () => {
+            this.props.setMenu();
+          }
+        );
       },
       (response) => {
         this.setState({
@@ -77,7 +90,7 @@ export class AddPhraseForm extends React.Component {
       <div className="add-phrase">
         <Form>
           <Field field="name" className="inline" errors={this.props.errors}>
-            <label htmlFor="phrase_name">Phrase: custom.</label>
+            <label htmlFor="phrase_name">Phrase: custom.emails.</label>
             <Input id="phrase_name" key="name" ref={(c) => { this.nameInput = c; }} />
           </Field>
           {translations}

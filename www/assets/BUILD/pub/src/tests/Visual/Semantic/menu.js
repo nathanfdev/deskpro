@@ -10,7 +10,7 @@ import {
   phrasesStructure,
   primaryList,
   variablesStructure
-} from '../../../DemoState/Semantic/menu';
+} from '../../DemoState/Semantic/menu';
 
 storiesOf('Semantic: menu', module)
   .add(

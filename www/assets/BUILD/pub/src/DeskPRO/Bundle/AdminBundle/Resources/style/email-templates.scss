@@ -221,21 +221,6 @@
     }
   }
   > .right-panel.ui.vertical.menu {
-    width: 520px;
-    > .item {
-      padding-top: 0;
-      overflow-y: auto;
-      max-height: 550px;
-      .menu {
-        margin: 0;
-        .ui.item {
-          border-bottom: solid 1px $dp-greyscale-200;
-        }
-        .ui.item:last-child {
-          border: 0;
-        }
-      }
-    }
     .description {
       font-size: 12px;
       color: $dp-greyscale-600;
@@ -256,10 +241,16 @@
   height: 550px;
   .ui.vertical.menu {
     > .item {
+      max-height: 550px;
+      overflow-y: auto;
+      .phrase-key {
+        color: #00a99d;
+      }
+    }
+    &:first-child > .item {
+      max-height: 443px;
       margin-bottom: 60px;
       width: 260px;
-      max-height: 425px;
-      overflow-y: auto;
     }
     footer {
       padding: 20px;
@@ -270,13 +261,36 @@
     }
     width: auto;
   }
-  .ui.vertical.menu:first-child {
-    width: 260px;
-  }
   .add-phrase {
+    width: 520px;
     padding: 10px;
     .ui.form .field > label {
       font-size: 12px;
     }
   }
+}
+.phrases,
+.variables {
+  > .right-panel.ui.vertical.menu {
+    width: 520px;
+    > .item {
+      padding-top: 0;
+      overflow-y: auto;
+      max-height: 550px;
+    }
+    .menu {
+      margin: 0;
+      .ui.item {
+        line-height: normal;
+        border-bottom: solid 1px $dp-greyscale-200;
+        padding-left: 10px;
+      }
+      .ui.item:last-child {
+        border: 0;
+      }
+    }
+  }
+}
+.media {
+
 }
