@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
+use Application\DeskPRO\Entity\Language;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -40,7 +41,7 @@ class CustomDefTranslation
      *
      * @var int
      *
-     * @JMS\Type("integer")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Language>")
      */
     private $language;
 
@@ -61,11 +62,11 @@ class CustomDefTranslation
     /**
      * Constructor.
      *
-     * @param string $title
-     * @param string $description
-     * @param string $language
+     * @param string   $title
+     * @param string   $description
+     * @param Language $language
      */
-    public function __construct($title, $description, $language)
+    public function __construct($title, $description, Language $language)
     {
         $this->title       = $title;
         $this->description = $description;

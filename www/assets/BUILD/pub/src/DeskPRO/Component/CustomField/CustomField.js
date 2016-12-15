@@ -68,19 +68,10 @@ export class CustomField extends React.Component {
     let title = config.get('title');
     let description = config.get('description');
 
-    if (language && config.get('translations')) {
-      config.get('translations').forEach((translation) => {
-        if (translation.get('language') !== language) {
-          return;
-        }
-
-        if (translation.get('title')) {
-          title = translation.get('title');
-        }
-        if (translation.get('description')) {
-          description = translation.get('description');
-        }
-      });
+    const translation = config.getIn(['translations', `${language}`]);
+    if (translation) {
+      title = translation.get('title');
+      description = translation.get('description');
     }
 
     return React.cloneElement(children, {

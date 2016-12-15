@@ -134,7 +134,7 @@ class CustomDef
     private $widgetType;
 
     /**
-     * @JMS\Type("deferred<array<DeskPRO\Bundle\AppBundle\Serializer\Model\CustomDefTranslation>>")
+     * @JMS\Type("deferred<map<DeskPRO\Bundle\AppBundle\Serializer\Model\CustomDefTranslation>>")
      *
      * @var CustomDefTranslation[]
      */

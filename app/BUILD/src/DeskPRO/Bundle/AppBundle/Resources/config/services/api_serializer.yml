@@ -29,7 +29,7 @@ services:
   # entities
   api_serializer.handler.custom_def:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDefHandler
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments: ["@deskpro.core.translate"]
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

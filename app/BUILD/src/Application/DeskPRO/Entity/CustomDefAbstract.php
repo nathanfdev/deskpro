@@ -255,19 +255,13 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @param Language|int $language
+     *
      * @return string
      */
-    public function getRealTitle()
+    public function getTitle($language = null)
     {
-        return $this->title;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return App::getTranslator()->getPhraseObject($this, 'title');
+        return App::getTranslator()->getPhraseObject($this, 'title', $language);
     }
 
     /**
@@ -279,11 +273,13 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @param Language|int $language
+     *
      * @return string
      */
-    public function getDescription()
+    public function getDescription($language = null)
     {
-        return App::getTranslator()->getPhraseObject($this, 'description');
+        return App::getTranslator()->getPhraseObject($this, 'description', $language);
     }
 
     /**
@@ -1167,7 +1163,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public function getPropertyPhraseName($property)
     {
-        $name        = strtolower(\Orb\Util\Util::getBaseClassname($this));
+        $name       = strtolower(\Orb\Util\Util::getBaseClassname($this));
         $phraseName = 'obj_'.$name.'.'.$this->id.'_'.$property;
 
         return $phraseName;
