@@ -310,7 +310,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setKey(ApiKey $key)
+    public function setKey(ApiKey $key = null)
     {
         $this->setModelField('key', $key);
 

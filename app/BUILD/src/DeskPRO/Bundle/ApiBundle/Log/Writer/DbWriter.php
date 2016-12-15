@@ -54,7 +54,12 @@ class DbWriter implements WriterInterface
      */
     public function write(ApiLog $log)
     {
+        $key = $log->getKey();
+        $log->setKey(null);
         $this->em->persist($log);
         $this->em->flush($log);
+        if ($key && $key->getId()) {
+            $this->em->getConnection()->update('api_log', ['api_key_id' => $key->getId()], ['id' => $log->getId()]);
+        }
     }
 }
