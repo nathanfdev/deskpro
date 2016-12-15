@@ -101,7 +101,7 @@ class NativeAppsSync
     {
         $em = $this->container->get('doctrine.orm.default_entity_manager');
         foreach ($this->manager->getAllPackages() as $package) {
-            if (strpos($package->name, 'deskpro_') === 0 && !$this->manager->getAppPath($package->name, true)) {
+            if ($package->native_name && strpos($package->name, 'deskpro_') === 0 && !$this->manager->getAppPath($package->name, true)) {
                 $this->manager->removePackage($package);
                 $em->remove($package);
                 $this->logger->debug(sprintf('Removing application %s.', $package->name));
