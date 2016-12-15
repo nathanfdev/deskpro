@@ -35,6 +35,7 @@ use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Util\ApiUtil;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 use Doctrine\ORM\EntityManager;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -237,6 +238,7 @@ class LogComposer
         try {
             $this->writer->write($this->log);
         } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
             throw new LogSaveException();
         }
     }
@@ -264,7 +266,7 @@ class LogComposer
             && $key = $keyRepo->findByKeyString($this->getToken()->getCredentials())
         ) {
             /* @var \Application\DeskPRO\Entity\ApiKey $key */
-            $log->setKey($key);
+            $key->addApiLog($log);
         }
     }
 

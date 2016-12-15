@@ -180,7 +180,7 @@ class ApiKey extends DomainObject
      */
     public function addApiLog(ApiLog $log)
     {
-        $this->actions->add($log);
+        $this->api_logs->add($log);
         $log->setKey($this);
 
         return $this;
