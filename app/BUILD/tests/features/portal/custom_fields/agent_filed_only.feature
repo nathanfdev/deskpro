@@ -43,7 +43,7 @@ Feature: Agent field only
 
     Scenario: I check new ticket agent only field is hidden
       When I go to "/new-ticket"
-      Then the ".form-ticket" form should have 9 elements
+      Then the ".form-ticket" form should have 10 elements
       And I should see ".form-ticket" form fields in following order:
         | name                                        |
         | ticket[ticket_field_{ticket_field_2}][data] |
@@ -52,6 +52,7 @@ Feature: Agent field only
         | ticket[subject]                             |
         | ticket[message][message]                    |
         | ticket[message][format]                     |
+        | ticket[attachments][0][upload]              |
         | ticket[person][user_name]                   |
         | ticket[person][user_email][email]           |
         | ticket[displayed_fields]                    |

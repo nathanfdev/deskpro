@@ -46,13 +46,14 @@ class LayoutUtil
         if (!$layout->has(FormFields::MESSAGE)) {
             $layout->prepend(new LayoutField(FormFields::MESSAGE));
         }
-
         if (!$layout->has(FormFields::SUBJECT)) {
             $layout->prepend(new LayoutField(FormFields::SUBJECT));
         }
-
         if (!$layout->has(FormFields::PERSON)) {
             $layout->prepend(new LayoutField(FormFields::PERSON));
+        }
+        if (!$layout->has(FormFields::ATTACHMENTS)) {
+            $layout->prepend(new LayoutField(FormFields::ATTACHMENTS));
         }
     }
 
