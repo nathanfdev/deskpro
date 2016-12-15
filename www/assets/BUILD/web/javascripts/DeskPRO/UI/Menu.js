@@ -546,9 +546,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 		}
 
 		if (!eventData.noFireEvent) {
-			setTimeout((function(){
-        this.fireEvent('itemClicked', [eventData]);
-			}).bind(this), 0);
+      this.fireEvent('itemClicked', [eventData]);
 		}
 
 		event.stopPropagation();

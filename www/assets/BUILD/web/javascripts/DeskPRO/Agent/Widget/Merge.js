@@ -219,19 +219,19 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 			ev.preventDefault();
 			buttons.each(function() {
 				if (!$(this).data('keep')) {
-					$(this).click();
+					$(this).trigger('click');
 					return false;
 				}
 			});
 		});
 
-		buttons.click(function() {
+		buttons.on('click', function() {
 			buttons.data('keep', false).html(mergeHtml);
 			$(this).data('keep', 1).html(keepHtml);
 			setMergeDataLostClasses();
 		});
 
-		wrapper.find('.merge-trigger').click(this._mergeTriggerClick.bind(this));
+		wrapper.find('.merge-trigger').on('click', this._mergeTriggerClick.bind(this));
 	},
 
 	_mergeTriggerClick: function() {
