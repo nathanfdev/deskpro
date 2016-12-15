@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 import { storiesOf, action } from '@kadira/storybook';
 import { EmailsAndBlockMenu } from 'DeskPRO/Bundle/AdminBundle/Modules/EmailTemplates/Components/Menus/EmailsAndBlockMenu';
 import { VariablesMenu } from 'DeskPRO/Bundle/AdminBundle/Modules/EmailTemplates/Components/Menus/VariablesMenu';
+import { MediaMenu } from 'DeskPRO/Bundle/AdminBundle/Modules/EmailTemplates/Components/Menus/MediaMenu';
 import {
   emailBlocks,
   variables
@@ -28,6 +29,12 @@ storiesOf('Admin: email templates', module)
       <VariablesMenu
         viewModel={Immutable.fromJS(variables)}
       />
+    </div>
+  )
+  .add(
+    'Media menu',
+    () => <div>
+      <MediaMenu />
     </div>
   )
 ;

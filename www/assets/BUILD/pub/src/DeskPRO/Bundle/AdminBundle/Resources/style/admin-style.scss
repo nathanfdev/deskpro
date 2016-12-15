@@ -1,5 +1,6 @@
 $fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
 $flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
+$font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 
 @import '../../../../../../node_modules/font-awesome/scss/font-awesome';
 @import '../../../../../../node_modules/flag-icon-css/sass/flag-icon';
@@ -15,7 +16,6 @@ $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/
 $fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.7.0/fonts" !default;
 @import "../../../../../../node_modules/@deskpro/react-components/src/styles/main";
 
-$font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 .two-panels-menu {
   display: table;
   border: 1px solid $dp-sonic-primary;
@@ -257,6 +257,81 @@ $font-family: 'Open Sans', Helvetica, Arial, sans-serif;
       padding-top: 3px;
       padding-bottom: 3px;
       margin-right: 10px;
+    }
+  }
+}
+
+.audio-widget {
+  .ui.bottom.attached.tab.segment {
+    margin-bottom: 0;
+  }
+
+  .upload-tab {
+    .format-note {
+      margin-bottom: 10px;
+    }
+
+    .rights-note {
+      display: block;
+      padding: 10px;
+      border: 1px solid #D4145A;
+      border-left: 3px solid #D4145A;
+      margin-bottom: 10px;
+    }
+
+    button {
+      &.upload {
+        position: relative;
+        overflow: hidden;
+      }
+
+      &.disabled {
+        background-color: #FCFCFC;
+        cursor: default;
+      }
+    }
+
+    input[type="file"] {
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      opacity: 0;
+      font-size: 100px;
+      filter: alpha(opacity=0);
+      cursor: pointer;
+    }
+  }
+
+  .record-tab {
+    button {
+      &.play-back {
+        margin-left: 15px;
+      }
+    }
+    input[type="file"] {
+      display: none;
+    }
+  }
+
+  .text-tab {
+    .field > label {
+      font-weight: normal;
+    }
+
+    .language-wrapper {
+      position: relative;
+
+      .language-field {
+        width: 200px;
+        margin-right: 20px;
+      }
+
+      .preview-button {
+        position: absolute;
+        left: 210px;
+        top: 0;
+      }
     }
   }
 }
