@@ -1,11 +1,11 @@
 import { dispatchInAgent, fakeRecordsStore } from 'Helpers';
-import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { api, setApi, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-
-const DAL = { repository };
 
 describe('RecordsStore loadBatch() action', () => {
-  setApi(api);
+  const loadBatch = require('DeskPRO/Bundle/AppBundle/Modules/RecordsStore').loadBatch; // eslint-disable-line global-require
+  const DAL = require('DeskPRO/Bundle/AppBundle/DAL/DAL');                              // eslint-disable-line global-require
+  const api = require('DeskPRO/Bundle/AppBundle/DAL').api;                              // eslint-disable-line global-require
+
+  DAL.setApi(api);
 
   it('should create Flux Standard Action', () => {
     const action = loadBatch();
