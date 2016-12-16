@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 
-class EmailTemplateItem extends React.Component {
+class ImageMenuItem extends React.Component {
   static propTypes    = {
     desc:      PropTypes.string,
     label:     PropTypes.string,
@@ -59,4 +59,4 @@ class EmailTemplateItem extends React.Component {
     );
   }
 }
-export default EmailTemplateItem;
+export default ImageMenuItem;

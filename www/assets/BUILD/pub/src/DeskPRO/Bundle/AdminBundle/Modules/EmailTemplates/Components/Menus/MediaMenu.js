@@ -2,6 +2,9 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { Tab, TabGroup } from 'DeskPRO/Component/Semantic/Tab';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
+import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
+import { MimeIcon } from 'DeskPRO/Component/Semantic/Icon';
+import ImageMenuItem from './ImageMenuItem';
 
 export class MediaMenuContainer extends React.Component {
   render() {
@@ -21,15 +24,54 @@ export class MediaMenu extends React.Component {
       <Button className="small basic">Upload files</Button>
   </div>);
 
+  getInlineFiles = () => {
+    if (!this.props.inlineFiles.get('files')) {
+      return null;
+    }
+    return this.props.inlineFiles.get('files').valueSeq().map((file, key) =>
+      <ImageMenuItem
+        key={`file${key}`}
+        label={file.get('file_name')}
+        icon="folder open"
+        desc="Test"
+        onClick={() => this.setActive(file)}
+      />
+    );
+  };
+
+  getAttachmentFiles = () => {
+    if (!this.props.attachmentFiles.get('files')) {
+      return null;
+    }
+    return this.props.attachmentFiles.get('files').valueSeq().map((file, key) =>
+      <MenuItem
+        key={`file${key}`}
+        label={file.get('file_name')}
+        icon={MimeIcon.getIcon(file.get('mime_type'))}
+        onClick={() => this.setActive(file)}
+      />
+    );
+  };
+
   render() {
     return (
       <div className="media">
         <TabGroup>
           <Tab key="inline" label="Inline images" icon="image">
             {this.getDropZone('image')}
+            <MenuWrapper className="files">
+              <Menu>
+                {this.getInlineFiles()}
+              </Menu>
+            </MenuWrapper>
           </Tab>
           <Tab key="file" label="File attachments" icon="attach">
             {this.getDropZone('attach')}
+            <MenuWrapper className="files">
+              <Menu>
+                {this.getAttachmentFiles()}
+              </Menu>
+            </MenuWrapper>
           </Tab>
         </TabGroup>
       </div>

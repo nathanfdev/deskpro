@@ -294,13 +294,21 @@
 .media {
   width: 480px;
   font-family: $font-family;
+  color: $dp-greyscale-850;
+  border: 1px solid $dp-sonic-primary;
+  .ui.segment.attached.bottom {
+    margin-bottom: 0;
+  }
   .ui.top.menu {
     .item {
       width: 240px;
     }
+    .item:last-child {
+      width: 239px;
+      border-right: 1px solid $dp-sonic-primary;
+    }
   }
   .drop-zone {
-    margin: 20px;
     border: 2px dotted $dp-greyscale-250;
     background-color: $dp-greyscale-100;
     padding: 20px;
@@ -314,7 +322,24 @@
     }
     .ui.basic.button {
       margin-left: 20px;
-      background-color: $dp-greyscale-50;
+      background-color: $dp-greyscale-50 !important;
+    }
+  }
+  .ui.vertical.menu.files {
+    width: 479px;
+    margin: 20px -21px -21px;
+    border-right: 1px solid $dp-sonic-primary;
+    box-shadow: none;
+    font-weight: 400;
+    .menu {
+      .ui.item {
+        padding-left: 15px;
+        font-size: 16px;
+        color: $dp-greyscale-850;
+        &:hover {
+          color : $dp-sonic-primary;
+        }
+      }
     }
   }
 }

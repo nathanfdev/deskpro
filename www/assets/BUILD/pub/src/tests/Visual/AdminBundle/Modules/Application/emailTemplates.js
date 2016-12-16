@@ -6,7 +6,9 @@ import { VariablesMenu } from 'DeskPRO/Bundle/AdminBundle/Modules/EmailTemplates
 import { MediaMenu } from 'DeskPRO/Bundle/AdminBundle/Modules/EmailTemplates/Components/Menus/MediaMenu';
 import {
   emailBlocks,
-  variables
+  variables,
+  mediaInline,
+  mediaAttachments
 } from '../../../../DemoState/AdminBundle/Modules/Application/email_templates';
 import { adminCss } from '../../../decorators';
 
@@ -34,7 +36,10 @@ storiesOf('Admin: email templates', module)
   .add(
     'Media menu',
     () => <div>
-      <MediaMenu />
+      <MediaMenu
+        inlineFiles={Immutable.fromJS(mediaInline)}
+        attachmentFiles={Immutable.fromJS(mediaAttachments)}
+      />
     </div>
   )
 ;
