@@ -3,7 +3,7 @@ import { url } from '../helpers';
 const commands = {
   load() {
     return this
-      .waitForElementVisible('@dashboard')
+      .waitForElementVisible('@dashboard', 30000)
       .waitForElementVisible('@sidebar')
       .assert.containsText('@dashboard', 'DeskPRO Updates')
       .assert.containsText('@sidebar', 'Admin Dashboard')
