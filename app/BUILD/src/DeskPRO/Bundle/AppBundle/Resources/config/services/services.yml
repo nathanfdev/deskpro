@@ -26,6 +26,7 @@ services:
       - "@security.token_storage"
       - "@portal_permissions_manager"
       - "@portal_mode_storage"
+      - "@url_corrector_factory"
       - "@=service('request_stack').getCurrentRequest().getBasePath()"
 
   captcha_settings_resolver:

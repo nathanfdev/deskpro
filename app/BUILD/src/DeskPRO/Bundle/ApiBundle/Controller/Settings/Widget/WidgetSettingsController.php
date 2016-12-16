@@ -91,13 +91,14 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      *
      * @Rest\Get("/code")
      *
-     * @param Brand $brand
+     * @param Brand   $brand
+     * @param Request $request
      *
      * @return string
      */
-    public function getWidgetCodeAction(Brand $brand)
+    public function getWidgetCodeAction(Brand $brand, Request $request)
     {
-        $code = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, false);
+        $code = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, $request, false);
 
         return new View($this->wrap($code));
     }
@@ -117,12 +118,14 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      *
      * @Rest\Get("/live_demo_code")
      *
+     * @param Request $request
+     *
      * @return string
      */
-    public function getWidgetLiveDemoCodeAction()
+    public function getWidgetLiveDemoCodeAction(Request $request)
     {
         $brand = $this->get('brand_stack')->getActive()->getBrand();
-        $code  = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, true);
+        $code  = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, $request, true);
 
         return new View($this->wrap($code));
     }
@@ -223,7 +226,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
         );
         $message->setTo($email);
         $attach = \Swift_Attachment::newInstance(
-            $this->get('widget_loader_code_renderer')->getWidgetCode($brand, false),
+            $this->get('widget_loader_code_renderer')->getWidgetCode($brand, $request, false),
             'deskpro-widget.txt',
             'text/plain'
         );

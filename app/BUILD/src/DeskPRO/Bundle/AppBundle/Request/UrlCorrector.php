@@ -118,14 +118,13 @@ class UrlCorrector
     }
 
     /**
+     * @param string  $url
      * @param Request $request
      *
      * @return string
      */
-    public function getCorrectedHelpdeskUrl(Request $request)
+    public function correctUrlScheme($url, Request $request)
     {
-        $url = rtrim($this->options['helpdeskUrl'], '/');
-
         // if we are on https but the url is set to just http, we wont change it
         // (i.e., allow a manual "upgrade" to https)
         if ($request->isSecure() && !preg_match('#^https:#i', $this->options['helpdeskUrl'])) {
@@ -133,6 +132,16 @@ class UrlCorrector
         }
 
         return $url;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return string
+     */
+    public function getCorrectedHelpdeskUrl(Request $request)
+    {
+        return $this->correctUrlScheme(rtrim($this->options['helpdeskUrl'], '/'), $request);
     }
 
     /**

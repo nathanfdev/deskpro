@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractTranslationModel;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
@@ -45,6 +46,7 @@ use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Packages;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -91,6 +93,11 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $portalModeStorage;
 
     /**
+     * @var UrlCorrectorFactory
+     */
+    private $urlCorrectorFactory;
+
+    /**
      * @var string
      */
     private $basePath;
@@ -105,6 +112,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @param TokenStorageInterface      $tokenStorage
      * @param PortalPermissionsManager   $permissionsManager
      * @param PortalModeStorage          $portalModeStorage
+     * @param UrlCorrectorFactory        $urlCorrectorFactory
      * @param string                     $basePath
      */
     public function __construct(
@@ -115,16 +123,18 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         TokenStorageInterface      $tokenStorage,
         PortalPermissionsManager   $permissionsManager,
         PortalModeStorage          $portalModeStorage,
+        UrlCorrectorFactory        $urlCorrectorFactory,
         $basePath
     ) {
         parent::__construct($settingsResolver);
 
-        $this->em                 = $em;
-        $this->assetPackages      = $assetPackages;
-        $this->tokenStorage       = $tokenStorage;
-        $this->permissionsManager = $permissionsManager;
-        $this->portalModeStorage  = $portalModeStorage;
-        $this->basePath           = $basePath;
+        $this->em                  = $em;
+        $this->assetPackages       = $assetPackages;
+        $this->tokenStorage        = $tokenStorage;
+        $this->permissionsManager  = $permissionsManager;
+        $this->portalModeStorage   = $portalModeStorage;
+        $this->urlCorrectorFactory = $urlCorrectorFactory;
+        $this->basePath            = $basePath;
 
         if ($router instanceof PortalRouter) {
             $this->router = $router->getBaseRouter();
@@ -184,11 +194,12 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
-     * @param Brand $brand
+     * @param Brand   $brand
+     * @param Request $request
      *
      * @return WidgetUrlSettings
      */
-    public function getWidgetUrlSettings(Brand $brand)
+    public function getWidgetUrlSettings(Brand $brand, Request $request = null)
     {
         $portalMode = $this->portalModeStorage->getMode();
 
@@ -198,6 +209,13 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         } else {
             $baseUrl     = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
             $helpdeskUrl = $baseUrl;
+        }
+
+        if ($request) {
+            $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($brand);
+
+            $baseUrl     = $urlCorrector->correctUrlScheme($baseUrl, $request);
+            $helpdeskUrl = $urlCorrector->correctUrlScheme($helpdeskUrl, $request);
         }
 
         $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
