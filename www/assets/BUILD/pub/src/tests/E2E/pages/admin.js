@@ -1,12 +1,14 @@
 import { url } from '../helpers';
 
 const commands = {
-  load() {
+  waitUntilLoaded() {
     return this
-      .waitForElementVisible('@dashboard', 30000)
       .waitForElementVisible('@sidebar')
+      .waitForElementVisible('@dashboard')
+      .waitForElementVisible('@updateButton')
       .assert.containsText('@dashboard', 'DeskPRO Updates')
       .assert.containsText('@sidebar', 'Admin Dashboard')
+      .assert.containsText('@updateButton', 'Update DeskPRO Now →')
     ;
   }
 };
@@ -15,7 +17,7 @@ module.exports = {
   url:      url('/admin/admin-interface'),
   commands: [commands],
   elements: {
-    updateButton: { selector: 'a[href="#/setup/updater"]' },
+    updateButton: { selector: 'div.status-content a[href="#/setup/updater"]' },
     dashboard:    { selector: 'div.dp-dashboard' },
     sidebar:      { selector: 'div.sidebar-list' }
   }

@@ -1,7 +1,7 @@
 import { url } from '../helpers';
 
 const commands = {
-  load() {
+  waitUntilLoaded() {
     return this
       .waitForElementVisible('@sidebar')
       .waitForElementVisible('@topbar')
