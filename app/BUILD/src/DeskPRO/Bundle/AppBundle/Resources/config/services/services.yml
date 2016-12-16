@@ -120,3 +120,7 @@ services:
   twilio_adapter:
     class: DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter
     arguments: ["@doctrine.orm.entity_manager"]
+
+  url_corrector_factory:
+    class: DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory
+    arguments: ["@brand_aware_settings_resolver"]

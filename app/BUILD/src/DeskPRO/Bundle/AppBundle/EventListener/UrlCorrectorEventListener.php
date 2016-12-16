@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
-use DeskPRO\Bundle\AppBundle\Request\UrlCorrector;
+use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
@@ -65,6 +65,11 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
     private $portalModeStorage;
 
     /**
+     * @var UrlCorrectorFactory
+     */
+    private $urlCorrectorFactory;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -72,17 +77,24 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param InterfaceInfo     $interfaceInfo
-     * @param BrandStack        $brandStack
-     * @param PortalModeStorage $portalModeStorage
-     * @param LoggerInterface   $logger
+     * @param InterfaceInfo       $interfaceInfo
+     * @param BrandStack          $brandStack
+     * @param PortalModeStorage   $portalModeStorage
+     * @param UrlCorrectorFactory $urlCorrectorFactory
+     * @param LoggerInterface     $logger
      */
-    public function __construct(InterfaceInfo $interfaceInfo, BrandStack $brandStack, PortalModeStorage $portalModeStorage, LoggerInterface $logger)
-    {
-        $this->interfaceInfo     = $interfaceInfo;
-        $this->brandStack        = $brandStack;
-        $this->portalModeStorage = $portalModeStorage;
-        $this->logger            = $logger;
+    public function __construct(
+        InterfaceInfo       $interfaceInfo,
+        BrandStack          $brandStack,
+        PortalModeStorage   $portalModeStorage,
+        UrlCorrectorFactory $urlCorrectorFactory,
+        LoggerInterface     $logger
+    ) {
+        $this->interfaceInfo       = $interfaceInfo;
+        $this->brandStack          = $brandStack;
+        $this->portalModeStorage   = $portalModeStorage;
+        $this->urlCorrectorFactory = $urlCorrectorFactory;
+        $this->logger              = $logger;
     }
 
     /**
@@ -105,21 +117,13 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-        $brand   = $this->brandStack->getActive();
 
-        $options = [
-            'autoCorrectScheme' => $brand->getSetting('core.deskpro_url_autocorrect'),
-            'autoCorrectHost'   => $brand->getSetting('core.deskpro_url_autocorrect'),
-            'helpdeskUrl'       => $brand->getSetting('core.deskpro_url'),
-        ];
-
-        $urlCorrector = new UrlCorrector($options);
-
-        $corrections = $urlCorrector->getCorrections($request);
+        $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($this->brandStack->getActive()->getBrand());
+        $corrections  = $urlCorrector->getCorrections($request);
 
         if ($corrections) {
             if (DebugUtils::isLoggerHandling($this->logger, 'DBEUG')) {
-                $this->logger->debug('[UrlCorrector] corrections: '.DebugUtils::varToString($options));
+                $this->logger->debug('[UrlCorrector] corrections: '.DebugUtils::varToString($urlCorrector->getOptions()));
             }
 
             $url = $urlCorrector->getCorrectedUrl($request);
