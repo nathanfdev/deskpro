@@ -68,7 +68,9 @@ class LogEvent extends Event
     private $metadata;
 
     /**
-     * PreLogEvent constructor.
+     * Constructor.
+     *
+     * @param AuditContext $context
      */
     public function __construct(AuditContext $context)
     {
