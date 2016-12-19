@@ -559,6 +559,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function getWidgetLoader()
     {
+        $request       = $this->container->get('request_stack')->getCurrentRequest();
         $brand         = $this->getBrandStack()->getActive()->getBrand();
         $widgetOptions = $this->container->get('widget_settings_resolver')->getWidgetBrandOptions($brand);
 
@@ -566,7 +567,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             return '';
         }
 
-        return $this->container->get('widget_loader_code_renderer')->getWidgetCode($brand, true);
+        return $this->container->get('widget_loader_code_renderer')->getWidgetCode($brand, $request, true);
     }
 
     /**

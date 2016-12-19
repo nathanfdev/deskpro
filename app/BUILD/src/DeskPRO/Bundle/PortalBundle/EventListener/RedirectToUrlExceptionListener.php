@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
-use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use Psr\Log\LoggerInterface;
@@ -49,9 +49,9 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
     private $logger;
 
     /**
-     * @var SettingsResolver
+     * @var UrlCorrectorFactory
      */
-    private $resolver;
+    private $urlCorrectorFactory;
 
     /**
      * @var BrandStack
@@ -61,15 +61,18 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param LoggerInterface  $logger
-     * @param SettingsResolver $resolver
-     * @param BrandStack       $brandStack
+     * @param LoggerInterface     $logger
+     * @param UrlCorrectorFactory $urlCorrectorFactory
+     * @param BrandStack          $brandStack
      */
-    public function __construct(LoggerInterface $logger, SettingsResolver $resolver = null, BrandStack $brandStack = null)
-    {
-        $this->logger     = $logger;
-        $this->resolver   = $resolver;
-        $this->brandStack = $brandStack;
+    public function __construct(
+        LoggerInterface     $logger,
+        UrlCorrectorFactory $urlCorrectorFactory = null,
+        BrandStack          $brandStack = null
+    ) {
+        $this->logger              = $logger;
+        $this->urlCorrectorFactory = $urlCorrectorFactory;
+        $this->brandStack          = $brandStack;
     }
 
     /**
@@ -89,28 +92,29 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $e = $event->getException();
+        $exception = $event->getException();
 
         // only interested in a particular exception here
         // the PortalRouter throws this
-        if (!$e instanceof RedirectToUrlException) {
+        if (!$exception instanceof RedirectToUrlException) {
             return;
         }
 
-        if (!$this->resolver || !$this->brandStack) {
+        if (!$this->urlCorrectorFactory || !$this->brandStack) {
             return;
         }
 
-        $url      = $e->getUrl();
+        $url      = $exception->getUrl();
         $brand    = $this->brandStack->getActive()->getBrand();
-        $brandUrl = $this->resolver->getBrandSettings($brand)->get('core.deskpro_url', '');
+        $request  = $event->getRequest();
+        $brandUrl = $this->urlCorrectorFactory->createUrlCorrector($brand)->getCorrectedHelpdeskUrl($request);
 
         $url = rtrim($brandUrl, '/').'/'.ltrim($url, '/');
 
-        $this->logger->info('RedirectToUrlException caught: '.$e->getMessage().' -- 302 redirecting to "'.$url.'"');
+        $this->logger->info('RedirectToUrlException caught: '.$exception->getMessage().' -- 302 redirecting to "'.$url.'"');
 
         $response = new RedirectResponse($url, Response::HTTP_FOUND);
-        $response->headers->set('X-DeskPRO-RedirectReason', 'RedirectToUrlException: '.$e->getMessage());
+        $response->headers->set('X-DeskPRO-RedirectReason', 'RedirectToUrlException: '.$exception->getMessage());
 
         $event->setResponse($response);
         $event->stopPropagation();

@@ -142,6 +142,7 @@ class UrlCorrectorEventListenerTest extends PortalTestCase
             $this->interfaceInfo,
             $this->getContainer()->get('brand_stack'),
             $portalModeStorage,
+            $this->getContainer()->get('url_corrector_factory'),
             $this->logger
         );
     }

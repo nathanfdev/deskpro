@@ -26,21 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace spec\DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\NewSettings\SettingsBag;
-use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Request\UrlCorrector;
+use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -49,13 +46,18 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class RedirectToUrlExceptionListenerSpec extends ObjectBehavior
 {
-    public function let(LoggerInterface $logger, SettingsResolver $resolver, BrandStack $brandStack, Brand $brand,
-                        BrandContainer $brandContainer, SettingsBag $settingsBag)
-    {
-        $this->beConstructedWith($logger, $resolver, $brandStack);
+    public function let(
+        LoggerInterface $logger,
+        UrlCorrectorFactory $urlCorrectorFactory,
+        UrlCorrector $urlCorrector,
+        BrandStack $brandStack,
+        Brand $brand,
+        BrandContainer $brandContainer
+    ) {
+        $this->beConstructedWith($logger, $urlCorrectorFactory, $brandStack);
         $brandStack->getActive()->willReturn($brandContainer);
         $brandContainer->getBrand()->willReturn($brand);
-        $resolver->getBrandSettings($brand)->willReturn($settingsBag);
+        $urlCorrectorFactory->createUrlCorrector($brand)->willReturn($urlCorrector);
     }
 
     public function it_subscrbied_to_kernel_exceptions()
@@ -67,9 +69,11 @@ class RedirectToUrlExceptionListenerSpec extends ObjectBehavior
 
     public function it_does_nothing_if_wrong_exception(
         \RuntimeException $wrong_exception,
-        GetResponseForExceptionEvent $event
+        GetResponseForExceptionEvent $event,
+        Request $request
     ) {
         $event->getException()->willReturn($wrong_exception);
+        $event->getRequest()->willReturn($request);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
 
@@ -78,9 +82,11 @@ class RedirectToUrlExceptionListenerSpec extends ObjectBehavior
 
     public function it_sets_a_redirect_response_if_it_is_the_right_exception(
         RedirectToUrlException $correct_exception,
-        GetResponseForExceptionEvent $event
+        GetResponseForExceptionEvent $event,
+        Request $request
     ) {
         $event->getException()->willReturn($correct_exception);
+        $event->getRequest()->willReturn($request);
 
         $correct_exception->getUrl()->shouldBeCalled()->willReturn('http://redirect.here');
         $event->setResponse(Argument::type('Symfony\Component\HttpFoundation\Response'))->shouldBeCalled();
