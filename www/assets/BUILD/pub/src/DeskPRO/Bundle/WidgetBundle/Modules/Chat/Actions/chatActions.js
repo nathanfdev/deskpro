@@ -27,15 +27,20 @@ export const setChatId = createAction('WIDGET_CHAT_SET_ID');
 export const unsetChatId = createAction(
   'WIDGET_CHAT_UNSET_ID',
   () => {
-    localStorage.removeItem('dpWidget.chat.partial');
-    localStorage.removeItem('dpWidget.chat.lastAgentId');
+    if (storageAvailable('localStorage')) {
+      localStorage.removeItem('dpWidget.chat.partial');
+      localStorage.removeItem('dpWidget.chat.lastAgentId');
+    }
   }
 );
 
 export const setLastAgentId = createAction(
   'WIDGET_CHAT_SET_LAST_AGENT',
   (lastAgentId) => {
-    localStorage.setItem('dpWidget.chat.lastAgentId', lastAgentId);
+    if (storageAvailable('localStorage')) {
+      localStorage.setItem('dpWidget.chat.lastAgentId', lastAgentId);
+    }
+
     return lastAgentId;
   }
 );
@@ -111,7 +116,10 @@ export const createChat = createAction(
       const chatId = data.id;
 
       if (chatId) {
-        localStorage.removeItem('dpWidget.chat.lastAgentId');
+        if (storageAvailable('localStorage')) {
+          localStorage.removeItem('dpWidget.chat.lastAgentId');
+        }
+
         dispatch(setChatId(chatId));
       }
     })

@@ -4,6 +4,7 @@ import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadOnlineAgents } from './peopleActions';
 import { loadOptions, fetchOptions, openWidget, reopenWidget, closeWidget } from './dpWindowActions';
 import { pollingChat, setChatId, unsetChatId, setLastAgentId } from '../../Chat/Actions/chatActions';
@@ -42,12 +43,16 @@ export const getSession = createAction(
 
     return widgetApi
       .sendPost(`DP_API/auth/session?dp__v=${visitorId}`, {
-        dpsid:        localStorage.getItem('dpWidget.sessionCode'),
+        dpsid:        storageAvailable('localStorage') && localStorage.getItem('dpWidget.sessionCode'),
         trackVisitor: window.DP_SEND_VISITOR_TRACK || {}
       }, { ...ajaxOptions })
       .success((response) => {
         const data = response.data;
-        localStorage.setItem('dpWidget.sessionCode', data.session_code);
+
+        if (storageAvailable('localStorage')) {
+          localStorage.setItem('dpWidget.sessionCode', data.session_code);
+        }
+
         dispatch(setSettings(data.global_settings));
         resolve(data);
 
@@ -127,7 +132,7 @@ export const chatResume = createAction(
   () => (dispatch, getState) => {
     const state = getState();
     const storedChatId = widgetSessionChatIdSelector(state);
-    const storedLastAgentId = Number(localStorage.getItem('dpWidget.chat.lastAgentId'));
+    const storedLastAgentId = storageAvailable('localStorage') ? Number(localStorage.getItem('dpWidget.chat.lastAgentId')) : null;
     const widgetHasChat = widgetHasChatSelector(state);
     const agentsCounts = onlineAgentsCountSelector(state);
     const liveDemo = liveDemoSelector(state);
@@ -147,7 +152,7 @@ export const chatResume = createAction(
       // Reset stored chat id on reload page if chat was ended
       if (!chatInfo || chatInfo.date_ended) {
         dispatch(unsetChatId());
-      } else if (!sessionStorage['dpWidget.dpWindow.minimized']) {
+      } else if (!storageAvailable('sessionStorage') || !sessionStorage['dpWidget.dpWindow.minimized']) {
         dispatch(openWidget());
       }
     });
