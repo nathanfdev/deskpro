@@ -49,7 +49,7 @@ define [
   InterfaceApp.service('AppConfig', -> return new AppConfig)
 
   InterfaceApp.service('TemplateLoader', [ 'AppConfig', '$http', '$q', (AppConfig, $http, $q) ->
-    window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'viewer/load-views', $http, $q)
+    window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'reports/multi-load-views', $http, $q)
     return window.DP_TEMPLATE_LOADER
   ])
 
@@ -116,7 +116,7 @@ define [
       debug: true,
       loadedModules: ['DeskPRO.InterfaceApp'],
       modules: [
-        {name: 'DeskPRO.ReportsApp', files: ['Reports/ReportsApp'] }
+        {name: 'Reports_App', files: ['Reports/App/ReportsModule'] }
       ]
     })
   ])
@@ -128,7 +128,7 @@ define [
 
     $urlRouterProvider.otherwise("/")
 
-    reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.ReportsApp'))
+    reportStates = new StateCollection(StateConfig.createFactory('Reports_App'))
     ReportsRouting(reportStates)
     for w in reportStates.whens
       $urlRouterProvider.when(w[0], w[1])

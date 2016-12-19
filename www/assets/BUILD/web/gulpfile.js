@@ -38,6 +38,7 @@ gulp.task('default', ['less', 'sass', 'semantic-copy', 'less-dp-semantic', 'sass
     './app/Admin*/**/*.coffee',
     './app/Agent*/**/*.coffee',
     './app/Reports*/**/*.coffee',
+    './app/Interface*/**/*.coffee',
     './app/DeskPRO*/**/*.coffee'
   ]);
 });
@@ -58,6 +59,7 @@ deskpro.watches = [
   ['./app/Admin*/**/*.coffee', ['coffee-admin']],
   ['./app/Agent*/**/*.coffee', ['coffee-agent']],
   ['./app/Reports/**/*.coffee', ['coffee-reports']],
+  ['./app/Interface/**/*.coffee', ['coffee-reports']],
   ['./app/DeskPRO/**/*.coffee', ['coffee-deskpro']],
   ['./app/**/Resources/style/*.less', ['less-app']],
   ['./app/**/Resources/style/*.scss', ['sass-app']],

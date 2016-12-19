@@ -42,6 +42,16 @@ $collection->create('reports', [
     'controller' => 'ReportsInterfaceBundle:Index:interface',
 ]);
 
+$collection->create('reports_interface', [
+    'path'       => '/reports-interface',
+    'controller' => 'InterfaceBundle:Interface:interface',
+]);
+
+$collection->create('new_reports_tplmultiload', [
+    'path'       => '/multi-load-views',
+    'controller' => 'InterfaceBundle:Interface:loadViews',
+]);
+
 $collection->create('reports_tpl_loadmulti', [
     'path'       => '/load-view/multi',
     'controller' => 'ReportsInterfaceBundle:Interface:multiLoadView',

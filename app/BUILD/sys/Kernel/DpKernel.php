@@ -132,6 +132,7 @@ class DpKernel extends BaseKernel
             new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
             new \Application\AgentBundle\AgentBundle(),
             new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
+            new \Application\InterfaceBundle\InterfaceBundle(),
             new \Application\UserBundle\UserBundle(),
             new \Application\LegacyApiBundle\LegacyApiBundle(),
             new \Application\ImportBundle\ImportBundle(),
