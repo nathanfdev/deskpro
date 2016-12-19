@@ -30,7 +30,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\Connection;
 
-class Build1481729332 extends AbstractBuild
+class Build1482156819 extends AbstractBuild
 {
     public function run()
     {
@@ -99,10 +99,10 @@ class Build1481729332 extends AbstractBuild
     {
         switch ($name) {
             case 'Theme:Internal:head-include.html.twig':
-                return file_get_contents(__DIR__.'/res/Build1481729332/head-include.html.twig');
+                return file_get_contents(__DIR__.'/res/Build1482156819/head-include.html.twig');
 
             case 'Theme:Internal:body-include.html.twig':
-                return file_get_contents(__DIR__.'/res/Build1481729332/body-include.html.twig');
+                return file_get_contents(__DIR__.'/res/Build1482156819/body-include.html.twig');
 
             default:
                 throw new \OutOfBoundsException();
