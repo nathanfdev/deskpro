@@ -36,6 +36,7 @@ use Application\DeskPRO\App\Native\NativeAppsSync;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -54,19 +55,26 @@ class DefaultDataFixture extends DeskProAbstractFixture implements OrderedFixtur
      */
     public function load(ObjectManager $manager)
     {
+        // Create Email templateSet to store email assets
+        $emailTemplateTheme = new ThemeSet();
+        $emailTemplateTheme->setThemeId('email_templates');
+        $manager->persist($emailTemplateTheme);
+
+        $manager->flush();
+
         $this->appsSync($manager);
-        $data_proc = new DefaultDataProcessor($this->container);
-        $data_proc->runInstall();
+        $dataProcessor = new DefaultDataProcessor($this->container);
+        $dataProcessor->runInstall();
     }
 
     private function appsSync($manager)
     {
-        $app_syncer = new NativeAppsSync(
+        $appSyncer = new NativeAppsSync(
             $this->container,
             $this->container->getAppManager(),
             new PackageInstaller($manager, $this->container->getBlobStorage(), $this->container->getImagine()),
             null
         );
-        $app_syncer->runSync();
+        $appSyncer->runSync();
     }
 }
