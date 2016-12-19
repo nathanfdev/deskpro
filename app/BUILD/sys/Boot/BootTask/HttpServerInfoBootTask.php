@@ -374,6 +374,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
             return;
         }
 
+        $dir          = $this->env->getAppDir();
         $filelistFile = $dir.'/sys/Resources/serverinfo/warmupit.php';
 
         // warmupit.php is generated at build time in the 'build-prod' script
@@ -383,7 +384,6 @@ class HttpServerInfoBootTask implements BootTaskInterface
         }
 
         $included = array_flip(get_included_files());
-        $dir      = $this->env->getAppDir();
         foreach (require($filelistFile) as $file) {
             if (is_file($dir.$file) && !isset($included[$dir.DIRECTORY_SEPARATOR.$file])) {
                 opcache_compile_file($dir.DIRECTORY_SEPARATOR.$file);
