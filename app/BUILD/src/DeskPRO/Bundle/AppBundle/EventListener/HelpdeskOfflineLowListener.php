@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use Application\DeskPRO\Command\WorkerJobCommand;
+use DeskPRO\Bundle\AppBundle\EventListener\Helper\LowTemplateHelper;
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -155,7 +156,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
             ]));
             $response->headers->set('Content-Type', 'application/json');
         } else {
-            $response->setContent($this->getOfflineHtmlPage($message, $request->getBasePath().'/pub'));
+            $response->setContent($this->getOfflineHtmlPage($request, $message));
             $response->headers->set('Content-Type', 'text/html');
         }
 
@@ -191,7 +192,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
             ]));
             $response->headers->set('Content-Type', 'application/json');
         } else {
-            $response->setContent($this->getOfflineHtmlPage('', $request->getBasePath().'/pub', 'upgrade-pending.html'));
+            $response->setContent($this->getOfflineHtmlPage($request, '', 'upgrade-pending.html'));
             $response->headers->set('Content-Type', 'text/html');
         }
 
@@ -296,15 +297,22 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
     }
 
     /**
-     * @param string $message
+     * @param Request $request
+     * @param string  $message
+     * @param string  $tpl
      *
      * @return string
      */
-    private function getOfflineHtmlPage($message, $asset_url, $tpl = 'helpdesk-disabled.html')
+    private function getOfflineHtmlPage(Request $request, $message, $tpl = 'helpdesk-disabled.html')
     {
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+        $asset_url = $request->getUriForPath('/assets/'.$DP_ENV->getAppName().'/pub');
+
         $page_html = @file_get_contents(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Resources/views/kernel/'.$tpl) ?: '{{ CONTENT }}';
         $page_html = str_replace('{{ ASSET_URL }}', $asset_url, $page_html);
         $page_html = str_replace('{{ CONTENT }}', $message, $page_html);
+        $page_html = LowTemplateHelper::injectAdminRedirect($request, $page_html);
 
         return $page_html;
     }
