@@ -227,6 +227,12 @@
                     {{ nav.list_item_group_end() }}
                 {% endif %}
 
+                {% if app.user.can_billing %}
+                    <div class="show-in-bare-page">
+                        {{ nav.list_item('Licensing and Billing', ng_href('license'), 'license', 'fa-dollar') }}
+                    </div>
+                {% endif %}
+
                 {{ nav.list_end() }}
             </div>
         </nav>
