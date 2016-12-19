@@ -4,9 +4,8 @@ import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 
 class ImageMenuItem extends React.Component {
   static propTypes    = {
-    desc:      PropTypes.string,
+    url:       PropTypes.string,
     label:     PropTypes.string,
-    icon:      PropTypes.string,
     onClick:   PropTypes.func,
     className: PropTypes.string
   };
@@ -42,14 +41,14 @@ class ImageMenuItem extends React.Component {
         positionMy="left top-15px"
         positionAt="right top"
         zIndex={99999}
-        content={this.props.desc}
+        content={<img src={this.props.url} role="presentation" />}
         ref={(c) => { this.templatePopup = c; }}
-        className="template-item"
+        className="image-menu-item"
         autoOpen={false}
       >
         <MenuItem
           label={this.props.label}
-          icon={this.props.icon}
+          src={this.props.url}
           className={this.props.className}
           onClick={this.props.onClick}
           onMouseOver={this.templateToolTip}

@@ -1,52 +1,100 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Tab, TabGroup } from 'DeskPRO/Component/Semantic/Tab';
-import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { MimeIcon } from 'DeskPRO/Component/Semantic/Icon';
 import ImageMenuItem from './ImageMenuItem';
+import MediaDropZone from './MediaDropZone';
+import * as actions from '../../Actions/templatesActions';
 
+@connect(state => ({
+  emailTemplates: state.EmailTemplates.templates
+}))
 export class MediaMenuContainer extends React.Component {
+  static propTypes = {
+    dispatch:       PropTypes.func,
+    emailTemplates: PropTypes.object.isRequired
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      uploading: false
+    };
+  }
+
+  onSend = () => {
+    this.setState({
+      uploading: true
+    });
+  };
+
+  onFail = () => {
+    this.setState({
+      uploading: false
+    });
+  };
+
+  reloadFiles = (type) => {
+    const action = (type === 'inline-image') ? actions.loadInlineImages : actions.loadAttachments;
+    this.props.dispatch(action).then(() => {
+      this.setState({
+        uploading: false
+      });
+    });
+  };
+
   render() {
-    return (<MediaMenu />);
+    let inlineImages = null;
+    let attachments = null;
+    if (this.props.emailTemplates) {
+      inlineImages = this.props.emailTemplates.get('inlineImages');
+      attachments = this.props.emailTemplates.get('attachments');
+    }
+    return (<MediaMenu
+      inlineFiles={inlineImages}
+      attachmentFiles={attachments}
+      reloadFiles={this.reloadFiles}
+      onFail={this.onFail}
+      onSend={this.onSend}
+      uploading={this.state.uploading}
+    />);
   }
 }
 
 export class MediaMenu extends React.Component {
   static propTypes = {
     inlineFiles:     PropTypes.node,
-    attachmentFiles: PropTypes.node
+    attachmentFiles: PropTypes.node,
+    reloadFiles:     PropTypes.func,
+    onFail:          PropTypes.func,
+    onSend:          PropTypes.func,
+    uploading:       PropTypes.bool
   };
 
-  getDropZone = icon => (<div className="drop-zone">
-    <i className={classNames('icon', icon)} />
-      Drop new files here or
-      <Button className="small basic">Upload files</Button>
-  </div>);
-
   getInlineFiles = () => {
-    if (!this.props.inlineFiles || !this.props.inlineFiles.get('files')) {
+    if (!this.props.inlineFiles) {
       return null;
     }
-    return this.props.inlineFiles.get('files').valueSeq().map((file, key) =>
+    return this.props.inlineFiles.valueSeq().map((file, key) =>
       <ImageMenuItem
         key={`file${key}`}
-        label={file.get('file_name')}
-        icon="folder open"
-        desc="Test"
+        label={file.get('name')}
+        url={file.get('url')}
         onClick={() => this.setActive(file)}
       />
     );
   };
 
   getAttachmentFiles = () => {
-    if (!this.props.attachmentFiles || !this.props.attachmentFiles.get('files')) {
+    if (!this.props.attachmentFiles) {
       return null;
     }
-    return this.props.attachmentFiles.get('files').valueSeq().map((file, key) =>
+    return this.props.attachmentFiles.valueSeq().map((file, key) =>
       <MenuItem
         key={`file${key}`}
-        label={file.get('file_name')}
+        label={file.get('name')}
         icon={MimeIcon.getIcon(file.get('mime_type'))}
         onClick={() => this.setActive(file)}
       />
@@ -56,9 +104,18 @@ export class MediaMenu extends React.Component {
   render() {
     return (
       <div className="media-drop-down">
+        <div className={classNames('ui dimmer', { active: this.props.uploading })}>
+          <div className="ui text loader">Uploading file</div>
+        </div>
         <TabGroup>
           <Tab key="inline" label="Inline images" icon="image">
-            {this.getDropZone('image')}
+            <MediaDropZone
+              icon="image"
+              type="inline-image"
+              onSuccess={this.props.reloadFiles}
+              onSend={this.props.onSend}
+              onFail={this.props.onFail}
+            />
             <MenuWrapper className="files">
               <Menu>
                 {this.getInlineFiles()}
@@ -66,7 +123,13 @@ export class MediaMenu extends React.Component {
             </MenuWrapper>
           </Tab>
           <Tab key="file" label="File attachments" icon="attach">
-            {this.getDropZone('attach')}
+            <MediaDropZone
+              icon="attach"
+              type="attachment"
+              onSuccess={this.props.reloadFiles}
+              onSend={this.props.onSend}
+              onFail={this.props.onFail}
+            />
             <MenuWrapper className="files">
               <Menu>
                 {this.getAttachmentFiles()}

@@ -12,6 +12,28 @@ export const loadTemplates = createAction(
   })
 );
 
+export const loadAttachments = createAction(
+  'EMAIL_TEMPLATES_LOAD_ATTACHMENTS',
+  () => new Promise((resolve) => {
+    repository('EmailTemplates').getFiles('attachment').then((promise) => {
+      const res = promise.getData();
+
+      resolve(res.data);
+    });
+  })
+);
+
+export const loadInlineImages = createAction(
+  'EMAIL_TEMPLATES_LOAD_INLINE_IMAGES',
+  () => new Promise((resolve) => {
+    repository('EmailTemplates').getFiles('inline-image').then((promise) => {
+      const res = promise.getData();
+
+      resolve(res.data);
+    });
+  })
+);
+
 export const loadPhrases = createAction(
   'EMAIL_TEMPLATES_LOAD_PHRASES',
   (templateGroup, languageId) => new Promise((resolve) => {

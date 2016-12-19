@@ -5,6 +5,8 @@ import * as actions from '../Actions/templatesActions';
 
 const initialState = {
   info:                 {},
+  inlineImages:         {},
+  attachments:          {},
   phrases:              {},
   template:             {},
   currentLanguage:      'en',
@@ -17,14 +19,20 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [actions.loadTemplates]: async({
-    success: setFullPayload('info')
+  [actions.loadAttachments]: async({
+    success: setFullPayload('attachments')
+  }),
+  [actions.loadInlineImages]: async({
+    success: setFullPayload('inlineImages')
   }),
   [actions.loadPhrases]: async({
     success: setFullPayload('phrases')
   }),
   [actions.loadTemplate]: async({
     success: setFullPayload('template')
+  }),
+  [actions.loadTemplates]: async({
+    success: setFullPayload('info')
   }),
   [actions.resetTemplate]: async({
     success: setFullPayload('template')

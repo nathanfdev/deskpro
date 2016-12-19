@@ -37,6 +37,8 @@ class EmailTemplatesEditorContainer extends React.Component {
       this.props.emailTemplates.get('currentTemplateGroup'),
       this.props.emailTemplates.get('currentLanguage')
     ));
+    this.props.dispatch(actions.loadInlineImages);
+    this.props.dispatch(actions.loadAttachments);
   }
 
   componentDidMount() {

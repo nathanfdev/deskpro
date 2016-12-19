@@ -7,6 +7,9 @@ export class MimeIcon extends React.Component {
   };
 
   static getIcon = (mimeType) => {
+    if (!mimeType) {
+      return 'file outline';
+    }
     if (mimeType.match(/^image/)) {
       return 'file image outline';
     }

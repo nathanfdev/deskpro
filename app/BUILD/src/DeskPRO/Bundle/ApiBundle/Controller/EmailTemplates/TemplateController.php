@@ -66,7 +66,6 @@ class TemplateController extends BaseController
      *         }
      *     },
      *)
-     * @ApiUnstable()
      * @Rest\Get("/template/{name}")
      *
      * @param $name
@@ -76,8 +75,8 @@ class TemplateController extends BaseController
     public function getTemplateAction($name)
     {
         if (strpos($name, 'EDIT_SIDEBAR_BLOCK:') === 0) {
-            $block_id = substr($name, strlen('EDIT_SIDEBAR_BLOCK:'));
-            $block    = $this->getManager()->getRepository(PortalPageDisplay::class)->find($block_id);
+            $blockId = substr($name, strlen('EDIT_SIDEBAR_BLOCK:'));
+            $block   = $this->getManager()->getRepository(PortalPageDisplay::class)->find($blockId);
             if (!$block || !$block->getData('tpl')) {
                 throw $this->createNotFoundException();
             }
@@ -200,8 +199,8 @@ class TemplateController extends BaseController
     public function resetTemplateAction($name)
     {
         if (strpos($name, 'EDIT_SIDEBAR_BLOCK:') === 0) {
-            $block_id = substr($name, strlen('EDIT_SIDEBAR_BLOCK:'));
-            $block    = $this->getManager()->getRepository(PortalPageDisplay::class)->find($block_id);
+            $blockId = substr($name, strlen('EDIT_SIDEBAR_BLOCK:'));
+            $block   = $this->getManager()->getRepository(PortalPageDisplay::class)->find($blockId);
             if (!$block || !$block->getData('tpl')) {
                 throw $this->createNotFoundException();
             }

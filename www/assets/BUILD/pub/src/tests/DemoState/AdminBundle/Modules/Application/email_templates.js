@@ -3342,61 +3342,57 @@ export const variables = {
     }
   }
 };
-export const mediaInline = {
-  files: [
-    {
-      blob_id:   1234,
-      file_name: 'our_logo.png',
-      width:     '600px',
-      height:    '790px'
-    },
-    {
-      blob_id:   1235,
-      file_name: 'our_logo_small.png',
-      width:     '100px',
-      height:    '135px'
-    },
-    {
-      blob_id:   1236,
-      file_name: 'button-pic.jpeg',
-      width:     '600px',
-      height:    '790px'
-    },
-    {
-      blob_id:   1237,
-      file_name: 'button-pic2.png',
-      width:     '600px',
-      height:    '790px'
-    },
-  ]
-};
-export const mediaAttachments = {
-  files: [
-    {
-      blob_id:   123,
-      file_name: 'Creating_Articles.pdf',
-      mime_type: 'application/pdf',
-    },
-    {
-      blob_id:   124,
-      file_name: 'Help_with_group.pdf',
-      mime_type: 'application/msword',
-    },
-    {
-      blob_id:   125,
-      file_name: 'Stats.xls',
-      mime_type: 'application/excel',
-    },
-    {
-      blob_id:   126,
-      file_name: 'Banner.png',
-      mime_type: 'image/png',
-    },
-    {
-      blob_id:   127,
-      file_name: 'Archive.zip',
-      mime_type: 'application/zip',
-    }
-  ]
-};
+export const mediaInline = [
+  {
+    blob_id: 1234,
+    name:    'our_logo.png',
+    width:   '600px',
+    height:  '790px'
+  },
+  {
+    blob_id: 1235,
+    name:    'our_logo_small.png',
+    width:   '100px',
+    height:  '135px'
+  },
+  {
+    blob_id: 1236,
+    name:    'button-pic.jpeg',
+    width:   '600px',
+    height:  '790px'
+  },
+  {
+    blob_id: 1237,
+    name:    'button-pic2.png',
+    width:   '600px',
+    height:  '790px'
+  },
+];
+export const mediaAttachments = [
+  {
+    blob_id:   123,
+    name:      'Creating_Articles.pdf',
+    mime_type: 'application/pdf',
+  },
+  {
+    blob_id:   124,
+    name:      'Help_with_group.pdf',
+    mime_type: 'application/msword',
+  },
+  {
+    blob_id:   125,
+    name:      'Stats.xls',
+    mime_type: 'application/excel',
+  },
+  {
+    blob_id:   126,
+    name:      'Banner.png',
+    mime_type: 'image/png',
+  },
+  {
+    blob_id:   127,
+    name:      'Archive.zip',
+    mime_type: 'application/zip',
+  }
+];
 export default emailBlocks;

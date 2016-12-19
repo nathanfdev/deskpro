@@ -35,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\ThemeSetAssetRepository")
  * @ORM\Table(name="theme_set_assets")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  */

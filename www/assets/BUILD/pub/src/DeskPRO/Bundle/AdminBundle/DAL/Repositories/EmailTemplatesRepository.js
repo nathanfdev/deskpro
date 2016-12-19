@@ -24,5 +24,13 @@ class EmailTemplatesRepository extends ApiRepository {
   loadVariables(viewModel) {
     return this.api.sendGet(`DP_API/${this.url}/view_model/variables/${viewModel}`);
   }
+
+  getFiles(type) {
+    return this.api.sendGet(`DP_API/${this.url}/email_assets/${type}`);
+  }
+
+  saveFile(type, file) {
+    return this.api.sendPost(`DP_API/${this.url}/email_assets/${type}`, file);
+  }
 }
 export default EmailTemplatesRepository;
