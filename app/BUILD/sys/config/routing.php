@@ -61,8 +61,4 @@ if (defined('DPC_IS_CLOUD')) {
     $collection->addCollection($col);
 }
 
-$col = $loader->import(DP_ROOT.'/src/Application/InterfaceBundle/Resources/config/interface-routing.php');
-$col->addPrefix('/iface');
-$collection->addCollection($col);
-
 return $collection;

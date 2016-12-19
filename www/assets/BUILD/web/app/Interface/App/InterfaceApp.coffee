@@ -49,7 +49,7 @@ define [
   InterfaceApp.service('AppConfig', -> return new AppConfig)
 
   InterfaceApp.service('TemplateLoader', [ 'AppConfig', '$http', '$q', (AppConfig, $http, $q) ->
-    window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'reports/multi-load-views', $http, $q)
+    window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'reports/viewer/load-views', $http, $q)
     return window.DP_TEMPLATE_LOADER
   ])
 
@@ -116,7 +116,7 @@ define [
       debug: true,
       loadedModules: ['DeskPRO.InterfaceApp'],
       modules: [
-        {name: 'Reports_App', files: ['Reports/App/ReportsModule'] }
+        {name: 'Reports_App', files: ['Reports/App/App'] }
       ]
     })
   ])
