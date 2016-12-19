@@ -116,6 +116,13 @@ class AgentActivity
             $agent_list       = $all_agents;
         }
 
+        // protection against memory errors with too many agents
+        // same logic as template logic in ReportsInterfaceBundle:AgentActivity:index.html.twig
+        if ($agent_or_team_id === 'all' && count($agent_list) > 20) {
+            $agent_or_team_id = '0';
+            $agent_list       = [];
+        }
+
         $activity = [];
         $agents   = [];
 

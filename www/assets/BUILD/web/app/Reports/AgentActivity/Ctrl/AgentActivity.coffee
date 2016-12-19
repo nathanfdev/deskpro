@@ -20,7 +20,14 @@ define [
       @agent_teams = []
       @filter = {}
       @filter.date = new Date()
-      @filter.agent_or_team = 'all'
+      @filter.agent_or_team = '0'
+
+      @$scope.$watch('AgentActivity.filter.agent_or_team', =>
+        @html = ''
+      )
+      @$scope.$watch('AgentActivity.filter.date', =>
+        @html = ''
+      )
 
 
     ###
@@ -28,7 +35,7 @@ define [
     ###
     initialLoad: ->
       date = moment(@filter.date).format("YYYY-MM-DD")
-      @Api.sendGet("/reports/agent-activity/#{@filter.agent_or_team}/${date}").then (res) =>
+      @Api.sendGet("/reports/agent-activity/0/${date}").then (res) =>
         @html = @$sce.trustAsHtml(res.data.html)
         @all_agents = res.data.all_agents
         @agent_teams = res.data.agent_teams
