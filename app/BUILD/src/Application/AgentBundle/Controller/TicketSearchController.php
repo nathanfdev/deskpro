@@ -1945,6 +1945,8 @@ class TicketSearchController extends AbstractController
         }
 
         if (($actions || $actions_set || $macro) && $tickets) {
+            $ticketManager = $this->container->getTicketManager();
+
             if ($macro) {
                 /** @var Ticket $ticket */
                 foreach ($tickets as $ticket) {
@@ -1971,10 +1973,10 @@ class TicketSearchController extends AbstractController
                             continue;
                         }
 
-                        $this->em->persist($ticket);
-                        $this->em->flush();
-                        $ticket->getTicketLogger()->done();
+                        $context = $ticketManager->createAgentExecutorContext($this->person, 'update', 'web');
+                        $ticketManager->saveTicket($ticket, $context);
 
+                        $this->em->flush();
                         $this->db->commit();
                     } catch (\Exception $e) {
                         $this->db->rollback();
@@ -2029,7 +2031,8 @@ class TicketSearchController extends AbstractController
                             continue;
                         }
 
-                        $this->em->persist($ticket);
+                        $context = $ticketManager->createAgentExecutorContext($this->person, 'update', 'web');
+                        $ticketManager->saveTicket($ticket, $context);
 
                         if ($snippet_ids) {
                             foreach ($snippet_ids as $snip_id) {
