@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Fieldset, createValue } from 'react-forms';
 import $ from 'jquery';
 import Immutable from 'immutable';
+import moment from 'moment';
 import { loadAll, isLoadedCollectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import PortalFormWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
@@ -92,7 +93,7 @@ export class ChatBeginContainer extends React.Component {
     super(props);
 
     this.state = {
-      formData: this.getInitialFormData(),
+      formData: this.getInitialFormData(props),
       submit:   false,
       errors:   null
     };
@@ -112,8 +113,16 @@ export class ChatBeginContainer extends React.Component {
 
   componentWillReceiveProps(newProps) {
     const newState = {};
-    if (newProps.children !== this.props.children) {
-      newState.formData = this.getInitialFormData();
+    const { children, customFields, customFieldsLoaded } = this.props;
+    const { chatDepartments, chatDepartmentsLoaded, allowDepartmentSelection } = this.props;
+
+    if (children !== newProps.children
+        || customFields !== newProps.customFields
+        || customFieldsLoaded !== newProps.customFieldsLoaded
+        || allowDepartmentSelection !== newProps.allowDepartmentSelection
+        || chatDepartments !== newProps.chatDepartments
+        || chatDepartmentsLoaded !== newProps.chatDepartmentsLoaded) {
+      newState.formData = this.getInitialFormData(newProps);
     }
 
     this.setState(newState);
@@ -177,14 +186,35 @@ export class ChatBeginContainer extends React.Component {
     );
   };
 
-  getInitialFormData() {
+  getInitialFormData(props) {
+    const { children, customFields, allowDepartmentSelection } = props;
+    const formData = {
+      name:   '',
+      email:  '',
+      fields: {}
+    };
+
+    if (children.type !== ChatBeginSimple) {
+      if (allowDepartmentSelection) {
+        formData.chat_department = '';
+      }
+
+      customFields.forEach((customField) => {
+        const fieldId = customField.get('id');
+        const widgetType = customField.get('widget_type');
+
+        let defaultValue = customField.get('default_value');
+        if (defaultValue && defaultValue.toJS) {
+          defaultValue = defaultValue.toJS();
+        }
+
+        formData.fields[fieldId] = defaultValue;
+      });
+    }
+
     return createValue({
       onChange: this.onChange,
-      value:    {
-        name:   '',
-        email:  '',
-        fields: {}
-      }
+      value:    formData
     });
   }
 

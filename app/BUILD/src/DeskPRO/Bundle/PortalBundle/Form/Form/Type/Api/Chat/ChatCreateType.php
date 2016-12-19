@@ -155,6 +155,7 @@ class ChatCreateType extends AbstractType
                         return $qb;
                     },
                     'constraints' => [
+                        new Assert\NotNull(),
                         new LeafDepartment(),
                     ],
                 ]
