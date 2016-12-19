@@ -65,6 +65,7 @@ class PortalPage extends PageWidget {
           fn();
         });
       }
+      window.DP_PAGE_IS_READY = true;
     });
   }
 
