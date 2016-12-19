@@ -5,4 +5,4 @@ PHP's built-in server is convenient for local development, but very inefficient 
 To run the server, cd to the project directory and then run the server like this:
 
     $ cd /path/to/deskpro
-    $ php -S 0.0.0.0:8000 dev/php-server/routing.php
+    $ php -S 0.0.0.0:9090 -t www/ dev/php-server/routing.php
