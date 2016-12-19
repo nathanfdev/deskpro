@@ -68,8 +68,8 @@ export default class WidgetFrameContainer extends React.Component {
       });
     } else {
       $body.css({
-        overflow: 'auto',
-        position: 'inherit'
+        overflow: '',
+        position: ''
       });
     }
   };
