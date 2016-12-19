@@ -402,17 +402,17 @@ class PhraseData
             $custom_phrases = [];
         }
 
-        $fn_get_rows = function (CustomDefAbstract $field, $depth = 0) use ($phrase_group, $custom_phrases, $fm, &$fn_get_rows) {
+        $fn_get_rows = function (CustomDefAbstract $field, $depth = 0) use ($phrase_group, $custom_phrases, $fm, &$fn_get_rows, $language) {
             $id = $phrase_group.'.'.$field->id.'_title';
 
             $row = [
                 'id'      => $id,
                 'depth'   => $depth,
                 'type'    => 'field',
-                'type_id' => $field->id,
-                'default' => $field->title,
-                'lang'    => $field->title,
-                'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
+                'type_id' => $field->getId(),
+                'default' => $field->getRawTitle(),
+                'lang'    => $field->getTitle($language),
+                'custom'  => $field->getTitle($language),
             ];
 
             $row['lang_default'] = $row['lang'] ?: $row['default'];

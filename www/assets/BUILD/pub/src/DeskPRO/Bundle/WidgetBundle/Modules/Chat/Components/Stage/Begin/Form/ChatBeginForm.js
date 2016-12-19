@@ -19,7 +19,8 @@ export class ChatBeginForm extends React.Component {
     customFieldsLoaded:       PropTypes.bool,
     allowDepartmentSelection: PropTypes.bool,
     chatDepartments:          PropTypes.object,
-    chatDepartmentsLoaded:    PropTypes.bool
+    chatDepartmentsLoaded:    PropTypes.bool,
+    widgetLanguage:           PropTypes.number
   };
 
 
@@ -43,7 +44,8 @@ export class ChatBeginForm extends React.Component {
             errors,
             onSubmit,
             allowDepartmentSelection,
-            chatDepartmentsLoaded
+            chatDepartmentsLoaded,
+            widgetLanguage
           } = this.props;
 
     if (!customFieldsLoaded) {
@@ -69,6 +71,7 @@ export class ChatBeginForm extends React.Component {
               <CustomField
                 key={index}
                 config={customField}
+                language={widgetLanguage}
                 formErrors={errors}
                 widgetOptions={{
                   context:       [parent.document, window.widgetFrame.document],

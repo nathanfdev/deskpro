@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * A custom field definition.
@@ -46,8 +45,6 @@ class CustomDefOrganization extends CustomDefAbstract
     /**
      * Field`s parent.
      *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\CustomDefOrganization>")
-     *
      * @var CustomDefOrganization
      */
     protected $parent = null;
@@ -56,8 +53,6 @@ class CustomDefOrganization extends CustomDefAbstract
      * Field children.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *
-     * @JMS\Exclude()
      */
     protected $children = null;
 
