@@ -74,7 +74,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
             if (isset($method[1])) {
                 $method = $reflection->getMethod($method[1]);
 
-                $classAnnotation  = $annotationsReader->getClassAnnotation($reflection, Feature::class);
+                $classAnnotation = $annotationsReader->getClassAnnotation($reflection, Feature::class);
                 $methodAnnotation = $annotationsReader->getMethodAnnotation($method, Feature::class);
 
                 /** @var Feature $annotation */
